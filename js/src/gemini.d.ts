@@ -6,15 +6,15 @@ export default class gemini extends Exchange {
     fetchMarketsFromWeb(params?: {}): Promise<any[]>;
     parseMarketActive(status: any): any;
     fetchUSDTMarkets(params?: {}): Promise<any[]>;
-    fetchMarketsFromAPI(params?: {}): Promise<any>;
+    fetchMarketsFromAPI(params?: {}): Promise<unknown[]>;
     parseMarket(response: any): {
-        id: any;
+        id: string;
         symbol: string;
         base: any;
         quote: any;
         settle: any;
-        baseId: any;
-        quoteId: any;
+        baseId: string;
+        quoteId: string;
         settleId: any;
         type: string;
         spot: boolean;
@@ -32,8 +32,8 @@ export default class gemini extends Exchange {
         strike: any;
         optionType: any;
         precision: {
-            price: any;
-            amount: any;
+            price: number;
+            amount: number;
         };
         limits: {
             leverage: {
@@ -41,7 +41,7 @@ export default class gemini extends Exchange {
                 max: any;
             };
             amount: {
-                min: any;
+                min: number;
                 max: any;
             };
             price: {
@@ -55,75 +55,75 @@ export default class gemini extends Exchange {
         };
         info: any;
     };
-    fetchOrderBook(symbol: string, limit?: Int, params?: {}): Promise<any>;
-    fetchTickerV1(symbol: string, params?: {}): Promise<any>;
-    fetchTickerV2(symbol: string, params?: {}): Promise<any>;
+    fetchOrderBook(symbol: string, limit?: Int, params?: {}): Promise<import("./base/types.js").OrderBook>;
+    fetchTickerV1(symbol: string, params?: {}): Promise<import("./base/types.js").Ticker>;
+    fetchTickerV2(symbol: string, params?: {}): Promise<import("./base/types.js").Ticker>;
     fetchTickerV1AndV2(symbol: string, params?: {}): Promise<any>;
     fetchTicker(symbol: string, params?: {}): Promise<any>;
-    parseTicker(ticker: any, market?: any): any;
+    parseTicker(ticker: any, market?: any): import("./base/types.js").Ticker;
     fetchTickers(symbols?: string[], params?: {}): Promise<any>;
-    parseTrade(trade: any, market?: any): any;
-    fetchTrades(symbol: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
-    parseBalance(response: any): any;
+    parseTrade(trade: any, market?: any): import("./base/types.js").Trade;
+    fetchTrades(symbol: string, since?: Int, limit?: Int, params?: {}): Promise<import("./base/types.js").Trade[]>;
+    parseBalance(response: any): import("./base/types.js").Balances;
     fetchTradingFees(params?: {}): Promise<{}>;
-    fetchBalance(params?: {}): Promise<any>;
+    fetchBalance(params?: {}): Promise<import("./base/types.js").Balances>;
     parseOrder(order: any, market?: any): any;
     fetchOrder(id: string, symbol?: string, params?: {}): Promise<any>;
-    fetchOpenOrders(symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
+    fetchOpenOrders(symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<import("./base/types.js").Order[]>;
     createOrder(symbol: string, type: any, side: OrderSide, amount: any, price?: any, params?: {}): Promise<any>;
     cancelOrder(id: string, symbol?: string, params?: {}): Promise<any>;
-    fetchMyTrades(symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
+    fetchMyTrades(symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<import("./base/types.js").Trade[]>;
     withdraw(code: string, amount: any, address: any, tag?: any, params?: {}): Promise<{
         info: any;
-        id: any;
-        txid: any;
-        timestamp: any;
-        datetime: any;
+        id: string;
+        txid: string;
+        timestamp: number;
+        datetime: string;
         network: any;
-        address: any;
+        address: string;
         addressTo: any;
         addressFrom: any;
         tag: any;
         tagTo: any;
         tagFrom: any;
-        type: any;
-        amount: any;
+        type: string;
+        amount: number;
         currency: any;
-        status: any;
+        status: string;
         updated: any;
         fee: any;
     }>;
-    nonce(): any;
+    nonce(): number;
     fetchTransactions(code?: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
     parseTransaction(transaction: any, currency?: any): {
         info: any;
-        id: any;
-        txid: any;
-        timestamp: any;
-        datetime: any;
+        id: string;
+        txid: string;
+        timestamp: number;
+        datetime: string;
         network: any;
-        address: any;
+        address: string;
         addressTo: any;
         addressFrom: any;
         tag: any;
         tagTo: any;
         tagFrom: any;
-        type: any;
-        amount: any;
+        type: string;
+        amount: number;
         currency: any;
-        status: any;
+        status: string;
         updated: any;
         fee: any;
     };
-    parseTransactionStatus(status: any): any;
+    parseTransactionStatus(status: any): string;
     parseDepositAddress(depositAddress: any, currency?: any): {
         currency: any;
         network: any;
-        address: any;
+        address: string;
         tag: any;
         info: any;
     };
-    fetchDepositAddressesByNetwork(code: string, params?: {}): Promise<any>;
+    fetchDepositAddressesByNetwork(code: string, params?: {}): Promise<{}>;
     sign(path: any, api?: string, method?: string, params?: {}, headers?: any, body?: any): {
         url: string;
         method: string;
@@ -133,9 +133,9 @@ export default class gemini extends Exchange {
     handleErrors(httpCode: any, reason: any, url: any, method: any, headers: any, body: any, response: any, requestHeaders: any, requestBody: any): any;
     createDepositAddress(code: string, params?: {}): Promise<{
         currency: string;
-        address: any;
+        address: string;
         tag: any;
         info: any;
     }>;
-    fetchOHLCV(symbol: string, timeframe?: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
+    fetchOHLCV(symbol: string, timeframe?: string, since?: Int, limit?: Int, params?: {}): Promise<import("./base/types.js").OHLCV[]>;
 }

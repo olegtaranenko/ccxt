@@ -4,8 +4,4 @@
 // https://github.com/ccxt/ccxt/blob/master/CONTRIBUTING.md#how-to-contribute-code
 // EDIT THE CORRESPONDENT .ts FILE INSTEAD
 
-// -------------------------------------------------------------------------------
-import _fmfwio from '../fmfwio.js';
-class fmfwio extends _fmfwio {
-}
-export default fmfwio;
+"use strict";

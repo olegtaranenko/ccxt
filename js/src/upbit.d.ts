@@ -4,42 +4,42 @@ export default class upbit extends Exchange {
     describe(): any;
     fetchCurrency(code: string, params?: {}): Promise<{
         info: any;
-        id: any;
+        id: string;
         code: any;
         name: any;
         active: boolean;
-        fee: any;
+        fee: number;
         precision: any;
         limits: {
             withdraw: {
-                min: any;
+                min: number;
                 max: any;
             };
         };
     }>;
     fetchCurrencyById(id: string, params?: {}): Promise<{
         info: any;
-        id: any;
+        id: string;
         code: any;
         name: any;
         active: boolean;
-        fee: any;
+        fee: number;
         precision: any;
         limits: {
             withdraw: {
-                min: any;
+                min: number;
                 max: any;
             };
         };
     }>;
     fetchMarket(symbol: string, params?: {}): Promise<{
-        id: any;
+        id: string;
         symbol: string;
         base: any;
         quote: any;
         settle: any;
-        baseId: any;
-        quoteId: any;
+        baseId: string;
+        quoteId: string;
         settleId: any;
         type: string;
         spot: boolean;
@@ -59,8 +59,8 @@ export default class upbit extends Exchange {
         strike: any;
         optionType: any;
         precision: {
-            amount: any;
-            price: any;
+            amount: number;
+            price: number;
         };
         limits: {
             leverage: {
@@ -68,7 +68,7 @@ export default class upbit extends Exchange {
                 max: any;
             };
             amount: {
-                min: any;
+                min: number;
                 max: any;
             };
             price: {
@@ -76,20 +76,20 @@ export default class upbit extends Exchange {
                 max: any;
             };
             cost: {
-                min: any;
-                max: any;
+                min: number;
+                max: number;
             };
             info: any;
         };
     }>;
     fetchMarketById(id: string, params?: {}): Promise<{
-        id: any;
+        id: string;
         symbol: string;
         base: any;
         quote: any;
         settle: any;
-        baseId: any;
-        quoteId: any;
+        baseId: string;
+        quoteId: string;
         settleId: any;
         type: string;
         spot: boolean;
@@ -109,8 +109,8 @@ export default class upbit extends Exchange {
         strike: any;
         optionType: any;
         precision: {
-            amount: any;
-            price: any;
+            amount: number;
+            price: number;
         };
         limits: {
             leverage: {
@@ -118,7 +118,7 @@ export default class upbit extends Exchange {
                 max: any;
             };
             amount: {
-                min: any;
+                min: number;
                 max: any;
             };
             price: {
@@ -126,88 +126,88 @@ export default class upbit extends Exchange {
                 max: any;
             };
             cost: {
-                min: any;
-                max: any;
+                min: number;
+                max: number;
             };
             info: any;
         };
     }>;
     fetchMarkets(params?: {}): Promise<any[]>;
-    parseBalance(response: any): any;
-    fetchBalance(params?: {}): Promise<any>;
+    parseBalance(response: any): import("./base/types.js").Balances;
+    fetchBalance(params?: {}): Promise<import("./base/types.js").Balances>;
     fetchOrderBooks(symbols?: string[], limit?: Int, params?: {}): Promise<{}>;
     fetchOrderBook(symbol: string, limit?: Int, params?: {}): Promise<any>;
-    parseTicker(ticker: any, market?: any): any;
+    parseTicker(ticker: any, market?: any): import("./base/types.js").Ticker;
     fetchTickers(symbols?: string[], params?: {}): Promise<any>;
     fetchTicker(symbol: string, params?: {}): Promise<any>;
-    parseTrade(trade: any, market?: any): any;
-    fetchTrades(symbol: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
+    parseTrade(trade: any, market?: any): import("./base/types.js").Trade;
+    fetchTrades(symbol: string, since?: Int, limit?: Int, params?: {}): Promise<import("./base/types.js").Trade[]>;
     fetchTradingFee(symbol: string, params?: {}): Promise<{
         info: any;
         symbol: string;
-        maker: any;
-        taker: any;
+        maker: number;
+        taker: number;
         percentage: boolean;
         tierBased: boolean;
     }>;
-    parseOHLCV(ohlcv: any, market?: any): any[];
-    fetchOHLCV(symbol: string, timeframe?: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
+    parseOHLCV(ohlcv: any, market?: any): number[];
+    fetchOHLCV(symbol: string, timeframe?: string, since?: Int, limit?: Int, params?: {}): Promise<import("./base/types.js").OHLCV[]>;
     createOrder(symbol: string, type: any, side: OrderSide, amount: any, price?: any, params?: {}): Promise<{
         info: any;
-        id: any;
+        id: string;
         clientOrderId: any;
-        timestamp: any;
-        datetime: any;
+        timestamp: number;
+        datetime: string;
         lastTradeTimestamp: any;
         symbol: any;
-        type: any;
+        type: string;
         timeInForce: any;
         postOnly: any;
-        side: any;
-        price: any;
+        side: string;
+        price: number;
         stopPrice: any;
         triggerPrice: any;
         cost: any;
         average: any;
-        amount: any;
-        filled: any;
-        remaining: any;
-        status: any;
+        amount: number;
+        filled: number;
+        remaining: number;
+        status: string;
         fee: any;
         trades: any;
     }>;
     cancelOrder(id: string, symbol?: string, params?: {}): Promise<{
         info: any;
-        id: any;
+        id: string;
         clientOrderId: any;
-        timestamp: any;
-        datetime: any;
+        timestamp: number;
+        datetime: string;
         lastTradeTimestamp: any;
         symbol: any;
-        type: any;
+        type: string;
         timeInForce: any;
         postOnly: any;
-        side: any;
-        price: any;
+        side: string;
+        price: number;
         stopPrice: any;
         triggerPrice: any;
         cost: any;
         average: any;
-        amount: any;
-        filled: any;
-        remaining: any;
-        status: any;
+        amount: number;
+        filled: number;
+        remaining: number;
+        status: string;
         fee: any;
         trades: any;
     }>;
     fetchDeposits(code?: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
     fetchWithdrawals(code?: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
-    parseTransactionStatus(status: any): any;
+    parseTransactionStatus(status: any): string;
     parseTransaction(transaction: any, currency?: any): {
         info: any;
-        id: any;
+        id: string;
         currency: any;
-        amount: any;
+        amount: number;
         network: any;
         address: any;
         addressTo: any;
@@ -215,97 +215,97 @@ export default class upbit extends Exchange {
         tag: any;
         tagTo: any;
         tagFrom: any;
-        status: any;
-        type: any;
-        updated: any;
-        txid: any;
-        timestamp: any;
-        datetime: any;
+        status: string;
+        type: string;
+        updated: number;
+        txid: string;
+        timestamp: number;
+        datetime: string;
         fee: {
             currency: any;
-            cost: any;
+            cost: number;
         };
     };
-    parseOrderStatus(status: any): any;
+    parseOrderStatus(status: any): string;
     parseOrder(order: any, market?: any): {
         info: any;
-        id: any;
+        id: string;
         clientOrderId: any;
-        timestamp: any;
-        datetime: any;
+        timestamp: number;
+        datetime: string;
         lastTradeTimestamp: any;
         symbol: any;
-        type: any;
+        type: string;
         timeInForce: any;
         postOnly: any;
-        side: any;
-        price: any;
+        side: string;
+        price: number;
         stopPrice: any;
         triggerPrice: any;
         cost: any;
         average: any;
-        amount: any;
-        filled: any;
-        remaining: any;
-        status: any;
+        amount: number;
+        filled: number;
+        remaining: number;
+        status: string;
         fee: any;
         trades: any;
     };
-    fetchOrdersByState(state: any, symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
-    fetchOpenOrders(symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
-    fetchClosedOrders(symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
-    fetchCanceledOrders(symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
+    fetchOrdersByState(state: any, symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<import("./base/types.js").Order[]>;
+    fetchOpenOrders(symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<import("./base/types.js").Order[]>;
+    fetchClosedOrders(symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<import("./base/types.js").Order[]>;
+    fetchCanceledOrders(symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<import("./base/types.js").Order[]>;
     fetchOrder(id: string, symbol?: string, params?: {}): Promise<{
         info: any;
-        id: any;
+        id: string;
         clientOrderId: any;
-        timestamp: any;
-        datetime: any;
+        timestamp: number;
+        datetime: string;
         lastTradeTimestamp: any;
         symbol: any;
-        type: any;
+        type: string;
         timeInForce: any;
         postOnly: any;
-        side: any;
-        price: any;
+        side: string;
+        price: number;
         stopPrice: any;
         triggerPrice: any;
         cost: any;
         average: any;
-        amount: any;
-        filled: any;
-        remaining: any;
-        status: any;
+        amount: number;
+        filled: number;
+        remaining: number;
+        status: string;
         fee: any;
         trades: any;
     }>;
-    fetchDepositAddresses(codes?: any, params?: {}): Promise<any>;
+    fetchDepositAddresses(codes?: any, params?: {}): Promise<{}>;
     parseDepositAddress(depositAddress: any, currency?: any): {
         currency: any;
-        address: any;
-        tag: any;
+        address: string;
+        tag: string;
         network: any;
         info: any;
     };
     fetchDepositAddress(code: string, params?: {}): Promise<{
         currency: any;
-        address: any;
-        tag: any;
+        address: string;
+        tag: string;
         network: any;
         info: any;
     }>;
     createDepositAddress(code: string, params?: {}): Promise<{
         currency: any;
-        address: any;
-        tag: any;
+        address: string;
+        tag: string;
         network: any;
         info: any;
     }>;
     withdraw(code: string, amount: any, address: any, tag?: any, params?: {}): Promise<{
         info: any;
-        id: any;
+        id: string;
         currency: any;
-        amount: any;
+        amount: number;
         network: any;
         address: any;
         addressTo: any;
@@ -313,18 +313,18 @@ export default class upbit extends Exchange {
         tag: any;
         tagTo: any;
         tagFrom: any;
-        status: any;
-        type: any;
-        updated: any;
-        txid: any;
-        timestamp: any;
-        datetime: any;
+        status: string;
+        type: string;
+        updated: number;
+        txid: string;
+        timestamp: number;
+        datetime: string;
         fee: {
             currency: any;
-            cost: any;
+            cost: number;
         };
     }>;
-    nonce(): any;
+    nonce(): number;
     sign(path: any, api?: string, method?: string, params?: {}, headers?: any, body?: any): {
         url: any;
         method: string;

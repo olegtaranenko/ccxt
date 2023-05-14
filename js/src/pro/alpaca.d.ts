@@ -5,7 +5,7 @@ export default class alpaca extends alpacaRest {
     describe(): any;
     watchTicker(symbol: string, params?: {}): Promise<any>;
     handleTicker(client: Client, message: any): void;
-    parseTicker(ticker: any, market?: any): any;
+    parseTicker(ticker: any, market?: any): import("../base/types.js").Ticker;
     watchOHLCV(symbol: string, timeframe?: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
     handleOHLCV(client: Client, message: any): void;
     watchOrderBook(symbol: string, limit?: Int, params?: {}): Promise<any>;
@@ -19,7 +19,7 @@ export default class alpaca extends alpacaRest {
     handleTradeUpdate(client: Client, message: any): void;
     handleOrder(client: Client, message: any): void;
     handleMyTrade(client: Client, message: any): void;
-    parseMyTrade(trade: any, market?: any): any;
+    parseMyTrade(trade: any, market?: any): import("../base/types.js").Trade;
     authenticate(url: any, params?: {}): Promise<any>;
     handleErrorMessage(client: Client, message: any): void;
     handleConnected(client: Client, message: any): any;

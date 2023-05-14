@@ -457,7 +457,7 @@ export default class Exchange {
     loadMarkets(reload?: boolean, params?: {}): Promise<Dictionary<Market>>;
     fetchCurrencies(params?: {}): Promise<unknown>;
     fetchMarkets(params?: {}): Promise<Market[]>;
-    private fetchMarketsFromDisk;
+    fetchMarketsFromOutside(markets: {}): {};
     checkRequiredDependencies(): void;
     parseNumber(value: any, d?: number): number;
     checkOrderArguments(market: any, type: any, side: any, amount: any, price: any, params: any): void;

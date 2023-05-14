@@ -11,20 +11,20 @@ export default class idex extends idexRest {
     handleTrade(client: Client, message: any): void;
     parseWsTrade(trade: any): {
         info: any;
-        timestamp: any;
-        datetime: any;
+        timestamp: number;
+        datetime: string;
         symbol: any;
-        id: any;
+        id: string;
         order: any;
         type: any;
-        takerOrMaker: any;
-        side: any;
-        price: any;
-        amount: any;
-        cost: any;
+        takerOrMaker: string;
+        side: string;
+        price: number;
+        amount: number;
+        cost: number;
         fee: {
-            currency: any;
-            cost: any;
+            currency: string;
+            cost: number;
         };
     };
     watchOHLCV(symbol: string, timeframe?: string, since?: Int, limit?: Int, params?: {}): Promise<any>;

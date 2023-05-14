@@ -47,23 +47,23 @@ export default class exmo extends Exchange {
     parseDepositWithdrawFee(fee: any, currency?: any): any;
     fetchCurrencies(params?: {}): Promise<{}>;
     fetchMarkets(params?: {}): Promise<any[]>;
-    fetchOHLCV(symbol: string, timeframe?: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
-    parseOHLCV(ohlcv: any, market?: any): any[];
-    parseBalance(response: any): any;
-    fetchBalance(params?: {}): Promise<any>;
-    fetchOrderBook(symbol: string, limit?: Int, params?: {}): Promise<any>;
+    fetchOHLCV(symbol: string, timeframe?: string, since?: Int, limit?: Int, params?: {}): Promise<import("./base/types.js").OHLCV[]>;
+    parseOHLCV(ohlcv: any, market?: any): number[];
+    parseBalance(response: any): import("./base/types.js").Balances;
+    fetchBalance(params?: {}): Promise<import("./base/types.js").Balances>;
+    fetchOrderBook(symbol: string, limit?: Int, params?: {}): Promise<import("./base/types.js").OrderBook>;
     fetchOrderBooks(symbols?: string[], limit?: Int, params?: {}): Promise<{}>;
-    parseTicker(ticker: any, market?: any): any;
+    parseTicker(ticker: any, market?: any): import("./base/types.js").Ticker;
     fetchTickers(symbols?: string[], params?: {}): Promise<any>;
-    fetchTicker(symbol: string, params?: {}): Promise<any>;
-    parseTrade(trade: any, market?: any): any;
-    fetchTrades(symbol: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
+    fetchTicker(symbol: string, params?: {}): Promise<import("./base/types.js").Ticker>;
+    parseTrade(trade: any, market?: any): import("./base/types.js").Trade;
+    fetchTrades(symbol: string, since?: Int, limit?: Int, params?: {}): Promise<import("./base/types.js").Trade[]>;
     fetchMyTrades(symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
     createOrder(symbol: string, type: any, side: OrderSide, amount: any, price?: any, params?: {}): Promise<{
-        id: any;
+        id: string;
         info: any;
-        timestamp: any;
-        datetime: any;
+        timestamp: number;
+        datetime: string;
         lastTradeTimestamp: any;
         status: string;
         symbol: any;
@@ -81,10 +81,10 @@ export default class exmo extends Exchange {
     }>;
     cancelOrder(id: string, symbol?: string, params?: {}): Promise<any>;
     fetchOrder(id: string, symbol?: string, params?: {}): Promise<any>;
-    fetchOrderTrades(id: string, symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
+    fetchOrderTrades(id: string, symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<import("./base/types.js").Trade[]>;
     fetchOpenOrders(symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
     parseOrder(order: any, market?: any): any;
-    fetchCanceledOrders(symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
+    fetchCanceledOrders(symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<import("./base/types.js").Order[]>;
     fetchDepositAddress(code: string, params?: {}): Promise<{
         currency: string;
         address: any;
@@ -95,22 +95,22 @@ export default class exmo extends Exchange {
     getMarketFromTrades(trades: any): any;
     withdraw(code: string, amount: any, address: any, tag?: any, params?: {}): Promise<{
         info: any;
-        id: any;
-        txid: any;
-        type: any;
+        id: string;
+        txid: string;
+        type: string;
         currency: any;
-        network: any;
-        amount: any;
-        status: any;
-        timestamp: any;
-        datetime: any;
+        network: string;
+        amount: string;
+        status: string;
+        timestamp: number;
+        datetime: string;
         address: any;
         addressFrom: any;
         addressTo: any;
         tag: any;
         tagFrom: any;
         tagTo: any;
-        updated: any;
+        updated: number;
         comment: any;
         fee: {
             currency: any;
@@ -118,25 +118,25 @@ export default class exmo extends Exchange {
             rate: any;
         };
     }>;
-    parseTransactionStatus(status: any): any;
+    parseTransactionStatus(status: any): string;
     parseTransaction(transaction: any, currency?: any): {
         info: any;
-        id: any;
-        txid: any;
-        type: any;
+        id: string;
+        txid: string;
+        type: string;
         currency: any;
-        network: any;
-        amount: any;
-        status: any;
-        timestamp: any;
-        datetime: any;
+        network: string;
+        amount: string;
+        status: string;
+        timestamp: number;
+        datetime: string;
         address: any;
         addressFrom: any;
         addressTo: any;
         tag: any;
         tagFrom: any;
         tagTo: any;
-        updated: any;
+        updated: number;
         comment: any;
         fee: {
             currency: any;
@@ -148,22 +148,22 @@ export default class exmo extends Exchange {
     fetchWithdrawals(code?: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
     fetchWithdrawal(id: string, code?: string, params?: {}): Promise<{
         info: any;
-        id: any;
-        txid: any;
-        type: any;
+        id: string;
+        txid: string;
+        type: string;
         currency: any;
-        network: any;
-        amount: any;
-        status: any;
-        timestamp: any;
-        datetime: any;
+        network: string;
+        amount: string;
+        status: string;
+        timestamp: number;
+        datetime: string;
         address: any;
         addressFrom: any;
         addressTo: any;
         tag: any;
         tagFrom: any;
         tagTo: any;
-        updated: any;
+        updated: number;
         comment: any;
         fee: {
             currency: any;
@@ -173,22 +173,22 @@ export default class exmo extends Exchange {
     }>;
     fetchDeposit(id?: any, code?: string, params?: {}): Promise<{
         info: any;
-        id: any;
-        txid: any;
-        type: any;
+        id: string;
+        txid: string;
+        type: string;
         currency: any;
-        network: any;
-        amount: any;
-        status: any;
-        timestamp: any;
-        datetime: any;
+        network: string;
+        amount: string;
+        status: string;
+        timestamp: number;
+        datetime: string;
         address: any;
         addressFrom: any;
         addressTo: any;
         tag: any;
         tagFrom: any;
         tagTo: any;
-        updated: any;
+        updated: number;
         comment: any;
         fee: {
             currency: any;
@@ -203,6 +203,6 @@ export default class exmo extends Exchange {
         body: any;
         headers: any;
     };
-    nonce(): any;
+    nonce(): number;
     handleErrors(httpCode: any, reason: any, url: any, method: any, headers: any, body: any, response: any, requestHeaders: any, requestBody: any): any;
 }

@@ -3,65 +3,65 @@ import { Int, OrderSide } from './base/types.js';
 export default class timex extends Exchange {
     describe(): any;
     fetchMarkets(params?: {}): Promise<any[]>;
-    fetchCurrencies(params?: {}): Promise<any>;
+    fetchCurrencies(params?: {}): Promise<{}>;
     fetchDeposits(code?: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
     fetchWithdrawals(code?: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
     getCurrencyByAddress(address: any): any;
     parseTransaction(transaction: any, currency?: any): {
         info: any;
-        id: any;
-        txid: any;
-        timestamp: any;
-        datetime: any;
+        id: string;
+        txid: string;
+        timestamp: number;
+        datetime: string;
         network: any;
         address: any;
-        addressTo: any;
-        addressFrom: any;
+        addressTo: string;
+        addressFrom: string;
         tag: any;
         tagTo: any;
         tagFrom: any;
         type: any;
-        amount: any;
+        amount: number;
         currency: any;
         status: string;
         updated: any;
         fee: any;
     };
     fetchTickers(symbols?: string[], params?: {}): Promise<any>;
-    fetchTicker(symbol: string, params?: {}): Promise<any>;
-    fetchOrderBook(symbol: string, limit?: Int, params?: {}): Promise<any>;
-    fetchTrades(symbol: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
-    fetchOHLCV(symbol: string, timeframe?: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
-    parseBalance(response: any): any;
-    fetchBalance(params?: {}): Promise<any>;
+    fetchTicker(symbol: string, params?: {}): Promise<import("./base/types.js").Ticker>;
+    fetchOrderBook(symbol: string, limit?: Int, params?: {}): Promise<import("./base/types.js").OrderBook>;
+    fetchTrades(symbol: string, since?: Int, limit?: Int, params?: {}): Promise<import("./base/types.js").Trade[]>;
+    fetchOHLCV(symbol: string, timeframe?: string, since?: Int, limit?: Int, params?: {}): Promise<import("./base/types.js").OHLCV[]>;
+    parseBalance(response: any): import("./base/types.js").Balances;
+    fetchBalance(params?: {}): Promise<import("./base/types.js").Balances>;
     createOrder(symbol: string, type: any, side: OrderSide, amount: any, price?: any, params?: {}): Promise<any>;
     editOrder(id: string, symbol: any, type: any, side: any, amount?: any, price?: any, params?: {}): Promise<any>;
     cancelOrder(id: string, symbol?: string, params?: {}): Promise<any>;
     cancelOrders(ids: any, symbol?: string, params?: {}): Promise<any>;
     fetchOrder(id: string, symbol?: string, params?: {}): Promise<any>;
-    fetchOpenOrders(symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
-    fetchClosedOrders(symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
-    fetchMyTrades(symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
+    fetchOpenOrders(symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<import("./base/types.js").Order[]>;
+    fetchClosedOrders(symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<import("./base/types.js").Order[]>;
+    fetchMyTrades(symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<import("./base/types.js").Trade[]>;
     parseTradingFee(fee: any, market?: any): {
         info: any;
         symbol: any;
-        maker: any;
-        taker: any;
+        maker: number;
+        taker: number;
     };
     fetchTradingFee(symbol: string, params?: {}): Promise<{
         info: any;
         symbol: any;
-        maker: any;
-        taker: any;
+        maker: number;
+        taker: number;
     }>;
     parseMarket(market: any): {
-        id: any;
+        id: string;
         symbol: string;
         base: any;
         quote: any;
         settle: any;
-        baseId: any;
-        quoteId: any;
+        baseId: string;
+        quoteId: string;
         settleId: any;
         type: string;
         spot: boolean;
@@ -73,16 +73,16 @@ export default class timex extends Exchange {
         contract: boolean;
         linear: any;
         inverse: any;
-        taker: any;
-        maker: any;
+        taker: number;
+        maker: number;
         contractSize: any;
         expiry: any;
         expiryDatetime: any;
         strike: any;
         optionType: any;
         precision: {
-            amount: any;
-            price: any;
+            amount: number;
+            price: number;
         };
         limits: {
             leverage: {
@@ -90,15 +90,15 @@ export default class timex extends Exchange {
                 max: any;
             };
             amount: {
-                min: any;
+                min: number;
                 max: any;
             };
             price: {
-                min: any;
+                min: number;
                 max: any;
             };
             cost: {
-                min: any;
+                min: string;
                 max: any;
             };
         };
@@ -109,12 +109,12 @@ export default class timex extends Exchange {
         code: any;
         info: any;
         type: any;
-        name: any;
+        name: string;
         active: any;
         deposit: any;
         withdraw: any;
         fee: any;
-        precision: any;
+        precision: number;
         limits: {
             withdraw: {
                 min: any;
@@ -127,23 +127,23 @@ export default class timex extends Exchange {
         };
         networks: {};
     };
-    parseTicker(ticker: any, market?: any): any;
+    parseTicker(ticker: any, market?: any): import("./base/types.js").Ticker;
     parseTrade(trade: any, market?: any): {
         info: any;
-        id: any;
-        timestamp: any;
-        datetime: any;
+        id: string;
+        timestamp: number;
+        datetime: string;
         symbol: any;
         order: any;
         type: any;
-        side: any;
-        price: any;
-        amount: any;
-        cost: any;
-        takerOrMaker: any;
+        side: string;
+        price: number;
+        amount: number;
+        cost: number;
+        takerOrMaker: string;
         fee: any;
     };
-    parseOHLCV(ohlcv: any, market?: any): any[];
+    parseOHLCV(ohlcv: any, market?: any): number[];
     parseOrder(order: any, market?: any): any;
     sign(path: any, api?: string, method?: string, params?: {}, headers?: any, body?: any): {
         url: string;

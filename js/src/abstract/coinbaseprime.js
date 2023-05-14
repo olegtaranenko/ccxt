@@ -4,8 +4,4 @@
 // https://github.com/ccxt/ccxt/blob/master/CONTRIBUTING.md#how-to-contribute-code
 // EDIT THE CORRESPONDENT .ts FILE INSTEAD
 
-// -------------------------------------------------------------------------------
-import _coinbasepro from '../coinbasepro.js';
-class coinbasepro extends _coinbasepro {
-}
-export default coinbasepro;
+"use strict";

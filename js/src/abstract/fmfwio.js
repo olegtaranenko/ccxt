@@ -4,8 +4,4 @@
 // https://github.com/ccxt/ccxt/blob/master/CONTRIBUTING.md#how-to-contribute-code
 // EDIT THE CORRESPONDENT .ts FILE INSTEAD
 
-// -------------------------------------------------------------------------------
-import _hitbtc from '../hitbtc.js';
-class hitbtc extends _hitbtc {
-}
-export default hitbtc;
+"use strict";

@@ -3,36 +3,36 @@ import { Int, OrderSide } from './base/types.js';
 export default class bitbns extends Exchange {
     describe(): any;
     fetchStatus(params?: {}): Promise<{
-        status: any;
+        status: string;
         updated: any;
         eta: any;
         url: any;
         info: any;
     }>;
     fetchMarkets(params?: {}): Promise<any[]>;
-    fetchOrderBook(symbol: string, limit?: Int, params?: {}): Promise<any>;
-    parseTicker(ticker: any, market?: any): any;
+    fetchOrderBook(symbol: string, limit?: Int, params?: {}): Promise<import("./base/types.js").OrderBook>;
+    parseTicker(ticker: any, market?: any): import("./base/types.js").Ticker;
     fetchTickers(symbols?: string[], params?: {}): Promise<any>;
-    parseBalance(response: any): any;
-    fetchBalance(params?: {}): Promise<any>;
-    parseOrderStatus(status: any): any;
+    parseBalance(response: any): import("./base/types.js").Balances;
+    fetchBalance(params?: {}): Promise<import("./base/types.js").Balances>;
+    parseOrderStatus(status: any): string;
     parseOrder(order: any, market?: any): any;
     createOrder(symbol: string, type: any, side: OrderSide, amount: any, price?: any, params?: {}): Promise<any>;
     cancelOrder(id: string, symbol?: string, params?: {}): Promise<any>;
     fetchOrder(id: string, symbol?: string, params?: {}): Promise<any>;
-    fetchOpenOrders(symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
-    parseTrade(trade: any, market?: any): any;
-    fetchMyTrades(symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
-    fetchTrades(symbol: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
+    fetchOpenOrders(symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<import("./base/types.js").Order[]>;
+    parseTrade(trade: any, market?: any): import("./base/types.js").Trade;
+    fetchMyTrades(symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<import("./base/types.js").Trade[]>;
+    fetchTrades(symbol: string, since?: Int, limit?: Int, params?: {}): Promise<import("./base/types.js").Trade[]>;
     fetchDeposits(code?: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
     fetchWithdrawals(code?: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
-    parseTransactionStatusByType(status: any, type?: any): any;
+    parseTransactionStatusByType(status: any, type?: any): string;
     parseTransaction(transaction: any, currency?: any): {
         info: any;
         id: any;
         txid: any;
-        timestamp: any;
-        datetime: any;
+        timestamp: number;
+        datetime: string;
         network: any;
         address: any;
         addressTo: any;
@@ -40,8 +40,8 @@ export default class bitbns extends Exchange {
         tag: any;
         tagTo: any;
         tagFrom: any;
-        type: any;
-        amount: any;
+        type: string;
+        amount: number;
         currency: any;
         status: any;
         updated: any;
@@ -50,12 +50,12 @@ export default class bitbns extends Exchange {
     };
     fetchDepositAddress(code: string, params?: {}): Promise<{
         currency: string;
-        address: any;
-        tag: any;
+        address: string;
+        tag: string;
         network: any;
         info: any;
     }>;
-    nonce(): any;
+    nonce(): number;
     sign(path: any, api?: string, method?: string, params?: {}, headers?: any, body?: any): {
         url: string;
         method: string;

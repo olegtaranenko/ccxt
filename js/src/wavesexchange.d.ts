@@ -7,8 +7,8 @@ export default class wavesexchange extends Exchange {
     customCalculateFee(symbol: string, type: any, side: any, amount: any, price: any, takerOrMaker?: string, params?: {}): Promise<{
         type: string;
         currency: any;
-        rate: any;
-        cost: any;
+        rate: number;
+        cost: number;
     }>;
     getQuotes(): Promise<any>;
     fetchMarkets(params?: {}): Promise<any[]>;
@@ -22,26 +22,26 @@ export default class wavesexchange extends Exchange {
         headers: any;
     };
     signIn(params?: {}): Promise<any>;
-    parseTicker(ticker: any, market?: any): any;
-    fetchTicker(symbol: string, params?: {}): Promise<any>;
+    parseTicker(ticker: any, market?: any): import("./base/types.js").Ticker;
+    fetchTicker(symbol: string, params?: {}): Promise<import("./base/types.js").Ticker>;
     fetchTickers(symbols?: string[], params?: {}): Promise<any>;
-    fetchOHLCV(symbol: string, timeframe?: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
+    fetchOHLCV(symbol: string, timeframe?: string, since?: Int, limit?: Int, params?: {}): Promise<import("./base/types.js").OHLCV[]>;
     filterFutureCandles(ohlcvs: any): any[];
-    parseOHLCV(ohlcv: any, market?: any): any[];
+    parseOHLCV(ohlcv: any, market?: any): number[];
     fetchDepositAddress(code: string, params?: {}): Promise<{
-        address: any;
+        address: string;
         code: string;
         currency: string;
-        network: any;
+        network: string;
         tag: any;
         info: any;
     }>;
     getMatcherPublicKey(): Promise<any>;
-    getAssetBytes(currencyId: any): any;
+    getAssetBytes(currencyId: any): Uint8Array;
     getAssetId(currencyId: any): any;
-    customPriceToPrecision(symbol: any, price: any): any;
-    customAmountToPrecision(symbol: any, amount: any): any;
-    currencyToPrecision(code: any, amount: any, networkCode?: any): any;
+    customPriceToPrecision(symbol: any, price: any): number;
+    customAmountToPrecision(symbol: any, amount: any): number;
+    currencyToPrecision(code: any, amount: any, networkCode?: any): number;
     fromPrecision(amount: any, scale: any): string;
     toPrecision(amount: any, scale: any): string;
     currencyFromPrecision(currency: any, amount: any): string;
@@ -51,7 +51,7 @@ export default class wavesexchange extends Exchange {
     createOrder(symbol: string, type: any, side: OrderSide, amount: any, price?: any, params?: {}): Promise<any>;
     cancelOrder(id: string, symbol?: string, params?: {}): Promise<{
         info: any;
-        id: any;
+        id: string;
         clientOrderId: any;
         timestamp: any;
         datetime: any;
@@ -70,17 +70,17 @@ export default class wavesexchange extends Exchange {
         trades: any;
     }>;
     fetchOrder(id: string, symbol?: string, params?: {}): Promise<any>;
-    fetchOrders(symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
-    fetchOpenOrders(symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
-    fetchClosedOrders(symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
-    parseOrderStatus(status: any): any;
+    fetchOrders(symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<import("./base/types.js").Order[]>;
+    fetchOpenOrders(symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<import("./base/types.js").Order[]>;
+    fetchClosedOrders(symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<import("./base/types.js").Order[]>;
+    parseOrderStatus(status: any): string;
     getSymbolFromAssetPair(assetPair: any): string;
     parseOrder(order: any, market?: any): any;
     getWavesAddress(): Promise<any>;
-    fetchBalance(params?: {}): Promise<any>;
-    fetchMyTrades(symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
-    fetchTrades(symbol: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
-    parseTrade(trade: any, market?: any): any;
+    fetchBalance(params?: {}): Promise<import("./base/types.js").Balances>;
+    fetchMyTrades(symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<import("./base/types.js").Trade[]>;
+    fetchTrades(symbol: string, since?: Int, limit?: Int, params?: {}): Promise<import("./base/types.js").Trade[]>;
+    parseTrade(trade: any, market?: any): import("./base/types.js").Trade;
     handleErrors(code: any, reason: any, url: any, method: any, headers: any, body: any, response: any, requestHeaders: any, requestBody: any): any;
     withdraw(code: string, amount: any, address: any, tag?: any, params?: {}): Promise<{
         id: any;

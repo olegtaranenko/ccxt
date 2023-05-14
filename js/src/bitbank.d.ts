@@ -3,33 +3,33 @@ import { Int, OrderSide } from './base/types.js';
 export default class bitbank extends Exchange {
     describe(): any;
     fetchMarkets(params?: {}): Promise<any[]>;
-    parseTicker(ticker: any, market?: any): any;
-    fetchTicker(symbol: string, params?: {}): Promise<any>;
-    fetchOrderBook(symbol: string, limit?: Int, params?: {}): Promise<any>;
-    parseTrade(trade: any, market?: any): any;
-    fetchTrades(symbol: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
+    parseTicker(ticker: any, market?: any): import("./base/types.js").Ticker;
+    fetchTicker(symbol: string, params?: {}): Promise<import("./base/types.js").Ticker>;
+    fetchOrderBook(symbol: string, limit?: Int, params?: {}): Promise<import("./base/types.js").OrderBook>;
+    parseTrade(trade: any, market?: any): import("./base/types.js").Trade;
+    fetchTrades(symbol: string, since?: Int, limit?: Int, params?: {}): Promise<import("./base/types.js").Trade[]>;
     fetchTradingFees(params?: {}): Promise<{}>;
-    parseOHLCV(ohlcv: any, market?: any): any[];
-    fetchOHLCV(symbol: string, timeframe?: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
-    parseBalance(response: any): any;
-    fetchBalance(params?: {}): Promise<any>;
-    parseOrderStatus(status: any): any;
+    parseOHLCV(ohlcv: any, market?: any): number[];
+    fetchOHLCV(symbol: string, timeframe?: string, since?: Int, limit?: Int, params?: {}): Promise<import("./base/types.js").OHLCV[]>;
+    parseBalance(response: any): import("./base/types.js").Balances;
+    fetchBalance(params?: {}): Promise<import("./base/types.js").Balances>;
+    parseOrderStatus(status: any): string;
     parseOrder(order: any, market?: any): any;
     createOrder(symbol: string, type: any, side: OrderSide, amount: any, price?: any, params?: {}): Promise<any>;
     cancelOrder(id: string, symbol?: string, params?: {}): Promise<any>;
     fetchOrder(id: string, symbol?: string, params?: {}): Promise<any>;
-    fetchOpenOrders(symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
-    fetchMyTrades(symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
+    fetchOpenOrders(symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<import("./base/types.js").Order[]>;
+    fetchMyTrades(symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<import("./base/types.js").Trade[]>;
     fetchDepositAddress(code: string, params?: {}): Promise<{
         currency: any;
-        address: any;
+        address: string;
         tag: any;
         network: any;
         info: any;
     }>;
     withdraw(code: string, amount: any, address: any, tag?: any, params?: {}): Promise<{
-        id: any;
-        txid: any;
+        id: string;
+        txid: string;
         timestamp: any;
         datetime: any;
         network: any;
@@ -49,8 +49,8 @@ export default class bitbank extends Exchange {
         info: any;
     }>;
     parseTransaction(transaction: any, currency?: any): {
-        id: any;
-        txid: any;
+        id: string;
+        txid: string;
         timestamp: any;
         datetime: any;
         network: any;
@@ -69,7 +69,7 @@ export default class bitbank extends Exchange {
         fee: any;
         info: any;
     };
-    nonce(): any;
+    nonce(): number;
     sign(path: any, api?: string, method?: string, params?: {}, headers?: any, body?: any): {
         url: string;
         method: string;

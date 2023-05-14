@@ -13,17 +13,17 @@ export default class currencycom extends currencycomRest {
     handleTicker(client: Client, message: any, subscription: any): void;
     handleTrade(trade: any, market?: any): {
         info: any;
-        timestamp: any;
-        datetime: any;
+        timestamp: number;
+        datetime: string;
         symbol: any;
-        id: any;
-        order: any;
+        id: string;
+        order: string;
         type: any;
         takerOrMaker: any;
         side: string;
-        price: any;
-        amount: any;
-        cost: any;
+        price: number;
+        amount: number;
+        cost: number;
         fee: any;
     };
     handleTrades(client: Client, message: any, subscription: any): void;

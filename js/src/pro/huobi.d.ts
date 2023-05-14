@@ -23,7 +23,7 @@ export default class huobi extends huobiRest {
     watchOrders(symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
     handleOrder(client: Client, message: any): void;
     parseWsOrder(order: any, market?: any): any;
-    parseOrderTrade(trade: any, market?: any): any;
+    parseOrderTrade(trade: any, market?: any): import("../base/types.js").Trade;
     watchBalance(params?: {}): Promise<any>;
     handleBalance(client: Client, message: any): void;
     handleSubscriptionStatus(client: Client, message: any): any;
@@ -35,7 +35,7 @@ export default class huobi extends huobiRest {
     handleErrorMessage(client: Client, message: any): any;
     handleMessage(client: Client, message: any): void;
     handleMyTrade(client: Client, message: any, extendParams?: {}): void;
-    parseWsTrade(trade: any): any;
+    parseWsTrade(trade: any): import("../base/types.js").Trade;
     getUrlByMarketType(type: any, isLinear?: boolean, isPrivate?: boolean): any;
     subscribePublic(url: any, symbol: any, messageHash: any, method?: any, params?: {}): Promise<any>;
     subscribePrivate(channel: any, messageHash: any, type: any, subtype: any, params?: {}, subscriptionParams?: {}): Promise<any>;
