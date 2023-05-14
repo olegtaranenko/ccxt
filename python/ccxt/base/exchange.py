@@ -2173,10 +2173,10 @@ class Exchange(object):
             'remaining': self.parse_number(remaining),
             'side': side,
             'status': self.safe_string(order, 'status'),
-            'stopPrice': triggerPrice,
+            'stopPrice': triggerPrice,  # ! deprecated, use triggerPrice instead
             'symbol': symbol,
             'timeInForce': timeInForce,
-            'timestamp': timestamp,  # ! deprecated, use triggerPrice instead
+            'timestamp': timestamp,
             'trades': trades,
             'triggerPrice': triggerPrice,
             'type': self.safe_string(order, 'type'),

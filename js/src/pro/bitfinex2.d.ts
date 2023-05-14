@@ -12,22 +12,22 @@ export default class bitfinex2 extends bitfinex2Rest {
     watchTicker(symbol: string, params?: {}): Promise<any>;
     handleMyTrade(client: Client, message: any, subscription?: {}): void;
     handleTrades(client: Client, message: any, subscription: any): any;
-    parseWsTrade(trade: any, isPublic?: boolean, market?: any): import("../base/types.js").Trade;
+    parseWsTrade(trade: any, isPublic?: boolean, market?: any): any;
     handleTicker(client: Client, message: any, subscription: any): void;
-    parseWsTicker(ticker: any, market?: any): import("../base/types.js").Ticker;
+    parseWsTicker(ticker: any, market?: any): any;
     watchOrderBook(symbol: string, limit?: Int, params?: {}): Promise<any>;
     handleOrderBook(client: Client, message: any, subscription: any): void;
     handleChecksum(client: Client, message: any, subscription: any): void;
     watchBalance(params?: {}): Promise<any>;
     handleBalance(client: Client, message: any, subscription: any): void;
-    parseWsBalance(balance: any): import("../base/types.js").Balance;
+    parseWsBalance(balance: any): any;
     handleSystemStatus(client: Client, message: any): any;
     handleSubscriptionStatus(client: Client, message: any): any;
     authenticate(params?: {}): any;
     handleAuthenticationMessage(client: Client, message: any): void;
     watchOrders(symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
     handleOrders(client: Client, message: any, subscription: any): void;
-    parseWsOrderStatus(status: any): string;
+    parseWsOrderStatus(status: any): any;
     parseWsOrder(order: any, market?: any): any;
     handleMessage(client: Client, message: any): any;
 }

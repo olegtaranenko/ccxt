@@ -5,19 +5,19 @@ export default class bittrex extends bittrexRest {
     describe(): any;
     getSignalRUrl(negotiation: any): string;
     makeRequest(requestId: any, method: any, args: any): {
-        H: string;
+        H: any;
         M: any;
         A: any;
         I: any;
     };
     makeRequestToSubscribe(requestId: any, args: any): {
-        H: string;
+        H: any;
         M: any;
         A: any;
         I: any;
     };
     makeRequestToAuthenticate(requestId: any): {
-        H: string;
+        H: any;
         M: any;
         A: any;
         I: any;

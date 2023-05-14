@@ -485,7 +485,7 @@ class Exchange {
                 'token': false,
                 'twofa': false,
                 'uid': false,
-                'walletAddress': false, // reserved for HTTP auth in some cases
+                'walletAddress': false, // the wallet address "0x"-prefixed hexstring
             },
             'status': {
                 'eta': undefined,
@@ -783,7 +783,13 @@ class Exchange {
         if (this.has['fetchCurrencies'] === true) {
             currencies = await this.fetchCurrencies();
         }
-        const markets = await this.fetchMarkets(params);
+        let markets = undefined;
+        if (typeof params['loadMarketsFromDisk'] !== 'string') {
+            markets = await this.fetchMarkets(params);
+        }
+        else {
+            markets = await this.fetchMarketsFromDisk(params['loadMarketsFromDisk']);
+        }
         return this.setMarkets(markets, currencies);
     }
     loadMarkets(reload = false, params = {}) {
@@ -812,6 +818,9 @@ class Exchange {
         // currencies are returned as a dict
         // this is for historical reasons
         // and may be changed for consistency later
+        return new Promise((resolve, reject) => resolve(Object.values(this.markets)));
+    }
+    async fetchMarketsFromDisk(path) {
         return new Promise((resolve, reject) => resolve(Object.values(this.markets)));
     }
     checkRequiredDependencies() {

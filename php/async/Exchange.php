@@ -292,7 +292,7 @@ class Exchange extends \ccxt\Exchange {
         $sinceIsDefined = $this->valueIsDefined ($since);
         $parsedArray = $this->to_array($array);
         if ($sinceIsDefined) {
-            $result = $array();
+            $result = [ ];
             for ($i = 0; $i < count($parsedArray); $i++) {
                 $entry = $parsedArray[$i];
                 if ($entry[$key] >= $since) {
@@ -310,7 +310,7 @@ class Exchange extends \ccxt\Exchange {
         $parsedArray = $this->to_array($array);
         // single-pass filter for both symbol and $since
         if ($valueIsDefined || $sinceIsDefined) {
-            $result = $array();
+            $result = [ ];
             for ($i = 0; $i < count($parsedArray); $i++) {
                 $entry = $parsedArray[$i];
                 $entryFiledEqualValue = $entry[$field] === $value;
@@ -887,10 +887,10 @@ class Exchange extends \ccxt\Exchange {
             'remaining' => $this->parse_number($remaining),
             'side' => $side,
             'status' => $this->safe_string($order, 'status'),
-            'stopPrice' => $triggerPrice,
+            'stopPrice' => $triggerPrice, // ! deprecated, use $triggerPrice instead
             'symbol' => $symbol,
             'timeInForce' => $timeInForce,
-            'timestamp' => $timestamp,  // ! deprecated, use $triggerPrice instead
+            'timestamp' => $timestamp,
             'trades' => $trades,
             'triggerPrice' => $triggerPrice,
             'type' => $this->safe_string($order, 'type'),

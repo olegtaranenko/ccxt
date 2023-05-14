@@ -5,9 +5,9 @@ export default class hitbtc extends Exchange {
     feeToPrecision(symbol: any, fee: any): any;
     fetchMarkets(params?: {}): Promise<any[]>;
     transfer(code: string, amount: any, fromAccount: any, toAccount: any, params?: {}): Promise<{
-        id: string;
-        timestamp: number;
-        datetime: string;
+        id: any;
+        timestamp: any;
+        datetime: any;
         currency: any;
         amount: any;
         fromAccount: any;
@@ -16,9 +16,9 @@ export default class hitbtc extends Exchange {
         info: any;
     }>;
     parseTransfer(transfer: any, currency?: any): {
-        id: string;
-        timestamp: number;
-        datetime: string;
+        id: any;
+        timestamp: any;
+        datetime: any;
         currency: any;
         amount: any;
         fromAccount: any;
@@ -30,47 +30,47 @@ export default class hitbtc extends Exchange {
     parseTradingFee(fee: any, market?: any): {
         info: any;
         symbol: any;
-        maker: number;
-        taker: number;
+        maker: any;
+        taker: any;
         percentage: boolean;
         tierBased: boolean;
     };
     fetchTradingFee(symbol: string, params?: {}): Promise<{
         info: any;
         symbol: any;
-        maker: number;
-        taker: number;
+        maker: any;
+        taker: any;
         percentage: boolean;
         tierBased: boolean;
     }>;
-    parseBalance(response: any): import("./base/types.js").Balances;
-    fetchBalance(params?: {}): Promise<import("./base/types.js").Balances>;
-    parseOHLCV(ohlcv: any, market?: any): number[];
-    fetchOHLCV(symbol: string, timeframe?: string, since?: Int, limit?: Int, params?: {}): Promise<import("./base/types.js").OHLCV[]>;
-    fetchOrderBook(symbol: string, limit?: Int, params?: {}): Promise<import("./base/types.js").OrderBook>;
-    parseTicker(ticker: any, market?: any): import("./base/types.js").Ticker;
+    parseBalance(response: any): any;
+    fetchBalance(params?: {}): Promise<any>;
+    parseOHLCV(ohlcv: any, market?: any): any[];
+    fetchOHLCV(symbol: string, timeframe?: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
+    fetchOrderBook(symbol: string, limit?: Int, params?: {}): Promise<any>;
+    parseTicker(ticker: any, market?: any): any;
     fetchTickers(symbols?: string[], params?: {}): Promise<any>;
-    fetchTicker(symbol: string, params?: {}): Promise<import("./base/types.js").Ticker>;
-    parseTrade(trade: any, market?: any): import("./base/types.js").Trade;
+    fetchTicker(symbol: string, params?: {}): Promise<any>;
+    parseTrade(trade: any, market?: any): any;
     fetchTransactions(code?: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
     parseTransaction(transaction: any, currency?: any): {
         info: any;
-        id: string;
-        txid: string;
-        type: string;
+        id: any;
+        txid: any;
+        type: any;
         currency: any;
         network: any;
-        amount: number;
-        status: string;
-        timestamp: number;
-        datetime: string;
-        address: string;
+        amount: any;
+        status: any;
+        timestamp: any;
+        datetime: any;
+        address: any;
         addressFrom: any;
         addressTo: any;
         tag: any;
         tagFrom: any;
         tagTo: any;
-        updated: number;
+        updated: any;
         comment: any;
         fee: {
             currency: any;
@@ -78,30 +78,30 @@ export default class hitbtc extends Exchange {
             rate: any;
         };
     };
-    parseTransactionStatus(status: any): string;
-    parseTransactionType(type: any): string;
-    fetchTrades(symbol: string, since?: Int, limit?: Int, params?: {}): Promise<import("./base/types.js").Trade[]>;
+    parseTransactionStatus(status: any): any;
+    parseTransactionType(type: any): any;
+    fetchTrades(symbol: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
     createOrder(symbol: string, type: any, side: OrderSide, amount: any, price?: any, params?: {}): Promise<any>;
     editOrder(id: string, symbol: any, type: any, side: any, amount?: any, price?: any, params?: {}): Promise<any>;
     cancelOrder(id: string, symbol?: string, params?: {}): Promise<any>;
-    parseOrderStatus(status: any): string;
+    parseOrderStatus(status: any): any;
     parseOrder(order: any, market?: any): any;
     fetchOrder(id: string, symbol?: string, params?: {}): Promise<any>;
     fetchOpenOrder(id: string, symbol?: string, params?: {}): Promise<any>;
-    fetchOpenOrders(symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<import("./base/types.js").Order[]>;
+    fetchOpenOrders(symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
     fetchClosedOrders(symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
-    fetchMyTrades(symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<import("./base/types.js").Trade[]>;
-    fetchOrderTrades(id: string, symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<import("./base/types.js").Trade[]>;
+    fetchMyTrades(symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
+    fetchOrderTrades(id: string, symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
     createDepositAddress(code: string, params?: {}): Promise<{
         currency: string;
-        address: string;
-        tag: string;
+        address: any;
+        tag: any;
         info: any;
     }>;
     fetchDepositAddress(code: string, params?: {}): Promise<{
         currency: any;
-        address: string;
-        tag: string;
+        address: any;
+        tag: any;
         network: any;
         info: any;
     }>;
@@ -110,22 +110,22 @@ export default class hitbtc extends Exchange {
     }>;
     withdraw(code: string, amount: any, address: any, tag?: any, params?: {}): Promise<{
         info: any;
-        id: string;
-        txid: string;
-        type: string;
+        id: any;
+        txid: any;
+        type: any;
         currency: any;
         network: any;
-        amount: number;
-        status: string;
-        timestamp: number;
-        datetime: string;
-        address: string;
+        amount: any;
+        status: any;
+        timestamp: any;
+        datetime: any;
+        address: any;
         addressFrom: any;
         addressTo: any;
         tag: any;
         tagFrom: any;
         tagTo: any;
-        updated: number;
+        updated: any;
         comment: any;
         fee: {
             currency: any;
@@ -133,7 +133,7 @@ export default class hitbtc extends Exchange {
             rate: any;
         };
     }>;
-    nonce(): number;
+    nonce(): any;
     sign(path: any, api?: string, method?: string, params?: {}, headers?: any, body?: any): {
         url: string;
         method: string;

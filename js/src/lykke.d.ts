@@ -4,18 +4,18 @@ export default class lykke extends Exchange {
     describe(): any;
     fetchCurrencies(params?: {}): Promise<{}>;
     fetchMarkets(params?: {}): Promise<any[]>;
-    parseTicker(ticker: any, market?: any): import("./base/types.js").Ticker;
-    fetchTicker(symbol: string, params?: {}): Promise<import("./base/types.js").Ticker>;
+    parseTicker(ticker: any, market?: any): any;
+    fetchTicker(symbol: string, params?: {}): Promise<any>;
     fetchTickers(symbols?: string[], params?: {}): Promise<any>;
-    fetchOrderBook(symbol: string, limit?: Int, params?: {}): Promise<import("./base/types.js").OrderBook>;
-    parseTrade(trade: any, market?: any): import("./base/types.js").Trade;
-    fetchTrades(symbol: string, since?: Int, limit?: Int, params?: {}): Promise<import("./base/types.js").Trade[]>;
-    parseBalance(response: any): import("./base/types.js").Balances;
-    fetchBalance(params?: {}): Promise<import("./base/types.js").Balances>;
-    parseOrderStatus(status: any): string;
+    fetchOrderBook(symbol: string, limit?: Int, params?: {}): Promise<any>;
+    parseTrade(trade: any, market?: any): any;
+    fetchTrades(symbol: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
+    parseBalance(response: any): any;
+    fetchBalance(params?: {}): Promise<any>;
+    parseOrderStatus(status: any): any;
     parseOrder(order: any, market?: any): any;
     createOrder(symbol: string, type: any, side: OrderSide, amount: any, price?: any, params?: {}): Promise<{
-        id: string;
+        id: any;
         info: any;
         clientOrderId: any;
         timestamp: any;
@@ -37,14 +37,14 @@ export default class lykke extends Exchange {
     cancelOrder(id: string, symbol?: string, params?: {}): Promise<any>;
     cancelAllOrders(symbol?: string, params?: {}): Promise<any>;
     fetchOrder(id: string, symbol?: string, params?: {}): Promise<any>;
-    fetchOpenOrders(symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<import("./base/types.js").Order[]>;
-    fetchClosedOrders(symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<import("./base/types.js").Order[]>;
-    fetchMyTrades(symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<import("./base/types.js").Trade[]>;
-    parseBidAsk(bidask: any, priceKey?: number, amountKey?: number): number[];
+    fetchOpenOrders(symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
+    fetchClosedOrders(symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
+    fetchMyTrades(symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
+    parseBidAsk(bidask: any, priceKey?: number, amountKey?: number): any[];
     fetchDepositAddress(code: string, params?: {}): Promise<{
         currency: string;
-        address: string;
-        tag: string;
+        address: any;
+        tag: any;
         network: any;
         info: any;
     }>;
@@ -53,7 +53,7 @@ export default class lykke extends Exchange {
         id: any;
         txid: any;
         timestamp: any;
-        datetime: string;
+        datetime: any;
         network: any;
         addressFrom: any;
         address: any;
@@ -74,7 +74,7 @@ export default class lykke extends Exchange {
         id: any;
         txid: any;
         timestamp: any;
-        datetime: string;
+        datetime: any;
         network: any;
         addressFrom: any;
         address: any;

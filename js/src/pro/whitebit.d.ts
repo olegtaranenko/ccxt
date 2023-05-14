@@ -15,11 +15,11 @@ export default class whitebit extends whitebitRest {
     handleTrades(client: Client, message: any): void;
     watchMyTrades(symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
     handleMyTrades(client: Client, message: any, subscription?: any): void;
-    parseWsTrade(trade: any, market?: any): import("../base/types.js").Trade;
+    parseWsTrade(trade: any, market?: any): any;
     watchOrders(symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
     handleOrder(client: Client, message: any, subscription?: any): void;
     parseWsOrder(order: any, status: any, market?: any): any;
-    parseWsOrderType(status: any): string;
+    parseWsOrderType(status: any): any;
     watchBalance(params?: {}): Promise<any>;
     handleBalance(client: Client, message: any): void;
     watchPublic(messageHash: any, method: any, reqParams?: any[], params?: {}): Promise<any>;

@@ -14,18 +14,18 @@ export default class krakenfutures extends krakenfuturesRest {
     watchMyTrades(symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
     watchBalance(params?: {}): Promise<any>;
     handleTrade(client: Client, message: any): any;
-    parseWsTrade(trade: any, market?: any): import("../base/types.js").Trade;
-    parseWsOrderTrade(trade: any, market?: any): import("../base/types.js").Trade;
+    parseWsTrade(trade: any, market?: any): any;
+    parseWsOrderTrade(trade: any, market?: any): any;
     handleOrder(client: Client, message: any): any;
     handleOrderSnapshot(client: Client, message: any): void;
     parseWsOrder(order: any, market?: any): any;
     handleTicker(client: Client, message: any): any;
-    parseWsTicker(ticker: any, market?: any): import("../base/types.js").Ticker;
+    parseWsTicker(ticker: any, market?: any): any;
     handleOrderBookSnapshot(client: Client, message: any): void;
     handleOrderBook(client: Client, message: any): void;
     handleBalance(client: Client, message: any): void;
     handleMyTrades(client: Client, message: any): void;
-    parseWsMyTrade(trade: any, market?: any): import("../base/types.js").Trade;
+    parseWsMyTrade(trade: any, market?: any): any;
     handleMessage(client: any, message: any): any;
     handleAuthenticate(client: Client, message: any): any;
 }

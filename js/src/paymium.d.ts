@@ -2,32 +2,32 @@ import Exchange from './abstract/paymium.js';
 import { Int, OrderSide } from './base/types.js';
 export default class paymium extends Exchange {
     describe(): any;
-    parseBalance(response: any): import("./base/types.js").Balances;
-    fetchBalance(params?: {}): Promise<import("./base/types.js").Balances>;
-    fetchOrderBook(symbol: string, limit?: Int, params?: {}): Promise<import("./base/types.js").OrderBook>;
-    parseTicker(ticker: any, market?: any): import("./base/types.js").Ticker;
-    fetchTicker(symbol: string, params?: {}): Promise<import("./base/types.js").Ticker>;
-    parseTrade(trade: any, market?: any): import("./base/types.js").Trade;
-    fetchTrades(symbol: string, since?: Int, limit?: Int, params?: {}): Promise<import("./base/types.js").Trade[]>;
+    parseBalance(response: any): any;
+    fetchBalance(params?: {}): Promise<any>;
+    fetchOrderBook(symbol: string, limit?: Int, params?: {}): Promise<any>;
+    parseTicker(ticker: any, market?: any): any;
+    fetchTicker(symbol: string, params?: {}): Promise<any>;
+    parseTrade(trade: any, market?: any): any;
+    fetchTrades(symbol: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
     createDepositAddress(code: string, params?: {}): Promise<{
         info: any;
         currency: any;
-        address: string;
+        address: any;
         tag: any;
         network: any;
     }>;
     fetchDepositAddress(code: string, params?: {}): Promise<{
         info: any;
         currency: any;
-        address: string;
+        address: any;
         tag: any;
         network: any;
     }>;
-    fetchDepositAddresses(codes?: any, params?: {}): Promise<{}>;
+    fetchDepositAddresses(codes?: any, params?: {}): Promise<any>;
     parseDepositAddress(depositAddress: any, currency?: any): {
         info: any;
         currency: any;
-        address: string;
+        address: any;
         tag: any;
         network: any;
     };
@@ -35,27 +35,27 @@ export default class paymium extends Exchange {
     cancelOrder(id: string, symbol?: string, params?: {}): Promise<any>;
     transfer(code: string, amount: any, fromAccount: any, toAccount: any, params?: {}): Promise<{
         info: any;
-        id: string;
-        timestamp: number;
-        datetime: string;
+        id: any;
+        timestamp: any;
+        datetime: any;
         currency: any;
-        amount: number;
+        amount: any;
         fromAccount: any;
-        toAccount: string;
-        status: string;
+        toAccount: any;
+        status: any;
     }>;
     parseTransfer(transfer: any, currency?: any): {
         info: any;
-        id: string;
-        timestamp: number;
-        datetime: string;
+        id: any;
+        timestamp: any;
+        datetime: any;
         currency: any;
-        amount: number;
+        amount: any;
         fromAccount: any;
-        toAccount: string;
-        status: string;
+        toAccount: any;
+        status: any;
     };
-    parseTransferStatus(status: any): string;
+    parseTransferStatus(status: any): any;
     sign(path: any, api?: string, method?: string, params?: {}, headers?: any, body?: any): {
         url: string;
         method: string;

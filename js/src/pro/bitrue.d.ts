@@ -11,8 +11,8 @@ export default class bitrue extends bitrueRest {
     parseWSOrder(order: any, market?: any): any;
     watchOrderBook(symbol: string, limit?: Int, params?: {}): Promise<any>;
     handleOrderBook(client: Client, message: any): void;
-    parseWSOrderType(typeId: any): string;
-    parseWSOrderStatus(status: any): string;
+    parseWSOrderType(typeId: any): any;
+    parseWSOrderStatus(status: any): any;
     handlePing(client: Client, message: any): void;
     pong(client: any, message: any): Promise<void>;
     handleMessage(client: Client, message: any): void;

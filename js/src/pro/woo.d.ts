@@ -8,7 +8,7 @@ export default class woo extends wooRest {
     watchOrderBook(symbol: string, limit?: Int, params?: {}): Promise<any>;
     handleOrderBook(client: Client, message: any): void;
     watchTicker(symbol: string, params?: {}): Promise<any>;
-    parseWsTicker(ticker: any, market?: any): import("../base/types.js").Ticker;
+    parseWsTicker(ticker: any, market?: any): any;
     handleTicker(client: Client, message: any): any;
     watchTickers(symbols?: string[], params?: {}): Promise<any>;
     handleTickers(client: Client, message: any): void;
@@ -16,7 +16,7 @@ export default class woo extends wooRest {
     handleOHLCV(client: Client, message: any): void;
     watchTrades(symbol: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
     handleTrade(client: Client, message: any): void;
-    parseWsTrade(trade: any, market?: any): import("../base/types.js").Trade;
+    parseWsTrade(trade: any, market?: any): any;
     checkRequiredUid(error?: boolean): boolean;
     authenticate(params?: {}): any;
     watchPrivate(messageHash: any, message: any, params?: {}): Promise<any>;
