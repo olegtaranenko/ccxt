@@ -1028,8 +1028,8 @@ export default class Exchange {
             currencies = await this.fetchCurrencies ()
         }
         let markets = undefined
-        const loadFromOutside = params && params['loadFromOutside']
-        if (typeof loadFromOutside !== 'object') {
+        const loadFromOutside = this.safeValue(params, 'loadFromOutside', undefined);
+        if (!loadFromOutside) {
             markets = await this.fetchMarkets (params)
         } else {
             markets = this.fetchMarketsFromOutside (loadFromOutside)
