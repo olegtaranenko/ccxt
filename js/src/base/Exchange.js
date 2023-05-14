@@ -38,6 +38,7 @@ export default class Exchange {
         this.validateClientSsl = false;
         this.timeout = 10000; // milliseconds
         this.verbose = false;
+        this.verboseTruncate = false;
         this.debug = false;
         this.userAgent = undefined;
         this.twofa = undefined; // two-factor authentication (2FA)
@@ -228,6 +229,7 @@ export default class Exchange {
         this.twofa = undefined; // two-factor authentication (2FA)
         this.userAgent = undefined;
         this.verbose = false;
+        this.verboseTruncate = false;
         // default credentials
         this.apiKey = undefined;
         this.login = undefined;
@@ -654,7 +656,7 @@ export default class Exchange {
         }
         headers = this.extend(this.headers, headers);
         headers = this.setHeaders(headers);
-        if (this.verbose) {
+        if (this.verbose || this.verboseTruncate) {
             this.log("fetch Request:\n", this.id, method, url, "\nRequestHeaders:\n", headers, "\nRequestBody:\n", body, "\n");
         }
         if (this.fetchImplementation === undefined) {
@@ -730,7 +732,7 @@ export default class Exchange {
             if (this.enableLastHttpResponse) {
                 this.last_http_response = responseBuffer;
             }
-            if (this.verbose) {
+            if (this.verbose || this.verboseTruncate) {
                 this.log("handleRestResponse:\n", this.id, method, url, response.status, response.statusText, "\nResponseHeaders:\n", responseHeaders, "ZIP redacted", "\n");
             }
             // no error handler needed, because it would not be a zip response in case of an error
@@ -748,8 +750,11 @@ export default class Exchange {
             if (this.enableLastJsonResponse) {
                 this.last_json_response = json;
             }
-            if (this.verbose) {
-                this.log("handleRestResponse:\n", this.id, method, url, response.status, response.statusText, "\nResponseHeaders:\n", responseHeaders, "\nResponseBody:\n", responseBody, "\n");
+            if (this.verbose || this.verboseTruncate) {
+                const TRUNCATE_LENGTH = 1e4;
+                const length = responseBody.length;
+                const truncatedBody = (this.verboseTruncate && (responseBody.length > TRUNCATE_LENGTH + 100)) ? responseBody.substring(0, TRUNCATE_LENGTH / 2) + '\n ... \n' + responseBody.substring(length - TRUNCATE_LENGTH / 2) : responseBody;
+                this.log("handleRestResponse:\n", this.id, method, url, response.status, response.statusText, "\nResponseHeaders:\n", responseHeaders, "\nResponseBody:\n", truncatedBody, "\n");
             }
             const skipFurtherErrorHandling = this.handleErrors(response.status, response.statusText, url, method, responseHeaders, responseBody, json, requestHeaders, requestBody);
             if (!skipFurtherErrorHandling) {
@@ -907,7 +912,7 @@ export default class Exchange {
             const options = this.deepExtend(this.streaming, {
                 'log': this.log ? this.log.bind(this) : this.log,
                 'ping': this.ping ? this.ping.bind(this) : this.ping,
-                'verbose': this.verbose,
+                'verbose': this.verbose || this.verboseTruncate,
                 'throttler': new Throttler(this.tokenBucket),
                 // add support for proxies
                 'options': {

@@ -30,6 +30,7 @@ export default class Exchange {
     validateClientSsl: boolean;
     timeout: number;
     verbose: boolean;
+    verboseTruncate: boolean;
     debug: boolean;
     userAgent: {
         'User-Agent': string;
