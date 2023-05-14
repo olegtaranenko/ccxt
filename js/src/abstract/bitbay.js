@@ -4,4 +4,8 @@
 // https://github.com/ccxt/ccxt/blob/master/CONTRIBUTING.md#how-to-contribute-code
 // EDIT THE CORRESPONDENT .ts FILE INSTEAD
 
-"use strict";
+// -------------------------------------------------------------------------------
+import _zonda from '../zonda.js';
+class zonda extends _zonda {
+}
+export default zonda;

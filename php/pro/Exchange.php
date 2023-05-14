@@ -61,6 +61,7 @@ Exchange::$exchanges = array(
     'kraken',
     'krakenfutures',
     'kucoin',
+    'kucoinfutures',
     'luno',
     'mexc',
     'mexc3',

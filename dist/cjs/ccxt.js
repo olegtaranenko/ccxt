@@ -85,6 +85,7 @@ var indodax = require('./src/indodax.js');
 var kraken = require('./src/kraken.js');
 var krakenfutures = require('./src/krakenfutures.js');
 var kucoin = require('./src/kucoin.js');
+var kucoinfutures = require('./src/kucoinfutures.js');
 var kuna = require('./src/kuna.js');
 var latoken = require('./src/latoken.js');
 var lbank = require('./src/lbank.js');
@@ -161,6 +162,7 @@ var independentreserve$1 = require('./src/pro/independentreserve.js');
 var kraken$1 = require('./src/pro/kraken.js');
 var krakenfutures$1 = require('./src/pro/krakenfutures.js');
 var kucoin$1 = require('./src/pro/kucoin.js');
+var kucoinfutures$1 = require('./src/pro/kucoinfutures.js');
 var luno$1 = require('./src/pro/luno.js');
 var mexc$1 = require('./src/pro/mexc.js');
 var mexc3$1 = require('./src/pro/mexc3.js');
@@ -253,6 +255,7 @@ const exchanges = {
     'kraken': kraken,
     'krakenfutures': krakenfutures,
     'kucoin': kucoin,
+    'kucoinfutures': kucoinfutures,
     'kuna': kuna,
     'latoken': latoken,
     'lbank': lbank,
@@ -331,6 +334,7 @@ const pro = {
     'kraken': kraken$1,
     'krakenfutures': krakenfutures$1,
     'kucoin': kucoin$1,
+    'kucoinfutures': kucoinfutures$1,
     'luno': luno$1,
     'mexc': mexc$1,
     'mexc3': mexc3$1,
@@ -458,6 +462,7 @@ exports.indodax = indodax;
 exports.kraken = kraken;
 exports.krakenfutures = krakenfutures;
 exports.kucoin = kucoin;
+exports.kucoinfutures = kucoinfutures;
 exports.kuna = kuna;
 exports.latoken = latoken;
 exports.lbank = lbank;

@@ -119,6 +119,7 @@ import indodax from  './src/indodax.js'
 import kraken from  './src/kraken.js'
 import krakenfutures from  './src/krakenfutures.js'
 import kucoin from  './src/kucoin.js'
+import kucoinfutures from  './src/kucoinfutures.js'
 import kuna from  './src/kuna.js'
 import latoken from  './src/latoken.js'
 import lbank from  './src/lbank.js'
@@ -198,6 +199,7 @@ import independentreservePro from  './src/pro/independentreserve.js'
 import krakenPro from  './src/pro/kraken.js'
 import krakenfuturesPro from  './src/pro/krakenfutures.js'
 import kucoinPro from  './src/pro/kucoin.js'
+import kucoinfuturesPro from  './src/pro/kucoinfutures.js'
 import lunoPro from  './src/pro/luno.js'
 import mexcPro from  './src/pro/mexc.js'
 import mexc3Pro from  './src/pro/mexc3.js'
@@ -286,6 +288,7 @@ const exchanges = {
     'kraken':                 kraken,
     'krakenfutures':          krakenfutures,
     'kucoin':                 kucoin,
+    'kucoinfutures':          kucoinfutures,
     'kuna':                   kuna,
     'latoken':                latoken,
     'lbank':                  lbank,
@@ -365,6 +368,7 @@ const pro = {
     'kraken':                 krakenPro,
     'krakenfutures':          krakenfuturesPro,
     'kucoin':                 kucoinPro,
+    'kucoinfutures':          kucoinfuturesPro,
     'luno':                   lunoPro,
     'mexc':                   mexcPro,
     'mexc3':                  mexc3Pro,
@@ -524,6 +528,7 @@ export {
     kraken,
     krakenfutures,
     kucoin,
+    kucoinfutures,
     kuna,
     latoken,
     lbank,

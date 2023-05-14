@@ -4,4 +4,8 @@
 // https://github.com/ccxt/ccxt/blob/master/CONTRIBUTING.md#how-to-contribute-code
 // EDIT THE CORRESPONDENT .ts FILE INSTEAD
 
-"use strict";
+// -------------------------------------------------------------------------------
+import _gate from '../gate.js';
+class gate extends _gate {
+}
+export default gate;
