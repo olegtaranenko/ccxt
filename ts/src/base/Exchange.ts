@@ -999,7 +999,13 @@ export default class Exchange {
         if (this.has['fetchCurrencies'] === true) {
             currencies = await this.fetchCurrencies ()
         }
-        const markets = await this.fetchMarkets (params)
+        let markets = undefined
+        const loadFromOutside = this.safeValue(params, 'loadFromOutside', undefined);
+        if (!loadFromOutside) {
+            markets = await this.fetchMarkets (params)
+        } else {
+            markets = this.fetchMarketsFromOutside (loadFromOutside)
+        }
         return this.setMarkets (markets, currencies)
     }
 
@@ -1032,6 +1038,10 @@ export default class Exchange {
         // this is for historical reasons
         // and may be changed for consistency later
         return new Promise ((resolve, reject) => resolve (Object.values (this.markets)))
+    }
+
+    fetchMarketsFromOutside (markets: {}) {
+        return markets
     }
 
     checkRequiredDependencies () {
