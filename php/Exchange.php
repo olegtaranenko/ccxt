@@ -4240,6 +4240,18 @@ class Exchange {
         }
     }
 
+    public function is_tick_precision() {
+        return $this->precisionMode === TICK_SIZE;
+    }
+
+    public function is_decimal_precision() {
+        return $this->precisionMode === DECIMAL_PLACES;
+    }
+
+    public function is_significant_precision() {
+        return $this->precisionMode === SIGNIFICANT_DIGITS;
+    }
+
     public function safe_number(array $obj, int|string $key, ?float $defaultNumber = null) {
         $value = $this->safe_string($obj, $key);
         return $this->parse_number($value, $defaultNumber);
