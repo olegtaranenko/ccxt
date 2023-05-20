@@ -240,6 +240,9 @@ class Exchange {
         this.debug = false;
         this.timeout = 10000; // milliseconds
         this.twofa = undefined; // two-factor authentication (2FA)
+        this.userAgent = undefined;
+        this.verbose = false;
+        this.verboseTruncate = false;
         // default credentials
         this.apiKey = undefined;
         this.login = undefined;
