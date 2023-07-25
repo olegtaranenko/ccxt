@@ -2719,43 +2719,6 @@ class Exchange(object):
             ]
         return ohlcv
 
-    def get_network(self, network: str, code: str):
-        network = network.upper()
-        aliases = {
-            'AVALANCHE': 'AVAX',
-            'AVAX': 'AVAX',
-            'BEP20': 'BSC',
-            'BSC': 'BSC',
-            'CHZ': 'CHZ',
-            'EOS': 'EOS',
-            'ERC20': 'ETH',
-            'ETH': 'ETH',
-            'ETHER': 'ETH',
-            'ETHEREUM': 'ETH',
-            'HECO': 'HT',
-            'HRC20': 'HT',
-            'LUNA': 'LUNA',
-            'MATIC': 'MATIC',
-            'NEO': 'NEO',
-            'ONT': 'ONT',
-            'POLYGON': 'MATIC',
-            'QTUM': 'QTUM',
-            'RON': 'RON',
-            'SOL': 'SOL',
-            'SPL': 'SOL',
-            'TERRA': 'LUNA',
-            'TRC20': 'TRX',
-            'TRON': 'TRX',
-            'TRX': 'TRX',
-            'WAVES': 'WAVES',
-        }
-        if network == code:
-            return network
-        elif network in aliases:
-            return aliases[network]
-        else:
-            raise NotSupported(self.id + ' network ' + network + ' is not yet supported')
-
     def network_code_to_id(self, networkCode, currencyCode=None):
         """
          * @ignore
