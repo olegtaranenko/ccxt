@@ -1632,6 +1632,7 @@ class Exchange {
         let lastTradeTimeTimestamp = this.safeInteger(order, 'lastTradeTimestamp');
         let symbol = this.safeString(order, 'symbol');
         let side = this.safeString(order, 'side');
+        const status = this.safeString(order, 'status');
         const parseFilled = (filled === undefined);
         const parseCost = (cost === undefined);
         const parseLastTradeTimeTimestamp = (lastTradeTimeTimestamp === undefined);
@@ -1744,7 +1745,7 @@ class Exchange {
             if (filled !== undefined && remaining !== undefined) {
                 amount = Precise["default"].stringAdd(filled, remaining);
             }
-            else if (this.safeString(order, 'status') === 'closed') {
+            else if (status === 'closed') {
                 amount = filled;
             }
         }
@@ -1752,10 +1753,16 @@ class Exchange {
             if (amount !== undefined && remaining !== undefined) {
                 filled = Precise["default"].stringSub(amount, remaining);
             }
+            else if (status === 'closed' && amount !== undefined) {
+                filled = amount;
+            }
         }
         if (remaining === undefined) {
             if (amount !== undefined && filled !== undefined) {
                 remaining = Precise["default"].stringSub(amount, filled);
+            }
+            else if (status === 'closed') {
+                remaining = '0';
             }
         }
         // ensure that the average field is calculated correctly
@@ -1861,7 +1868,7 @@ class Exchange {
             'reduceOnly': this.safeValue(order, 'reduceOnly'),
             'remaining': this.parseNumber(remaining),
             'side': side,
-            'status': this.safeString(order, 'status'),
+            'status': status,
             'stopLossPrice': stopLossPrice,
             'stopPrice': triggerPrice,
             'symbol': symbol,
@@ -3815,9 +3822,9 @@ class Exchange {
         /**
          * @ignore
          * @method
-         * @param {string} argument the argument to check
-         * @param {string} argumentName the name of the argument to check
          * @param {string} methodName the name of the method that the argument is being checked for
+         * @param {string} argument the argument's actual value provided
+         * @param {string} argumentName the name of the argument being checked (for logging purposes)
          * @param {string[]} options a list of options that the argument can be
          * @returns {undefined}
          */
