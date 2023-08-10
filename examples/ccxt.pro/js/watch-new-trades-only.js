@@ -1,6 +1,6 @@
 'use strict';
 
-const ccxt = require ('../../../ccxt');
+const ccxt = require ('ccxt');
 
 console.log ('CCXT Version:', ccxt.version);
 
@@ -19,10 +19,10 @@ async function watchExchange (exchangeId, symbol) {
             const trades = await exchange.watchTrades (symbol)
             for (let i = 0; i < trades.length; i++) {
                 const trade = trades[i]
-                console.log (exchange.iso8601 (exchange.milliseconds ()), exchange.id, trade['symbol'], trade['id'], trade['datetime'], trade['price'], trade['amount'])
+                console.log (exchange.iso8601 (exchange.milliseconds ()), exchange.id, trade['symbol'], i, trade['id'], trade['datetime'], trade['price'], trade['amount'])
             }
         } catch (e) {
-            console.log (symbol, e)
+            console.log (exchangeId, symbol, e)
         }
     }
 }
@@ -30,8 +30,8 @@ async function watchExchange (exchangeId, symbol) {
 async function main () {
 
     const streams = {
-        'binance': 'BTC/USDT',
-        'okex': 'BTC/USDT',
+        // 'binanceusdm': 'BTC/USDT',
+        // 'okex': 'BTC/USDT',
         'kraken': 'BTC/USD',
     };
 

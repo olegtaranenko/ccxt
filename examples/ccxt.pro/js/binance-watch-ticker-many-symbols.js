@@ -15,7 +15,7 @@ async function loop (exchange, symbol) {
             const ticker = await exchange.watchTicker (symbol)
             handle (exchange, symbol, ticker)
         } catch (e) {
-            console.log (symbol, e)
+            console.log (symbol, e.message)
             // do nothing and retry on next loop iteration
             // throw e // uncomment to break all loops in case of an error in any one of them
             // break // you can also break just this one loop if it fails
@@ -43,7 +43,7 @@ async function main () {
     if (exchange.has['watchTicker']) {
         await exchange.loadMarkets ()
         // many symbols
-        await Promise.all (exchange.symbols.map (symbol => loop (exchange, symbol)))
+        await Promise.all (exchange.symbols.slice(0, 35).map (symbol => loop (exchange, symbol)))
         //
         // or
         //

@@ -1,12 +1,12 @@
 'use strict';
 
-const ccxt = require ('../../../ccxt');
+const ccxt = require ('ccxt');
 
 (async () => {
 
     const streams = {
-        'binance': 'BTC/USDT',
-        'okex': 'BTC/USDT'
+        'binanceusdm': 'TLM/USDT',
+        // 'kraken': 'BTC/USDT'
     };
 
     await Promise.all (Object.keys (streams).map (exchangeId =>
@@ -22,14 +22,17 @@ const ccxt = require ('../../../ccxt');
             const symbol = streams[exchangeId]
             let lastId = ''
             while (true) {
-                console.log ('---')
+                // console.log ('---')
                 try {
                     const trades = await exchange.watchTrades (symbol)
                     for (let i = 0; i < trades.length; i++) {
                         const trade = trades[i]
-                        if (trade['id'] > lastId) {
+                        if (trade) {
                             console.log (exchange.iso8601 (exchange.milliseconds ()), exchange.id, trade['symbol'], trade['id'], trade['datetime'], trade['price'], trade['amount'])
                             lastId = trade['id']
+                        } else {
+                            // console.log (exchange.iso8601 (exchange.milliseconds ()), exchange.id, trade['symbol'], trade['id'], trade['datetime'], trade['price'], trade['amount'])
+                            // console.log(`lastId: ${lastId}, tradeId: ${trade['id']}`)
                         }
                     }
                 } catch (e) {
