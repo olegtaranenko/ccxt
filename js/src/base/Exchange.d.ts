@@ -55,6 +55,7 @@ export default class Exchange {
     twofa: any;
     verbose: boolean;
     verboseTruncate: boolean;
+    verboseNoLog: any;
     apiKey: string;
     secret: string;
     uid: string;

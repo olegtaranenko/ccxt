@@ -59,7 +59,9 @@ class Client {
     }
     resolve(result, messageHash) {
         if (this.verbose && (messageHash === undefined)) {
-            this.log(new Date(), 'resolve received undefined messageHash');
+            if (typeof this.verboseNoLog && !this.verboseNoLog('resolve', messageHash)) {
+                this.log(new Date(), 'resolve received undefined messageHash');
+            }
         }
         if (messageHash in this.futures) {
             const promise = this.futures[messageHash];
@@ -164,7 +166,9 @@ class Client {
     }
     onOpen() {
         if (this.verbose) {
-            this.log(new Date(), 'onOpen');
+            if (typeof this.verboseNoLog && !this.verboseNoLog('onOpen')) {
+                this.log(new Date(), 'onOpen');
+            }
         }
         this.connectionEstablished = time.milliseconds();
         this.isConnected = true;
@@ -179,18 +183,24 @@ class Client {
     // however, some devs may want to track connection states in their app
     onPing() {
         if (this.verbose) {
-            this.log(new Date(), 'onPing');
+            if (typeof this.verboseNoLog && !this.verboseNoLog('onPing')) {
+                this.log(new Date(), 'onPing');
+            }
         }
     }
     onPong() {
         this.lastPong = time.milliseconds();
         if (this.verbose) {
-            this.log(new Date(), 'onPong');
+            if (typeof this.verboseNoLog && !this.verboseNoLog('onP0ng')) {
+                this.log(new Date(), 'onPong');
+            }
         }
     }
     onError(error) {
         if (this.verbose) {
-            this.log(new Date(), 'onError', error.message);
+            if (typeof this.verboseNoLog && !this.verboseNoLog('onError', error)) {
+                this.log(new Date(), 'onError', error.message);
+            }
         }
         if (!(error instanceof errors.BaseError)) {
             // in case of ErrorEvent from node_modules/ws/lib/event-target.js
@@ -202,7 +212,9 @@ class Client {
     }
     onClose(event) {
         if (this.verbose) {
-            this.log(new Date(), 'onClose', event);
+            if (typeof this.verboseNoLog && !this.verboseNoLog('onClose', event)) {
+                this.log(new Date(), 'onClose', event);
+            }
         }
         if (!this.error) {
             // todo: exception types for server-side disconnects
@@ -217,12 +229,16 @@ class Client {
     // but may be used to read protocol-level data like cookies, headers, etc
     onUpgrade(message) {
         if (this.verbose) {
-            this.log(new Date(), 'onUpgrade');
+            if (typeof this.verboseNoLog && !this.verboseNoLog('onUpdate')) {
+                this.log(new Date(), 'onUpgrade');
+            }
         }
     }
     async send(message) {
         if (this.verbose) {
-            this.log(new Date(), 'sending', message);
+            if (typeof this.verboseNoLog && !this.verboseNoLog('send', message)) {
+                this.log(new Date(), 'sending', message);
+            }
         }
         message = (typeof message === 'string') ? message : JSON.stringify(message);
         const future = Future.createFuture();
@@ -274,7 +290,9 @@ class Client {
                 message = JSON.parse(message.replace(/:(\d{15,}),/g, ':"$1",'));
             }
             if (this.verbose) {
-                this.log(new Date(), 'onMessage', message);
+                if (typeof this.verboseNoLog && !this.verboseNoLog('onMessage', message)) {
+                    this.log(new Date(), 'onMessage', message);
+                }
                 // unlimited depth
                 // this.log (new Date (), 'onMessage', util.inspect (message, false, null, true))
                 // this.log (new Date (), 'onMessage', JSON.stringify (message, null, 4))

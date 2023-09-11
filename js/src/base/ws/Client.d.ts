@@ -8,6 +8,7 @@ export default class Client {
     connection: any;
     connectionTimeout: any;
     verbose: boolean;
+    verboseNoLog: any;
     connectionTimer: any;
     lastPong: any;
     maxPingPongMisses: any;

@@ -241,6 +241,7 @@ class Exchange {
         this.twofa = undefined; // two-factor authentication (2FA)
         this.verbose = false;
         this.verboseTruncate = false;
+        this.verboseNoLog = undefined;
         // default credentials
         this.apiKey = undefined;
         this.login = undefined;
@@ -669,7 +670,9 @@ class Exchange {
         headers = this.setHeaders(headers);
         // ######## end of proxies ########
         if (this.verbose || this.verboseTruncate) {
-            this.log("fetch Request:\n", this.id, method, url, "\nRequestHeaders:\n", headers, "\nRequestBody:\n", body, "\n");
+            if (typeof this.verboseNoLog === 'function' && this.verboseNoLog('fetch', method, url, headers, body)) {
+                this.log("fetch Request:\n", this.id, method, url, "\nRequestHeaders:\n", headers, "\nRequestBody:\n", body, "\n");
+            }
         }
         if (this.fetchImplementation === undefined) {
             if (isNode) {
@@ -745,7 +748,9 @@ class Exchange {
                 this.last_http_response = responseBuffer;
             }
             if (this.verbose || this.verboseTruncate) {
-                this.log("handleRestResponse:\n", this.id, method, url, response.status, response.statusText, "\nResponseHeaders:\n", responseHeaders, "ZIP redacted", "\n");
+                if (typeof this.verboseNoLog === 'function' && this.verboseNoLog('handle', method, url, response)) {
+                    this.log("handleRestResponse:\n", this.id, method, url, response.status, response.statusText, "\nResponseHeaders:\n", responseHeaders, "ZIP redacted", "\n");
+                }
             }
             // no error handler needed, because it would not be a zip response in case of an error
             return responseBuffer;
@@ -763,10 +768,12 @@ class Exchange {
                 this.last_json_response = json;
             }
             if (this.verbose || this.verboseTruncate) {
-                const TRUNCATE_LENGTH = 1e4;
-                const length = responseBody.length;
-                const truncatedBody = (this.verboseTruncate && (responseBody.length > TRUNCATE_LENGTH + 100)) ? responseBody.substring(0, TRUNCATE_LENGTH / 2) + '\n ... \n' + responseBody.substring(length - TRUNCATE_LENGTH / 2) : responseBody;
-                this.log("handleRestResponse:\n", this.id, method, url, response.status, response.statusText, "\nResponseHeaders:\n", responseHeaders, "\nResponseBody:\n", truncatedBody, "\n");
+                if (typeof this.verboseNoLog === 'function' && this.verboseNoLog('response', method, url, response)) {
+                    const TRUNCATE_LENGTH = 1e4;
+                    const length = responseBody.length;
+                    const truncatedBody = (this.verboseTruncate && (responseBody.length > TRUNCATE_LENGTH + 100)) ? responseBody.substring(0, TRUNCATE_LENGTH / 2) + '\n ... \n' + responseBody.substring(length - TRUNCATE_LENGTH / 2) : responseBody;
+                    this.log("handleRestResponse:\n", this.id, method, url, response.status, response.statusText, "\nResponseHeaders:\n", responseHeaders, "\nResponseBody:\n", truncatedBody, "\n");
+                }
             }
             const skipFurtherErrorHandling = this.handleErrors(response.status, response.statusText, url, method, responseHeaders, responseBody, json, requestHeaders, requestBody);
             if (!skipFurtherErrorHandling) {
@@ -791,20 +798,33 @@ class Exchange {
         let currencies = undefined;
         // only call if exchange API provides endpoint (true), thus avoid emulated versions ('emulated')
         if (this.has['fetchCurrencies'] === true) {
-            currencies = await this.fetchCurrencies();
+            const currenciesFromOutside = this.safeValue(params, 'currenciesFromOutside', undefined);
+            if (!currenciesFromOutside || reload) {
+                currencies = await this.fetchCurrencies();
+                const fetchCurrenciesCallback = this.safeValue(params, 'fetchCurrenciesCallback', undefined);
+                if (fetchCurrenciesCallback) {
+                    currencies = fetchCurrenciesCallback(currencies);
+                    this.omit(params, 'fetchCurrenciesCallback');
+                }
+            }
+            else {
+                currencies = currenciesFromOutside;
+                this.omit(params, 'currenciesFromOutside');
+            }
         }
         let markets;
-        // TODO strip loadFromOutside, loadedMarketCallback params to avoid side effects
         const loadFromOutside = this.safeValue(params, 'loadFromOutside', undefined);
         if (!loadFromOutside || reload) {
             markets = await this.fetchMarkets(params);
             const loadedMarketCallback = this.safeValue(params, 'loadedMarketCallback', undefined);
             if (loadedMarketCallback) {
                 loadedMarketCallback(markets);
+                this.omit(params, 'loadedMarketCallback');
             }
         }
         else {
             markets = this.fetchMarketsFromOutside(loadFromOutside);
+            this.omit(params, 'loadFromOutside');
         }
         return this.setMarkets(markets, currencies);
     }
@@ -918,6 +938,7 @@ class Exchange {
                 'log': this.log ? this.log.bind(this) : this.log,
                 'ping': this.ping ? this.ping.bind(this) : this.ping,
                 'verbose': this.verbose || this.verboseTruncate,
+                'verboseNoLog': this.verboseNoLog,
                 'throttler': new Throttler(this.tokenBucket),
                 // add support for proxies
                 'options': {
