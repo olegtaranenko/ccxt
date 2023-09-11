@@ -29,7 +29,7 @@ function _interopNamespace(e) {
 }
 
 // ----------------------------------------------------------------------------
-const { aggregate, arrayConcat, base16ToBinary, base58ToBinary, base64ToBinary, base64ToString, binaryConcat, binaryConcatArray, binaryToBase16, binaryToBase64, capitalize, clone, crc32, DECIMAL_PLACES, decimalToPrecision, decode, deepExtend, ecdsa, encode, extend, extractParams, filterBy, flatten, groupBy, hash, hmac, implodeParams, inArray, indexBy, isArray, isEmpty, isJsonEncodedObject, isNode, iso8601, json, keys, keysort, merge, microseconds, milliseconds, NO_PADDING, now, numberToBE, numberToLE, numberToString, omit, omitZero, ordered, parse8601, parseDate, parseTimeframe, precisionFromString, rawencode, ROUND, safeFloat, safeFloat2, safeFloatN, safeInteger, safeInteger2, safeIntegerN, safeIntegerProduct, safeIntegerProduct2, safeIntegerProductN, safeString, safeString2, safeStringLower, safeStringLower2, safeStringLowerN, safeStringN, safeStringUpper, safeStringUpper2, safeStringUpperN, safeTimestamp, safeTimestamp2, safeTimestampN, safeValue, safeValue2, safeValueN, seconds, SIGNIFICANT_DIGITS, sortBy, sortBy2, stringToBase64, strip, sum, Throttler, TICK_SIZE, toArray, TRUNCATE, unCamelCase, unique, urlencode, urlencodeNested, urlencodeWithArrayRepeat, uuid, uuid16, uuid22, uuidv1, values, vwap, ymd, ymdhms, yymmdd, yyyymmdd } = functions;
+const { aggregate, arrayConcat, base16ToBinary, base58ToBinary, base64ToBinary, base64ToString, binaryConcat, binaryConcatArray, binaryToBase16, binaryToBase58, binaryToBase64, capitalize, clone, crc32, DECIMAL_PLACES, decimalToPrecision, decode, deepExtend, ecdsa, encode, extend, extractParams, filterBy, flatten, groupBy, hash, hmac, implodeParams, inArray, indexBy, isArray, isEmpty, isJsonEncodedObject, isNode, iso8601, json, keys, keysort, merge, microseconds, milliseconds, NO_PADDING, now, numberToBE, numberToLE, numberToString, omit, omitZero, ordered, parse8601, parseDate, parseTimeframe, precisionFromString, rawencode, ROUND, safeFloat, safeFloat2, safeFloatN, safeInteger, safeInteger2, safeIntegerN, safeIntegerProduct, safeIntegerProduct2, safeIntegerProductN, safeString, safeString2, safeStringLower, safeStringLower2, safeStringLowerN, safeStringN, safeStringUpper, safeStringUpper2, safeStringUpperN, safeTimestamp, safeTimestamp2, safeTimestampN, safeValue, safeValue2, safeValueN, seconds, SIGNIFICANT_DIGITS, sortBy, sortBy2, stringToBase64, strip, sum, Throttler, TICK_SIZE, toArray, TRUNCATE, unCamelCase, unique, urlencode, urlencodeNested, urlencodeWithArrayRepeat, uuid, uuid16, uuid22, uuidv1, values, vwap, ymd, ymdhms, yymmdd, yyyymmdd } = functions;
 // ----------------------------------------------------------------------------
 /**
  * @class Exchange
@@ -108,10 +108,6 @@ class Exchange {
         this.targetAccount = undefined;
         this.stablePairs = {};
         // WS/PRO options
-        this.clients = {};
-        this.newUpdates = true;
-        this.streaming = {};
-        this.deepExtend = deepExtend;
         this.aggregate = aggregate;
         this.arrayConcat = arrayConcat;
         this.base16ToBinary = base16ToBinary;
@@ -121,12 +117,15 @@ class Exchange {
         this.binaryConcat = binaryConcat;
         this.binaryConcatArray = binaryConcatArray;
         this.binaryToBase16 = binaryToBase16;
+        this.binaryToBase58 = binaryToBase58;
         this.binaryToBase64 = binaryToBase64;
         this.capitalize = capitalize;
+        this.clients = {};
         this.clone = clone;
         this.crc32 = crc32;
         this.decimalToPrecision = decimalToPrecision;
         this.decode = decode;
+        this.deepExtend = deepExtend;
         this.encode = encode;
         this.extend = extend;
         this.extractParams = extractParams;
@@ -149,6 +148,7 @@ class Exchange {
         this.merge = merge;
         this.microseconds = microseconds;
         this.milliseconds = milliseconds;
+        this.newUpdates = true;
         this.now = now;
         this.numberToBE = numberToBE;
         this.numberToLE = numberToLE;
@@ -188,6 +188,7 @@ class Exchange {
         this.seconds = seconds;
         this.sortBy = sortBy;
         this.sortBy2 = sortBy2;
+        this.streaming = {};
         this.stringToBase64 = stringToBase64;
         this.strip = strip;
         this.sum = sum;
@@ -321,7 +322,6 @@ class Exchange {
             'certified': false,
             'commonCurrencies': {
                 'BCC': 'BCH',
-                'BCHABC': 'BCH',
                 'BCHSV': 'BSV',
                 'XBT': 'BTC',
             },
@@ -412,6 +412,7 @@ class Exchange {
                 'fetchPermissions': undefined,
                 'fetchPosition': undefined,
                 'fetchPositions': undefined,
+                'fetchPositionsBySymbol': undefined,
                 'fetchPositionsRisk': undefined,
                 'fetchPremiumIndexOHLCV': undefined,
                 'fetchStatus': 'emulated',
@@ -879,18 +880,6 @@ class Exchange {
             return hexData;
         }
     }
-    // method to override
-    findTimeframe(timeframe, timeframes = undefined) {
-        timeframes = timeframes || this.timeframes;
-        const keys = Object.keys(timeframes);
-        for (let i = 0; i < keys.length; i++) {
-            const key = keys[i];
-            if (timeframes[key] === timeframe) {
-                return key;
-            }
-        }
-        return undefined;
-    }
     spawn(method, ...args) {
         const future = Future.createFuture();
         method.apply(this, args).then(future.resolve).catch(future.reject);
@@ -1034,27 +1023,26 @@ class Exchange {
     }
     async close() {
         const clients = Object.values(this.clients || {});
+        const closedClients = [];
         for (let i = 0; i < clients.length; i++) {
             const client = clients[i];
             delete this.clients[client.url];
-            await client.close();
+            closedClients.push(client.close());
         }
-    }
-    handleDelta(bookside, delta, nonce = undefined) {
-        //stub
+        return Promise.all(closedClients);
     }
     async loadOrderBook(client, messageHash, symbol, limit = undefined, params = {}) {
         if (!(symbol in this.orderbooks)) {
             client.reject(new errors.ExchangeError(this.id + ' loadOrderBook() orderbook is not initiated'), messageHash);
             return;
         }
-        const maxRetries = this.handleOption('watchOrderBook', 'maxRetries', 3);
+        const maxRetries = this.handleOption('watchOrderBook', 'snapshotMaxRetries', 3);
         let tries = 0;
         try {
             const stored = this.orderbooks[symbol];
             while (tries < maxRetries) {
                 const cache = stored.cache;
-                const orderBook = await this.fetchOrderBook(symbol, limit, params);
+                const orderBook = await this.fetchRestOrderBookSafe(symbol, limit, params);
                 const index = this.getCacheIndex(orderBook, cache);
                 if (index >= 0) {
                     stored.reset(orderBook);
@@ -1072,16 +1060,6 @@ class Exchange {
             client.reject(e, messageHash);
             await this.loadOrderBook(client, messageHash, symbol, limit, params);
         }
-    }
-    handleDeltas(orderbook, deltas, nonce = undefined) {
-        for (let i = 0; i < deltas.length; i++) {
-            this.handleDelta(orderbook, deltas[i]);
-        }
-    }
-    // eslint-disable-next-line no-unused-vars
-    getCacheIndex(orderbook, deltas) {
-        // return the first index of the cache that can be applied to the orderbook or -1 if not possible
-        return -1;
     }
     convertToBigInt(value) {
         return BigInt(value); // used on XT
@@ -1138,6 +1116,31 @@ class Exchange {
     // ########################################################################
     // ------------------------------------------------------------------------
     // METHODS BELOW THIS LINE ARE TRANSPILED FROM JAVASCRIPT TO PYTHON AND PHP
+    handleDeltas(orderbook, deltas) {
+        for (let i = 0; i < deltas.length; i++) {
+            this.handleDelta(orderbook, deltas[i]);
+        }
+    }
+    handleDelta(bookside, delta) {
+        throw new errors.NotSupported(this.id + ' handleDelta not supported yet');
+    }
+    getCacheIndex(orderbook, deltas) {
+        // return the first index of the cache that can be applied to the orderbook or -1 if not possible
+        return -1;
+    }
+    findTimeframe(timeframe, timeframes = undefined) {
+        if (timeframes === undefined) {
+            timeframes = this.timeframes;
+        }
+        const keys = Object.keys(timeframes);
+        for (let i = 0; i < keys.length; i++) {
+            const key = keys[i];
+            if (timeframes[key] === timeframe) {
+                return key;
+            }
+        }
+        return undefined;
+    }
     checkProxySettings(url, method, headers, body) {
         let proxyUrl = (this.proxyUrl !== undefined) ? this.proxyUrl : this.proxy_url;
         const proxyUrlCallback = (this.proxyUrlCallback !== undefined) ? this.proxyUrlCallback : this.proxy_url_callback;
@@ -1318,6 +1321,21 @@ class Exchange {
     async fetchOrderBook(symbol, limit = undefined, params = {}) {
         throw new errors.NotSupported(this.id + ' fetchOrderBook() is not supported yet');
     }
+    async fetchRestOrderBookSafe(symbol, limit = undefined, params = {}) {
+        const fetchSnapshotMaxRetries = this.handleOption('watchOrderBook', 'maxRetries', 3);
+        for (let i = 0; i < fetchSnapshotMaxRetries; i++) {
+            try {
+                const orderBook = await this.fetchOrderBook(symbol, limit, params);
+                return orderBook;
+            }
+            catch (e) {
+                if ((i + 1) === fetchSnapshotMaxRetries) {
+                    throw e;
+                }
+            }
+        }
+        return undefined;
+    }
     async watchOrderBook(symbol, limit = undefined, params = {}) {
         throw new errors.NotSupported(this.id + ' watchOrderBook() is not supported yet');
     }
@@ -1379,7 +1397,7 @@ class Exchange {
         throw new errors.NotSupported(this.id + ' parseWsOrderTrade() is not supported yet');
     }
     parseWsOHLCV(ohlcv, market = undefined) {
-        throw new errors.NotSupported(this.id + ' parseWsOHLCV() is not supported yet');
+        return this.parseOHLCV(ohlcv, market);
     }
     async fetchFundingRates(symbols = undefined, params = {}) {
         throw new errors.NotSupported(this.id + ' fetchFundingRates() is not supported yet');
@@ -2562,7 +2580,7 @@ class Exchange {
             const position = this.extend(this.parsePosition(positions[i], undefined), params);
             result.push(position);
         }
-        return this.filterByArray(result, 'symbol', symbols, false);
+        return this.filterByArrayPositions(result, 'symbol', symbols, false);
     }
     parseAccounts(accounts, params = {}) {
         accounts = this.toArray(accounts);
@@ -2763,6 +2781,17 @@ class Exchange {
     }
     async fetchPosition(symbol, params = {}) {
         throw new errors.NotSupported(this.id + ' fetchPosition() is not supported yet');
+    }
+    async fetchPositionsBySymbol(symbol, params = {}) {
+        /**
+         * @method
+         * @name exchange#fetchPositionsBySymbol
+         * @description specifically fetches positions for specific symbol, unlike fetchPositions (which can work with multiple symbols, but because of that, it might be slower & more rate-limit consuming)
+         * @param {string} symbol unified market symbol of the market the position is held in
+         * @param {object} params extra parameters specific to the endpoint
+         * @returns {object[]} a list of [position structure]{@link https://github.com/ccxt/ccxt/wiki/Manual#position-structure} with maximum 3 items - one position for "one-way" mode, and two positions (long & short) for "two-way" (a.k.a. hedge) mode
+         */
+        throw new errors.NotSupported(this.id + ' fetchPositionsBySymbol() is not supported yet');
     }
     async fetchPositions(symbols = undefined, params = {}) {
         throw new errors.NotSupported(this.id + ' fetchPositions() is not supported yet');
@@ -3213,7 +3242,7 @@ class Exchange {
          * @param {int} [since] timestamp in ms of the earliest deposit/withdrawal, default is undefined
          * @param {int} [limit] max number of deposit/withdrawals to return, default is undefined
          * @param {object} [params] extra parameters specific to the exchange api endpoint
-         * @returns {object} a list of [transaction structures]{@link https://docs.ccxt.com/en/latest/manual.html#transaction-structure}
+         * @returns {object} a list of [transaction structures]{@link https://github.com/ccxt/ccxt/wiki/Manual#transaction-structure}
          */
         throw new errors.NotSupported(this.id + ' fetchDepositsWithdrawals() is not supported yet');
     }
@@ -3357,11 +3386,17 @@ class Exchange {
             precision = this.safeValue(networkItem, 'precision', precision);
         }
         if (precision === undefined) {
-            return fee;
+            return this.forceString(fee);
         }
         else {
             return this.decimalToPrecision(fee, ROUND, precision, this.precisionMode, this.paddingMode);
         }
+    }
+    forceString(value) {
+        if (typeof value !== 'string') {
+            return this.numberToString(value);
+        }
+        return value;
     }
     isTickPrecision() {
         return this.precisionMode === TICK_SIZE;
@@ -3945,7 +3980,7 @@ class Exchange {
          * @param {object} market ccxt market
          * @param {int} [since] when defined, the response items are filtered to only include items after this timestamp
          * @param {int} [limit] limits the number of items in the response
-         * @returns {object[]} an array of [funding history structures]{@link https://docs.ccxt.com/#/?id=funding-history-structure}
+         * @returns {object[]} an array of [funding history structures]{@link https://github.com/ccxt/ccxt/wiki/Manual#funding-history-structure}
          */
         const result = [];
         for (let i = 0; i < incomes.length; i++) {
@@ -3964,6 +3999,13 @@ class Exchange {
         const market = this.market(firstMarket);
         return market;
     }
+    parseWsOHLCVs(ohlcvs, market = undefined, timeframe = '1m', since = undefined, limit = undefined) {
+        const results = [];
+        for (let i = 0; i < ohlcvs.length; i++) {
+            results.push(this.parseWsOHLCV(ohlcvs[i], market));
+        }
+        return results;
+    }
     async fetchTransactions(code = undefined, since = undefined, limit = undefined, params = {}) {
         /**
          * @method
@@ -3974,7 +4016,7 @@ class Exchange {
          * @param {int} [since] timestamp in ms of the earliest deposit/withdrawal, default is undefined
          * @param {int} [limit] max number of deposit/withdrawals to return, default is undefined
          * @param {object} [params] extra parameters specific to the exchange api endpoint
-         * @returns {object} a list of [transaction structures]{@link https://docs.ccxt.com/en/latest/manual.html#transaction-structure}
+         * @returns {object} a list of [transaction structures]{@link https://github.com/ccxt/ccxt/wiki/Manual#transaction-structure}
          */
         if (this.has['fetchDepositsWithdrawals']) {
             return await this.fetchDepositsWithdrawals(code, since, limit, params);
@@ -3982,6 +4024,14 @@ class Exchange {
         else {
             throw new errors.NotSupported(this.id + ' fetchTransactions () is not supported yet');
         }
+    }
+    filterByArrayPositions(objects, key, values = undefined, indexed = true) {
+        /**
+         * @ignore
+         * @method
+         * @description Typed wrapper for filterByArray that returns a list of positions
+         */
+        return this.filterByArray(objects, key, values, indexed);
     }
 }
 
