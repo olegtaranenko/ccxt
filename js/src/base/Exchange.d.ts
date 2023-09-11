@@ -4,7 +4,7 @@ import WsClient from './ws/WsClient.js';
 import { Future } from './ws/Future.js';
 import { CountedOrderBook, IndexedOrderBook, OrderBook as WsOrderBook } from './ws/OrderBook.js';
 import { Balance, Balances, Currency, DepositAddressResponse, Dictionary, IndexType, Int, Market, MinMax, OHLCV, OHLCVC, Order, OrderBook, OrderSide, OrderType, Position, Ticker, Trade } from './types.js';
-export { Fee, Market, Ticker, Trade } from './types.js';
+export { Fee, Market, Position, Ticker, Trade } from './types.js';
 /**
  * @class Exchange
  */

@@ -4,7 +4,7 @@
 
 # -----------------------------------------------------------------------------
 
-__version__ = '4.0.88'
+__version__ = '4.0.89'
 
 # -----------------------------------------------------------------------------
 
@@ -2910,6 +2910,15 @@ class Exchange(object):
             # was done in all implementations( aax, btcex, bybit, deribit, ftx, gate, kucoinfutures, phemex )
             percentageString = Precise.string_mul(Precise.string_div(unrealizedPnlString, initialMarginString, 4), '100')
             position['percentage'] = self.parse_number(percentageString)
+        # if contractSize is None get from market
+        contractSize = self.safe_number(position, 'contractSize')
+        symbol = self.safe_string(position, 'symbol')
+        market = None
+        if symbol is not None:
+            market = self.market(symbol)
+        if contractSize is None and market is not None:
+            contractSize = self.safe_number(market, 'contractSize')
+            position['contractSize'] = contractSize
         return position
 
     def parse_positions(self, positions, symbols: Optional[List[str]] = None, params={}):
