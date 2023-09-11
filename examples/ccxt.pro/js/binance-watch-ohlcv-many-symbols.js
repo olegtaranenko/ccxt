@@ -1,6 +1,7 @@
 'use strict';
 
 const ccxt = require ('ccxt');
+const dayjs = require("dayjs");
 
 // your version must be 0.7+
 console.log ('CCXT Version:', ccxt.version)
@@ -14,10 +15,10 @@ function handle (exchange, symbol, timeframe, candles) {
 async function loop (exchange, symbol, timeframe) {
     while (true) {
         try {
-            const candles = await exchange.watchOHLCV (symbol, timeframe)
+            const candles = await exchange.watchOHLCV (symbol, timeframe, dayjs().subtract (timeframe, '1d').valueof)
             handle (exchange, symbol, timeframe, candles)
         } catch (e) {
-            console.log (symbol, e)
+            console.log (symbol, e.message)
             // do nothing and retry on next loop iteration
             // throw e // uncomment to break all loops in case of an error in any one of them
             // break // you can also break just this one loop if it fails
@@ -27,7 +28,9 @@ async function loop (exchange, symbol, timeframe) {
 
 async function main () {
 
-     const exchange = new ccxt.pro.binanceusdm () // usd(s)-margined contracts
+    let params
+    // params = {verbose: true};
+    const exchange = new ccxt.pro.binanceusdm (params) // usd(s)-margined contracts
     //
     // or
     //
@@ -44,14 +47,14 @@ async function main () {
 
     if (exchange.has['watchOHLCV']) {
         await exchange.loadMarkets ()
-        const timeframe = '15m'
+        const timeframe = '1m'
         // many symbols
-        await Promise.all (exchange.symbols.map (symbol => loop (exchange, symbol, timeframe)))
+        // await Promise.all (exchange.symbols.map (symbol => loop (exchange, symbol, timeframe)))
         //
         // or
         //
-        // const symbols = [ 'BTC/USDT', 'ETH/USDT' ] // specific symbols
-        // await Promise.all (symbols.map (symbol => loop (exchange, symbol, timeframe)))
+        const symbols = [ 'TLM/USDT' ] // specific symbols
+        await Promise.all (symbols.map (symbol => loop (exchange, symbol, timeframe)))
         //
         // or
         //
