@@ -1,6 +1,6 @@
 'use strict';
 
-const ccxt = require ('../../../ccxt');
+const ccxt = require ('ccxt');
 
 let stop = false
 
@@ -30,7 +30,8 @@ async function watchOrderBook (exchangeId, symbol) {
 async function main () {
     const streams = {
         'binance': 'BTC/USDT',
-        'ftx': 'BTC/USDT',
+        'binanceusdm': 'BTC/USDT',
+        // 'ftx': 'BTC/USDT',
     };
 
     await Promise.all ([
