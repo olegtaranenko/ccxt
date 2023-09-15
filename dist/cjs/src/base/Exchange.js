@@ -64,10 +64,10 @@ class Exchange {
         this.verboseTruncate = false;
         this.balance = {};
         this.orderbooks = {};
-        this.tickers = {};
         this.orders = undefined;
-        this.transactions = {};
         this.positions = {};
+        this.tickers = {};
+        this.transactions = {};
         this.requiresEddsa = false;
         this.requiresWeb3 = false;
         this.enableLastHttpResponse = true;
@@ -345,14 +345,14 @@ class Exchange {
                 },
             },
             'has': {
+                'CORS': undefined,
                 'addMargin': undefined,
                 'cancelAllOrders': undefined,
                 'cancelAllOrdersWs': undefined,
                 'cancelOrder': true,
+                'cancelOrderWs': undefined,
                 'cancelOrders': undefined,
                 'cancelOrdersWs': undefined,
-                'cancelOrderWs': undefined,
-                'CORS': undefined,
                 'createDepositAddress': undefined,
                 'createLimitOrder': true,
                 'createMarketOrder': true,
@@ -394,9 +394,9 @@ class Exchange {
                 'fetchLedger': undefined,
                 'fetchLedgerEntry': undefined,
                 'fetchLeverageTiers': undefined,
+                'fetchMarkOHLCV': undefined,
                 'fetchMarketLeverageTiers': undefined,
                 'fetchMarkets': true,
-                'fetchMarkOHLCV': undefined,
                 'fetchMyTrades': undefined,
                 'fetchOHLCV': undefined,
                 'fetchOpenInterest': undefined,
@@ -407,9 +407,9 @@ class Exchange {
                 'fetchOrder': undefined,
                 'fetchOrderBook': true,
                 'fetchOrderBooks': undefined,
-                'fetchOrders': undefined,
                 'fetchOrderTrades': undefined,
                 'fetchOrderWs': undefined,
+                'fetchOrders': undefined,
                 'fetchPermissions': undefined,
                 'fetchPosition': undefined,
                 'fetchPositions': undefined,
@@ -446,18 +446,18 @@ class Exchange {
                 'spot': undefined,
                 'swap': undefined,
                 'transfer': undefined,
-                'withdraw': undefined,
-                'watchOrderBook': undefined,
-                'watchOrders': undefined,
+                'watchBalance': undefined,
                 'watchMyTrades': undefined,
-                'watchTickers': undefined,
+                'watchOHLCV': undefined,
+                'watchOHLCVForSymbols': undefined,
+                'watchOrderBook': undefined,
+                'watchOrderBookForSymbols': undefined,
+                'watchOrders': undefined,
                 'watchTicker': undefined,
+                'watchTickers': undefined,
                 'watchTrades': undefined,
                 'watchTradesForSymbols': undefined,
-                'watchOrderBookForSymbols': undefined,
-                'watchOHLCVForSymbols': undefined,
-                'watchBalance': undefined,
-                'watchOHLCV': undefined,
+                'withdraw': undefined,
             },
             'httpExceptions': {
                 '400': errors.ExchangeNotAvailable,
@@ -1528,19 +1528,13 @@ class Exchange {
     }
     safeCurrencyStructure(currency) {
         return this.extend({
-            'info': undefined,
-            'id': undefined,
-            'numericId': undefined,
-            'code': undefined,
-            'precision': undefined,
-            'type': undefined,
-            'name': undefined,
             'active': undefined,
+            'code': undefined,
             'deposit': undefined,
-            'withdraw': undefined,
             'fee': undefined,
             'fees': {},
-            'networks': {},
+            'id': undefined,
+            'info': undefined,
             'limits': {
                 'deposit': {
                     'min': undefined,
@@ -1551,6 +1545,12 @@ class Exchange {
                     'max': undefined,
                 },
             },
+            'name': undefined,
+            'networks': {},
+            'numericId': undefined,
+            'precision': undefined,
+            'type': undefined,
+            'withdraw': undefined,
         }, currency);
     }
     setMarkets(markets, currencies = undefined) {

@@ -36,7 +36,7 @@ use Elliptic\EdDSA;
 use BN\BN;
 use Exception;
 
-$version = '4.0.97';
+$version = '4.0.96';
 
 // rounding mode
 const TRUNCATE = 0;
@@ -55,7 +55,7 @@ const PAD_WITH_ZERO = 6;
 
 class Exchange {
 
-    const VERSION = '4.0.97';
+    const VERSION = '4.0.96';
 
     private static $base58_alphabet = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
     private static $base58_encoder = null;
@@ -2533,19 +2533,13 @@ class Exchange {
 
     public function safe_currency_structure(array $currency) {
         return array_merge(array(
-            'info' => null,
-            'id' => null,
-            'numericId' => null,
-            'code' => null,
-            'precision' => null,
-            'type' => null,
-            'name' => null,
             'active' => null,
+            'code' => null,
             'deposit' => null,
-            'withdraw' => null,
             'fee' => null,
             'fees' => array(),
-            'networks' => array(),
+            'id' => null,
+            'info' => null,
             'limits' => array(
                 'deposit' => array(
                     'min' => null,
@@ -2556,6 +2550,12 @@ class Exchange {
                     'max' => null,
                 ),
             ),
+            'name' => null,
+            'networks' => array(),
+            'numericId' => null,
+            'precision' => null,
+            'type' => null,
+            'withdraw' => null,
         ), $currency);
     }
 

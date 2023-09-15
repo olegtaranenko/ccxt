@@ -4,7 +4,7 @@
 
 # -----------------------------------------------------------------------------
 
-__version__ = '4.0.97'
+__version__ = '4.0.96'
 
 # -----------------------------------------------------------------------------
 
@@ -2024,19 +2024,13 @@ class Exchange(object):
 
     def safe_currency_structure(self, currency: object):
         return self.extend({
-            'info': None,
-            'id': None,
-            'numericId': None,
-            'code': None,
-            'precision': None,
-            'type': None,
-            'name': None,
             'active': None,
+            'code': None,
             'deposit': None,
-            'withdraw': None,
             'fee': None,
             'fees': {},
-            'networks': {},
+            'id': None,
+            'info': None,
             'limits': {
                 'deposit': {
                     'min': None,
@@ -2047,6 +2041,12 @@ class Exchange(object):
                     'max': None,
                 },
             },
+            'name': None,
+            'networks': {},
+            'numericId': None,
+            'precision': None,
+            'type': None,
+            'withdraw': None,
         }, currency)
 
     def set_markets(self, markets, currencies=None):

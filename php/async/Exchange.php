@@ -40,11 +40,11 @@ use Exception;
 
 include 'Throttle.php';
 
-$version = '4.0.97';
+$version = '4.0.96';
 
 class Exchange extends \ccxt\Exchange {
 
-    const VERSION = '4.0.97';
+    const VERSION = '4.0.96';
 
     public $browser;
     public $marketsLoading = null;
@@ -728,19 +728,13 @@ class Exchange extends \ccxt\Exchange {
 
     public function safe_currency_structure(array $currency) {
         return array_merge(array(
-            'info' => null,
-            'id' => null,
-            'numericId' => null,
-            'code' => null,
-            'precision' => null,
-            'type' => null,
-            'name' => null,
             'active' => null,
+            'code' => null,
             'deposit' => null,
-            'withdraw' => null,
             'fee' => null,
             'fees' => array(),
-            'networks' => array(),
+            'id' => null,
+            'info' => null,
             'limits' => array(
                 'deposit' => array(
                     'min' => null,
@@ -751,6 +745,12 @@ class Exchange extends \ccxt\Exchange {
                     'max' => null,
                 ),
             ),
+            'name' => null,
+            'networks' => array(),
+            'numericId' => null,
+            'precision' => null,
+            'type' => null,
+            'withdraw' => null,
         ), $currency);
     }
 
