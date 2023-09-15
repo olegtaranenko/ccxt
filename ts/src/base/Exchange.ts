@@ -225,23 +225,23 @@ export default class Exchange {
     token: string; // reserved for HTTP auth in some cases
 
     balance = {}
+    myTrades: any
+    ohlcvs: any
     orderbooks = {}
-    tickers = {}
     orders = undefined
+    positions = {}
+    tickers = {}
     trades: any
     transactions = {}
-    ohlcvs: any
-    myTrades: any
-    positions = {}
     urls: {
-        logo?: string;
         api?: string | Dictionary<string>;
+        api_management?: string;
+        doc?: string[];
+        fees?: string;
+        logo?: string;
+        referral?: string;
         test?: string | Dictionary<string>;
         www?: string;
-        doc?: string[];
-        api_management?: string;
-        fees?: string;
-        referral?: string;
     };
 
     precision: {
@@ -459,14 +459,14 @@ export default class Exchange {
                 },
             },
             'has': {
+                'CORS': undefined,
                 'addMargin': undefined,
                 'cancelAllOrders': undefined,
                 'cancelAllOrdersWs': undefined,
                 'cancelOrder': true,
+                'cancelOrderWs': undefined,
                 'cancelOrders': undefined,
                 'cancelOrdersWs': undefined,
-                'cancelOrderWs': undefined,
-                'CORS': undefined,
                 'createDepositAddress': undefined,
                 'createLimitOrder': true,
                 'createMarketOrder': true,
@@ -508,9 +508,9 @@ export default class Exchange {
                 'fetchLedger': undefined,
                 'fetchLedgerEntry': undefined,
                 'fetchLeverageTiers': undefined,
+                'fetchMarkOHLCV': undefined,
                 'fetchMarketLeverageTiers': undefined,
                 'fetchMarkets': true,
-                'fetchMarkOHLCV': undefined,
                 'fetchMyTrades': undefined,
                 'fetchOHLCV': undefined,
                 'fetchOpenInterest': undefined,
@@ -521,9 +521,9 @@ export default class Exchange {
                 'fetchOrder': undefined,
                 'fetchOrderBook': true,
                 'fetchOrderBooks': undefined,
-                'fetchOrders': undefined,
                 'fetchOrderTrades': undefined,
                 'fetchOrderWs': undefined,
+                'fetchOrders': undefined,
                 'fetchPermissions': undefined,
                 'fetchPosition': undefined,
                 'fetchPositions': undefined,
@@ -560,6 +560,17 @@ export default class Exchange {
                 'spot': undefined,
                 'swap': undefined,
                 'transfer': undefined,
+                'watchBalance': undefined,
+                'watchMyTrades': undefined,
+                'watchOHLCV': undefined,
+                'watchOHLCVForSymbols': undefined,
+                'watchOrderBook': undefined,
+                'watchOrderBookForSymbols': undefined,
+                'watchOrders': undefined,
+                'watchTicker': undefined,
+                'watchTickers': undefined,
+                'watchTrades': undefined,
+                'watchTradesForSymbols': undefined,
                 'withdraw': undefined,
             },
             'httpExceptions': {
@@ -1613,6 +1624,18 @@ export default class Exchange {
         throw new NotSupported (this.id + ' watchTrades() is not supported yet');
     }
 
+    async watchTradesForSymbols (symbols: string[], since: Int = undefined, limit: Int = undefined, params = {}): Promise<Trade[]> {
+        throw new NotSupported (this.id + ' watchTradesForSymbols() is not supported yet');
+    }
+
+    async watchOHLCVForSymbols (symbolsAndTimeframes: string[][], since: Int = undefined, limit: Int = undefined, params = {}): Promise<Dictionary<Dictionary<OHLCV[]>>> {
+        throw new NotSupported (this.id + ' watchOHLCVForSymbols() is not supported yet');
+    }
+
+    async watchOrderBookForSymbols (symbols: string[], limit: Int = undefined, params = {}): Promise<OrderBook> {
+        throw new NotSupported (this.id + ' watchOrderBookForSymbols() is not supported yet');
+    }
+
     async fetchDepositAddresses (codes: string[] = undefined, params = {}): Promise<any> {
         throw new NotSupported (this.id + ' fetchDepositAddresses() is not supported yet');
     }
@@ -1817,19 +1840,13 @@ export default class Exchange {
 
     safeCurrencyStructure (currency: object) {
         return this.extend ({
-            'info': undefined,
-            'id': undefined,
-            'numericId': undefined,
-            'code': undefined,
-            'precision': undefined,
-            'type': undefined,
-            'name': undefined,
             'active': undefined,
+            'code': undefined,
             'deposit': undefined,
-            'withdraw': undefined,
             'fee': undefined,
             'fees': {},
-            'networks': {},
+            'id': undefined,
+            'info': undefined,
             'limits': {
                 'deposit': {
                     'min': undefined,
@@ -1840,6 +1857,12 @@ export default class Exchange {
                     'max': undefined,
                 },
             },
+            'name': undefined,
+            'networks': {},
+            'numericId': undefined,
+            'precision': undefined,
+            'type': undefined,
+            'withdraw': undefined,
         }, currency);
     }
 
@@ -4501,6 +4524,40 @@ export default class Exchange {
          * @description Typed wrapper for filterByArray that returns a list of positions
          */
         return this.filterByArray (objects, key, values, indexed) as Position[];
+    }
+
+    resolvePromiseIfMessagehashMatches (client, prefix: string, symbol: string, data) {
+        const messageHashes = this.findMessageHashes (client, prefix);
+        for (let i = 0; i < messageHashes.length; i++) {
+            const messageHash = messageHashes[i];
+            const parts = messageHash.split ('::');
+            const symbolsString = parts[1];
+            const symbols = symbolsString.split (',');
+            if (this.inArray (symbol, symbols)) {
+                client.resolve (data, messageHash);
+            }
+        }
+    }
+
+    resolveMultipleOHLCV (client, prefix: string, symbol: string, timeframe: string, data) {
+        const messageHashes = this.findMessageHashes (client, 'multipleOHLCV::');
+        for (let i = 0; i < messageHashes.length; i++) {
+            const messageHash = messageHashes[i];
+            const parts = messageHash.split ('::');
+            const symbolsAndTimeframes = parts[1];
+            const splitted = symbolsAndTimeframes.split (',');
+            const id = symbol + '#' + timeframe;
+            if (this.inArray (id, splitted)) {
+                client.resolve ([ symbol, timeframe, data ], messageHash);
+            }
+        }
+    }
+
+    createOHLCVObject (symbol: string, timeframe: string, data): Dictionary<Dictionary<OHLCV[]>> {
+        const res = {};
+        res[symbol] = {};
+        res[symbol][timeframe] = data;
+        return res;
     }
 }
 

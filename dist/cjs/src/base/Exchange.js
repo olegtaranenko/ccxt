@@ -447,6 +447,17 @@ class Exchange {
                 'swap': undefined,
                 'transfer': undefined,
                 'withdraw': undefined,
+                'watchOrderBook': undefined,
+                'watchOrders': undefined,
+                'watchMyTrades': undefined,
+                'watchTickers': undefined,
+                'watchTicker': undefined,
+                'watchTrades': undefined,
+                'watchTradesForSymbols': undefined,
+                'watchOrderBookForSymbols': undefined,
+                'watchOHLCVForSymbols': undefined,
+                'watchBalance': undefined,
+                'watchOHLCV': undefined,
             },
             'httpExceptions': {
                 '400': errors.ExchangeNotAvailable,
@@ -1335,6 +1346,15 @@ class Exchange {
     }
     async watchTrades(symbol, since = undefined, limit = undefined, params = {}) {
         throw new errors.NotSupported(this.id + ' watchTrades() is not supported yet');
+    }
+    async watchTradesForSymbols(symbols, since = undefined, limit = undefined, params = {}) {
+        throw new errors.NotSupported(this.id + ' watchTradesForSymbols() is not supported yet');
+    }
+    async watchOHLCVForSymbols(symbolsAndTimeframes, since = undefined, limit = undefined, params = {}) {
+        throw new errors.NotSupported(this.id + ' watchOHLCVForSymbols() is not supported yet');
+    }
+    async watchOrderBookForSymbols(symbols, limit = undefined, params = {}) {
+        throw new errors.NotSupported(this.id + ' watchOrderBookForSymbols() is not supported yet');
     }
     async fetchDepositAddresses(codes = undefined, params = {}) {
         throw new errors.NotSupported(this.id + ' fetchDepositAddresses() is not supported yet');
@@ -4064,6 +4084,37 @@ class Exchange {
          * @description Typed wrapper for filterByArray that returns a list of positions
          */
         return this.filterByArray(objects, key, values, indexed);
+    }
+    resolvePromiseIfMessagehashMatches(client, prefix, symbol, data) {
+        const messageHashes = this.findMessageHashes(client, prefix);
+        for (let i = 0; i < messageHashes.length; i++) {
+            const messageHash = messageHashes[i];
+            const parts = messageHash.split('::');
+            const symbolsString = parts[1];
+            const symbols = symbolsString.split(',');
+            if (this.inArray(symbol, symbols)) {
+                client.resolve(data, messageHash);
+            }
+        }
+    }
+    resolveMultipleOHLCV(client, prefix, symbol, timeframe, data) {
+        const messageHashes = this.findMessageHashes(client, 'multipleOHLCV::');
+        for (let i = 0; i < messageHashes.length; i++) {
+            const messageHash = messageHashes[i];
+            const parts = messageHash.split('::');
+            const symbolsAndTimeframes = parts[1];
+            const splitted = symbolsAndTimeframes.split(',');
+            const id = symbol + '#' + timeframe;
+            if (this.inArray(id, splitted)) {
+                client.resolve([symbol, timeframe, data], messageHash);
+            }
+        }
+    }
+    createOHLCVObject(symbol, timeframe, data) {
+        const res = {};
+        res[symbol] = {};
+        res[symbol][timeframe] = data;
+        return res;
     }
 }
 
