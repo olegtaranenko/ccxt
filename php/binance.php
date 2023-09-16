@@ -4374,17 +4374,17 @@ class binance extends Exchange {
         //
         // spot/margin
         //
-        //     LIMIT                $timeInForce, quantity, $price
+        //     LIMIT                timeInForce, quantity, $price
         //     MARKET               quantity or $quoteOrderQty
         //     STOP_LOSS            quantity, $stopPrice
-        //     STOP_LOSS_LIMIT      $timeInForce, quantity, $price, $stopPrice
+        //     STOP_LOSS_LIMIT      timeInForce, quantity, $price, $stopPrice
         //     TAKE_PROFIT          quantity, $stopPrice
-        //     TAKE_PROFIT_LIMIT    $timeInForce, quantity, $price, $stopPrice
+        //     TAKE_PROFIT_LIMIT    timeInForce, quantity, $price, $stopPrice
         //     LIMIT_MAKER          quantity, $price
         //
         // futures
         //
-        //     LIMIT                $timeInForce, quantity, $price
+        //     LIMIT                timeInForce, quantity, $price
         //     MARKET               quantity
         //     STOP/TAKE_PROFIT     quantity, $price, $stopPrice
         //     STOP_MARKET          $stopPrice
@@ -4457,13 +4457,8 @@ class binance extends Exchange {
             }
             $request['price'] = $this->price_to_precision($symbol, $price);
         }
-        $timeInForce = $this->safe_string($params, 'timeInForce');
         if ($timeInForceIsRequired) {
-            if (!$params['timeInForce']) {
-                $request['timeInForce'] = $this->options['defaultTimeInForce']; // 'GTC' = Good To Cancel (default), 'IOC' = Immediate Or Cancel
-            } else {
-                $request['timeInForce'] = $timeInForce;
-            }
+            $request['timeInForce'] = $this->options['defaultTimeInForce']; // 'GTC' = Good To Cancel (default), 'IOC' = Immediate Or Cancel
         }
         if ($market['contract'] && $postOnly) {
             $request['timeInForce'] = 'GTX';
@@ -4483,8 +4478,8 @@ class binance extends Exchange {
                 $request['stopPrice'] = $this->price_to_precision($symbol, $stopPrice);
             }
         }
-        // remove $timeInForce from $params because PO is only used by $this->is_post_onlyand it's not a valid value for Binance
-        if ($timeInForce === 'PO') {
+        // remove timeInForce from $params because PO is only used by $this->is_post_onlyand it's not a valid value for Binance
+        if ($this->safe_string($params, 'timeInForce') === 'PO') {
             $params = $this->omit($params, array( 'timeInForce' ));
         }
         $requestParams = $this->omit($params, array( 'quoteOrderQty', 'cost', 'stopPrice', 'test', 'type', 'newClientOrderId', 'clientOrderId', 'postOnly' ));

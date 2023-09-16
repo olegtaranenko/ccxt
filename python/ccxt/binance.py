@@ -4301,12 +4301,8 @@ class binance(Exchange, ImplicitAPI):
             if price is None:
                 raise InvalidOrder(self.id + ' createOrder() requires a price argument for a ' + type + ' order')
             request['price'] = self.price_to_precision(symbol, price)
-        timeInForce = self.safe_string(params, 'timeInForce')
         if timeInForceIsRequired:
-            if not params['timeInForce']:
-                request['timeInForce'] = self.options['defaultTimeInForce']  # 'GTC' = Good To Cancel(default), 'IOC' = Immediate Or Cancel
-            else:
-                request['timeInForce'] = timeInForce
+            request['timeInForce'] = self.options['defaultTimeInForce']  # 'GTC' = Good To Cancel(default), 'IOC' = Immediate Or Cancel
         if market['contract'] and postOnly:
             request['timeInForce'] = 'GTX'
         if stopPriceIsRequired:
@@ -4320,7 +4316,7 @@ class binance(Exchange, ImplicitAPI):
             if stopPrice is not None:
                 request['stopPrice'] = self.price_to_precision(symbol, stopPrice)
         # remove timeInForce from params because PO is only used by self.is_post_onlyand it's not a valid value for Binance
-        if timeInForce == 'PO':
+        if self.safe_string(params, 'timeInForce') == 'PO':
             params = self.omit(params, ['timeInForce'])
         requestParams = self.omit(params, ['quoteOrderQty', 'cost', 'stopPrice', 'test', 'type', 'newClientOrderId', 'clientOrderId', 'postOnly'])
         return self.extend(request, requestParams)
