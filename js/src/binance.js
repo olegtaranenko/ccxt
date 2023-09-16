@@ -4555,8 +4555,14 @@ export default class binance extends Exchange {
             }
             request['price'] = this.priceToPrecision(symbol, price);
         }
+        const timeInForce = this.safeString(params, 'timeInForce');
         if (timeInForceIsRequired) {
-            request['timeInForce'] = this.options['defaultTimeInForce']; // 'GTC' = Good To Cancel (default), 'IOC' = Immediate Or Cancel
+            if (!params['timeInForce']) {
+                request['timeInForce'] = this.options['defaultTimeInForce']; // 'GTC' = Good To Cancel (default), 'IOC' = Immediate Or Cancel
+            }
+            else {
+                request['timeInForce'] = timeInForce;
+            }
         }
         if (market['contract'] && postOnly) {
             request['timeInForce'] = 'GTX';
@@ -4578,7 +4584,7 @@ export default class binance extends Exchange {
             }
         }
         // remove timeInForce from params because PO is only used by this.isPostOnly and it's not a valid value for Binance
-        if (this.safeString(params, 'timeInForce') === 'PO') {
+        if (timeInForce === 'PO') {
             params = this.omit(params, ['timeInForce']);
         }
         const requestParams = this.omit(params, ['quoteOrderQty', 'cost', 'stopPrice', 'test', 'type', 'newClientOrderId', 'clientOrderId', 'postOnly']);
