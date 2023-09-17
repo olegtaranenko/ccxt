@@ -19,7 +19,7 @@ export default class Client {
     connection: any
     connectionTimeout: any
     verbose: boolean
-    verboseNoLog: any
+    verboseLogVeto: any
     connectionTimer: any
     lastPong: any
     maxPingPongMisses: any
@@ -87,7 +87,7 @@ export default class Client {
 
     resolve (result, messageHash) {
         if (this.verbose && (messageHash === undefined)) {
-            if (typeof this.verboseNoLog && !this.verboseNoLog ('resolve', messageHash)) {
+            if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto ('resolve', messageHash)) {
                 this.log (new Date (), 'resolve received undefined messageHash');
             }
         }
@@ -201,7 +201,7 @@ export default class Client {
 
     onOpen () {
         if (this.verbose) {
-            if (typeof this.verboseNoLog && !this.verboseNoLog ('onOpen')) {
+            if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto ('onOpen')) {
                 this.log (new Date (), 'onOpen')
             }
         }
@@ -219,7 +219,7 @@ export default class Client {
     // however, some devs may want to track connection states in their app
     onPing () {
         if (this.verbose) {
-            if (typeof this.verboseNoLog && !this.verboseNoLog ('onPing')) {
+            if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto ('onPing')) {
                 this.log (new Date (), 'onPing')
             }
         }
@@ -228,7 +228,7 @@ export default class Client {
     onPong () {
         this.lastPong = milliseconds ()
         if (this.verbose) {
-            if (typeof this.verboseNoLog && !this.verboseNoLog ('onP0ng')) {
+            if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto ('onP0ng')) {
                 this.log (new Date (), 'onPong')
             }
         }
@@ -236,7 +236,7 @@ export default class Client {
 
     onError (error) {
         if (this.verbose) {
-            if (typeof this.verboseNoLog && !this.verboseNoLog ('onError', error)) {
+            if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto ('onError', error)) {
                 this.log (new Date (), 'onError', error.message)
             }
         }
@@ -251,7 +251,7 @@ export default class Client {
 
     onClose (event) {
         if (this.verbose) {
-            if (typeof this.verboseNoLog && !this.verboseNoLog ('onClose', event)) {
+            if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto ('onClose', event)) {
                 this.log (new Date (), 'onClose', event)
             }
         }
@@ -269,7 +269,7 @@ export default class Client {
     // but may be used to read protocol-level data like cookies, headers, etc
     onUpgrade (message) {
         if (this.verbose) {
-            if (typeof this.verboseNoLog && !this.verboseNoLog ('onUpdate')) {
+            if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto ('onUpdate')) {
                 this.log (new Date (), 'onUpgrade')
             }
         }
@@ -277,7 +277,7 @@ export default class Client {
 
     async send (message) {
         if (this.verbose) {
-            if (typeof this.verboseNoLog && !this.verboseNoLog ('send', message)) {
+            if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto ('send', message)) {
                 this.log (new Date (), 'sending', message)
             }
         }
@@ -330,7 +330,7 @@ export default class Client {
                 message = JSON.parse (message.replace (/:(\d{15,}),/g, ':"$1",'))
             }
             if (this.verbose) {
-                if (typeof this.verboseNoLog && !this.verboseNoLog ('onMessage', message)) {
+                if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto ('onMessage', message)) {
                     this.log (new Date (), 'onMessage', message)
                 }
                 // unlimited depth
