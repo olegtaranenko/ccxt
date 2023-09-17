@@ -2,148 +2,146 @@
 /* eslint-disable */
 
 import * as functions from './functions.js'
-
 const {
-    aggregate,
-    arrayConcat,
-    base16ToBinary,
-    base58ToBinary,
-    base64ToBinary,
-    base64ToString,
-    binaryConcat,
-    binaryConcatArray,
-    binaryToBase16,
-    binaryToBase58,
-    binaryToBase64,
-    capitalize,
-    clone,
-    crc32,
-    DECIMAL_PLACES,
-    decimalToPrecision,
-    decode,
-    deepExtend,
-    ecdsa,
-    encode,
-    extend,
-    extractParams,
-    filterBy,
-    flatten,
-    groupBy,
-    hash,
-    hmac,
-    implodeParams,
-    inArray,
-    indexBy,
-    isArray,
-    isEmpty,
-    isJsonEncodedObject,
-    isNode,
-    iso8601,
-    json,
-    keys,
-    keysort,
-    merge,
-    microseconds,
-    milliseconds,
-    NO_PADDING,
-    now,
-    numberToBE,
-    numberToLE,
-    numberToString,
-    omit,
-    omitZero,
-    ordered,
-    parse8601,
-    parseDate,
-    parseTimeframe,
-    precisionFromString,
-    rawencode,
-    ROUND,
-    safeFloat,
-    safeFloat2,
-    safeFloatN,
-    safeInteger,
-    safeInteger2,
-    safeIntegerN,
-    safeIntegerProduct,
-    safeIntegerProduct2,
-    safeIntegerProductN,
-    safeString,
-    safeString2,
-    safeStringLower,
-    safeStringLower2,
-    safeStringLowerN,
-    safeStringN,
-    safeStringUpper,
-    safeStringUpper2,
-    safeStringUpperN,
-    safeTimestamp,
-    safeTimestamp2,
-    safeTimestampN,
-    safeValue,
-    safeValue2,
-    safeValueN,
-    seconds,
-    SIGNIFICANT_DIGITS,
-    sortBy,
-    sortBy2,
-    stringToBase64,
-    strip,
-    sum,
-    Throttler,
-    TICK_SIZE,
-    toArray,
-    TRUNCATE,
-    unCamelCase,
-    unique,
-    urlencode,
-    urlencodeNested,
-    urlencodeWithArrayRepeat,
-    uuid,
-    uuid16,
-    uuid22,
-    uuidv1,
-    values,
-    vwap,
-    ymd,
-    ymdhms,
-    yymmdd,
-    yyyymmdd
+    isNode
+    , keys
+    , values
+    , deepExtend
+    , extend
+    , clone
+    , flatten
+    , unique
+    , indexBy
+    , sortBy
+    , sortBy2
+    , safeFloat2
+    , groupBy
+    , aggregate
+    , uuid
+    , unCamelCase
+    , precisionFromString
+    , Throttler
+    , capitalize
+    , now
+    , decimalToPrecision
+    , safeValue
+    , safeValue2
+    , safeString
+    , safeString2
+    , seconds
+    , milliseconds
+    , binaryToBase16
+    , numberToBE
+    , base16ToBinary
+    , iso8601
+    , omit
+    , isJsonEncodedObject
+    , safeInteger
+    , sum
+    , omitZero
+    , implodeParams
+    , extractParams
+    , json
+    , vwap
+    , merge
+    , binaryConcat
+    , hash
+    , ecdsa
+    , arrayConcat
+    , encode
+    , urlencode
+    , hmac
+    , numberToString
+    , parseTimeframe
+    , safeInteger2
+    , safeStringLower
+    , parse8601
+    , yyyymmdd
+    , safeStringUpper
+    , safeTimestamp
+    , binaryConcatArray
+    , uuidv1
+    , numberToLE
+    , ymdhms
+    , stringToBase64
+    , decode
+    , uuid22
+    , safeIntegerProduct2
+    , safeIntegerProduct
+    , safeStringLower2
+    , yymmdd
+    , base58ToBinary
+    , binaryToBase58
+    , safeTimestamp2
+    , rawencode
+    , keysort
+    , inArray
+    , isEmpty
+    , ordered
+    , filterBy
+    , uuid16
+    , safeFloat
+    , base64ToBinary
+    , safeStringUpper2
+    , urlencodeWithArrayRepeat
+    , microseconds
+    , binaryToBase64
+    , strip
+    , toArray
+    , safeFloatN
+    , safeIntegerN
+    , safeIntegerProductN
+    , safeTimestampN
+    , safeValueN
+    , safeStringN
+    , safeStringLowerN
+    , safeStringUpperN
+    , urlencodeNested
+    , parseDate
+    , ymd
+    , isArray
+    , base64ToString
+    , crc32
+    , TRUNCATE
+    , ROUND
+    , DECIMAL_PLACES
+    , NO_PADDING
+    , TICK_SIZE
+    , SIGNIFICANT_DIGITS
 } = functions
 
 // import exceptions from "./errors.js"
 
-import { // eslint-disable-line object-curly-newline
-    ArgumentsRequired,
-    AuthenticationError,
-    BadRequest,
-    BadResponse,
-    BadSymbol,
-    DDoSProtection,
-    ExchangeError,
-    ExchangeNotAvailable,
-    InvalidAddress,
-    InvalidOrder,
-    NetworkError,
-    NotSupported,
-    NullResponse,
-    RateLimitExceeded,
-    RequestTimeout
-} from "./errors.js"
+ import { // eslint-disable-line object-curly-newline
+    ExchangeError
+    , BadSymbol
+    , NullResponse
+    , InvalidAddress
+    , InvalidOrder
+    , NotSupported
+    , BadResponse
+    , AuthenticationError
+    , DDoSProtection
+    , RequestTimeout
+    , NetworkError
+    , ExchangeNotAvailable
+    , ArgumentsRequired
+    , RateLimitExceeded,
+    BadRequest} from "./errors.js"
 
 import { Precise } from './Precise.js'
 
 //-----------------------------------------------------------------------------
 import WsClient from './ws/WsClient.js';
 import { createFuture, Future } from './ws/Future.js';
-import { CountedOrderBook, IndexedOrderBook, OrderBook as WsOrderBook } from './ws/OrderBook.js';
+import { OrderBook as WsOrderBook, IndexedOrderBook, CountedOrderBook } from './ws/OrderBook.js';
 
 // ----------------------------------------------------------------------------
 //
 
 // import types
-import { Balance, Balances, Currency, DepositAddressResponse, Dictionary, Fee, IndexType, Int, Market, MinMax, OHLCV, OHLCVC, Order, OrderBook, OrderSide, OrderType, Position, Ticker, Trade, Transaction } from './types.js';
-export { Fee, Market, Position, Ticker, Trade } from './types.js'
+import { Market, Trade, Fee, Ticker, OHLCV, OHLCVC, Order, OrderBook, Balance, Balances, Dictionary, Transaction, DepositAddressResponse, Currency, MinMax, IndexType, Int, OrderType, OrderSide, Position } from './types.js';
+export {Market, Trade, Fee, Position, Ticker} from './types.js'
 
 // ----------------------------------------------------------------------------
 // move this elsewhere
@@ -210,76 +208,76 @@ export default class Exchange {
     validateClientSsl = false
 
     timeout       = 10000 // milliseconds
-    twofa         = undefined // two-factor authentication (2FA)
     verbose       = false
     verboseTruncate = false
-    verboseNoLog: any;
+    verboseLogVeto: any;
+    twofa         = undefined // two-factor authentication (2FA)
 
     apiKey: string;
     secret: string;
     uid: string;
-    login: string;
+    login:string;
     password: string;
     privateKey: string;// a "0x"-prefixed hexstring private key for a wallet
     walletAddress: string; // a wallet address "0x"-prefixed hexstring
     token: string; // reserved for HTTP auth in some cases
 
-    balance = {}
-    myTrades: any
-    ohlcvs: any
-    orderbooks = {}
-    orders = undefined
-    positions = {}
-    tickers = {}
+    balance      = {}
+    orderbooks   = {}
+    tickers      = {}
+    orders       = undefined
     trades: any
     transactions = {}
+    ohlcvs: any
+    myTrades: any
+    positions    = {}
     urls: {
-        api?: string | Dictionary<string>;
-        api_management?: string;
-        doc?: string[];
-        fees?: string;
         logo?: string;
-        referral?: string;
+        api?: string | Dictionary<string>;
         test?: string | Dictionary<string>;
         www?: string;
+        doc?: string[];
+        api_management?: string;
+        fees?: string;
+        referral?: string;
     };
 
+    requiresWeb3 = false
+    requiresEddsa = false
     precision: {
         amount: number | undefined,
         price: number | undefined
     };
-    requiresEddsa = false
-    requiresWeb3 = false
 
-    enableLastHttpResponse = true
     enableLastJsonResponse = true
+    enableLastHttpResponse = true
     enableLastResponseHeaders = true
-    last_http_response = undefined
-    last_json_response = undefined
+    last_http_response    = undefined
+    last_json_response    = undefined
     last_response_headers = undefined
 
     id: string = undefined
 
-    has: Dictionary<boolean | 'emulated'>
     markets: Dictionary<any> = undefined
+    has: Dictionary<boolean | 'emulated'>
 
     status = undefined
 
     requiredCredentials: {
         apiKey: boolean;
+        secret: boolean;
+        uid: boolean;
         login: boolean;
         password: boolean;
-        privateKey: boolean;
-        secret: boolean;
-        token: boolean;
         twofa: boolean;
-        uid: boolean;
+        privateKey: boolean;
         walletAddress: boolean;
+        token: boolean;
     };
-    enableRateLimit: boolean = undefined;
     rateLimit: number = undefined; // milliseconds
-    throttler = undefined
     tokenBucket = undefined
+    throttler = undefined
+    enableRateLimit: boolean = undefined;
 
     httpExceptions = undefined
 
@@ -289,19 +287,19 @@ export default class Exchange {
         leverage?: MinMax,
         price?: MinMax,
     };
-    currencies: Dictionary<Currency> = undefined;
     fees: object;
-    ids: string[] = undefined;
     markets_by_id: Dictionary<any> = undefined;
     symbols: string[] = undefined;
+    ids: string[] = undefined;
+    currencies: Dictionary<Currency> = undefined;
 
     baseCurrencies = undefined
-    codes = undefined
-    currencies_by_id = undefined
     quoteCurrencies = undefined
+    currencies_by_id = undefined
+    codes = undefined
 
-    marketsLoading = undefined
     reloadingMarkets = undefined
+    marketsLoading = undefined
 
     accounts = undefined
     accountsById = undefined
@@ -310,8 +308,8 @@ export default class Exchange {
 
     hostname: string = undefined;
 
-    paddingMode = undefined
     precisionMode: number = undefined;
+    paddingMode = undefined
 
     exceptions = {}
     timeframes: Dictionary<number | string> = {}
@@ -320,174 +318,167 @@ export default class Exchange {
 
     marketsByAltname = undefined
 
-    name: string = undefined
+    name:string = undefined
 
-    lastRestRequestTimestamp: number;
+    lastRestRequestTimestamp:number;
 
     targetAccount = undefined
 
     stablePairs = {}
 
     // WS/PRO options
-    aggregate = aggregate
-    arrayConcat = arrayConcat
-    base16ToBinary = base16ToBinary
-    base58ToBinary = base58ToBinary
-    base64ToBinary = base64ToBinary
-    base64ToString = base64ToString
-    binaryConcat = binaryConcat
-    binaryConcatArray = binaryConcatArray
-    binaryToBase16 = binaryToBase16
-    binaryToBase58 = binaryToBase58
-    binaryToBase64 = binaryToBase64
-    capitalize = capitalize
     clients = {}
-    clone = clone
-    crc32 = crc32
-    decimalToPrecision = decimalToPrecision
-    decode = decode
-    deepExtend = deepExtend
-    encode = encode
-    extend = extend
-    extractParams = extractParams
-    filterBy = filterBy
-    flatten = flatten
-    groupBy = groupBy
-    hash = hash
-    hmac = hmac
-    implodeParams = implodeParams
-    inArray = inArray
-    indexBy = indexBy
-    isArray = isArray
-    isEmpty = isEmpty
-    isJsonEncodedObject = isJsonEncodedObject
-    isNode = isNode
-    iso8601 = iso8601
-    json = json
-    keys = keys
-    keysort = keysort
-    merge = merge
-    microseconds = microseconds
-    milliseconds = milliseconds
     newUpdates = true
-    now = now
-    numberToBE = numberToBE
-    numberToLE = numberToLE
-    numberToString = numberToString
-    omit = omit
-    omitZero = omitZero
-    ordered = ordered
-    parse8601 = parse8601
-    parseDate = parseDate
-    parseTimeframe = parseTimeframe
-    precisionFromString = precisionFromString
-    rawencode = rawencode
-    safeFloat = safeFloat
-    safeFloat2 = safeFloat2
-    safeFloatN = safeFloatN
-    safeInteger = safeInteger
-    safeInteger2 = safeInteger2
-    safeIntegerN = safeIntegerN
-    safeIntegerProduct = safeIntegerProduct
-    safeIntegerProduct2 = safeIntegerProduct2
-    safeIntegerProductN = safeIntegerProductN
-    safeString = safeString
-    safeString2 = safeString2
-    safeStringLower = safeStringLower
-    safeStringLower2 = safeStringLower2
-    safeStringLowerN = safeStringLowerN
-    safeStringN = safeStringN
-    safeStringUpper = safeStringUpper
-    safeStringUpper2 = safeStringUpper2
-    safeStringUpperN = safeStringUpperN
-    safeTimestamp = safeTimestamp
-    safeTimestamp2 = safeTimestamp2
-    safeTimestampN = safeTimestampN
-    safeValue = safeValue
-    safeValue2 = safeValue2
-    safeValueN = safeValueN
-    seconds = seconds
+    streaming = {}
+
+    deepExtend = deepExtend
+    isNode = isNode
+    keys = keys
+    values = values
+    extend = extend
+    clone = clone
+    flatten = flatten
+    unique = unique
+    indexBy = indexBy
     sortBy = sortBy
     sortBy2 = sortBy2
-    streaming = {}
-    stringToBase64 = stringToBase64
-    strip = strip
-    sum = sum
-    toArray = toArray
-    unCamelCase = unCamelCase
-    unique = unique
-    urlencode = urlencode
-    urlencodeNested = urlencodeNested
-    urlencodeWithArrayRepeat = urlencodeWithArrayRepeat
+    groupBy = groupBy
+    aggregate = aggregate
     uuid = uuid
-    uuid16 = uuid16
-    uuid22 = uuid22
-    uuidv1 = uuidv1
-    values = values
+    unCamelCase = unCamelCase
+    precisionFromString = precisionFromString
+    capitalize = capitalize
+    now = now
+    decimalToPrecision = decimalToPrecision
+    safeValue = safeValue
+    safeValue2 = safeValue2
+    safeString = safeString
+    safeString2 = safeString2
+    safeFloat = safeFloat
+    safeFloat2 = safeFloat2
+    seconds = seconds
+    milliseconds = milliseconds
+    binaryToBase16 = binaryToBase16
+    numberToBE = numberToBE
+    base16ToBinary = base16ToBinary
+    iso8601 = iso8601
+    omit = omit
+    isJsonEncodedObject = isJsonEncodedObject
+    safeInteger = safeInteger
+    sum = sum
+    omitZero = omitZero
+    implodeParams = implodeParams
+    extractParams = extractParams
+    json = json
     vwap = vwap
-    ymd = ymd
+    merge = merge
+    binaryConcat = binaryConcat
+    hash = hash
+    arrayConcat = arrayConcat
+    encode = encode
+    urlencode = urlencode
+    hmac = hmac
+    numberToString = numberToString
+    parseTimeframe = parseTimeframe
+    safeInteger2 = safeInteger2
+    safeStringLower = safeStringLower
+    parse8601 = parse8601
+    yyyymmdd = yyyymmdd
+    safeStringUpper = safeStringUpper
+    safeTimestamp = safeTimestamp
+    binaryConcatArray = binaryConcatArray
+    uuidv1 = uuidv1
+    numberToLE = numberToLE
     ymdhms = ymdhms
     yymmdd = yymmdd
-    yyyymmdd = yyyymmdd
+    stringToBase64 = stringToBase64
+    decode = decode
+    uuid22 = uuid22
+    safeIntegerProduct2 = safeIntegerProduct2
+    safeIntegerProduct = safeIntegerProduct
+    binaryToBase58 = binaryToBase58
+    base58ToBinary = base58ToBinary
+    base64ToBinary = base64ToBinary
+    safeTimestamp2 = safeTimestamp2
+    rawencode = rawencode
+    keysort = keysort
+    inArray = inArray
+    safeStringLower2 = safeStringLower2
+    safeStringUpper2 = safeStringUpper2
+    isEmpty = isEmpty
+    ordered = ordered
+    filterBy = filterBy
+    uuid16 = uuid16
+    urlencodeWithArrayRepeat = urlencodeWithArrayRepeat
+    microseconds = microseconds
+    binaryToBase64 = binaryToBase64
+    strip = strip
+    toArray = toArray
+    safeFloatN = safeFloatN
+    safeIntegerN = safeIntegerN
+    safeIntegerProductN = safeIntegerProductN
+    safeTimestampN = safeTimestampN
+    safeValueN = safeValueN
+    safeStringN = safeStringN
+    safeStringLowerN = safeStringLowerN
+    safeStringUpperN = safeStringUpperN
+    urlencodeNested = urlencodeNested
+    parseDate = parseDate
+    ymd = ymd
+    isArray = isArray
+    base64ToString = base64ToString
+    crc32 = crc32
 
     describe () {
         return {
-            'alias': false, // whether this exchange is an alias to another exchange
-            'api': undefined,
-            'certified': false, // if certified by the CCXT dev team
-            'commonCurrencies': { // gets extended/overwritten in subclasses
-                'BCC': 'BCH',
-                'BCHSV': 'BSV',
-                'XBT': 'BTC',
-            },
+            'id': undefined,
+            'name': undefined,
             'countries': undefined,
-            'currencies': {}, // to be filled manually or by fetchMarkets
             'enableRateLimit': true,
-            'exceptions': undefined,
-            'fees': {
-                'funding': {
-                    'deposit': {},
-                    'percentage': undefined,
-                    'tierBased': undefined,
-                    'withdraw': {},
-                },
-                'trading': {
-                    'maker': undefined,
-                    'percentage': undefined,
-                    'taker': undefined,
-                    'tierBased': undefined,
-                },
-            },
+            'rateLimit': 2000, // milliseconds = seconds * 1000
+            'certified': false, // if certified by the CCXT dev team
+            'pro': false, // if it is integrated with CCXT Pro for WebSocket support
+            'alias': false, // whether this exchange is an alias to another exchange
             'has': {
+                'publicAPI': true,
+                'privateAPI': true,
                 'CORS': undefined,
+                'spot': undefined,
+                'margin': undefined,
+                'swap': undefined,
+                'future': undefined,
+                'option': undefined,
                 'addMargin': undefined,
                 'cancelAllOrders': undefined,
-                'cancelAllOrdersWs': undefined,
                 'cancelOrder': true,
-                'cancelOrderWs': undefined,
                 'cancelOrders': undefined,
-                'cancelOrdersWs': undefined,
                 'createDepositAddress': undefined,
                 'createLimitOrder': true,
                 'createMarketOrder': true,
                 'createOrder': true,
-                'createOrderWs': undefined,
                 'createPostOnlyOrder': undefined,
                 'createReduceOnlyOrder': undefined,
+                'createStopOrder': undefined,
                 'createStopLimitOrder': undefined,
                 'createStopMarketOrder': undefined,
-                'createStopOrder': undefined,
-                'editOrder': 'emulated',
+                'createOrderWs': undefined,
                 'editOrderWs': undefined,
+                'fetchOpenOrdersWs': undefined,
+                'fetchOrderWs': undefined,
+                'cancelOrderWs': undefined,
+                'cancelOrdersWs': undefined,
+                'cancelAllOrdersWs': undefined,
+                'fetchTradesWs': undefined,
+                'fetchBalanceWs': undefined,
+                'editOrder': 'emulated',
                 'fetchAccounts': undefined,
                 'fetchBalance': true,
-                'fetchBalanceWs': undefined,
                 'fetchBidsAsks': undefined,
                 'fetchBorrowInterest': undefined,
                 'fetchBorrowRate': undefined,
                 'fetchBorrowRateHistory': undefined,
-                'fetchBorrowRates': undefined,
                 'fetchBorrowRatesPerSymbol': undefined,
+                'fetchBorrowRates': undefined,
                 'fetchCanceledOrders': undefined,
                 'fetchClosedOrder': undefined,
                 'fetchClosedOrders': undefined,
@@ -498,6 +489,8 @@ export default class Exchange {
                 'fetchDepositAddressesByNetwork': undefined,
                 'fetchDeposits': undefined,
                 'fetchDepositsWithdrawals': undefined,
+                'fetchTransactionFee': undefined,
+                'fetchTransactionFees': undefined,
                 'fetchFundingHistory': undefined,
                 'fetchFundingRate': undefined,
                 'fetchFundingRateHistory': undefined,
@@ -508,22 +501,20 @@ export default class Exchange {
                 'fetchLedger': undefined,
                 'fetchLedgerEntry': undefined,
                 'fetchLeverageTiers': undefined,
-                'fetchMarkOHLCV': undefined,
                 'fetchMarketLeverageTiers': undefined,
                 'fetchMarkets': true,
+                'fetchMarkOHLCV': undefined,
                 'fetchMyTrades': undefined,
                 'fetchOHLCV': undefined,
                 'fetchOpenInterest': undefined,
                 'fetchOpenInterestHistory': undefined,
                 'fetchOpenOrder': undefined,
                 'fetchOpenOrders': undefined,
-                'fetchOpenOrdersWs': undefined,
                 'fetchOrder': undefined,
                 'fetchOrderBook': true,
                 'fetchOrderBooks': undefined,
-                'fetchOrderTrades': undefined,
-                'fetchOrderWs': undefined,
                 'fetchOrders': undefined,
+                'fetchOrderTrades': undefined,
                 'fetchPermissions': undefined,
                 'fetchPosition': undefined,
                 'fetchPositions': undefined,
@@ -535,108 +526,116 @@ export default class Exchange {
                 'fetchTickers': undefined,
                 'fetchTime': undefined,
                 'fetchTrades': true,
-                'fetchTradesWs': undefined,
                 'fetchTradingFee': undefined,
                 'fetchTradingFees': undefined,
                 'fetchTradingLimits': undefined,
-                'fetchTransactionFee': undefined,
-                'fetchTransactionFees': undefined,
                 'fetchTransactions': undefined,
                 'fetchTransfers': undefined,
                 'fetchWithdrawAddresses': undefined,
                 'fetchWithdrawal': undefined,
                 'fetchWithdrawals': undefined,
-                'future': undefined,
-                'margin': undefined,
-                'option': undefined,
-                'privateAPI': true,
-                'publicAPI': true,
                 'reduceMargin': undefined,
                 'setLeverage': undefined,
                 'setMargin': undefined,
                 'setMarginMode': undefined,
                 'setPositionMode': undefined,
                 'signIn': undefined,
-                'spot': undefined,
-                'swap': undefined,
                 'transfer': undefined,
-                'watchBalance': undefined,
-                'watchMyTrades': undefined,
-                'watchOHLCV': undefined,
-                'watchOHLCVForSymbols': undefined,
+                'withdraw': undefined,
                 'watchOrderBook': undefined,
-                'watchOrderBookForSymbols': undefined,
                 'watchOrders': undefined,
-                'watchTicker': undefined,
+                'watchMyTrades': undefined,
                 'watchTickers': undefined,
+                'watchTicker': undefined,
                 'watchTrades': undefined,
                 'watchTradesForSymbols': undefined,
-                'withdraw': undefined,
+                'watchOrderBookForSymbols': undefined,
+                'watchOHLCVForSymbols': undefined,
+                'watchBalance': undefined,
+                'watchOHLCV': undefined,
             },
+            'urls': {
+                'logo': undefined,
+                'api': undefined,
+                'www': undefined,
+                'doc': undefined,
+                'fees': undefined,
+            },
+            'api': undefined,
+            'requiredCredentials': {
+                'apiKey':     true,
+                'secret':     true,
+                'uid':        false,
+                'login':      false,
+                'password':   false,
+                'twofa':      false, // 2-factor authentication (one-time password key)
+                'privateKey': false, // a "0x"-prefixed hexstring private key for a wallet
+                'walletAddress': false, // the wallet address "0x"-prefixed hexstring
+                'token':      false, // reserved for HTTP auth in some cases
+            },
+            'markets': undefined, // to be filled manually or by fetchMarkets
+            'currencies': {}, // to be filled manually or by fetchMarkets
+            'timeframes': undefined, // redefine if the exchange has.fetchOHLCV
+            'fees': {
+                'trading': {
+                    'tierBased': undefined,
+                    'percentage': undefined,
+                    'taker': undefined,
+                    'maker': undefined,
+                },
+                'funding': {
+                    'tierBased': undefined,
+                    'percentage': undefined,
+                    'withdraw': {},
+                    'deposit': {},
+                },
+            },
+            'status': {
+                'status': 'ok',
+                'updated': undefined,
+                'eta': undefined,
+                'url': undefined,
+            },
+            'exceptions': undefined,
             'httpExceptions': {
-                '400': ExchangeNotAvailable,
-                '401': AuthenticationError,
-                '403': ExchangeNotAvailable,
+                '422': ExchangeError,
+                '418': DDoSProtection,
+                '429': RateLimitExceeded,
                 '404': ExchangeNotAvailable,
-                '405': ExchangeNotAvailable,
-                '407': AuthenticationError,
-                '408': RequestTimeout,
                 '409': ExchangeNotAvailable,
                 '410': ExchangeNotAvailable,
-                '418': DDoSProtection,
-                '422': ExchangeError,
-                '429': RateLimitExceeded,
                 '451': ExchangeNotAvailable,
                 '500': ExchangeNotAvailable,
                 '501': ExchangeNotAvailable,
                 '502': ExchangeNotAvailable,
-                '503': ExchangeNotAvailable,
-                '504': RequestTimeout,
-                '511': AuthenticationError,
                 '520': ExchangeNotAvailable,
                 '521': ExchangeNotAvailable,
                 '522': ExchangeNotAvailable,
                 '525': ExchangeNotAvailable,
                 '526': ExchangeNotAvailable,
+                '400': ExchangeNotAvailable,
+                '403': ExchangeNotAvailable,
+                '405': ExchangeNotAvailable,
+                '503': ExchangeNotAvailable,
                 '530': ExchangeNotAvailable,
+                '408': RequestTimeout,
+                '504': RequestTimeout,
+                '401': AuthenticationError,
+                '407': AuthenticationError,
+                '511': AuthenticationError,
             },
-            'id': undefined,
-            'limits': {
-                'amount': { 'min': undefined, 'max': undefined },
-                'cost': { 'min': undefined, 'max': undefined },
-                'leverage': { 'min': undefined, 'max': undefined },
-                'price': { 'min': undefined, 'max': undefined },
+            'commonCurrencies': { // gets extended/overwritten in subclasses
+                'XBT': 'BTC',
+                'BCC': 'BCH',
+                'BCHSV': 'BSV',
             },
-            'markets': undefined, // to be filled manually or by fetchMarkets
-            'name': undefined,
-            'paddingMode': NO_PADDING,
             'precisionMode': DECIMAL_PLACES,
-            'pro': false, // if it is integrated with CCXT Pro for WebSocket support
-            'rateLimit': 2000, // milliseconds = seconds * 1000
-            'requiredCredentials': {
-                'apiKey': true,
-                'login': false,
-                'password': false,
-                'privateKey': false, // a "0x"-prefixed hexstring private key for a wallet
-                'secret': true,
-                'token': false, // reserved for HTTP auth in some cases
-                'twofa': false, // 2-factor authentication (one-time password key)
-                'uid': false,
-                'walletAddress': false, // the wallet address "0x"-prefixed hexstring
-            },
-            'status': {
-                'eta': undefined,
-                'status': 'ok',
-                'updated': undefined,
-                'url': undefined,
-            },
-            'timeframes': undefined, // redefine if the exchange has.fetchOHLCV
-            'urls': {
-                'api': undefined,
-                'doc': undefined,
-                'fees': undefined,
-                'logo': undefined,
-                'www': undefined,
+            'paddingMode': NO_PADDING,
+            'limits': {
+                'leverage': { 'min': undefined, 'max': undefined },
+                'amount': { 'min': undefined, 'max': undefined },
+                'price': { 'min': undefined, 'max': undefined },
+                'cost': { 'min': undefined, 'max': undefined },
             },
         } // return
     } // describe ()
@@ -653,59 +652,59 @@ export default class Exchange {
         //         }
         //     }
         //
-        this.options = this.getDefaultOptions (); // exchange-specific options, if any
+        this.options = this.getDefaultOptions(); // exchange-specific options, if any
         // fetch implementation options (JS only)
         // http properties
         this.headers = {}
         this.origin = '*' // CORS origin
         // underlying properties
-        this.handleContentTypeApplicationZip = false
         this.minFundingAddressLength = 1 // used in checkAddress
-        this.number = Number // or String (a pointer to a function)
-        this.quoteJsonNumbers = true // treat numbers in json as quoted precise strings
         this.substituteCommonCurrencyCodes = true  // reserved
+        this.quoteJsonNumbers = true // treat numbers in json as quoted precise strings
+        this.number = Number // or String (a pointer to a function)
+        this.handleContentTypeApplicationZip = false
         // whether fees should be summed by currency code
         this.reduceFees = true
         // do not delete this line, it is needed for users to be able to define their own fetchImplementation
         this.fetchImplementation = undefined
-        this.validateClientSsl = false
         this.validateServerSsl = true
+        this.validateClientSsl = false
         // default property values
         this.timeout       = 10000 // milliseconds
-        this.twofa         = undefined // two-factor authentication (2FA)
         this.verbose       = false
         this.verboseTruncate = false
-        this.verboseNoLog  = undefined
+        this.verboseLogVeto  = undefined
+        this.twofa         = undefined // two-factor authentication (2FA)
         // default credentials
-        this.apiKey = undefined
-        this.login = undefined
-        this.password = undefined
-        this.privateKey = undefined // a "0x"-prefixed hexstring private key for a wallet
-        this.secret = undefined
-        this.token = undefined // reserved for HTTP auth in some cases
-        this.uid = undefined
+        this.apiKey        = undefined
+        this.secret        = undefined
+        this.uid           = undefined
+        this.login         = undefined
+        this.password      = undefined
+        this.privateKey    = undefined // a "0x"-prefixed hexstring private key for a wallet
         this.walletAddress = undefined // a wallet address "0x"-prefixed hexstring
+        this.token         = undefined // reserved for HTTP auth in some cases
         // placeholders for cached data
-        this.balance = {}
-        this.myTrades = undefined
-        this.ohlcvs = {}
-        this.orderbooks = {}
-        this.orders = undefined
-        this.positions = {}
-        this.tickers = {}
-        this.trades = {}
+        this.balance      = {}
+        this.orderbooks   = {}
+        this.tickers      = {}
+        this.orders       = undefined
+        this.trades       = {}
         this.transactions = {}
+        this.ohlcvs       = {}
+        this.myTrades     = undefined
+        this.positions    = {}
         // web3 and cryptography flags
-        this.requiresEddsa = false
         this.requiresWeb3 = false
+        this.requiresEddsa = false
         // response handling flags and properties
-        this.enableLastHttpResponse = true
-        this.enableLastJsonResponse = true
-        this.enableLastResponseHeaders = true
-        this.last_http_response = undefined
-        this.last_json_response = undefined
-        this.last_response_headers = undefined
         this.lastRestRequestTimestamp = 0
+        this.enableLastJsonResponse = true
+        this.enableLastHttpResponse = true
+        this.enableLastResponseHeaders = true
+        this.last_http_response    = undefined
+        this.last_json_response    = undefined
+        this.last_response_headers = undefined
         // camelCase and snake_notation support
         const unCamelCaseProperties = (obj = this) => {
             if (obj !== null) {
@@ -721,7 +720,7 @@ export default class Exchange {
         // merge constructor overrides to this instance
         const configEntries = Object.entries (this.describe ()).concat (Object.entries (userConfig))
         for (let i = 0; i < configEntries.length; i++) {
-            const [ property, value ] = configEntries[i]
+            const [property, value] = configEntries[i]
             if (value && Object.getPrototypeOf (value) === Object.prototype) {
                 this[property] = this.deepExtend (this[property], value)
             } else {
@@ -757,9 +756,9 @@ export default class Exchange {
         this.afterConstruct ();
     }
 
-    encodeURIComponent (... args) {
+    encodeURIComponent (...args) {
         // @ts-expect-error
-        return encodeURIComponent (... args)
+        return encodeURIComponent (...args)
     }
 
     checkRequiredVersion (requiredVersion, error = true) {
@@ -823,17 +822,17 @@ export default class Exchange {
 
     defineRestApiEndpoint (methodName, uppercaseMethod, lowercaseMethod, camelcaseMethod, path, paths, config = {}) {
         const splitPath = path.split (/[^a-zA-Z0-9]/)
-        const camelcaseSuffix = splitPath.map (this.capitalize).join ('')
+        const camelcaseSuffix  = splitPath.map (this.capitalize).join ('')
         const underscoreSuffix = splitPath.map ((x) => x.trim ().toLowerCase ()).filter ((x) => x.length > 0).join ('_')
         const camelcasePrefix = [ paths[0] ].concat (paths.slice (1).map (this.capitalize)).join ('')
         const underscorePrefix = [ paths[0] ].concat (paths.slice (1).map ((x) => x.trim ()).filter ((x) => x.length > 0)).join ('_')
-        const camelcase = camelcasePrefix + camelcaseMethod + this.capitalize (camelcaseSuffix)
+        const camelcase  = camelcasePrefix + camelcaseMethod + this.capitalize (camelcaseSuffix)
         const underscore = underscorePrefix + '_' + lowercaseMethod + '_' + underscoreSuffix
         const typeArgument = (paths.length > 1) ? paths : paths[0]
         // handle call costs here
         const partial = async (params = {}, context = {}) => this[methodName] (path, typeArgument, uppercaseMethod, params, undefined, undefined, config, context)
         // const partial = async (params) => this[methodName] (path, typeArgument, uppercaseMethod, params || {})
-        this[camelcase] = partial
+        this[camelcase]  = partial
         this[underscore] = partial
     }
 
@@ -850,8 +849,8 @@ export default class Exchange {
                     const path = value[k].trim ()
                     this.defineRestApiEndpoint (methodName, uppercaseMethod, lowercaseMethod, camelcaseMethod, path, paths)
                 }
-                // the options HTTP method conflicts with the 'options' API url path
-                // } else if (key.match (/^(?:get|post|put|delete|options|head|patch)$/i)) {
+            // the options HTTP method conflicts with the 'options' API url path
+            // } else if (key.match (/^(?:get|post|put|delete|options|head|patch)$/i)) {
             } else if (key.match (/^(?:get|post|put|delete|head|patch)$/i)) {
                 const endpoints = Object.keys (value);
                 for (let j = 0; j < endpoints.length; j++) {
@@ -920,7 +919,7 @@ export default class Exchange {
         // ######## end of proxies ########
 
         if (this.verbose || this.verboseTruncate) {
-            if (typeof this.verboseNoLog === 'function' && this.verboseNoLog('fetch', method, url, headers, body)) {
+            if (typeof this.verboseLogVeto !== 'function' || this.verboseLogVeto('fetch', method, url, headers, body)) {
                 this.log ("fetch Request:\n", this.id, method, url, "\nRequestHeaders:\n", headers, "\nRequestBody:\n", body, "\n")
             }
         }
@@ -997,7 +996,7 @@ export default class Exchange {
                 this.last_http_response = responseBuffer
             }
             if (this.verbose || this.verboseTruncate) {
-                if (typeof this.verboseNoLog === 'function' && this.verboseNoLog('handle', method, url, response)) {
+                if (typeof this.verboseLogVeto !== 'function' || this.verboseLogVeto('handle', method, url, response)) {
                     this.log ("handleRestResponse:\n", this.id, method, url, response.status, response.statusText, "\nResponseHeaders:\n", responseHeaders, "ZIP redacted", "\n")
                 }
             }
@@ -1017,7 +1016,7 @@ export default class Exchange {
                 this.last_json_response = json
             }
             if (this.verbose || this.verboseTruncate) {
-                if (typeof this.verboseNoLog === 'function' && this.verboseNoLog('response', method, url, response)) {
+                if (typeof this.verboseLogVeto !== 'function' || this.verboseLogVeto('response', method, url, response)) {
                     const TRUNCATE_LENGTH = 1e4
                     const length = responseBody.length
                     const truncatedBody = (this.verboseTruncate && (responseBody.length > TRUNCATE_LENGTH + 100)) ? responseBody.substring (0, TRUNCATE_LENGTH / 2) + '\n ... \n' + responseBody.substring (length - TRUNCATE_LENGTH / 2) : responseBody
@@ -1050,32 +1049,9 @@ export default class Exchange {
         let currencies = undefined
         // only call if exchange API provides endpoint (true), thus avoid emulated versions ('emulated')
         if (this.has['fetchCurrencies'] === true) {
-            const currenciesFromOutside = this.safeValue (params, 'currenciesFromOutside', undefined);
-            if (!currenciesFromOutside || reload) {
-                currencies = await this.fetchCurrencies ()
-                const fetchCurrenciesCallback = this.safeValue (params, 'fetchCurrenciesCallback', undefined);
-                if (fetchCurrenciesCallback) {
-                    currencies = fetchCurrenciesCallback (currencies)
-                    this.omit(params, 'fetchCurrenciesCallback')
-                }
-            } else {
-                currencies = currenciesFromOutside
-                this.omit(params, 'currenciesFromOutside')
-            }
+            currencies = await this.fetchCurrencies ()
         }
-        let markets
-        const loadFromOutside = this.safeValue(params, 'loadFromOutside', undefined);
-        if (!loadFromOutside || reload) {
-            markets = await this.fetchMarkets (params)
-            const loadedMarketCallback = this.safeValue (params, 'loadedMarketCallback', undefined);
-            if (loadedMarketCallback) {
-                loadedMarketCallback (markets)
-                this.omit(params, 'loadedMarketCallback')
-            }
-        } else {
-            markets = this.fetchMarketsFromOutside (loadFromOutside)
-            this.omit(params, 'loadFromOutside')
-        }
+        const markets = await this.fetchMarkets (params)
         return this.setMarkets (markets, currencies)
     }
 
@@ -1110,10 +1086,6 @@ export default class Exchange {
         return new Promise ((resolve, reject) => resolve (Object.values (this.markets)))
     }
 
-    fetchMarketsFromOutside (markets: {}) {
-        return markets
-    }
-
     checkRequiredDependencies () {
         return
     }
@@ -1133,7 +1105,7 @@ export default class Exchange {
     checkOrderArguments (market, type, side, amount, price, params) {
         if (price === undefined) {
             if (type === 'limit') {
-                throw new ArgumentsRequired (this.id + ' createOrder() requires a price argument for a limit order');
+                  throw new ArgumentsRequired (this.id + ' createOrder() requires a price argument for a limit order');
             }
         }
         if (amount <= 0) {
@@ -1185,8 +1157,7 @@ export default class Exchange {
         return new CountedOrderBook (snapshot, depth);
     }
 
-    handleMessage (client, message) {
-    } // stub to override
+    handleMessage (client, message) {} // stub to override
 
     // ping (client) {} // stub to override
 
@@ -1203,7 +1174,7 @@ export default class Exchange {
                 'log': this.log ? this.log.bind (this) : this.log,
                 'ping': (this as any).ping ? (this as any).ping.bind (this) : (this as any).ping,
                 'verbose': this.verbose || this.verboseTruncate,
-                'verboseNoLog': this.verboseNoLog,
+                'verboseLogVeto': this.verboseLogVeto,
                 'throttler': new Throttler (this.tokenBucket),
                 // add support for proxies
                 'options': {
@@ -1357,15 +1328,15 @@ export default class Exchange {
         return BigInt(value); // used on XT
     }
 
-    valueIsDefined (value) {
+    valueIsDefined(value){
         return value !== undefined && value !== null;
     }
 
-    arraySlice (array, first, second = undefined) {
+    arraySlice(array, first, second = undefined) {
         if (second === undefined) {
-            return array.slice (first);
+            return array.slice(first);
         }
-        return array.slice (first, second);
+        return array.slice(first, second);
     }
 
     getProperty (obj, property, defaultValue = undefined) {
@@ -1840,13 +1811,19 @@ export default class Exchange {
 
     safeCurrencyStructure (currency: object) {
         return this.extend ({
-            'active': undefined,
+            'info': undefined,
+            'id': undefined,
+            'numericId': undefined,
             'code': undefined,
+            'precision': undefined,
+            'type': undefined,
+            'name': undefined,
+            'active': undefined,
             'deposit': undefined,
+            'withdraw': undefined,
             'fee': undefined,
             'fees': {},
-            'id': undefined,
-            'info': undefined,
+            'networks': {},
             'limits': {
                 'deposit': {
                     'min': undefined,
@@ -1857,12 +1834,6 @@ export default class Exchange {
                     'max': undefined,
                 },
             },
-            'name': undefined,
-            'networks': {},
-            'numericId': undefined,
-            'precision': undefined,
-            'type': undefined,
-            'withdraw': undefined,
         }, currency);
     }
 
@@ -2215,31 +2186,31 @@ export default class Exchange {
         const takeProfitPrice = this.parseNumber (this.safeString (order, 'takeProfitPrice'));
         const stopLossPrice = this.parseNumber (this.safeString (order, 'stopLossPrice'));
         return this.extend (order, {
-            'amount': this.parseNumber (amount),
-            'average': this.parseNumber (average),
-            'clientOrderId': this.safeString (order, 'clientOrderId'),
-            'cost': this.parseNumber (cost),
-            'datetime': datetime,
-            'fee': this.safeValue (order, 'fee'),
-            'filled': this.parseNumber (filled),
             'id': this.safeString (order, 'id'),
+            'clientOrderId': this.safeString (order, 'clientOrderId'),
+            'timestamp': timestamp,
+            'datetime': datetime,
+            'symbol': symbol,
+            'type': this.safeString (order, 'type'),
+            'side': side,
             'lastTradeTimestamp': lastTradeTimeTimestamp,
             'lastUpdateTimestamp': lastUpdateTimestamp,
-            'postOnly': postOnly,
             'price': this.parseNumber (price),
-            'reduceOnly': this.safeValue (order, 'reduceOnly'),
+            'amount': this.parseNumber (amount),
+            'cost': this.parseNumber (cost),
+            'average': this.parseNumber (average),
+            'filled': this.parseNumber (filled),
             'remaining': this.parseNumber (remaining),
-            'side': side,
-            'status': status,
-            'stopLossPrice': stopLossPrice,
-            'stopPrice': triggerPrice, // ! deprecated, use triggerPrice instead
-            'symbol': symbol,
-            'takeProfitPrice': takeProfitPrice,
             'timeInForce': timeInForce,
-            'timestamp': timestamp,
+            'postOnly': postOnly,
             'trades': trades,
+            'reduceOnly': this.safeValue (order, 'reduceOnly'),
+            'stopPrice': triggerPrice,  // ! deprecated, use triggerPrice instead
             'triggerPrice': triggerPrice,
-            'type': this.safeString (order, 'type'),
+            'takeProfitPrice': takeProfitPrice,
+            'stopLossPrice': stopLossPrice,
+            'status': status,
+            'fee': this.safeValue (order, 'fee'),
         });
     }
 
@@ -2321,10 +2292,10 @@ export default class Exchange {
         const rate = this.safeString (market, takerOrMaker);
         cost = Precise.stringMul (cost, rate);
         return {
-            'cost': this.parseNumber (cost),
+            'type': takerOrMaker,
             'currency': market[key],
             'rate': this.parseNumber (rate),
-            'type': takerOrMaker,
+            'cost': this.parseNumber (cost),
         };
     }
 
@@ -2382,8 +2353,8 @@ export default class Exchange {
             }
         }
         trade['amount'] = this.parseNumber (amount);
-        trade['cost'] = this.parseNumber (cost);
         trade['price'] = this.parseNumber (price);
+        trade['cost'] = this.parseNumber (cost);
         return trade as Trade;
     }
 
@@ -2465,8 +2436,8 @@ export default class Exchange {
                     reduced[feeCurrencyCode][rateKey]['cost'] = Precise.stringAdd (reduced[feeCurrencyCode][rateKey]['cost'], cost);
                 } else {
                     reduced[feeCurrencyCode][rateKey] = {
-                        'cost': cost,
                         'currency': feeCurrencyCode,
+                        'cost': cost,
                     };
                     if (rate !== undefined) {
                         reduced[feeCurrencyCode][rateKey]['rate'] = rate;
@@ -2521,22 +2492,22 @@ export default class Exchange {
         // timestamp and symbol operations don't belong in safeTicker
         // they should be done in the derived classes
         return this.extend (ticker, {
-            'ask': this.omitZero (this.safeNumber (ticker, 'ask')),
-            'askVolume': this.safeNumber (ticker, 'askVolume'),
-            'average': this.omitZero (this.parseNumber (average)),
-            'baseVolume': this.parseNumber (baseVolume),
             'bid': this.omitZero (this.safeNumber (ticker, 'bid')),
             'bidVolume': this.safeNumber (ticker, 'bidVolume'),
-            'change': this.parseNumber (change),
-            'close': this.omitZero (this.parseNumber (close)),
+            'ask': this.omitZero (this.safeNumber (ticker, 'ask')),
+            'askVolume': this.safeNumber (ticker, 'askVolume'),
             'high': this.omitZero (this.safeNumber (ticker, 'high')),
-            'last': this.omitZero (this.parseNumber (last)),
             'low': this.omitZero (this.safeNumber (ticker, 'low')),
             'open': this.omitZero (this.parseNumber (open)),
+            'close': this.omitZero (this.parseNumber (close)),
+            'last': this.omitZero (this.parseNumber (last)),
+            'change': this.parseNumber (change),
             'percentage': this.parseNumber (percentage),
-            'previousClose': this.safeNumber (ticker, 'previousClose'),
-            'quoteVolume': this.parseNumber (quoteVolume),
+            'average': this.omitZero (this.parseNumber (average)),
             'vwap': this.omitZero (this.parseNumber (vwap)),
+            'baseVolume': this.parseNumber (baseVolume),
+            'quoteVolume': this.parseNumber (quoteVolume),
+            'previousClose': this.safeNumber (ticker, 'previousClose'),
         });
     }
 
@@ -2575,11 +2546,11 @@ export default class Exchange {
 
     convertOHLCVToTradingView (ohlcvs, timestamp = 't', open = 'o', high = 'h', low = 'l', close = 'c', volume = 'v', ms = false) {
         const result = {};
-        result[close] = [];
+        result[timestamp] = [];
+        result[open] = [];
         result[high] = [];
         result[low] = [];
-        result[open] = [];
-        result[timestamp] = [];
+        result[close] = [];
         result[volume] = [];
         for (let i = 0; i < ohlcvs.length; i++) {
             const ts = ms ? ohlcvs[i][0] : this.parseToInt (ohlcvs[i][0] / 1000);
@@ -2866,12 +2837,12 @@ export default class Exchange {
         const bids = this.parseBidsAsks (this.safeValue (orderbook, bidsKey, []), priceKey, amountKey);
         const asks = this.parseBidsAsks (this.safeValue (orderbook, asksKey, []), priceKey, amountKey);
         return {
-            'asks': this.sortBy (asks, 0),
+            'symbol': symbol,
             'bids': this.sortBy (bids, 0, true),
+            'asks': this.sortBy (asks, 0),
+            'timestamp': timestamp,
             'datetime': this.iso8601 (timestamp),
             'nonce': undefined,
-            'symbol': symbol,
-            'timestamp': timestamp,
         } as any;
     }
 
@@ -3221,23 +3192,35 @@ export default class Exchange {
 
     safeMarket (marketId = undefined, market = undefined, delimiter = undefined, marketType = undefined) {
         const result = {
-            'active': undefined,
+            'id': marketId,
+            'symbol': marketId,
             'base': undefined,
+            'quote': undefined,
             'baseId': undefined,
+            'quoteId': undefined,
+            'active': undefined,
+            'type': undefined,
+            'linear': undefined,
+            'inverse': undefined,
+            'spot': false,
+            'swap': false,
+            'future': false,
+            'option': false,
+            'margin': false,
             'contract': false,
             'contractSize': undefined,
             'expiry': undefined,
             'expiryDatetime': undefined,
-            'future': false,
-            'id': marketId,
-            'info': undefined,
-            'inverse': undefined,
+            'optionType': undefined,
+            'strike': undefined,
+            'settle': undefined,
+            'settleId': undefined,
+            'precision': {
+                'amount': undefined,
+                'price': undefined,
+            },
             'limits': {
                 'amount': {
-                    'min': undefined,
-                    'max': undefined,
-                },
-                'cost': {
                     'min': undefined,
                     'max': undefined,
                 },
@@ -3245,24 +3228,12 @@ export default class Exchange {
                     'min': undefined,
                     'max': undefined,
                 },
+                'cost': {
+                    'min': undefined,
+                    'max': undefined,
+                },
             },
-            'linear': undefined,
-            'margin': false,
-            'option': false,
-            'optionType': undefined,
-            'precision': {
-                'amount': undefined,
-                'price': undefined,
-            },
-            'quote': undefined,
-            'quoteId': undefined,
-            'settle': undefined,
-            'settleId': undefined,
-            'spot': false,
-            'strike': undefined,
-            'swap': false,
-            'symbol': marketId,
-            'type': undefined,
+            'info': undefined,
         };
         if (marketId !== undefined) {
             if ((this.markets_by_id !== undefined) && (marketId in this.markets_by_id)) {
@@ -4416,16 +4387,16 @@ export default class Exchange {
 
     depositWithdrawFee (info): any {
         return {
-            'deposit': {
-                'fee': undefined,
-                'percentage': undefined,
-            },
             'info': info,
-            'networks': {},
             'withdraw': {
                 'fee': undefined,
                 'percentage': undefined,
             },
+            'deposit': {
+                'fee': undefined,
+                'percentage': undefined,
+            },
+            'networks': {},
         };
     }
 
@@ -4449,8 +4420,8 @@ export default class Exchange {
         for (let i = 0; i < numNetworks; i++) {
             const network = networkKeys[i];
             if (network === currencyCode) {
-                fee['deposit'] = fee['networks'][networkKeys[i]]['deposit'];
                 fee['withdraw'] = fee['networks'][networkKeys[i]]['withdraw'];
+                fee['deposit'] = fee['networks'][networkKeys[i]]['deposit'];
             }
         }
         return fee;

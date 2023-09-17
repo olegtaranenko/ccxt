@@ -40,11 +40,11 @@ use Exception;
 
 include 'Throttle.php';
 
-$version = '4.0.98';
+$version = '4.0.99';
 
 class Exchange extends \ccxt\Exchange {
 
-    const VERSION = '4.0.98';
+    const VERSION = '4.0.99';
 
     public $browser;
     public $marketsLoading = null;
@@ -728,13 +728,19 @@ class Exchange extends \ccxt\Exchange {
 
     public function safe_currency_structure(array $currency) {
         return array_merge(array(
-            'active' => null,
+            'info' => null,
+            'id' => null,
+            'numericId' => null,
             'code' => null,
+            'precision' => null,
+            'type' => null,
+            'name' => null,
+            'active' => null,
             'deposit' => null,
+            'withdraw' => null,
             'fee' => null,
             'fees' => array(),
-            'id' => null,
-            'info' => null,
+            'networks' => array(),
             'limits' => array(
                 'deposit' => array(
                     'min' => null,
@@ -745,12 +751,6 @@ class Exchange extends \ccxt\Exchange {
                     'max' => null,
                 ),
             ),
-            'name' => null,
-            'networks' => array(),
-            'numericId' => null,
-            'precision' => null,
-            'type' => null,
-            'withdraw' => null,
         ), $currency);
     }
 
@@ -1103,31 +1103,31 @@ class Exchange extends \ccxt\Exchange {
         $takeProfitPrice = $this->parse_number($this->safe_string($order, 'takeProfitPrice'));
         $stopLossPrice = $this->parse_number($this->safe_string($order, 'stopLossPrice'));
         return array_merge($order, array(
-            'amount' => $this->parse_number($amount),
-            'average' => $this->parse_number($average),
-            'clientOrderId' => $this->safe_string($order, 'clientOrderId'),
-            'cost' => $this->parse_number($cost),
-            'datetime' => $datetime,
-            'fee' => $this->safe_value($order, 'fee'),
-            'filled' => $this->parse_number($filled),
             'id' => $this->safe_string($order, 'id'),
+            'clientOrderId' => $this->safe_string($order, 'clientOrderId'),
+            'timestamp' => $timestamp,
+            'datetime' => $datetime,
+            'symbol' => $symbol,
+            'type' => $this->safe_string($order, 'type'),
+            'side' => $side,
             'lastTradeTimestamp' => $lastTradeTimeTimestamp,
             'lastUpdateTimestamp' => $lastUpdateTimestamp,
-            'postOnly' => $postOnly,
             'price' => $this->parse_number($price),
-            'reduceOnly' => $this->safe_value($order, 'reduceOnly'),
+            'amount' => $this->parse_number($amount),
+            'cost' => $this->parse_number($cost),
+            'average' => $this->parse_number($average),
+            'filled' => $this->parse_number($filled),
             'remaining' => $this->parse_number($remaining),
-            'side' => $side,
-            'status' => $status,
-            'stopLossPrice' => $stopLossPrice,
-            'stopPrice' => $triggerPrice, // ! deprecated, use $triggerPrice instead
-            'symbol' => $symbol,
-            'takeProfitPrice' => $takeProfitPrice,
             'timeInForce' => $timeInForce,
-            'timestamp' => $timestamp,
+            'postOnly' => $postOnly,
             'trades' => $trades,
+            'reduceOnly' => $this->safe_value($order, 'reduceOnly'),
+            'stopPrice' => $triggerPrice,  // ! deprecated, use $triggerPrice instead
             'triggerPrice' => $triggerPrice,
-            'type' => $this->safe_string($order, 'type'),
+            'takeProfitPrice' => $takeProfitPrice,
+            'stopLossPrice' => $stopLossPrice,
+            'status' => $status,
+            'fee' => $this->safe_value($order, 'fee'),
         ));
     }
 
@@ -1209,10 +1209,10 @@ class Exchange extends \ccxt\Exchange {
         $rate = $this->safe_string($market, $takerOrMaker);
         $cost = Precise::string_mul($cost, $rate);
         return array(
-            'cost' => $this->parse_number($cost),
+            'type' => $takerOrMaker,
             'currency' => $market[$key],
             'rate' => $this->parse_number($rate),
-            'type' => $takerOrMaker,
+            'cost' => $this->parse_number($cost),
         );
     }
 
@@ -1270,8 +1270,8 @@ class Exchange extends \ccxt\Exchange {
             }
         }
         $trade['amount'] = $this->parse_number($amount);
-        $trade['cost'] = $this->parse_number($cost);
         $trade['price'] = $this->parse_number($price);
+        $trade['cost'] = $this->parse_number($cost);
         return $trade;
     }
 
@@ -1353,8 +1353,8 @@ class Exchange extends \ccxt\Exchange {
                     $reduced[$feeCurrencyCode][$rateKey]['cost'] = Precise::string_add($reduced[$feeCurrencyCode][$rateKey]['cost'], $cost);
                 } else {
                     $reduced[$feeCurrencyCode][$rateKey] = array(
-                        'cost' => $cost,
                         'currency' => $feeCurrencyCode,
+                        'cost' => $cost,
                     );
                     if ($rate !== null) {
                         $reduced[$feeCurrencyCode][$rateKey]['rate'] = $rate;
@@ -1409,22 +1409,22 @@ class Exchange extends \ccxt\Exchange {
         // timestamp and symbol operations don't belong in safeTicker
         // they should be done in the derived classes
         return array_merge($ticker, array(
-            'ask' => $this->omit_zero($this->safe_number($ticker, 'ask')),
-            'askVolume' => $this->safe_number($ticker, 'askVolume'),
-            'average' => $this->omit_zero($this->parse_number($average)),
-            'baseVolume' => $this->parse_number($baseVolume),
             'bid' => $this->omit_zero($this->safe_number($ticker, 'bid')),
             'bidVolume' => $this->safe_number($ticker, 'bidVolume'),
-            'change' => $this->parse_number($change),
-            'close' => $this->omit_zero($this->parse_number($close)),
+            'ask' => $this->omit_zero($this->safe_number($ticker, 'ask')),
+            'askVolume' => $this->safe_number($ticker, 'askVolume'),
             'high' => $this->omit_zero($this->safe_number($ticker, 'high')),
-            'last' => $this->omit_zero($this->parse_number($last)),
             'low' => $this->omit_zero($this->safe_number($ticker, 'low')),
             'open' => $this->omit_zero($this->parse_number($open)),
+            'close' => $this->omit_zero($this->parse_number($close)),
+            'last' => $this->omit_zero($this->parse_number($last)),
+            'change' => $this->parse_number($change),
             'percentage' => $this->parse_number($percentage),
-            'previousClose' => $this->safe_number($ticker, 'previousClose'),
-            'quoteVolume' => $this->parse_number($quoteVolume),
+            'average' => $this->omit_zero($this->parse_number($average)),
             'vwap' => $this->omit_zero($this->parse_number($vwap)),
+            'baseVolume' => $this->parse_number($baseVolume),
+            'quoteVolume' => $this->parse_number($quoteVolume),
+            'previousClose' => $this->safe_number($ticker, 'previousClose'),
         ));
     }
 
@@ -1463,11 +1463,11 @@ class Exchange extends \ccxt\Exchange {
 
     public function convert_ohlcv_to_trading_view($ohlcvs, $timestamp = 't', $open = 'o', $high = 'h', $low = 'l', $close = 'c', $volume = 'v', $ms = false) {
         $result = array();
-        $result[$close] = array();
+        $result[$timestamp] = array();
+        $result[$open] = array();
         $result[$high] = array();
         $result[$low] = array();
-        $result[$open] = array();
-        $result[$timestamp] = array();
+        $result[$close] = array();
         $result[$volume] = array();
         for ($i = 0; $i < count($ohlcvs); $i++) {
             $ts = $ms ? $ohlcvs[$i][0] : $this->parseToInt ($ohlcvs[$i][0] / 1000);
@@ -1754,12 +1754,12 @@ class Exchange extends \ccxt\Exchange {
         $bids = $this->parse_bids_asks($this->safe_value($orderbook, $bidsKey, array()), $priceKey, $amountKey);
         $asks = $this->parse_bids_asks($this->safe_value($orderbook, $asksKey, array()), $priceKey, $amountKey);
         return array(
-            'asks' => $this->sort_by($asks, 0),
+            'symbol' => $symbol,
             'bids' => $this->sort_by($bids, 0, true),
+            'asks' => $this->sort_by($asks, 0),
+            'timestamp' => $timestamp,
             'datetime' => $this->iso8601 ($timestamp),
             'nonce' => null,
-            'symbol' => $symbol,
-            'timestamp' => $timestamp,
         );
     }
 
@@ -2125,23 +2125,35 @@ class Exchange extends \ccxt\Exchange {
 
     public function safe_market($marketId = null, $market = null, $delimiter = null, $marketType = null) {
         $result = array(
-            'active' => null,
+            'id' => $marketId,
+            'symbol' => $marketId,
             'base' => null,
+            'quote' => null,
             'baseId' => null,
+            'quoteId' => null,
+            'active' => null,
+            'type' => null,
+            'linear' => null,
+            'inverse' => null,
+            'spot' => false,
+            'swap' => false,
+            'future' => false,
+            'option' => false,
+            'margin' => false,
             'contract' => false,
             'contractSize' => null,
             'expiry' => null,
             'expiryDatetime' => null,
-            'future' => false,
-            'id' => $marketId,
-            'info' => null,
-            'inverse' => null,
+            'optionType' => null,
+            'strike' => null,
+            'settle' => null,
+            'settleId' => null,
+            'precision' => array(
+                'amount' => null,
+                'price' => null,
+            ),
             'limits' => array(
                 'amount' => array(
-                    'min' => null,
-                    'max' => null,
-                ),
-                'cost' => array(
                     'min' => null,
                     'max' => null,
                 ),
@@ -2149,24 +2161,12 @@ class Exchange extends \ccxt\Exchange {
                     'min' => null,
                     'max' => null,
                 ),
+                'cost' => array(
+                    'min' => null,
+                    'max' => null,
+                ),
             ),
-            'linear' => null,
-            'margin' => false,
-            'option' => false,
-            'optionType' => null,
-            'precision' => array(
-                'amount' => null,
-                'price' => null,
-            ),
-            'quote' => null,
-            'quoteId' => null,
-            'settle' => null,
-            'settleId' => null,
-            'spot' => false,
-            'strike' => null,
-            'swap' => false,
-            'symbol' => $marketId,
-            'type' => null,
+            'info' => null,
         );
         if ($marketId !== null) {
             if (($this->markets_by_id !== null) && (is_array($this->markets_by_id) && array_key_exists($marketId, $this->markets_by_id))) {
@@ -3366,16 +3366,16 @@ class Exchange extends \ccxt\Exchange {
 
     public function deposit_withdraw_fee($info) {
         return array(
-            'deposit' => array(
-                'fee' => null,
-                'percentage' => null,
-            ),
             'info' => $info,
-            'networks' => array(),
             'withdraw' => array(
                 'fee' => null,
                 'percentage' => null,
             ),
+            'deposit' => array(
+                'fee' => null,
+                'percentage' => null,
+            ),
+            'networks' => array(),
         );
     }
 
@@ -3398,8 +3398,8 @@ class Exchange extends \ccxt\Exchange {
         for ($i = 0; $i < $numNetworks; $i++) {
             $network = $networkKeys[$i];
             if ($network === $currencyCode) {
-                $fee['deposit'] = $fee['networks'][$networkKeys[$i]]['deposit'];
                 $fee['withdraw'] = $fee['networks'][$networkKeys[$i]]['withdraw'];
+                $fee['deposit'] = $fee['networks'][$networkKeys[$i]]['deposit'];
             }
         }
         return $fee;
