@@ -210,7 +210,7 @@ export default class Exchange {
     timeout       = 10000 // milliseconds
     verbose       = false
     verboseTruncate = false
-    verboseNoLog: any;
+    verboseLogVeto: any;
     twofa         = undefined // two-factor authentication (2FA)
 
     apiKey: string;
@@ -673,7 +673,7 @@ export default class Exchange {
         this.timeout       = 10000 // milliseconds
         this.verbose       = false
         this.verboseTruncate = false
-        this.verboseNoLog  = undefined
+        this.verboseLogVeto  = undefined
         this.twofa         = undefined // two-factor authentication (2FA)
         // default credentials
         this.apiKey        = undefined
@@ -919,7 +919,7 @@ export default class Exchange {
         // ######## end of proxies ########
 
         if (this.verbose || this.verboseTruncate) {
-            if (typeof this.verboseNoLog === 'function' && this.verboseNoLog('fetch', method, url, headers, body)) {
+            if (typeof this.verboseLogVeto !== 'function' || this.verboseLogVeto('fetch', method, url, headers, body)) {
                 this.log ("fetch Request:\n", this.id, method, url, "\nRequestHeaders:\n", headers, "\nRequestBody:\n", body, "\n")
             }
         }
@@ -996,7 +996,7 @@ export default class Exchange {
                 this.last_http_response = responseBuffer
             }
             if (this.verbose || this.verboseTruncate) {
-                if (typeof this.verboseNoLog === 'function' && this.verboseNoLog('handle', method, url, response)) {
+                if (typeof this.verboseLogVeto !== 'function' || this.verboseLogVeto('handle', method, url, response)) {
                     this.log ("handleRestResponse:\n", this.id, method, url, response.status, response.statusText, "\nResponseHeaders:\n", responseHeaders, "ZIP redacted", "\n")
                 }
             }
@@ -1016,7 +1016,7 @@ export default class Exchange {
                 this.last_json_response = json
             }
             if (this.verbose || this.verboseTruncate) {
-                if (typeof this.verboseNoLog === 'function' && this.verboseNoLog('response', method, url, response)) {
+                if (typeof this.verboseLogVeto !== 'function' || this.verboseLogVeto('response', method, url, response)) {
                     const TRUNCATE_LENGTH = 1e4
                     const length = responseBody.length
                     const truncatedBody = (this.verboseTruncate && (responseBody.length > TRUNCATE_LENGTH + 100)) ? responseBody.substring (0, TRUNCATE_LENGTH / 2) + '\n ... \n' + responseBody.substring (length - TRUNCATE_LENGTH / 2) : responseBody
@@ -1174,7 +1174,7 @@ export default class Exchange {
                 'log': this.log ? this.log.bind (this) : this.log,
                 'ping': (this as any).ping ? (this as any).ping.bind (this) : (this as any).ping,
                 'verbose': this.verbose || this.verboseTruncate,
-                'verboseNoLog': this.verboseNoLog,
+                'verboseLogVeto': this.verboseLogVeto,
                 'throttler': new Throttler (this.tokenBucket),
                 // add support for proxies
                 'options': {
