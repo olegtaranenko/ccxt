@@ -2,108 +2,113 @@
 /* eslint-disable */
 
 import * as functions from './functions.js'
+
 const {
-    isNode
-    , deepExtend
-    , extend
-    , clone
-    , flatten
-    , unique
-    , indexBy
-    , sortBy
-    , sortBy2
-    , safeFloat2
-    , groupBy
-    , aggregate
-    , uuid
-    , unCamelCase
-    , precisionFromString
-    , Throttler
-    , capitalize
-    , now
-    , decimalToPrecision
-    , safeValue
-    , safeValue2
-    , safeString
-    , safeString2
-    , seconds
-    , milliseconds
-    , binaryToBase16
-    , numberToBE
-    , base16ToBinary
-    , iso8601
-    , omit
-    , isJsonEncodedObject
-    , safeInteger
-    , sum
-    , omitZero
-    , implodeParams
-    , extractParams
-    , json
-    , merge
-    , binaryConcat
-    , hash
-    , ecdsa
-    , arrayConcat
-    , encode
-    , urlencode
-    , hmac
-    , numberToString
-    , parseTimeframe
-    , safeInteger2
-    , safeStringLower
-    , parse8601
-    , yyyymmdd
-    , safeStringUpper
-    , safeTimestamp
-    , binaryConcatArray
-    , uuidv1
-    , numberToLE
-    , ymdhms
-    , stringToBase64
-    , decode
-    , uuid22
-    , safeIntegerProduct2
-    , safeIntegerProduct
-    , safeStringLower2
-    , yymmdd
-    , base58ToBinary
-    , binaryToBase58
-    , safeTimestamp2
-    , rawencode
-    , keysort
-    , inArray
-    , isEmpty
-    , ordered
-    , filterBy
-    , uuid16
-    , safeFloat
-    , base64ToBinary
-    , safeStringUpper2
-    , urlencodeWithArrayRepeat
-    , microseconds
-    , binaryToBase64
-    , strip
-    , toArray
-    , safeFloatN
-    , safeIntegerN
-    , safeIntegerProductN
-    , safeTimestampN
-    , safeValueN
-    , safeStringN
-    , safeStringLowerN
-    , safeStringUpperN
-    , urlencodeNested
-    , parseDate
-    , ymd
-    , base64ToString
-    , crc32
-    , TRUNCATE
-    , ROUND
-    , DECIMAL_PLACES
-    , NO_PADDING
-    , TICK_SIZE
-    , SIGNIFICANT_DIGITS
+    aggregate,
+    arrayConcat,
+    base16ToBinary,
+    base58ToBinary,
+    base64ToBinary,
+    base64ToString,
+    binaryConcat,
+    binaryConcatArray,
+    binaryToBase16,
+    binaryToBase58,
+    binaryToBase64,
+    capitalize,
+    clone,
+    crc32,
+    DECIMAL_PLACES,
+    decimalToPrecision,
+    decode,
+    deepExtend,
+    ecdsa,
+    encode,
+    extend,
+    extractParams,
+    filterBy,
+    flatten,
+    groupBy,
+    hash,
+    hmac,
+    implodeParams,
+    inArray,
+    indexBy,
+    isArray,
+    isEmpty,
+    isJsonEncodedObject,
+    isNode,
+    iso8601,
+    json,
+    keys,
+    keysort,
+    merge,
+    microseconds,
+    milliseconds,
+    NO_PADDING,
+    now,
+    numberToBE,
+    numberToLE,
+    numberToString,
+    omit,
+    omitZero,
+    ordered,
+    parse8601,
+    parseDate,
+    parseTimeframe,
+    precisionFromString,
+    rawencode,
+    ROUND,
+    safeFloat,
+    safeFloat2,
+    safeFloatN,
+    safeInteger,
+    safeInteger2,
+    safeIntegerN,
+    safeIntegerProduct,
+    safeIntegerProduct2,
+    safeIntegerProductN,
+    safeString,
+    safeString2,
+    safeStringLower,
+    safeStringLower2,
+    safeStringLowerN,
+    safeStringN,
+    safeStringUpper,
+    safeStringUpper2,
+    safeStringUpperN,
+    safeTimestamp,
+    safeTimestamp2,
+    safeTimestampN,
+    safeValue,
+    safeValue2,
+    safeValueN,
+    seconds,
+    SIGNIFICANT_DIGITS,
+    sortBy,
+    sortBy2,
+    stringToBase64,
+    strip,
+    sum,
+    Throttler,
+    TICK_SIZE,
+    toArray,
+    TRUNCATE,
+    unCamelCase,
+    unique,
+    urlencode,
+    urlencodeNested,
+    urlencodeWithArrayRepeat,
+    uuid,
+    uuid16,
+    uuid22,
+    uuidv1,
+    values,
+    vwap,
+    ymd,
+    ymdhms,
+    yymmdd,
+    yyyymmdd
 } = functions
 
 import {
@@ -329,107 +334,99 @@ export default class Exchange {
     stablePairs = {}
 
     // WS/PRO options
-    clients = {}
-    newUpdates = true
-    streaming = {}
-
-    deepExtend = deepExtend
-    isNode = isNode
-    keys = keysFunc
-    values = valuesFunc
-    extend = extend
-    clone = clone
-    flatten = flatten
-    unique = unique
-    indexBy = indexBy
-    sortBy = sortBy
-    sortBy2 = sortBy2
-    groupBy = groupBy
     aggregate = aggregate
-    uuid = uuid
-    unCamelCase = unCamelCase
-    precisionFromString = precisionFromString
-    capitalize = capitalize
-    now = now
-    decimalToPrecision = decimalToPrecision
-    safeValue = safeValue
-    safeValue2 = safeValue2
-    safeString = safeString
-    safeString2 = safeString2
-    safeFloat = safeFloat
-    safeFloat2 = safeFloat2
-    seconds = seconds
-    milliseconds = milliseconds
-    binaryToBase16 = binaryToBase16
-    numberToBE = numberToBE
-    base16ToBinary = base16ToBinary
-    iso8601 = iso8601
-    omit = omit
-    isJsonEncodedObject = isJsonEncodedObject
-    safeInteger = safeInteger
-    sum = sum
-    omitZero = omitZero
-    implodeParams = implodeParams
-    extractParams = extractParams
-    json = json
-    vwap = vwapFunc
-    merge = merge
-    binaryConcat = binaryConcat
-    hash = hash
     arrayConcat = arrayConcat
-    encode = encode
-    urlencode = urlencode
-    hmac = hmac
-    numberToString = numberToString
-    parseTimeframe = parseTimeframe
-    safeInteger2 = safeInteger2
-    safeStringLower = safeStringLower
-    parse8601 = parse8601
-    yyyymmdd = yyyymmdd
-    safeStringUpper = safeStringUpper
-    safeTimestamp = safeTimestamp
-    binaryConcatArray = binaryConcatArray
-    uuidv1 = uuidv1
-    numberToLE = numberToLE
-    ymdhms = ymdhms
-    yymmdd = yymmdd
-    stringToBase64 = stringToBase64
-    decode = decode
-    uuid22 = uuid22
-    safeIntegerProduct2 = safeIntegerProduct2
-    safeIntegerProduct = safeIntegerProduct
-    binaryToBase58 = binaryToBase58
     base58ToBinary = base58ToBinary
     base64ToBinary = base64ToBinary
-    safeTimestamp2 = safeTimestamp2
-    rawencode = rawencode
-    keysort = keysort
-    inArray = inArray
-    safeStringLower2 = safeStringLower2
-    safeStringUpper2 = safeStringUpper2
-    isEmpty = isEmpty
-    ordered = ordered
-    filterBy = filterBy
-    uuid16 = uuid16
-    urlencodeWithArrayRepeat = urlencodeWithArrayRepeat
-    microseconds = microseconds
-    binaryToBase64 = binaryToBase64
-    strip = strip
-    toArray = toArray
-    safeFloatN = safeFloatN
-    safeIntegerN = safeIntegerN
-    safeIntegerProductN = safeIntegerProductN
-    safeTimestampN = safeTimestampN
-    safeValueN = safeValueN
-    safeStringN = safeStringN
-    safeStringLowerN = safeStringLowerN
-    safeStringUpperN = safeStringUpperN
-    urlencodeNested = urlencodeNested
-    parseDate = parseDate
-    ymd = ymd
-    isArray = inArrayFunc
     base64ToString = base64ToString
+    binaryConcatArray = binaryConcatArray
+    binaryToBase58 = binaryToBase58
     crc32 = crc32
+    decimalToPrecision = decimalToPrecision
+    decode = decode
+    deepExtend = deepExtend
+    encode = encode
+    extend = extend
+    extractParams = extractParams
+    filterBy = filterBy
+    flatten = flatten
+    groupBy = groupBy
+    hash = hash
+    hmac = hmac
+    implodeParams = implodeParams
+    inArray = inArray
+    indexBy = indexBy
+    isArray = inArrayFunc
+    isEmpty = isEmpty
+    isJsonEncodedObject = isJsonEncodedObject
+    isNode = isNode
+    iso8601 = iso8601
+    json = json
+    keys = keysFunc
+    keysort = keysort
+    merge = merge
+    microseconds = microseconds
+    milliseconds = milliseconds
+    newUpdates = true
+    now = now
+    numberToBE = numberToBE
+    numberToLE = numberToLE
+    numberToString = numberToString
+    omit = omit
+    omitZero = omitZero
+    ordered = ordered
+    parse8601 = parse8601
+    parseDate = parseDate
+    parseTimeframe = parseTimeframe
+    precisionFromString = precisionFromString
+    rawencode = rawencode
+    safeFloat = safeFloat
+    safeFloat2 = safeFloat2
+    safeFloatN = safeFloatN
+    safeInteger = safeInteger
+    safeInteger2 = safeInteger2
+    safeIntegerN = safeIntegerN
+    safeIntegerProduct = safeIntegerProduct
+    safeIntegerProduct2 = safeIntegerProduct2
+    safeIntegerProductN = safeIntegerProductN
+    safeString = safeString
+    safeString2 = safeString2
+    safeStringLower = safeStringLower
+    safeStringLower2 = safeStringLower2
+    safeStringLowerN = safeStringLowerN
+    safeStringN = safeStringN
+    safeStringUpper = safeStringUpper
+    safeStringUpper2 = safeStringUpper2
+    safeStringUpperN = safeStringUpperN
+    safeTimestamp = safeTimestamp
+    safeTimestamp2 = safeTimestamp2
+    safeTimestampN = safeTimestampN
+    safeValue = safeValue
+    safeValue2 = safeValue2
+    safeValueN = safeValueN
+    seconds = seconds
+    sortBy = sortBy
+    sortBy2 = sortBy2
+    streaming = {}
+    stringToBase64 = stringToBase64
+    strip = strip
+    sum = sum
+    toArray = toArray
+    unCamelCase = unCamelCase
+    unique = unique
+    urlencode = urlencode
+    urlencodeNested = urlencodeNested
+    urlencodeWithArrayRepeat = urlencodeWithArrayRepeat
+    uuid = uuid
+    uuid16 = uuid16
+    uuid22 = uuid22
+    uuidv1 = uuidv1
+    values = valuesFunc
+    vwap = vwapFunc
+    ymd = ymd
+    ymdhms = ymdhms
+    yymmdd = yymmdd
+    yyyymmdd = yyyymmdd
 
     describe () {
         return {

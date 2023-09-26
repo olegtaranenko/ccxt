@@ -31,7 +31,7 @@ function _interopNamespace(e) {
 }
 
 // ----------------------------------------------------------------------------
-const { isNode, deepExtend, extend, clone, flatten, unique, indexBy, sortBy, sortBy2, safeFloat2, groupBy, aggregate, uuid, unCamelCase, precisionFromString, Throttler, capitalize, now, decimalToPrecision, safeValue, safeValue2, safeString, safeString2, seconds, milliseconds, binaryToBase16, numberToBE, base16ToBinary, iso8601, omit, isJsonEncodedObject, safeInteger, sum, omitZero, implodeParams, extractParams, json, merge, binaryConcat, hash, ecdsa, arrayConcat, encode, urlencode, hmac, numberToString, parseTimeframe, safeInteger2, safeStringLower, parse8601, yyyymmdd, safeStringUpper, safeTimestamp, binaryConcatArray, uuidv1, numberToLE, ymdhms, stringToBase64, decode, uuid22, safeIntegerProduct2, safeIntegerProduct, safeStringLower2, yymmdd, base58ToBinary, binaryToBase58, safeTimestamp2, rawencode, keysort, inArray, isEmpty, ordered, filterBy, uuid16, safeFloat, base64ToBinary, safeStringUpper2, urlencodeWithArrayRepeat, microseconds, binaryToBase64, strip, toArray, safeFloatN, safeIntegerN, safeIntegerProductN, safeTimestampN, safeValueN, safeStringN, safeStringLowerN, safeStringUpperN, urlencodeNested, parseDate, ymd, base64ToString, crc32, TRUNCATE, ROUND, DECIMAL_PLACES, NO_PADDING, TICK_SIZE, SIGNIFICANT_DIGITS } = functions;
+const { aggregate, arrayConcat, base16ToBinary, base58ToBinary, base64ToBinary, base64ToString, binaryConcat, binaryConcatArray, binaryToBase16, binaryToBase58, binaryToBase64, capitalize, clone, crc32, DECIMAL_PLACES, decimalToPrecision, decode, deepExtend, ecdsa, encode, extend, extractParams, filterBy, flatten, groupBy, hash, hmac, implodeParams, inArray, indexBy, isArray, isEmpty, isJsonEncodedObject, isNode, iso8601, json, keys, keysort, merge, microseconds, milliseconds, NO_PADDING, now, numberToBE, numberToLE, numberToString, omit, omitZero, ordered, parse8601, parseDate, parseTimeframe, precisionFromString, rawencode, ROUND, safeFloat, safeFloat2, safeFloatN, safeInteger, safeInteger2, safeIntegerN, safeIntegerProduct, safeIntegerProduct2, safeIntegerProductN, safeString, safeString2, safeStringLower, safeStringLower2, safeStringLowerN, safeStringN, safeStringUpper, safeStringUpper2, safeStringUpperN, safeTimestamp, safeTimestamp2, safeTimestampN, safeValue, safeValue2, safeValueN, seconds, SIGNIFICANT_DIGITS sortBy, sortBy2, stringToBase64, strip, sum, Throttler, TICK_SIZE, toArray, TRUNCATE, unCamelCase, unique, urlencode, urlencodeNested, urlencodeWithArrayRepeat, uuid, uuid16, uuid22, uuidv1, values, vwap, ymd, ymdhms, yymmdd, yyyymmdd } = functions;
 // ----------------------------------------------------------------------------
 /**
  * @class Exchange
@@ -51,111 +51,66 @@ class Exchange {
         this.origin = '*'; // CORS origin
         //
         this.agent = undefined; // maintained for backwards compatibility
-        this.minFundingAddressLength = 1; // used in checkAddress
-        this.substituteCommonCurrencyCodes = true; // reserved
-        this.quoteJsonNumbers = true; // treat numbers in json as quoted precise strings
-        this.number = Number; // or String (a pointer to a function)
         this.handleContentTypeApplicationZip = false;
+        this.minFundingAddressLength = 1; // used in checkAddress
+        this.number = Number; // or String (a pointer to a function)
+        this.quoteJsonNumbers = true; // treat numbers in json as quoted precise strings
+        this.substituteCommonCurrencyCodes = true; // reserved
         // whether fees should be summed by currency code
-        this.reduceFees = true;
-        this.validateServerSsl = true;
-        this.validateClientSsl = false;
-        this.timeout = 10000; // milliseconds
-        this.verbose = false;
-        this.verboseTruncate = false;
-        this.twofa = undefined; // two-factor authentication (2FA)
+        this.accounts = undefined;
+        this.accountsById = undefined;
         this.balance = {};
-        this.orderbooks = {};
-        this.tickers = {};
-        this.orders = undefined;
-        this.transactions = {};
-        this.positions = {};
-        this.requiresWeb3 = false;
-        this.requiresEddsa = false;
+        this.baseCurrencies = undefined;
+        this.codes = undefined;
+        this.commonCurrencies = undefined;
+        this.currencies = undefined;
+        this.currencies_by_id = undefined;
+        this.enableLastHttpResponse = true;
         this.enableLastJsonResponse = true;
         this.enableLastHttpResponse = true;
         this.enableLastResponseHeaders = true;
+        this.enableRateLimit = undefined;
+        this.exceptions = {};
+        this.hostname = undefined;
+        this.httpExceptions = undefined;
+        this.id = undefined;
+        this.ids = undefined;
         this.last_http_response = undefined;
         this.last_json_response = undefined;
         this.last_response_headers = undefined;
-        this.id = undefined;
         this.markets = undefined;
-        this.status = undefined;
-        this.rateLimit = undefined; // milliseconds
-        this.tokenBucket = undefined;
-        this.throttler = undefined;
-        this.enableRateLimit = undefined;
-        this.httpExceptions = undefined;
         this.markets_by_id = undefined;
-        this.symbols = undefined;
-        this.ids = undefined;
-        this.currencies = undefined;
-        this.baseCurrencies = undefined;
-        this.quoteCurrencies = undefined;
-        this.currencies_by_id = undefined;
-        this.codes = undefined;
-        this.reloadingMarkets = undefined;
-        this.marketsLoading = undefined;
-        this.accounts = undefined;
-        this.accountsById = undefined;
-        this.commonCurrencies = undefined;
-        this.hostname = undefined;
-        this.precisionMode = undefined;
-        this.paddingMode = undefined;
-        this.exceptions = {};
-        this.timeframes = {};
-        this.version = undefined;
         this.marketsByAltname = undefined;
+        this.marketsLoading = undefined;
         this.name = undefined;
-        this.targetAccount = undefined;
+        this.orderbooks = {};
+        this.orders = undefined;
+        this.paddingMode = undefined;
+        this.positions = {};
+        this.precisionMode = undefined;
+        this.quoteCurrencies = undefined;
+        this.rateLimit = undefined; // milliseconds
+        this.reduceFees = true;
+        this.reloadingMarkets = undefined;
+        this.requiresEddsa = false;
+        this.requiresWeb3 = false;
         this.stablePairs = {};
+        this.status = undefined;
+        this.symbols = undefined;
+        this.targetAccount = undefined;
+        this.throttler = undefined;
+        this.tickers = {};
+        this.timeframes = {};
+        this.timeout = 10000; // milliseconds
+        this.tokenBucket = undefined;
+        this.transactions = {};
+        this.twofa = undefined; // two-factor authentication (2FA)
+        this.validateClientSsl = false;
+        this.validateServerSsl = true;
+        this.verbose = false;
+        this.version = undefined;
         // WS/PRO options
-        this.clients = {};
-        this.newUpdates = true;
-        this.streaming = {};
-        this.deepExtend = deepExtend;
-        this.isNode = isNode;
-        this.keys = generic.keys;
-        this.values = generic.values;
-        this.extend = extend;
-        this.clone = clone;
-        this.flatten = flatten;
-        this.unique = unique;
-        this.indexBy = indexBy;
-        this.sortBy = sortBy;
-        this.sortBy2 = sortBy2;
-        this.groupBy = groupBy;
         this.aggregate = aggregate;
-        this.uuid = uuid;
-        this.unCamelCase = unCamelCase;
-        this.precisionFromString = precisionFromString;
-        this.capitalize = capitalize;
-        this.now = now;
-        this.decimalToPrecision = decimalToPrecision;
-        this.safeValue = safeValue;
-        this.safeValue2 = safeValue2;
-        this.safeString = safeString;
-        this.safeString2 = safeString2;
-        this.safeFloat = safeFloat;
-        this.safeFloat2 = safeFloat2;
-        this.seconds = seconds;
-        this.milliseconds = milliseconds;
-        this.binaryToBase16 = binaryToBase16;
-        this.numberToBE = numberToBE;
-        this.base16ToBinary = base16ToBinary;
-        this.iso8601 = iso8601;
-        this.omit = omit;
-        this.isJsonEncodedObject = isJsonEncodedObject;
-        this.safeInteger = safeInteger;
-        this.sum = sum;
-        this.omitZero = omitZero;
-        this.implodeParams = implodeParams;
-        this.extractParams = extractParams;
-        this.json = json;
-        this.vwap = misc.vwap;
-        this.merge = merge;
-        this.binaryConcat = binaryConcat;
-        this.hash = hash;
         this.arrayConcat = arrayConcat;
         this.encode = encode;
         this.urlencode = urlencode;
@@ -181,35 +136,93 @@ class Exchange {
         this.binaryToBase58 = binaryToBase58;
         this.base58ToBinary = base58ToBinary;
         this.base64ToBinary = base64ToBinary;
-        this.safeTimestamp2 = safeTimestamp2;
-        this.rawencode = rawencode;
-        this.keysort = keysort;
-        this.inArray = inArray;
-        this.safeStringLower2 = safeStringLower2;
-        this.safeStringUpper2 = safeStringUpper2;
-        this.isEmpty = isEmpty;
-        this.ordered = ordered;
-        this.filterBy = filterBy;
-        this.uuid16 = uuid16;
-        this.urlencodeWithArrayRepeat = urlencodeWithArrayRepeat;
-        this.microseconds = microseconds;
-        this.binaryToBase64 = binaryToBase64;
-        this.strip = strip;
-        this.toArray = toArray;
-        this.safeFloatN = safeFloatN;
-        this.safeIntegerN = safeIntegerN;
-        this.safeIntegerProductN = safeIntegerProductN;
-        this.safeTimestampN = safeTimestampN;
-        this.safeValueN = safeValueN;
-        this.safeStringN = safeStringN;
-        this.safeStringLowerN = safeStringLowerN;
-        this.safeStringUpperN = safeStringUpperN;
-        this.urlencodeNested = urlencodeNested;
-        this.parseDate = parseDate;
-        this.ymd = ymd;
-        this.isArray = generic.inArray;
         this.base64ToString = base64ToString;
         this.crc32 = crc32;
+        this.decimalToPrecision = decimalToPrecision;
+        this.decode = decode;
+        this.deepExtend = deepExtend;
+        this.encode = encode;
+        this.extend = extend;
+        this.extractParams = extractParams;
+        this.filterBy = filterBy;
+        this.flatten = flatten;
+        this.groupBy = groupBy;
+        this.hash = hash;
+        this.hmac = hmac;
+        this.implodeParams = implodeParams;
+        this.inArray = inArray;
+        this.indexBy = indexBy;
+        this.isArray = generic.inArray;
+        this.isEmpty = isEmpty;
+        this.isJsonEncodedObject = isJsonEncodedObject;
+        this.isNode = isNode;
+        this.iso8601 = iso8601;
+        this.json = json;
+        this.keys = generic.keys;
+        this.keysort = keysort;
+        this.merge = merge;
+        this.microseconds = microseconds;
+        this.milliseconds = milliseconds;
+        this.newUpdates = true;
+        this.now = now;
+        this.numberToBE = numberToBE;
+        this.numberToLE = numberToLE;
+        this.numberToString = numberToString;
+        this.omit = omit;
+        this.omitZero = omitZero;
+        this.ordered = ordered;
+        this.parse8601 = parse8601;
+        this.parseDate = parseDate;
+        this.parseTimeframe = parseTimeframe;
+        this.precisionFromString = precisionFromString;
+        this.rawencode = rawencode;
+        this.safeFloat = safeFloat;
+        this.safeFloat2 = safeFloat2;
+        this.safeFloatN = safeFloatN;
+        this.safeInteger = safeInteger;
+        this.safeInteger2 = safeInteger2;
+        this.safeIntegerN = safeIntegerN;
+        this.safeIntegerProduct = safeIntegerProduct;
+        this.safeIntegerProduct2 = safeIntegerProduct2;
+        this.safeIntegerProductN = safeIntegerProductN;
+        this.safeString = safeString;
+        this.safeString2 = safeString2;
+        this.safeStringLower = safeStringLower;
+        this.safeStringLower2 = safeStringLower2;
+        this.safeStringLowerN = safeStringLowerN;
+        this.safeStringN = safeStringN;
+        this.safeStringUpper = safeStringUpper;
+        this.safeStringUpper2 = safeStringUpper2;
+        this.safeStringUpperN = safeStringUpperN;
+        this.safeTimestamp = safeTimestamp;
+        this.safeTimestamp2 = safeTimestamp2;
+        this.safeTimestampN = safeTimestampN;
+        this.safeValue = safeValue;
+        this.safeValue2 = safeValue2;
+        this.safeValueN = safeValueN;
+        this.seconds = seconds;
+        this.sortBy = sortBy;
+        this.sortBy2 = sortBy2;
+        this.streaming = {};
+        this.stringToBase64 = stringToBase64;
+        this.strip = strip;
+        this.sum = sum;
+        this.toArray = toArray;
+        this.unCamelCase = unCamelCase;
+        this.unique = unique;
+        this.urlencode = urlencode;
+        this.urlencodeNested = urlencodeNested;
+        this.urlencodeWithArrayRepeat = urlencodeWithArrayRepeat;
+        this.uuid = uuid;
+        this.uuid16 = uuid16;
+        this.uuid22 = uuid22;
+        this.uuidv1 = uuidv1;
+        this.values = generic.values;
+        this.vwap = misc.vwap;
+        this.ymd = ymd;
+        this.ymdhms = ymdhms;
+        this.yymmdd = yymmdd;
+        this.yyyymmdd = yyyymmdd;
         Object.assign(this, functions);
         //
         //     if (isNode) {
@@ -329,18 +342,13 @@ class Exchange {
             'pro': false,
             'alias': false,
             'has': {
-                'publicAPI': true,
-                'privateAPI': true,
-                'CORS': undefined,
-                'spot': undefined,
-                'margin': undefined,
-                'swap': undefined,
-                'future': undefined,
-                'option': undefined,
                 'addMargin': undefined,
                 'cancelAllOrders': undefined,
                 'cancelOrder': true,
                 'cancelOrders': undefined,
+                'cancelOrdersWs': undefined,
+                'cancelOrderWs': undefined,
+                'CORS': undefined,
                 'createDepositAddress': undefined,
                 'createLimitOrder': true,
                 'createMarketOrder': true,
@@ -404,6 +412,7 @@ class Exchange {
                 'fetchOrderBooks': undefined,
                 'fetchOrders': undefined,
                 'fetchOrderTrades': undefined,
+                'fetchOrderWs': undefined,
                 'fetchPermissions': undefined,
                 'fetchPosition': undefined,
                 'fetchPositions': undefined,
