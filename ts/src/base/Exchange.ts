@@ -34,13 +34,11 @@ const {
     implodeParams,
     inArray,
     indexBy,
-    isArray,
     isEmpty,
     isJsonEncodedObject,
     isNode,
     iso8601,
     json,
-    keys,
     keysort,
     merge,
     microseconds,
@@ -103,8 +101,6 @@ const {
     uuid16,
     uuid22,
     uuidv1,
-    values,
-    vwap,
     ymd,
     ymdhms,
     yymmdd,
@@ -336,11 +332,17 @@ export default class Exchange {
     // WS/PRO options
     aggregate = aggregate
     arrayConcat = arrayConcat
+    base16ToBinary = base16ToBinary
     base58ToBinary = base58ToBinary
     base64ToBinary = base64ToBinary
     base64ToString = base64ToString
+    binaryConcat = binaryConcat
     binaryConcatArray = binaryConcatArray
+    binaryToBase16 = binaryToBase16
     binaryToBase58 = binaryToBase58
+    capitalize = capitalize
+    clients = {}
+    clone = clone
     crc32 = crc32
     decimalToPrecision = decimalToPrecision
     decode = decode

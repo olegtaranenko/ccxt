@@ -31,7 +31,7 @@ function _interopNamespace(e) {
 }
 
 // ----------------------------------------------------------------------------
-const { aggregate, arrayConcat, base16ToBinary, base58ToBinary, base64ToBinary, base64ToString, binaryConcat, binaryConcatArray, binaryToBase16, binaryToBase58, binaryToBase64, capitalize, clone, crc32, DECIMAL_PLACES, decimalToPrecision, decode, deepExtend, ecdsa, encode, extend, extractParams, filterBy, flatten, groupBy, hash, hmac, implodeParams, inArray, indexBy, isArray, isEmpty, isJsonEncodedObject, isNode, iso8601, json, keys, keysort, merge, microseconds, milliseconds, NO_PADDING, now, numberToBE, numberToLE, numberToString, omit, omitZero, ordered, parse8601, parseDate, parseTimeframe, precisionFromString, rawencode, ROUND, safeFloat, safeFloat2, safeFloatN, safeInteger, safeInteger2, safeIntegerN, safeIntegerProduct, safeIntegerProduct2, safeIntegerProductN, safeString, safeString2, safeStringLower, safeStringLower2, safeStringLowerN, safeStringN, safeStringUpper, safeStringUpper2, safeStringUpperN, safeTimestamp, safeTimestamp2, safeTimestampN, safeValue, safeValue2, safeValueN, seconds, SIGNIFICANT_DIGITS sortBy, sortBy2, stringToBase64, strip, sum, Throttler, TICK_SIZE, toArray, TRUNCATE, unCamelCase, unique, urlencode, urlencodeNested, urlencodeWithArrayRepeat, uuid, uuid16, uuid22, uuidv1, values, vwap, ymd, ymdhms, yymmdd, yyyymmdd } = functions;
+const { aggregate, arrayConcat, base16ToBinary, base58ToBinary, base64ToBinary, base64ToString, binaryConcat, binaryConcatArray, binaryToBase16, binaryToBase58, binaryToBase64, capitalize, clone, crc32, DECIMAL_PLACES, decimalToPrecision, decode, deepExtend, ecdsa, encode, extend, extractParams, filterBy, flatten, groupBy, hash, hmac, implodeParams, inArray, indexBy, isEmpty, isJsonEncodedObject, isNode, iso8601, json, keysort, merge, microseconds, milliseconds, NO_PADDING, now, numberToBE, numberToLE, numberToString, omit, omitZero, ordered, parse8601, parseDate, parseTimeframe, precisionFromString, rawencode, ROUND, safeFloat, safeFloat2, safeFloatN, safeInteger, safeInteger2, safeIntegerN, safeIntegerProduct, safeIntegerProduct2, safeIntegerProductN, safeString, safeString2, safeStringLower, safeStringLower2, safeStringLowerN, safeStringN, safeStringUpper, safeStringUpper2, safeStringUpperN, safeTimestamp, safeTimestamp2, safeTimestampN, safeValue, safeValue2, safeValueN, seconds, SIGNIFICANT_DIGITS, sortBy, sortBy2, stringToBase64, strip, sum, Throttler, TICK_SIZE, toArray, TRUNCATE, unCamelCase, unique, urlencode, urlencodeNested, urlencodeWithArrayRepeat, uuid, uuid16, uuid22, uuidv1, ymd, ymdhms, yymmdd, yyyymmdd } = functions;
 // ----------------------------------------------------------------------------
 /**
  * @class Exchange
@@ -51,92 +51,78 @@ class Exchange {
         this.origin = '*'; // CORS origin
         //
         this.agent = undefined; // maintained for backwards compatibility
-        this.handleContentTypeApplicationZip = false;
         this.minFundingAddressLength = 1; // used in checkAddress
-        this.number = Number; // or String (a pointer to a function)
-        this.quoteJsonNumbers = true; // treat numbers in json as quoted precise strings
         this.substituteCommonCurrencyCodes = true; // reserved
+        this.quoteJsonNumbers = true; // treat numbers in json as quoted precise strings
+        this.number = Number; // or String (a pointer to a function)
+        this.handleContentTypeApplicationZip = false;
         // whether fees should be summed by currency code
-        this.accounts = undefined;
-        this.accountsById = undefined;
+        this.reduceFees = true;
+        this.validateServerSsl = true;
+        this.validateClientSsl = false;
+        this.timeout = 10000; // milliseconds
+        this.verbose = false;
+        this.verboseTruncate = false;
+        this.twofa = undefined; // two-factor authentication (2FA)
         this.balance = {};
-        this.baseCurrencies = undefined;
-        this.codes = undefined;
-        this.commonCurrencies = undefined;
-        this.currencies = undefined;
-        this.currencies_by_id = undefined;
-        this.enableLastHttpResponse = true;
+        this.orderbooks = {};
+        this.tickers = {};
+        this.orders = undefined;
+        this.transactions = {};
+        this.positions = {};
+        this.requiresWeb3 = false;
+        this.requiresEddsa = false;
         this.enableLastJsonResponse = true;
         this.enableLastHttpResponse = true;
         this.enableLastResponseHeaders = true;
-        this.enableRateLimit = undefined;
-        this.exceptions = {};
-        this.hostname = undefined;
-        this.httpExceptions = undefined;
-        this.id = undefined;
-        this.ids = undefined;
         this.last_http_response = undefined;
         this.last_json_response = undefined;
         this.last_response_headers = undefined;
+        this.id = undefined;
         this.markets = undefined;
-        this.markets_by_id = undefined;
-        this.marketsByAltname = undefined;
-        this.marketsLoading = undefined;
-        this.name = undefined;
-        this.orderbooks = {};
-        this.orders = undefined;
-        this.paddingMode = undefined;
-        this.positions = {};
-        this.precisionMode = undefined;
-        this.quoteCurrencies = undefined;
-        this.rateLimit = undefined; // milliseconds
-        this.reduceFees = true;
-        this.reloadingMarkets = undefined;
-        this.requiresEddsa = false;
-        this.requiresWeb3 = false;
-        this.stablePairs = {};
         this.status = undefined;
-        this.symbols = undefined;
-        this.targetAccount = undefined;
-        this.throttler = undefined;
-        this.tickers = {};
-        this.timeframes = {};
-        this.timeout = 10000; // milliseconds
+        this.rateLimit = undefined; // milliseconds
         this.tokenBucket = undefined;
-        this.transactions = {};
-        this.twofa = undefined; // two-factor authentication (2FA)
-        this.validateClientSsl = false;
-        this.validateServerSsl = true;
-        this.verbose = false;
+        this.throttler = undefined;
+        this.enableRateLimit = undefined;
+        this.httpExceptions = undefined;
+        this.markets_by_id = undefined;
+        this.symbols = undefined;
+        this.ids = undefined;
+        this.currencies = undefined;
+        this.baseCurrencies = undefined;
+        this.quoteCurrencies = undefined;
+        this.currencies_by_id = undefined;
+        this.codes = undefined;
+        this.reloadingMarkets = undefined;
+        this.marketsLoading = undefined;
+        this.accounts = undefined;
+        this.accountsById = undefined;
+        this.commonCurrencies = undefined;
+        this.hostname = undefined;
+        this.precisionMode = undefined;
+        this.paddingMode = undefined;
+        this.exceptions = {};
+        this.timeframes = {};
         this.version = undefined;
+        this.marketsByAltname = undefined;
+        this.name = undefined;
+        this.targetAccount = undefined;
+        this.stablePairs = {};
         // WS/PRO options
         this.aggregate = aggregate;
         this.arrayConcat = arrayConcat;
-        this.encode = encode;
-        this.urlencode = urlencode;
-        this.hmac = hmac;
-        this.numberToString = numberToString;
-        this.parseTimeframe = parseTimeframe;
-        this.safeInteger2 = safeInteger2;
-        this.safeStringLower = safeStringLower;
-        this.parse8601 = parse8601;
-        this.yyyymmdd = yyyymmdd;
-        this.safeStringUpper = safeStringUpper;
-        this.safeTimestamp = safeTimestamp;
-        this.binaryConcatArray = binaryConcatArray;
-        this.uuidv1 = uuidv1;
-        this.numberToLE = numberToLE;
-        this.ymdhms = ymdhms;
-        this.yymmdd = yymmdd;
-        this.stringToBase64 = stringToBase64;
-        this.decode = decode;
-        this.uuid22 = uuid22;
-        this.safeIntegerProduct2 = safeIntegerProduct2;
-        this.safeIntegerProduct = safeIntegerProduct;
-        this.binaryToBase58 = binaryToBase58;
+        this.base16ToBinary = base16ToBinary;
         this.base58ToBinary = base58ToBinary;
         this.base64ToBinary = base64ToBinary;
         this.base64ToString = base64ToString;
+        this.binaryConcat = binaryConcat;
+        this.binaryConcatArray = binaryConcatArray;
+        this.binaryToBase16 = binaryToBase16;
+        this.binaryToBase58 = binaryToBase58;
+        this.capitalize = capitalize;
+        this.clients = {};
+        this.clone = clone;
         this.crc32 = crc32;
         this.decimalToPrecision = decimalToPrecision;
         this.decode = decode;
@@ -342,13 +328,18 @@ class Exchange {
             'pro': false,
             'alias': false,
             'has': {
+                'publicAPI': true,
+                'privateAPI': true,
+                'CORS': undefined,
+                'spot': undefined,
+                'margin': undefined,
+                'swap': undefined,
+                'future': undefined,
+                'option': undefined,
                 'addMargin': undefined,
                 'cancelAllOrders': undefined,
                 'cancelOrder': true,
                 'cancelOrders': undefined,
-                'cancelOrdersWs': undefined,
-                'cancelOrderWs': undefined,
-                'CORS': undefined,
                 'createDepositAddress': undefined,
                 'createLimitOrder': true,
                 'createMarketOrder': true,
@@ -412,7 +403,6 @@ class Exchange {
                 'fetchOrderBooks': undefined,
                 'fetchOrders': undefined,
                 'fetchOrderTrades': undefined,
-                'fetchOrderWs': undefined,
                 'fetchPermissions': undefined,
                 'fetchPosition': undefined,
                 'fetchPositions': undefined,
