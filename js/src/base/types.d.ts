@@ -201,6 +201,13 @@ export interface Position {
     timestamp?: number;
     unrealizedPnl?: number;
 }
+export interface FundingRateHistory {
+    info: any;
+    symbol: string;
+    fundingRate: number;
+    timestamp?: number;
+    datetime?: string;
+}
 /** [ timestamp, open, high, low, close, volume ] */
 export declare type OHLCV = [number, number, number, number, number, number];
 /** [ timestamp, open, high, low, close, volume, count ] */
