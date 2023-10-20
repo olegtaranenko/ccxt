@@ -25,8 +25,8 @@ import totp from './functions/totp.js';
 export default class Exchange {
     constructor(userConfig = {}) {
         this.api = undefined;
-        this.userAgent = undefined;
         this.user_agent = undefined;
+        this.userAgent = undefined;
         //
         this.userAgents = {
             'chrome': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36',
@@ -37,15 +37,15 @@ export default class Exchange {
         this.origin = '*'; // CORS origin
         //
         this.agent = undefined; // maintained for backwards compatibility
-        this.minFundingAddressLength = 1; // used in checkAddress
-        this.substituteCommonCurrencyCodes = true; // reserved
-        this.quoteJsonNumbers = true; // treat numbers in json as quoted precise strings
-        this.number = Number; // or String (a pointer to a function)
         this.handleContentTypeApplicationZip = false;
+        this.minFundingAddressLength = 1; // used in checkAddress
+        this.number = Number; // or String (a pointer to a function)
+        this.quoteJsonNumbers = true; // treat numbers in json as quoted precise strings
+        this.substituteCommonCurrencyCodes = true; // reserved
         // whether fees should be summed by currency code
         this.reduceFees = true;
-        this.validateServerSsl = true;
         this.validateClientSsl = false;
+        this.validateServerSsl = true;
         this.timeout = 10000; // milliseconds
         this.verbose = false;
         this.verboseTruncate = false;
@@ -54,11 +54,9 @@ export default class Exchange {
         this.orderbooks = {};
         this.tickers = {};
         this.orders = undefined;
-        this.triggerOrders = undefined;
-        this.transactions = {};
         this.positions = {};
-        this.requiresWeb3 = false;
-        this.requiresEddsa = false;
+        this.tickers = {};
+        this.transactions = {};
         this.enableLastJsonResponse = true;
         this.enableLastHttpResponse = true;
         this.enableLastResponseHeaders = true;
@@ -321,45 +319,35 @@ export default class Exchange {
             'pro': false,
             'alias': false,
             'has': {
-                'publicAPI': true,
-                'privateAPI': true,
-                'CORS': undefined,
-                'spot': undefined,
-                'margin': undefined,
-                'swap': undefined,
-                'future': undefined,
-                'option': undefined,
                 'addMargin': undefined,
                 'cancelAllOrders': undefined,
+                'cancelAllOrdersWs': undefined,
                 'cancelOrder': true,
                 'cancelOrders': undefined,
+                'cancelOrdersWs': undefined,
+                'cancelOrderWs': undefined,
+                'CORS': undefined,
                 'createDepositAddress': undefined,
                 'createLimitOrder': true,
                 'createMarketOrder': true,
                 'createOrder': true,
+                'createOrderWs': undefined,
                 'createPostOnlyOrder': undefined,
                 'createReduceOnlyOrder': undefined,
-                'createStopOrder': undefined,
                 'createStopLimitOrder': undefined,
                 'createStopMarketOrder': undefined,
-                'createOrderWs': undefined,
-                'editOrderWs': undefined,
-                'fetchOpenOrdersWs': undefined,
-                'fetchOrderWs': undefined,
-                'cancelOrderWs': undefined,
-                'cancelOrdersWs': undefined,
-                'cancelAllOrdersWs': undefined,
-                'fetchTradesWs': undefined,
-                'fetchBalanceWs': undefined,
+                'createStopOrder': undefined,
                 'editOrder': 'emulated',
+                'editOrderWs': undefined,
                 'fetchAccounts': undefined,
                 'fetchBalance': true,
+                'fetchBalanceWs': undefined,
                 'fetchBidsAsks': undefined,
                 'fetchBorrowInterest': undefined,
                 'fetchBorrowRate': undefined,
                 'fetchBorrowRateHistory': undefined,
-                'fetchBorrowRatesPerSymbol': undefined,
                 'fetchBorrowRates': undefined,
+                'fetchBorrowRatesPerSymbol': undefined,
                 'fetchCanceledOrders': undefined,
                 'fetchClosedOrder': undefined,
                 'fetchClosedOrders': undefined,
@@ -370,8 +358,6 @@ export default class Exchange {
                 'fetchDepositAddressesByNetwork': undefined,
                 'fetchDeposits': undefined,
                 'fetchDepositsWithdrawals': undefined,
-                'fetchTransactionFee': undefined,
-                'fetchTransactionFees': undefined,
                 'fetchFundingHistory': undefined,
                 'fetchFundingRate': undefined,
                 'fetchFundingRateHistory': undefined,
@@ -391,11 +377,13 @@ export default class Exchange {
                 'fetchOpenInterestHistory': undefined,
                 'fetchOpenOrder': undefined,
                 'fetchOpenOrders': undefined,
+                'fetchOpenOrdersWs': undefined,
                 'fetchOrder': undefined,
                 'fetchOrderBook': true,
                 'fetchOrderBooks': undefined,
                 'fetchOrders': undefined,
                 'fetchOrderTrades': undefined,
+                'fetchOrderWs': undefined,
                 'fetchPermissions': undefined,
                 'fetchPosition': undefined,
                 'fetchPositions': undefined,
@@ -407,33 +395,43 @@ export default class Exchange {
                 'fetchTickers': undefined,
                 'fetchTime': undefined,
                 'fetchTrades': true,
+                'fetchTradesWs': undefined,
                 'fetchTradingFee': undefined,
                 'fetchTradingFees': undefined,
                 'fetchTradingLimits': undefined,
+                'fetchTransactionFee': undefined,
+                'fetchTransactionFees': undefined,
                 'fetchTransactions': undefined,
                 'fetchTransfers': undefined,
                 'fetchWithdrawAddresses': undefined,
                 'fetchWithdrawal': undefined,
                 'fetchWithdrawals': undefined,
+                'future': undefined,
+                'margin': undefined,
+                'option': undefined,
+                'privateAPI': true,
+                'publicAPI': true,
                 'reduceMargin': undefined,
                 'setLeverage': undefined,
                 'setMargin': undefined,
                 'setMarginMode': undefined,
                 'setPositionMode': undefined,
                 'signIn': undefined,
+                'spot': undefined,
+                'swap': undefined,
                 'transfer': undefined,
-                'withdraw': undefined,
-                'watchOrderBook': undefined,
-                'watchOrders': undefined,
+                'watchBalance': undefined,
                 'watchMyTrades': undefined,
-                'watchTickers': undefined,
+                'watchOHLCV': undefined,
+                'watchOHLCVForSymbols': undefined,
+                'watchOrderBook': undefined,
+                'watchOrderBookForSymbols': undefined,
+                'watchOrders': undefined,
                 'watchTicker': undefined,
+                'watchTickers': undefined,
                 'watchTrades': undefined,
                 'watchTradesForSymbols': undefined,
-                'watchOrderBookForSymbols': undefined,
-                'watchOHLCVForSymbols': undefined,
-                'watchBalance': undefined,
-                'watchOHLCV': undefined,
+                'withdraw': undefined,
             },
             'urls': {
                 'logo': undefined,
@@ -1565,58 +1563,58 @@ export default class Exchange {
     }
     safeMarketStructure(market = undefined) {
         const cleanStructure = {
-            'id': undefined,
-            'lowercaseId': undefined,
-            'symbol': undefined,
-            'base': undefined,
-            'quote': undefined,
-            'settle': undefined,
-            'baseId': undefined,
-            'quoteId': undefined,
-            'settleId': undefined,
-            'type': undefined,
-            'spot': undefined,
-            'margin': undefined,
-            'swap': undefined,
-            'future': undefined,
-            'option': undefined,
-            'index': undefined,
             'active': undefined,
+            'base': undefined,
+            'baseId': undefined,
             'contract': undefined,
-            'linear': undefined,
-            'inverse': undefined,
-            'taker': undefined,
-            'maker': undefined,
             'contractSize': undefined,
             'expiry': undefined,
             'expiryDatetime': undefined,
-            'strike': undefined,
+            'future': undefined,
+            'id': undefined,
+            'index': undefined,
+            'inverse': undefined,
+            'limits': {
+                'leverage': {
+                    'max': undefined,
+                    'min': undefined,
+                },
+                'amount': {
+                    'max': undefined,
+                    'min': undefined,
+                },
+                'price': {
+                    'max': undefined,
+                    'min': undefined,
+                },
+                'cost': {
+                    'max': undefined,
+                    'min': undefined,
+                },
+            },
+            'linear': undefined,
+            'lowercaseId': undefined,
+            'maker': undefined,
+            'margin': undefined,
+            'option': undefined,
             'optionType': undefined,
             'precision': {
                 'amount': undefined,
-                'price': undefined,
-                'cost': undefined,
                 'base': undefined,
+                'cost': undefined,
+                'price': undefined,
                 'quote': undefined,
             },
-            'limits': {
-                'leverage': {
-                    'min': undefined,
-                    'max': undefined,
-                },
-                'amount': {
-                    'min': undefined,
-                    'max': undefined,
-                },
-                'price': {
-                    'min': undefined,
-                    'max': undefined,
-                },
-                'cost': {
-                    'min': undefined,
-                    'max': undefined,
-                },
-            },
+            'quote': undefined,
+            'quoteId': undefined,
+            'settle': undefined,
+            'settleId': undefined,
+            'spot': undefined,
+            'strike': undefined,
+            'swap': undefined,
+            'symbol': undefined,
+            'taker': undefined,
+            'type': undefined,
             'created': undefined,
             'info': undefined,
         };
@@ -4532,14 +4530,14 @@ export default class Exchange {
     }
     safeOpenInterest(interest, market = undefined) {
         return this.extend(interest, {
-            'symbol': this.safeString(market, 'symbol'),
             'baseVolume': this.safeNumber(interest, 'baseVolume'),
-            'quoteVolume': this.safeNumber(interest, 'quoteVolume'),
-            'openInterestAmount': this.safeNumber(interest, 'openInterestAmount'),
-            'openInterestValue': this.safeNumber(interest, 'openInterestValue'),
-            'timestamp': this.safeInteger(interest, 'timestamp'),
             'datetime': this.safeString(interest, 'datetime'),
             'info': this.safeValue(interest, 'info'),
+            'openInterestAmount': this.safeNumber(interest, 'openInterestAmount'),
+            'openInterestValue': this.safeNumber(interest, 'openInterestValue'),
+            'quoteVolume': this.safeNumber(interest, 'quoteVolume'),
+            'symbol': this.safeString(market, 'symbol'),
+            'timestamp': this.safeInteger(interest, 'timestamp'),
         });
     }
     parseLiquidation(liquidation, market = undefined) {

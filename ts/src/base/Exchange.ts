@@ -163,25 +163,25 @@ export default class Exchange {
     api = undefined
 
     // PROXY & USER-AGENTS (see "examples/proxy-usage" file for explanation)
-    proxy: any; // maintained for backwards compatibility, no-one should use it from now on
-    proxyUrl: string;
-    proxy_url: string;
-    proxyUrlCallback: any;
-    proxy_url_callback: any;
-    httpProxy: string;
     http_proxy: string;
-    httpProxyCallback: any;
     http_proxy_callback: any;
-    httpsProxy: string;
+    httpProxy: string;
+    httpProxyCallback: any;
     https_proxy: string;
-    httpsProxyCallback: any;
     https_proxy_callback: any;
-    socksProxy: string;
+    httpsProxy: string;
+    httpsProxyCallback: any;
+    proxy: any; // maintained for backwards compatibility, no-one should use it from now on
+    proxy_url: string;
+    proxy_url_callback: any;
+    proxyUrl: string;
+    proxyUrlCallback: any;
     socks_proxy: string;
-    socksProxyCallback: any;
     socks_proxy_callback: any;
-    userAgent: { 'User-Agent': string } | false = undefined;
+    socksProxy: string;
+    socksProxyCallback: any;
     user_agent: { 'User-Agent': string } | false = undefined;
+    userAgent: { 'User-Agent': string } | false = undefined;
     //
     userAgents: any = {
         'chrome': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36',
@@ -193,22 +193,22 @@ export default class Exchange {
     //
     agent = undefined; // maintained for backwards compatibility
 
-    minFundingAddressLength = 1 // used in checkAddress
-    substituteCommonCurrencyCodes = true  // reserved
-    quoteJsonNumbers = true // treat numbers in json as quoted precise strings
-    number = Number // or String (a pointer to a function)
     handleContentTypeApplicationZip = false
+    minFundingAddressLength = 1 // used in checkAddress
+    number = Number // or String (a pointer to a function)
+    quoteJsonNumbers = true // treat numbers in json as quoted precise strings
+    substituteCommonCurrencyCodes = true  // reserved
 
     // whether fees should be summed by currency code
     reduceFees = true
 
     // do not delete this line, it is needed for users to be able to define their own fetchImplementation
-    fetchImplementation: any
     AbortError: any
     FetchError: any
+    fetchImplementation: any
 
-    validateServerSsl = true
     validateClientSsl = false
+    validateServerSsl = true
 
     timeout       = 10000 // milliseconds
     verbose       = false
@@ -217,24 +217,24 @@ export default class Exchange {
     twofa         = undefined // two-factor authentication (2FA)
 
     apiKey: string;
-    secret: string;
-    uid: string;
-    login:string;
+    login: string;
     password: string;
     privateKey: string;// a "0x"-prefixed hexstring private key for a wallet
-    walletAddress: string; // a wallet address "0x"-prefixed hexstring
+    secret: string;
     token: string; // reserved for HTTP auth in some cases
+    uid: string;
+    walletAddress: string; // a wallet address "0x"-prefixed hexstring
 
-    balance      = {}
-    orderbooks   = {}
-    tickers      = {}
-    orders       = undefined
-    triggerOrders = undefined
+    balance = {}
+    myTrades: any
+    ohlcvs: any
+    orderbooks = {}
+    orders = undefined
+    positions = {}
+    tickers = {}
     trades: any
     transactions = {}
-    ohlcvs: any
-    myTrades: any
-    positions    = {}
+    triggerOrders = undefined
     urls: {
         logo?: string;
         api?: string | Dictionary<string>;
@@ -442,45 +442,35 @@ export default class Exchange {
             'pro': false, // if it is integrated with CCXT Pro for WebSocket support
             'alias': false, // whether this exchange is an alias to another exchange
             'has': {
-                'publicAPI': true,
-                'privateAPI': true,
-                'CORS': undefined,
-                'spot': undefined,
-                'margin': undefined,
-                'swap': undefined,
-                'future': undefined,
-                'option': undefined,
                 'addMargin': undefined,
                 'cancelAllOrders': undefined,
+                'cancelAllOrdersWs': undefined,
                 'cancelOrder': true,
                 'cancelOrders': undefined,
+                'cancelOrdersWs': undefined,
+                'cancelOrderWs': undefined,
+                'CORS': undefined,
                 'createDepositAddress': undefined,
                 'createLimitOrder': true,
                 'createMarketOrder': true,
                 'createOrder': true,
+                'createOrderWs': undefined,
                 'createPostOnlyOrder': undefined,
                 'createReduceOnlyOrder': undefined,
-                'createStopOrder': undefined,
                 'createStopLimitOrder': undefined,
                 'createStopMarketOrder': undefined,
-                'createOrderWs': undefined,
-                'editOrderWs': undefined,
-                'fetchOpenOrdersWs': undefined,
-                'fetchOrderWs': undefined,
-                'cancelOrderWs': undefined,
-                'cancelOrdersWs': undefined,
-                'cancelAllOrdersWs': undefined,
-                'fetchTradesWs': undefined,
-                'fetchBalanceWs': undefined,
+                'createStopOrder': undefined,
                 'editOrder': 'emulated',
+                'editOrderWs': undefined,
                 'fetchAccounts': undefined,
                 'fetchBalance': true,
+                'fetchBalanceWs': undefined,
                 'fetchBidsAsks': undefined,
                 'fetchBorrowInterest': undefined,
                 'fetchBorrowRate': undefined,
                 'fetchBorrowRateHistory': undefined,
-                'fetchBorrowRatesPerSymbol': undefined,
                 'fetchBorrowRates': undefined,
+                'fetchBorrowRatesPerSymbol': undefined,
                 'fetchCanceledOrders': undefined,
                 'fetchClosedOrder': undefined,
                 'fetchClosedOrders': undefined,
@@ -491,8 +481,6 @@ export default class Exchange {
                 'fetchDepositAddressesByNetwork': undefined,
                 'fetchDeposits': undefined,
                 'fetchDepositsWithdrawals': undefined,
-                'fetchTransactionFee': undefined,
-                'fetchTransactionFees': undefined,
                 'fetchFundingHistory': undefined,
                 'fetchFundingRate': undefined,
                 'fetchFundingRateHistory': undefined,
@@ -512,11 +500,13 @@ export default class Exchange {
                 'fetchOpenInterestHistory': undefined,
                 'fetchOpenOrder': undefined,
                 'fetchOpenOrders': undefined,
+                'fetchOpenOrdersWs': undefined,
                 'fetchOrder': undefined,
                 'fetchOrderBook': true,
                 'fetchOrderBooks': undefined,
                 'fetchOrders': undefined,
                 'fetchOrderTrades': undefined,
+                'fetchOrderWs': undefined,
                 'fetchPermissions': undefined,
                 'fetchPosition': undefined,
                 'fetchPositions': undefined,
@@ -528,9 +518,12 @@ export default class Exchange {
                 'fetchTickers': undefined,
                 'fetchTime': undefined,
                 'fetchTrades': true,
+                'fetchTradesWs': undefined,
                 'fetchTradingFee': undefined,
                 'fetchTradingFees': undefined,
                 'fetchTradingLimits': undefined,
+                'fetchTransactionFee': undefined,
+                'fetchTransactionFees': undefined,
                 'fetchTransactions': undefined,
                 'fetchTransfers': undefined,
                 'fetchWithdrawAddresses': undefined,
@@ -543,18 +536,18 @@ export default class Exchange {
                 'setPositionMode': undefined,
                 'signIn': undefined,
                 'transfer': undefined,
-                'withdraw': undefined,
-                'watchOrderBook': undefined,
-                'watchOrders': undefined,
+                'watchBalance': undefined,
                 'watchMyTrades': undefined,
-                'watchTickers': undefined,
+                'watchOHLCV': undefined,
+                'watchOHLCVForSymbols': undefined,
+                'watchOrderBook': undefined,
+                'watchOrderBookForSymbols': undefined,
+                'watchOrders': undefined,
                 'watchTicker': undefined,
+                'watchTickers': undefined,
                 'watchTrades': undefined,
                 'watchTradesForSymbols': undefined,
-                'watchOrderBookForSymbols': undefined,
-                'watchOHLCVForSymbols': undefined,
-                'watchBalance': undefined,
-                'watchOHLCV': undefined,
+                'withdraw': undefined,
             },
             'urls': {
                 'logo': undefined,
@@ -1367,7 +1360,7 @@ export default class Exchange {
         return value.split ('');
     }
 
-    valueIsDefined(value){
+    valueIsDefined (value) {
         return value !== undefined && value !== null;
     }
 
@@ -1886,58 +1879,58 @@ export default class Exchange {
 
     safeMarketStructure (market: object = undefined) {
         const cleanStructure = {
-            'id': undefined,
-            'lowercaseId': undefined,
-            'symbol': undefined,
-            'base': undefined,
-            'quote': undefined,
-            'settle': undefined,
-            'baseId': undefined,
-            'quoteId': undefined,
-            'settleId': undefined,
-            'type': undefined,
-            'spot': undefined,
-            'margin': undefined,
-            'swap': undefined,
-            'future': undefined,
-            'option': undefined,
-            'index': undefined,
             'active': undefined,
+            'base': undefined,
+            'baseId': undefined,
             'contract': undefined,
-            'linear': undefined,
-            'inverse': undefined,
-            'taker': undefined,
-            'maker': undefined,
             'contractSize': undefined,
             'expiry': undefined,
             'expiryDatetime': undefined,
-            'strike': undefined,
+            'future': undefined,
+            'id': undefined,
+            'index': undefined,
+            'inverse': undefined,
+            'limits': {
+                'leverage': {
+                    'max': undefined,
+                    'min': undefined,
+                },
+                'amount': {
+                    'max': undefined,
+                    'min': undefined,
+                },
+                'price': {
+                    'max': undefined,
+                    'min': undefined,
+                },
+                'cost': {
+                    'max': undefined,
+                    'min': undefined,
+                },
+            },
+            'linear': undefined,
+            'lowercaseId': undefined,
+            'maker': undefined,
+            'margin': undefined,
+            'option': undefined,
             'optionType': undefined,
             'precision': {
                 'amount': undefined,
-                'price': undefined,
-                'cost': undefined,
                 'base': undefined,
+                'cost': undefined,
+                'price': undefined,
                 'quote': undefined,
             },
-            'limits': {
-                'leverage': {
-                    'min': undefined,
-                    'max': undefined,
-                },
-                'amount': {
-                    'min': undefined,
-                    'max': undefined,
-                },
-                'price': {
-                    'min': undefined,
-                    'max': undefined,
-                },
-                'cost': {
-                    'min': undefined,
-                    'max': undefined,
-                },
-            },
+            'quote': undefined,
+            'quoteId': undefined,
+            'settle': undefined,
+            'settleId': undefined,
+            'spot': undefined,
+            'strike': undefined,
+            'swap': undefined,
+            'symbol': undefined,
+            'taker': undefined,
+            'type': undefined,
             'created': undefined,
             'info': undefined,
         };
@@ -4991,14 +4984,14 @@ export default class Exchange {
 
     safeOpenInterest (interest, market = undefined): OpenInterest {
         return this.extend (interest, {
-            'symbol': this.safeString (market, 'symbol'),
             'baseVolume': this.safeNumber (interest, 'baseVolume'), // deprecated
-            'quoteVolume': this.safeNumber (interest, 'quoteVolume'), // deprecated
-            'openInterestAmount': this.safeNumber (interest, 'openInterestAmount'),
-            'openInterestValue': this.safeNumber (interest, 'openInterestValue'),
-            'timestamp': this.safeInteger (interest, 'timestamp'),
             'datetime': this.safeString (interest, 'datetime'),
             'info': this.safeValue (interest, 'info'),
+            'openInterestAmount': this.safeNumber (interest, 'openInterestAmount'),
+            'openInterestValue': this.safeNumber (interest, 'openInterestValue'),
+            'quoteVolume': this.safeNumber (interest, 'quoteVolume'), // deprecated
+            'symbol': this.safeString (market, 'symbol'),
+            'timestamp': this.safeInteger (interest, 'timestamp'),
         });
     }
 
