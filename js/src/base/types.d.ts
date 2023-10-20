@@ -18,6 +18,7 @@ export interface Market {
     baseId: string;
     contract?: boolean;
     contractSize?: number | undefined;
+    created?: number | undefined;
     expiry?: number | undefined;
     expiryDatetime?: string | undefined;
     feeSide?: string | undefined;
@@ -154,6 +155,8 @@ export interface PartialBalances extends Dictionary<number> {
 }
 export interface Balances extends Dictionary<Balance> {
     info: any;
+    timestamp?: any;
+    datetime?: any;
 }
 export interface DepositAddress {
     address: string;
@@ -207,6 +210,25 @@ export interface FundingRateHistory {
     fundingRate: number;
     timestamp?: number;
     datetime?: string;
+}
+export interface OpenInterest {
+    symbol: string;
+    openInterestAmount?: number;
+    openInterestValue?: number;
+    baseVolume?: number;
+    quoteVolume?: number;
+    timestamp?: number;
+    datetime?: string;
+    info: any;
+}
+export interface Liquidation {
+    info: any;
+    symbol: string;
+    timestamp?: number;
+    datetime?: string;
+    price: number;
+    baseValue?: number;
+    quoteValue?: number;
 }
 /** [ timestamp, open, high, low, close, volume ] */
 export declare type OHLCV = [number, number, number, number, number, number];
