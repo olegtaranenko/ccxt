@@ -51,18 +51,19 @@ class Exchange {
         this.origin = '*'; // CORS origin
         //
         this.agent = undefined; // maintained for backwards compatibility
-        this.minFundingAddressLength = 1; // used in checkAddress
-        this.substituteCommonCurrencyCodes = true; // reserved
-        this.quoteJsonNumbers = true; // treat numbers in json as quoted precise strings
-        this.number = Number; // or String (a pointer to a function)
         this.handleContentTypeApplicationZip = false;
+        this.minFundingAddressLength = 1; // used in checkAddress
+        this.number = Number; // or String (a pointer to a function)
+        this.quoteJsonNumbers = true; // treat numbers in json as quoted precise strings
+        this.substituteCommonCurrencyCodes = true; // reserved
         // whether fees should be summed by currency code
         this.reduceFees = true;
         this.validateClientSsl = false;
         this.validateServerSsl = true;
         this.timeout = 10000; // milliseconds
-        this.twofa = undefined; // two-factor authentication (2FA)
         this.verbose = false;
+        this.verboseTruncate = false;
+        this.twofa = undefined; // two-factor authentication (2FA)
         this.balance = {};
         this.orderbooks = {};
         this.orders = undefined;
@@ -70,8 +71,9 @@ class Exchange {
         this.tickers = {};
         this.transactions = {};
         this.triggerOrders = undefined;
-        this.requiresEddsa = false;
         this.requiresWeb3 = false;
+        this.requiresEddsa = false;
+        this.enableLastJsonResponse = true;
         this.enableLastHttpResponse = true;
         this.enableLastResponseHeaders = true;
         this.last_http_response = undefined;
@@ -80,27 +82,27 @@ class Exchange {
         this.id = undefined;
         this.markets = undefined;
         this.status = undefined;
-        this.enableRateLimit = undefined;
         this.rateLimit = undefined; // milliseconds
-        this.throttler = undefined;
         this.tokenBucket = undefined;
+        this.throttler = undefined;
+        this.enableRateLimit = undefined;
         this.httpExceptions = undefined;
-        this.currencies = undefined;
-        this.ids = undefined;
         this.markets_by_id = undefined;
         this.symbols = undefined;
+        this.ids = undefined;
+        this.currencies = undefined;
         this.baseCurrencies = undefined;
-        this.codes = undefined;
-        this.currencies_by_id = undefined;
         this.quoteCurrencies = undefined;
-        this.marketsLoading = undefined;
+        this.currencies_by_id = undefined;
+        this.codes = undefined;
         this.reloadingMarkets = undefined;
+        this.marketsLoading = undefined;
         this.accounts = undefined;
         this.accountsById = undefined;
         this.commonCurrencies = undefined;
         this.hostname = undefined;
-        this.paddingMode = undefined;
         this.precisionMode = undefined;
+        this.paddingMode = undefined;
         this.exceptions = {};
         this.timeframes = {};
         this.version = undefined;
@@ -327,45 +329,35 @@ class Exchange {
             'pro': false,
             'alias': false,
             'has': {
-                'publicAPI': true,
-                'privateAPI': true,
-                'CORS': undefined,
-                'spot': undefined,
-                'margin': undefined,
-                'swap': undefined,
-                'future': undefined,
-                'option': undefined,
                 'addMargin': undefined,
                 'cancelAllOrders': undefined,
+                'cancelAllOrdersWs': undefined,
                 'cancelOrder': true,
                 'cancelOrders': undefined,
+                'cancelOrdersWs': undefined,
+                'cancelOrderWs': undefined,
+                'CORS': undefined,
                 'createDepositAddress': undefined,
                 'createLimitOrder': true,
                 'createMarketOrder': true,
                 'createOrder': true,
+                'createOrderWs': undefined,
                 'createPostOnlyOrder': undefined,
                 'createReduceOnlyOrder': undefined,
-                'createStopOrder': undefined,
                 'createStopLimitOrder': undefined,
                 'createStopMarketOrder': undefined,
-                'createOrderWs': undefined,
-                'editOrderWs': undefined,
-                'fetchOpenOrdersWs': undefined,
-                'fetchOrderWs': undefined,
-                'cancelOrderWs': undefined,
-                'cancelOrdersWs': undefined,
-                'cancelAllOrdersWs': undefined,
-                'fetchTradesWs': undefined,
-                'fetchBalanceWs': undefined,
+                'createStopOrder': undefined,
                 'editOrder': 'emulated',
+                'editOrderWs': undefined,
                 'fetchAccounts': undefined,
                 'fetchBalance': true,
+                'fetchBalanceWs': undefined,
                 'fetchBidsAsks': undefined,
                 'fetchBorrowInterest': undefined,
                 'fetchBorrowRate': undefined,
                 'fetchBorrowRateHistory': undefined,
-                'fetchBorrowRatesPerSymbol': undefined,
                 'fetchBorrowRates': undefined,
+                'fetchBorrowRatesPerSymbol': undefined,
                 'fetchCanceledOrders': undefined,
                 'fetchClosedOrder': undefined,
                 'fetchClosedOrders': undefined,
@@ -376,8 +368,6 @@ class Exchange {
                 'fetchDepositAddressesByNetwork': undefined,
                 'fetchDeposits': undefined,
                 'fetchDepositsWithdrawals': undefined,
-                'fetchTransactionFee': undefined,
-                'fetchTransactionFees': undefined,
                 'fetchFundingHistory': undefined,
                 'fetchFundingRate': undefined,
                 'fetchFundingRateHistory': undefined,
@@ -397,11 +387,13 @@ class Exchange {
                 'fetchOpenInterestHistory': undefined,
                 'fetchOpenOrder': undefined,
                 'fetchOpenOrders': undefined,
+                'fetchOpenOrdersWs': undefined,
                 'fetchOrder': undefined,
                 'fetchOrderBook': true,
                 'fetchOrderBooks': undefined,
                 'fetchOrders': undefined,
                 'fetchOrderTrades': undefined,
+                'fetchOrderWs': undefined,
                 'fetchPermissions': undefined,
                 'fetchPosition': undefined,
                 'fetchPositions': undefined,
@@ -413,9 +405,12 @@ class Exchange {
                 'fetchTickers': undefined,
                 'fetchTime': undefined,
                 'fetchTrades': true,
+                'fetchTradesWs': undefined,
                 'fetchTradingFee': undefined,
                 'fetchTradingFees': undefined,
                 'fetchTradingLimits': undefined,
+                'fetchTransactionFee': undefined,
+                'fetchTransactionFees': undefined,
                 'fetchTransactions': undefined,
                 'fetchTransfers': undefined,
                 'fetchWithdrawAddresses': undefined,
@@ -428,18 +423,18 @@ class Exchange {
                 'setPositionMode': undefined,
                 'signIn': undefined,
                 'transfer': undefined,
-                'withdraw': undefined,
-                'watchOrderBook': undefined,
-                'watchOrders': undefined,
+                'watchBalance': undefined,
                 'watchMyTrades': undefined,
-                'watchTickers': undefined,
+                'watchOHLCV': undefined,
+                'watchOHLCVForSymbols': undefined,
+                'watchOrderBook': undefined,
+                'watchOrderBookForSymbols': undefined,
+                'watchOrders': undefined,
                 'watchTicker': undefined,
+                'watchTickers': undefined,
                 'watchTrades': undefined,
                 'watchTradesForSymbols': undefined,
-                'watchOrderBookForSymbols': undefined,
-                'watchOHLCVForSymbols': undefined,
-                'watchBalance': undefined,
-                'watchOHLCV': undefined,
+                'withdraw': undefined,
             },
             'urls': {
                 'logo': undefined,

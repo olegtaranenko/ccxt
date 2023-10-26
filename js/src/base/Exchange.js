@@ -52,11 +52,13 @@ export default class Exchange {
         this.twofa = undefined; // two-factor authentication (2FA)
         this.balance = {};
         this.orderbooks = {};
-        this.tickers = {};
         this.orders = undefined;
         this.positions = {};
         this.tickers = {};
         this.transactions = {};
+        this.triggerOrders = undefined;
+        this.requiresWeb3 = false;
+        this.requiresEddsa = false;
         this.enableLastJsonResponse = true;
         this.enableLastHttpResponse = true;
         this.enableLastResponseHeaders = true;
@@ -406,19 +408,12 @@ export default class Exchange {
                 'fetchWithdrawAddresses': undefined,
                 'fetchWithdrawal': undefined,
                 'fetchWithdrawals': undefined,
-                'future': undefined,
-                'margin': undefined,
-                'option': undefined,
-                'privateAPI': true,
-                'publicAPI': true,
                 'reduceMargin': undefined,
                 'setLeverage': undefined,
                 'setMargin': undefined,
                 'setMarginMode': undefined,
                 'setPositionMode': undefined,
                 'signIn': undefined,
-                'spot': undefined,
-                'swap': undefined,
                 'transfer': undefined,
                 'watchBalance': undefined,
                 'watchMyTrades': undefined,
