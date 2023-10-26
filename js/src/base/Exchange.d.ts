@@ -4,7 +4,7 @@ ExchangeError, AuthenticationError, DDoSProtection, RequestTimeout, ExchangeNotA
 import WsClient from './ws/WsClient.js';
 import { Future } from './ws/Future.js';
 import { OrderBook as WsOrderBook, IndexedOrderBook, CountedOrderBook } from './ws/OrderBook.js';
-import { Balance, Balances, Currency, DepositAddressResponse, Dictionary, FundingRateHistory, IndexType, Int, Liquidation, Market, MinMax, OHLCV, OHLCVC, OpenInterest, Order, OrderBook, OrderSide, OrderType, Position, Ticker, Trade } from './types.js';
+import { Balance, Balances, Currency, DepositAddressResponse, Dictionary, FundingRateHistory, IndexType, Int, Liquidation, Market, MinMax, OHLCV, OHLCVC, Order, OrderBook, OrderRequest, OrderSide, OrderType, OpenInterest, Position, Ticker, Trade } from './types.js';
 export { Balance, Balances, Currency, DepositAddressResponse, Dictionary, Fee, FundingRateHistory, IndexType, Int, Liquidation, Market, MinMax, OHLCV, OHLCVC, Order, OrderBook, OrderSide, OrderType, Position, Ticker, Trade, Transaction } from './types.js';
 /**
  * @class Exchange
@@ -238,7 +238,7 @@ export default class Exchange {
     safeValue2: (o: any, k1: string | number, k2: string | number, $default?: any) => any;
     safeValueN: (o: any, k: (string | number)[], $default?: any) => any;
     seconds: () => number;
-    sortBy: (array: any, key: any, descending?: boolean, direction?: number) => any;
+    sortBy: (array: any, key: any, descending?: boolean, defaultValue?: any, direction?: number) => any;
     sortBy2: (array: any, key1: any, key2: any, descending?: boolean, direction?: number) => any;
     streaming: {};
     stringToBase64: (string: any) => string;
@@ -282,6 +282,7 @@ export default class Exchange {
             createLimitOrder: boolean;
             createMarketOrder: boolean;
             createOrder: boolean;
+            createOrders: any;
             createOrderWs: any;
             createPostOnlyOrder: any;
             createReduceOnlyOrder: any;
@@ -709,6 +710,7 @@ export default class Exchange {
     fetchOrderStatus(id: string, symbol?: string, params?: {}): Promise<string>;
     fetchUnifiedOrder(order: any, params?: {}): Promise<Order>;
     createOrder(symbol: string, type: OrderType, side: OrderSide, amount: any, price?: any, params?: {}): Promise<Order>;
+    createOrders(orders: OrderRequest[], params?: {}): Promise<Order[]>;
     createOrderWs(symbol: string, type: OrderType, side: OrderSide, amount: number, price?: number, params?: {}): Promise<Order>;
     cancelOrder(id: string, symbol?: string, params?: {}): Promise<any>;
     cancelOrderWs(id: string, symbol?: string, params?: {}): Promise<any>;
