@@ -3,7 +3,7 @@ import { AuthenticationError, DDoSProtection, ExchangeError, ExchangeNotAvailabl
 import WsClient from './ws/WsClient.js';
 import { Future } from './ws/Future.js';
 import { CountedOrderBook, IndexedOrderBook, OrderBook as WsOrderBook } from './ws/OrderBook.js';
-import { Balance, Balances, Currency, DepositAddressResponse, Dictionary, FundingRateHistory, IndexType, Int, Liquidation, Market, MinMax, OHLCV, OHLCVC, Order, OrderBook, OrderRequest, OrderSide, OpenInterest, OrderType, Position, Ticker, Trade } from './types.js';
+import { Balance, Balances, Currency, DepositAddressResponse, Dictionary, FundingRateHistory, IndexType, Int, Liquidation, Market, MinMax, OHLCV, OHLCVC, Order, OrderBook, OrderSide, OpenInterest, OrderRequest, OrderType, Position, Ticker, Trade } from './types.js';
 export { Balance, Balances, Currency, DepositAddressResponse, Dictionary, Fee, FundingRateHistory, IndexType, Int, Liquidation, Market, MinMax, OHLCV, OHLCVC, Order, OrderBook, OrderSide, OrderType, Position, Ticker, Trade, Transaction } from './types.js';
 /**
  * @class Exchange
@@ -174,13 +174,13 @@ export default class Exchange {
         outputLen: number;
         blockLen: number;
         create(): import("../static_dependencies/noble-hashes/utils.js").Hash<import("../static_dependencies/noble-hashes/utils.js").Hash<any>>;
-    }, digest?: "hex" | "base64" | "binary") => any;
+    }, digest?: "binary" | "hex" | "base64") => any;
     hmac: (request: import("../static_dependencies/noble-hashes/utils.js").Input, secret: import("../static_dependencies/noble-hashes/utils.js").Input, hash: {
         (message: import("../static_dependencies/noble-hashes/utils.js").Input): Uint8Array;
         outputLen: number;
         blockLen: number;
         create(): import("../static_dependencies/noble-hashes/utils.js").Hash<import("../static_dependencies/noble-hashes/utils.js").Hash<any>>;
-    }, digest?: "hex" | "base64" | "binary") => any;
+    }, digest?: "binary" | "hex" | "base64") => any;
     implodeParams: (string: any, params: any) => any;
     inArray: (needle: any, haystack: any) => any;
     indexBy: (x: any, k: any, out?: {}) => {};
@@ -236,8 +236,8 @@ export default class Exchange {
     safeValue2: (o: any, k1: string | number, k2: string | number, $default?: any) => any;
     safeValueN: (o: any, k: (string | number)[], $default?: any) => any;
     seconds: () => number;
-    sortBy2: (array: any, key1: any, key2: any, descending?: boolean, direction?: number) => any;
     sortBy: (array: any, key: any, descending?: boolean, defaultValue?: any, direction?: number) => any;
+    sortBy2: (array: any, key1: any, key2: any, descending?: boolean, direction?: number) => any;
     streaming: {};
     stringToBase64: (string: any) => string;
     strip: (s: string) => string;
