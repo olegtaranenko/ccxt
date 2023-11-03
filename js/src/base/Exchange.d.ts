@@ -1,11 +1,10 @@
 import * as functions from './functions.js';
-import { // eslint-disable-line object-curly-newline
-ExchangeError, AuthenticationError, DDoSProtection, RequestTimeout, ExchangeNotAvailable, RateLimitExceeded } from "./errors.js";
+import { AuthenticationError, DDoSProtection, ExchangeError, ExchangeNotAvailable, RateLimitExceeded, RequestTimeout } from "./errors.js";
 import WsClient from './ws/WsClient.js';
 import { Future } from './ws/Future.js';
-import { OrderBook as WsOrderBook, IndexedOrderBook, CountedOrderBook } from './ws/OrderBook.js';
-import { Balance, Balances, Currency, DepositAddressResponse, Dictionary, FundingRateHistory, IndexType, Int, Liquidation, Market, MinMax, OHLCV, OHLCVC, Order, OrderBook, OrderRequest, OrderSide, OrderType, OpenInterest, Position, Ticker, Trade } from './types.js';
-export { Balance, Balances, Currency, DepositAddressResponse, Dictionary, Fee, FundingRateHistory, IndexType, Int, Liquidation, Market, MinMax, OHLCV, OHLCVC, Order, OrderBook, OrderSide, OrderType, Position, Ticker, Trade, Transaction } from './types.js';
+import { CountedOrderBook, IndexedOrderBook, OrderBook as WsOrderBook } from './ws/OrderBook.js';
+import { Balance, Balances, Currency, DepositAddressResponse, Dictionary, FundingRateHistory, FundingHistory, IndexType, Int, Liquidation, Market, MinMax, OHLCV, OHLCVC, OpenInterest, Order, OrderBook, OrderRequest, OrderSide, OrderType, Position, Ticker, Trade } from './types.js';
+export { Balance, Balances, Currency, DepositAddressResponse, Dictionary, Fee, FundingRateHistory, FundingHistory, IndexType, Int, Liquidation, Market, MinMax, OHLCV, OHLCVC, Order, OrderBook, OrderSide, OrderType, Position, Ticker, Trade, Transaction } from './types.js';
 /**
  * @class Exchange
  */
@@ -76,46 +75,49 @@ export default class Exchange {
     transactions: {};
     triggerOrders: any;
     urls: {
-        logo?: string;
         api?: string | Dictionary<string>;
+        api_management?: string;
+        doc?: string[];
+        fees?: string;
+        logo?: string;
+        referral?: string;
         test?: string | Dictionary<string>;
         www?: string;
-        doc?: string[];
-        api_management?: string;
-        fees?: string;
-        referral?: string;
     };
-    requiresWeb3: boolean;
-    requiresEddsa: boolean;
     precision: {
         amount: number | undefined;
         price: number | undefined;
     };
-    enableLastJsonResponse: boolean;
+    requiresEddsa: boolean;
+    requiresWeb3: boolean;
     enableLastHttpResponse: boolean;
+    enableLastJsonResponse: boolean;
     enableLastResponseHeaders: boolean;
     last_http_response: any;
     last_json_response: any;
+    last_request_body: any;
+    last_request_headers: any;
+    last_request_path: any;
+    last_request_url: any;
     last_response_headers: any;
     id: string;
-    markets: Dictionary<any>;
     has: Dictionary<boolean | 'emulated'>;
+    markets: Dictionary<any>;
     status: any;
     requiredCredentials: {
         apiKey: boolean;
-        secret: boolean;
-        uid: boolean;
         login: boolean;
         password: boolean;
-        twofa: boolean;
         privateKey: boolean;
-        walletAddress: boolean;
+        secret: boolean;
         token: boolean;
+        twofa: boolean;
+        uid: boolean;
+        walletAddress: boolean;
     };
     rateLimit: number;
-    tokenBucket: any;
     throttler: any;
-    enableRateLimit: boolean;
+    tokenBucket: any;
     httpExceptions: any;
     limits: {
         amount?: MinMax;
@@ -123,23 +125,23 @@ export default class Exchange {
         leverage?: MinMax;
         price?: MinMax;
     };
+    currencies: Dictionary<Currency>;
     fees: object;
+    ids: string[];
     markets_by_id: Dictionary<any>;
     symbols: string[];
-    ids: string[];
-    currencies: Dictionary<Currency>;
     baseCurrencies: any;
-    quoteCurrencies: any;
-    currencies_by_id: any;
     codes: any;
-    reloadingMarkets: any;
+    currencies_by_id: any;
+    quoteCurrencies: any;
     marketsLoading: any;
+    reloadingMarkets: any;
     accounts: any;
     accountsById: any;
     commonCurrencies: any;
     hostname: string;
-    precisionMode: number;
     paddingMode: any;
+    precisionMode: number;
     exceptions: {};
     timeframes: Dictionary<number | string>;
     version: string;
@@ -158,6 +160,7 @@ export default class Exchange {
     binaryConcatArray: (arr: any) => Uint8Array;
     binaryToBase16: (data: Uint8Array) => string;
     binaryToBase58: (data: Uint8Array) => string;
+    binaryToBase64: (data: Uint8Array) => string;
     capitalize: (s: string) => string;
     clients: {};
     clone: (x: any) => any;
@@ -165,6 +168,7 @@ export default class Exchange {
     decimalToPrecision: (x: any, roundingMode: any, numPrecisionDigits: any, countingMode?: number, paddingMode?: number) => any;
     decode: (data: Uint8Array) => string;
     deepExtend: (...xs: any[]) => any;
+    enableRateLimit: boolean;
     encode: (str: string) => Uint8Array;
     extend: (...args: any[]) => any;
     extractParams: (string: any) => any[];
@@ -186,7 +190,6 @@ export default class Exchange {
     implodeParams: (string: any, params: any) => any;
     inArray: (needle: any, haystack: any) => any;
     indexBy: (x: any, k: any, out?: {}) => {};
-    isArray: (needle: any, haystack: any) => any;
     isEmpty: (object: any) => boolean;
     isJsonEncodedObject: (object: any) => boolean;
     isNode: boolean;
@@ -261,14 +264,32 @@ export default class Exchange {
     yymmdd: (timestamp: any, infix?: string) => string;
     yyyymmdd: (timestamp: any, infix?: string) => string;
     describe(): {
-        id: any;
-        name: any;
-        countries: any;
-        enableRateLimit: boolean;
-        rateLimit: number;
-        certified: boolean;
-        pro: boolean;
         alias: boolean;
+        api: any;
+        certified: boolean;
+        commonCurrencies: {
+            BCC: string;
+            BCHSV: string;
+            XBT: string;
+        };
+        countries: any;
+        currencies: {};
+        enableRateLimit: boolean;
+        exceptions: any;
+        fees: {
+            funding: {
+                deposit: {};
+                percentage: any;
+                tierBased: any;
+                withdraw: {};
+            };
+            trading: {
+                maker: any;
+                percentage: any;
+                taker: any;
+                tierBased: any;
+            };
+        };
         has: {
             addMargin: any;
             cancelAllOrders: any;
@@ -358,12 +379,19 @@ export default class Exchange {
             fetchWithdrawAddresses: any;
             fetchWithdrawal: any;
             fetchWithdrawals: any;
+            future: any;
+            margin: any;
+            option: any;
+            privateAPI: boolean;
+            publicAPI: boolean;
             reduceMargin: any;
             setLeverage: any;
             setMargin: any;
             setMarginMode: any;
             setPositionMode: any;
             signIn: any;
+            spot: any;
+            swap: any;
             transfer: any;
             watchBalance: any;
             watchMyTrades: any;
@@ -378,93 +406,36 @@ export default class Exchange {
             watchTradesForSymbols: any;
             withdraw: any;
         };
-        urls: {
-            logo: any;
-            api: any;
-            www: any;
-            doc: any;
-            fees: any;
-        };
-        api: any;
-        requiredCredentials: {
-            apiKey: boolean;
-            secret: boolean;
-            uid: boolean;
-            login: boolean;
-            password: boolean;
-            twofa: boolean;
-            privateKey: boolean;
-            walletAddress: boolean;
-            token: boolean;
-        };
-        markets: any;
-        currencies: {};
-        timeframes: any;
-        fees: {
-            trading: {
-                tierBased: any;
-                percentage: any;
-                taker: any;
-                maker: any;
-            };
-            funding: {
-                tierBased: any;
-                percentage: any;
-                withdraw: {};
-                deposit: {};
-            };
-        };
-        status: {
-            status: string;
-            updated: any;
-            eta: any;
-            url: any;
-        };
-        exceptions: any;
         httpExceptions: {
-            '422': typeof ExchangeError;
-            '418': typeof DDoSProtection;
-            '429': typeof RateLimitExceeded;
+            '400': typeof ExchangeNotAvailable;
+            '401': typeof AuthenticationError;
+            '403': typeof ExchangeNotAvailable;
             '404': typeof ExchangeNotAvailable;
+            '405': typeof ExchangeNotAvailable;
+            '407': typeof AuthenticationError;
+            '408': typeof RequestTimeout;
             '409': typeof ExchangeNotAvailable;
             '410': typeof ExchangeNotAvailable;
+            '418': typeof DDoSProtection;
+            '422': typeof ExchangeError;
+            '429': typeof RateLimitExceeded;
             '451': typeof ExchangeNotAvailable;
             '500': typeof ExchangeNotAvailable;
             '501': typeof ExchangeNotAvailable;
             '502': typeof ExchangeNotAvailable;
+            '503': typeof ExchangeNotAvailable;
+            '504': typeof RequestTimeout;
+            '511': typeof AuthenticationError;
             '520': typeof ExchangeNotAvailable;
             '521': typeof ExchangeNotAvailable;
             '522': typeof ExchangeNotAvailable;
             '525': typeof ExchangeNotAvailable;
             '526': typeof ExchangeNotAvailable;
-            '400': typeof ExchangeNotAvailable;
-            '403': typeof ExchangeNotAvailable;
-            '405': typeof ExchangeNotAvailable;
-            '503': typeof ExchangeNotAvailable;
             '530': typeof ExchangeNotAvailable;
-            '408': typeof RequestTimeout;
-            '504': typeof RequestTimeout;
-            '401': typeof AuthenticationError;
-            '407': typeof AuthenticationError;
-            '511': typeof AuthenticationError;
         };
-        commonCurrencies: {
-            XBT: string;
-            BCC: string;
-            BCHSV: string;
-        };
-        precisionMode: number;
-        paddingMode: number;
+        id: any;
         limits: {
-            leverage: {
-                min: any;
-                max: any;
-            };
             amount: {
-                min: any;
-                max: any;
-            };
-            price: {
                 min: any;
                 max: any;
             };
@@ -472,6 +443,45 @@ export default class Exchange {
                 min: any;
                 max: any;
             };
+            leverage: {
+                min: any;
+                max: any;
+            };
+            price: {
+                min: any;
+                max: any;
+            };
+        };
+        markets: any;
+        name: any;
+        paddingMode: number;
+        precisionMode: number;
+        pro: boolean;
+        rateLimit: number;
+        requiredCredentials: {
+            apiKey: boolean;
+            login: boolean;
+            password: boolean;
+            privateKey: boolean;
+            secret: boolean;
+            token: boolean;
+            twofa: boolean;
+            uid: boolean;
+            walletAddress: boolean;
+        };
+        status: {
+            eta: any;
+            status: string;
+            updated: any;
+            url: any;
+        };
+        timeframes: any;
+        urls: {
+            api: any;
+            doc: any;
+            fees: any;
+            logo: any;
+            www: any;
         };
     };
     constructor(userConfig?: {});
@@ -517,6 +527,7 @@ export default class Exchange {
     valueIsDefined(value: any): boolean;
     arraySlice(array: any, first: any, second?: any): any;
     getProperty(obj: any, property: any, defaultValue?: any): any;
+    axolotl(payload: any, hexKey: any, ed25519: any): string;
     handleDeltas(orderbook: any, deltas: any): void;
     handleDelta(bookside: any, delta: any): void;
     getCacheIndex(orderbook: any, deltas: any): number;
@@ -560,7 +571,7 @@ export default class Exchange {
     parseWsTrade(trade: any, market?: any): Trade;
     parseWsOrder(order: any, market?: any): Order;
     parseWsOrderTrade(trade: any, market?: any): Trade;
-    parseWsOHLCV(ohlcv: any, market?: any): any;
+    parseWsOHLCV(ohlcv: any, market?: any): OHLCV;
     fetchFundingRates(symbols?: string[], params?: {}): Promise<any>;
     transfer(code: string, amount: any, fromAccount: any, toAccount: any, params?: {}): Promise<any>;
     withdraw(code: string, amount: any, address: any, tag?: any, params?: {}): Promise<any>;
@@ -606,11 +617,12 @@ export default class Exchange {
     safeOrder(order: object, market?: object): Order;
     parseOrders(orders: object, market?: object, since?: Int, limit?: Int, params?: {}): Order[];
     calculateFee(symbol: string, type: string, side: string, amount: number, price: number, takerOrMaker?: string, params?: {}): {
-        type: string;
+        cost: number;
         currency: any;
         rate: number;
-        cost: number;
+        type: string;
     };
+    safeLiquidation(liquidation: object, market?: object): Liquidation;
     safeTrade(trade: object, market?: object): Trade;
     invertFlatStringDictionary(dict: any): {};
     reduceFeesByCurrency(fees: any): any[];
@@ -626,7 +638,7 @@ export default class Exchange {
     parseBidsAsks(bidasks: any, priceKey?: IndexType, amountKey?: IndexType): any[];
     fetchL2OrderBook(symbol: string, limit?: Int, params?: {}): Promise<any>;
     filterBySymbol(objects: any, symbol?: string): any;
-    parseOHLCV(ohlcv: any, market?: any): any;
+    parseOHLCV(ohlcv: any, market?: any): OHLCV;
     networkCodeToId(networkCode: any, currencyCode?: any): string;
     networkIdToCode(networkId: any, currencyCode?: any): string;
     handleNetworkCodeAndParams(params: any): any[];
@@ -735,6 +747,7 @@ export default class Exchange {
     fetchWithdrawals(symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
     fetchOpenInterest(symbol: string, params?: {}): Promise<OpenInterest>;
     fetchFundingRateHistory(symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<FundingRateHistory[]>;
+    fetchFundingHistory(symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<FundingHistory[]>;
     parseLastPrice(price: any, market?: any): any;
     fetchDepositAddress(code: string, params?: {}): Promise<any>;
     account(): Balance;
@@ -771,6 +784,7 @@ export default class Exchange {
     safeCurrencyCode(currencyId?: string, currency?: any): any;
     filterBySymbolSinceLimit(array: any, symbol?: string, since?: Int, limit?: Int, tail?: boolean): any;
     filterByCurrencySinceLimit(array: any, code?: any, since?: Int, limit?: Int, tail?: boolean): any;
+    filterBySymbolsSinceLimit(array: any, symbols?: string[], since?: Int, limit?: Int, tail?: boolean): any;
     parseLastPrices(pricesData: any, symbols?: string[], params?: {}): any;
     parseTickers(tickers: any, symbols?: string[], params?: {}): Dictionary<Ticker>;
     parseDepositAddresses(addresses: any, codes?: string[], indexed?: boolean, params?: {}): {};
@@ -801,7 +815,7 @@ export default class Exchange {
     depositWithdrawFee(info: any): any;
     assignDefaultDepositWithdrawFees(fee: any, currency?: any): any;
     parseIncome(info: any, market?: any): void;
-    parseIncomes(incomes: any, market?: any, since?: Int, limit?: Int): any;
+    parseIncomes(incomes: any, market?: any, since?: Int, limit?: Int): FundingHistory[];
     getMarketFromSymbols(symbols?: string[]): any;
     parseWsOHLCVs(ohlcvs: object[], market?: any, timeframe?: string, since?: Int, limit?: Int): any[];
     fetchTransactions(code?: string, since?: Int, limit?: Int, params?: {}): Promise<any>;

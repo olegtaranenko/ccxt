@@ -2,7 +2,7 @@
 
 # -----------------------------------------------------------------------------
 
-__version__ = '4.1.28'
+__version__ = '4.1.37'
 
 # -----------------------------------------------------------------------------
 
@@ -125,7 +125,7 @@ class Exchange(BaseExchange):
     async def fetch(self, url, method='GET', headers=None, body=None):
         """Perform a HTTP request and return decoded JSON data"""
         request_headers = self.prepare_request_headers(headers)
-
+        self.last_request_headers = request_headers
         # ##### PROXY & HEADERS #####
         final_proxy = None  # set default
         final_session = None
@@ -298,14 +298,6 @@ class Exchange(BaseExchange):
         return await asyncio.sleep(milliseconds / 1000)
 
     async def spawn_async(self, method, *args):
-        try:
-            await method(*args)
-        except Exception:
-            # todo: handle spawned errors
-            pass
-
-    async def delay_async(self, timeout, method, *args):
-        await self.sleep(timeout)
         try:
             await method(*args)
         except Exception:
@@ -842,19 +834,13 @@ class Exchange(BaseExchange):
 
     def safe_currency_structure(self, currency: object):
         return self.extend({
-            'info': None,
-            'id': None,
-            'numericId': None,
-            'code': None,
-            'precision': None,
-            'type': None,
-            'name': None,
             'active': None,
+            'code': None,
             'deposit': None,
-            'withdraw': None,
             'fee': None,
             'fees': {},
-            'networks': {},
+            'id': None,
+            'info': None,
             'limits': {
                 'deposit': {
                     'min': None,
@@ -865,6 +851,12 @@ class Exchange(BaseExchange):
                     'max': None,
                 },
             },
+            'name': None,
+            'networks': {},
+            'numericId': None,
+            'precision': None,
+            'type': None,
+            'withdraw': None,
         }, currency)
 
     def safe_market_structure(self, market: Optional[object] = None):
@@ -1234,31 +1226,31 @@ class Exchange(BaseExchange):
         takeProfitPrice = self.parse_number(self.safe_string(order, 'takeProfitPrice'))
         stopLossPrice = self.parse_number(self.safe_string(order, 'stopLossPrice'))
         return self.extend(order, {
-            'id': self.safe_string(order, 'id'),
+            'amount': self.parse_number(amount),
+            'average': self.parse_number(average),
             'clientOrderId': self.safe_string(order, 'clientOrderId'),
-            'timestamp': timestamp,
+            'cost': self.parse_number(cost),
             'datetime': datetime,
-            'symbol': symbol,
-            'type': self.safe_string(order, 'type'),
-            'side': side,
+            'fee': self.safe_value(order, 'fee'),
+            'filled': self.parse_number(filled),
+            'id': self.safe_string(order, 'id'),
             'lastTradeTimestamp': lastTradeTimeTimestamp,
             'lastUpdateTimestamp': lastUpdateTimestamp,
-            'price': self.parse_number(price),
-            'amount': self.parse_number(amount),
-            'cost': self.parse_number(cost),
-            'average': self.parse_number(average),
-            'filled': self.parse_number(filled),
-            'remaining': self.parse_number(remaining),
-            'timeInForce': timeInForce,
             'postOnly': postOnly,
-            'trades': trades,
+            'price': self.parse_number(price),
             'reduceOnly': self.safe_value(order, 'reduceOnly'),
-            'stopPrice': triggerPrice,  # ! deprecated, use triggerPrice instead
-            'triggerPrice': triggerPrice,
-            'takeProfitPrice': takeProfitPrice,
-            'stopLossPrice': stopLossPrice,
+            'remaining': self.parse_number(remaining),
+            'side': side,
             'status': status,
-            'fee': self.safe_value(order, 'fee'),
+            'stopLossPrice': stopLossPrice,
+            'stopPrice': triggerPrice,  # ! deprecated, use triggerPrice instead
+            'symbol': symbol,
+            'takeProfitPrice': takeProfitPrice,
+            'timeInForce': timeInForce,
+            'timestamp': timestamp,
+            'trades': trades,
+            'triggerPrice': triggerPrice,
+            'type': self.safe_string(order, 'type'),
         })
 
     def parse_orders(self, orders: object, market: Optional[object] = None, since: Optional[int] = None, limit: Optional[int] = None, params={}):
@@ -1330,11 +1322,28 @@ class Exchange(BaseExchange):
         rate = self.safe_string(market, takerOrMaker)
         cost = Precise.string_mul(cost, rate)
         return {
-            'type': takerOrMaker,
+            'cost': self.parse_number(cost),
             'currency': market[key],
             'rate': self.parse_number(rate),
-            'cost': self.parse_number(cost),
+            'type': takerOrMaker,
         }
+
+    def safe_liquidation(self, liquidation: object, market: Optional[object] = None):
+        contracts = self.safe_string(liquidation, 'contracts')
+        contractSize = self.safe_string(market, 'contractSize')
+        price = self.safe_string(liquidation, 'price')
+        baseValue = self.safe_string(liquidation, 'baseValue')
+        quoteValue = self.safe_string(liquidation, 'quoteValue')
+        if (baseValue is None) and (contracts is not None) and (contractSize is not None) and (price is not None):
+            baseValue = Precise.string_mul(contracts, contractSize)
+        if (quoteValue is None) and (baseValue is not None) and (price is not None):
+            quoteValue = Precise.string_mul(baseValue, price)
+        liquidation['contracts'] = self.parse_number(contracts)
+        liquidation['contractSize'] = self.parse_number(contractSize)
+        liquidation['price'] = self.parse_number(price)
+        liquidation['baseValue'] = self.parse_number(baseValue)
+        liquidation['quoteValue'] = self.parse_number(quoteValue)
+        return liquidation
 
     def safe_trade(self, trade: object, market: Optional[object] = None):
         amount = self.safe_string(trade, 'amount')
@@ -1378,8 +1387,8 @@ class Exchange(BaseExchange):
                     tradeFee['rate'] = self.safe_number(tradeFee, 'rate')
                 trade['fee'] = tradeFee
         trade['amount'] = self.parse_number(amount)
-        trade['price'] = self.parse_number(price)
         trade['cost'] = self.parse_number(cost)
+        trade['price'] = self.parse_number(price)
         return trade
 
     def invert_flat_string_dictionary(self, dict):
@@ -1455,8 +1464,8 @@ class Exchange(BaseExchange):
                     reduced[feeCurrencyCode][rateKey]['cost'] = Precise.string_add(reduced[feeCurrencyCode][rateKey]['cost'], cost)
                 else:
                     reduced[feeCurrencyCode][rateKey] = {
-                        'currency': feeCurrencyCode,
                         'cost': cost,
+                        'currency': feeCurrencyCode,
                     }
                     if rate is not None:
                         reduced[feeCurrencyCode][rateKey]['rate'] = rate
@@ -1497,22 +1506,22 @@ class Exchange(BaseExchange):
         # timestamp and symbol operations don't belong in safeTicker
         # they should be done in the derived classes
         return self.extend(ticker, {
-            'bid': self.omit_zero(self.safe_number(ticker, 'bid')),
-            'bidVolume': self.safe_number(ticker, 'bidVolume'),
             'ask': self.omit_zero(self.safe_number(ticker, 'ask')),
             'askVolume': self.safe_number(ticker, 'askVolume'),
+            'average': self.omit_zero(self.parse_number(average)),
+            'baseVolume': self.parse_number(baseVolume),
+            'bid': self.omit_zero(self.safe_number(ticker, 'bid')),
+            'bidVolume': self.safe_number(ticker, 'bidVolume'),
+            'change': self.parse_number(change),
+            'close': self.omit_zero(self.parse_number(close)),
             'high': self.omit_zero(self.safe_number(ticker, 'high')),
+            'last': self.omit_zero(self.parse_number(last)),
             'low': self.omit_zero(self.safe_number(ticker, 'low')),
             'open': self.omit_zero(self.parse_number(open)),
-            'close': self.omit_zero(self.parse_number(close)),
-            'last': self.omit_zero(self.parse_number(last)),
-            'change': self.parse_number(change),
             'percentage': self.parse_number(percentage),
-            'average': self.omit_zero(self.parse_number(average)),
-            'vwap': self.omit_zero(self.parse_number(vwap)),
-            'baseVolume': self.parse_number(baseVolume),
-            'quoteVolume': self.parse_number(quoteVolume),
             'previousClose': self.safe_number(ticker, 'previousClose'),
+            'quoteVolume': self.parse_number(quoteVolume),
+            'vwap': self.omit_zero(self.parse_number(vwap)),
         })
 
     async def fetch_ohlcv(self, symbol: str, timeframe='1m', since: Optional[int] = None, limit: Optional[int] = None, params={}):
@@ -1545,11 +1554,11 @@ class Exchange(BaseExchange):
 
     def convert_ohlcv_to_trading_view(self, ohlcvs, timestamp='t', open='o', high='h', low='l', close='c', volume='v', ms=False):
         result = {}
-        result[timestamp] = []
-        result[open] = []
+        result[close] = []
         result[high] = []
         result[low] = []
-        result[close] = []
+        result[open] = []
+        result[timestamp] = []
         result[volume] = []
         for i in range(0, len(ohlcvs)):
             ts = ohlcvs[i][0] if ms else self.parseToInt(ohlcvs[i][0] / 1000)
@@ -1672,7 +1681,7 @@ class Exchange(BaseExchange):
                 result.append(objects[i])
         return result
 
-    def parse_ohlcv(self, ohlcv, market=None):
+    def parse_ohlcv(self, ohlcv, market=None) -> list:
         if isinstance(ohlcv, list):
             return [
                 self.safe_integer(ohlcv, 0),  # timestamp
@@ -1795,12 +1804,12 @@ class Exchange(BaseExchange):
         bids = self.parse_bids_asks(self.safe_value(orderbook, bidsKey, []), priceKey, amountKey)
         asks = self.parse_bids_asks(self.safe_value(orderbook, asksKey, []), priceKey, amountKey)
         return {
-            'symbol': symbol,
-            'bids': self.sort_by(bids, 0, True),
             'asks': self.sort_by(asks, 0),
-            'timestamp': timestamp,
+            'bids': self.sort_by(bids, 0, True),
             'datetime': self.iso8601(timestamp),
             'nonce': None,
+            'symbol': symbol,
+            'timestamp': timestamp,
         }
 
     def parse_ohlcvs(self, ohlcvs: List[object], market: Optional[Any] = None, timeframe: str = '1m', since: Optional[int] = None, limit: Optional[int] = None):
@@ -1957,6 +1966,9 @@ class Exchange(BaseExchange):
             await self.throttle(cost)
         self.lastRestRequestTimestamp = self.milliseconds()
         request = self.sign(path, api, method, params, headers, body)
+        self.last_request_headers = request['headers']
+        self.last_request_body = request['body']
+        self.last_request_url = request['url']
         return await self.fetch(request['url'], request['method'], request['headers'], request['body'])
 
     async def request(self, path, api: Any = 'public', method='GET', params={}, headers: Optional[Any] = None, body: Optional[Any] = None, config={}):
@@ -2082,39 +2094,19 @@ class Exchange(BaseExchange):
 
     def safe_market(self, marketId=None, market=None, delimiter=None, marketType=None):
         result = {
-            'id': marketId,
-            'symbol': marketId,
-            'base': None,
-            'quote': None,
-            'baseId': None,
-            'quoteId': None,
             'active': None,
-            'type': None,
-            'linear': None,
-            'inverse': None,
-            'spot': False,
-            'swap': False,
-            'future': False,
-            'option': False,
-            'margin': False,
+            'base': None,
+            'baseId': None,
             'contract': False,
             'contractSize': None,
             'expiry': None,
             'expiryDatetime': None,
-            'optionType': None,
-            'strike': None,
-            'settle': None,
-            'settleId': None,
-            'precision': {
-                'amount': None,
-                'price': None,
-            },
+            'future': False,
+            'id': marketId,
+            'info': None,
+            'inverse': None,
             'limits': {
                 'amount': {
-                    'min': None,
-                    'max': None,
-                },
-                'price': {
                     'min': None,
                     'max': None,
                 },
@@ -2122,8 +2114,28 @@ class Exchange(BaseExchange):
                     'min': None,
                     'max': None,
                 },
+                'price': {
+                    'min': None,
+                    'max': None,
+                },
             },
-            'info': None,
+            'linear': None,
+            'margin': False,
+            'option': False,
+            'optionType': None,
+            'precision': {
+                'amount': None,
+                'price': None,
+            },
+            'quote': None,
+            'quoteId': None,
+            'settle': None,
+            'settleId': None,
+            'spot': False,
+            'strike': None,
+            'swap': False,
+            'symbol': marketId,
+            'type': None,
         }
         if marketId is not None:
             if (self.markets_by_id is not None) and (marketId in self.markets_by_id):
@@ -2475,6 +2487,9 @@ class Exchange(BaseExchange):
     async def fetch_funding_rate_history(self, symbol: Optional[str] = None, since: Optional[int] = None, limit: Optional[int] = None, params={}):
         raise NotSupported(self.id + ' fetchFundingRateHistory() is not supported yet')
 
+    async def fetch_funding_history(self, symbol: Optional[str] = None, since: Optional[int] = None, limit: Optional[int] = None, params={}):
+        raise NotSupported(self.id + ' fetchFundingHistory() is not supported yet')
+
     def parse_last_price(self, price, market=None):
         raise NotSupported(self.id + ' parseLastPrice() is not supported yet')
 
@@ -2687,6 +2702,10 @@ class Exchange(BaseExchange):
 
     def filter_by_currency_since_limit(self, array, code=None, since: Optional[int] = None, limit: Optional[int] = None, tail=False):
         return self.filter_by_value_since_limit(array, 'currency', code, since, limit, 'timestamp', tail)
+
+    def filter_by_symbols_since_limit(self, array, symbols: Optional[List[str]] = None, since: Optional[int] = None, limit: Optional[int] = None, tail=False):
+        result = self.filter_by_array(array, 'symbol', symbols, False)
+        return self.filter_by_since_limit(result, since, limit, 'timestamp', tail)
 
     def parse_last_prices(self, pricesData, symbols: Optional[List[str]] = None, params={}):
         #
@@ -3049,16 +3068,16 @@ class Exchange(BaseExchange):
 
     def deposit_withdraw_fee(self, info):
         return {
-            'info': info,
-            'withdraw': {
-                'fee': None,
-                'percentage': None,
-            },
             'deposit': {
                 'fee': None,
                 'percentage': None,
             },
+            'info': info,
             'networks': {},
+            'withdraw': {
+                'fee': None,
+                'percentage': None,
+            },
         }
 
     def assign_default_deposit_withdraw_fees(self, fee, currency=None):
@@ -3079,8 +3098,8 @@ class Exchange(BaseExchange):
         for i in range(0, numNetworks):
             network = networkKeys[i]
             if network == currencyCode:
-                fee['withdraw'] = fee['networks'][networkKeys[i]]['withdraw']
                 fee['deposit'] = fee['networks'][networkKeys[i]]['deposit']
+                fee['withdraw'] = fee['networks'][networkKeys[i]]['withdraw']
         return fee
 
     def parse_income(self, info, market=None):
