@@ -191,7 +191,7 @@ class Client {
     onPong() {
         this.lastPong = time.milliseconds();
         if (this.verbose) {
-            if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto('onP0ng')) {
+            if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto('onPong')) {
                 this.log(new Date(), 'onPong');
             }
         }

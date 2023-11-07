@@ -87,7 +87,6 @@ class Exchange {
         this.id = undefined;
         this.markets = undefined;
         this.status = undefined;
-        this.enableRateLimit = undefined;
         this.rateLimit = undefined; // milliseconds
         this.throttler = undefined;
         this.tokenBucket = undefined;
