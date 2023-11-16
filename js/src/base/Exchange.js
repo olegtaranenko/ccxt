@@ -18,8 +18,6 @@ import { CountedOrderBook, IndexedOrderBook, OrderBook as WsOrderBook } from './
 // ----------------------------------------------------------------------------
 //
 import { axolotl } from './functions/crypto.js';
-// ----------------------------------------------------------------------------
-// move this elsewhere
 import totp from './functions/totp.js';
 const { aggregate, arrayConcat, base16ToBinary, base58ToBinary, base64ToBinary, base64ToString, binaryConcat, binaryConcatArray, binaryToBase16, binaryToBase58, binaryToBase64, capitalize, clone, crc32, DECIMAL_PLACES, decimalToPrecision, decode, deepExtend, ecdsa, encode, extend, extractParams, filterBy, flatten, groupBy, hash, hmac, implodeParams, inArray, indexBy, isEmpty, isJsonEncodedObject, isNode, iso8601, json, keysort, merge, microseconds, milliseconds, NO_PADDING, now, numberToBE, numberToLE, numberToString, omit, omitZero, ordered, parse8601, parseDate, parseTimeframe, precisionFromString, rawencode, ROUND, safeFloat, safeFloat2, safeFloatN, safeInteger, safeInteger2, safeIntegerN, safeIntegerProduct, safeIntegerProduct2, safeIntegerProductN, safeString, safeString2, safeStringLower, safeStringLower2, safeStringLowerN, safeStringN, safeStringUpper, safeStringUpper2, safeStringUpperN, safeTimestamp, safeTimestamp2, safeTimestampN, safeValue, safeValue2, safeValueN, seconds, SIGNIFICANT_DIGITS, sortBy, sortBy2, stringToBase64, strip, sum, Throttler, TICK_SIZE, toArray, TRUNCATE, unCamelCase, unique, urlencode, urlencodeNested, urlencodeWithArrayRepeat, uuid, uuid16, uuid22, uuidv1, ymd, ymdhms, yymmdd, yyyymmdd } = functions;
 // ----------------------------------------------------------------------------
@@ -40,32 +38,25 @@ export default class Exchange {
         this.headers = {};
         this.origin = '*'; // CORS origin
         //
+        this.accounts = undefined;
+        this.accountsById = undefined;
         this.agent = undefined; // maintained for backwards compatibility
-        this.handleContentTypeApplicationZip = false;
-        this.minFundingAddressLength = 1; // used in checkAddress
-        this.number = Number; // or String (a pointer to a function)
-        this.quoteJsonNumbers = true; // treat numbers in json as quoted precise strings
-        this.substituteCommonCurrencyCodes = true; // reserved
-        // whether fees should be summed by currency code
-        this.reduceFees = true;
-        this.validateClientSsl = false;
-        this.validateServerSsl = true;
-        this.timeout = 10000; // milliseconds
-        this.verbose = false;
-        this.verboseTruncate = false;
-        this.twofa = undefined; // two-factor authentication (2FA)
         this.balance = {};
-        this.orderbooks = {};
-        this.orders = undefined;
-        this.positions = {};
-        this.tickers = {};
-        this.transactions = {};
-        this.triggerOrders = undefined;
-        this.requiresEddsa = false;
-        this.requiresWeb3 = false;
+        this.baseCurrencies = undefined;
+        this.codes = undefined;
+        this.commonCurrencies = undefined;
+        this.currencies = undefined;
+        this.currencies_by_id = undefined;
         this.enableLastHttpResponse = true;
         this.enableLastJsonResponse = true;
         this.enableLastResponseHeaders = true;
+        this.enableRateLimit = undefined;
+        this.exceptions = {};
+        this.handleContentTypeApplicationZip = false;
+        this.hostname = undefined;
+        this.httpExceptions = undefined;
+        this.id = undefined;
+        this.ids = undefined;
         this.last_http_response = undefined;
         this.last_json_response = undefined;
         this.last_request_body = undefined;
@@ -73,36 +64,43 @@ export default class Exchange {
         this.last_request_path = undefined;
         this.last_request_url = undefined;
         this.last_response_headers = undefined;
-        this.id = undefined;
         this.markets = undefined;
-        this.status = undefined;
-        this.rateLimit = undefined; // milliseconds
-        this.throttler = undefined;
-        this.tokenBucket = undefined;
-        this.httpExceptions = undefined;
-        this.currencies = undefined;
-        this.ids = undefined;
         this.markets_by_id = undefined;
-        this.symbols = undefined;
-        this.baseCurrencies = undefined;
-        this.codes = undefined;
-        this.currencies_by_id = undefined;
-        this.quoteCurrencies = undefined;
-        this.marketsLoading = undefined;
-        this.reloadingMarkets = undefined;
-        this.accounts = undefined;
-        this.accountsById = undefined;
-        this.commonCurrencies = undefined;
-        this.hostname = undefined;
-        this.paddingMode = undefined;
-        this.precisionMode = undefined;
-        this.exceptions = {};
-        this.timeframes = {};
-        this.version = undefined;
         this.marketsByAltname = undefined;
+        this.marketsLoading = undefined;
+        this.minFundingAddressLength = 1; // used in checkAddress
         this.name = undefined;
-        this.targetAccount = undefined;
+        this.number = Number; // or String (a pointer to a function)
+        this.orderbooks = {};
+        this.orders = undefined;
+        this.paddingMode = undefined;
+        this.positions = undefined;
+        this.precisionMode = undefined;
+        this.quoteCurrencies = undefined;
+        this.quoteJsonNumbers = true; // treat numbers in json as quoted precise strings
+        this.rateLimit = undefined; // milliseconds
+        // whether fees should be summed by currency code
+        this.reduceFees = true;
+        this.reloadingMarkets = undefined;
+        this.requiresEddsa = false;
+        this.requiresWeb3 = false;
         this.stablePairs = {};
+        this.status = undefined;
+        this.substituteCommonCurrencyCodes = true; // reserved
+        this.symbols = undefined;
+        this.targetAccount = undefined;
+        this.throttler = undefined;
+        this.tickers = {};
+        this.timeframes = {};
+        this.timeout = 10000; // milliseconds
+        this.tokenBucket = undefined;
+        this.transactions = {};
+        this.triggerOrders = undefined;
+        this.twofa = undefined; // two-factor authentication (2FA)
+        this.validateClientSsl = false;
+        this.validateServerSsl = true;
+        this.verbose = false;
+        this.version = undefined;
         // WS/PRO options
         this.aggregate = aggregate;
         this.arrayConcat = arrayConcat;
@@ -254,7 +252,7 @@ export default class Exchange {
         this.positions = {};
         this.tickers = {};
         this.trades = {};
-        this.transactions = {};
+        this.transactions = undefined;
         // web3 and cryptography flags
         this.requiresEddsa = false;
         this.requiresWeb3 = false;
@@ -1385,6 +1383,9 @@ export default class Exchange {
     async fetchOrderBook(symbol, limit = undefined, params = {}) {
         throw new NotSupported(this.id + ' fetchOrderBook() is not supported yet');
     }
+    async fetchMarginMode(symbol = undefined, params = {}) {
+        throw new NotSupported(this.id + ' fetchMarginMode() is not supported yet');
+    }
     async fetchRestOrderBookSafe(symbol, limit = undefined, params = {}) {
         const fetchSnapshotMaxRetries = this.handleOption('watchOrderBook', 'maxRetries', 3);
         for (let i = 0; i < fetchSnapshotMaxRetries; i++) {
@@ -1408,6 +1409,16 @@ export default class Exchange {
     }
     async fetchTradingLimits(symbols = undefined, params = {}) {
         throw new NotSupported(this.id + ' fetchTradingLimits() is not supported yet');
+    }
+    parseMarket(market) {
+        throw new NotSupported(this.id + ' parseMarket() is not supported yet');
+    }
+    parseMarkets(markets) {
+        const result = [];
+        for (let i = 0; i < markets.length; i++) {
+            result.push(this.parseMarket(markets[i]));
+        }
+        return result;
     }
     parseTicker(ticker, market = undefined) {
         throw new NotSupported(this.id + ' parseTicker() is not supported yet');
@@ -1682,7 +1693,7 @@ export default class Exchange {
             else {
                 this.markets_by_id[value['id']] = [value];
             }
-            const market = this.deepExtend(this.safeMarket(), {
+            const market = this.deepExtend(this.safeMarketStructure(), {
                 'precision': this.precision,
                 'limits': this.limits,
             }, this.fees['trading'], value);
@@ -2784,7 +2795,7 @@ export default class Exchange {
         const symbol = this.safeString(position, 'symbol');
         let market = undefined;
         if (symbol !== undefined) {
-            market = this.market(symbol);
+            market = this.safeValue(this.markets, symbol);
         }
         if (contractSize === undefined && market !== undefined) {
             contractSize = this.safeNumber(market, 'contractSize');
@@ -3005,6 +3016,15 @@ export default class Exchange {
     async fetchPosition(symbol, params = {}) {
         throw new NotSupported(this.id + ' fetchPosition() is not supported yet');
     }
+    async watchPosition(symbol = undefined, params = {}) {
+        throw new NotSupported(this.id + ' watchPosition() is not supported yet');
+    }
+    async watchPositions(symbols = undefined, since = undefined, limit = undefined, params = {}) {
+        throw new NotSupported(this.id + ' watchPositions() is not supported yet');
+    }
+    async watchPositionForSymbols(symbols = undefined, since = undefined, limit = undefined, params = {}) {
+        return this.watchPositions(symbols, since, limit, params);
+    }
     async fetchPositionsBySymbol(symbol, params = {}) {
         /**
          * @method
@@ -3044,53 +3064,14 @@ export default class Exchange {
         return {
             'id': currencyId,
             'code': code,
+            'precision': undefined,
         };
     }
-    safeMarket(marketId = undefined, market = undefined, delimiter = undefined, marketType = undefined) {
-        const result = {
-            'active': undefined,
-            'base': undefined,
-            'baseId': undefined,
-            'contract': false,
-            'contractSize': undefined,
-            'expiry': undefined,
-            'expiryDatetime': undefined,
-            'future': false,
-            'id': marketId,
-            'info': undefined,
-            'inverse': undefined,
-            'limits': {
-                'amount': {
-                    'min': undefined,
-                    'max': undefined,
-                },
-                'cost': {
-                    'min': undefined,
-                    'max': undefined,
-                },
-                'price': {
-                    'min': undefined,
-                    'max': undefined,
-                },
-            },
-            'linear': undefined,
-            'margin': false,
-            'option': false,
-            'optionType': undefined,
-            'precision': {
-                'amount': undefined,
-                'price': undefined,
-            },
-            'quote': undefined,
-            'quoteId': undefined,
-            'settle': undefined,
-            'settleId': undefined,
-            'spot': false,
-            'strike': undefined,
-            'swap': false,
+    safeMarket(marketId, market = undefined, delimiter = undefined, marketType = undefined) {
+        const result = this.safeMarketStructure({
             'symbol': marketId,
-            'type': undefined,
-        };
+            'marketId': marketId,
+        });
         if (marketId !== undefined) {
             if ((this.markets_by_id !== undefined) && (marketId in this.markets_by_id)) {
                 const markets = this.markets_by_id[marketId];
@@ -3099,13 +3080,17 @@ export default class Exchange {
                     return markets[0];
                 }
                 else {
-                    if ((marketType === undefined) && (market === undefined)) {
-                        throw new ArgumentsRequired(this.id + ' safeMarket() requires a fourth argument for ' + marketId + ' to disambiguate between different markets with the same market id');
+                    if (marketType === undefined) {
+                        if (market === undefined) {
+                            throw new ArgumentsRequired(this.id + ' safeMarket() requires a fourth argument for ' + marketId + ' to disambiguate between different markets with the same market id');
+                        }
+                        else {
+                            marketType = market['type'];
+                        }
                     }
-                    const inferredMarketType = (marketType === undefined) ? market['type'] : marketType;
                     for (let i = 0; i < markets.length; i++) {
                         const currentMarket = markets[i];
-                        if (currentMarket[inferredMarketType]) {
+                        if (currentMarket[marketType]) {
                             return currentMarket;
                         }
                     }
@@ -3181,17 +3166,7 @@ export default class Exchange {
         return await this.fetchPartialBalance('total', params);
     }
     async fetchStatus(params = {}) {
-        if (this.has['fetchTime']) {
-            const time = await this.fetchTime(params);
-            this.status = this.extend(this.status, {
-                'updated': time,
-                'info': time,
-            });
-        }
-        if (!('info' in this.status)) {
-            this.status['info'] = undefined;
-        }
-        return this.status;
+        throw new NotSupported(this.id + ' fetchStatus() is not supported yet');
     }
     async fetchFundingFee(code, params = {}) {
         const warnOnFetchFundingFee = this.safeValue(this.options, 'warnOnFetchFundingFee', true);
@@ -3468,6 +3443,9 @@ export default class Exchange {
     async fetchOHLCVWs(symbol, timeframe = '1m', since = undefined, limit = undefined, params = {}) {
         throw new NotSupported(this.id + ' fetchOHLCVWs() is not supported yet');
     }
+    async fetchGreeks(symbol, params = {}) {
+        throw new NotSupported(this.id + ' fetchGreeks() is not supported yet');
+    }
     async fetchDepositsWithdrawals(code = undefined, since = undefined, limit = undefined, params = {}) {
         /**
          * @method
@@ -3545,21 +3523,19 @@ export default class Exchange {
         if (this.markets === undefined) {
             throw new ExchangeError(this.id + ' markets not loaded');
         }
-        if (typeof symbol === 'string') {
-            if (symbol in this.markets) {
-                return this.markets[symbol];
-            }
-            else if (symbol in this.markets_by_id) {
-                const markets = this.markets_by_id[symbol];
-                const defaultType = this.safeString2(this.options, 'defaultType', 'defaultSubType', 'spot');
-                for (let i = 0; i < markets.length; i++) {
-                    const market = markets[i];
-                    if (market[defaultType]) {
-                        return market;
-                    }
+        if (symbol in this.markets) {
+            return this.markets[symbol];
+        }
+        else if (symbol in this.markets_by_id) {
+            const markets = this.markets_by_id[symbol];
+            const defaultType = this.safeString2(this.options, 'defaultType', 'defaultSubType', 'spot');
+            for (let i = 0; i < markets.length; i++) {
+                const market = markets[i];
+                if (market[defaultType]) {
+                    return market;
                 }
-                return markets[0];
             }
+            return markets[0];
         }
         throw new BadSymbol(this.id + ' does not have market symbol ' + symbol);
     }
@@ -4627,6 +4603,9 @@ export default class Exchange {
         const sorted = this.sortBy(result, 'timestamp');
         const symbol = this.safeString(market, 'symbol');
         return this.filterBySymbolSinceLimit(sorted, symbol, since, limit);
+    }
+    parseGreeks(greeks, market = undefined) {
+        throw new NotSupported(this.id + ' parseGreeks () is not supported yet');
     }
 }
 export { Exchange, };
