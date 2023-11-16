@@ -239,7 +239,7 @@ import ccxt
 print(ccxt.exchanges) # print a list of all available exchange classes
 ```
 
-The library supports concurrent asynchronous mode with asyncio and async/await in Python 3.5.3+
+The library supports concurrent asynchronous mode with asyncio and async/await in Python 3.7.0+
 
 ```Python
 import ccxt.async_support as ccxt # link against the asynchronous version of ccxt
