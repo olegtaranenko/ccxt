@@ -2266,7 +2266,7 @@ class Exchange {
         $parsedArray = $this->to_array($array);
         $result = $parsedArray;
         if ($sinceIsDefined) {
-            $result = [ ];
+            $result = $array();
             for ($i = 0; $i < count($parsedArray); $i++) {
                 $entry = $parsedArray[$i];
                 $value = $this->safe_value($entry, $key);
@@ -2288,7 +2288,7 @@ class Exchange {
         $result = $parsedArray;
         // single-pass filter for both symbol and $since
         if ($valueIsDefined || $sinceIsDefined) {
-            $result = [ ];
+            $result = $array();
             for ($i = 0; $i < count($parsedArray); $i++) {
                 $entry = $parsedArray[$i];
                 $entryFiledEqualValue = $entry[$field] === $value;

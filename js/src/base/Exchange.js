@@ -7,19 +7,20 @@
 // ----------------------------------------------------------------------------
 /* eslint-disable */
 import * as functions from './functions.js';
-const { aggregate, arrayConcat, base16ToBinary, base58ToBinary, base64ToBinary, base64ToString, binaryConcat, binaryConcatArray, binaryToBase16, binaryToBase58, binaryToBase64, capitalize, clone, crc32, DECIMAL_PLACES, decimalToPrecision, decode, deepExtend, ecdsa, encode, extend, extractParams, filterBy, flatten, groupBy, hash, hmac, implodeParams, inArray, indexBy, isEmpty, isJsonEncodedObject, isNode, iso8601, json, keysort, merge, microseconds, milliseconds, NO_PADDING, now, numberToBE, numberToLE, numberToString, omit, omitZero, ordered, parse8601, parseDate, parseTimeframe, precisionFromString, rawencode, ROUND, safeFloat, safeFloat2, safeFloatN, safeInteger, safeInteger2, safeIntegerN, safeIntegerProduct, safeIntegerProduct2, safeIntegerProductN, safeString, safeString2, safeStringLower, safeStringLower2, safeStringLowerN, safeStringN, safeStringUpper, safeStringUpper2, safeStringUpperN, safeTimestamp, safeTimestamp2, safeTimestampN, safeValue, safeValue2, safeValueN, seconds, SIGNIFICANT_DIGITS, sortBy, sortBy2, stringToBase64, strip, sum, Throttler, TICK_SIZE, toArray, TRUNCATE, unCamelCase, unique, urlencode, urlencodeNested, urlencodeWithArrayRepeat, uuid, uuid16, uuid22, uuidv1, ymd, ymdhms, yymmdd, yyyymmdd } = functions;
 import { keys as keysFunc, values as valuesFunc, vwap as vwapFunc } from './functions.js';
 // import exceptions from "./errors.js"
-import { // eslint-disable-line object-curly-newline
-ArgumentsRequired, AuthenticationError, BadRequest, BadResponse, BadSymbol, DDoSProtection, ExchangeError, ExchangeNotAvailable, InvalidAddress, InvalidOrder, NetworkError, NotSupported, NullResponse, RateLimitExceeded, RequestTimeout } from "./errors.js";
+import { ArgumentsRequired, AuthenticationError, BadRequest, BadResponse, BadSymbol, DDoSProtection, ExchangeError, ExchangeNotAvailable, InvalidAddress, InvalidOrder, NetworkError, NotSupported, NullResponse, RateLimitExceeded, RequestTimeout } from "./errors.js";
 import { Precise } from './Precise.js';
 //-----------------------------------------------------------------------------
 import WsClient from './ws/WsClient.js';
 import { createFuture } from './ws/Future.js';
 import { CountedOrderBook, IndexedOrderBook, OrderBook as WsOrderBook } from './ws/OrderBook.js';
-import totp from './functions/totp.js';
 // ----------------------------------------------------------------------------
+//
 import { axolotl } from './functions/crypto.js';
+import totp from './functions/totp.js';
+const { aggregate, arrayConcat, base16ToBinary, base58ToBinary, base64ToBinary, base64ToString, binaryConcat, binaryConcatArray, binaryToBase16, binaryToBase58, binaryToBase64, capitalize, clone, crc32, DECIMAL_PLACES, decimalToPrecision, decode, deepExtend, ecdsa, encode, extend, extractParams, filterBy, flatten, groupBy, hash, hmac, implodeParams, inArray, indexBy, isEmpty, isJsonEncodedObject, isNode, iso8601, json, keysort, merge, microseconds, milliseconds, NO_PADDING, now, numberToBE, numberToLE, numberToString, omit, omitZero, ordered, parse8601, parseDate, parseTimeframe, precisionFromString, rawencode, ROUND, safeFloat, safeFloat2, safeFloatN, safeInteger, safeInteger2, safeIntegerN, safeIntegerProduct, safeIntegerProduct2, safeIntegerProductN, safeString, safeString2, safeStringLower, safeStringLower2, safeStringLowerN, safeStringN, safeStringUpper, safeStringUpper2, safeStringUpperN, safeTimestamp, safeTimestamp2, safeTimestampN, safeValue, safeValue2, safeValueN, seconds, SIGNIFICANT_DIGITS, sortBy, sortBy2, stringToBase64, strip, sum, Throttler, TICK_SIZE, toArray, TRUNCATE, unCamelCase, unique, urlencode, urlencodeNested, urlencodeWithArrayRepeat, uuid, uuid16, uuid22, uuidv1, ymd, ymdhms, yymmdd, yyyymmdd } = functions;
+// ----------------------------------------------------------------------------
 /**
  * @class Exchange
  */
@@ -29,33 +30,39 @@ export default class Exchange {
         this.user_agent = undefined;
         this.userAgent = undefined;
         //
-        this.headers = {};
-        this.origin = '*'; // CORS origin
         this.userAgents = {
             'chrome': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36',
             'chrome39': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Safari/537.36',
             'chrome100': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.75 Safari/537.36',
         };
+        this.headers = {};
+        this.origin = '*'; // CORS origin
         //
-        this.accounts = undefined;
-        this.accountsById = undefined;
         this.agent = undefined; // maintained for backwards compatibility
+        this.handleContentTypeApplicationZip = false;
+        this.minFundingAddressLength = 1; // used in checkAddress
+        this.number = Number; // or String (a pointer to a function)
+        this.quoteJsonNumbers = true; // treat numbers in json as quoted precise strings
+        this.substituteCommonCurrencyCodes = true; // reserved
+        // whether fees should be summed by currency code
+        this.reduceFees = true;
+        this.validateClientSsl = false;
+        this.validateServerSsl = true;
+        this.timeout = 10000; // milliseconds
+        this.twofa = undefined; // two-factor authentication (2FA)
+        this.verbose = false;
         this.balance = {};
-        this.baseCurrencies = undefined;
-        this.codes = undefined;
-        this.commonCurrencies = undefined;
-        this.currencies = undefined;
-        this.currencies_by_id = undefined;
+        this.orderbooks = {};
+        this.orders = undefined;
+        this.positions = undefined;
+        this.tickers = {};
+        this.transactions = {};
+        this.triggerOrders = undefined;
+        this.requiresEddsa = false;
+        this.requiresWeb3 = false;
         this.enableLastHttpResponse = true;
         this.enableLastJsonResponse = true;
         this.enableLastResponseHeaders = true;
-        this.enableRateLimit = undefined;
-        this.exceptions = {};
-        this.handleContentTypeApplicationZip = false;
-        this.hostname = undefined;
-        this.httpExceptions = undefined;
-        this.id = undefined;
-        this.ids = undefined;
         this.last_http_response = undefined;
         this.last_json_response = undefined;
         this.last_request_body = undefined;
@@ -63,44 +70,37 @@ export default class Exchange {
         this.last_request_path = undefined;
         this.last_request_url = undefined;
         this.last_response_headers = undefined;
+        this.id = undefined;
         this.markets = undefined;
-        this.markets_by_id = undefined;
-        this.marketsByAltname = undefined;
-        this.marketsLoading = undefined;
-        this.minFundingAddressLength = 1; // used in checkAddress
-        this.name = undefined;
-        this.number = Number; // or String (a pointer to a function)
-        this.orderbooks = {};
-        this.orders = undefined;
-        this.paddingMode = undefined;
-        this.positions = {};
-        this.precisionMode = undefined;
-        this.quoteCurrencies = undefined;
-        this.quoteJsonNumbers = true; // treat numbers in json as quoted precise strings
-        this.rateLimit = undefined; // milliseconds
-        this.requiresEddsa = false;
-        // whether fees should be summed by currency code
-        this.reduceFees = true;
-        this.reloadingMarkets = undefined;
-        this.requiresEddsa = false;
-        this.requiresWeb3 = false;
-        this.stablePairs = {};
         this.status = undefined;
-        this.substituteCommonCurrencyCodes = true; // reserved
-        this.symbols = undefined;
-        this.targetAccount = undefined;
+        this.enableRateLimit = undefined;
+        this.rateLimit = undefined; // milliseconds
         this.throttler = undefined;
-        this.tickers = {};
-        this.timeframes = {};
-        this.timeout = 10000; // milliseconds
         this.tokenBucket = undefined;
-        this.transactions = {};
-        this.triggerOrders = undefined;
-        this.twofa = undefined; // two-factor authentication (2FA)
-        this.validateClientSsl = false;
-        this.validateServerSsl = true;
-        this.verbose = false;
+        this.httpExceptions = undefined;
+        this.currencies = undefined;
+        this.ids = undefined;
+        this.markets_by_id = undefined;
+        this.symbols = undefined;
+        this.baseCurrencies = undefined;
+        this.codes = undefined;
+        this.currencies_by_id = undefined;
+        this.quoteCurrencies = undefined;
+        this.marketsLoading = undefined;
+        this.reloadingMarkets = undefined;
+        this.accounts = undefined;
+        this.accountsById = undefined;
+        this.commonCurrencies = undefined;
+        this.hostname = undefined;
+        this.paddingMode = undefined;
+        this.precisionMode = undefined;
+        this.exceptions = {};
+        this.timeframes = {};
         this.version = undefined;
+        this.marketsByAltname = undefined;
+        this.name = undefined;
+        this.targetAccount = undefined;
+        this.stablePairs = {};
         // WS/PRO options
         this.aggregate = aggregate;
         this.arrayConcat = arrayConcat;
@@ -131,7 +131,6 @@ export default class Exchange {
         this.implodeParams = implodeParams;
         this.inArray = inArray;
         this.indexBy = indexBy;
-        this.isArray = inArrayFunc;
         this.isEmpty = isEmpty;
         this.isJsonEncodedObject = isJsonEncodedObject;
         this.isNode = isNode;
@@ -249,10 +248,10 @@ export default class Exchange {
         this.ohlcvs = {};
         this.orderbooks = {};
         this.orders = undefined;
-        this.positions = undefined;
+        this.positions = {};
         this.tickers = {};
         this.trades = {};
-        this.transactions = {};
+        this.transactions = undefined;
         // web3 and cryptography flags
         this.requiresEddsa = false;
         this.requiresWeb3 = false;
@@ -992,8 +991,7 @@ export default class Exchange {
                         });
                     }
                     else {
-                        client.send(message)
-                            .catch((e) => {
+                        client.send(message).catch((e) => {
                             delete client.subscriptions[subscribeHash];
                             future.reject(e);
                         });
@@ -1569,13 +1567,11 @@ export default class Exchange {
             'baseId': undefined,
             'contract': undefined,
             'contractSize': undefined,
-            'created': undefined,
             'expiry': undefined,
             'expiryDatetime': undefined,
             'future': undefined,
             'id': undefined,
             'index': undefined,
-            'info': undefined,
             'inverse': undefined,
             'limits': {
                 'leverage': {
@@ -1601,8 +1597,6 @@ export default class Exchange {
             'margin': undefined,
             'option': undefined,
             'optionType': undefined,
-            'quote': undefined,
-            'quoteId': undefined,
             'precision': {
                 'amount': undefined,
                 'base': undefined,
@@ -1610,6 +1604,8 @@ export default class Exchange {
                 'price': undefined,
                 'quote': undefined,
             },
+            'quote': undefined,
+            'quoteId': undefined,
             'settle': undefined,
             'settleId': undefined,
             'spot': undefined,
@@ -1618,6 +1614,8 @@ export default class Exchange {
             'symbol': undefined,
             'taker': undefined,
             'type': undefined,
+            'created': undefined,
+            'info': undefined,
         };
         if (market !== undefined) {
             const result = this.extend(cleanStructure, market);
