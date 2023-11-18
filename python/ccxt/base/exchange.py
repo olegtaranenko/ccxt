@@ -4,7 +4,7 @@
 
 # -----------------------------------------------------------------------------
 
-__version__ = '4.1.55'
+__version__ = '4.1.56'
 
 # -----------------------------------------------------------------------------
 
@@ -30,7 +30,7 @@ from ccxt.base.decimal_to_precision import decimal_to_precision
 from ccxt.base.decimal_to_precision import DECIMAL_PLACES, TICK_SIZE, NO_PADDING, TRUNCATE, ROUND, ROUND_UP, ROUND_DOWN, SIGNIFICANT_DIGITS
 from ccxt.base.decimal_to_precision import number_to_string
 from ccxt.base.precise import Precise
-from ccxt.base.types import Balance, Currency, IndexType, OrderSide, OrderType, Trade, OrderRequest, Market, Str, Num
+from ccxt.base.types import Account, Currency, IndexType, OrderSide, OrderType, Trade, OrderRequest, Market, Str, Num
 
 # -----------------------------------------------------------------------------
 
@@ -1940,8 +1940,11 @@ class Exchange(object):
     def parse_order(self, order, market: Market = None):
         raise NotSupported(self.id + ' parseOrder() is not supported yet')
 
-    def fetch_borrow_rates(self, params={}):
-        raise NotSupported(self.id + ' fetchBorrowRates() is not supported yet')
+    def fetch_cross_borrow_rates(self, params={}):
+        raise NotSupported(self.id + ' fetchCrossBorrowRates() is not supported yet')
+
+    def fetch_isolated_borrow_rates(self, params={}):
+        raise NotSupported(self.id + ' fetchIsolatedBorrowRates() is not supported yet')
 
     def parse_market_leverage_tiers(self, info, market: Market = None):
         raise NotSupported(self.id + ' parseMarketLeverageTiers() is not supported yet')
@@ -1995,12 +1998,18 @@ class Exchange(object):
     def parse_to_numeric(self, number):
         stringVersion = self.number_to_string(number)  # self will convert 1.0 and 1 to "1" and 1.1 to "1.1"
         # keep self in mind:
-        # in JS: 1 == 1.0 is True
+        # in JS: 1 == 1.0 is True;  1 == 1.0 is True
         # in Python: 1 == 1.0 is True
-        # in PHP 1 == 1.0 is False
-        if stringVersion.find('.') > 0:
+        # in PHP 1 == 1.0 is True, but 1 == 1.0 is False
+        if stringVersion.find('.') >= 0:
             return float(stringVersion)
         return int(stringVersion)
+
+    def is_round_number(self, value):
+        # self method is similar to isInteger, but self is more loyal and does not check for types.
+        # i.e. isRoundNumber(1.000) returns True, while isInteger(1.000) returns False
+        res = self.parse_to_numeric((value % 1))
+        return res == 0
 
     def after_construct(self):
         self.create_networks_by_id_object()
@@ -3296,7 +3305,7 @@ class Exchange(object):
         specifically fetches positions for specific symbol, unlike fetchPositions(which can work with multiple symbols, but because of that, it might be slower & more rate-limit consuming)
         :param str symbol: unified market symbol of the market the position is held in
         :param dict params: extra parameters specific to the endpoint
-        :returns dict[]: a list of `position structure <https://github.com/ccxt/ccxt/wiki/Manual#position-structure>` with maximum 3 items - one position for "one-way" mode, and two positions(long & short) for "two-way"(a.k.a. hedge) mode
+        :returns dict[]: a list of `position structure <https://docs.ccxt.com/#/?id=position-structure>` with maximum 3 items - one position for "one-way" mode, and two positions(long & short) for "two-way"(a.k.a. hedge) mode
         """
         raise NotSupported(self.id + ' fetchPositionsBySymbol() is not supported yet')
 
@@ -3445,14 +3454,24 @@ class Exchange(object):
         else:
             raise NotSupported(self.id + ' ' + key + ' does not have a value in mapping')
 
-    def fetch_borrow_rate(self, code: str, params={}):
+    def fetch_cross_borrow_rate(self, code: str, params={}):
         self.load_markets()
         if not self.has['fetchBorrowRates']:
-            raise NotSupported(self.id + ' fetchBorrowRate() is not supported yet')
-        borrowRates = self.fetch_borrow_rates(params)
+            raise NotSupported(self.id + ' fetchCrossBorrowRate() is not supported yet')
+        borrowRates = self.fetchCrossBorrowRates(params)
         rate = self.safe_value(borrowRates, code)
         if rate is None:
-            raise ExchangeError(self.id + ' fetchBorrowRate() could not find the borrow rate for currency code ' + code)
+            raise ExchangeError(self.id + ' fetchCrossBorrowRate() could not find the borrow rate for currency code ' + code)
+        return rate
+
+    def fetch_isolated_borrow_rate(self, symbol: str, params={}):
+        self.load_markets()
+        if not self.has['fetchBorrowRates']:
+            raise NotSupported(self.id + ' fetchIsolatedBorrowRate() is not supported yet')
+        borrowRates = self.fetchIsolatedBorrowRates(params)
+        rate = self.safe_value(borrowRates, symbol)
+        if rate is None:
+            raise ExchangeError(self.id + ' fetchIsolatedBorrowRate() could not find the borrow rate for market symbol ' + symbol)
         return rate
 
     def handle_option_and_params(self, params, methodName, optionName, defaultValue=None):
@@ -3480,7 +3499,7 @@ class Exchange(object):
         result, empty = self.handle_option_and_params({}, methodName, optionName, defaultValue)
         return result
 
-    def handle_market_type_and_params(self, methodName, market=None, params={}):
+    def handle_market_type_and_params(self, methodName: str, market: Market = None, params={}):
         defaultType = self.safe_string_2(self.options, 'defaultType', 'type', 'spot')
         methodOptions = self.safe_value(self.options, methodName)
         methodType = defaultType
@@ -3664,7 +3683,7 @@ class Exchange(object):
         :param int [since]: timestamp in ms of the earliest deposit/withdrawal, default is None
         :param int [limit]: max number of deposit/withdrawals to return, default is None
         :param dict [params]: extra parameters specific to the exchange api endpoint
-        :returns dict: a list of `transaction structures <https://github.com/ccxt/ccxt/wiki/Manual#transaction-structure>`
+        :returns dict: a list of `transaction structures <https://docs.ccxt.com/#/?id=transaction-structure>`
         """
         raise NotSupported(self.id + ' fetchDepositsWithdrawals() is not supported yet')
 
@@ -3697,7 +3716,7 @@ class Exchange(object):
         else:
             raise NotSupported(self.id + ' fetchDepositAddress() is not supported yet')
 
-    def account(self) -> Balance:
+    def account(self) -> Account:
         return {
             'free': None,
             'used': None,
@@ -4305,7 +4324,7 @@ class Exchange(object):
         :param dict market: ccxt market
         :param int [since]: when defined, the response items are filtered to only include items after self timestamp
         :param int [limit]: limits the number of items in the response
-        :returns dict[]: an array of `funding history structures <https://github.com/ccxt/ccxt/wiki/Manual#funding-history-structure>`
+        :returns dict[]: an array of `funding history structures <https://docs.ccxt.com/#/?id=funding-history-structure>`
         """
         result = []
         for i in range(0, len(incomes)):
@@ -4336,7 +4355,7 @@ class Exchange(object):
         :param int [since]: timestamp in ms of the earliest deposit/withdrawal, default is None
         :param int [limit]: max number of deposit/withdrawals to return, default is None
         :param dict [params]: extra parameters specific to the exchange api endpoint
-        :returns dict: a list of `transaction structures <https://github.com/ccxt/ccxt/wiki/Manual#transaction-structure>`
+        :returns dict: a list of `transaction structures <https://docs.ccxt.com/#/?id=transaction-structure>`
         """
         if self.has['fetchDepositsWithdrawals']:
             return self.fetchDepositsWithdrawals(code, since, limit, params)
@@ -4625,7 +4644,7 @@ class Exchange(object):
         :param dict market: ccxt market
         :param int [since]: when defined, the response items are filtered to only include items after self timestamp
         :param int [limit]: limits the number of items in the response
-        :returns dict[]: an array of `liquidation structures <https://github.com/ccxt/ccxt/wiki/Manual#liquidation-structure>`
+        :returns dict[]: an array of `liquidation structures <https://docs.ccxt.com/#/?id=liquidation-structure>`
         """
         result = []
         for i in range(0, len(liquidations)):
