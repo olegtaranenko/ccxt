@@ -1,17 +1,13 @@
 export type Bool = boolean | undefined;
-export type Currency = CurrencyInterface | undefined;
 export type Int = number | undefined;
-export type Market = MarketInterface | undefined;
-export type Num = number | undefined;
-export type Str = string | undefined;
-export type Strings = string[] | undefined;
-export type Num = number | undefined;
-export type Bool = boolean | undefined;
 // must be an integer in other langs
 export type IndexType = number | string;
+export type MarketType = 'spot' | 'margin' | 'swap' | 'future' | 'option';
+export type Num = number | undefined;
 export type OrderSide = 'buy' | 'sell' | string;
 export type OrderType = 'limit' | 'market' | string;
-export type MarketType = 'spot' | 'margin' | 'swap' | 'future' | 'option';
+export type Str = string | undefined;
+export type Strings = string[] | undefined;
 
 export interface Dictionary<T> {
     [key: string]: T;
@@ -36,14 +32,6 @@ export interface MarketInterface {
     active: Bool;
     base: string;
     baseId: string;
-    quoteId: string;
-    active: Bool;
-    type: MarketType;
-    spot: boolean;
-    margin: boolean;
-    swap: boolean;
-    future: boolean;
-    option: boolean;
     contract: boolean;
     contractSize: Num;
     created: Int;
@@ -82,7 +70,7 @@ export interface MarketInterface {
     symbol: string;
     taker?: Num
     tierBased?: boolean | undefined;
-    type: string;
+    type: MarketType;
     uppercaseId?: string;
 }
 
@@ -192,16 +180,16 @@ export interface CurrencyInterface {
 }
 
 export interface Balance {
-    free: Num,
-    used: Num,
-    total: Num,
     debt?: Num,
+    free: Num,
+    total: Num,
+    used: Num,
 }
 
 export interface Account {
     free: Str,
-    used: Str,
     total: Str,
+    used: Str,
 }
 
 export interface PartialBalances extends Dictionary<number> {
