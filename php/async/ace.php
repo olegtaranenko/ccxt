@@ -7,6 +7,7 @@ namespace ccxt\async;
 
 use Exception; // a common import
 use ccxt\async\abstract\ace as Exchange;
+use ccxt\ArgumentsRequired;
 use ccxt\Precise;
 use React\Async;
 use React\Promise\PromiseInterface;
@@ -712,7 +713,9 @@ class ace extends Exchange {
              * @param {array} [$params] extra parameters specific to the ace api endpoint
              * @return {Order[]} a list of ~@link https://docs.ccxt.com/#/?id=order-structure order structures~
              */
-            $this->check_required_symbol('fetchOpenOrders', $symbol);
+            if ($symbol === null) {
+                throw new ArgumentsRequired($this->id . ' fetchOpenOrders() requires a $symbol argument');
+            }
             Async\await($this->load_markets());
             $market = $this->market($symbol);
             $request = array(

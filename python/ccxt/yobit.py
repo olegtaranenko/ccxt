@@ -984,7 +984,8 @@ class yobit(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the yobit api endpoint
         :returns Order[]: a list of `order structures <https://docs.ccxt.com/#/?id=order-structure>`
         """
-        self.check_required_symbol('fetchOpenOrders', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' fetchOpenOrders() requires a symbol argument')
         self.load_markets()
         request = {}
         market = None
@@ -1028,7 +1029,8 @@ class yobit(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the yobit api endpoint
         :returns Trade[]: a list of `trade structures <https://docs.ccxt.com/#/?id=trade-structure>`
         """
-        self.check_required_symbol('fetchMyTrades', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' fetchMyTrades() requires a symbol argument')
         self.load_markets()
         market = self.market(symbol)
         # some derived classes use camelcase notation for request fields

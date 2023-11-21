@@ -890,7 +890,9 @@ class coinsph extends Exchange {
              * @param {array} [$params] extra parameters specific to the coinsph api endpoint
              * @return {Trade[]} a list of ~@link https://docs.ccxt.com/#/?id=trade-structure trade structures~
              */
-            $this->check_required_symbol('fetchMyTrades', $symbol);
+            if ($symbol === null) {
+                throw new ArgumentsRequired($this->id . ' fetchMyTrades() requires a $symbol argument');
+            }
             Async\await($this->load_markets());
             $market = $this->market($symbol);
             $request = array(
@@ -919,7 +921,9 @@ class coinsph extends Exchange {
              * @param {array} [$params] extra parameters specific to the coinsph api endpoint
              * @return {array[]} a list of ~@link https://docs.ccxt.com/#/?$id=trade-structure trade structures~
              */
-            $this->check_required_symbol('fetchOrderTrades', $symbol);
+            if ($symbol === null) {
+                throw new ArgumentsRequired($this->id . ' fetchOrderTrades() requires a $symbol argument');
+            }
             $request = array(
                 'orderId' => $id,
             );
@@ -1225,7 +1229,9 @@ class coinsph extends Exchange {
              * @param {array} [$params] extra parameters specific to the coinsph api endpoint
              * @return {Order[]} a list of ~@link https://docs.ccxt.com/#/?id=order-structure order structures~
              */
-            $this->check_required_symbol('fetchClosedOrders', $symbol);
+            if ($symbol === null) {
+                throw new ArgumentsRequired($this->id . ' fetchClosedOrders() requires a $symbol argument');
+            }
             Async\await($this->load_markets());
             $market = $this->market($symbol);
             $request = array(
@@ -1274,7 +1280,9 @@ class coinsph extends Exchange {
              * @param {array} [$params] extra parameters specific to the coinsph api endpoint
              * @return {array[]} a list of ~@link https://docs.ccxt.com/#/?id=order-structure order structures~
              */
-            $this->check_required_symbol('cancelAllOrders', $symbol);
+            if ($symbol === null) {
+                throw new ArgumentsRequired($this->id . ' cancelAllOrders() requires a $symbol argument');
+            }
             Async\await($this->load_markets());
             $market = null;
             $request = array();

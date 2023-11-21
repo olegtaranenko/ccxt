@@ -859,7 +859,8 @@ class coinsph(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the coinsph api endpoint
         :returns Trade[]: a list of `trade structures <https://docs.ccxt.com/#/?id=trade-structure>`
         """
-        self.check_required_symbol('fetchMyTrades', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' fetchMyTrades() requires a symbol argument')
         await self.load_markets()
         market = self.market(symbol)
         request = {
@@ -884,7 +885,8 @@ class coinsph(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the coinsph api endpoint
         :returns dict[]: a list of `trade structures <https://docs.ccxt.com/#/?id=trade-structure>`
         """
-        self.check_required_symbol('fetchOrderTrades', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' fetchOrderTrades() requires a symbol argument')
         request = {
             'orderId': id,
         }
@@ -1158,7 +1160,8 @@ class coinsph(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the coinsph api endpoint
         :returns Order[]: a list of `order structures <https://docs.ccxt.com/#/?id=order-structure>`
         """
-        self.check_required_symbol('fetchClosedOrders', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' fetchClosedOrders() requires a symbol argument')
         await self.load_markets()
         market = self.market(symbol)
         request = {
@@ -1199,7 +1202,8 @@ class coinsph(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the coinsph api endpoint
         :returns dict[]: a list of `order structures <https://docs.ccxt.com/#/?id=order-structure>`
         """
-        self.check_required_symbol('cancelAllOrders', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' cancelAllOrders() requires a symbol argument')
         await self.load_markets()
         market = None
         request = {}

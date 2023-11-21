@@ -10,6 +10,7 @@ from ccxt.base.types import Int, Str, Strings, Ticker
 from ccxt.async_support.base.ws.client import Client
 from typing import List
 from ccxt.base.errors import ExchangeError
+from ccxt.base.errors import ArgumentsRequired
 from ccxt.base.errors import BadRequest
 from ccxt.base.errors import BadSymbol
 from ccxt.base.errors import AuthenticationError
@@ -189,7 +190,8 @@ class coinbasepro(ccxt.async_support.coinbasepro):
         :param dict [params]: extra parameters specific to the coinbasepro api endpoint
         :returns dict[]: a list of [trade structures]{@link https://docs.ccxt.com/#/?id=trade-structure
         """
-        self.check_required_symbol('watchMyTrades', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' watchMyTrades() requires a symbol argument')
         await self.load_markets()
         symbol = self.symbol(symbol)
         name = 'user'

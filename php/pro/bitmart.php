@@ -15,6 +15,13 @@ class bitmart extends \ccxt\async\bitmart {
     public function describe() {
         return $this->deep_extend(parent::describe(), array(
             'has' => array(
+                'createOrderWs' => false,
+                'editOrderWs' => false,
+                'fetchOpenOrdersWs' => false,
+                'fetchOrderWs' => false,
+                'cancelOrderWs' => false,
+                'cancelOrdersWs' => false,
+                'cancelAllOrdersWs' => false,
                 'ws' => true,
                 'watchTicker' => true,
                 'watchOrderBook' => true,
@@ -131,7 +138,9 @@ class bitmart extends \ccxt\async\bitmart {
              * @param {array} [$params] extra parameters specific to the bitmart api endpoint
              * @return {array[]} a list of ~@link https://docs.ccxt.com/#/?id=order-structure order structures~
              */
-            $this->check_required_symbol('watchOrders', $symbol);
+            if ($symbol === null) {
+                throw new ArgumentsRequired($this->id . ' watchOrders() requires a $symbol argument');
+            }
             Async\await($this->load_markets());
             $market = $this->market($symbol);
             $symbol = $market['symbol'];

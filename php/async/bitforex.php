@@ -8,6 +8,7 @@ namespace ccxt\async;
 use Exception; // a common import
 use ccxt\async\abstract\bitforex as Exchange;
 use ccxt\ExchangeError;
+use ccxt\ArgumentsRequired;
 use React\Async;
 use React\Promise\PromiseInterface;
 
@@ -389,7 +390,9 @@ class bitforex extends Exchange {
              * @param {array} [$params] extra parameters specific to the bitforex api endpoint
              * @return {Trade[]} a list of ~@link https://docs.ccxt.com/#/?id=trade-structure trade structures~
              */
-            $this->check_required_symbol('fetchMyTrades', $symbol);
+            if ($symbol === null) {
+                throw new ArgumentsRequired($this->id . ' fetchMyTrades() requires a $symbol argument');
+            }
             Async\await($this->load_markets());
             $request = array(
                 // 'symbol' => $market['id'],
@@ -723,11 +726,13 @@ class bitforex extends Exchange {
              * @param {array} [$params] extra parameters specific to the bitforex api endpoint
              * @return {Order[]} a list of ~@link https://docs.ccxt.com/#/?id=order-structure order structures~
              */
-            $this->check_required_symbol('fetchOpenOrders', $symbol);
+            if ($symbol === null) {
+                throw new ArgumentsRequired($this->id . ' fetchOpenOrders() requires a $symbol argument');
+            }
             Async\await($this->load_markets());
             $market = $this->market($symbol);
             $request = array(
-                'symbol' => $this->market_id($symbol),
+                'symbol' => $market['id'],
                 'state' => 0,
             );
             $response = Async\await($this->privatePostApiV1TradeOrderInfos (array_merge($request, $params)));
@@ -745,11 +750,13 @@ class bitforex extends Exchange {
              * @param {array} [$params] extra parameters specific to the bitforex api endpoint
              * @return {Order[]} a list of ~@link https://docs.ccxt.com/#/?id=order-structure order structures~
              */
-            $this->check_required_symbol('fetchClosedOrders', $symbol);
+            if ($symbol === null) {
+                throw new ArgumentsRequired($this->id . ' fetchClosedOrders() requires a $symbol argument');
+            }
             Async\await($this->load_markets());
             $market = $this->market($symbol);
             $request = array(
-                'symbol' => $this->market_id($symbol),
+                'symbol' => $market['id'],
                 'state' => 1,
             );
             $response = Async\await($this->privatePostApiV1TradeOrderInfos (array_merge($request, $params)));

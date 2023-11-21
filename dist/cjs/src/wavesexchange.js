@@ -1559,7 +1559,9 @@ class wavesexchange extends wavesexchange$1 {
          */
         this.checkRequiredDependencies();
         this.checkRequiredKeys();
-        this.checkRequiredSymbol('fetchOrders', symbol);
+        if (symbol === undefined) {
+            throw new errors.ArgumentsRequired(this.id + ' fetchOrders() requires a symbol argument');
+        }
         await this.loadMarkets();
         const market = this.market(symbol);
         const timestamp = this.milliseconds();

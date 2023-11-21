@@ -2697,7 +2697,9 @@ class phemex extends phemex$1 {
          * @param {string} [params.posSide] either 'Merged' or 'Long' or 'Short'
          * @returns {object} An [order structure]{@link https://docs.ccxt.com/#/?id=order-structure}
          */
-        this.checkRequiredSymbol('cancelOrder', symbol);
+        if (symbol === undefined) {
+            throw new errors.ArgumentsRequired(this.id + ' cancelOrder() requires a symbol argument');
+        }
         await this.loadMarkets();
         const market = this.market(symbol);
         const request = {
@@ -2736,7 +2738,9 @@ class phemex extends phemex$1 {
          * @param {object} [params] extra parameters specific to the phemex api endpoint
          * @returns {object[]} a list of [order structures]{@link https://docs.ccxt.com/#/?id=order-structure}
          */
-        this.checkRequiredSymbol('cancelAllOrders', symbol);
+        if (symbol === undefined) {
+            throw new errors.ArgumentsRequired(this.id + ' cancelAllOrders() requires a symbol argument');
+        }
         await this.loadMarkets();
         const request = {
         // 'symbol': market['id'],
@@ -2763,7 +2767,9 @@ class phemex extends phemex$1 {
          * @param {object} [params] extra parameters specific to the phemex api endpoint
          * @returns {object} An [order structure]{@link https://docs.ccxt.com/#/?id=order-structure}
          */
-        this.checkRequiredSymbol('fetchOrder', symbol);
+        if (symbol === undefined) {
+            throw new errors.ArgumentsRequired(this.id + ' fetchOrder() requires a symbol argument');
+        }
         await this.loadMarkets();
         const market = this.market(symbol);
         if (market['settle'] === 'USDT') {
@@ -2810,7 +2816,9 @@ class phemex extends phemex$1 {
          * @param {object} [params] extra parameters specific to the phemex api endpoint
          * @returns {Order[]} a list of [order structures]{@link https://docs.ccxt.com/#/?id=order-structure}
          */
-        this.checkRequiredSymbol('fetchOrders', symbol);
+        if (symbol === undefined) {
+            throw new errors.ArgumentsRequired(this.id + ' fetchOrders() requires a symbol argument');
+        }
         await this.loadMarkets();
         const market = this.market(symbol);
         const request = {
@@ -2848,7 +2856,9 @@ class phemex extends phemex$1 {
          * @param {object} [params] extra parameters specific to the phemex api endpoint
          * @returns {Order[]} a list of [order structures]{@link https://docs.ccxt.com/#/?id=order-structure}
          */
-        this.checkRequiredSymbol('fetchOpenOrders', symbol);
+        if (symbol === undefined) {
+            throw new errors.ArgumentsRequired(this.id + ' fetchOpenOrders() requires a symbol argument');
+        }
         await this.loadMarkets();
         const market = this.market(symbol);
         let method = 'privateGetSpotOrders';
@@ -2892,7 +2902,9 @@ class phemex extends phemex$1 {
          * @param {object} [params] extra parameters specific to the phemex api endpoint
          * @returns {Order[]} a list of [order structures]{@link https://docs.ccxt.com/#/?id=order-structure}
          */
-        this.checkRequiredSymbol('fetchClosedOrders', symbol);
+        if (symbol === undefined) {
+            throw new errors.ArgumentsRequired(this.id + ' fetchClosedOrders() requires a symbol argument');
+        }
         await this.loadMarkets();
         const market = this.market(symbol);
         const request = {
@@ -2971,7 +2983,9 @@ class phemex extends phemex$1 {
          * @param {object} [params] extra parameters specific to the phemex api endpoint
          * @returns {Trade[]} a list of [trade structures]{@link https://docs.ccxt.com/#/?id=trade-structure}
          */
-        this.checkRequiredSymbol('fetchMyTrades', symbol);
+        if (symbol === undefined) {
+            throw new errors.ArgumentsRequired(this.id + ' fetchMyTrades() requires a symbol argument');
+        }
         await this.loadMarkets();
         const market = this.market(symbol);
         let method = 'privateGetExchangeSpotOrderTrades';
@@ -3613,7 +3627,9 @@ class phemex extends phemex$1 {
          * @param {object} [params] extra parameters specific to the phemex api endpoint
          * @returns {object} a [funding history structure]{@link https://docs.ccxt.com/#/?id=funding-history-structure}
          */
-        this.checkRequiredSymbol('fetchFundingHistory', symbol);
+        if (symbol === undefined) {
+            throw new errors.ArgumentsRequired(this.id + ' fetchFundingHistory() requires a symbol argument');
+        }
         await this.loadMarkets();
         const market = this.market(symbol);
         const request = {
@@ -3851,7 +3867,9 @@ class phemex extends phemex$1 {
          * @param {object} [params] extra parameters specific to the phemex api endpoint
          * @returns {object} response from the exchange
          */
-        this.checkRequiredSymbol('setMarginMode', symbol);
+        if (symbol === undefined) {
+            throw new errors.ArgumentsRequired(this.id + ' setMarginMode() requires a symbol argument');
+        }
         await this.loadMarkets();
         const market = this.market(symbol);
         if (!market['swap'] || market['settle'] === 'USDT') {
@@ -4087,7 +4105,9 @@ class phemex extends phemex$1 {
          */
         // WARNING: THIS WILL INCREASE LIQUIDATION PRICE FOR OPEN ISOLATED LONG POSITIONS
         // AND DECREASE LIQUIDATION PRICE FOR OPEN ISOLATED SHORT POSITIONS
-        this.checkRequiredSymbol('setLeverage', symbol);
+        if (symbol === undefined) {
+            throw new errors.ArgumentsRequired(this.id + ' setLeverage() requires a symbol argument');
+        }
         if ((leverage < 1) || (leverage > 100)) {
             throw new errors.BadRequest(this.id + ' setLeverage() leverage should be between 1 and 100');
         }
@@ -4334,7 +4354,9 @@ class phemex extends phemex$1 {
          * @param {int} [params.until] timestamp in ms of the latest funding rate
          * @returns {object[]} a list of [funding rate structures]{@link https://docs.ccxt.com/#/?id=funding-rate-history-structure}
          */
-        this.checkRequiredSymbol('fetchFundingRateHistory', symbol);
+        if (symbol === undefined) {
+            throw new errors.ArgumentsRequired(this.id + ' fetchFundingRateHistory() requires a symbol argument');
+        }
         await this.loadMarkets();
         const market = this.market(symbol);
         const isUsdtSettled = market['settle'] === 'USDT';

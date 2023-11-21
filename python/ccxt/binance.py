@@ -54,7 +54,8 @@ class binance(Exchange, ImplicitAPI):
                 'future': True,
                 'option': True,
                 'addMargin': True,
-                'borrowMargin': True,
+                'borrowCrossMargin': True,
+                'borrowIsolatedMargin': True,
                 'cancelAllOrders': True,
                 'cancelOrder': True,
                 'cancelOrders': True,  # contract only
@@ -141,7 +142,8 @@ class binance(Exchange, ImplicitAPI):
                 'fetchWithdrawals': True,
                 'fetchWithdrawalWhitelist': False,
                 'reduceMargin': True,
-                'repayMargin': True,
+                'repayCrossMargin': True,
+                'repayIsolatedMargin': True,
                 'setLeverage': True,
                 'setMargin': False,
                 'setMarginMode': True,
@@ -276,6 +278,7 @@ class binance(Exchange, ImplicitAPI):
                         'margin/capital-flow': 10,  # Weight(IP): 100 => cost = 0.1 * 100 = 10
                         'margin/delist-schedule': 10,  # Weight(IP): 100 => cost = 0.1 * 100 = 10
                         'margin/available-inventory': 0.3334,  # Weight(UID): 50 => cost = 0.006667 * 50 = 0.3334
+                        'margin/leverageBracket': 0.1,  # Weight(IP): 1 => cost = 0.1 * 1 = 0.1
                         'loan/vip/loanable/data': 40,  # Weight(IP): 400 => cost = 0.1 * 400 = 40
                         'loan/vip/collateral/data': 40,  # Weight(IP): 400 => cost = 0.1 * 400 = 40
                         'loan/vip/request/data': 2.6668,  # Weight(UID): 400 => cost = 0.006667 * 400 = 2.6668
@@ -4483,7 +4486,8 @@ class binance(Exchange, ImplicitAPI):
         :param str [params.marginMode]: 'cross' or 'isolated', for spot margin trading
         :returns dict: An `order structure <https://docs.ccxt.com/#/?id=order-structure>`
         """
-        self.check_required_symbol('fetchOrder', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' fetchOrder() requires a symbol argument')
         self.load_markets()
         market = self.market(symbol)
         defaultType = self.safe_string_2(self.options, 'fetchOrder', 'defaultType', 'spot')
@@ -4532,7 +4536,8 @@ class binance(Exchange, ImplicitAPI):
         :param boolean [params.paginate]: default False, when True will automatically paginate by calling self endpoint multiple times. See in the docs all the [availble parameters](https://github.com/ccxt/ccxt/wiki/Manual#pagination-params)
         :returns Order[]: a list of `order structures <https://docs.ccxt.com/#/?id=order-structure>`
         """
-        self.check_required_symbol('fetchOrders', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' fetchOrders() requires a symbol argument')
         self.load_markets()
         paginate = False
         paginate, params = self.handle_option_and_params(params, 'fetchOrders', 'paginate')
@@ -4735,7 +4740,8 @@ class binance(Exchange, ImplicitAPI):
         :param boolean [params.paginate]: default False, when True will automatically paginate by calling self endpoint multiple times. See in the docs all the [availble parameters](https://github.com/ccxt/ccxt/wiki/Manual#pagination-params)
         :returns dict[]: a list of `order structures <https://docs.ccxt.com/#/?id=order-structure>`
         """
-        self.check_required_symbol('fetchCanceledOrders', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' fetchCanceledOrders() requires a symbol argument')
         self.load_markets()
         market = self.market(symbol)
         if market['swap'] or market['future']:
@@ -4758,7 +4764,8 @@ class binance(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the binance api endpoint
         :returns dict: An `order structure <https://docs.ccxt.com/#/?id=order-structure>`
         """
-        self.check_required_symbol('cancelOrder', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' cancelOrder() requires a symbol argument')
         self.load_markets()
         market = self.market(symbol)
         defaultType = self.safe_string_2(self.options, 'cancelOrder', 'defaultType', 'spot')
@@ -4805,7 +4812,8 @@ class binance(Exchange, ImplicitAPI):
         :param str [params.marginMode]: 'cross' or 'isolated', for spot margin trading
         :returns dict[]: a list of `order structures <https://docs.ccxt.com/#/?id=order-structure>`
         """
-        self.check_required_symbol('cancelAllOrders', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' cancelOrder() requires a symbol argument')
         self.load_markets()
         market = self.market(symbol)
         request = {
@@ -4845,7 +4853,8 @@ class binance(Exchange, ImplicitAPI):
         :param int[] [params.recvWindow]:
         :returns dict: an list of `order structures <https://docs.ccxt.com/#/?id=order-structure>`
         """
-        self.check_required_symbol('cancelOrders', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' cancelOrders() requires a symbol argument')
         self.load_markets()
         market = self.market(symbol)
         if not market['contract']:
@@ -4910,7 +4919,8 @@ class binance(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the binance api endpoint
         :returns dict[]: a list of `trade structures <https://docs.ccxt.com/#/?id=trade-structure>`
         """
-        self.check_required_symbol('fetchOrderTrades', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' fetchOrderTrades() requires a symbol argument')
         self.load_markets()
         market = self.market(symbol)
         type = self.safe_string(params, 'type', market['type'])
@@ -4954,7 +4964,8 @@ class binance(Exchange, ImplicitAPI):
         if type == 'option':
             method = 'eapiPrivateGetUserTrades'
         else:
-            self.check_required_symbol('fetchMyTrades', symbol)
+            if symbol is None:
+                raise ArgumentsRequired(self.id + ' fetchMyTrades() requires a symbol argument')
             marginMode, params = self.handle_margin_mode_and_params('fetchMyTrades', params)
             if type == 'spot' or type == 'margin':
                 method = 'privateGetMyTrades'
@@ -7425,14 +7436,15 @@ class binance(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the binance api endpoint
         :returns dict: response from the exchange
         """
-        self.check_required_symbol('setLeverage', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' setLeverage() requires a symbol argument')
         # WARNING: THIS WILL INCREASE LIQUIDATION PRICE FOR OPEN ISOLATED LONG POSITIONS
         # AND DECREASE LIQUIDATION PRICE FOR OPEN ISOLATED SHORT POSITIONS
         if (leverage < 1) or (leverage > 125):
             raise BadRequest(self.id + ' leverage should be between 1 and 125')
         self.load_markets()
         market = self.market(symbol)
-        method = None
+        method: str
         if market['linear']:
             method = 'fapiPrivatePostLeverage'
         elif market['inverse']:
@@ -7455,7 +7467,8 @@ class binance(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the binance api endpoint
         :returns dict: response from the exchange
         """
-        self.check_required_symbol('setMarginMode', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' setMarginMode() requires a symbol argument')
         #
         # {"code": -4048 , "msg": "Margin type cannot be changed if there exists position."}
         #
@@ -8356,29 +8369,23 @@ class binance(Exchange, ImplicitAPI):
             'info': info,
         }
 
-    def repay_margin(self, code: str, amount, symbol: Str = None, params={}):
+    def repay_cross_margin(self, code: str, amount, params={}):
         """
         repay borrowed margin and interest
         :see: https://binance-docs.github.io/apidocs/spot/en/#margin-account-repay-margin
         :param str code: unified currency code of the currency to repay
         :param float amount: the amount to repay
-        :param str symbol: unified market symbol, required for isolated margin
         :param dict [params]: extra parameters specific to the binance api endpoint
         :returns dict: a `margin loan structure <https://docs.ccxt.com/#/?id=margin-loan-structure>`
         """
-        marginMode, query = self.handle_margin_mode_and_params('repayMargin', params)  # cross or isolated
-        self.check_required_margin_argument('repayMargin', symbol, marginMode)
         self.load_markets()
         currency = self.currency(code)
         request = {
             'asset': currency['id'],
             'amount': self.currency_to_precision(code, amount),
+            'isIsolated': 'FALSE',
         }
-        if symbol is not None:
-            market = self.market(symbol)
-            request['symbol'] = market['id']
-            request['isIsolated'] = 'TRUE'
-        response = self.sapiPostMarginRepay(self.extend(request, query))
+        response = self.sapiPostMarginRepay(self.extend(request, params))
         #
         #     {
         #         "tranId": 108988250265,
@@ -8387,29 +8394,79 @@ class binance(Exchange, ImplicitAPI):
         #
         return self.parse_margin_loan(response, currency)
 
-    def borrow_margin(self, code: str, amount, symbol: Str = None, params={}):
+    def repay_isolated_margin(self, symbol: str, code: str, amount, params={}):
+        """
+        repay borrowed margin and interest
+        :see: https://binance-docs.github.io/apidocs/spot/en/#margin-account-repay-margin
+        :param str symbol: unified market symbol, required for isolated margin
+        :param str code: unified currency code of the currency to repay
+        :param float amount: the amount to repay
+        :param dict [params]: extra parameters specific to the binance api endpoint
+        :returns dict: a `margin loan structure <https://docs.ccxt.com/#/?id=margin-loan-structure>`
+        """
+        self.load_markets()
+        currency = self.currency(code)
+        market = self.market(symbol)
+        request = {
+            'asset': currency['id'],
+            'amount': self.currency_to_precision(code, amount),
+            'symbol': market['id'],
+            'isIsolated': 'TRUE',
+        }
+        response = self.sapiPostMarginRepay(self.extend(request, params))
+        #
+        #     {
+        #         "tranId": 108988250265,
+        #         "clientTag":""
+        #     }
+        #
+        return self.parse_margin_loan(response, currency)
+
+    def borrow_cross_margin(self, code: str, amount, params={}):
         """
         create a loan to borrow margin
         :see: https://binance-docs.github.io/apidocs/spot/en/#margin-account-borrow-margin
         :param str code: unified currency code of the currency to borrow
         :param float amount: the amount to borrow
-        :param str symbol: unified market symbol, required for isolated margin
         :param dict [params]: extra parameters specific to the binance api endpoint
         :returns dict: a `margin loan structure <https://docs.ccxt.com/#/?id=margin-loan-structure>`
         """
-        marginMode, query = self.handle_margin_mode_and_params('borrowMargin', params)  # cross or isolated
-        self.check_required_margin_argument('borrowMargin', symbol, marginMode)
         self.load_markets()
         currency = self.currency(code)
         request = {
             'asset': currency['id'],
             'amount': self.currency_to_precision(code, amount),
+            'isIsolated': 'FALSE',
         }
-        if symbol is not None:
-            market = self.market(symbol)
-            request['symbol'] = market['id']
-            request['isIsolated'] = 'TRUE'
-        response = self.sapiPostMarginLoan(self.extend(request, query))
+        response = self.sapiPostMarginLoan(self.extend(request, params))
+        #
+        #     {
+        #         "tranId": 108988250265,
+        #         "clientTag":""
+        #     }
+        #
+        return self.parse_margin_loan(response, currency)
+
+    def borrow_isolated_margin(self, symbol: str, code: str, amount, params={}):
+        """
+        create a loan to borrow margin
+        :see: https://binance-docs.github.io/apidocs/spot/en/#margin-account-borrow-margin
+        :param str symbol: unified market symbol, required for isolated margin
+        :param str code: unified currency code of the currency to borrow
+        :param float amount: the amount to borrow
+        :param dict [params]: extra parameters specific to the binance api endpoint
+        :returns dict: a `margin loan structure <https://docs.ccxt.com/#/?id=margin-loan-structure>`
+        """
+        self.load_markets()
+        currency = self.currency(code)
+        market = self.market(symbol)
+        request = {
+            'asset': currency['id'],
+            'amount': self.currency_to_precision(code, amount),
+            'symbol': market['id'],
+            'isIsolated': 'TRUE',
+        }
+        response = self.sapiPostMarginLoan(self.extend(request, params))
         #
         #     {
         #         "tranId": 108988250265,

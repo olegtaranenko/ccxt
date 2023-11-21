@@ -8,6 +8,7 @@ from ccxt.async_support.base.ws.cache import ArrayCache, ArrayCacheBySymbolById,
 import hashlib
 from ccxt.base.types import Int, Str
 from ccxt.async_support.base.ws.client import Client
+from ccxt.base.errors import ArgumentsRequired
 from ccxt.base.errors import AuthenticationError
 
 
@@ -17,6 +18,15 @@ class bitvavo(ccxt.async_support.bitvavo):
         return self.deep_extend(super(bitvavo, self).describe(), {
             'has': {
                 'ws': True,
+                'createOrderWs': False,
+                'editOrderWs': False,
+                'fetchOpenOrdersWs': False,
+                'fetchOrderWs': False,
+                'cancelOrderWs': False,
+                'cancelOrdersWs': False,
+                'cancelAllOrdersWs': False,
+                'fetchTradesWs': False,
+                'fetchBalanceWs': False,
                 'watchOrderBook': True,
                 'watchTrades': True,
                 'watchTicker': True,
@@ -399,7 +409,8 @@ class bitvavo(ccxt.async_support.bitvavo):
         :param dict [params]: extra parameters specific to the bitvavo api endpoint
         :returns dict[]: a list of `order structures <https://docs.ccxt.com/#/?id=order-structure>`
         """
-        self.check_required_symbol('watchOrders', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' watchOrders() requires a symbol argument')
         await self.load_markets()
         await self.authenticate()
         market = self.market(symbol)
@@ -431,7 +442,8 @@ class bitvavo(ccxt.async_support.bitvavo):
         :param dict [params]: extra parameters specific to the bitvavo api endpoint
         :returns dict[]: a list of [trade structures]{@link https://docs.ccxt.com/#/?id=ortradeder-structure
         """
-        self.check_required_symbol('watchMyTrades', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' watchMyTrades() requires a symbol argument')
         await self.load_markets()
         await self.authenticate()
         market = self.market(symbol)

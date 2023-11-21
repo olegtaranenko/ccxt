@@ -7,6 +7,7 @@ namespace ccxt\pro;
 
 use Exception; // a common import
 use ccxt\ExchangeError;
+use ccxt\ArgumentsRequired;
 use ccxt\BadRequest;
 use ccxt\BadSymbol;
 use ccxt\AuthenticationError;
@@ -216,7 +217,9 @@ class coinbasepro extends \ccxt\async\coinbasepro {
              * @param {array} [$params] extra parameters specific to the coinbasepro api endpoint
              * @return {array[]} a list of [trade structures]{@link https://docs.ccxt.com/#/?id=trade-structure
              */
-            $this->check_required_symbol('watchMyTrades', $symbol);
+            if ($symbol === null) {
+                throw new ArgumentsRequired($this->id . ' watchMyTrades() requires a $symbol argument');
+            }
             Async\await($this->load_markets());
             $symbol = $this->symbol($symbol);
             $name = 'user';

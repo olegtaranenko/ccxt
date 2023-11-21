@@ -27,7 +27,7 @@ class mexc extends Exchange {
                 'future' => false,
                 'option' => false,
                 'addMargin' => true,
-                'borrowMargin' => true,
+                'borrowMargin' => false,
                 'cancelAllOrders' => true,
                 'cancelOrder' => true,
                 'cancelOrders' => null,
@@ -99,7 +99,7 @@ class mexc extends Exchange {
                 'fetchWithdrawal' => null,
                 'fetchWithdrawals' => true,
                 'reduceMargin' => true,
-                'repayMargin' => true,
+                'repayMargin' => false,
                 'setLeverage' => true,
                 'setMarginMode' => null,
                 'setPositionMode' => true,
@@ -210,10 +210,6 @@ class mexc extends Exchange {
                             'capital/deposit/address' => 1,
                             'capital/sub-account/universalTransfer' => 1,
                             'capital/convert' => 1,
-                            'margin/tradeMode' => 1,
-                            'margin/order' => 1,
-                            'margin/loan' => 1,
-                            'margin/repay' => 1,
                             'mxDeduct/enable' => 1,
                             'userDataStream' => 1,
                         ),
@@ -433,18 +429,18 @@ class mexc extends Exchange {
                 'networks' => array(
                     'BTC' => 'BTC',
                     'BCH' => 'BCH',
-                    'TRC20' => 'TRC20',
-                    'ERC20' => 'ERC20',
-                    'BEP20' => 'BEP20(BSC)',
-                    'OPTIMISM' => 'OP',
-                    'SOL' => 'SOL',
+                    'TRC20' => 'Tron(TRC20)',
+                    'ERC20' => 'Ethereum(ERC20)',
+                    'BEP20' => 'BNBSmartChain(BEP20)',
+                    'OPTIMISM' => 'Optimism(OP)',
+                    'SOL' => 'Solana(SOL)',
                     'CRC20' => 'CRONOS',
-                    'ALGO' => 'ALGO',
+                    'ALGO' => 'Algorand(ALGO)',
                     'XRP' => 'XRP',
-                    'MATIC' => 'MATIC',
+                    'MATIC' => 'Polygon(MATIC)',
                     'AVAXX' => 'AVAX_XCHAIN',
-                    'AVAXC' => 'AVAX_CCHAIN',
-                    'ARBONE' => 'Arbitrum One',
+                    'AVAXC' => 'AvalancheCChain(AVAXCCHAIN)',
+                    'ARBONE' => 'ArbitrumOne(ARB)',
                     'ARBNOVA' => 'ARBNOVA',
                     'FTM' => 'FTM',
                     'WAVES' => 'WAVES',
@@ -1025,10 +1021,15 @@ class mexc extends Exchange {
         $networkId = implode('', $parts);
         $networkId = str_replace('-20', '20', $networkId);
         $networksById = array(
-            'ETH' => 'ETH',
-            'ERC20' => 'ERC20',
-            'BEP20(BSC)' => 'BEP20',
-            'TRX' => 'TRC20',
+            'Ethereum(ERC20)' => 'ERC20',
+            'Algorand(ALGO)' => 'ALGO',
+            'ArbitrumOne(ARB)' => 'ARBONE',
+            'AvalancheCChain(AVAXCCHAIN)' => 'AVAXC',
+            'BNBSmartChain(BEP20)' => 'BEP20',
+            'Polygon(MATIC)' => 'MATIC',
+            'Optimism(OP)' => 'OPTIMISM',
+            'Solana(SOL)' => 'SOL',
+            'Tron(TRC20)' => 'TRC20',
         );
         return $this->safe_string($networksById, $networkId, $networkId);
     }
@@ -2111,12 +2112,7 @@ class mexc extends Exchange {
     public function create_spot_order($market, $type, $side, $amount, $price = null, $marginMode = null, $params = array ()) {
         $this->load_markets();
         $request = $this->create_spot_order_request($market, $type, $side, $amount, $price, $marginMode, $params);
-        $response = null;
-        if ($marginMode !== null) {
-            $response = $this->spotPrivatePostMarginOrder (array_merge($request, $params));
-        } else {
-            $response = $this->spotPrivatePostOrder (array_merge($request, $params));
-        }
+        $response = $this->spotPrivatePostOrder (array_merge($request, $params));
         //
         // spot
         //
@@ -2315,7 +2311,9 @@ class mexc extends Exchange {
          * @param {string} [$params->marginMode] only 'isolated' is supported, for spot-margin trading
          * @return {array} An ~@link https://docs.ccxt.com/#/?$id=order-structure order structure~
          */
-        $this->check_required_symbol('fetchOrder', $symbol);
+        if ($symbol === null) {
+            throw new ArgumentsRequired($this->id . ' fetchOrder() requires a $symbol argument');
+        }
         $this->load_markets();
         $market = $this->market($symbol);
         $request = array(
@@ -3621,7 +3619,9 @@ class mexc extends Exchange {
          * @param {array} [$params] extra parameters specific to the mexc3 api endpoint
          * @return {Trade[]} a list of ~@link https://docs.ccxt.com/#/?id=trade-structure trade structures~
          */
-        $this->check_required_symbol('fetchMyTrades', $symbol);
+        if ($symbol === null) {
+            throw new ArgumentsRequired($this->id . ' fetchMyTrades() requires a $symbol argument');
+        }
         $this->load_markets();
         $market = $this->market($symbol);
         list($marketType, $query) = $this->handle_market_type_and_params('fetchMyTrades', $market, $params);
@@ -4003,7 +4003,9 @@ class mexc extends Exchange {
          * @param {array} [$params] extra parameters specific to the mexc api endpoint
          * @return {array[]} a list of ~@link https://docs.ccxt.com/#/?id=funding-rate-history-structure funding rate structures~
          */
-        $this->check_required_symbol('fetchFundingRateHistory', $symbol);
+        if ($symbol === null) {
+            throw new ArgumentsRequired($this->id . ' fetchFundingRateHistory() requires a $symbol argument');
+        }
         $this->load_markets();
         $market = $this->market($symbol);
         $request = array(
@@ -4959,76 +4961,6 @@ class mexc extends Exchange {
         );
     }
 
-    public function borrow_margin(string $code, $amount, ?string $symbol = null, $params = array ()) {
-        /**
-         * create a loan to borrow margin
-         * @see https://mexcdevelop.github.io/apidocs/spot_v3_en/#loan
-         * @param {string} $code unified $currency $code of the $currency to borrow
-         * @param {float} $amount the $amount to borrow
-         * @param {string} $symbol unified $market $symbol
-         * @param {array} [$params] extra parameters specific to the mexc3 api endpoint
-         * @return {array} a ~@link https://docs.ccxt.com/#/?id=margin-loan-structure margin loan structure~
-         */
-        $this->check_required_symbol('borrowMargin', $symbol);
-        $this->load_markets();
-        $market = $this->market($symbol);
-        $currency = $this->currency($code);
-        $request = array(
-            'asset' => $currency['id'],
-            'amount' => $this->currency_to_precision($code, $amount),
-            'symbol' => $market['id'],
-        );
-        $response = $this->spotPrivatePostMarginLoan (array_merge($request, $params));
-        //
-        //     {
-        //         "tranId" => "762407666453712896"
-        //     }
-        //
-        $transaction = $this->parse_margin_loan($response, $currency);
-        return array_merge($transaction, array(
-            'amount' => $amount,
-            'symbol' => $symbol,
-        ));
-    }
-
-    public function repay_margin(string $code, $amount, ?string $symbol = null, $params = array ()) {
-        /**
-         * repay borrowed margin and interest
-         * @see https://mexcdevelop.github.io/apidocs/spot_v3_en/#repayment
-         * @param {string} $code unified $currency $code of the $currency to repay
-         * @param {float} $amount the $amount to repay
-         * @param {string} $symbol unified $market $symbol
-         * @param {array} [$params] extra parameters specific to the mexc3 api endpoint
-         * @param {string} [$params->borrowId] $transaction $id '762407666453712896'
-         * @return {array} a ~@link https://docs.ccxt.com/#/?$id=margin-loan-structure margin loan structure~
-         */
-        $this->check_required_symbol('repayMargin', $symbol);
-        $this->load_markets();
-        $id = $this->safe_string_2($params, 'id', 'borrowId');
-        if ($id === null) {
-            throw new ArgumentsRequired($this->id . ' repayMargin() requires a borrowId argument in the params');
-        }
-        $market = $this->market($symbol);
-        $currency = $this->currency($code);
-        $request = array(
-            'asset' => $currency['id'],
-            'amount' => $this->currency_to_precision($code, $amount),
-            'borrowId' => $id,
-            'symbol' => $market['id'],
-        );
-        $response = $this->spotPrivatePostMarginRepay (array_merge($request, $params));
-        //
-        //     {
-        //         "tranId" => "762407666453712896"
-        //     }
-        //
-        $transaction = $this->parse_margin_loan($response, $currency);
-        return array_merge($transaction, array(
-            'amount' => $amount,
-            'symbol' => $symbol,
-        ));
-    }
-
     public function fetch_transaction_fees($codes = null, $params = array ()) {
         /**
          * fetch deposit and withdrawal fees
@@ -5215,23 +5147,6 @@ class mexc extends Exchange {
             );
         }
         return $this->assign_default_deposit_withdraw_fees($result);
-    }
-
-    public function parse_margin_loan($info, ?array $currency = null) {
-        //
-        //     {
-        //         "tranId" => "762407666453712896"
-        //     }
-        //
-        return array(
-            'id' => $this->safe_string($info, 'tranId'),
-            'currency' => $this->safe_currency_code(null, $currency),
-            'amount' => null,
-            'symbol' => null,
-            'timestamp' => null,
-            'datetime' => null,
-            'info' => $info,
-        );
     }
 
     public function handle_margin_mode_and_params($methodName, $params = array (), $defaultValue = null) {

@@ -7,6 +7,7 @@ namespace ccxt\async;
 
 use Exception; // a common import
 use ccxt\async\abstract\woo as Exchange;
+use ccxt\ArgumentsRequired;
 use ccxt\BadRequest;
 use ccxt\InvalidOrder;
 use ccxt\Precise;
@@ -1000,8 +1001,8 @@ class woo extends Exchange {
              */
             $stop = $this->safe_value($params, 'stop', false);
             $params = $this->omit($params, 'stop');
-            if (!$stop) {
-                $this->check_required_symbol('cancelOrder', $symbol);
+            if (!$stop && ($symbol === null)) {
+                throw new ArgumentsRequired($this->id . ' cancelOrder() requires a $symbol argument');
             }
             Async\await($this->load_markets());
             $market = null;
@@ -1058,7 +1059,9 @@ class woo extends Exchange {
             if ($stop) {
                 return Async\await($this->v3PrivateDeleteAlgoOrdersPending ($params));
             }
-            $this->check_required_symbol('cancelOrders', $symbol);
+            if ($symbol === null) {
+                throw new ArgumentsRequired($this->id . ' cancelOrders() requires a $symbol argument');
+            }
             $market = $this->market($symbol);
             $request = array(
                 'symbol' => $market['id'],

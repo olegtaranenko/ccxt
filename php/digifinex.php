@@ -1798,7 +1798,9 @@ class digifinex extends Exchange {
             'order_id' => $id,
         );
         if ($marketType === 'swap') {
-            $this->check_required_symbol('cancelOrder', $symbol);
+            if ($symbol === null) {
+                throw new ArgumentsRequired($this->id . ' cancelOrder() requires a $symbol argument');
+            }
             $request['instrument_id'] = $market['id'];
         } else {
             $request['market'] = $marketType;
@@ -3126,7 +3128,9 @@ class digifinex extends Exchange {
          * @param {array} [$params] extra parameters specific to the digifinex api endpoint
          * @return {array[]} a list of ~@link https://docs.ccxt.com/#/?id=funding-rate-history-structure funding rate structures~
          */
-        $this->check_required_symbol('fetchFundingRateHistory', $symbol);
+        if ($symbol === null) {
+            throw new ArgumentsRequired($this->id . ' fetchFundingRateHistory() requires a $symbol argument');
+        }
         $this->load_markets();
         $market = $this->market($symbol);
         if (!$market['swap']) {
@@ -3514,8 +3518,10 @@ class digifinex extends Exchange {
          * @param {string} [$params->side] either 'long' or 'short', required for isolated markets only
          * @return {array} response from the exchange
          */
+        if ($symbol === null) {
+            throw new ArgumentsRequired($this->id . ' setLeverage() requires a $symbol argument');
+        }
         $this->load_markets();
-        $this->check_required_symbol('setLeverage', $symbol);
         $market = $this->market($symbol);
         if ($market['type'] !== 'swap') {
             throw new BadSymbol($this->id . ' setLeverage() supports swap contracts only');
@@ -4079,7 +4085,9 @@ class digifinex extends Exchange {
          * @param {array} [$params] extra parameters specific to the digifinex api endpoint
          * @return {array} response from the exchange
          */
-        $this->check_required_symbol('setMarginMode', $symbol);
+        if ($symbol === null) {
+            throw new ArgumentsRequired($this->id . ' setMarginMode() requires a $symbol argument');
+        }
         $this->load_markets();
         $market = $this->market($symbol);
         $marginMode = strtolower($marginMode);

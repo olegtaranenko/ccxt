@@ -9,6 +9,7 @@ import hashlib
 from ccxt.base.types import Int, Str, Strings
 from ccxt.async_support.base.ws.client import Client
 from ccxt.base.errors import ExchangeError
+from ccxt.base.errors import ArgumentsRequired
 from ccxt.base.precise import Precise
 
 
@@ -365,7 +366,8 @@ class cex(ccxt.async_support.cex):
         :param dict [params]: extra parameters specific to the cex api endpoint
         :returns dict[]: a list of `trade structures <https://docs.ccxt.com/#/?id=public-trades>`
         """
-        self.check_required_symbol('watchOrders', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' watchOrders() requires a symbol argument')
         await self.load_markets()
         await self.authenticate(params)
         url = self.urls['api']['ws']
@@ -398,7 +400,8 @@ class cex(ccxt.async_support.cex):
         :param dict [params]: extra parameters specific to the cex api endpoint
         :returns dict[]: a list of `trade structures <https://docs.ccxt.com/#/?id=public-trades>`
         """
-        self.check_required_symbol('watchMyTrades', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' watchMyTrades() requires a symbol argument')
         await self.load_markets()
         await self.authenticate(params)
         url = self.urls['api']['ws']

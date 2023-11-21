@@ -10,6 +10,7 @@ from ccxt.base.types import Balances, Currency, Int, Market, Order, OrderBook, O
 from typing import List
 from ccxt.base.errors import ExchangeError
 from ccxt.base.errors import PermissionDenied
+from ccxt.base.errors import ArgumentsRequired
 from ccxt.base.errors import BadRequest
 from ccxt.base.errors import BadSymbol
 from ccxt.base.errors import InsufficientFunds
@@ -1442,7 +1443,8 @@ class lbank(Exchange, ImplicitAPI):
         return self.fetch_order_default(id, symbol, params)
 
     def fetch_order_supplement(self, id: str, symbol: Str = None, params={}):
-        self.check_required_symbol('fetchOrder', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' fetchOrder() requires a symbol argument')
         self.load_markets()
         market = self.market(symbol)
         request = {
@@ -1476,7 +1478,8 @@ class lbank(Exchange, ImplicitAPI):
 
     def fetch_order_default(self, id: str, symbol: Str = None, params={}):
         # Id can be a list of ids delimited by a comma
-        self.check_required_symbol('fetchOrder', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' fetchOrder() requires a symbol argument')
         self.load_markets()
         market = self.market(symbol)
         request = {
@@ -1527,7 +1530,8 @@ class lbank(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the lbank2 api endpoint
         :returns Trade[]: a list of `trade structures <https://docs.ccxt.com/#/?id=trade-structure>`
         """
-        self.check_required_symbol('fetchMyTrades', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' fetchMyTrades() requires a symbol argument')
         self.load_markets()
         market = self.market(symbol)
         since = self.safe_value(params, 'start_date', since)
@@ -1582,7 +1586,8 @@ class lbank(Exchange, ImplicitAPI):
         """
         # default query is for canceled and completely filled orders
         # does not return open orders unless specified explicitly
-        self.check_required_symbol('fetchOrders', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' fetchOrders() requires a symbol argument')
         self.load_markets()
         market = self.market(symbol)
         if limit is None:
@@ -1635,7 +1640,8 @@ class lbank(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the lbank2 api endpoint
         :returns Order[]: a list of `order structures <https://docs.ccxt.com/#/?id=order-structure>`
         """
-        self.check_required_symbol('fetchOpenOrders', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' fetchOpenOrders() requires a symbol argument')
         self.load_markets()
         market = self.market(symbol)
         if limit is None:
@@ -1686,7 +1692,8 @@ class lbank(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the lbank2 api endpoint
         :returns dict: An `order structure <https://docs.ccxt.com/#/?id=order-structure>`
         """
-        self.check_required_symbol('cancelOrder', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' cancelOrder() requires a symbol argument')
         self.load_markets()
         clientOrderId = self.safe_string_2(params, 'origClientOrderId', 'clientOrderId')
         params = self.omit(params, ['origClientOrderId', 'clientOrderId'])
@@ -1722,7 +1729,8 @@ class lbank(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the lbank2 api endpoint
         :returns dict[]: a list of `order structures <https://docs.ccxt.com/#/?id=order-structure>`
         """
-        self.check_required_symbol('cancelAllOrders', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' cancelAllOrders() requires a symbol argument')
         self.load_markets()
         market = self.market(symbol)
         request = {

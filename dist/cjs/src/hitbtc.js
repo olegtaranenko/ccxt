@@ -2137,19 +2137,34 @@ class hitbtc extends hitbtc$1 {
          */
         await this.loadMarkets();
         const market = this.market(symbol);
-        const isLimit = (type === 'limit');
-        const reduceOnly = this.safeValue(params, 'reduceOnly');
-        const timeInForce = this.safeString(params, 'timeInForce');
-        const triggerPrice = this.safeNumberN(params, ['triggerPrice', 'stopPrice', 'stop_price']);
+        let request = undefined;
         let marketType = undefined;
         [marketType, params] = this.handleMarketTypeAndParams('createOrder', market, params);
         let marginMode = undefined;
         [marginMode, params] = this.handleMarginModeAndParams('createOrder', params);
+        [request, params] = this.createOrderRequest(market, marketType, type, side, amount, price, marginMode, params);
+        let response = undefined;
+        if (marketType === 'swap') {
+            response = await this.privatePostFuturesOrder(this.extend(request, params));
+        }
+        else if ((marketType === 'margin') || (marginMode !== undefined)) {
+            response = await this.privatePostMarginOrder(this.extend(request, params));
+        }
+        else {
+            response = await this.privatePostSpotOrder(this.extend(request, params));
+        }
+        return this.parseOrder(response, market);
+    }
+    createOrderRequest(market, marketType, type, side, amount, price = undefined, marginMode = undefined, params = {}) {
+        const isLimit = (type === 'limit');
+        const reduceOnly = this.safeValue(params, 'reduceOnly');
+        const timeInForce = this.safeString(params, 'timeInForce');
+        const triggerPrice = this.safeNumberN(params, ['triggerPrice', 'stopPrice', 'stop_price']);
         const isPostOnly = this.isPostOnly(type === 'market', undefined, params);
         const request = {
             'type': type,
             'side': side,
-            'quantity': this.amountToPrecision(symbol, amount),
+            'quantity': this.amountToPrecision(market['symbol'], amount),
             'symbol': market['id'],
             // 'client_order_id': 'r42gdPjNMZN-H_xs8RKl2wljg_dfgdg4', // Optional
             // 'time_in_force': 'GTC', // Optional GTC, IOC, FOK, Day, GTD
@@ -2181,7 +2196,7 @@ class hitbtc extends hitbtc$1 {
             if (price === undefined) {
                 throw new errors.ExchangeError(this.id + ' createOrder() requires a price argument for limit orders');
             }
-            request['price'] = this.priceToPrecision(symbol, price);
+            request['price'] = this.priceToPrecision(market['symbol'], price);
         }
         if ((timeInForce === 'GTD')) {
             const expireTime = this.safeString(params, 'expire_time');
@@ -2190,7 +2205,7 @@ class hitbtc extends hitbtc$1 {
             }
         }
         if (triggerPrice !== undefined) {
-            request['stop_price'] = this.priceToPrecision(symbol, triggerPrice);
+            request['stop_price'] = this.priceToPrecision(market['symbol'], triggerPrice);
             if (isLimit) {
                 request['type'] = 'stopLimit';
             }
@@ -2209,17 +2224,7 @@ class hitbtc extends hitbtc$1 {
             }
             request['margin_mode'] = marginMode;
         }
-        let response = undefined;
-        if (marketType === 'swap') {
-            response = await this.privatePostFuturesOrder(this.extend(request, params));
-        }
-        else if ((marketType === 'margin') || (marginMode !== undefined)) {
-            response = await this.privatePostMarginOrder(this.extend(request, params));
-        }
-        else {
-            response = await this.privatePostSpotOrder(this.extend(request, params));
-        }
-        return this.parseOrder(response, market);
+        return [request, params];
     }
     parseOrderStatus(status) {
         const statuses = {
@@ -3208,7 +3213,9 @@ class hitbtc extends hitbtc$1 {
          * @param {object} [params] extra parameters specific to the hitbtc api endpoint
          * @returns {object} response from the exchange
          */
-        this.checkRequiredSymbol('setLeverage', symbol);
+        if (symbol === undefined) {
+            throw new errors.ArgumentsRequired(this.id + ' setLeverage() requires a symbol argument');
+        }
         await this.loadMarkets();
         if (params['margin_balance'] === undefined) {
             throw new errors.ArgumentsRequired(this.id + ' setLeverage() requires a margin_balance parameter that will transfer margin to the specified trading pair');

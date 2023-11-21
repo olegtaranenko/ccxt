@@ -112,7 +112,7 @@ class bitrue(Exchange, ImplicitAPI):
                     'kline': 'https://www.bitrue.com/kline-api',
                 },
                 'www': 'https://www.bitrue.com',
-                'referral': 'https://www.bitrue.com/activity/task/task-landing?inviteCode=EZWETQE&cn=900000',
+                'referral': 'https://www.bitrue.com/affiliate/landing?cn=600000&inviteCode=EZWETQE',
                 'doc': [
                     'https://github.com/Bitrue-exchange/bitrue-official-api-docs',
                 ],
@@ -1327,7 +1327,8 @@ class bitrue(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the bitrue api endpoint
         :returns dict: An `order structure <https://docs.ccxt.com/#/?id=order-structure>`
         """
-        self.check_required_symbol('fetchOrder', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' fetchOrder() requires a symbol argument')
         await self.load_markets()
         market = self.market(symbol)
         request = {
@@ -1351,7 +1352,8 @@ class bitrue(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the bitrue api endpoint
         :returns Order[]: a list of `order structures <https://docs.ccxt.com/#/?id=order-structure>`
         """
-        self.check_required_symbol('fetchClosedOrders', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' fetchClosedOrders() requires a symbol argument')
         await self.load_markets()
         market = self.market(symbol)
         request = {
@@ -1399,7 +1401,8 @@ class bitrue(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the bitrue api endpoint
         :returns Order[]: a list of `order structures <https://docs.ccxt.com/#/?id=order-structure>`
         """
-        self.check_required_symbol('fetchOpenOrders', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' fetchOpenOrders() requires a symbol argument')
         await self.load_markets()
         market = self.market(symbol)
         request = {
@@ -1438,7 +1441,8 @@ class bitrue(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the bitrue api endpoint
         :returns dict: An `order structure <https://docs.ccxt.com/#/?id=order-structure>`
         """
-        self.check_required_symbol('cancelOrder', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' cancelOrder() requires a symbol argument')
         await self.load_markets()
         market = self.market(symbol)
         origClientOrderId = self.safe_value_2(params, 'origClientOrderId', 'clientOrderId')
@@ -1772,7 +1776,7 @@ class bitrue(Exchange, ImplicitAPI):
         self.check_address(address)
         await self.load_markets()
         currency = self.currency(code)
-        chainName = self.safe_string(params, 'chainName')
+        chainName = self.safe_string_2(params, 'network', 'chainName')
         if chainName is None:
             networks = self.safe_value(currency, 'networks', {})
             optionsNetworks = self.safe_value(self.options, 'networks', {})

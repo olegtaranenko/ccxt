@@ -6,7 +6,7 @@
 
 //  ---------------------------------------------------------------------------
 import Exchange from './abstract/lbank.js';
-import { ExchangeError, InvalidAddress, DuplicateOrderId, InsufficientFunds, InvalidOrder, InvalidNonce, AuthenticationError, RateLimitExceeded, PermissionDenied, BadRequest, BadSymbol } from './base/errors.js';
+import { ExchangeError, InvalidAddress, DuplicateOrderId, InsufficientFunds, InvalidOrder, InvalidNonce, AuthenticationError, RateLimitExceeded, PermissionDenied, BadRequest, BadSymbol, ArgumentsRequired } from './base/errors.js';
 import { TICK_SIZE } from './base/functions/number.js';
 import { Precise } from './base/Precise.js';
 import { md5 } from './static_dependencies/noble-hashes/md5.js';
@@ -1517,7 +1517,9 @@ export default class lbank extends Exchange {
         return await this.fetchOrderDefault(id, symbol, params);
     }
     async fetchOrderSupplement(id, symbol = undefined, params = {}) {
-        this.checkRequiredSymbol('fetchOrder', symbol);
+        if (symbol === undefined) {
+            throw new ArgumentsRequired(this.id + ' fetchOrder() requires a symbol argument');
+        }
         await this.loadMarkets();
         const market = this.market(symbol);
         const request = {
@@ -1551,7 +1553,9 @@ export default class lbank extends Exchange {
     }
     async fetchOrderDefault(id, symbol = undefined, params = {}) {
         // Id can be a list of ids delimited by a comma
-        this.checkRequiredSymbol('fetchOrder', symbol);
+        if (symbol === undefined) {
+            throw new ArgumentsRequired(this.id + ' fetchOrder() requires a symbol argument');
+        }
         await this.loadMarkets();
         const market = this.market(symbol);
         const request = {
@@ -1606,7 +1610,9 @@ export default class lbank extends Exchange {
          * @param {object} [params] extra parameters specific to the lbank2 api endpoint
          * @returns {Trade[]} a list of [trade structures]{@link https://docs.ccxt.com/#/?id=trade-structure}
          */
-        this.checkRequiredSymbol('fetchMyTrades', symbol);
+        if (symbol === undefined) {
+            throw new ArgumentsRequired(this.id + ' fetchMyTrades() requires a symbol argument');
+        }
         await this.loadMarkets();
         const market = this.market(symbol);
         since = this.safeValue(params, 'start_date', since);
@@ -1665,7 +1671,9 @@ export default class lbank extends Exchange {
          */
         // default query is for canceled and completely filled orders
         // does not return open orders unless specified explicitly
-        this.checkRequiredSymbol('fetchOrders', symbol);
+        if (symbol === undefined) {
+            throw new ArgumentsRequired(this.id + ' fetchOrders() requires a symbol argument');
+        }
         await this.loadMarkets();
         const market = this.market(symbol);
         if (limit === undefined) {
@@ -1721,7 +1729,9 @@ export default class lbank extends Exchange {
          * @param {object} [params] extra parameters specific to the lbank2 api endpoint
          * @returns {Order[]} a list of [order structures]{@link https://docs.ccxt.com/#/?id=order-structure}
          */
-        this.checkRequiredSymbol('fetchOpenOrders', symbol);
+        if (symbol === undefined) {
+            throw new ArgumentsRequired(this.id + ' fetchOpenOrders() requires a symbol argument');
+        }
         await this.loadMarkets();
         const market = this.market(symbol);
         if (limit === undefined) {
@@ -1775,7 +1785,9 @@ export default class lbank extends Exchange {
          * @param {object} [params] extra parameters specific to the lbank2 api endpoint
          * @returns {object} An [order structure]{@link https://docs.ccxt.com/#/?id=order-structure}
          */
-        this.checkRequiredSymbol('cancelOrder', symbol);
+        if (symbol === undefined) {
+            throw new ArgumentsRequired(this.id + ' cancelOrder() requires a symbol argument');
+        }
         await this.loadMarkets();
         const clientOrderId = this.safeString2(params, 'origClientOrderId', 'clientOrderId');
         params = this.omit(params, ['origClientOrderId', 'clientOrderId']);
@@ -1814,7 +1826,9 @@ export default class lbank extends Exchange {
          * @param {object} [params] extra parameters specific to the lbank2 api endpoint
          * @returns {object[]} a list of [order structures]{@link https://docs.ccxt.com/#/?id=order-structure}
          */
-        this.checkRequiredSymbol('cancelAllOrders', symbol);
+        if (symbol === undefined) {
+            throw new ArgumentsRequired(this.id + ' cancelAllOrders() requires a symbol argument');
+        }
         await this.loadMarkets();
         const market = this.market(symbol);
         const request = {

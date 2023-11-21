@@ -2549,7 +2549,8 @@ class phemex(Exchange, ImplicitAPI):
         :param str [params.posSide]: either 'Merged' or 'Long' or 'Short'
         :returns dict: An `order structure <https://docs.ccxt.com/#/?id=order-structure>`
         """
-        self.check_required_symbol('cancelOrder', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' cancelOrder() requires a symbol argument')
         self.load_markets()
         market = self.market(symbol)
         request = {
@@ -2581,7 +2582,8 @@ class phemex(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the phemex api endpoint
         :returns dict[]: a list of `order structures <https://docs.ccxt.com/#/?id=order-structure>`
         """
-        self.check_required_symbol('cancelAllOrders', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' cancelAllOrders() requires a symbol argument')
         self.load_markets()
         request = {
             # 'symbol': market['id'],
@@ -2604,7 +2606,8 @@ class phemex(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the phemex api endpoint
         :returns dict: An `order structure <https://docs.ccxt.com/#/?id=order-structure>`
         """
-        self.check_required_symbol('fetchOrder', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' fetchOrder() requires a symbol argument')
         self.load_markets()
         market = self.market(symbol)
         if market['settle'] == 'USDT':
@@ -2642,7 +2645,8 @@ class phemex(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the phemex api endpoint
         :returns Order[]: a list of `order structures <https://docs.ccxt.com/#/?id=order-structure>`
         """
-        self.check_required_symbol('fetchOrders', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' fetchOrders() requires a symbol argument')
         self.load_markets()
         market = self.market(symbol)
         request = {
@@ -2674,7 +2678,8 @@ class phemex(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the phemex api endpoint
         :returns Order[]: a list of `order structures <https://docs.ccxt.com/#/?id=order-structure>`
         """
-        self.check_required_symbol('fetchOpenOrders', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' fetchOpenOrders() requires a symbol argument')
         self.load_markets()
         market = self.market(symbol)
         method = 'privateGetSpotOrders'
@@ -2709,7 +2714,8 @@ class phemex(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the phemex api endpoint
         :returns Order[]: a list of `order structures <https://docs.ccxt.com/#/?id=order-structure>`
         """
-        self.check_required_symbol('fetchClosedOrders', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' fetchClosedOrders() requires a symbol argument')
         self.load_markets()
         market = self.market(symbol)
         request = {
@@ -2780,7 +2786,8 @@ class phemex(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the phemex api endpoint
         :returns Trade[]: a list of `trade structures <https://docs.ccxt.com/#/?id=trade-structure>`
         """
-        self.check_required_symbol('fetchMyTrades', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' fetchMyTrades() requires a symbol argument')
         self.load_markets()
         market = self.market(symbol)
         method = 'privateGetExchangeSpotOrderTrades'
@@ -3385,7 +3392,8 @@ class phemex(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the phemex api endpoint
         :returns dict: a `funding history structure <https://docs.ccxt.com/#/?id=funding-history-structure>`
         """
-        self.check_required_symbol('fetchFundingHistory', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' fetchFundingHistory() requires a symbol argument')
         self.load_markets()
         market = self.market(symbol)
         request = {
@@ -3609,7 +3617,8 @@ class phemex(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the phemex api endpoint
         :returns dict: response from the exchange
         """
-        self.check_required_symbol('setMarginMode', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' setMarginMode() requires a symbol argument')
         self.load_markets()
         market = self.market(symbol)
         if not market['swap'] or market['settle'] == 'USDT':
@@ -3825,7 +3834,8 @@ class phemex(Exchange, ImplicitAPI):
         """
         # WARNING: THIS WILL INCREASE LIQUIDATION PRICE FOR OPEN ISOLATED LONG POSITIONS
         # AND DECREASE LIQUIDATION PRICE FOR OPEN ISOLATED SHORT POSITIONS
-        self.check_required_symbol('setLeverage', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' setLeverage() requires a symbol argument')
         if (leverage < 1) or (leverage > 100):
             raise BadRequest(self.id + ' setLeverage() leverage should be between 1 and 100')
         self.load_markets()
@@ -4047,7 +4057,8 @@ class phemex(Exchange, ImplicitAPI):
         :param int [params.until]: timestamp in ms of the latest funding rate
         :returns dict[]: a list of `funding rate structures <https://docs.ccxt.com/#/?id=funding-rate-history-structure>`
         """
-        self.check_required_symbol('fetchFundingRateHistory', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' fetchFundingRateHistory() requires a symbol argument')
         self.load_markets()
         market = self.market(symbol)
         isUsdtSettled = market['settle'] == 'USDT'

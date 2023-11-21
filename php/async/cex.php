@@ -1150,7 +1150,9 @@ class cex extends Exchange {
              * @param {array} [$params] extra parameters specific to the cex api endpoint
              * @return {Order[]} a list of ~@link https://docs.ccxt.com/#/?id=order-structure order structures~
              */
-            $this->check_required_symbol('fetchClosedOrders', $symbol);
+            if ($symbol === null) {
+                throw new ArgumentsRequired($this->id . ' fetchClosedOrders() requires a $symbol argument');
+            }
             Async\await($this->load_markets());
             $method = 'privatePostArchivedOrdersPair';
             $market = $this->market($symbol);

@@ -48,7 +48,8 @@ class bitmart(Exchange, ImplicitAPI):
                 'swap': True,
                 'future': False,
                 'option': False,
-                'borrowMargin': True,
+                'borrowCrossMargin': False,
+                'borrowIsolatedMargin': True,
                 'cancelAllOrders': True,
                 'cancelOrder': True,
                 'cancelOrders': False,
@@ -110,7 +111,8 @@ class bitmart(Exchange, ImplicitAPI):
                 'fetchWithdrawal': True,
                 'fetchWithdrawals': True,
                 'reduceMargin': False,
-                'repayMargin': True,
+                'repayCrossMargin': False,
+                'repayIsolatedMargin': True,
                 'setLeverage': True,
                 'setMarginMode': False,
                 'transfer': True,
@@ -146,15 +148,15 @@ class bitmart(Exchange, ImplicitAPI):
                         'spot/v1/symbols/details': 5,
                         'spot/quotation/v3/tickers': 6,  # 10 times/2 sec = 5/s => 30/5 = 6
                         'spot/quotation/v3/ticker': 4,  # 15 times/2 sec = 7.5/s => 30/7.5 = 4
-                        'spot/quotation/v3/lite-klines': 4,  # 15 times/2 sec = 7.5/s => 30/7.5 = 4
-                        'spot/quotation/v3/klines': 6,  # 10 times/2 sec = 5/s => 30/5 = 6
+                        'spot/quotation/v3/lite-klines': 5,  # should be 4 but errors
+                        'spot/quotation/v3/klines': 7,  # should be 6 but errors
                         'spot/quotation/v3/books': 4,  # 15 times/2 sec = 7.5/s => 30/7.5 = 4
                         'spot/quotation/v3/trades': 4,  # 15 times/2 sec = 7.5/s => 30/7.5 = 4
                         'spot/v1/ticker': 5,
                         'spot/v2/ticker': 30,
                         'spot/v1/ticker_detail': 5,  # 12 times/2 sec = 6/s => 30/6 = 5
                         'spot/v1/steps': 30,
-                        'spot/v1/symbols/kline': 5,
+                        'spot/v1/symbols/kline': 6,  # should be 5 but errors
                         'spot/v1/symbols/book': 5,
                         'spot/v1/symbols/trades': 5,
                         # contract markets
@@ -163,7 +165,7 @@ class bitmart(Exchange, ImplicitAPI):
                         'contract/public/depth': 5,
                         'contract/public/open-interest': 30,
                         'contract/public/funding-rate': 30,
-                        'contract/public/kline': 5,
+                        'contract/public/kline': 6,  # should be 5 but errors
                         'account/v1/currencies': 30,
                     },
                 },
@@ -1615,7 +1617,8 @@ class bitmart(Exchange, ImplicitAPI):
                 request['endTime'] = until
             response = await self.privatePostSpotV4QueryTrades(self.extend(request, params))
         elif type == 'swap':
-            self.check_required_symbol('fetchMyTrades', symbol)
+            if symbol is None:
+                raise ArgumentsRequired(self.id + ' fetchMyTrades() requires a symbol argument')
             if since is not None:
                 request['start_time'] = since
             if until is not None:
@@ -2258,7 +2261,8 @@ class bitmart(Exchange, ImplicitAPI):
         :param boolean [params.stop]: *swap only* whether the order is a stop order
         :returns dict: An `order structure <https://docs.ccxt.com/#/?id=order-structure>`
         """
-        self.check_required_symbol('cancelOrder', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' cancelOrder() requires a symbol argument')
         await self.load_markets()
         market = self.market(symbol)
         request = {
@@ -2342,7 +2346,8 @@ class bitmart(Exchange, ImplicitAPI):
         if type == 'spot':
             response = await self.privatePostSpotV1CancelOrders(self.extend(request, params))
         elif type == 'swap':
-            self.check_required_symbol('cancelAllOrders', symbol)
+            if symbol is None:
+                raise ArgumentsRequired(self.id + ' cancelAllOrders() requires a symbol argument')
             response = await self.privatePostContractPrivateCancelOrders(self.extend(request, params))
         #
         # spot
@@ -2365,7 +2370,8 @@ class bitmart(Exchange, ImplicitAPI):
         return response
 
     async def fetch_orders_by_status(self, status, symbol: Str = None, since: Int = None, limit: Int = None, params={}):
-        self.check_required_symbol('fetchOrdersByStatus', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' fetchOrdersByStatus() requires a symbol argument')
         await self.load_markets()
         market = self.market(symbol)
         if not market['spot']:
@@ -2537,7 +2543,8 @@ class bitmart(Exchange, ImplicitAPI):
         type = None
         type, params = self.handle_market_type_and_params('fetchClosedOrders', market, params)
         if type != 'spot':
-            self.check_required_symbol('fetchClosedOrders', symbol)
+            if symbol is None:
+                raise ArgumentsRequired(self.id + ' fetchClosedOrders() requires a symbol argument')
         marginMode = None
         marginMode, params = self.handle_margin_mode_and_params('fetchClosedOrders', params)
         if marginMode == 'isolated':
@@ -2598,7 +2605,8 @@ class bitmart(Exchange, ImplicitAPI):
             else:
                 response = await self.privatePostSpotV4QueryOrder(self.extend(request, params))
         elif type == 'swap':
-            self.check_required_symbol('fetchOrder', symbol)
+            if symbol is None:
+                raise ArgumentsRequired(self.id + ' fetchOrder() requires a symbol argument')
             request['symbol'] = market['id']
             request['order_id'] = id
             response = await self.privateGetContractPrivateOrder(self.extend(request, params))
@@ -2997,18 +3005,16 @@ class bitmart(Exchange, ImplicitAPI):
             'fee': fee,
         }
 
-    async def repay_margin(self, code: str, amount, symbol: Str = None, params={}):
+    async def repay_isolated_margin(self, symbol: str, code: str, amount, params={}):
         """
         repay borrowed margin and interest
         :see: https://developer-pro.bitmart.com/en/spot/#margin-repay-isolated
+        :param str symbol: unified market symbol
         :param str code: unified currency code of the currency to repay
         :param str amount: the amount to repay
-        :param str symbol: unified market symbol
         :param dict [params]: extra parameters specific to the bitmart api endpoint
-        :param str [params.marginMode]: 'isolated' is the default and 'cross' is unavailable
         :returns dict: a `margin loan structure <https://docs.ccxt.com/#/?id=margin-loan-structure>`
         """
-        self.check_required_symbol('repayMargin', symbol)
         await self.load_markets()
         market = self.market(symbol)
         currency = self.currency(code)
@@ -3017,7 +3023,6 @@ class bitmart(Exchange, ImplicitAPI):
             'currency': currency['id'],
             'amount': self.currency_to_precision(code, amount),
         }
-        params = self.omit(params, 'marginMode')
         response = await self.privatePostSpotV1MarginIsolatedRepay(self.extend(request, params))
         #
         #     {
@@ -3036,18 +3041,16 @@ class bitmart(Exchange, ImplicitAPI):
             'symbol': symbol,
         })
 
-    async def borrow_margin(self, code: str, amount, symbol: Str = None, params={}):
+    async def borrow_isolated_margin(self, symbol: str, code: str, amount, params={}):
         """
         create a loan to borrow margin
         :see: https://developer-pro.bitmart.com/en/spot/#margin-borrow-isolated
+        :param str symbol: unified market symbol
         :param str code: unified currency code of the currency to borrow
         :param str amount: the amount to borrow
-        :param str symbol: unified market symbol
         :param dict [params]: extra parameters specific to the bitmart api endpoint
-        :param str [params.marginMode]: 'isolated' is the default and 'cross' is unavailable
         :returns dict: a `margin loan structure <https://docs.ccxt.com/#/?id=margin-loan-structure>`
         """
-        self.check_required_symbol('borrowMargin', symbol)
         await self.load_markets()
         market = self.market(symbol)
         currency = self.currency(code)
@@ -3056,7 +3059,6 @@ class bitmart(Exchange, ImplicitAPI):
             'currency': currency['id'],
             'amount': self.currency_to_precision(code, amount),
         }
-        params = self.omit(params, 'marginMode')
         response = await self.privatePostSpotV1MarginIsolatedBorrow(self.extend(request, params))
         #
         #     {
@@ -3445,7 +3447,8 @@ class bitmart(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the bitmart api endpoint
         :returns dict[]: a list of `borrow interest structures <https://docs.ccxt.com/#/?id=borrow-interest-structure>`
         """
-        self.check_required_symbol('fetchBorrowInterest', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' fetchBorrowInterest() requires a symbol argument')
         await self.load_markets()
         market = self.market(symbol)
         request = {
@@ -3572,7 +3575,8 @@ class bitmart(Exchange, ImplicitAPI):
         :param str [params.marginMode]: 'isolated' or 'cross'
         :returns dict: response from the exchange
         """
-        self.check_required_symbol('setLeverage', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' setLeverage() requires a symbol argument')
         marginMode = None
         marginMode, params = self.handle_margin_mode_and_params('setLeverage', params)
         self.check_required_argument('setLeverage', marginMode, 'marginMode', ['isolated', 'cross'])
@@ -3828,7 +3832,8 @@ class bitmart(Exchange, ImplicitAPI):
         :param int [params.until]: timestamp in ms of the latest liquidation
         :returns dict: an array of `liquidation structures <https://docs.ccxt.com/#/?id=liquidation-structure>`
         """
-        self.check_required_symbol('fetchMyLiquidations', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' fetchMyLiquidations() requires a symbol argument')
         await self.load_markets()
         market = self.market(symbol)
         if not market['swap']:

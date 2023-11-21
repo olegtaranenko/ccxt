@@ -2916,7 +2916,9 @@ class gate extends gate$1 {
          * @param {object} [params] extra parameters specific to the gate api endpoint
          * @returns {object[]} a list of [funding rate structures]{@link https://docs.ccxt.com/#/?id=funding-rate-history-structure}
          */
-        this.checkRequiredSymbol('fetchFundingRateHistory', symbol);
+        if (symbol === undefined) {
+            throw new errors.ArgumentsRequired(this.id + ' fetchFundingRateHistory() requires a symbol argument');
+        }
         await this.loadMarkets();
         const market = this.market(symbol);
         if (!market['swap']) {
@@ -3119,8 +3121,10 @@ class gate extends gate$1 {
          * @param {object} [params] extra parameters specific to the binance api endpoint
          * @returns {object[]} a list of [trade structures]{@link https://docs.ccxt.com/#/?id=trade-structure}
          */
+        if (symbol === undefined) {
+            throw new errors.ArgumentsRequired(this.id + ' fetchOrderTrades() requires a symbol argument');
+        }
         await this.loadMarkets();
-        this.checkRequiredSymbol('fetchOrderTrades', symbol);
         //
         //      [
         //          {
@@ -4966,7 +4970,9 @@ class gate extends gate$1 {
          * @param {object} [params] extra parameters specific to the gate api endpoint
          * @returns {object} response from the exchange
          */
-        this.checkRequiredSymbol('setLeverage', symbol);
+        if (symbol === undefined) {
+            throw new errors.ArgumentsRequired(this.id + ' setLeverage() requires a symbol argument');
+        }
         // WARNING: THIS WILL INCREASE LIQUIDATION PRICE FOR OPEN ISOLATED LONG POSITIONS
         // AND DECREASE LIQUIDATION PRICE FOR OPEN ISOLATED SHORT POSITIONS
         if ((leverage < 0) || (leverage > 100)) {
@@ -6025,7 +6031,9 @@ class gate extends gate$1 {
          * @param {object} [params] exchange specific params
          * @returns {object[]} a list of [settlement history objects]{@link https://docs.ccxt.com/#/?id=settlement-history-structure}
          */
-        this.checkRequiredSymbol('fetchSettlementHistory', symbol);
+        if (symbol === undefined) {
+            throw new errors.ArgumentsRequired(this.id + ' fetchSettlementHistory() requires a symbol argument');
+        }
         await this.loadMarkets();
         const market = this.market(symbol);
         let type = undefined;
@@ -6073,7 +6081,9 @@ class gate extends gate$1 {
          * @param {object} [params] exchange specific params
          * @returns {object[]} a list of [settlement history objects]
          */
-        this.checkRequiredSymbol('fetchMySettlementHistory', symbol);
+        if (symbol === undefined) {
+            throw new errors.ArgumentsRequired(this.id + ' fetchMySettlementHistory() requires a symbol argument');
+        }
         await this.loadMarkets();
         const market = this.market(symbol);
         let type = undefined;
@@ -6548,7 +6558,9 @@ class gate extends gate$1 {
          * @param {object} [params] exchange specific parameters for the gate api endpoint
          * @returns {object} an array of [liquidation structures]{@link https://docs.ccxt.com/#/?id=liquidation-structure}
          */
-        this.checkRequiredSymbol('fetchMyLiquidations', symbol);
+        if (symbol === undefined) {
+            throw new errors.ArgumentsRequired(this.id + ' fetchMyLiquidations() requires a symbol argument');
+        }
         await this.loadMarkets();
         const market = this.market(symbol);
         const request = {

@@ -2031,19 +2031,31 @@ class hitbtc(Exchange, ImplicitAPI):
         """
         self.load_markets()
         market = self.market(symbol)
-        isLimit = (type == 'limit')
-        reduceOnly = self.safe_value(params, 'reduceOnly')
-        timeInForce = self.safe_string(params, 'timeInForce')
-        triggerPrice = self.safe_number_n(params, ['triggerPrice', 'stopPrice', 'stop_price'])
+        request = None
         marketType = None
         marketType, params = self.handle_market_type_and_params('createOrder', market, params)
         marginMode = None
         marginMode, params = self.handle_margin_mode_and_params('createOrder', params)
+        request, params = self.create_order_request(market, marketType, type, side, amount, price, marginMode, params)
+        response = None
+        if marketType == 'swap':
+            response = self.privatePostFuturesOrder(self.extend(request, params))
+        elif (marketType == 'margin') or (marginMode is not None):
+            response = self.privatePostMarginOrder(self.extend(request, params))
+        else:
+            response = self.privatePostSpotOrder(self.extend(request, params))
+        return self.parse_order(response, market)
+
+    def create_order_request(self, market: object, marketType: str, type: OrderType, side: OrderSide, amount, price=None, marginMode: Str = None, params={}):
+        isLimit = (type == 'limit')
+        reduceOnly = self.safe_value(params, 'reduceOnly')
+        timeInForce = self.safe_string(params, 'timeInForce')
+        triggerPrice = self.safe_number_n(params, ['triggerPrice', 'stopPrice', 'stop_price'])
         isPostOnly = self.is_post_only(type == 'market', None, params)
         request = {
             'type': type,
             'side': side,
-            'quantity': self.amount_to_precision(symbol, amount),
+            'quantity': self.amount_to_precision(market['symbol'], amount),
             'symbol': market['id'],
             # 'client_order_id': 'r42gdPjNMZN-H_xs8RKl2wljg_dfgdg4',  # Optional
             # 'time_in_force': 'GTC',  # Optional GTC, IOC, FOK, Day, GTD
@@ -2069,13 +2081,13 @@ class hitbtc(Exchange, ImplicitAPI):
         if isLimit or (type == 'stopLimit') or (type == 'takeProfitLimit'):
             if price is None:
                 raise ExchangeError(self.id + ' createOrder() requires a price argument for limit orders')
-            request['price'] = self.price_to_precision(symbol, price)
+            request['price'] = self.price_to_precision(market['symbol'], price)
         if (timeInForce == 'GTD'):
             expireTime = self.safe_string(params, 'expire_time')
             if expireTime is None:
                 raise ExchangeError(self.id + ' createOrder() requires an expire_time parameter for a GTD order')
         if triggerPrice is not None:
-            request['stop_price'] = self.price_to_precision(symbol, triggerPrice)
+            request['stop_price'] = self.price_to_precision(market['symbol'], triggerPrice)
             if isLimit:
                 request['type'] = 'stopLimit'
             elif type == 'market':
@@ -2088,14 +2100,7 @@ class hitbtc(Exchange, ImplicitAPI):
             if marginMode is None:
                 marginMode = 'cross'
             request['margin_mode'] = marginMode
-        response = None
-        if marketType == 'swap':
-            response = self.privatePostFuturesOrder(self.extend(request, params))
-        elif (marketType == 'margin') or (marginMode is not None):
-            response = self.privatePostMarginOrder(self.extend(request, params))
-        else:
-            response = self.privatePostSpotOrder(self.extend(request, params))
-        return self.parse_order(response, market)
+        return [request, params]
 
     def parse_order_status(self, status):
         statuses = {
@@ -3022,7 +3027,8 @@ class hitbtc(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the hitbtc api endpoint
         :returns dict: response from the exchange
         """
-        self.check_required_symbol('setLeverage', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' setLeverage() requires a symbol argument')
         self.load_markets()
         if params['margin_balance'] is None:
             raise ArgumentsRequired(self.id + ' setLeverage() requires a margin_balance parameter that will transfer margin to the specified trading pair')

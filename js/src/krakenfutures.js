@@ -1895,7 +1895,9 @@ export default class krakenfutures extends Exchange {
          * @param {object} [params] extra parameters specific to the api endpoint
          * @returns {object[]} a list of [funding rate structures]{@link https://docs.ccxt.com/#/?id=funding-rate-history-structure}
          */
-        this.checkRequiredSymbol('fetchFundingRateHistory', symbol);
+        if (symbol === undefined) {
+            throw new ArgumentsRequired(this.id + ' fetchFundingRateHistory() requires a symbol argument');
+        }
         await this.loadMarkets();
         const market = this.market(symbol);
         if (!market['swap']) {
@@ -2274,7 +2276,9 @@ export default class krakenfutures extends Exchange {
          * @param {object} [params] extra parameters specific to the delta api endpoint
          * @returns {object} response from the exchange
          */
-        this.checkRequiredSymbol('setLeverage', symbol);
+        if (symbol === undefined) {
+            throw new ArgumentsRequired(this.id + ' setLeverage() requires a symbol argument');
+        }
         await this.loadMarkets();
         const request = {
             'maxLeverage': leverage,
@@ -2295,7 +2299,9 @@ export default class krakenfutures extends Exchange {
          * @param {object} [params] extra parameters specific to the krakenfutures api endpoint
          * @returns {object} a [leverage structure]{@link https://docs.ccxt.com/#/?id=leverage-structure}
          */
-        this.checkRequiredSymbol('fetchLeverage', symbol);
+        if (symbol === undefined) {
+            throw new ArgumentsRequired(this.id + ' fetchLeverage() requires a symbol argument');
+        }
         await this.loadMarkets();
         const request = {
             'symbol': this.marketId(symbol).toUpperCase(),

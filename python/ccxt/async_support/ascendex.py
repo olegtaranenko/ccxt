@@ -2051,7 +2051,8 @@ class ascendex(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the ascendex api endpoint
         :returns dict: An `order structure <https://docs.ccxt.com/#/?id=order-structure>`
         """
-        self.check_required_symbol('cancelOrder', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' cancelOrder() requires a symbol argument')
         await self.load_markets()
         await self.load_accounts()
         market = self.market(symbol)
@@ -2755,7 +2756,8 @@ class ascendex(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the ascendex api endpoint
         :returns dict: response from the exchange
         """
-        self.check_required_symbol('setLeverage', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' setLeverage() requires a symbol argument')
         if (leverage < 1) or (leverage > 100):
             raise BadRequest(self.id + ' leverage should be between 1 and 100')
         await self.load_markets()
@@ -2781,7 +2783,8 @@ class ascendex(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the ascendex api endpoint
         :returns dict: response from the exchange
         """
-        self.check_required_symbol('setMarginMode', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' setMarginMode() requires a symbol argument')
         marginMode = marginMode.lower()
         if marginMode == 'cross':
             marginMode = 'crossed'

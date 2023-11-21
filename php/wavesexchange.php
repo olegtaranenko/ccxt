@@ -1549,7 +1549,9 @@ class wavesexchange extends Exchange {
          */
         $this->check_required_dependencies();
         $this->check_required_keys();
-        $this->check_required_symbol('fetchOrders', $symbol);
+        if ($symbol === null) {
+            throw new ArgumentsRequired($this->id . ' fetchOrders() requires a $symbol argument');
+        }
         $this->load_markets();
         $market = $this->market($symbol);
         $timestamp = $this->milliseconds();

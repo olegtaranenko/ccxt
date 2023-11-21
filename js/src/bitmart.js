@@ -34,7 +34,8 @@ export default class bitmart extends Exchange {
                 'swap': true,
                 'future': false,
                 'option': false,
-                'borrowMargin': true,
+                'borrowCrossMargin': false,
+                'borrowIsolatedMargin': true,
                 'cancelAllOrders': true,
                 'cancelOrder': true,
                 'cancelOrders': false,
@@ -96,7 +97,8 @@ export default class bitmart extends Exchange {
                 'fetchWithdrawal': true,
                 'fetchWithdrawals': true,
                 'reduceMargin': false,
-                'repayMargin': true,
+                'repayCrossMargin': false,
+                'repayIsolatedMargin': true,
                 'setLeverage': true,
                 'setMarginMode': false,
                 'transfer': true,
@@ -132,15 +134,15 @@ export default class bitmart extends Exchange {
                         'spot/v1/symbols/details': 5,
                         'spot/quotation/v3/tickers': 6,
                         'spot/quotation/v3/ticker': 4,
-                        'spot/quotation/v3/lite-klines': 4,
-                        'spot/quotation/v3/klines': 6,
+                        'spot/quotation/v3/lite-klines': 5,
+                        'spot/quotation/v3/klines': 7,
                         'spot/quotation/v3/books': 4,
                         'spot/quotation/v3/trades': 4,
                         'spot/v1/ticker': 5,
                         'spot/v2/ticker': 30,
                         'spot/v1/ticker_detail': 5,
                         'spot/v1/steps': 30,
-                        'spot/v1/symbols/kline': 5,
+                        'spot/v1/symbols/kline': 6,
                         'spot/v1/symbols/book': 5,
                         'spot/v1/symbols/trades': 5,
                         // contract markets
@@ -149,7 +151,7 @@ export default class bitmart extends Exchange {
                         'contract/public/depth': 5,
                         'contract/public/open-interest': 30,
                         'contract/public/funding-rate': 30,
-                        'contract/public/kline': 5,
+                        'contract/public/kline': 6,
                         'account/v1/currencies': 30,
                     },
                 },
@@ -1671,7 +1673,9 @@ export default class bitmart extends Exchange {
             response = await this.privatePostSpotV4QueryTrades(this.extend(request, params));
         }
         else if (type === 'swap') {
-            this.checkRequiredSymbol('fetchMyTrades', symbol);
+            if (symbol === undefined) {
+                throw new ArgumentsRequired(this.id + ' fetchMyTrades() requires a symbol argument');
+            }
             if (since !== undefined) {
                 request['start_time'] = since;
             }
@@ -2373,7 +2377,9 @@ export default class bitmart extends Exchange {
          * @param {boolean} [params.stop] *swap only* whether the order is a stop order
          * @returns {object} An [order structure]{@link https://docs.ccxt.com/#/?id=order-structure}
          */
-        this.checkRequiredSymbol('cancelOrder', symbol);
+        if (symbol === undefined) {
+            throw new ArgumentsRequired(this.id + ' cancelOrder() requires a symbol argument');
+        }
         await this.loadMarkets();
         const market = this.market(symbol);
         const request = {
@@ -2473,7 +2479,9 @@ export default class bitmart extends Exchange {
             response = await this.privatePostSpotV1CancelOrders(this.extend(request, params));
         }
         else if (type === 'swap') {
-            this.checkRequiredSymbol('cancelAllOrders', symbol);
+            if (symbol === undefined) {
+                throw new ArgumentsRequired(this.id + ' cancelAllOrders() requires a symbol argument');
+            }
             response = await this.privatePostContractPrivateCancelOrders(this.extend(request, params));
         }
         //
@@ -2497,7 +2505,9 @@ export default class bitmart extends Exchange {
         return response;
     }
     async fetchOrdersByStatus(status, symbol = undefined, since = undefined, limit = undefined, params = {}) {
-        this.checkRequiredSymbol('fetchOrdersByStatus', symbol);
+        if (symbol === undefined) {
+            throw new ArgumentsRequired(this.id + ' fetchOrdersByStatus() requires a symbol argument');
+        }
         await this.loadMarkets();
         const market = this.market(symbol);
         if (!market['spot']) {
@@ -2687,7 +2697,9 @@ export default class bitmart extends Exchange {
         let type = undefined;
         [type, params] = this.handleMarketTypeAndParams('fetchClosedOrders', market, params);
         if (type !== 'spot') {
-            this.checkRequiredSymbol('fetchClosedOrders', symbol);
+            if (symbol === undefined) {
+                throw new ArgumentsRequired(this.id + ' fetchClosedOrders() requires a symbol argument');
+            }
         }
         let marginMode = undefined;
         [marginMode, params] = this.handleMarginModeAndParams('fetchClosedOrders', params);
@@ -2763,7 +2775,9 @@ export default class bitmart extends Exchange {
             }
         }
         else if (type === 'swap') {
-            this.checkRequiredSymbol('fetchOrder', symbol);
+            if (symbol === undefined) {
+                throw new ArgumentsRequired(this.id + ' fetchOrder() requires a symbol argument');
+            }
             request['symbol'] = market['id'];
             request['order_id'] = id;
             response = await this.privateGetContractPrivateOrder(this.extend(request, params));
@@ -3188,20 +3202,18 @@ export default class bitmart extends Exchange {
             'fee': fee,
         };
     }
-    async repayMargin(code, amount, symbol = undefined, params = {}) {
+    async repayIsolatedMargin(symbol, code, amount, params = {}) {
         /**
          * @method
-         * @name bitmart#repayMargin
+         * @name bitmart#repayIsolatedMargin
          * @description repay borrowed margin and interest
          * @see https://developer-pro.bitmart.com/en/spot/#margin-repay-isolated
+         * @param {string} symbol unified market symbol
          * @param {string} code unified currency code of the currency to repay
          * @param {string} amount the amount to repay
-         * @param {string} symbol unified market symbol
          * @param {object} [params] extra parameters specific to the bitmart api endpoint
-         * @param {string} [params.marginMode] 'isolated' is the default and 'cross' is unavailable
          * @returns {object} a [margin loan structure]{@link https://docs.ccxt.com/#/?id=margin-loan-structure}
          */
-        this.checkRequiredSymbol('repayMargin', symbol);
         await this.loadMarkets();
         const market = this.market(symbol);
         const currency = this.currency(code);
@@ -3210,7 +3222,6 @@ export default class bitmart extends Exchange {
             'currency': currency['id'],
             'amount': this.currencyToPrecision(code, amount),
         };
-        params = this.omit(params, 'marginMode');
         const response = await this.privatePostSpotV1MarginIsolatedRepay(this.extend(request, params));
         //
         //     {
@@ -3229,20 +3240,18 @@ export default class bitmart extends Exchange {
             'symbol': symbol,
         });
     }
-    async borrowMargin(code, amount, symbol = undefined, params = {}) {
+    async borrowIsolatedMargin(symbol, code, amount, params = {}) {
         /**
          * @method
-         * @name bitmart#borrowMargin
+         * @name bitmart#borrowIsolatedMargin
          * @description create a loan to borrow margin
          * @see https://developer-pro.bitmart.com/en/spot/#margin-borrow-isolated
+         * @param {string} symbol unified market symbol
          * @param {string} code unified currency code of the currency to borrow
          * @param {string} amount the amount to borrow
-         * @param {string} symbol unified market symbol
          * @param {object} [params] extra parameters specific to the bitmart api endpoint
-         * @param {string} [params.marginMode] 'isolated' is the default and 'cross' is unavailable
          * @returns {object} a [margin loan structure]{@link https://docs.ccxt.com/#/?id=margin-loan-structure}
          */
-        this.checkRequiredSymbol('borrowMargin', symbol);
         await this.loadMarkets();
         const market = this.market(symbol);
         const currency = this.currency(code);
@@ -3251,7 +3260,6 @@ export default class bitmart extends Exchange {
             'currency': currency['id'],
             'amount': this.currencyToPrecision(code, amount),
         };
-        params = this.omit(params, 'marginMode');
         const response = await this.privatePostSpotV1MarginIsolatedBorrow(this.extend(request, params));
         //
         //     {
@@ -3663,7 +3671,9 @@ export default class bitmart extends Exchange {
          * @param {object} [params] extra parameters specific to the bitmart api endpoint
          * @returns {object[]} a list of [borrow interest structures]{@link https://docs.ccxt.com/#/?id=borrow-interest-structure}
          */
-        this.checkRequiredSymbol('fetchBorrowInterest', symbol);
+        if (symbol === undefined) {
+            throw new ArgumentsRequired(this.id + ' fetchBorrowInterest() requires a symbol argument');
+        }
         await this.loadMarkets();
         const market = this.market(symbol);
         const request = {
@@ -3797,7 +3807,9 @@ export default class bitmart extends Exchange {
          * @param {string} [params.marginMode] 'isolated' or 'cross'
          * @returns {object} response from the exchange
          */
-        this.checkRequiredSymbol('setLeverage', symbol);
+        if (symbol === undefined) {
+            throw new ArgumentsRequired(this.id + ' setLeverage() requires a symbol argument');
+        }
         let marginMode = undefined;
         [marginMode, params] = this.handleMarginModeAndParams('setLeverage', params);
         this.checkRequiredArgument('setLeverage', marginMode, 'marginMode', ['isolated', 'cross']);
@@ -4066,7 +4078,9 @@ export default class bitmart extends Exchange {
          * @param {int} [params.until] timestamp in ms of the latest liquidation
          * @returns {object} an array of [liquidation structures]{@link https://docs.ccxt.com/#/?id=liquidation-structure}
          */
-        this.checkRequiredSymbol('fetchMyLiquidations', symbol);
+        if (symbol === undefined) {
+            throw new ArgumentsRequired(this.id + ' fetchMyLiquidations() requires a symbol argument');
+        }
         await this.loadMarkets();
         const market = this.market(symbol);
         if (!market['swap']) {

@@ -6,7 +6,7 @@
 
 //  ---------------------------------------------------------------------------
 import bitvavoRest from '../bitvavo.js';
-import { AuthenticationError } from '../base/errors.js';
+import { ArgumentsRequired, AuthenticationError } from '../base/errors.js';
 import { ArrayCache, ArrayCacheByTimestamp, ArrayCacheBySymbolById } from '../base/ws/Cache.js';
 import { sha256 } from '../static_dependencies/noble-hashes/sha256.js';
 //  ---------------------------------------------------------------------------
@@ -15,6 +15,15 @@ export default class bitvavo extends bitvavoRest {
         return this.deepExtend(super.describe(), {
             'has': {
                 'ws': true,
+                'createOrderWs': false,
+                'editOrderWs': false,
+                'fetchOpenOrdersWs': false,
+                'fetchOrderWs': false,
+                'cancelOrderWs': false,
+                'cancelOrdersWs': false,
+                'cancelAllOrdersWs': false,
+                'fetchTradesWs': false,
+                'fetchBalanceWs': false,
                 'watchOrderBook': true,
                 'watchTrades': true,
                 'watchTicker': true,
@@ -425,7 +434,9 @@ export default class bitvavo extends bitvavoRest {
          * @param {object} [params] extra parameters specific to the bitvavo api endpoint
          * @returns {object[]} a list of [order structures]{@link https://docs.ccxt.com/#/?id=order-structure}
          */
-        this.checkRequiredSymbol('watchOrders', symbol);
+        if (symbol === undefined) {
+            throw new ArgumentsRequired(this.id + ' watchOrders() requires a symbol argument');
+        }
         await this.loadMarkets();
         await this.authenticate();
         const market = this.market(symbol);
@@ -460,7 +471,9 @@ export default class bitvavo extends bitvavoRest {
          * @param {object} [params] extra parameters specific to the bitvavo api endpoint
          * @returns {object[]} a list of [trade structures]{@link https://docs.ccxt.com/#/?id=ortradeder-structure
          */
-        this.checkRequiredSymbol('watchMyTrades', symbol);
+        if (symbol === undefined) {
+            throw new ArgumentsRequired(this.id + ' watchMyTrades() requires a symbol argument');
+        }
         await this.loadMarkets();
         await this.authenticate();
         const market = this.market(symbol);

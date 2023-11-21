@@ -8,6 +8,7 @@ namespace ccxt\async;
 use Exception; // a common import
 use ccxt\async\abstract\huobijp as Exchange;
 use ccxt\ExchangeError;
+use ccxt\ArgumentsRequired;
 use ccxt\BadSymbol;
 use ccxt\InvalidOrder;
 use ccxt\NetworkError;
@@ -1227,7 +1228,9 @@ class huobijp extends Exchange {
 
     public function fetch_open_orders_v1(?string $symbol = null, ?int $since = null, ?int $limit = null, $params = array ()) {
         return Async\async(function () use ($symbol, $since, $limit, $params) {
-            $this->check_required_symbol('fetchOpenOrdersV1', $symbol);
+            if ($symbol === null) {
+                throw new ArgumentsRequired($this->id . ' fetchOpenOrdersV1() requires a $symbol argument');
+            }
             return Async\await($this->fetch_orders_by_states('pre-submitted,submitted,partial-filled', $symbol, $since, $limit, $params));
         }) ();
     }

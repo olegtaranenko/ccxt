@@ -2860,7 +2860,8 @@ class deribit(Exchange, ImplicitAPI):
         :param dict [params]: exchange specific parameters for the deribit api endpoint
         :returns dict: an array of `liquidation structures <https://docs.ccxt.com/#/?id=liquidation-structure>`
         """
-        self.check_required_symbol('fetchMyLiquidations', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' fetchMyLiquidations() requires a symbol argument')
         self.load_markets()
         market = self.market(symbol)
         if market['spot']:

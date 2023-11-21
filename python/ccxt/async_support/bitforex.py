@@ -10,6 +10,7 @@ from ccxt.base.types import Balances, Int, Market, Order, OrderBook, OrderSide, 
 from typing import List
 from ccxt.base.errors import ExchangeError
 from ccxt.base.errors import PermissionDenied
+from ccxt.base.errors import ArgumentsRequired
 from ccxt.base.errors import BadSymbol
 from ccxt.base.errors import InsufficientFunds
 from ccxt.base.errors import InvalidOrder
@@ -383,7 +384,8 @@ class bitforex(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the bitforex api endpoint
         :returns Trade[]: a list of `trade structures <https://docs.ccxt.com/#/?id=trade-structure>`
         """
-        self.check_required_symbol('fetchMyTrades', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' fetchMyTrades() requires a symbol argument')
         await self.load_markets()
         request = {
             # 'symbol': market['id'],
@@ -686,11 +688,12 @@ class bitforex(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the bitforex api endpoint
         :returns Order[]: a list of `order structures <https://docs.ccxt.com/#/?id=order-structure>`
         """
-        self.check_required_symbol('fetchOpenOrders', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' fetchOpenOrders() requires a symbol argument')
         await self.load_markets()
         market = self.market(symbol)
         request = {
-            'symbol': self.market_id(symbol),
+            'symbol': market['id'],
             'state': 0,
         }
         response = await self.privatePostApiV1TradeOrderInfos(self.extend(request, params))
@@ -705,11 +708,12 @@ class bitforex(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the bitforex api endpoint
         :returns Order[]: a list of `order structures <https://docs.ccxt.com/#/?id=order-structure>`
         """
-        self.check_required_symbol('fetchClosedOrders', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' fetchClosedOrders() requires a symbol argument')
         await self.load_markets()
         market = self.market(symbol)
         request = {
-            'symbol': self.market_id(symbol),
+            'symbol': market['id'],
             'state': 1,
         }
         response = await self.privatePostApiV1TradeOrderInfos(self.extend(request, params))

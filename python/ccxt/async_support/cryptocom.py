@@ -44,7 +44,7 @@ class cryptocom(Exchange, ImplicitAPI):
                 'future': True,
                 'option': True,
                 'addMargin': False,
-                'borrowMargin': True,
+                'borrowMargin': False,
                 'cancelAllOrders': True,
                 'cancelOrder': True,
                 'cancelOrders': True,
@@ -107,7 +107,7 @@ class cryptocom(Exchange, ImplicitAPI):
                 'fetchVolatilityHistory': False,
                 'fetchWithdrawals': True,
                 'reduceMargin': False,
-                'repayMargin': True,
+                'repayMargin': False,
                 'setLeverage': False,
                 'setMarginMode': False,
                 'setPositionMode': False,
@@ -227,26 +227,6 @@ class cryptocom(Exchange, ImplicitAPI):
                             'private/get-open-orders': 10 / 3,
                             'private/get-order-detail': 1 / 3,
                             'private/get-trades': 100,
-                            'private/margin/get-user-config': 10 / 3,
-                            'private/margin/get-account-summary': 10 / 3,
-                            'private/margin/transfer': 10 / 3,
-                            'private/margin/borrow': 10 / 3,
-                            'private/margin/repay': 10 / 3,
-                            'private/margin/get-transfer-history': 10 / 3,
-                            'private/margin/get-borrow-history': 10 / 3,
-                            'private/margin/get-interest-history': 10 / 3,
-                            'private/margin/get-repay-history': 10 / 3,
-                            'private/margin/get-liquidation-history': 10 / 3,
-                            'private/margin/get-liquidation-orders': 10 / 3,
-                            'private/margin/create-order': 2 / 3,
-                            'private/margin/cancel-order': 2 / 3,
-                            'private/margin/cancel-all-orders': 2 / 3,
-                            'private/margin/get-order-history': 10 / 3,
-                            'private/margin/get-open-orders': 10 / 3,
-                            'private/margin/get-order-detail': 1 / 3,
-                            'private/margin/get-trades': 100,
-                            'private/deriv/transfer': 10 / 3,
-                            'private/deriv/get-transfer-history': 10 / 3,
                             'private/get-accounts': 10 / 3,
                             'private/get-subaccount-balances': 10 / 3,
                             'private/create-subaccount-transfer': 10 / 3,
@@ -1334,7 +1314,8 @@ class cryptocom(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the okx api endpoint
         :returns dict: an list of `order structures <https://docs.ccxt.com/#/?id=order-structure>`
         """
-        self.check_required_symbol('cancelOrders', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' cancelOrders() requires a symbol argument')
         await self.load_markets()
         market = self.market(symbol)
         orderRequests = []
@@ -2247,148 +2228,6 @@ class cryptocom(Exchange, ImplicitAPI):
             'fee': fee,
         }
 
-    async def repay_margin(self, code: str, amount, symbol: Str = None, params={}):
-        """
-        repay borrowed margin and interest
-        :see: https://exchange-docs.crypto.com/spot/index.html#private-margin-repay
-        :param str code: unified currency code of the currency to repay
-        :param float amount: the amount to repay
-        :param str symbol: unified market symbol, not used by cryptocom.repayMargin()
-        :param dict [params]: extra parameters specific to the cryptocom api endpoint
-        :returns dict: a `margin loan structure <https://docs.ccxt.com/#/?id=margin-loan-structure>`
-        """
-        await self.load_markets()
-        currency = self.currency(code)
-        request = {
-            'currency': currency['id'],
-            'amount': self.currency_to_precision(code, amount),
-        }
-        response = await self.v2PrivatePostPrivateMarginRepay(self.extend(request, params))
-        #
-        #     {
-        #         "id": 1656620104211,
-        #         "method": "private/margin/repay",
-        #         "code": 0,
-        #         "result": {
-        #             "badDebt": 0
-        #         }
-        #     }
-        #
-        transaction = self.parse_margin_loan(response, currency)
-        return self.extend(transaction, {
-            'amount': amount,
-        })
-
-    async def borrow_margin(self, code: str, amount, symbol: Str = None, params={}):
-        """
-        create a loan to borrow margin
-        :see: https://exchange-docs.crypto.com/spot/index.html#private-margin-borrow
-        :param str code: unified currency code of the currency to borrow
-        :param float amount: the amount to borrow
-        :param str symbol: unified market symbol, not used by cryptocom.repayMargin()
-        :param dict [params]: extra parameters specific to the cryptocom api endpoint
-        :returns dict: a `margin loan structure <https://docs.ccxt.com/#/?id=margin-loan-structure>`
-        """
-        await self.load_markets()
-        currency = self.currency(code)
-        request = {
-            'currency': currency['id'],
-            'amount': self.currency_to_precision(code, amount),
-        }
-        response = await self.v2PrivatePostPrivateMarginBorrow(self.extend(request, params))
-        #
-        #     {
-        #         "id": 1656619578559,
-        #         "method": "private/margin/borrow",
-        #         "code": 0
-        #     }
-        #
-        transaction = self.parse_margin_loan(response, currency)
-        return self.extend(transaction, {
-            'amount': amount,
-        })
-
-    def parse_margin_loan(self, info, currency: Currency = None):
-        #
-        # borrowMargin
-        #
-        #     {
-        #         "id": 1656619578559,
-        #         "method": "private/margin/borrow",
-        #         "code": 0
-        #     }
-        #
-        # repayMargin
-        #
-        #     {
-        #         "id": 1656620104211,
-        #         "method": "private/margin/repay",
-        #         "code": 0,
-        #         "result": {
-        #             "badDebt": 0
-        #         }
-        #     }
-        #
-        return {
-            'id': self.safe_integer(info, 'id'),
-            'currency': self.safe_currency_code(None, currency),
-            'amount': None,
-            'symbol': None,
-            'timestamp': None,
-            'datetime': None,
-            'info': info,
-        }
-
-    def parse_borrow_interest(self, info, market: Market = None):
-        #
-        #     {
-        #         "loan_id": "2643528867803765921",
-        #         "currency": "USDT",
-        #         "interest": 0.00000004,
-        #         "time": 1656702899559,
-        #         "stake_amount": 6,
-        #         "interest_rate": 0.000025
-        #     },
-        #
-        timestamp = self.safe_integer(info, 'time')
-        symbol = None
-        if market is not None:
-            symbol = market['symbol']
-        return {
-            'symbol': symbol,
-            'marginMode': None,
-            'currency': self.safe_currency_code(self.safe_string(info, 'currency')),
-            'interest': self.safe_number(info, 'interest'),
-            'interestRate': self.safe_number(info, 'interest_rate'),  # hourly interest rate
-            'amountBorrowed': None,
-            'timestamp': timestamp,
-            'datetime': self.iso8601(timestamp),
-            'info': info,
-        }
-
-    def parse_borrow_rates(self, info, codeKey):
-        #
-        #     {
-        #         "currency": "AGLD",
-        #         "hourly_rate": 0.00003334,
-        #         "max_borrow_limit": 342.4032393,
-        #         "min_borrow_limit": 30
-        #     },
-        #
-        timestamp = self.milliseconds()
-        rates = []
-        for i in range(0, len(info)):
-            entry = info[i]
-            rates.append({
-                'currency': self.safe_currency_code(self.safe_string(entry, 'currency')),
-                'rate': self.safe_number(entry, 'hourly_rate'),
-                'period': 3600000,  # 1-Hour
-                'timestamp': timestamp,
-                'datetime': self.iso8601(timestamp),
-                'info': entry,
-            })
-        return rates
-
     def custom_handle_margin_mode_and_params(self, methodName, params={}):
         """
          * @ignore
@@ -2777,7 +2616,8 @@ class cryptocom(Exchange, ImplicitAPI):
         :param boolean [params.paginate]: default False, when True will automatically paginate by calling self endpoint multiple times. See in the docs all the [availble parameters](https://github.com/ccxt/ccxt/wiki/Manual#pagination-params)
         :returns dict[]: a list of `funding rate structures <https://docs.ccxt.com/#/?id=funding-rate-history-structure>`
         """
-        self.check_required_symbol('fetchFundingRateHistory', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' fetchFundingRateHistory() requires a symbol argument')
         await self.load_markets()
         paginate = False
         paginate, params = self.handle_option_and_params(params, 'fetchFundingRateHistory', 'paginate')

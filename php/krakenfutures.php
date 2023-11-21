@@ -1863,7 +1863,9 @@ class krakenfutures extends Exchange {
          * @param {array} [$params] extra parameters specific to the api endpoint
          * @return {array[]} a list of ~@link https://docs.ccxt.com/#/?id=funding-rate-history-structure funding rate structures~
          */
-        $this->check_required_symbol('fetchFundingRateHistory', $symbol);
+        if ($symbol === null) {
+            throw new ArgumentsRequired($this->id . ' fetchFundingRateHistory() requires a $symbol argument');
+        }
         $this->load_markets();
         $market = $this->market($symbol);
         if (!$market['swap']) {
@@ -2239,7 +2241,9 @@ class krakenfutures extends Exchange {
          * @param {array} [$params] extra parameters specific to the delta api endpoint
          * @return {array} response from the exchange
          */
-        $this->check_required_symbol('setLeverage', $symbol);
+        if ($symbol === null) {
+            throw new ArgumentsRequired($this->id . ' setLeverage() requires a $symbol argument');
+        }
         $this->load_markets();
         $request = array(
             'maxLeverage' => $leverage,
@@ -2259,7 +2263,9 @@ class krakenfutures extends Exchange {
          * @param {array} [$params] extra parameters specific to the krakenfutures api endpoint
          * @return {array} a ~@link https://docs.ccxt.com/#/?id=leverage-structure leverage structure~
          */
-        $this->check_required_symbol('fetchLeverage', $symbol);
+        if ($symbol === null) {
+            throw new ArgumentsRequired($this->id . ' fetchLeverage() requires a $symbol argument');
+        }
         $this->load_markets();
         $request = array(
             'symbol' => strtoupper($this->market_id($symbol)),

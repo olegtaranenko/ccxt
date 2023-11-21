@@ -2111,23 +2111,37 @@ class hitbtc extends Exchange {
          */
         $this->load_markets();
         $market = $this->market($symbol);
-        $isLimit = ($type === 'limit');
-        $reduceOnly = $this->safe_value($params, 'reduceOnly');
-        $timeInForce = $this->safe_string($params, 'timeInForce');
-        $triggerPrice = $this->safe_number_n($params, array( 'triggerPrice', 'stopPrice', 'stop_price' ));
+        $request = null;
         $marketType = null;
         list($marketType, $params) = $this->handle_market_type_and_params('createOrder', $market, $params);
         $marginMode = null;
         list($marginMode, $params) = $this->handle_margin_mode_and_params('createOrder', $params);
+        list($request, $params) = $this->create_order_request($market, $marketType, $type, $side, $amount, $price, $marginMode, $params);
+        $response = null;
+        if ($marketType === 'swap') {
+            $response = $this->privatePostFuturesOrder (array_merge($request, $params));
+        } elseif (($marketType === 'margin') || ($marginMode !== null)) {
+            $response = $this->privatePostMarginOrder (array_merge($request, $params));
+        } else {
+            $response = $this->privatePostSpotOrder (array_merge($request, $params));
+        }
+        return $this->parse_order($response, $market);
+    }
+
+    public function create_order_request(array $market, string $marketType, string $type, string $side, $amount, $price = null, ?string $marginMode = null, $params = array ()) {
+        $isLimit = ($type === 'limit');
+        $reduceOnly = $this->safe_value($params, 'reduceOnly');
+        $timeInForce = $this->safe_string($params, 'timeInForce');
+        $triggerPrice = $this->safe_number_n($params, array( 'triggerPrice', 'stopPrice', 'stop_price' ));
         $isPostOnly = $this->is_post_only($type === 'market', null, $params);
         $request = array(
             'type' => $type,
             'side' => $side,
-            'quantity' => $this->amount_to_precision($symbol, $amount),
+            'quantity' => $this->amount_to_precision($market['symbol'], $amount),
             'symbol' => $market['id'],
             // 'client_order_id' => 'r42gdPjNMZN-H_xs8RKl2wljg_dfgdg4', // Optional
             // 'time_in_force' => 'GTC', // Optional GTC, IOC, FOK, Day, GTD
-            // 'price' => $this->price_to_precision($symbol, $price), // Required if $type is limit, stopLimit, or takeProfitLimit
+            // 'price' => $this->price_to_precision(symbol, $price), // Required if $type is limit, stopLimit, or takeProfitLimit
             // 'stop_price' => $this->safe_number($params, 'stop_price'), // Required if $type is stopLimit, stopMarket, takeProfitLimit, takeProfitMarket
             // 'expire_time' => '2021-06-15T17:01:05.092Z', // Required if $timeInForce is GTD
             // 'strict_validate' => false,
@@ -2155,7 +2169,7 @@ class hitbtc extends Exchange {
             if ($price === null) {
                 throw new ExchangeError($this->id . ' createOrder() requires a $price argument for limit orders');
             }
-            $request['price'] = $this->price_to_precision($symbol, $price);
+            $request['price'] = $this->price_to_precision($market['symbol'], $price);
         }
         if (($timeInForce === 'GTD')) {
             $expireTime = $this->safe_string($params, 'expire_time');
@@ -2164,7 +2178,7 @@ class hitbtc extends Exchange {
             }
         }
         if ($triggerPrice !== null) {
-            $request['stop_price'] = $this->price_to_precision($symbol, $triggerPrice);
+            $request['stop_price'] = $this->price_to_precision($market['symbol'], $triggerPrice);
             if ($isLimit) {
                 $request['type'] = 'stopLimit';
             } elseif ($type === 'market') {
@@ -2181,15 +2195,7 @@ class hitbtc extends Exchange {
             }
             $request['margin_mode'] = $marginMode;
         }
-        $response = null;
-        if ($marketType === 'swap') {
-            $response = $this->privatePostFuturesOrder (array_merge($request, $params));
-        } elseif (($marketType === 'margin') || ($marginMode !== null)) {
-            $response = $this->privatePostMarginOrder (array_merge($request, $params));
-        } else {
-            $response = $this->privatePostSpotOrder (array_merge($request, $params));
-        }
-        return $this->parse_order($response, $market);
+        return array( $request, $params );
     }
 
     public function parse_order_status($status) {
@@ -3172,7 +3178,9 @@ class hitbtc extends Exchange {
          * @param {array} [$params] extra parameters specific to the hitbtc api endpoint
          * @return {array} response from the exchange
          */
-        $this->check_required_symbol('setLeverage', $symbol);
+        if ($symbol === null) {
+            throw new ArgumentsRequired($this->id . ' setLeverage() requires a $symbol argument');
+        }
         $this->load_markets();
         if ($params['margin_balance'] === null) {
             throw new ArgumentsRequired($this->id . ' setLeverage() requires a margin_balance parameter that will transfer margin to the specified trading pair');

@@ -1793,13 +1793,16 @@ class bitmex extends Exchange {
     public function create_order(string $symbol, string $type, string $side, $amount, $price = null, $params = array ()) {
         /**
          * create a trade order
+         * @see https://www.bitmex.com/api/explorer/#!/Order/Order_new
          * @param {string} $symbol unified $symbol of the $market to create an order in
          * @param {string} $type 'market' or 'limit'
          * @param {string} $side 'buy' or 'sell'
          * @param {float} $amount how much of currency you want to trade in units of base currency
          * @param {float} [$price] the $price at which the order is to be fullfilled, in units of the quote currency, ignored in $market orders
          * @param {array} [$params] extra parameters specific to the bitmex api endpoint
-         * @return {array} an ~@link https://docs.ccxt.com/#/?id=order-structure order structure~
+         * @param {array} [$params->triggerPrice] the $price at which a trigger order is triggered at
+         * @param {array} [$params->triggerDirection] the direction whenever the trigger happens with relation to $price - 'above' or 'below'
+         * @return {array} an {@link https://github.com/ccxt/ccxt/wiki/Manual#order-structure order structure}
          */
         $this->load_markets();
         $market = $this->market($symbol);
@@ -1819,14 +1822,37 @@ class bitmex extends Exchange {
             'ordType' => $orderType,
             'text' => $brokerId,
         );
-        if (($orderType === 'Stop') || ($orderType === 'StopLimit') || ($orderType === 'MarketIfTouched') || ($orderType === 'LimitIfTouched')) {
-            $stopPrice = $this->safe_number_2($params, 'stopPx', 'stopPrice');
-            if ($stopPrice === null) {
-                throw new ArgumentsRequired($this->id . ' createOrder() requires a stopPx or $stopPrice parameter for the ' . $orderType . ' order type');
-            } else {
-                $request['stopPx'] = floatval($this->price_to_precision($symbol, $stopPrice));
-                $params = $this->omit($params, array( 'stopPx', 'stopPrice' ));
+        $customTriggerType = ($orderType === 'Stop') || ($orderType === 'StopLimit') || ($orderType === 'MarketIfTouched') || ($orderType === 'LimitIfTouched');
+        // support for unified trigger format
+        $triggerPrice = $this->safe_number_n($params, array( 'triggerPrice', 'stopPx', 'stopPrice' ));
+        if (($triggerPrice !== null) && !$customTriggerType) {
+            $request['stopPx'] = floatval($this->price_to_precision($symbol, $triggerPrice));
+            $triggerDirection = $this->safe_string($params, 'triggerDirection');
+            $params = $this->omit($params, array( 'triggerPrice', 'stopPrice', 'stopPx', 'triggerDirection' ));
+            $triggerAbove = ($triggerDirection === 'above');
+            $this->check_required_argument('createOrder', $triggerDirection, 'triggerDirection', array( 'above', 'below' ));
+            $this->check_required_argument('createOrder', $side, 'side', array( 'buy', 'sell' ));
+            if ($type === 'limit') {
+                $request['price'] = floatval($this->price_to_precision($symbol, $price));
+                if ($side === 'buy') {
+                    $request['ordType'] = $triggerAbove ? 'StopLimit' : 'LimitIfTouched';
+                } else {
+                    $request['ordType'] = $triggerAbove ? 'LimitIfTouched' : 'StopLimit';
+                }
+            } elseif ($type === 'market') {
+                if ($side === 'buy') {
+                    $request['ordType'] = $triggerAbove ? 'Stop' : 'MarketIfTouched';
+                } else {
+                    $request['ordType'] = $triggerAbove ? 'MarketIfTouched' : 'Stop';
+                }
             }
+        } elseif ($customTriggerType) {
+            if ($triggerPrice === null) {
+                // if exchange specific trigger types were provided
+                throw new ArgumentsRequired($this->id . ' createOrder() requires a $triggerPrice (stopPx|stopPrice) parameter for the ' . $orderType . ' order type');
+            }
+            $params = $this->omit($params, array( 'triggerPrice', 'stopPrice', 'stopPx' ));
+            $request['stopPx'] = floatval($this->price_to_precision($symbol, $triggerPrice));
         }
         if (($orderType === 'Limit') || ($orderType === 'StopLimit') || ($orderType === 'LimitIfTouched')) {
             $request['price'] = floatval($this->price_to_precision($symbol, $price));
@@ -2419,7 +2445,9 @@ class bitmex extends Exchange {
          * @param {array} [$params] extra parameters specific to the bitmex api endpoint
          * @return {array} response from the exchange
          */
-        $this->check_required_symbol('setLeverage', $symbol);
+        if ($symbol === null) {
+            throw new ArgumentsRequired($this->id . ' setLeverage() requires a $symbol argument');
+        }
         if (($leverage < 0.01) || ($leverage > 100)) {
             throw new BadRequest($this->id . ' $leverage should be between 0.01 and 100');
         }
@@ -2443,7 +2471,9 @@ class bitmex extends Exchange {
          * @param {array} [$params] extra parameters specific to the bitmex api endpoint
          * @return {array} response from the exchange
          */
-        $this->check_required_symbol('setMarginMode', $symbol);
+        if ($symbol === null) {
+            throw new ArgumentsRequired($this->id . ' setMarginMode() requires a $symbol argument');
+        }
         $marginMode = strtolower($marginMode);
         if ($marginMode !== 'isolated' && $marginMode !== 'cross') {
             throw new BadRequest($this->id . ' setMarginMode() $marginMode argument should be isolated or cross');

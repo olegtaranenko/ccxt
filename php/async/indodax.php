@@ -618,7 +618,9 @@ class indodax extends Exchange {
              * @param {array} [$params] extra parameters specific to the indodax api endpoint
              * @return {array} An ~@link https://docs.ccxt.com/#/?$id=$order-structure $order structure~
              */
-            $this->check_required_symbol('fetchOrder', $symbol);
+            if ($symbol === null) {
+                throw new ArgumentsRequired($this->id . ' fetchOrder() requires a $symbol argument');
+            }
             Async\await($this->load_markets());
             $market = $this->market($symbol);
             $request = array(
@@ -684,15 +686,14 @@ class indodax extends Exchange {
              * @param {array} [$params] extra parameters specific to the indodax api endpoint
              * @return {Order[]} a list of ~@link https://docs.ccxt.com/#/?id=order-structure order structures~
              */
-            $this->check_required_symbol('fetchClosedOrders', $symbol);
-            Async\await($this->load_markets());
-            $request = array();
-            $market = null;
-            if ($symbol !== null) {
-                $market = $this->market($symbol);
-                $symbol = $market['symbol'];
-                $request['pair'] = $market['id'];
+            if ($symbol === null) {
+                throw new ArgumentsRequired($this->id . ' fetchClosedOrders() requires a $symbol argument');
             }
+            Async\await($this->load_markets());
+            $market = $this->market($symbol);
+            $request = array(
+                'pair' => $market['id'],
+            );
             $response = Async\await($this->privatePostOrderHistory (array_merge($request, $params)));
             $orders = $this->parse_orders($response['return']['orders'], $market);
             $orders = $this->filter_by($orders, 'status', 'closed');
@@ -748,7 +749,9 @@ class indodax extends Exchange {
              * @param {array} [$params] extra parameters specific to the indodax api endpoint
              * @return {array} An ~@link https://docs.ccxt.com/#/?$id=order-structure order structure~
              */
-            $this->check_required_symbol('cancelOrder', $symbol);
+            if ($symbol === null) {
+                throw new ArgumentsRequired($this->id . ' cancelOrder() requires a $symbol argument');
+            }
             $side = $this->safe_value($params, 'side');
             if ($side === null) {
                 throw new ArgumentsRequired($this->id . ' cancelOrder() requires an extra "side" param');

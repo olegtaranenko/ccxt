@@ -9,6 +9,7 @@ import hashlib
 from ccxt.base.types import Balances, Currency, Int, MarketType, Market, Order, OrderBook, OrderSide, OrderType, Num, Str, Bool, Strings, Trade, Transaction
 from typing import List
 from ccxt.base.errors import ExchangeError
+from ccxt.base.errors import ArgumentsRequired
 from ccxt.base.errors import BadRequest
 from ccxt.base.errors import InvalidOrder
 from ccxt.base.errors import RateLimitExceeded
@@ -951,8 +952,8 @@ class woo(Exchange, ImplicitAPI):
         """
         stop = self.safe_value(params, 'stop', False)
         params = self.omit(params, 'stop')
-        if not stop:
-            self.check_required_symbol('cancelOrder', symbol)
+        if not stop and (symbol is None):
+            raise ArgumentsRequired(self.id + ' cancelOrder() requires a symbol argument')
         await self.load_markets()
         market: Market = None
         if symbol is not None:
@@ -1000,7 +1001,8 @@ class woo(Exchange, ImplicitAPI):
         params = self.omit(params, 'stop')
         if stop:
             return await self.v3PrivateDeleteAlgoOrdersPending(params)
-        self.check_required_symbol('cancelOrders', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' cancelOrders() requires a symbol argument')
         market = self.market(symbol)
         request = {
             'symbol': market['id'],

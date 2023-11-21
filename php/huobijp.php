@@ -1183,7 +1183,9 @@ class huobijp extends Exchange {
     }
 
     public function fetch_open_orders_v1(?string $symbol = null, ?int $since = null, ?int $limit = null, $params = array ()) {
-        $this->check_required_symbol('fetchOpenOrdersV1', $symbol);
+        if ($symbol === null) {
+            throw new ArgumentsRequired($this->id . ' fetchOpenOrdersV1() requires a $symbol argument');
+        }
         return $this->fetch_orders_by_states('pre-submitted,submitted,partial-filled', $symbol, $since, $limit, $params);
     }
 

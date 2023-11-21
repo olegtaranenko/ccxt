@@ -686,7 +686,8 @@ class oceanex(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the oceanex api endpoint
         :returns Order[]: a list of `order structures <https://docs.ccxt.com/#/?id=order-structure>`
         """
-        self.check_required_symbol('fetchOrders', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' fetchOrders() requires a symbol argument')
         self.load_markets()
         market = self.market(symbol)
         states = self.safe_value(params, 'states', ['wait', 'done', 'cancel'])

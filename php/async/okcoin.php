@@ -1551,7 +1551,9 @@ class okcoin extends Exchange {
              * @param {bool} [$params->advanced] True if canceling $advanced orders only
              * @return {array} An ~@link https://docs.ccxt.com/#/?$id=$order-structure $order structure~
              */
-            $this->check_required_symbol('cancelOrder', $symbol);
+            if ($symbol === null) {
+                throw new ArgumentsRequired($this->id . ' cancelOrder() requires a $symbol argument');
+            }
             Async\await($this->load_markets());
             $stop = $this->safe_value_2($params, 'stop', 'trigger');
             $advanced = $this->safe_value($params, 'advanced');
@@ -1605,7 +1607,9 @@ class okcoin extends Exchange {
              * @param {array} [$params] extra parameters specific to the okx api endpoint
              * @return {array} an list of ~@link https://docs.ccxt.com/#/?id=order-structure order structures~
              */
-            $this->check_required_symbol('cancelOrders', $symbol);
+            if ($symbol === null) {
+                throw new ArgumentsRequired($this->id . ' cancelOrders() requires a $symbol argument');
+            }
             Async\await($this->load_markets());
             $stop = $this->safe_value_2($params, 'stop', 'trigger');
             $advanced = $this->safe_value($params, 'advanced');
@@ -1892,6 +1896,9 @@ class okcoin extends Exchange {
              * @param {array} [$params] extra parameters specific to the okcoin api endpoint
              * @return {array} An ~@link https://docs.ccxt.com/#/?$id=$order-structure $order structure~
              */
+            if ($symbol === null) {
+                throw new ArgumentsRequired($this->id . ' fetchOrder() requires a $symbol argument');
+            }
             Async\await($this->load_markets());
             $market = $this->market($symbol);
             $request = array(
@@ -1908,7 +1915,6 @@ class okcoin extends Exchange {
                     $request['algoId'] = $id;
                 }
             } else {
-                $this->check_required_symbol('fetchOrder', $symbol);
                 if ($clientOrderId !== null) {
                     $request['clOrdId'] = $clientOrderId;
                 } else {

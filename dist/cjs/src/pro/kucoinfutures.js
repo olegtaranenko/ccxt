@@ -194,7 +194,9 @@ class kucoinfutures extends kucoinfutures$1 {
          * @param {object} params extra parameters specific to the kucoinfutures api endpoint
          * @returns {object} a [position structure]{@link https://docs.ccxt.com/en/latest/manual.html#position-structure}
          */
-        this.checkRequiredSymbol('watchPosition', symbol);
+        if (symbol === undefined) {
+            throw new errors.ArgumentsRequired(this.id + ' watchPosition() requires a symbol argument');
+        }
         await this.loadMarkets();
         const url = await this.negotiate(true);
         const market = this.market(symbol);

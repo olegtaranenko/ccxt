@@ -6,6 +6,7 @@ namespace ccxt\pro;
 // https://github.com/ccxt/ccxt/blob/master/CONTRIBUTING.md#how-to-contribute-code
 
 use Exception; // a common import
+use ccxt\ArgumentsRequired;
 use ccxt\AuthenticationError;
 use React\Async;
 
@@ -15,6 +16,15 @@ class bitvavo extends \ccxt\async\bitvavo {
         return $this->deep_extend(parent::describe(), array(
             'has' => array(
                 'ws' => true,
+                'createOrderWs' => false,
+                'editOrderWs' => false,
+                'fetchOpenOrdersWs' => false,
+                'fetchOrderWs' => false,
+                'cancelOrderWs' => false,
+                'cancelOrdersWs' => false,
+                'cancelAllOrdersWs' => false,
+                'fetchTradesWs' => false,
+                'fetchBalanceWs' => false,
                 'watchOrderBook' => true,
                 'watchTrades' => true,
                 'watchTicker' => true,
@@ -444,7 +454,9 @@ class bitvavo extends \ccxt\async\bitvavo {
              * @param {array} [$params] extra parameters specific to the bitvavo api endpoint
              * @return {array[]} a list of ~@link https://docs.ccxt.com/#/?id=order-structure order structures~
              */
-            $this->check_required_symbol('watchOrders', $symbol);
+            if ($symbol === null) {
+                throw new ArgumentsRequired($this->id . ' watchOrders() requires a $symbol argument');
+            }
             Async\await($this->load_markets());
             Async\await($this->authenticate());
             $market = $this->market($symbol);
@@ -480,7 +492,9 @@ class bitvavo extends \ccxt\async\bitvavo {
              * @param {array} [$params] extra parameters specific to the bitvavo api endpoint
              * @return {array[]} a list of [trade structures]{@link https://docs.ccxt.com/#/?id=ortradeder-structure
              */
-            $this->check_required_symbol('watchMyTrades', $symbol);
+            if ($symbol === null) {
+                throw new ArgumentsRequired($this->id . ' watchMyTrades() requires a $symbol argument');
+            }
             Async\await($this->load_markets());
             Async\await($this->authenticate());
             $market = $this->market($symbol);

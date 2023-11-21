@@ -12,6 +12,15 @@ class bitvavo extends bitvavo$1 {
         return this.deepExtend(super.describe(), {
             'has': {
                 'ws': true,
+                'createOrderWs': false,
+                'editOrderWs': false,
+                'fetchOpenOrdersWs': false,
+                'fetchOrderWs': false,
+                'cancelOrderWs': false,
+                'cancelOrdersWs': false,
+                'cancelAllOrdersWs': false,
+                'fetchTradesWs': false,
+                'fetchBalanceWs': false,
                 'watchOrderBook': true,
                 'watchTrades': true,
                 'watchTicker': true,
@@ -422,7 +431,9 @@ class bitvavo extends bitvavo$1 {
          * @param {object} [params] extra parameters specific to the bitvavo api endpoint
          * @returns {object[]} a list of [order structures]{@link https://docs.ccxt.com/#/?id=order-structure}
          */
-        this.checkRequiredSymbol('watchOrders', symbol);
+        if (symbol === undefined) {
+            throw new errors.ArgumentsRequired(this.id + ' watchOrders() requires a symbol argument');
+        }
         await this.loadMarkets();
         await this.authenticate();
         const market = this.market(symbol);
@@ -457,7 +468,9 @@ class bitvavo extends bitvavo$1 {
          * @param {object} [params] extra parameters specific to the bitvavo api endpoint
          * @returns {object[]} a list of [trade structures]{@link https://docs.ccxt.com/#/?id=ortradeder-structure
          */
-        this.checkRequiredSymbol('watchMyTrades', symbol);
+        if (symbol === undefined) {
+            throw new errors.ArgumentsRequired(this.id + ' watchMyTrades() requires a symbol argument');
+        }
         await this.loadMarkets();
         await this.authenticate();
         const market = this.market(symbol);

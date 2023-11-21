@@ -711,7 +711,9 @@ class oceanex extends Exchange {
          * @param {array} [$params] extra parameters specific to the oceanex api endpoint
          * @return {Order[]} a list of ~@link https://docs.ccxt.com/#/?id=order-structure order structures~
          */
-        $this->check_required_symbol('fetchOrders', $symbol);
+        if ($symbol === null) {
+            throw new ArgumentsRequired($this->id . ' fetchOrders() requires a $symbol argument');
+        }
         $this->load_markets();
         $market = $this->market($symbol);
         $states = $this->safe_value($params, 'states', array( 'wait', 'done', 'cancel' ));

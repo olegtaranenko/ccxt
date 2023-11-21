@@ -1841,7 +1841,9 @@ class digifinex extends digifinex$1 {
             'order_id': id,
         };
         if (marketType === 'swap') {
-            this.checkRequiredSymbol('cancelOrder', symbol);
+            if (symbol === undefined) {
+                throw new errors.ArgumentsRequired(this.id + ' cancelOrder() requires a symbol argument');
+            }
             request['instrument_id'] = market['id'];
         }
         else {
@@ -3185,7 +3187,9 @@ class digifinex extends digifinex$1 {
          * @param {object} [params] extra parameters specific to the digifinex api endpoint
          * @returns {object[]} a list of [funding rate structures]{@link https://docs.ccxt.com/#/?id=funding-rate-history-structure}
          */
-        this.checkRequiredSymbol('fetchFundingRateHistory', symbol);
+        if (symbol === undefined) {
+            throw new errors.ArgumentsRequired(this.id + ' fetchFundingRateHistory() requires a symbol argument');
+        }
         await this.loadMarkets();
         const market = this.market(symbol);
         if (!market['swap']) {
@@ -3579,8 +3583,10 @@ class digifinex extends digifinex$1 {
          * @param {string} [params.side] either 'long' or 'short', required for isolated markets only
          * @returns {object} response from the exchange
          */
+        if (symbol === undefined) {
+            throw new errors.ArgumentsRequired(this.id + ' setLeverage() requires a symbol argument');
+        }
         await this.loadMarkets();
-        this.checkRequiredSymbol('setLeverage', symbol);
         const market = this.market(symbol);
         if (market['type'] !== 'swap') {
             throw new errors.BadSymbol(this.id + ' setLeverage() supports swap contracts only');
@@ -4122,7 +4128,9 @@ class digifinex extends digifinex$1 {
          * @param {object} [params] extra parameters specific to the digifinex api endpoint
          * @returns {object} response from the exchange
          */
-        this.checkRequiredSymbol('setMarginMode', symbol);
+        if (symbol === undefined) {
+            throw new errors.ArgumentsRequired(this.id + ' setMarginMode() requires a symbol argument');
+        }
         await this.loadMarkets();
         const market = this.market(symbol);
         marginMode = marginMode.toLowerCase();

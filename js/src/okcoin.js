@@ -1559,7 +1559,9 @@ export default class okcoin extends Exchange {
          * @param {bool} [params.advanced] True if canceling advanced orders only
          * @returns {object} An [order structure]{@link https://docs.ccxt.com/#/?id=order-structure}
          */
-        this.checkRequiredSymbol('cancelOrder', symbol);
+        if (symbol === undefined) {
+            throw new ArgumentsRequired(this.id + ' cancelOrder() requires a symbol argument');
+        }
         await this.loadMarkets();
         const stop = this.safeValue2(params, 'stop', 'trigger');
         const advanced = this.safeValue(params, 'advanced');
@@ -1615,7 +1617,9 @@ export default class okcoin extends Exchange {
          * @param {object} [params] extra parameters specific to the okx api endpoint
          * @returns {object} an list of [order structures]{@link https://docs.ccxt.com/#/?id=order-structure}
          */
-        this.checkRequiredSymbol('cancelOrders', symbol);
+        if (symbol === undefined) {
+            throw new ArgumentsRequired(this.id + ' cancelOrders() requires a symbol argument');
+        }
         await this.loadMarkets();
         const stop = this.safeValue2(params, 'stop', 'trigger');
         const advanced = this.safeValue(params, 'advanced');
@@ -1906,6 +1910,9 @@ export default class okcoin extends Exchange {
          * @param {object} [params] extra parameters specific to the okcoin api endpoint
          * @returns {object} An [order structure]{@link https://docs.ccxt.com/#/?id=order-structure}
          */
+        if (symbol === undefined) {
+            throw new ArgumentsRequired(this.id + ' fetchOrder() requires a symbol argument');
+        }
         await this.loadMarkets();
         const market = this.market(symbol);
         const request = {
@@ -1924,7 +1931,6 @@ export default class okcoin extends Exchange {
             }
         }
         else {
-            this.checkRequiredSymbol('fetchOrder', symbol);
             if (clientOrderId !== undefined) {
                 request['clOrdId'] = clientOrderId;
             }

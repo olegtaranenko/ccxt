@@ -7,6 +7,7 @@ import ccxt.async_support
 from ccxt.async_support.base.ws.cache import ArrayCache, ArrayCacheBySymbolById, ArrayCacheByTimestamp
 from ccxt.base.types import Int, Str
 from ccxt.async_support.base.ws.client import Client
+from ccxt.base.errors import ArgumentsRequired
 from ccxt.base.errors import BadRequest
 from ccxt.base.errors import AuthenticationError
 from ccxt.base.precise import Precise
@@ -355,7 +356,8 @@ class whitebit(ccxt.async_support.whitebit):
         :param dict [params]: extra parameters specific to the whitebit api endpoint
         :returns dict[]: a list of `trade structures <https://docs.ccxt.com/#/?id=trade-structure>`
         """
-        self.check_required_symbol('watchMyTrades', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' watchMyTrades() requires a symbol argument')
         await self.load_markets()
         await self.authenticate()
         market = self.market(symbol)
@@ -447,7 +449,8 @@ class whitebit(ccxt.async_support.whitebit):
         :param dict [params]: extra parameters specific to the whitebit api endpoint
         :returns dict[]: a list of [order structures]{@link https://docs.ccxt.com/#/?id=order-structure
         """
-        self.check_required_symbol('watchOrders', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' watchOrders() requires a symbol argument')
         await self.load_markets()
         await self.authenticate()
         market = self.market(symbol)

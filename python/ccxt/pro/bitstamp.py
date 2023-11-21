@@ -7,6 +7,7 @@ import ccxt.async_support
 from ccxt.async_support.base.ws.cache import ArrayCache, ArrayCacheBySymbolById
 from ccxt.base.types import Int, Str
 from ccxt.async_support.base.ws.client import Client
+from ccxt.base.errors import ArgumentsRequired
 from ccxt.base.errors import AuthenticationError
 
 
@@ -260,7 +261,8 @@ class bitstamp(ccxt.async_support.bitstamp):
         :param dict [params]: extra parameters specific to the bitstamp api endpoint
         :returns dict[]: a list of `order structures <https://docs.ccxt.com/#/?id=order-structure>`
         """
-        self.check_required_symbol('watchOrders', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' watchOrders() requires a symbol argument')
         await self.load_markets()
         market = self.market(symbol)
         symbol = market['symbol']

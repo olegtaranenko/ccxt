@@ -12,6 +12,7 @@ from typing import List
 from ccxt.base.errors import ExchangeError
 from ccxt.base.errors import PermissionDenied
 from ccxt.base.errors import AccountSuspended
+from ccxt.base.errors import ArgumentsRequired
 from ccxt.base.errors import BadRequest
 from ccxt.base.errors import BadSymbol
 from ccxt.base.errors import BadResponse
@@ -1736,7 +1737,8 @@ class digifinex(Exchange, ImplicitAPI):
             'order_id': id,
         }
         if marketType == 'swap':
-            self.check_required_symbol('cancelOrder', symbol)
+            if symbol is None:
+                raise ArgumentsRequired(self.id + ' cancelOrder() requires a symbol argument')
             request['instrument_id'] = market['id']
         else:
             request['market'] = marketType
@@ -2979,7 +2981,8 @@ class digifinex(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the digifinex api endpoint
         :returns dict[]: a list of `funding rate structures <https://docs.ccxt.com/#/?id=funding-rate-history-structure>`
         """
-        self.check_required_symbol('fetchFundingRateHistory', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' fetchFundingRateHistory() requires a symbol argument')
         self.load_markets()
         market = self.market(symbol)
         if not market['swap']:
@@ -3346,8 +3349,9 @@ class digifinex(Exchange, ImplicitAPI):
         :param str [params.side]: either 'long' or 'short', required for isolated markets only
         :returns dict: response from the exchange
         """
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' setLeverage() requires a symbol argument')
         self.load_markets()
-        self.check_required_symbol('setLeverage', symbol)
         market = self.market(symbol)
         if market['type'] != 'swap':
             raise BadSymbol(self.id + ' setLeverage() supports swap contracts only')
@@ -3871,7 +3875,8 @@ class digifinex(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the digifinex api endpoint
         :returns dict: response from the exchange
         """
-        self.check_required_symbol('setMarginMode', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' setMarginMode() requires a symbol argument')
         self.load_markets()
         market = self.market(symbol)
         marginMode = marginMode.lower()

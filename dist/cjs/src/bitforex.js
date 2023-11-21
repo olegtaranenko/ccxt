@@ -385,7 +385,9 @@ class bitforex extends bitforex$1 {
          * @param {object} [params] extra parameters specific to the bitforex api endpoint
          * @returns {Trade[]} a list of [trade structures]{@link https://docs.ccxt.com/#/?id=trade-structure}
          */
-        this.checkRequiredSymbol('fetchMyTrades', symbol);
+        if (symbol === undefined) {
+            throw new errors.ArgumentsRequired(this.id + ' fetchMyTrades() requires a symbol argument');
+        }
         await this.loadMarkets();
         const request = {
         // 'symbol': market['id'],
@@ -709,11 +711,13 @@ class bitforex extends bitforex$1 {
          * @param {object} [params] extra parameters specific to the bitforex api endpoint
          * @returns {Order[]} a list of [order structures]{@link https://docs.ccxt.com/#/?id=order-structure}
          */
-        this.checkRequiredSymbol('fetchOpenOrders', symbol);
+        if (symbol === undefined) {
+            throw new errors.ArgumentsRequired(this.id + ' fetchOpenOrders() requires a symbol argument');
+        }
         await this.loadMarkets();
         const market = this.market(symbol);
         const request = {
-            'symbol': this.marketId(symbol),
+            'symbol': market['id'],
             'state': 0,
         };
         const response = await this.privatePostApiV1TradeOrderInfos(this.extend(request, params));
@@ -730,11 +734,13 @@ class bitforex extends bitforex$1 {
          * @param {object} [params] extra parameters specific to the bitforex api endpoint
          * @returns {Order[]} a list of [order structures]{@link https://docs.ccxt.com/#/?id=order-structure}
          */
-        this.checkRequiredSymbol('fetchClosedOrders', symbol);
+        if (symbol === undefined) {
+            throw new errors.ArgumentsRequired(this.id + ' fetchClosedOrders() requires a symbol argument');
+        }
         await this.loadMarkets();
         const market = this.market(symbol);
         const request = {
-            'symbol': this.marketId(symbol),
+            'symbol': market['id'],
             'state': 1,
         };
         const response = await this.privatePostApiV1TradeOrderInfos(this.extend(request, params));

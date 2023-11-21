@@ -27,7 +27,8 @@ class bitget extends Exchange {
                 'future' => true,
                 'option' => false,
                 'addMargin' => true,
-                'borrowMargin' => true,
+                'borrowCrossMargin' => true,
+                'borrowIsolatedMargin' => true,
                 'cancelAllOrders' => true,
                 'cancelOrder' => true,
                 'cancelOrders' => true,
@@ -91,7 +92,8 @@ class bitget extends Exchange {
                 'fetchWithdrawal' => false,
                 'fetchWithdrawals' => true,
                 'reduceMargin' => true,
-                'repayMargin' => true,
+                'repayCrossMargin' => true,
+                'repayIsolatedMargin' => true,
                 'setLeverage' => true,
                 'setMarginMode' => true,
                 'setPositionMode' => true,
@@ -1794,7 +1796,9 @@ class bitget extends Exchange {
             $response = $this->publicMarginGetMarginV1IsolatedPublicTierData (array_merge($request, $params));
         } elseif ($marginMode === 'cross') {
             $code = $this->safe_string($params, 'code');
-            $this->check_required_argument('fetchMarketLeverageTiers', $code, 'code');
+            if ($code === null) {
+                throw new ArgumentsRequired($this->id . ' fetchMarketLeverageTiers() requires a $code argument');
+            }
             $params = $this->omit($params, 'code');
             $currency = $this->currency($code);
             $request['coin'] = $currency['code'];
@@ -3865,7 +3869,9 @@ class bitget extends Exchange {
          * @param {string} [$params->marginMode] 'isolated' or 'cross' for spot margin trading
          * @return {array} An ~@link https://docs.ccxt.com/#/?$id=$order-structure $order structure~
          */
-        $this->check_required_symbol('cancelOrder', $symbol);
+        if ($symbol === null) {
+            throw new ArgumentsRequired($this->id . ' cancelOrder() requires a $symbol argument');
+        }
         $this->load_markets();
         $market = $this->market($symbol);
         $marketType = null;
@@ -3989,7 +3995,9 @@ class bitget extends Exchange {
          * @param {string} [$params->marginMode] 'isolated' or 'cross' for spot margin trading
          * @return {array} an list of ~@link https://docs.ccxt.com/#/?id=order-structure order structures~
          */
-        $this->check_required_symbol('cancelOrders', $symbol);
+        if ($symbol === null) {
+            throw new ArgumentsRequired($this->id . ' cancelOrders() requires a $symbol argument');
+        }
         $this->load_markets();
         $market = $this->market($symbol);
         $type = null;
@@ -4087,7 +4095,9 @@ class bitget extends Exchange {
             if ($marginMode === null) {
                 throw new NotSupported($this->id . ' cancelAllOrders () does not support spot markets, only spot-margin');
             }
-            $this->check_required_symbol('cancelAllOrders', $symbol);
+            if ($symbol === null) {
+                throw new ArgumentsRequired($this->id . ' cancelAllOrders() requires a $symbol argument');
+            }
             $spotMarginRequest = array(
                 'symbol' => $market['info']['symbolName'], // regular id like LTCUSDT_SPBL does not work here
             );
@@ -4143,7 +4153,9 @@ class bitget extends Exchange {
          * @param {array} [$params] extra parameters specific to the bitget api endpoint
          * @return {array} An ~@link https://docs.ccxt.com/#/?$id=order-structure order structure~
          */
-        $this->check_required_symbol('fetchOrder', $symbol);
+        if ($symbol === null) {
+            throw new ArgumentsRequired($this->id . ' fetchOrder() requires a $symbol argument');
+        }
         $this->load_markets();
         $market = $this->market($symbol);
         list($marketType, $query) = $this->handle_market_type_and_params('fetchOrder', $market, $params);
@@ -4251,7 +4263,9 @@ class bitget extends Exchange {
         $stop = $this->safe_value_2($params, 'stop', 'trigger');
         $params = $this->omit($params, array( 'stop', 'trigger' ));
         if ($stop) {
-            $this->check_required_symbol('fetchOpenOrders', $symbol);
+            if ($symbol === null) {
+                throw new ArgumentsRequired($this->id . ' fetchOpenOrders() requires a $symbol argument');
+            }
             if ($marketType === 'spot') {
                 if ($limit !== null) {
                     $request['pageSize'] = $limit;
@@ -4298,7 +4312,9 @@ class bitget extends Exchange {
                     $request['productType'] = $productType;
                     $response = $this->privateMixGetMixV1OrderMarginCoinCurrent (array_merge($request, $params));
                 } else {
-                    $this->check_required_symbol('fetchOpenOrders', $symbol);
+                    if ($symbol === null) {
+                        throw new ArgumentsRequired($this->id . ' fetchOpenOrders() requires a $symbol argument');
+                    }
                     $response = $this->privateMixGetMixV1OrderCurrent (array_merge($request, $params));
                 }
             }
@@ -4469,7 +4485,9 @@ class bitget extends Exchange {
          * @return {Order[]} a list of ~@link https://docs.ccxt.com/#/?id=order-structure order structures~
          */
         $this->load_markets();
-        $this->check_required_symbol('fetchClosedOrders', $symbol);
+        if ($symbol === null) {
+            throw new ArgumentsRequired($this->id . ' fetchClosedOrders() requires a $symbol argument');
+        }
         $market = $this->market($symbol);
         $paginate = false;
         list($paginate, $params) = $this->handle_option_and_params($params, 'fetchClosedOrders', 'paginate');
@@ -4507,8 +4525,10 @@ class bitget extends Exchange {
          * @param {int} [$params->until] the latest time in ms to fetch entries for
          * @return {array} a list of ~@link https://docs.ccxt.com/#/?id=order-structure order structures~
          */
+        if ($symbol === null) {
+            throw new ArgumentsRequired($this->id . ' fetchCanceledOrders() requires a $symbol argument');
+        }
         $this->load_markets();
-        $this->check_required_symbol('fetchCanceledOrders', $symbol);
         $market = $this->market($symbol);
         $paginate = false;
         list($paginate, $params) = $this->handle_option_and_params($params, 'fetchCanceledOrders', 'paginate');
@@ -4900,7 +4920,9 @@ class bitget extends Exchange {
          * @param {boolean} [$params->paginate] default false, when true will automatically $paginate by calling this endpoint multiple times. See in the docs all the [available parameters](https://github.com/ccxt/ccxt/wiki/Manual#pagination-$params)
          * @return {Trade[]} a list of ~@link https://docs.ccxt.com/#/?id=trade-structure trade structures~
          */
-        $this->check_required_symbol('fetchMyTrades', $symbol);
+        if ($symbol === null) {
+            throw new ArgumentsRequired($this->id . ' fetchMyTrades() requires a $symbol argument');
+        }
         $this->load_markets();
         $market = $this->market($symbol);
         $paginate = false;
@@ -5054,7 +5076,9 @@ class bitget extends Exchange {
          * @param {array} [$params] extra parameters specific to the bitget api endpoint
          * @return {array[]} a list of ~@link https://docs.ccxt.com/#/?$id=trade-structure trade structures~
          */
-        $this->check_required_symbol('fetchOrderTrades', $symbol);
+        if ($symbol === null) {
+            throw new ArgumentsRequired($this->id . ' fetchOrderTrades() requires a $symbol argument');
+        }
         $this->load_markets();
         $market = $this->market($symbol);
         list($marketType, $query) = $this->handle_market_type_and_params('fetchOrderTrades', $market, $params);
@@ -5413,7 +5437,9 @@ class bitget extends Exchange {
          * @param {boolean} [$params->paginate] default false, when true will automatically $paginate by calling this endpoint multiple times. See in the docs all the [availble parameters](https://github.com/ccxt/ccxt/wiki/Manual#pagination-$params)
          * @return {array[]} a list of ~@link https://docs.ccxt.com/#/?id=funding-rate-history-structure funding rate structures~
          */
-        $this->check_required_symbol('fetchFundingRateHistory', $symbol);
+        if ($symbol === null) {
+            throw new ArgumentsRequired($this->id . ' fetchFundingRateHistory() requires a $symbol argument');
+        }
         $this->load_markets();
         $paginate = false;
         list($paginate, $params) = $this->handle_option_and_params($params, 'fetchFundingRateHistory', 'paginate');
@@ -5538,7 +5564,9 @@ class bitget extends Exchange {
          * @return {array[]} a list of ~@link https://docs.ccxt.com/#/?id=funding-history-structure funding history structures~
          */
         $this->load_markets();
-        $this->check_required_symbol('fetchFundingHistory', $symbol);
+        if ($symbol === null) {
+            throw new ArgumentsRequired($this->id . ' fetchFundingHistory() requires a $symbol argument');
+        }
         $market = $this->market($symbol);
         if (!$market['swap']) {
             throw new BadSymbol($this->id . ' fetchFundingHistory() supports swap contracts only');
@@ -5761,7 +5789,9 @@ class bitget extends Exchange {
          * @param {array} [$params] extra parameters specific to the bitget api endpoint
          * @return {array} response from the exchange
          */
-        $this->check_required_symbol('setLeverage', $symbol);
+        if ($symbol === null) {
+            throw new ArgumentsRequired($this->id . ' setLeverage() requires a $symbol argument');
+        }
         $this->load_markets();
         $market = $this->market($symbol);
         $request = array(
@@ -5782,7 +5812,9 @@ class bitget extends Exchange {
          * @param {array} [$params] extra parameters specific to the bitget api endpoint
          * @return {array} response from the exchange
          */
-        $this->check_required_symbol('setMarginMode', $symbol);
+        if ($symbol === null) {
+            throw new ArgumentsRequired($this->id . ' setMarginMode() requires a $symbol argument');
+        }
         $marginMode = strtolower($marginMode);
         if ($marginMode === 'isolated') {
             $marginMode = 'fixed';
@@ -6141,16 +6173,13 @@ class bitget extends Exchange {
         ), $market);
     }
 
-    public function borrow_margin(string $code, $amount, ?string $symbol = null, $params = array ()) {
+    public function borrow_cross_margin(string $code, $amount, $params = array ()) {
         /**
          * create a loan to borrow margin
          * @see https://bitgetlimited.github.io/apidoc/en/margin/#cross-borrow
-         * @see https://bitgetlimited.github.io/apidoc/en/margin/#isolated-borrow
          * @param {string} $code unified $currency $code of the $currency to borrow
          * @param {string} $amount the $amount to borrow
-         * @param {string} [$symbol] unified $market $symbol
          * @param {array} [$params] extra parameters specific to the bitget api endpoint
-         * @param {string} [$params->marginMode] 'isolated' or 'cross', $symbol is required for 'isolated'
          * @return {array} a ~@link https://docs.ccxt.com/#/?id=margin-loan-structure margin loan structure~
          */
         $this->load_markets();
@@ -6159,34 +6188,7 @@ class bitget extends Exchange {
             'coin' => $currency['info']['coinName'],
             'borrowAmount' => $this->currency_to_precision($code, $amount),
         );
-        $response = null;
-        $marginMode = null;
-        list($marginMode, $params) = $this->handle_margin_mode_and_params('borrowMargin', $params);
-        if (($symbol !== null) || ($marginMode === 'isolated')) {
-            $this->check_required_symbol('borrowMargin', $symbol);
-            $market = $this->market($symbol);
-            $marketId = $market['id'];
-            $parts = explode('_', $marketId);
-            $marginMarketId = $this->safe_string_upper($parts, 0);
-            $request['symbol'] = $marginMarketId;
-            $response = $this->privateMarginPostMarginV1IsolatedAccountBorrow (array_merge($request, $params));
-        } else {
-            $response = $this->privateMarginPostMarginV1CrossAccountBorrow (array_merge($request, $params));
-        }
-        //
-        // isolated
-        //
-        //     {
-        //         "code" => "00000",
-        //         "msg" => "success",
-        //         "requestTime" => 1697250952516,
-        //         "data" => {
-        //             "clientOid" => null,
-        //             "symbol" => "BTCUSDT",
-        //             "coin" => "BTC",
-        //             "borrowAmount" => "0.001"
-        //         }
-        //     }
+        $response = $this->privateMarginPostMarginV1CrossAccountBorrow (array_merge($request, $params));
         //
         // cross
         //
@@ -6205,38 +6207,70 @@ class bitget extends Exchange {
         return $this->parse_margin_loan($data, $currency);
     }
 
-    public function repay_margin(string $code, $amount, ?string $symbol = null, $params = array ()) {
+    public function borrow_isolated_margin(string $symbol, string $code, $amount, $params = array ()) {
         /**
-         * repay borrowed margin and interest
-         * @see https://bitgetlimited.github.io/apidoc/en/margin/#cross-repay
-         * @see https://bitgetlimited.github.io/apidoc/en/margin/#isolated-repay
-         * @param {string} $code unified $currency $code of the $currency to repay
-         * @param {string} $amount the $amount to repay
-         * @param {string} [$symbol] unified $market $symbol
+         * create a loan to borrow margin
+         * @see https://bitgetlimited.github.io/apidoc/en/margin/#isolated-borrow
+         * @param {string} $symbol unified $market $symbol
+         * @param {string} $code unified $currency $code of the $currency to borrow
+         * @param {string} $amount the $amount to borrow
          * @param {array} [$params] extra parameters specific to the bitget api endpoint
-         * @param {string} [$params->marginMode] 'isolated' or 'cross', $symbol is required for 'isolated'
          * @return {array} a ~@link https://docs.ccxt.com/#/?id=margin-loan-structure margin loan structure~
          */
         $this->load_markets();
         $currency = $this->currency($code);
+        $market = $this->market($symbol);
+        $marketId = $market['id'];
+        $parts = explode('_', $marketId);
+        $marginMarketId = $this->safe_string_upper($parts, 0);
+        $request = array(
+            'coin' => $currency['info']['coinName'],
+            'borrowAmount' => $this->currency_to_precision($code, $amount),
+            'symbol' => $marginMarketId,
+        );
+        $response = $this->privateMarginPostMarginV1IsolatedAccountBorrow (array_merge($request, $params));
+        //
+        // isolated
+        //
+        //     {
+        //         "code" => "00000",
+        //         "msg" => "success",
+        //         "requestTime" => 1697250952516,
+        //         "data" => {
+        //             "clientOid" => null,
+        //             "symbol" => "BTCUSDT",
+        //             "coin" => "BTC",
+        //             "borrowAmount" => "0.001"
+        //         }
+        //     }
+        //
+        $data = $this->safe_value($response, 'data', array());
+        return $this->parse_margin_loan($data, $currency);
+    }
+
+    public function repay_isolated_margin(string $symbol, string $code, $amount, $params = array ()) {
+        /**
+         * repay borrowed margin and interest
+         * @see https://bitgetlimited.github.io/apidoc/en/margin/#cross-repay
+         * @see https://bitgetlimited.github.io/apidoc/en/margin/#isolated-repay
+         * @param {string} $symbol unified $market $symbol
+         * @param {string} $code unified $currency $code of the $currency to repay
+         * @param {string} $amount the $amount to repay
+         * @param {array} [$params] extra parameters specific to the bitget api endpoint
+         * @return {array} a ~@link https://docs.ccxt.com/#/?id=margin-loan-structure margin loan structure~
+         */
+        $this->load_markets();
+        $currency = $this->currency($code);
+        $market = $this->market($symbol);
+        $marketId = $market['id'];
+        $parts = explode('_', $marketId);
+        $marginMarketId = $this->safe_string_upper($parts, 0);
         $request = array(
             'coin' => $currency['info']['coinName'],
             'repayAmount' => $this->currency_to_precision($code, $amount),
+            'symbol' => $marginMarketId,
         );
-        $response = null;
-        $marginMode = null;
-        list($marginMode, $params) = $this->handle_margin_mode_and_params('repayMargin', $params);
-        if (($symbol !== null) || ($marginMode === 'isolated')) {
-            $this->check_required_symbol('repayMargin', $symbol);
-            $market = $this->market($symbol);
-            $marketId = $market['id'];
-            $parts = explode('_', $marketId);
-            $marginMarketId = $this->safe_string_upper($parts, 0);
-            $request['symbol'] = $marginMarketId;
-            $response = $this->privateMarginPostMarginV1IsolatedAccountRepay (array_merge($request, $params));
-        } else {
-            $response = $this->privateMarginPostMarginV1CrossAccountRepay (array_merge($request, $params));
-        }
+        $response = $this->privateMarginPostMarginV1IsolatedAccountRepay (array_merge($request, $params));
         //
         // isolated
         //
@@ -6252,6 +6286,28 @@ class bitget extends Exchange {
         //             "repayAmount" => "0.00100001"
         //         }
         //     }
+        //
+        $data = $this->safe_value($response, 'data', array());
+        return $this->parse_margin_loan($data, $currency);
+    }
+
+    public function repay_cross_margin(string $code, $amount, $params = array ()) {
+        /**
+         * repay borrowed margin and interest
+         * @see https://bitgetlimited.github.io/apidoc/en/margin/#cross-repay
+         * @see https://bitgetlimited.github.io/apidoc/en/margin/#isolated-repay
+         * @param {string} $code unified $currency $code of the $currency to repay
+         * @param {string} $amount the $amount to repay
+         * @param {array} [$params] extra parameters specific to the bitget api endpoint
+         * @return {array} a ~@link https://docs.ccxt.com/#/?id=margin-loan-structure margin loan structure~
+         */
+        $this->load_markets();
+        $currency = $this->currency($code);
+        $request = array(
+            'coin' => $currency['info']['coinName'],
+            'repayAmount' => $this->currency_to_precision($code, $amount),
+        );
+        $response = $this->privateMarginPostMarginV1CrossAccountRepay (array_merge($request, $params));
         //
         // cross
         //
@@ -6363,7 +6419,9 @@ class bitget extends Exchange {
         $marginMode = null;
         list($marginMode, $params) = $this->handle_margin_mode_and_params('fetchMyLiquidations', $params, 'cross');
         if ($marginMode === 'isolated') {
-            $this->check_required_symbol('fetchMyLiquidations', $symbol);
+            if ($symbol === null) {
+                throw new ArgumentsRequired($this->id . ' fetchMyLiquidations() requires a $symbol argument');
+            }
             $request['symbol'] = $market['info']['symbolName'];
             $response = $this->privateMarginGetMarginV1IsolatedLiquidationList (array_merge($request, $params));
         } elseif ($marginMode === 'cross') {
@@ -6702,7 +6760,9 @@ class bitget extends Exchange {
         $marginMode = null;
         list($marginMode, $params) = $this->handle_margin_mode_and_params('fetchBorrowInterest', $params, 'cross');
         if ($marginMode === 'isolated') {
-            $this->check_required_symbol('fetchBorrowInterest', $symbol);
+            if ($symbol === null) {
+                throw new ArgumentsRequired($this->id . ' fetchBorrowInterest() requires a $symbol argument');
+            }
             $request['symbol'] = $market['info']['symbolName'];
             $response = $this->privateMarginGetMarginV1IsolatedInterestList (array_merge($request, $params));
         } elseif ($marginMode === 'cross') {

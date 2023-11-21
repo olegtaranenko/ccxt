@@ -1077,7 +1077,8 @@ class cex(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the cex api endpoint
         :returns Order[]: a list of `order structures <https://docs.ccxt.com/#/?id=order-structure>`
         """
-        self.check_required_symbol('fetchClosedOrders', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' fetchClosedOrders() requires a symbol argument')
         await self.load_markets()
         method = 'privatePostArchivedOrdersPair'
         market = self.market(symbol)

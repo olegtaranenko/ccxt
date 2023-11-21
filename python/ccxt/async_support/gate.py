@@ -2807,7 +2807,8 @@ class gate(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the gate api endpoint
         :returns dict[]: a list of `funding rate structures <https://docs.ccxt.com/#/?id=funding-rate-history-structure>`
         """
-        self.check_required_symbol('fetchFundingRateHistory', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' fetchFundingRateHistory() requires a symbol argument')
         await self.load_markets()
         market = self.market(symbol)
         if not market['swap']:
@@ -2997,8 +2998,9 @@ class gate(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the binance api endpoint
         :returns dict[]: a list of `trade structures <https://docs.ccxt.com/#/?id=trade-structure>`
         """
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' fetchOrderTrades() requires a symbol argument')
         await self.load_markets()
-        self.check_required_symbol('fetchOrderTrades', symbol)
         #
         #      [
         #          {
@@ -4697,7 +4699,8 @@ class gate(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the gate api endpoint
         :returns dict: response from the exchange
         """
-        self.check_required_symbol('setLeverage', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' setLeverage() requires a symbol argument')
         # WARNING: THIS WILL INCREASE LIQUIDATION PRICE FOR OPEN ISOLATED LONG POSITIONS
         # AND DECREASE LIQUIDATION PRICE FOR OPEN ISOLATED SHORT POSITIONS
         if (leverage < 0) or (leverage > 100):
@@ -5690,7 +5693,8 @@ class gate(Exchange, ImplicitAPI):
         :param dict [params]: exchange specific params
         :returns dict[]: a list of `settlement history objects <https://docs.ccxt.com/#/?id=settlement-history-structure>`
         """
-        self.check_required_symbol('fetchSettlementHistory', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' fetchSettlementHistory() requires a symbol argument')
         await self.load_markets()
         market = self.market(symbol)
         type = None
@@ -5733,7 +5737,8 @@ class gate(Exchange, ImplicitAPI):
         :param dict [params]: exchange specific params
         :returns dict[]: a list of [settlement history objects]
         """
-        self.check_required_symbol('fetchMySettlementHistory', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' fetchMySettlementHistory() requires a symbol argument')
         await self.load_markets()
         market = self.market(symbol)
         type = None
@@ -6172,7 +6177,8 @@ class gate(Exchange, ImplicitAPI):
         :param dict [params]: exchange specific parameters for the gate api endpoint
         :returns dict: an array of `liquidation structures <https://docs.ccxt.com/#/?id=liquidation-structure>`
         """
-        self.check_required_symbol('fetchMyLiquidations', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' fetchMyLiquidations() requires a symbol argument')
         await self.load_markets()
         market = self.market(symbol)
         request = {

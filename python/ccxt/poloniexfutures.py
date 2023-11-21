@@ -1070,7 +1070,8 @@ class poloniexfutures(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the poloniexfutures api endpoint
         :returns dict: a `funding history structure <https://docs.ccxt.com/#/?id=funding-history-structure>`
         """
-        self.check_required_symbol('fetchFundingHistory', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' fetchFundingHistory() requires a symbol argument')
         self.load_markets()
         market = self.market(symbol)
         request = {
@@ -1616,7 +1617,8 @@ class poloniexfutures(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the poloniexfutures api endpoint
         :returns dict: response from the exchange
         """
-        self.check_required_symbol('setMarginMode', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' setMarginMode() requires a symbol argument')
         if (marginMode != 0) and (marginMode != 1):
             raise ArgumentsRequired(self.id + ' setMarginMode() marginMode must be 0(isolated) or 1(cross)')
         self.load_markets()

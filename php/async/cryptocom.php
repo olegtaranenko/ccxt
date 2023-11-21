@@ -36,7 +36,7 @@ class cryptocom extends Exchange {
                 'future' => true,
                 'option' => true,
                 'addMargin' => false,
-                'borrowMargin' => true,
+                'borrowMargin' => false,
                 'cancelAllOrders' => true,
                 'cancelOrder' => true,
                 'cancelOrders' => true,
@@ -99,7 +99,7 @@ class cryptocom extends Exchange {
                 'fetchVolatilityHistory' => false,
                 'fetchWithdrawals' => true,
                 'reduceMargin' => false,
-                'repayMargin' => true,
+                'repayMargin' => false,
                 'setLeverage' => false,
                 'setMarginMode' => false,
                 'setPositionMode' => false,
@@ -219,26 +219,6 @@ class cryptocom extends Exchange {
                             'private/get-open-orders' => 10 / 3,
                             'private/get-order-detail' => 1 / 3,
                             'private/get-trades' => 100,
-                            'private/margin/get-user-config' => 10 / 3,
-                            'private/margin/get-account-summary' => 10 / 3,
-                            'private/margin/transfer' => 10 / 3,
-                            'private/margin/borrow' => 10 / 3,
-                            'private/margin/repay' => 10 / 3,
-                            'private/margin/get-transfer-history' => 10 / 3,
-                            'private/margin/get-borrow-history' => 10 / 3,
-                            'private/margin/get-interest-history' => 10 / 3,
-                            'private/margin/get-repay-history' => 10 / 3,
-                            'private/margin/get-liquidation-history' => 10 / 3,
-                            'private/margin/get-liquidation-orders' => 10 / 3,
-                            'private/margin/create-order' => 2 / 3,
-                            'private/margin/cancel-order' => 2 / 3,
-                            'private/margin/cancel-all-orders' => 2 / 3,
-                            'private/margin/get-order-history' => 10 / 3,
-                            'private/margin/get-open-orders' => 10 / 3,
-                            'private/margin/get-order-detail' => 1 / 3,
-                            'private/margin/get-trades' => 100,
-                            'private/deriv/transfer' => 10 / 3,
-                            'private/deriv/get-transfer-history' => 10 / 3,
                             'private/get-accounts' => 10 / 3,
                             'private/get-subaccount-balances' => 10 / 3,
                             'private/create-subaccount-transfer' => 10 / 3,
@@ -1427,7 +1407,9 @@ class cryptocom extends Exchange {
              * @param {array} [$params] extra parameters specific to the okx api endpoint
              * @return {array} an list of ~@link https://docs.ccxt.com/#/?$id=$order-structure $order structures~
              */
-            $this->check_required_symbol('cancelOrders', $symbol);
+            if ($symbol === null) {
+                throw new ArgumentsRequired($this->id . ' cancelOrders() requires a $symbol argument');
+            }
             Async\await($this->load_markets());
             $market = $this->market($symbol);
             $orderRequests = array();
@@ -2420,159 +2402,6 @@ class cryptocom extends Exchange {
         );
     }
 
-    public function repay_margin(string $code, $amount, ?string $symbol = null, $params = array ()) {
-        return Async\async(function () use ($code, $amount, $symbol, $params) {
-            /**
-             * repay borrowed margin and interest
-             * @see https://exchange-docs.crypto.com/spot/index.html#private-margin-repay
-             * @param {string} $code unified $currency $code of the $currency to repay
-             * @param {float} $amount the $amount to repay
-             * @param {string} $symbol unified market $symbol, not used by cryptocom.repayMargin ()
-             * @param {array} [$params] extra parameters specific to the cryptocom api endpoint
-             * @return {array} a ~@link https://docs.ccxt.com/#/?id=margin-loan-structure margin loan structure~
-             */
-            Async\await($this->load_markets());
-            $currency = $this->currency($code);
-            $request = array(
-                'currency' => $currency['id'],
-                'amount' => $this->currency_to_precision($code, $amount),
-            );
-            $response = Async\await($this->v2PrivatePostPrivateMarginRepay (array_merge($request, $params)));
-            //
-            //     {
-            //         "id" => 1656620104211,
-            //         "method" => "private/margin/repay",
-            //         "code" => 0,
-            //         "result" => {
-            //             "badDebt" => 0
-            //         }
-            //     }
-            //
-            $transaction = $this->parse_margin_loan($response, $currency);
-            return array_merge($transaction, array(
-                'amount' => $amount,
-            ));
-        }) ();
-    }
-
-    public function borrow_margin(string $code, $amount, ?string $symbol = null, $params = array ()) {
-        return Async\async(function () use ($code, $amount, $symbol, $params) {
-            /**
-             * create a loan to borrow margin
-             * @see https://exchange-docs.crypto.com/spot/index.html#private-margin-borrow
-             * @param {string} $code unified $currency $code of the $currency to borrow
-             * @param {float} $amount the $amount to borrow
-             * @param {string} $symbol unified market $symbol, not used by cryptocom.repayMargin ()
-             * @param {array} [$params] extra parameters specific to the cryptocom api endpoint
-             * @return {array} a ~@link https://docs.ccxt.com/#/?id=margin-loan-structure margin loan structure~
-             */
-            Async\await($this->load_markets());
-            $currency = $this->currency($code);
-            $request = array(
-                'currency' => $currency['id'],
-                'amount' => $this->currency_to_precision($code, $amount),
-            );
-            $response = Async\await($this->v2PrivatePostPrivateMarginBorrow (array_merge($request, $params)));
-            //
-            //     {
-            //         "id" => 1656619578559,
-            //         "method" => "private/margin/borrow",
-            //         "code" => 0
-            //     }
-            //
-            $transaction = $this->parse_margin_loan($response, $currency);
-            return array_merge($transaction, array(
-                'amount' => $amount,
-            ));
-        }) ();
-    }
-
-    public function parse_margin_loan($info, ?array $currency = null) {
-        //
-        // borrowMargin
-        //
-        //     {
-        //         "id" => 1656619578559,
-        //         "method" => "private/margin/borrow",
-        //         "code" => 0
-        //     }
-        //
-        // repayMargin
-        //
-        //     {
-        //         "id" => 1656620104211,
-        //         "method" => "private/margin/repay",
-        //         "code" => 0,
-        //         "result" => {
-        //             "badDebt" => 0
-        //         }
-        //     }
-        //
-        return array(
-            'id' => $this->safe_integer($info, 'id'),
-            'currency' => $this->safe_currency_code(null, $currency),
-            'amount' => null,
-            'symbol' => null,
-            'timestamp' => null,
-            'datetime' => null,
-            'info' => $info,
-        );
-    }
-
-    public function parse_borrow_interest($info, ?array $market = null) {
-        //
-        //     array(
-        //         "loan_id" => "2643528867803765921",
-        //         "currency" => "USDT",
-        //         "interest" => 0.00000004,
-        //         "time" => 1656702899559,
-        //         "stake_amount" => 6,
-        //         "interest_rate" => 0.000025
-        //     ),
-        //
-        $timestamp = $this->safe_integer($info, 'time');
-        $symbol = null;
-        if ($market !== null) {
-            $symbol = $market['symbol'];
-        }
-        return array(
-            'symbol' => $symbol,
-            'marginMode' => null,
-            'currency' => $this->safe_currency_code($this->safe_string($info, 'currency')),
-            'interest' => $this->safe_number($info, 'interest'),
-            'interestRate' => $this->safe_number($info, 'interest_rate'), // hourly interest rate
-            'amountBorrowed' => null,
-            'timestamp' => $timestamp,
-            'datetime' => $this->iso8601($timestamp),
-            'info' => $info,
-        );
-    }
-
-    public function parse_borrow_rates($info, $codeKey) {
-        //
-        //     array(
-        //         "currency" => "AGLD",
-        //         "hourly_rate" => 0.00003334,
-        //         "max_borrow_limit" => 342.4032393,
-        //         "min_borrow_limit" => 30
-        //     ),
-        //
-        $timestamp = $this->milliseconds();
-        $rates = array();
-        for ($i = 0; $i < count($info); $i++) {
-            $entry = $info[$i];
-            $rates[] = array(
-                'currency' => $this->safe_currency_code($this->safe_string($entry, 'currency')),
-                'rate' => $this->safe_number($entry, 'hourly_rate'),
-                'period' => 3600000, // 1-Hour
-                'timestamp' => $timestamp,
-                'datetime' => $this->iso8601($timestamp),
-                'info' => $entry,
-            );
-        }
-        return $rates;
-    }
-
     public function custom_handle_margin_mode_and_params($methodName, $params = array ()) {
         /**
          * @ignore
@@ -2995,7 +2824,9 @@ class cryptocom extends Exchange {
              * @param {boolean} [$params->paginate] default false, when true will automatically $paginate by calling this endpoint multiple times. See in the docs all the [availble parameters](https://github.com/ccxt/ccxt/wiki/Manual#pagination-$params)
              * @return {array[]} a list of ~@link https://docs.ccxt.com/#/?id=funding-rate-history-structure funding rate structures~
              */
-            $this->check_required_symbol('fetchFundingRateHistory', $symbol);
+            if ($symbol === null) {
+                throw new ArgumentsRequired($this->id . ' fetchFundingRateHistory() requires a $symbol argument');
+            }
             Async\await($this->load_markets());
             $paginate = false;
             list($paginate, $params) = $this->handle_option_and_params($params, 'fetchFundingRateHistory', 'paginate');

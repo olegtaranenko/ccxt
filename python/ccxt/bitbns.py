@@ -630,7 +630,8 @@ class bitbns(Exchange, ImplicitAPI):
         :param boolean [params.trigger]: True if cancelling a trigger order
         :returns dict: An `order structure <https://docs.ccxt.com/#/?id=order-structure>`
         """
-        self.check_required_symbol('cancelOrder', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' cancelOrder() requires a symbol argument')
         self.load_markets()
         market = self.market(symbol)
         isTrigger = self.safe_value_2(params, 'trigger', 'stop')
@@ -656,7 +657,8 @@ class bitbns(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the bitbns api endpoint
         :returns dict: An `order structure <https://docs.ccxt.com/#/?id=order-structure>`
         """
-        self.check_required_symbol('fetchOrder', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' fetchOrder() requires a symbol argument')
         self.load_markets()
         market = self.market(symbol)
         request = {
@@ -708,7 +710,8 @@ class bitbns(Exchange, ImplicitAPI):
         :param boolean [params.trigger]: True if fetching trigger orders
         :returns Order[]: a list of `order structures <https://docs.ccxt.com/#/?id=order-structure>`
         """
-        self.check_required_symbol('fetchOpenOrders', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' fetchOpenOrders() requires a symbol argument')
         self.load_markets()
         market = self.market(symbol)
         isTrigger = self.safe_value_2(params, 'trigger', 'stop')
@@ -828,7 +831,8 @@ class bitbns(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the bitbns api endpoint
         :returns Trade[]: a list of `trade structures <https://docs.ccxt.com/#/?id=trade-structure>`
         """
-        self.check_required_symbol('fetchMyTrades', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' fetchMyTrades() requires a symbol argument')
         self.load_markets()
         market = self.market(symbol)
         request = {
@@ -891,7 +895,8 @@ class bitbns(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the bitbns api endpoint
         :returns Trade[]: a list of `trade structures <https://docs.ccxt.com/#/?id=public-trades>`
         """
-        self.check_required_symbol('fetchTrades', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' fetchTrades() requires a symbol argument')
         self.load_markets()
         market = self.market(symbol)
         request = {

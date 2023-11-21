@@ -373,7 +373,9 @@ class whitebit extends whitebit$1 {
          * @param {object} [params] extra parameters specific to the whitebit api endpoint
          * @returns {object[]} a list of [trade structures]{@link https://docs.ccxt.com/#/?id=trade-structure}
          */
-        this.checkRequiredSymbol('watchMyTrades', symbol);
+        if (symbol === undefined) {
+            throw new errors.ArgumentsRequired(this.id + ' watchMyTrades() requires a symbol argument');
+        }
         await this.loadMarkets();
         await this.authenticate();
         const market = this.market(symbol);
@@ -470,7 +472,9 @@ class whitebit extends whitebit$1 {
          * @param {object} [params] extra parameters specific to the whitebit api endpoint
          * @returns {object[]} a list of [order structures]{@link https://docs.ccxt.com/#/?id=order-structure
          */
-        this.checkRequiredSymbol('watchOrders', symbol);
+        if (symbol === undefined) {
+            throw new errors.ArgumentsRequired(this.id + ' watchOrders() requires a symbol argument');
+        }
         await this.loadMarkets();
         await this.authenticate();
         const market = this.market(symbol);

@@ -17,6 +17,13 @@ class bitmart(ccxt.async_support.bitmart):
     def describe(self):
         return self.deep_extend(super(bitmart, self).describe(), {
             'has': {
+                'createOrderWs': False,
+                'editOrderWs': False,
+                'fetchOpenOrdersWs': False,
+                'fetchOrderWs': False,
+                'cancelOrderWs': False,
+                'cancelOrdersWs': False,
+                'cancelAllOrdersWs': False,
                 'ws': True,
                 'watchTicker': True,
                 'watchOrderBook': True,
@@ -118,7 +125,8 @@ class bitmart(ccxt.async_support.bitmart):
         :param dict [params]: extra parameters specific to the bitmart api endpoint
         :returns dict[]: a list of `order structures <https://docs.ccxt.com/#/?id=order-structure>`
         """
-        self.check_required_symbol('watchOrders', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' watchOrders() requires a symbol argument')
         await self.load_markets()
         market = self.market(symbol)
         symbol = market['symbol']

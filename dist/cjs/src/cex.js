@@ -1134,7 +1134,9 @@ class cex extends cex$1 {
          * @param {object} [params] extra parameters specific to the cex api endpoint
          * @returns {Order[]} a list of [order structures]{@link https://docs.ccxt.com/#/?id=order-structure}
          */
-        this.checkRequiredSymbol('fetchClosedOrders', symbol);
+        if (symbol === undefined) {
+            throw new errors.ArgumentsRequired(this.id + ' fetchClosedOrders() requires a symbol argument');
+        }
         await this.loadMarkets();
         const method = 'privatePostArchivedOrdersPair';
         const market = this.market(symbol);

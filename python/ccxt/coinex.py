@@ -50,7 +50,8 @@ class coinex(Exchange, ImplicitAPI):
                 'future': False,
                 'option': False,
                 'addMargin': True,
-                'borrowMargin': True,
+                'borrowCrossMargin': False,
+                'borrowIsolatedMargin': True,
                 'cancelAllOrders': True,
                 'cancelOrder': True,
                 'createDepositAddress': True,
@@ -103,7 +104,8 @@ class coinex(Exchange, ImplicitAPI):
                 'fetchWithdrawal': False,
                 'fetchWithdrawals': True,
                 'reduceMargin': True,
-                'repayMargin': True,
+                'repayCrossMargin': False,
+                'repayIsolatedMargin': True,
                 'setLeverage': True,
                 'setMarginMode': True,
                 'setPositionMode': False,
@@ -2031,7 +2033,8 @@ class coinex(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the coinex api endpoint
         :returns dict: an `order structure <https://docs.ccxt.com/#/?id=order-structure>`
         """
-        self.check_required_argument('editOrder', symbol, 'symbol')
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' editOrder() requires a symbol argument')
         self.load_markets()
         market = self.market(symbol)
         if not market['spot']:
@@ -2228,7 +2231,8 @@ class coinex(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the coinex api endpoint
         :returns dict[]: a list of `order structures <https://docs.ccxt.com/#/?id=order-structure>`
         """
-        self.check_required_symbol('cancelAllOrders', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' cancelAllOrders() requires a symbol argument')
         self.load_markets()
         market = self.market(symbol)
         marketId = market['id']
@@ -2270,7 +2274,8 @@ class coinex(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the coinex api endpoint
         :returns dict: An `order structure <https://docs.ccxt.com/#/?id=order-structure>`
         """
-        self.check_required_symbol('fetchOrder', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' fetchOrder() requires a symbol argument')
         self.load_markets()
         market = self.market(symbol)
         swap = market['swap']
@@ -3083,16 +3088,19 @@ class coinex(Exchange, ImplicitAPI):
         maintenanceMargin = self.safe_string(position, 'mainten_margin_amount')
         maintenanceMarginPercentage = self.safe_string(position, 'mainten_margin')
         collateral = self.safe_string(position, 'margin_amount')
-        leverage = self.safe_number(position, 'leverage')
+        leverage = self.safe_string(position, 'leverage')
+        notional = self.safe_string(position, 'open_val')
+        initialMargin = Precise.string_div(notional, leverage)
+        initialMarginPercentage = Precise.string_div('1', leverage)
         return self.safe_position({
             'info': position,
             'id': positionId,
             'symbol': symbol,
-            'notional': None,
+            'notional': self.parse_number(notional),
             'marginMode': marginMode,
             'liquidationPrice': liquidationPrice,
-            'entryPrice': entryPrice,
-            'unrealizedPnl': unrealizedPnl,
+            'entryPrice': self.parse_number(entryPrice),
+            'unrealizedPnl': self.parse_number(unrealizedPnl),
             'percentage': None,
             'contracts': contracts,
             'contractSize': self.safe_number(market, 'contractSize'),
@@ -3103,15 +3111,15 @@ class coinex(Exchange, ImplicitAPI):
             'timestamp': timestamp,
             'datetime': self.iso8601(timestamp),
             'lastUpdateTimestamp': None,
-            'maintenanceMargin': maintenanceMargin,
-            'maintenanceMarginPercentage': maintenanceMarginPercentage,
-            'collateral': collateral,
-            'initialMargin': None,
-            'initialMarginPercentage': None,
-            'leverage': leverage,
+            'maintenanceMargin': self.parse_number(maintenanceMargin),
+            'maintenanceMarginPercentage': self.parse_number(maintenanceMarginPercentage),
+            'collateral': self.parse_number(collateral),
+            'initialMargin': self.parse_number(initialMargin),
+            'initialMarginPercentage': self.parse_number(initialMarginPercentage),
+            'leverage': self.parse_number(leverage),
             'marginRatio': None,
-            'stopLossPrice': self.safe_number(position, 'stop_loss_price'),
-            'takeProfitPrice': self.safe_number(position, 'take_profit_price'),
+            'stopLossPrice': self.omit_zero(self.safe_string(position, 'stop_loss_price')),
+            'takeProfitPrice': self.omit_zero(self.safe_string(position, 'take_profit_price')),
         })
 
     def set_margin_mode(self, marginMode, symbol: Str = None, params={}):
@@ -3122,7 +3130,8 @@ class coinex(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the coinex api endpoint
         :returns dict: response from the exchange
         """
-        self.check_required_symbol('setMarginMode', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' setMarginMode() requires a symbol argument')
         marginMode = marginMode.lower()
         if marginMode != 'isolated' and marginMode != 'cross':
             raise BadRequest(self.id + ' setMarginMode() marginMode argument should be isolated or cross')
@@ -3161,7 +3170,8 @@ class coinex(Exchange, ImplicitAPI):
         :param str [params.marginMode]: 'cross' or 'isolated'(default is 'cross')
         :returns dict: response from the exchange
         """
-        self.check_required_symbol('setLeverage', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' setLeverage() requires a symbol argument')
         self.load_markets()
         market = self.market(symbol)
         if not market['swap']:
@@ -3371,7 +3381,8 @@ class coinex(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the coinex api endpoint
         :returns dict: a `funding history structure <https://docs.ccxt.com/#/?id=funding-history-structure>`
         """
-        self.check_required_symbol('fetchFundingHistory', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' fetchFundingHistory() requires a symbol argument')
         limit = 100 if (limit is None) else limit
         self.load_markets()
         market = self.market(symbol)
@@ -3675,7 +3686,8 @@ class coinex(Exchange, ImplicitAPI):
         :param int [params.until]: timestamp in ms of the latest funding rate
         :returns dict[]: a list of `funding rate structures <https://docs.ccxt.com/#/?id=funding-rate-history-structure>`
         """
-        self.check_required_symbol('fetchFundingRateHistory', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' fetchFundingRateHistory() requires a symbol argument')
         self.load_markets()
         paginate = False
         paginate, params = self.handle_option_and_params(params, 'fetchFundingRateHistory', 'paginate')
@@ -4339,17 +4351,16 @@ class coinex(Exchange, ImplicitAPI):
             'info': info,
         }
 
-    def borrow_margin(self, code: str, amount, symbol: Str = None, params={}):
+    def borrow_isolated_margin(self, symbol: str, code: str, amount, params={}):
         """
         create a loan to borrow margin
         :see: https://github.com/coinexcom/coinex_exchange_api/wiki/086margin_loan
+        :param str symbol: unified market symbol, required for coinex
         :param str code: unified currency code of the currency to borrow
         :param float amount: the amount to borrow
-        :param str symbol: unified market symbol, required for coinex
         :param dict [params]: extra parameters specific to the coinex api endpoint
         :returns dict: a `margin loan structure <https://docs.ccxt.com/#/?id=margin-loan-structure>`
         """
-        self.check_required_symbol('borrowMargin', symbol)
         self.load_markets()
         market = self.market(symbol)
         currency = self.currency(code)
@@ -4375,18 +4386,17 @@ class coinex(Exchange, ImplicitAPI):
             'symbol': symbol,
         })
 
-    def repay_margin(self, code: str, amount, symbol: Str = None, params={}):
+    def repay_isolated_margin(self, symbol: str, code: str, amount, params={}):
         """
         repay borrowed margin and interest
         :see: https://github.com/coinexcom/coinex_exchange_api/wiki/087margin_flat
+        :param str symbol: unified market symbol, required for coinex
         :param str code: unified currency code of the currency to repay
         :param float amount: the amount to repay
-        :param str symbol: unified market symbol, required for coinex
         :param dict [params]: extra parameters specific to the coinex api endpoint
         :param str [params.loan_id]: extra parameter that is not required
         :returns dict: a `margin loan structure <https://docs.ccxt.com/#/?id=margin-loan-structure>`
         """
-        self.check_required_symbol('repayMargin', symbol)
         self.load_markets()
         market = self.market(symbol)
         currency = self.currency(code)
@@ -4395,9 +4405,6 @@ class coinex(Exchange, ImplicitAPI):
             'coin_type': currency['id'],
             'amount': self.currency_to_precision(code, amount),
         }
-        loanId = self.safe_integer(params, 'loan_id')
-        if loanId is not None:
-            request['loan_id'] = loanId
         response = self.privatePostMarginFlat(self.extend(request, params))
         #
         #     {

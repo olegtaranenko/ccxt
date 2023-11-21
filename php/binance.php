@@ -27,7 +27,8 @@ class binance extends Exchange {
                 'future' => true,
                 'option' => true,
                 'addMargin' => true,
-                'borrowMargin' => true,
+                'borrowCrossMargin' => true,
+                'borrowIsolatedMargin' => true,
                 'cancelAllOrders' => true,
                 'cancelOrder' => true,
                 'cancelOrders' => true,  // contract only
@@ -114,7 +115,8 @@ class binance extends Exchange {
                 'fetchWithdrawals' => true,
                 'fetchWithdrawalWhitelist' => false,
                 'reduceMargin' => true,
-                'repayMargin' => true,
+                'repayCrossMargin' => true,
+                'repayIsolatedMargin' => true,
                 'setLeverage' => true,
                 'setMargin' => false,
                 'setMarginMode' => true,
@@ -249,6 +251,7 @@ class binance extends Exchange {
                         'margin/capital-flow' => 10, // Weight(IP) => 100 => cost = 0.1 * 100 = 10
                         'margin/delist-schedule' => 10, // Weight(IP) => 100 => cost = 0.1 * 100 = 10
                         'margin/available-inventory' => 0.3334, // Weight(UID) => 50 => cost = 0.006667 * 50 = 0.3334
+                        'margin/leverageBracket' => 0.1, // Weight(IP) => 1 => cost = 0.1 * 1 = 0.1
                         'loan/vip/loanable/data' => 40, // Weight(IP) => 400 => cost = 0.1 * 400 = 40
                         'loan/vip/collateral/data' => 40, // Weight(IP) => 400 => cost = 0.1 * 400 = 40
                         'loan/vip/request/data' => 2.6668, // Weight(UID) => 400 => cost = 0.006667 * 400 = 2.6668
@@ -4658,7 +4661,9 @@ class binance extends Exchange {
          * @param {string} [$params->marginMode] 'cross' or 'isolated', for spot margin trading
          * @return {array} An ~@link https://docs.ccxt.com/#/?$id=order-structure order structure~
          */
-        $this->check_required_symbol('fetchOrder', $symbol);
+        if ($symbol === null) {
+            throw new ArgumentsRequired($this->id . ' fetchOrder() requires a $symbol argument');
+        }
         $this->load_markets();
         $market = $this->market($symbol);
         $defaultType = $this->safe_string_2($this->options, 'fetchOrder', 'defaultType', 'spot');
@@ -4712,7 +4717,9 @@ class binance extends Exchange {
          * @param {boolean} [$params->paginate] default false, when true will automatically $paginate by calling this endpoint multiple times. See in the docs all the [availble parameters](https://github.com/ccxt/ccxt/wiki/Manual#pagination-$params)
          * @return {Order[]} a list of ~@link https://docs.ccxt.com/#/?id=order-structure order structures~
          */
-        $this->check_required_symbol('fetchOrders', $symbol);
+        if ($symbol === null) {
+            throw new ArgumentsRequired($this->id . ' fetchOrders() requires a $symbol argument');
+        }
         $this->load_markets();
         $paginate = false;
         list($paginate, $params) = $this->handle_option_and_params($params, 'fetchOrders', 'paginate');
@@ -4930,7 +4937,9 @@ class binance extends Exchange {
          * @param {boolean} [$params->paginate] default false, when true will automatically paginate by calling this endpoint multiple times. See in the docs all the [availble parameters](https://github.com/ccxt/ccxt/wiki/Manual#pagination-$params)
          * @return {array[]} a list of ~@link https://docs.ccxt.com/#/?id=order-structure order structures~
          */
-        $this->check_required_symbol('fetchCanceledOrders', $symbol);
+        if ($symbol === null) {
+            throw new ArgumentsRequired($this->id . ' fetchCanceledOrders() requires a $symbol argument');
+        }
         $this->load_markets();
         $market = $this->market($symbol);
         if ($market['swap'] || $market['future']) {
@@ -4955,7 +4964,9 @@ class binance extends Exchange {
          * @param {array} [$params] extra parameters specific to the binance api endpoint
          * @return {array} An ~@link https://docs.ccxt.com/#/?$id=order-structure order structure~
          */
-        $this->check_required_symbol('cancelOrder', $symbol);
+        if ($symbol === null) {
+            throw new ArgumentsRequired($this->id . ' cancelOrder() requires a $symbol argument');
+        }
         $this->load_markets();
         $market = $this->market($symbol);
         $defaultType = $this->safe_string_2($this->options, 'cancelOrder', 'defaultType', 'spot');
@@ -5007,7 +5018,9 @@ class binance extends Exchange {
          * @param {string} [$params->marginMode] 'cross' or 'isolated', for spot margin trading
          * @return {array[]} a list of ~@link https://docs.ccxt.com/#/?id=order-structure order structures~
          */
-        $this->check_required_symbol('cancelAllOrders', $symbol);
+        if ($symbol === null) {
+            throw new ArgumentsRequired($this->id . ' cancelOrder() requires a $symbol argument');
+        }
         $this->load_markets();
         $market = $this->market($symbol);
         $request = array(
@@ -5051,7 +5064,9 @@ class binance extends Exchange {
          * @param {int[]} [$params->recvWindow]
          * @return {array} an list of ~@link https://docs.ccxt.com/#/?id=order-structure order structures~
          */
-        $this->check_required_symbol('cancelOrders', $symbol);
+        if ($symbol === null) {
+            throw new ArgumentsRequired($this->id . ' cancelOrders() requires a $symbol argument');
+        }
         $this->load_markets();
         $market = $this->market($symbol);
         if (!$market['contract']) {
@@ -5119,7 +5134,9 @@ class binance extends Exchange {
          * @param {array} [$params] extra parameters specific to the binance api endpoint
          * @return {array[]} a list of ~@link https://docs.ccxt.com/#/?$id=trade-structure trade structures~
          */
-        $this->check_required_symbol('fetchOrderTrades', $symbol);
+        if ($symbol === null) {
+            throw new ArgumentsRequired($this->id . ' fetchOrderTrades() requires a $symbol argument');
+        }
         $this->load_markets();
         $market = $this->market($symbol);
         $type = $this->safe_string($params, 'type', $market['type']);
@@ -5167,7 +5184,9 @@ class binance extends Exchange {
         if ($type === 'option') {
             $method = 'eapiPrivateGetUserTrades';
         } else {
-            $this->check_required_symbol('fetchMyTrades', $symbol);
+            if ($symbol === null) {
+                throw new ArgumentsRequired($this->id . ' fetchMyTrades() requires a $symbol argument');
+            }
             list($marginMode, $params) = $this->handle_margin_mode_and_params('fetchMyTrades', $params);
             if ($type === 'spot' || $type === 'margin') {
                 $method = 'privateGetMyTrades';
@@ -7824,7 +7843,9 @@ class binance extends Exchange {
          * @param {array} [$params] extra parameters specific to the binance api endpoint
          * @return {array} response from the exchange
          */
-        $this->check_required_symbol('setLeverage', $symbol);
+        if ($symbol === null) {
+            throw new ArgumentsRequired($this->id . ' setLeverage() requires a $symbol argument');
+        }
         // WARNING => THIS WILL INCREASE LIQUIDATION PRICE FOR OPEN ISOLATED LONG POSITIONS
         // AND DECREASE LIQUIDATION PRICE FOR OPEN ISOLATED SHORT POSITIONS
         if (($leverage < 1) || ($leverage > 125)) {
@@ -7832,7 +7853,6 @@ class binance extends Exchange {
         }
         $this->load_markets();
         $market = $this->market($symbol);
-        $method = null;
         if ($market['linear']) {
             $method = 'fapiPrivatePostLeverage';
         } elseif ($market['inverse']) {
@@ -7857,7 +7877,9 @@ class binance extends Exchange {
          * @param {array} [$params] extra parameters specific to the binance api endpoint
          * @return {array} $response from the exchange
          */
-        $this->check_required_symbol('setMarginMode', $symbol);
+        if ($symbol === null) {
+            throw new ArgumentsRequired($this->id . ' setMarginMode() requires a $symbol argument');
+        }
         //
         // array( "code" => -4048 , "msg" => "Margin type cannot be changed if there exists position." )
         //
@@ -8860,30 +8882,23 @@ class binance extends Exchange {
         );
     }
 
-    public function repay_margin(string $code, $amount, ?string $symbol = null, $params = array ()) {
+    public function repay_cross_margin(string $code, $amount, $params = array ()) {
         /**
          * repay borrowed margin and interest
          * @see https://binance-docs.github.io/apidocs/spot/en/#margin-account-repay-margin
          * @param {string} $code unified $currency $code of the $currency to repay
          * @param {float} $amount the $amount to repay
-         * @param {string} $symbol unified $market $symbol, required for isolated margin
          * @param {array} [$params] extra parameters specific to the binance api endpoint
          * @return {array} a ~@link https://docs.ccxt.com/#/?id=margin-loan-structure margin loan structure~
          */
-        list($marginMode, $query) = $this->handle_margin_mode_and_params('repayMargin', $params); // cross or isolated
-        $this->check_required_margin_argument('repayMargin', $symbol, $marginMode);
         $this->load_markets();
         $currency = $this->currency($code);
         $request = array(
             'asset' => $currency['id'],
             'amount' => $this->currency_to_precision($code, $amount),
+            'isIsolated' => 'FALSE',
         );
-        if ($symbol !== null) {
-            $market = $this->market($symbol);
-            $request['symbol'] = $market['id'];
-            $request['isIsolated'] = 'TRUE';
-        }
-        $response = $this->sapiPostMarginRepay (array_merge($request, $query));
+        $response = $this->sapiPostMarginRepay (array_merge($request, $params));
         //
         //     {
         //         "tranId" => 108988250265,
@@ -8893,30 +8908,81 @@ class binance extends Exchange {
         return $this->parse_margin_loan($response, $currency);
     }
 
-    public function borrow_margin(string $code, $amount, ?string $symbol = null, $params = array ()) {
+    public function repay_isolated_margin(string $symbol, string $code, $amount, $params = array ()) {
+        /**
+         * repay borrowed margin and interest
+         * @see https://binance-docs.github.io/apidocs/spot/en/#margin-account-repay-margin
+         * @param {string} $symbol unified $market $symbol, required for isolated margin
+         * @param {string} $code unified $currency $code of the $currency to repay
+         * @param {float} $amount the $amount to repay
+         * @param {array} [$params] extra parameters specific to the binance api endpoint
+         * @return {array} a ~@link https://docs.ccxt.com/#/?id=margin-loan-structure margin loan structure~
+         */
+        $this->load_markets();
+        $currency = $this->currency($code);
+        $market = $this->market($symbol);
+        $request = array(
+            'asset' => $currency['id'],
+            'amount' => $this->currency_to_precision($code, $amount),
+            'symbol' => $market['id'],
+            'isIsolated' => 'TRUE',
+        );
+        $response = $this->sapiPostMarginRepay (array_merge($request, $params));
+        //
+        //     {
+        //         "tranId" => 108988250265,
+        //         "clientTag":""
+        //     }
+        //
+        return $this->parse_margin_loan($response, $currency);
+    }
+
+    public function borrow_cross_margin(string $code, $amount, $params = array ()) {
         /**
          * create a loan to borrow margin
          * @see https://binance-docs.github.io/apidocs/spot/en/#margin-account-borrow-margin
          * @param {string} $code unified $currency $code of the $currency to borrow
          * @param {float} $amount the $amount to borrow
-         * @param {string} $symbol unified $market $symbol, required for isolated margin
          * @param {array} [$params] extra parameters specific to the binance api endpoint
          * @return {array} a ~@link https://docs.ccxt.com/#/?id=margin-loan-structure margin loan structure~
          */
-        list($marginMode, $query) = $this->handle_margin_mode_and_params('borrowMargin', $params); // cross or isolated
-        $this->check_required_margin_argument('borrowMargin', $symbol, $marginMode);
         $this->load_markets();
         $currency = $this->currency($code);
         $request = array(
             'asset' => $currency['id'],
             'amount' => $this->currency_to_precision($code, $amount),
+            'isIsolated' => 'FALSE',
         );
-        if ($symbol !== null) {
-            $market = $this->market($symbol);
-            $request['symbol'] = $market['id'];
-            $request['isIsolated'] = 'TRUE';
-        }
-        $response = $this->sapiPostMarginLoan (array_merge($request, $query));
+        $response = $this->sapiPostMarginLoan (array_merge($request, $params));
+        //
+        //     {
+        //         "tranId" => 108988250265,
+        //         "clientTag":""
+        //     }
+        //
+        return $this->parse_margin_loan($response, $currency);
+    }
+
+    public function borrow_isolated_margin(string $symbol, string $code, $amount, $params = array ()) {
+        /**
+         * create a loan to borrow margin
+         * @see https://binance-docs.github.io/apidocs/spot/en/#margin-account-borrow-margin
+         * @param {string} $symbol unified $market $symbol, required for isolated margin
+         * @param {string} $code unified $currency $code of the $currency to borrow
+         * @param {float} $amount the $amount to borrow
+         * @param {array} [$params] extra parameters specific to the binance api endpoint
+         * @return {array} a ~@link https://docs.ccxt.com/#/?id=margin-loan-structure margin loan structure~
+         */
+        $this->load_markets();
+        $currency = $this->currency($code);
+        $market = $this->market($symbol);
+        $request = array(
+            'asset' => $currency['id'],
+            'amount' => $this->currency_to_precision($code, $amount),
+            'symbol' => $market['id'],
+            'isIsolated' => 'TRUE',
+        );
+        $response = $this->sapiPostMarginLoan (array_merge($request, $params));
         //
         //     {
         //         "tranId" => 108988250265,

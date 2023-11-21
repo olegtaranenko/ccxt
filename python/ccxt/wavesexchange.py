@@ -11,6 +11,7 @@ from typing import List
 from typing import Any
 from ccxt.base.errors import ExchangeError
 from ccxt.base.errors import AccountSuspended
+from ccxt.base.errors import ArgumentsRequired
 from ccxt.base.errors import BadRequest
 from ccxt.base.errors import BadSymbol
 from ccxt.base.errors import InsufficientFunds
@@ -1475,7 +1476,8 @@ class wavesexchange(Exchange, ImplicitAPI):
         """
         self.check_required_dependencies()
         self.check_required_keys()
-        self.check_required_symbol('fetchOrders', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' fetchOrders() requires a symbol argument')
         self.load_markets()
         market = self.market(symbol)
         timestamp = self.milliseconds()

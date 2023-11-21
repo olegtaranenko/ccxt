@@ -691,7 +691,8 @@ class bithumb(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the bithumb api endpoint
         :returns dict: An `order structure <https://docs.ccxt.com/#/?id=order-structure>`
         """
-        self.check_required_symbol('fetchOrder', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' fetchOrder() requires a symbol argument')
         await self.load_markets()
         market = self.market(symbol)
         request = {
@@ -841,7 +842,8 @@ class bithumb(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the bithumb api endpoint
         :returns Order[]: a list of `order structures <https://docs.ccxt.com/#/?id=order-structure>`
         """
-        self.check_required_symbol('fetchOpenOrders', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' fetchOpenOrders() requires a symbol argument')
         await self.load_markets()
         market = self.market(symbol)
         if limit is None:
@@ -882,7 +884,8 @@ class bithumb(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the bithumb api endpoint
         :returns dict: An `order structure <https://docs.ccxt.com/#/?id=order-structure>`
         """
-        self.check_required_symbol('cancelOrder', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' cancelOrder() requires a symbol argument')
         side_in_params = ('side' in params)
         if not side_in_params:
             raise ArgumentsRequired(self.id + ' cancelOrder() requires a `side` parameter(sell or buy)')

@@ -1075,7 +1075,9 @@ class bingx extends Exchange {
          * @param {boolean} [$params->paginate] default false, when true will automatically $paginate by calling this endpoint multiple times. See in the docs all the [availble parameters](https://github.com/ccxt/ccxt/wiki/Manual#pagination-$params)
          * @return {array[]} a list of ~@link https://docs.ccxt.com/#/?id=funding-rate-history-structure funding rate structures~
          */
-        $this->check_required_symbol('fetchFundingRateHistory', $symbol);
+        if ($symbol === null) {
+            throw new ArgumentsRequired($this->id . ' fetchFundingRateHistory() requires a $symbol argument');
+        }
         $this->load_markets();
         $paginate = false;
         list($paginate, $params) = $this->handle_option_and_params($params, 'fetchFundingRateHistory', 'paginate');
@@ -2060,7 +2062,9 @@ class bingx extends Exchange {
          * @param {array} [$params] extra parameters specific to the bingx api endpoint
          * @return {array} An ~@link https://docs.ccxt.com/#/?$id=order-structure order structure~
          */
-        $this->check_required_symbol('cancelOrder', $symbol);
+        if ($symbol === null) {
+            throw new ArgumentsRequired($this->id . ' cancelOrder() requires a $symbol argument');
+        }
         $this->load_markets();
         $market = $this->market($symbol);
         $request = array(
@@ -2133,7 +2137,9 @@ class bingx extends Exchange {
          * @param {array} [$params] extra parameters specific to the bingx api endpoint
          * @return {array[]} a list of ~@link https://docs.ccxt.com/#/?id=order-structure order structures~
          */
-        $this->check_required_symbol('cancelAllOrders', $symbol);
+        if ($symbol === null) {
+            throw new ArgumentsRequired($this->id . ' cancelAllOrders() requires a $symbol argument');
+        }
         $this->load_markets();
         $market = $this->market($symbol);
         if ($market['type'] !== 'swap') {
@@ -2185,7 +2191,9 @@ class bingx extends Exchange {
          * @param {array} [$params] extra parameters specific to the bingx api endpoint
          * @return {array} an list of ~@link https://docs.ccxt.com/#/?$id=order-structure order structures~
          */
-        $this->check_required_symbol('cancelOrders', $symbol);
+        if ($symbol === null) {
+            throw new ArgumentsRequired($this->id . ' cancelOrders() requires a $symbol argument');
+        }
         $this->load_markets();
         $market = $this->market($symbol);
         $request = array(
@@ -2246,7 +2254,9 @@ class bingx extends Exchange {
          * @param {array} [$params] extra parameters specific to the bingx api endpoint
          * @return {array} An ~@link https://docs.ccxt.com/#/?$id=order-structure order structure~
          */
-        $this->check_required_symbol('fetchOrders', $symbol);
+        if ($symbol === null) {
+            throw new ArgumentsRequired($this->id . ' fetchOrders() requires a $symbol argument');
+        }
         $this->load_markets();
         $market = $this->market($symbol);
         $request = array(
@@ -2327,7 +2337,9 @@ class bingx extends Exchange {
          * @param {array} [$params] extra parameters specific to the bingx api endpoint
          * @return {array[]} a list of ~@link https://docs.ccxt.com/#/?id=order-structure order structures~
          */
-        $this->check_required_symbol('fetchOrders', $symbol);
+        if ($symbol === null) {
+            throw new ArgumentsRequired($this->id . ' fetchOrders() requires a $symbol argument');
+        }
         $this->load_markets();
         $market = $this->market($symbol);
         $request = array(
@@ -2414,7 +2426,9 @@ class bingx extends Exchange {
          * @param {boolean} [$params->standard] whether to fetch $standard contract $orders
          * @return {array[]} a list of ~@link https://docs.ccxt.com/#/?id=order-structure order structures~
          */
-        $this->check_required_symbol('fetchClosedOrders', $symbol);
+        if ($symbol === null) {
+            throw new ArgumentsRequired($this->id . ' fetchClosedOrders() requires a $symbol argument');
+        }
         $this->load_markets();
         $market = $this->market($symbol);
         $request = array(
@@ -2878,7 +2892,9 @@ class bingx extends Exchange {
          * @param {array} [$params] extra parameters specific to the bingx api endpoint
          * @return {array} response from the exchange
          */
-        $this->check_required_symbol('setMarginMode', $symbol);
+        if ($symbol === null) {
+            throw new ArgumentsRequired($this->id . ' setMarginMode() requires a $symbol argument');
+        }
         $this->load_markets();
         $market = $this->market($symbol);
         if ($market['type'] !== 'swap') {
@@ -2969,7 +2985,9 @@ class bingx extends Exchange {
          * @param {array} [$params] extra parameters specific to the bingx api endpoint
          * @return {array} response from the exchange
          */
-        $this->check_required_symbol('setLeverage', $symbol);
+        if ($symbol === null) {
+            throw new ArgumentsRequired($this->id . ' setLeverage() requires a $symbol argument');
+        }
         $side = $this->safe_string_upper($params, 'side');
         $this->check_required_argument('setLeverage', $side, 'side', array( 'LONG', 'SHORT' ));
         $this->load_markets();
@@ -3003,8 +3021,12 @@ class bingx extends Exchange {
          * @param {string} $params->trandingUnit COIN (directly represent assets such and ETH) or CONT (represents the number of contract sheets)
          * @return {array[]} a list of ~@link https://docs.ccxt.com/#/?id=trade-structure trade structures~
          */
-        $this->check_required_argument('fetchMyTrades', $symbol, 'symbol');
-        $this->check_required_argument('fetchMyTrades', $since, 'since');
+        if ($symbol === null) {
+            throw new ArgumentsRequired($this->id . ' fetchMyTrades() requires a $symbol argument');
+        }
+        if ($since === null) {
+            throw new ArgumentsRequired($this->id . ' fetchMyTrades() requires a $since argument');
+        }
         $tradingUnit = $this->safe_string_upper($params, 'tradingUnit', 'CONT');
         $this->load_markets();
         $market = $this->market($symbol);

@@ -588,7 +588,8 @@ class indodax(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the indodax api endpoint
         :returns dict: An `order structure <https://docs.ccxt.com/#/?id=order-structure>`
         """
-        self.check_required_symbol('fetchOrder', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' fetchOrder() requires a symbol argument')
         await self.load_markets()
         market = self.market(symbol)
         request = {
@@ -644,14 +645,13 @@ class indodax(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the indodax api endpoint
         :returns Order[]: a list of `order structures <https://docs.ccxt.com/#/?id=order-structure>`
         """
-        self.check_required_symbol('fetchClosedOrders', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' fetchClosedOrders() requires a symbol argument')
         await self.load_markets()
-        request = {}
-        market = None
-        if symbol is not None:
-            market = self.market(symbol)
-            symbol = market['symbol']
-            request['pair'] = market['id']
+        market = self.market(symbol)
+        request = {
+            'pair': market['id'],
+        }
         response = await self.privatePostOrderHistory(self.extend(request, params))
         orders = self.parse_orders(response['return']['orders'], market)
         orders = self.filter_by(orders, 'status', 'closed')
@@ -699,7 +699,8 @@ class indodax(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the indodax api endpoint
         :returns dict: An `order structure <https://docs.ccxt.com/#/?id=order-structure>`
         """
-        self.check_required_symbol('cancelOrder', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' cancelOrder() requires a symbol argument')
         side = self.safe_value(params, 'side')
         if side is None:
             raise ArgumentsRequired(self.id + ' cancelOrder() requires an extra "side" param')

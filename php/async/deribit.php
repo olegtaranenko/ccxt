@@ -3048,7 +3048,9 @@ class deribit extends Exchange {
              * @param {array} [$params] exchange specific parameters for the deribit api endpoint
              * @return {array} an array of ~@link https://docs.ccxt.com/#/?id=liquidation-structure liquidation structures~
              */
-            $this->check_required_symbol('fetchMyLiquidations', $symbol);
+            if ($symbol === null) {
+                throw new ArgumentsRequired($this->id . ' fetchMyLiquidations() requires a $symbol argument');
+            }
             Async\await($this->load_markets());
             $market = $this->market($symbol);
             if ($market['spot']) {

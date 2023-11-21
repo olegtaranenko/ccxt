@@ -199,7 +199,9 @@ class coinbasepro extends coinbasepro$1 {
          * @param {object} [params] extra parameters specific to the coinbasepro api endpoint
          * @returns {object[]} a list of [trade structures]{@link https://docs.ccxt.com/#/?id=trade-structure
          */
-        this.checkRequiredSymbol('watchMyTrades', symbol);
+        if (symbol === undefined) {
+            throw new errors.ArgumentsRequired(this.id + ' watchMyTrades() requires a symbol argument');
+        }
         await this.loadMarkets();
         symbol = this.symbol(symbol);
         const name = 'user';

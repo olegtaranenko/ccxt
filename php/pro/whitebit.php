@@ -6,6 +6,7 @@ namespace ccxt\pro;
 // https://github.com/ccxt/ccxt/blob/master/CONTRIBUTING.md#how-to-contribute-code
 
 use Exception; // a common import
+use ccxt\ArgumentsRequired;
 use ccxt\AuthenticationError;
 use ccxt\Precise;
 use React\Async;
@@ -385,7 +386,9 @@ class whitebit extends \ccxt\async\whitebit {
              * @param {array} [$params] extra parameters specific to the whitebit api endpoint
              * @return {array[]} a list of ~@link https://docs.ccxt.com/#/?id=trade-structure trade structures~
              */
-            $this->check_required_symbol('watchMyTrades', $symbol);
+            if ($symbol === null) {
+                throw new ArgumentsRequired($this->id . ' watchMyTrades() requires a $symbol argument');
+            }
             Async\await($this->load_markets());
             Async\await($this->authenticate());
             $market = $this->market($symbol);
@@ -485,7 +488,9 @@ class whitebit extends \ccxt\async\whitebit {
              * @param {array} [$params] extra parameters specific to the whitebit api endpoint
              * @return {array[]} a list of [order structures]{@link https://docs.ccxt.com/#/?id=order-structure
              */
-            $this->check_required_symbol('watchOrders', $symbol);
+            if ($symbol === null) {
+                throw new ArgumentsRequired($this->id . ' watchOrders() requires a $symbol argument');
+            }
             Async\await($this->load_markets());
             Async\await($this->authenticate());
             $market = $this->market($symbol);

@@ -1785,7 +1785,8 @@ class krakenfutures(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the api endpoint
         :returns dict[]: a list of `funding rate structures <https://docs.ccxt.com/#/?id=funding-rate-history-structure>`
         """
-        self.check_required_symbol('fetchFundingRateHistory', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' fetchFundingRateHistory() requires a symbol argument')
         self.load_markets()
         market = self.market(symbol)
         if not market['swap']:
@@ -2140,7 +2141,8 @@ class krakenfutures(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the delta api endpoint
         :returns dict: response from the exchange
         """
-        self.check_required_symbol('setLeverage', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' setLeverage() requires a symbol argument')
         self.load_markets()
         request = {
             'maxLeverage': leverage,
@@ -2159,7 +2161,8 @@ class krakenfutures(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the krakenfutures api endpoint
         :returns dict: a `leverage structure <https://docs.ccxt.com/#/?id=leverage-structure>`
         """
-        self.check_required_symbol('fetchLeverage', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' fetchLeverage() requires a symbol argument')
         self.load_markets()
         request = {
             'symbol': self.market_id(symbol).upper(),

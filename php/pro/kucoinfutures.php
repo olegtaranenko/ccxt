@@ -207,7 +207,9 @@ class kucoinfutures extends \ccxt\async\kucoinfutures {
              * @param {array} $params extra parameters specific to the kucoinfutures api endpoint
              * @return {array} a {@link https://docs.ccxt.com/en/latest/manual.html#position-structure position structure}
              */
-            $this->check_required_symbol('watchPosition', $symbol);
+            if ($symbol === null) {
+                throw new ArgumentsRequired($this->id . ' watchPosition() requires a $symbol argument');
+            }
             Async\await($this->load_markets());
             $url = Async\await($this->negotiate(true));
             $market = $this->market($symbol);

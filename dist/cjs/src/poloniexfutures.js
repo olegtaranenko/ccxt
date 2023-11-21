@@ -1113,7 +1113,9 @@ class poloniexfutures extends poloniexfutures$1 {
          * @param {object} [params] extra parameters specific to the poloniexfutures api endpoint
          * @returns {object} a [funding history structure]{@link https://docs.ccxt.com/#/?id=funding-history-structure}
          */
-        this.checkRequiredSymbol('fetchFundingHistory', symbol);
+        if (symbol === undefined) {
+            throw new errors.ArgumentsRequired(this.id + ' fetchFundingHistory() requires a symbol argument');
+        }
         await this.loadMarkets();
         const market = this.market(symbol);
         const request = {
@@ -1696,7 +1698,9 @@ class poloniexfutures extends poloniexfutures$1 {
          * @param {object} [params] extra parameters specific to the poloniexfutures api endpoint
          * @returns {object} response from the exchange
          */
-        this.checkRequiredSymbol('setMarginMode', symbol);
+        if (symbol === undefined) {
+            throw new errors.ArgumentsRequired(this.id + ' setMarginMode() requires a symbol argument');
+        }
         if ((marginMode !== 0) && (marginMode !== 1)) {
             throw new errors.ArgumentsRequired(this.id + ' setMarginMode() marginMode must be 0 (isolated) or 1 (cross)');
         }

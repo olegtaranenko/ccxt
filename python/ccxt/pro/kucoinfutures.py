@@ -192,7 +192,8 @@ class kucoinfutures(ccxt.async_support.kucoinfutures):
         :param dict params: extra parameters specific to the kucoinfutures api endpoint
         :returns dict: a `position structure <https://docs.ccxt.com/en/latest/manual.html#position-structure>`
         """
-        self.check_required_symbol('watchPosition', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' watchPosition() requires a symbol argument')
         await self.load_markets()
         url = await self.negotiate(True)
         market = self.market(symbol)

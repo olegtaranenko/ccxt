@@ -8,6 +8,7 @@ namespace ccxt\async;
 use Exception; // a common import
 use ccxt\async\abstract\wavesexchange as Exchange;
 use ccxt\ExchangeError;
+use ccxt\ArgumentsRequired;
 use ccxt\BadRequest;
 use ccxt\InsufficientFunds;
 use ccxt\InvalidOrder;
@@ -1587,7 +1588,9 @@ class wavesexchange extends Exchange {
              */
             $this->check_required_dependencies();
             $this->check_required_keys();
-            $this->check_required_symbol('fetchOrders', $symbol);
+            if ($symbol === null) {
+                throw new ArgumentsRequired($this->id . ' fetchOrders() requires a $symbol argument');
+            }
             Async\await($this->load_markets());
             $market = $this->market($symbol);
             $timestamp = $this->milliseconds();

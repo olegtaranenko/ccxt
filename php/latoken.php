@@ -1066,12 +1066,13 @@ class latoken extends Exchange {
          * @param {boolean} [$params->trigger] true if fetching trigger orders
          * @return {Order[]} a list of ~@link https://docs.ccxt.com/#/?id=order-structure order structures~
         */
+        if ($symbol === null) {
+            throw new ArgumentsRequired($this->id . ' fetchOpenOrders() requires a $symbol argument');
+        }
         $this->load_markets();
         $response = null;
-        $market = null;
         $isTrigger = $this->safe_value_2($params, 'trigger', 'stop');
         $params = $this->omit($params, 'stop');
-        $this->check_required_symbol('fetchOpenOrders', $symbol);
         // privateGetAuthOrderActive doesn't work even though its listed at https://api.latoken.com/doc/v2/#tag/Order/operation/getMyActiveOrders
         $market = $this->market($symbol);
         $request = array(

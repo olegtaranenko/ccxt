@@ -97,7 +97,7 @@ class bitrue extends Exchange {
                     'kline' => 'https://www.bitrue.com/kline-api',
                 ),
                 'www' => 'https://www.bitrue.com',
-                'referral' => 'https://www.bitrue.com/activity/task/task-landing?inviteCode=EZWETQE&cn=900000',
+                'referral' => 'https://www.bitrue.com/affiliate/landing?cn=600000&inviteCode=EZWETQE',
                 'doc' => array(
                     'https://github.com/Bitrue-exchange/bitrue-official-api-docs',
                 ),
@@ -1388,7 +1388,9 @@ class bitrue extends Exchange {
              * @param {array} [$params] extra parameters specific to the bitrue api endpoint
              * @return {array} An ~@link https://docs.ccxt.com/#/?$id=order-structure order structure~
              */
-            $this->check_required_symbol('fetchOrder', $symbol);
+            if ($symbol === null) {
+                throw new ArgumentsRequired($this->id . ' fetchOrder() requires a $symbol argument');
+            }
             Async\await($this->load_markets());
             $market = $this->market($symbol);
             $request = array(
@@ -1416,7 +1418,9 @@ class bitrue extends Exchange {
              * @param {array} [$params] extra parameters specific to the bitrue api endpoint
              * @return {Order[]} a list of ~@link https://docs.ccxt.com/#/?id=order-structure order structures~
              */
-            $this->check_required_symbol('fetchClosedOrders', $symbol);
+            if ($symbol === null) {
+                throw new ArgumentsRequired($this->id . ' fetchClosedOrders() requires a $symbol argument');
+            }
             Async\await($this->load_markets());
             $market = $this->market($symbol);
             $request = array(
@@ -1469,7 +1473,9 @@ class bitrue extends Exchange {
              * @param {array} [$params] extra parameters specific to the bitrue api endpoint
              * @return {Order[]} a list of ~@link https://docs.ccxt.com/#/?id=order-structure order structures~
              */
-            $this->check_required_symbol('fetchOpenOrders', $symbol);
+            if ($symbol === null) {
+                throw new ArgumentsRequired($this->id . ' fetchOpenOrders() requires a $symbol argument');
+            }
             Async\await($this->load_markets());
             $market = $this->market($symbol);
             $request = array(
@@ -1511,7 +1517,9 @@ class bitrue extends Exchange {
              * @param {array} [$params] extra parameters specific to the bitrue api endpoint
              * @return {array} An ~@link https://docs.ccxt.com/#/?$id=order-structure order structure~
              */
-            $this->check_required_symbol('cancelOrder', $symbol);
+            if ($symbol === null) {
+                throw new ArgumentsRequired($this->id . ' cancelOrder() requires a $symbol argument');
+            }
             Async\await($this->load_markets());
             $market = $this->market($symbol);
             $origClientOrderId = $this->safe_value_2($params, 'origClientOrderId', 'clientOrderId');
@@ -1876,7 +1884,7 @@ class bitrue extends Exchange {
             $this->check_address($address);
             Async\await($this->load_markets());
             $currency = $this->currency($code);
-            $chainName = $this->safe_string($params, 'chainName');
+            $chainName = $this->safe_string_2($params, 'network', 'chainName');
             if ($chainName === null) {
                 $networks = $this->safe_value($currency, 'networks', array());
                 $optionsNetworks = $this->safe_value($this->options, 'networks', array());

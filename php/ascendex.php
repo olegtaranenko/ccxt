@@ -2127,7 +2127,9 @@ class ascendex extends Exchange {
          * @param {array} [$params] extra parameters specific to the ascendex api endpoint
          * @return {array} An ~@link https://docs.ccxt.com/#/?$id=$order-structure $order structure~
          */
-        $this->check_required_symbol('cancelOrder', $symbol);
+        if ($symbol === null) {
+            throw new ArgumentsRequired($this->id . ' cancelOrder() requires a $symbol argument');
+        }
         $this->load_markets();
         $this->load_accounts();
         $market = $this->market($symbol);
@@ -2865,7 +2867,9 @@ class ascendex extends Exchange {
          * @param {array} [$params] extra parameters specific to the ascendex api endpoint
          * @return {array} response from the exchange
          */
-        $this->check_required_symbol('setLeverage', $symbol);
+        if ($symbol === null) {
+            throw new ArgumentsRequired($this->id . ' setLeverage() requires a $symbol argument');
+        }
         if (($leverage < 1) || ($leverage > 100)) {
             throw new BadRequest($this->id . ' $leverage should be between 1 and 100');
         }
@@ -2894,7 +2898,9 @@ class ascendex extends Exchange {
          * @param {array} [$params] extra parameters specific to the ascendex api endpoint
          * @return {array} response from the exchange
          */
-        $this->check_required_symbol('setMarginMode', $symbol);
+        if ($symbol === null) {
+            throw new ArgumentsRequired($this->id . ' setMarginMode() requires a $symbol argument');
+        }
         $marginMode = strtolower($marginMode);
         if ($marginMode === 'cross') {
             $marginMode = 'crossed';

@@ -1473,7 +1473,8 @@ class okcoin(Exchange, ImplicitAPI):
         :param bool [params.advanced]: True if canceling advanced orders only
         :returns dict: An `order structure <https://docs.ccxt.com/#/?id=order-structure>`
         """
-        self.check_required_symbol('cancelOrder', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' cancelOrder() requires a symbol argument')
         self.load_markets()
         stop = self.safe_value_2(params, 'stop', 'trigger')
         advanced = self.safe_value(params, 'advanced')
@@ -1520,7 +1521,8 @@ class okcoin(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the okx api endpoint
         :returns dict: an list of `order structures <https://docs.ccxt.com/#/?id=order-structure>`
         """
-        self.check_required_symbol('cancelOrders', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' cancelOrders() requires a symbol argument')
         self.load_markets()
         stop = self.safe_value_2(params, 'stop', 'trigger')
         advanced = self.safe_value(params, 'advanced')
@@ -1790,6 +1792,8 @@ class okcoin(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the okcoin api endpoint
         :returns dict: An `order structure <https://docs.ccxt.com/#/?id=order-structure>`
         """
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' fetchOrder() requires a symbol argument')
         self.load_markets()
         market = self.market(symbol)
         request = {
@@ -1805,7 +1809,6 @@ class okcoin(Exchange, ImplicitAPI):
             else:
                 request['algoId'] = id
         else:
-            self.check_required_symbol('fetchOrder', symbol)
             if clientOrderId is not None:
                 request['clOrdId'] = clientOrderId
             else:

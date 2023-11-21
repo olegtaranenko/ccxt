@@ -1717,13 +1717,16 @@ class bitmex(Exchange, ImplicitAPI):
     async def create_order(self, symbol: str, type: OrderType, side: OrderSide, amount, price=None, params={}):
         """
         create a trade order
+        :see: https://www.bitmex.com/api/explorer/#not /Order/Order_new
         :param str symbol: unified symbol of the market to create an order in
         :param str type: 'market' or 'limit'
         :param str side: 'buy' or 'sell'
         :param float amount: how much of currency you want to trade in units of base currency
         :param float [price]: the price at which the order is to be fullfilled, in units of the quote currency, ignored in market orders
         :param dict [params]: extra parameters specific to the bitmex api endpoint
-        :returns dict: an `order structure <https://docs.ccxt.com/#/?id=order-structure>`
+        :param dict [params.triggerPrice]: the price at which a trigger order is triggered at
+        :param dict [params.triggerDirection]: the direction whenever the trigger happens with relation to price - 'above' or 'below'
+        :returns dict: an `order structure <https://github.com/ccxt/ccxt/wiki/Manual#order-structure>`
         """
         await self.load_markets()
         market = self.market(symbol)
@@ -1741,13 +1744,33 @@ class bitmex(Exchange, ImplicitAPI):
             'ordType': orderType,
             'text': brokerId,
         }
-        if (orderType == 'Stop') or (orderType == 'StopLimit') or (orderType == 'MarketIfTouched') or (orderType == 'LimitIfTouched'):
-            stopPrice = self.safe_number_2(params, 'stopPx', 'stopPrice')
-            if stopPrice is None:
-                raise ArgumentsRequired(self.id + ' createOrder() requires a stopPx or stopPrice parameter for the ' + orderType + ' order type')
-            else:
-                request['stopPx'] = float(self.price_to_precision(symbol, stopPrice))
-                params = self.omit(params, ['stopPx', 'stopPrice'])
+        customTriggerType = (orderType == 'Stop') or (orderType == 'StopLimit') or (orderType == 'MarketIfTouched') or (orderType == 'LimitIfTouched')
+        # support for unified trigger format
+        triggerPrice = self.safe_number_n(params, ['triggerPrice', 'stopPx', 'stopPrice'])
+        if (triggerPrice is not None) and not customTriggerType:
+            request['stopPx'] = float(self.price_to_precision(symbol, triggerPrice))
+            triggerDirection = self.safe_string(params, 'triggerDirection')
+            params = self.omit(params, ['triggerPrice', 'stopPrice', 'stopPx', 'triggerDirection'])
+            triggerAbove = (triggerDirection == 'above')
+            self.check_required_argument('createOrder', triggerDirection, 'triggerDirection', ['above', 'below'])
+            self.check_required_argument('createOrder', side, 'side', ['buy', 'sell'])
+            if type == 'limit':
+                request['price'] = float(self.price_to_precision(symbol, price))
+                if side == 'buy':
+                    request['ordType'] = 'StopLimit' if triggerAbove else 'LimitIfTouched'
+                else:
+                    request['ordType'] = 'LimitIfTouched' if triggerAbove else 'StopLimit'
+            elif type == 'market':
+                if side == 'buy':
+                    request['ordType'] = 'Stop' if triggerAbove else 'MarketIfTouched'
+                else:
+                    request['ordType'] = 'MarketIfTouched' if triggerAbove else 'Stop'
+        elif customTriggerType:
+            if triggerPrice is None:
+                # if exchange specific trigger types were provided
+                raise ArgumentsRequired(self.id + ' createOrder() requires a triggerPrice(stopPx|stopPrice) parameter for the ' + orderType + ' order type')
+            params = self.omit(params, ['triggerPrice', 'stopPrice', 'stopPx'])
+            request['stopPx'] = float(self.price_to_precision(symbol, triggerPrice))
         if (orderType == 'Limit') or (orderType == 'StopLimit') or (orderType == 'LimitIfTouched'):
             request['price'] = float(self.price_to_precision(symbol, price))
         clientOrderId = self.safe_string_2(params, 'clOrdID', 'clientOrderId')
@@ -2307,7 +2330,8 @@ class bitmex(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the bitmex api endpoint
         :returns dict: response from the exchange
         """
-        self.check_required_symbol('setLeverage', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' setLeverage() requires a symbol argument')
         if (leverage < 0.01) or (leverage > 100):
             raise BadRequest(self.id + ' leverage should be between 0.01 and 100')
         await self.load_markets()
@@ -2328,7 +2352,8 @@ class bitmex(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the bitmex api endpoint
         :returns dict: response from the exchange
         """
-        self.check_required_symbol('setMarginMode', symbol)
+        if symbol is None:
+            raise ArgumentsRequired(self.id + ' setMarginMode() requires a symbol argument')
         marginMode = marginMode.lower()
         if marginMode != 'isolated' and marginMode != 'cross':
             raise BadRequest(self.id + ' setMarginMode() marginMode argument should be isolated or cross')

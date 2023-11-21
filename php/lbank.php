@@ -1496,7 +1496,9 @@ class lbank extends Exchange {
     }
 
     public function fetch_order_supplement(string $id, ?string $symbol = null, $params = array ()) {
-        $this->check_required_symbol('fetchOrder', $symbol);
+        if ($symbol === null) {
+            throw new ArgumentsRequired($this->id . ' fetchOrder() requires a $symbol argument');
+        }
         $this->load_markets();
         $market = $this->market($symbol);
         $request = array(
@@ -1531,7 +1533,9 @@ class lbank extends Exchange {
 
     public function fetch_order_default(string $id, ?string $symbol = null, $params = array ()) {
         // Id can be a list of ids delimited by a comma
-        $this->check_required_symbol('fetchOrder', $symbol);
+        if ($symbol === null) {
+            throw new ArgumentsRequired($this->id . ' fetchOrder() requires a $symbol argument');
+        }
         $this->load_markets();
         $market = $this->market($symbol);
         $request = array(
@@ -1584,7 +1588,9 @@ class lbank extends Exchange {
          * @param {array} [$params] extra parameters specific to the lbank2 api endpoint
          * @return {Trade[]} a list of ~@link https://docs.ccxt.com/#/?id=trade-structure trade structures~
          */
-        $this->check_required_symbol('fetchMyTrades', $symbol);
+        if ($symbol === null) {
+            throw new ArgumentsRequired($this->id . ' fetchMyTrades() requires a $symbol argument');
+        }
         $this->load_markets();
         $market = $this->market($symbol);
         $since = $this->safe_value($params, 'start_date', $since);
@@ -1642,7 +1648,9 @@ class lbank extends Exchange {
          */
         // default query is for canceled and completely filled $orders
         // does not return open $orders unless specified explicitly
-        $this->check_required_symbol('fetchOrders', $symbol);
+        if ($symbol === null) {
+            throw new ArgumentsRequired($this->id . ' fetchOrders() requires a $symbol argument');
+        }
         $this->load_markets();
         $market = $this->market($symbol);
         if ($limit === null) {
@@ -1697,7 +1705,9 @@ class lbank extends Exchange {
          * @param {array} [$params] extra parameters specific to the lbank2 api endpoint
          * @return {Order[]} a list of ~@link https://docs.ccxt.com/#/?id=order-structure order structures~
          */
-        $this->check_required_symbol('fetchOpenOrders', $symbol);
+        if ($symbol === null) {
+            throw new ArgumentsRequired($this->id . ' fetchOpenOrders() requires a $symbol argument');
+        }
         $this->load_markets();
         $market = $this->market($symbol);
         if ($limit === null) {
@@ -1750,7 +1760,9 @@ class lbank extends Exchange {
          * @param {array} [$params] extra parameters specific to the lbank2 api endpoint
          * @return {array} An ~@link https://docs.ccxt.com/#/?$id=order-structure order structure~
          */
-        $this->check_required_symbol('cancelOrder', $symbol);
+        if ($symbol === null) {
+            throw new ArgumentsRequired($this->id . ' cancelOrder() requires a $symbol argument');
+        }
         $this->load_markets();
         $clientOrderId = $this->safe_string_2($params, 'origClientOrderId', 'clientOrderId');
         $params = $this->omit($params, array( 'origClientOrderId', 'clientOrderId' ));
@@ -1788,7 +1800,9 @@ class lbank extends Exchange {
          * @param {array} [$params] extra parameters specific to the lbank2 api endpoint
          * @return {array[]} a list of ~@link https://docs.ccxt.com/#/?id=order-structure order structures~
          */
-        $this->check_required_symbol('cancelAllOrders', $symbol);
+        if ($symbol === null) {
+            throw new ArgumentsRequired($this->id . ' cancelAllOrders() requires a $symbol argument');
+        }
         $this->load_markets();
         $market = $this->market($symbol);
         $request = array(

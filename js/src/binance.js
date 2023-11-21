@@ -36,7 +36,8 @@ export default class binance extends Exchange {
                 'future': true,
                 'option': true,
                 'addMargin': true,
-                'borrowMargin': true,
+                'borrowCrossMargin': true,
+                'borrowIsolatedMargin': true,
                 'cancelAllOrders': true,
                 'cancelOrder': true,
                 'cancelOrders': true,
@@ -123,7 +124,8 @@ export default class binance extends Exchange {
                 'fetchWithdrawals': true,
                 'fetchWithdrawalWhitelist': false,
                 'reduceMargin': true,
-                'repayMargin': true,
+                'repayCrossMargin': true,
+                'repayIsolatedMargin': true,
                 'setLeverage': true,
                 'setMargin': false,
                 'setMarginMode': true,
@@ -258,6 +260,7 @@ export default class binance extends Exchange {
                         'margin/capital-flow': 10,
                         'margin/delist-schedule': 10,
                         'margin/available-inventory': 0.3334,
+                        'margin/leverageBracket': 0.1,
                         'loan/vip/loanable/data': 40,
                         'loan/vip/collateral/data': 40,
                         'loan/vip/request/data': 2.6668,
@@ -4767,7 +4770,9 @@ export default class binance extends Exchange {
          * @param {string} [params.marginMode] 'cross' or 'isolated', for spot margin trading
          * @returns {object} An [order structure]{@link https://docs.ccxt.com/#/?id=order-structure}
          */
-        this.checkRequiredSymbol('fetchOrder', symbol);
+        if (symbol === undefined) {
+            throw new ArgumentsRequired(this.id + ' fetchOrder() requires a symbol argument');
+        }
         await this.loadMarkets();
         const market = this.market(symbol);
         const defaultType = this.safeString2(this.options, 'fetchOrder', 'defaultType', 'spot');
@@ -4827,7 +4832,9 @@ export default class binance extends Exchange {
          * @param {boolean} [params.paginate] default false, when true will automatically paginate by calling this endpoint multiple times. See in the docs all the [availble parameters](https://github.com/ccxt/ccxt/wiki/Manual#pagination-params)
          * @returns {Order[]} a list of [order structures]{@link https://docs.ccxt.com/#/?id=order-structure}
          */
-        this.checkRequiredSymbol('fetchOrders', symbol);
+        if (symbol === undefined) {
+            throw new ArgumentsRequired(this.id + ' fetchOrders() requires a symbol argument');
+        }
         await this.loadMarkets();
         let paginate = false;
         [paginate, params] = this.handleOptionAndParams(params, 'fetchOrders', 'paginate');
@@ -5056,7 +5063,9 @@ export default class binance extends Exchange {
          * @param {boolean} [params.paginate] default false, when true will automatically paginate by calling this endpoint multiple times. See in the docs all the [availble parameters](https://github.com/ccxt/ccxt/wiki/Manual#pagination-params)
          * @returns {object[]} a list of [order structures]{@link https://docs.ccxt.com/#/?id=order-structure}
          */
-        this.checkRequiredSymbol('fetchCanceledOrders', symbol);
+        if (symbol === undefined) {
+            throw new ArgumentsRequired(this.id + ' fetchCanceledOrders() requires a symbol argument');
+        }
         await this.loadMarkets();
         const market = this.market(symbol);
         if (market['swap'] || market['future']) {
@@ -5082,7 +5091,9 @@ export default class binance extends Exchange {
          * @param {object} [params] extra parameters specific to the binance api endpoint
          * @returns {object} An [order structure]{@link https://docs.ccxt.com/#/?id=order-structure}
          */
-        this.checkRequiredSymbol('cancelOrder', symbol);
+        if (symbol === undefined) {
+            throw new ArgumentsRequired(this.id + ' cancelOrder() requires a symbol argument');
+        }
         await this.loadMarkets();
         const market = this.market(symbol);
         const defaultType = this.safeString2(this.options, 'cancelOrder', 'defaultType', 'spot');
@@ -5140,7 +5151,9 @@ export default class binance extends Exchange {
          * @param {string} [params.marginMode] 'cross' or 'isolated', for spot margin trading
          * @returns {object[]} a list of [order structures]{@link https://docs.ccxt.com/#/?id=order-structure}
          */
-        this.checkRequiredSymbol('cancelAllOrders', symbol);
+        if (symbol === undefined) {
+            throw new ArgumentsRequired(this.id + ' cancelOrder() requires a symbol argument');
+        }
         await this.loadMarkets();
         const market = this.market(symbol);
         const request = {
@@ -5189,7 +5202,9 @@ export default class binance extends Exchange {
          * @param {int[]} [params.recvWindow]
          * @returns {object} an list of [order structures]{@link https://docs.ccxt.com/#/?id=order-structure}
          */
-        this.checkRequiredSymbol('cancelOrders', symbol);
+        if (symbol === undefined) {
+            throw new ArgumentsRequired(this.id + ' cancelOrders() requires a symbol argument');
+        }
         await this.loadMarkets();
         const market = this.market(symbol);
         if (!market['contract']) {
@@ -5259,7 +5274,9 @@ export default class binance extends Exchange {
          * @param {object} [params] extra parameters specific to the binance api endpoint
          * @returns {object[]} a list of [trade structures]{@link https://docs.ccxt.com/#/?id=trade-structure}
          */
-        this.checkRequiredSymbol('fetchOrderTrades', symbol);
+        if (symbol === undefined) {
+            throw new ArgumentsRequired(this.id + ' fetchOrderTrades() requires a symbol argument');
+        }
         await this.loadMarkets();
         const market = this.market(symbol);
         const type = this.safeString(params, 'type', market['type']);
@@ -5309,7 +5326,9 @@ export default class binance extends Exchange {
             method = 'eapiPrivateGetUserTrades';
         }
         else {
-            this.checkRequiredSymbol('fetchMyTrades', symbol);
+            if (symbol === undefined) {
+                throw new ArgumentsRequired(this.id + ' fetchMyTrades() requires a symbol argument');
+            }
             [marginMode, params] = this.handleMarginModeAndParams('fetchMyTrades', params);
             if (type === 'spot' || type === 'margin') {
                 method = 'privateGetMyTrades';
@@ -8021,7 +8040,9 @@ export default class binance extends Exchange {
          * @param {object} [params] extra parameters specific to the binance api endpoint
          * @returns {object} response from the exchange
          */
-        this.checkRequiredSymbol('setLeverage', symbol);
+        if (symbol === undefined) {
+            throw new ArgumentsRequired(this.id + ' setLeverage() requires a symbol argument');
+        }
         // WARNING: THIS WILL INCREASE LIQUIDATION PRICE FOR OPEN ISOLATED LONG POSITIONS
         // AND DECREASE LIQUIDATION PRICE FOR OPEN ISOLATED SHORT POSITIONS
         if ((leverage < 1) || (leverage > 125)) {
@@ -8029,7 +8050,7 @@ export default class binance extends Exchange {
         }
         await this.loadMarkets();
         const market = this.market(symbol);
-        let method = undefined;
+        let method;
         if (market['linear']) {
             method = 'fapiPrivatePostLeverage';
         }
@@ -8057,7 +8078,9 @@ export default class binance extends Exchange {
          * @param {object} [params] extra parameters specific to the binance api endpoint
          * @returns {object} response from the exchange
          */
-        this.checkRequiredSymbol('setMarginMode', symbol);
+        if (symbol === undefined) {
+            throw new ArgumentsRequired(this.id + ' setMarginMode() requires a symbol argument');
+        }
         //
         // { "code": -4048 , "msg": "Margin type cannot be changed if there exists position." }
         //
@@ -9085,32 +9108,25 @@ export default class binance extends Exchange {
             'info': info,
         };
     }
-    async repayMargin(code, amount, symbol = undefined, params = {}) {
+    async repayCrossMargin(code, amount, params = {}) {
         /**
          * @method
-         * @name binance#repayMargin
+         * @name binance#repayCrossMargin
          * @description repay borrowed margin and interest
          * @see https://binance-docs.github.io/apidocs/spot/en/#margin-account-repay-margin
          * @param {string} code unified currency code of the currency to repay
          * @param {float} amount the amount to repay
-         * @param {string} symbol unified market symbol, required for isolated margin
          * @param {object} [params] extra parameters specific to the binance api endpoint
          * @returns {object} a [margin loan structure]{@link https://docs.ccxt.com/#/?id=margin-loan-structure}
          */
-        const [marginMode, query] = this.handleMarginModeAndParams('repayMargin', params); // cross or isolated
-        this.checkRequiredMarginArgument('repayMargin', symbol, marginMode);
         await this.loadMarkets();
         const currency = this.currency(code);
         const request = {
             'asset': currency['id'],
             'amount': this.currencyToPrecision(code, amount),
+            'isIsolated': 'FALSE',
         };
-        if (symbol !== undefined) {
-            const market = this.market(symbol);
-            request['symbol'] = market['id'];
-            request['isIsolated'] = 'TRUE';
-        }
-        const response = await this.sapiPostMarginRepay(this.extend(request, query));
+        const response = await this.sapiPostMarginRepay(this.extend(request, params));
         //
         //     {
         //         "tranId": 108988250265,
@@ -9119,32 +9135,85 @@ export default class binance extends Exchange {
         //
         return this.parseMarginLoan(response, currency);
     }
-    async borrowMargin(code, amount, symbol = undefined, params = {}) {
+    async repayIsolatedMargin(symbol, code, amount, params = {}) {
         /**
          * @method
-         * @name binance#borrowMargin
+         * @name binance#repayIsolatedMargin
+         * @description repay borrowed margin and interest
+         * @see https://binance-docs.github.io/apidocs/spot/en/#margin-account-repay-margin
+         * @param {string} symbol unified market symbol, required for isolated margin
+         * @param {string} code unified currency code of the currency to repay
+         * @param {float} amount the amount to repay
+         * @param {object} [params] extra parameters specific to the binance api endpoint
+         * @returns {object} a [margin loan structure]{@link https://docs.ccxt.com/#/?id=margin-loan-structure}
+         */
+        await this.loadMarkets();
+        const currency = this.currency(code);
+        const market = this.market(symbol);
+        const request = {
+            'asset': currency['id'],
+            'amount': this.currencyToPrecision(code, amount),
+            'symbol': market['id'],
+            'isIsolated': 'TRUE',
+        };
+        const response = await this.sapiPostMarginRepay(this.extend(request, params));
+        //
+        //     {
+        //         "tranId": 108988250265,
+        //         "clientTag":""
+        //     }
+        //
+        return this.parseMarginLoan(response, currency);
+    }
+    async borrowCrossMargin(code, amount, params = {}) {
+        /**
+         * @method
+         * @name binance#borrowCrossMargin
          * @description create a loan to borrow margin
          * @see https://binance-docs.github.io/apidocs/spot/en/#margin-account-borrow-margin
          * @param {string} code unified currency code of the currency to borrow
          * @param {float} amount the amount to borrow
-         * @param {string} symbol unified market symbol, required for isolated margin
          * @param {object} [params] extra parameters specific to the binance api endpoint
          * @returns {object} a [margin loan structure]{@link https://docs.ccxt.com/#/?id=margin-loan-structure}
          */
-        const [marginMode, query] = this.handleMarginModeAndParams('borrowMargin', params); // cross or isolated
-        this.checkRequiredMarginArgument('borrowMargin', symbol, marginMode);
         await this.loadMarkets();
         const currency = this.currency(code);
         const request = {
             'asset': currency['id'],
             'amount': this.currencyToPrecision(code, amount),
+            'isIsolated': 'FALSE',
         };
-        if (symbol !== undefined) {
-            const market = this.market(symbol);
-            request['symbol'] = market['id'];
-            request['isIsolated'] = 'TRUE';
-        }
-        const response = await this.sapiPostMarginLoan(this.extend(request, query));
+        const response = await this.sapiPostMarginLoan(this.extend(request, params));
+        //
+        //     {
+        //         "tranId": 108988250265,
+        //         "clientTag":""
+        //     }
+        //
+        return this.parseMarginLoan(response, currency);
+    }
+    async borrowIsolatedMargin(symbol, code, amount, params = {}) {
+        /**
+         * @method
+         * @name binance#borrowIsolatedMargin
+         * @description create a loan to borrow margin
+         * @see https://binance-docs.github.io/apidocs/spot/en/#margin-account-borrow-margin
+         * @param {string} symbol unified market symbol, required for isolated margin
+         * @param {string} code unified currency code of the currency to borrow
+         * @param {float} amount the amount to borrow
+         * @param {object} [params] extra parameters specific to the binance api endpoint
+         * @returns {object} a [margin loan structure]{@link https://docs.ccxt.com/#/?id=margin-loan-structure}
+         */
+        await this.loadMarkets();
+        const currency = this.currency(code);
+        const market = this.market(symbol);
+        const request = {
+            'asset': currency['id'],
+            'amount': this.currencyToPrecision(code, amount),
+            'symbol': market['id'],
+            'isIsolated': 'TRUE',
+        };
+        const response = await this.sapiPostMarginLoan(this.extend(request, params));
         //
         //     {
         //         "tranId": 108988250265,

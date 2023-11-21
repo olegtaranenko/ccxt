@@ -2901,7 +2901,9 @@ class gate extends Exchange {
          * @param {array} [$params] extra parameters specific to the gate api endpoint
          * @return {array[]} a list of ~@link https://docs.ccxt.com/#/?id=funding-rate-history-structure funding rate structures~
          */
-        $this->check_required_symbol('fetchFundingRateHistory', $symbol);
+        if ($symbol === null) {
+            throw new ArgumentsRequired($this->id . ' fetchFundingRateHistory() requires a $symbol argument');
+        }
         $this->load_markets();
         $market = $this->market($symbol);
         if (!$market['swap']) {
@@ -3102,8 +3104,10 @@ class gate extends Exchange {
          * @param {array} [$params] extra parameters specific to the binance api endpoint
          * @return {array[]} a list of ~@link https://docs.ccxt.com/#/?$id=trade-structure trade structures~
          */
+        if ($symbol === null) {
+            throw new ArgumentsRequired($this->id . ' fetchOrderTrades() requires a $symbol argument');
+        }
         $this->load_markets();
-        $this->check_required_symbol('fetchOrderTrades', $symbol);
         //
         //      array(
         //          {
@@ -4920,7 +4924,9 @@ class gate extends Exchange {
          * @param {array} [$params] extra parameters specific to the gate api endpoint
          * @return {array} $response from the exchange
          */
-        $this->check_required_symbol('setLeverage', $symbol);
+        if ($symbol === null) {
+            throw new ArgumentsRequired($this->id . ' setLeverage() requires a $symbol argument');
+        }
         // WARNING => THIS WILL INCREASE LIQUIDATION PRICE FOR OPEN ISOLATED LONG POSITIONS
         // AND DECREASE LIQUIDATION PRICE FOR OPEN ISOLATED SHORT POSITIONS
         if (($leverage < 0) || ($leverage > 100)) {
@@ -5963,7 +5969,9 @@ class gate extends Exchange {
          * @param {array} [$params] exchange specific $params
          * @return {array[]} a list of ~@link https://docs.ccxt.com/#/?id=settlement-history-structure settlement history objects~
          */
-        $this->check_required_symbol('fetchSettlementHistory', $symbol);
+        if ($symbol === null) {
+            throw new ArgumentsRequired($this->id . ' fetchSettlementHistory() requires a $symbol argument');
+        }
         $this->load_markets();
         $market = $this->market($symbol);
         $type = null;
@@ -6010,7 +6018,9 @@ class gate extends Exchange {
          * @param {array} [$params] exchange specific $params
          * @return {array[]} a list of [settlement history objects]
          */
-        $this->check_required_symbol('fetchMySettlementHistory', $symbol);
+        if ($symbol === null) {
+            throw new ArgumentsRequired($this->id . ' fetchMySettlementHistory() requires a $symbol argument');
+        }
         $this->load_markets();
         $market = $this->market($symbol);
         $type = null;
@@ -6478,7 +6488,9 @@ class gate extends Exchange {
          * @param {array} [$params] exchange specific parameters for the gate api endpoint
          * @return {array} an array of ~@link https://docs.ccxt.com/#/?id=liquidation-structure liquidation structures~
          */
-        $this->check_required_symbol('fetchMyLiquidations', $symbol);
+        if ($symbol === null) {
+            throw new ArgumentsRequired($this->id . ' fetchMyLiquidations() requires a $symbol argument');
+        }
         $this->load_markets();
         $market = $this->market($symbol);
         $request = array(

@@ -1074,14 +1074,15 @@ class latoken extends latoken$1 {
          * @param {boolean} [params.trigger] true if fetching trigger orders
          * @returns {Order[]} a list of [order structures]{@link https://docs.ccxt.com/#/?id=order-structure}
         */
+        if (symbol === undefined) {
+            throw new errors.ArgumentsRequired(this.id + ' fetchOpenOrders() requires a symbol argument');
+        }
         await this.loadMarkets();
         let response = undefined;
-        let market = undefined;
         const isTrigger = this.safeValue2(params, 'trigger', 'stop');
         params = this.omit(params, 'stop');
-        this.checkRequiredSymbol('fetchOpenOrders', symbol);
         // privateGetAuthOrderActive doesn't work even though its listed at https://api.latoken.com/doc/v2/#tag/Order/operation/getMyActiveOrders
-        market = this.market(symbol);
+        const market = this.market(symbol);
         const request = {
             'currency': market['baseId'],
             'quote': market['quoteId'],
