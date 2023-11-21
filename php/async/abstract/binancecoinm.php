@@ -160,6 +160,9 @@ abstract class binancecoinm extends \ccxt\async\binance {
     public function sapi_get_margin_available_inventory($params = array()) {
         return $this->request('margin/available-inventory', 'sapi', 'GET', $params, null, null, array("cost" => 0.3334));
     }
+    public function sapi_get_margin_leveragebracket($params = array()) {
+        return $this->request('margin/leverageBracket', 'sapi', 'GET', $params, null, null, array("cost" => 0.1));
+    }
     public function sapi_get_loan_vip_loanable_data($params = array()) {
         return $this->request('loan/vip/loanable/data', 'sapi', 'GET', $params, null, null, array("cost" => 40));
     }
@@ -1339,6 +1342,9 @@ abstract class binancecoinm extends \ccxt\async\binance {
     public function fapidata_get_takerlongshortratio($params = array()) {
         return $this->request('takerlongshortRatio', 'fapiData', 'GET', $params, null, null, array("cost" => 1));
     }
+    public function fapidata_get_basis($params = array()) {
+        return $this->request('basis', 'fapiData', 'GET', $params, null, null, array("cost" => 1));
+    }
     public function fapiprivate_get_forceorders($params = array()) {
         return $this->request('forceOrders', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 20, "noSymbol" => 50));
     }
@@ -1492,6 +1498,9 @@ abstract class binancecoinm extends \ccxt\async\binance {
     public function fapiprivate_delete_listenkey($params = array()) {
         return $this->request('listenKey', 'fapiPrivate', 'DELETE', $params, null, null, array("cost" => 1));
     }
+    public function fapipublicv2_get_ticker_price($params = array()) {
+        return $this->request('ticker/price', 'fapiPublicV2', 'GET', $params, null, null, array("cost" => 0));
+    }
     public function fapiprivatev2_get_account($params = array()) {
         return $this->request('account', 'fapiPrivateV2', 'GET', $params, null, null, array("cost" => 1));
     }
@@ -1641,6 +1650,9 @@ abstract class binancecoinm extends \ccxt\async\binance {
     }
     public function public_get_ticker_24hr($params = array()) {
         return $this->request('ticker/24hr', 'public', 'GET', $params, null, null, array("cost" => 0.4, "noSymbol" => 16));
+    }
+    public function public_get_ticker($params = array()) {
+        return $this->request('ticker', 'public', 'GET', $params, null, null, array("cost" => 0.4, "noSymbol" => 16));
     }
     public function public_get_ticker_price($params = array()) {
         return $this->request('ticker/price', 'public', 'GET', $params, null, null, array("cost" => 0.4, "noSymbol" => 0.8));
@@ -1882,8 +1894,14 @@ abstract class binancecoinm extends \ccxt\async\binance {
     public function papi_post_um_order($params = array()) {
         return $this->request('um/order', 'papi', 'POST', $params, null, null, array("cost" => 1));
     }
+    public function papi_post_um_conditional_order($params = array()) {
+        return $this->request('um/conditional/order', 'papi', 'POST', $params, null, null, array("cost" => 1));
+    }
     public function papi_post_cm_order($params = array()) {
         return $this->request('cm/order', 'papi', 'POST', $params, null, null, array("cost" => 1));
+    }
+    public function papi_post_cm_conditional_order($params = array()) {
+        return $this->request('cm/conditional/order', 'papi', 'POST', $params, null, null, array("cost" => 1));
     }
     public function papi_post_margin_order($params = array()) {
         return $this->request('margin/order', 'papi', 'POST', $params, null, null, array("cost" => 0.0133));
@@ -1933,14 +1951,26 @@ abstract class binancecoinm extends \ccxt\async\binance {
     public function papi_delete_um_order($params = array()) {
         return $this->request('um/order', 'papi', 'DELETE', $params, null, null, array("cost" => 1));
     }
+    public function papi_delete_um_conditional_order($params = array()) {
+        return $this->request('um/conditional/order', 'papi', 'DELETE', $params, null, null, array("cost" => 1));
+    }
     public function papi_delete_um_allopenorders($params = array()) {
         return $this->request('um/allOpenOrders', 'papi', 'DELETE', $params, null, null, array("cost" => 1));
+    }
+    public function papi_delete_um_conditional_allopenorders($params = array()) {
+        return $this->request('um/conditional/allOpenOrders', 'papi', 'DELETE', $params, null, null, array("cost" => 1));
     }
     public function papi_delete_cm_order($params = array()) {
         return $this->request('cm/order', 'papi', 'DELETE', $params, null, null, array("cost" => 1));
     }
+    public function papi_delete_cm_conditional_order($params = array()) {
+        return $this->request('cm/conditional/order', 'papi', 'DELETE', $params, null, null, array("cost" => 1));
+    }
     public function papi_delete_cm_allopenorders($params = array()) {
         return $this->request('cm/allOpenOrders', 'papi', 'DELETE', $params, null, null, array("cost" => 1));
+    }
+    public function papi_delete_cm_conditional_allopenorders($params = array()) {
+        return $this->request('cm/conditional/allOpenOrders', 'papi', 'DELETE', $params, null, null, array("cost" => 1));
     }
     public function papi_delete_margin_order($params = array()) {
         return $this->request('margin/order', 'papi', 'DELETE', $params, null, null, array("cost" => 1));
@@ -2106,6 +2136,9 @@ abstract class binancecoinm extends \ccxt\async\binance {
     }
     public function sapiGetMarginAvailableInventory($params = array()) {
         return $this->request('margin/available-inventory', 'sapi', 'GET', $params, null, null, array("cost" => 0.3334));
+    }
+    public function sapiGetMarginLeverageBracket($params = array()) {
+        return $this->request('margin/leverageBracket', 'sapi', 'GET', $params, null, null, array("cost" => 0.1));
     }
     public function sapiGetLoanVipLoanableData($params = array()) {
         return $this->request('loan/vip/loanable/data', 'sapi', 'GET', $params, null, null, array("cost" => 40));
@@ -3286,6 +3319,9 @@ abstract class binancecoinm extends \ccxt\async\binance {
     public function fapiDataGetTakerlongshortRatio($params = array()) {
         return $this->request('takerlongshortRatio', 'fapiData', 'GET', $params, null, null, array("cost" => 1));
     }
+    public function fapiDataGetBasis($params = array()) {
+        return $this->request('basis', 'fapiData', 'GET', $params, null, null, array("cost" => 1));
+    }
     public function fapiPrivateGetForceOrders($params = array()) {
         return $this->request('forceOrders', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 20, "noSymbol" => 50));
     }
@@ -3439,6 +3475,9 @@ abstract class binancecoinm extends \ccxt\async\binance {
     public function fapiPrivateDeleteListenKey($params = array()) {
         return $this->request('listenKey', 'fapiPrivate', 'DELETE', $params, null, null, array("cost" => 1));
     }
+    public function fapiPublicV2GetTickerPrice($params = array()) {
+        return $this->request('ticker/price', 'fapiPublicV2', 'GET', $params, null, null, array("cost" => 0));
+    }
     public function fapiPrivateV2GetAccount($params = array()) {
         return $this->request('account', 'fapiPrivateV2', 'GET', $params, null, null, array("cost" => 1));
     }
@@ -3588,6 +3627,9 @@ abstract class binancecoinm extends \ccxt\async\binance {
     }
     public function publicGetTicker24hr($params = array()) {
         return $this->request('ticker/24hr', 'public', 'GET', $params, null, null, array("cost" => 0.4, "noSymbol" => 16));
+    }
+    public function publicGetTicker($params = array()) {
+        return $this->request('ticker', 'public', 'GET', $params, null, null, array("cost" => 0.4, "noSymbol" => 16));
     }
     public function publicGetTickerPrice($params = array()) {
         return $this->request('ticker/price', 'public', 'GET', $params, null, null, array("cost" => 0.4, "noSymbol" => 0.8));
@@ -3829,8 +3871,14 @@ abstract class binancecoinm extends \ccxt\async\binance {
     public function papiPostUmOrder($params = array()) {
         return $this->request('um/order', 'papi', 'POST', $params, null, null, array("cost" => 1));
     }
+    public function papiPostUmConditionalOrder($params = array()) {
+        return $this->request('um/conditional/order', 'papi', 'POST', $params, null, null, array("cost" => 1));
+    }
     public function papiPostCmOrder($params = array()) {
         return $this->request('cm/order', 'papi', 'POST', $params, null, null, array("cost" => 1));
+    }
+    public function papiPostCmConditionalOrder($params = array()) {
+        return $this->request('cm/conditional/order', 'papi', 'POST', $params, null, null, array("cost" => 1));
     }
     public function papiPostMarginOrder($params = array()) {
         return $this->request('margin/order', 'papi', 'POST', $params, null, null, array("cost" => 0.0133));
@@ -3880,14 +3928,26 @@ abstract class binancecoinm extends \ccxt\async\binance {
     public function papiDeleteUmOrder($params = array()) {
         return $this->request('um/order', 'papi', 'DELETE', $params, null, null, array("cost" => 1));
     }
+    public function papiDeleteUmConditionalOrder($params = array()) {
+        return $this->request('um/conditional/order', 'papi', 'DELETE', $params, null, null, array("cost" => 1));
+    }
     public function papiDeleteUmAllOpenOrders($params = array()) {
         return $this->request('um/allOpenOrders', 'papi', 'DELETE', $params, null, null, array("cost" => 1));
+    }
+    public function papiDeleteUmConditionalAllOpenOrders($params = array()) {
+        return $this->request('um/conditional/allOpenOrders', 'papi', 'DELETE', $params, null, null, array("cost" => 1));
     }
     public function papiDeleteCmOrder($params = array()) {
         return $this->request('cm/order', 'papi', 'DELETE', $params, null, null, array("cost" => 1));
     }
+    public function papiDeleteCmConditionalOrder($params = array()) {
+        return $this->request('cm/conditional/order', 'papi', 'DELETE', $params, null, null, array("cost" => 1));
+    }
     public function papiDeleteCmAllOpenOrders($params = array()) {
         return $this->request('cm/allOpenOrders', 'papi', 'DELETE', $params, null, null, array("cost" => 1));
+    }
+    public function papiDeleteCmConditionalAllOpenOrders($params = array()) {
+        return $this->request('cm/conditional/allOpenOrders', 'papi', 'DELETE', $params, null, null, array("cost" => 1));
     }
     public function papiDeleteMarginOrder($params = array()) {
         return $this->request('margin/order', 'papi', 'DELETE', $params, null, null, array("cost" => 1));
