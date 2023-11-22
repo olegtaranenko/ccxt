@@ -6371,39 +6371,6 @@ class bitget(Exchange, ImplicitAPI):
 
     def parse_borrow_rate(self, info, currency: Currency = None):
         #
-        #     {
-        #         "code": "00000",
-        #         "msg": "success",
-        #         "requestTime": 1698208150986,
-        #         "data": [
-        #             {
-        #                 "coin": "BTC",
-        #                 "leverage": "3",
-        #                 "transferInAble": True,
-        #                 "borrowAble": True,
-        #                 "dailyInterestRate": "0.00007",
-        #                 "yearlyInterestRate": "0.02555",
-        #                 "maxBorrowableAmount": "26",
-        #                 "vips": [
-        #                     {
-        #                         "level": "0",
-        #                         "dailyInterestRate": "0.00007",
-        #                         "yearlyInterestRate": "0.02555",
-        #                         "discountRate": "1"
-        #                     },
-        #                 ]
-        #             }
-        #         ]
-        #     }
-        #
-        timestamp = self.safe_integer(response, 'requestTime')
-        data = self.safe_value(response, 'data', [])
-        first = self.safe_value(data, 0, {})
-        first['timestamp'] = timestamp
-        return self.parse_borrow_rate(first, currency)
-
-    def parse_borrow_rate(self, info, currency: Currency = None):
-        #
         currencyId = self.safe_string(info, 'coin')
         timestamp = self.safe_integer(info, 'timestamp')
         return {

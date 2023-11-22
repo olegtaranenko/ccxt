@@ -49,9 +49,9 @@ export default class Exchange {
         this.validateClientSsl = false;
         this.validateServerSsl = true;
         this.timeout = 10000; // milliseconds
-        this.twofa = undefined; // two-factor authentication (2FA)
-        this.verboseTruncate = false;
         this.verbose = false;
+        this.verboseTruncate = false;
+        this.twofa = undefined; // two-factor authentication (2FA)
         this.balance = {};
         this.orderbooks = {};
         this.orders = undefined;
@@ -74,7 +74,6 @@ export default class Exchange {
         this.id = undefined;
         this.markets = undefined;
         this.status = undefined;
-        this.enableRateLimit = undefined;
         this.rateLimit = undefined; // milliseconds
         this.throttler = undefined;
         this.tokenBucket = undefined;

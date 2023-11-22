@@ -6829,27 +6829,20 @@ export default class bitget extends Exchange {
     parseBorrowRate(info, currency = undefined) {
         //
         //     {
-        //         "code": "00000",
-        //         "msg": "success",
-        //         "requestTime": 1698208150986,
-        //         "data": [
+        //         "coin": "BTC",
+        //         "leverage": "3",
+        //         "transferInAble": true,
+        //         "borrowAble": true,
+        //         "dailyInterestRate": "0.00007",
+        //         "yearlyInterestRate": "0.02555",
+        //         "maxBorrowableAmount": "26",
+        //         "vips": [
         //             {
-        //                 "coin": "BTC",
-        //                 "leverage": "3",
-        //                 "transferInAble": true,
-        //                 "borrowAble": true,
+        //                 "level": "0",
         //                 "dailyInterestRate": "0.00007",
         //                 "yearlyInterestRate": "0.02555",
-        //                 "maxBorrowableAmount": "26",
-        //                 "vips": [
-        //                     {
-        //                         "level": "0",
-        //                         "dailyInterestRate": "0.00007",
-        //                         "yearlyInterestRate": "0.02555",
-        //                         "discountRate": "1"
-        //                     },
-        //                 ]
-        //             }
+        //                 "discountRate": "1"
+        //             },
         //         ]
         //     }
         //

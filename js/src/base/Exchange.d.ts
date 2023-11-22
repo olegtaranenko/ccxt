@@ -52,10 +52,10 @@ export default class Exchange {
     validateClientSsl: boolean;
     validateServerSsl: boolean;
     timeout: number;
-    twofa: any;
     verbose: boolean;
     verboseTruncate: boolean;
     verboseLogVeto: any;
+    twofa: any;
     apiKey: string;
     login: string;
     password: string;
@@ -180,13 +180,13 @@ export default class Exchange {
         outputLen: number;
         blockLen: number;
         create(): import("../static_dependencies/noble-hashes/utils.js").Hash<import("../static_dependencies/noble-hashes/utils.js").Hash<any>>;
-    }, digest?: "binary" | "hex" | "base64") => any;
+    }, digest?: "hex" | "base64" | "binary") => any;
     hmac: (request: import("../static_dependencies/noble-hashes/utils.js").Input, secret: import("../static_dependencies/noble-hashes/utils.js").Input, hash: {
         (message: import("../static_dependencies/noble-hashes/utils.js").Input): Uint8Array;
         outputLen: number;
         blockLen: number;
         create(): import("../static_dependencies/noble-hashes/utils.js").Hash<import("../static_dependencies/noble-hashes/utils.js").Hash<any>>;
-    }, digest?: "binary" | "hex" | "base64") => any;
+    }, digest?: "hex" | "base64" | "binary") => any;
     implodeParams: (string: any, params: any) => any;
     inArray: (needle: any, haystack: any) => any;
     indexBy: (x: any, k: any, out?: {}) => {};
