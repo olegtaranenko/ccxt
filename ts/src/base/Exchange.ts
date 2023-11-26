@@ -1052,10 +1052,9 @@ export default class Exchange {
         // set final headers
         headers = this.setHeaders (headers);
         // log
-
         if (this.verbose || this.verboseTruncate) {
             if (typeof this.verboseLogVeto !== 'function' || this.verboseLogVeto('fetch', method, url, headers, body)) {
-                this.log ("fetch Request:\n", this.id, method, url, "\nRequestHeaders:\n", headers, "\nRequestBody:\n", body, "\n");
+                this.log ("fetch Request:\n", this.id, method, url, "\nRequestHeaders:\n", headers, "\nRequestBody:\n", body, "\n")
             }
         }
         // end of proxies & headers
