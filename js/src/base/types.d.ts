@@ -304,4 +304,3 @@ export declare type OHLCVC = [Num, Num, Num, Num, Num, Num, Num];
 export declare type implicitReturnType = any;
 export declare type Market = MarketInterface | undefined;
 export declare type Currency = CurrencyInterface | undefined;
-export declare type Currency = CurrencyInterface | undefined;
