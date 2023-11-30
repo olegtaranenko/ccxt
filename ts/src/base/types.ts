@@ -8,6 +8,7 @@ export type OrderSide = 'buy' | 'sell' | string;
 export type OrderType = 'limit' | 'market' | string;
 export type Str = string | undefined;
 export type Strings = string[] | undefined;
+export type SubType = 'linear' | 'inverse' | undefined;
 
 export interface Dictionary<T> {
     [key: string]: T;
@@ -66,6 +67,7 @@ export interface MarketInterface {
     settleId: Str;
     spot: boolean;
     strike: Num;
+    subType?: SubType;
     swap: boolean;
     symbol: string;
     taker?: Num
