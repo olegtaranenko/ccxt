@@ -1,12 +1,13 @@
 export declare type Bool = boolean | undefined;
-export declare type Int = number | undefined;
 export declare type IndexType = number | string;
+export declare type Int = number | undefined;
 export declare type MarketType = 'spot' | 'margin' | 'swap' | 'future' | 'option';
 export declare type Num = number | undefined;
 export declare type OrderSide = 'buy' | 'sell' | string;
 export declare type OrderType = 'limit' | 'market' | string;
 export declare type Str = string | undefined;
 export declare type Strings = string[] | undefined;
+export declare type SubType = 'linear' | 'inverse' | undefined;
 export interface Dictionary<T> {
     [key: string]: T;
 }
@@ -59,6 +60,7 @@ export interface MarketInterface {
     settleId: Str;
     spot: boolean;
     strike: Num;
+    subType?: SubType;
     swap: boolean;
     symbol: string;
     taker?: Num;

@@ -1864,6 +1864,15 @@ class Exchange {
                 'precision': this.precision,
                 'limits': this.limits,
             }, this.fees['trading'], value);
+            if (market['linear']) {
+                market['subType'] = 'linear';
+            }
+            else if (market['inverse']) {
+                market['subType'] = 'inverse';
+            }
+            else {
+                market['subType'] = undefined;
+            }
             values.push(market);
         }
         this.markets = this.indexBy(values, 'symbol');
@@ -2550,7 +2559,7 @@ class Exchange {
             'bidVolume': this.safeNumber(ticker, 'bidVolume'),
             'change': this.parseNumber(change),
             'close': this.parseNumber(this.omitZero(this.parseNumber(close))),
-            'high': this.parseNumber(this.omitZero(this.safeString(ticker, 'high"'))),
+            'high': this.parseNumber(this.omitZero(this.safeString(ticker, 'high'))),
             'last': this.parseNumber(this.omitZero(this.parseNumber(last))),
             'low': this.parseNumber(this.omitZero(this.safeNumber(ticker, 'low'))),
             'open': this.parseNumber(this.omitZero(this.parseNumber(open))),
@@ -3215,7 +3224,7 @@ class Exchange {
         throw new errors.NotSupported(this.id + ' watchPositions() is not supported yet');
     }
     async watchPositionForSymbols(symbols = undefined, since = undefined, limit = undefined, params = {}) {
-        return this.watchPositions(symbols, since, limit, params);
+        return await this.watchPositions(symbols, since, limit, params);
     }
     async fetchPositionsForSymbol(symbol, params = {}) {
         /**

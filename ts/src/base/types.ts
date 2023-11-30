@@ -10,6 +10,8 @@ export type Str = string | undefined;
 export type Strings = string[] | undefined;
 export type SubType = 'linear' | 'inverse' | undefined;
 
+export type MarketType = 'spot' | 'margin' | 'swap' | 'future' | 'option';
+export type SubType = 'linear' | 'inverse' | undefined;
 export interface Dictionary<T> {
     [key: string]: T;
 }
