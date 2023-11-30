@@ -1,7 +1,7 @@
 export type Bool = boolean | undefined;
-export type Int = number | undefined;
-// must be an integer in other langs
 export type IndexType = number | string;
+// must be an integer in other langs
+export type Int = number | undefined;
 export type MarketType = 'spot' | 'margin' | 'swap' | 'future' | 'option';
 export type Num = number | undefined;
 export type OrderSide = 'buy' | 'sell' | string;
@@ -10,8 +10,6 @@ export type Str = string | undefined;
 export type Strings = string[] | undefined;
 export type SubType = 'linear' | 'inverse' | undefined;
 
-export type MarketType = 'spot' | 'margin' | 'swap' | 'future' | 'option';
-export type SubType = 'linear' | 'inverse' | undefined;
 export interface Dictionary<T> {
     [key: string]: T;
 }

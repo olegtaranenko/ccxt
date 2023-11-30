@@ -1815,6 +1815,7 @@ class Exchange {
             'settleId': undefined,
             'spot': undefined,
             'strike': undefined,
+            'subType': undefined,
             'swap': undefined,
             'symbol': undefined,
             'taker': undefined,

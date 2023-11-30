@@ -22,7 +22,7 @@ export default class Exchange {
     httpsProxy: string;
     httpsProxyCallback: any;
     proxy: any;
-    proxy_url: string;
+    proxy_url: string;gi
     proxy_url_callback: any;
     proxyUrl: string;
     proxyUrlCallback: any;
