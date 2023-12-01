@@ -336,6 +336,3 @@ export type OHLCV = [Num, Num, Num, Num, Num, Num];
 export type OHLCVC = [Num, Num, Num, Num, Num, Num, Num];
 
 export type implicitReturnType = any;
-
-export type Market = MarketInterface | undefined;
-export type Currency = CurrencyInterface | undefined;
