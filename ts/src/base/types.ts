@@ -59,6 +59,7 @@ export interface MarketInterface {
     precision: {
         amount: Num
         price: Num
+        cost?: Num
     };
     quanto?: boolean;
     quote?: string;
