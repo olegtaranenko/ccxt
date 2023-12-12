@@ -37,8 +37,10 @@ export default class Exchange {
         'User-Agent': string;
     } | false;
     ws_proxy: string;
+    ws_socks_proxy: string;
     wsProxy: string;
     wss_proxy: string;
+    wsSocksProxy: string;
     wssProxy: string;
     userAgents: any;
     headers: any;
@@ -514,6 +516,8 @@ export default class Exchange {
     proxyModulesLoaded: boolean;
     loadProxyModules(): Promise<void>;
     setProxyAgents(httpProxy: any, httpsProxy: any, socksProxy: any): any;
+    loadHttpProxyAgent(): Promise<any>;
+    getHttpAgentIfNeeded(url: any): any;
     fetch(url: any, method?: string, headers?: any, body?: any): Promise<any>;
     parseJson(jsonString: any): any;
     getResponseHeaders(response: any): {};
