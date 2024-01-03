@@ -50,6 +50,8 @@ class bitmex(Exchange, ImplicitAPI):
                 'cancelAllOrders': True,
                 'cancelOrder': True,
                 'cancelOrders': True,
+                'closeAllPositions': False,
+                'closePosition': True,
                 'createOrder': True,
                 'createReduceOnlyOrder': True,
                 'editOrder': True,
@@ -393,7 +395,11 @@ class bitmex(Exchange, ImplicitAPI):
         finalAmount = Precise.string_div(amountString, precision)
         return self.parse_number(finalAmount)
 
-    def convert_to_real_amount(self, code: str, amount: str):
+    def convert_to_real_amount(self, code: Str, amount: Str):
+        if code is None:
+            return amount
+        elif amount is None:
+            return None
         currency = self.currency(code)
         precision = self.safe_string(currency, 'precision')
         return Precise.string_mul(amount, precision)
@@ -841,7 +847,7 @@ class bitmex(Exchange, ImplicitAPI):
         fetches information on multiple orders made by the user
         :param str symbol: unified market symbol of the market orders were made in
         :param int [since]: the earliest time in ms to fetch orders for
-        :param int [limit]: the maximum number of  orde structures to retrieve
+        :param int [limit]: the maximum number of order structures to retrieve
         :param dict [params]: extra parameters specific to the exchange API endpoint
         :param int [params.until]: the earliest time in ms to fetch orders for
         :param boolean [params.paginate]: default False, when True will automatically paginate by calling self endpoint multiple times. See in the docs all the [availble parameters](https://github.com/ccxt/ccxt/wiki/Manual#pagination-params)
@@ -895,7 +901,7 @@ class bitmex(Exchange, ImplicitAPI):
         fetches information on multiple closed orders made by the user
         :param str symbol: unified market symbol of the market orders were made in
         :param int [since]: the earliest time in ms to fetch orders for
-        :param int [limit]: the maximum number of  orde structures to retrieve
+        :param int [limit]: the maximum number of order structures to retrieve
         :param dict [params]: extra parameters specific to the exchange API endpoint
         :returns Order[]: a list of `order structures <https://docs.ccxt.com/#/?id=order-structure>`
         """
@@ -2114,7 +2120,7 @@ class bitmex(Exchange, ImplicitAPI):
         datetime = self.safe_string(position, 'timestamp')
         crossMargin = self.safe_value(position, 'crossMargin')
         marginMode = 'cross' if (crossMargin is True) else 'isolated'
-        notionalString = Precise.string_abs(self.safe_string(position, 'foreignNotional', 'homeNotional'))
+        notionalString = Precise.string_abs(self.safe_string_2(position, 'foreignNotional', 'homeNotional'))
         settleCurrencyCode = self.safe_string(market, 'settle')
         maintenanceMargin = self.convert_to_real_amount(settleCurrencyCode, self.safe_string(position, 'maintMargin'))
         unrealisedPnl = self.convert_to_real_amount(settleCurrencyCode, self.safe_string(position, 'unrealisedPnl'))
