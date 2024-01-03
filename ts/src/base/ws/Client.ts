@@ -25,10 +25,6 @@ export default class Client {
 
     connectionTimeout: any
 
-    verbose: boolean
-
-    verboseLogVeto: any
-
     connectionTimer: any
 
     lastPong: any
@@ -62,6 +58,10 @@ export default class Client {
     subscriptions: {}
 
     throttle: any
+
+    verbose: boolean
+
+    verboseLogVeto: any
 
     constructor (url, onMessageCallback, onErrorCallback, onCloseCallback, onConnectedCallback, config = {}) {
         const defaults = {
