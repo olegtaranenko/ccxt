@@ -1,7 +1,6 @@
 import * as functions from './functions.js';
 import { AuthenticationError, DDoSProtection, ExchangeError, ExchangeNotAvailable, RateLimitExceeded, RequestTimeout } from "./errors.js";
 import WsClient from './ws/WsClient.js';
-import { Future } from './ws/Future.js';
 import { CountedOrderBook, IndexedOrderBook, OrderBook as WsOrderBook } from './ws/OrderBook.js';
 import type { Account, Balance, Balances, Currency, CurrencyInterface, DepositAddressResponse, Dictionary, FundingHistory, FundingRateHistory, Greeks, IndexType, Int, Liquidation, MarginMode, Market, MarketInterface, MinMax, Num, OHLCV, OHLCVC, OpenInterest, Order, OrderBook, OrderRequest, OrderSide, OrderType, Position, Str, Ticker, Tickers, Trade } from './types.js';
 export type { Balance, Balances, Currency, DepositAddressResponse, Dictionary, Fee, FundingHistory, FundingRateHistory, Greeks, IndexType, Int, Liquidation, Market, MinMax, OHLCV, OHLCVC, Order, OrderBook, OrderSide, OrderType, Position, Ticker, Trade, Transaction } from './types.js';
@@ -386,7 +385,7 @@ export default class Exchange {
             fetchPositionsForSymbol: any;
             fetchPositionsRisk: any;
             fetchPremiumIndexOHLCV: any;
-            fetchStatus: string;
+            fetchStatus: any;
             fetchTicker: boolean;
             fetchTickers: any;
             fetchTime: any;
@@ -542,7 +541,7 @@ export default class Exchange {
     checkOrderArguments(market: any, type: any, side: any, amount: any, price: any, params: any): void;
     handleHttpStatusCode(code: any, reason: any, url: any, method: any, body: any): void;
     remove0xPrefix(hexData: any): any;
-    spawn(method: any, ...args: any[]): ReturnType<typeof Future>;
+    spawn(method: any, ...args: any[]): import("./ws/Future.js").FutureInterface;
     delay(timeout: any, method: any, ...args: any[]): void;
     orderBook(snapshot?: {}, depth?: number): WsOrderBook;
     indexedOrderBook(snapshot?: {}, depth?: number): IndexedOrderBook;
