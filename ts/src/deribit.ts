@@ -42,6 +42,7 @@ export default class deribit extends Exchange {
                 'createStopLimitOrder': true,
                 'createStopMarketOrder': true,
                 'createStopOrder': true,
+                'createTrailingAmountOrder': true,
                 'editOrder': true,
                 'fetchAccounts': true,
                 'fetchBalance': true,
@@ -1698,6 +1699,10 @@ export default class deribit extends Exchange {
         const request = {
             'order_id': id,
         };
+        let market = undefined;
+        if (symbol !== undefined) {
+            market = this.market (symbol);
+        }
         const response = await this.privateGetGetOrderState (this.extend (request, params));
         //
         //     {
@@ -1728,7 +1733,7 @@ export default class deribit extends Exchange {
         //     }
         //
         const result = this.safeValue (response, 'result');
-        return this.parseOrder (result);
+        return this.parseOrder (result, market);
     }
 
     async createOrder (symbol: string, type: OrderType, side: OrderSide, amount, price = undefined, params = {}) {
@@ -1740,25 +1745,18 @@ export default class deribit extends Exchange {
          * @param {string} symbol unified symbol of the market to create an order in
          * @param {string} type 'market' or 'limit'
          * @param {string} side 'buy' or 'sell'
-         * @param {float} amount how much of currency you want to trade. For perpetual and futures the amount is in USD. For options it is in corresponding cryptocurrency contracts currency.
+         * @param {float} amount how much you want to trade in units of the base currency. For inverse perpetual and futures the amount is in the quote currency USD. For options it is in the underlying assets base currency.
          * @param {float} [price] the price at which the order is to be fullfilled, in units of the quote currency, ignored in market orders
          * @param {object} [params] extra parameters specific to the exchange API endpoint
+         * @param {string} [params.trigger] the trigger type 'index_price', 'mark_price', or 'last_price', default is 'last_price'
+         * @param {float} [params.trailingAmount] the quote amount to trail away from the current market price
          * @returns {object} an [order structure]{@link https://docs.ccxt.com/#/?id=order-structure}
          */
         await this.loadMarkets ();
         const market = this.market (symbol);
-        if (market['inverse']) {
-            amount = this.amountToPrecision (symbol, amount);
-        } else if (market['settle'] === 'USDC') {
-            amount = this.amountToPrecision (symbol, amount);
-        } else {
-            amount = this.currencyToPrecision (symbol, amount);
-        }
         const request = {
             'instrument_name': market['id'],
-            // for perpetual and futures the amount is in USD
-            // for options it is in corresponding cryptocurrency contracts, e.g., BTC or ETH
-            'amount': amount,
+            'amount': this.amountToPrecision (symbol, amount),
             'type': type, // limit, stop_limit, market, stop_market, default is limit
             // 'label': 'string', // user-defined label for the order (maximum 64 characters)
             // 'price': this.priceToPrecision (symbol, 123.45), // only for limit and stop_limit orders
@@ -1771,12 +1769,15 @@ export default class deribit extends Exchange {
             // 'trigger': 'index_price', // mark_price, last_price, required for stop_limit orders
             // 'advanced': 'usd', // 'implv', advanced option order type, options only
         };
+        const trigger = this.safeString (params, 'trigger', 'last_price');
         const timeInForce = this.safeStringUpper (params, 'timeInForce');
         const reduceOnly = this.safeValue2 (params, 'reduceOnly', 'reduce_only');
         // only stop loss sell orders are allowed when price crossed from above
         const stopLossPrice = this.safeValue (params, 'stopLossPrice');
         // only take profit buy orders are allowed when price crossed from below
         const takeProfitPrice = this.safeValue (params, 'takeProfitPrice');
+        const trailingAmount = this.safeString2 (params, 'trailingAmount', 'trigger_offset');
+        const isTrailingAmountOrder = trailingAmount !== undefined;
         const isStopLimit = type === 'stop_limit';
         const isStopMarket = type === 'stop_market';
         const isTakeLimit = type === 'take_limit';
@@ -1797,10 +1798,14 @@ export default class deribit extends Exchange {
         } else {
             request['type'] = 'market';
         }
-        if (isStopOrder) {
+        if (isTrailingAmountOrder) {
+            request['trigger'] = trigger;
+            request['type'] = 'trailing_stop';
+            request['trigger_offset'] = this.parseToNumeric (trailingAmount);
+        } else if (isStopOrder) {
             const triggerPrice = (stopLossPrice !== undefined) ? stopLossPrice : takeProfitPrice;
             request['trigger_price'] = this.priceToPrecision (symbol, triggerPrice);
-            request['trigger'] = 'last_price'; // required
+            request['trigger'] = trigger;
             if (isStopLossOrder) {
                 if (isMarketOrder) {
                     // stop_market (sell only)
@@ -1837,7 +1842,7 @@ export default class deribit extends Exchange {
                 request['time_in_force'] = 'fill_or_kill';
             }
         }
-        params = this.omit (params, [ 'timeInForce', 'stopLossPrice', 'takeProfitPrice', 'postOnly', 'reduceOnly' ]);
+        params = this.omit (params, [ 'timeInForce', 'stopLossPrice', 'takeProfitPrice', 'postOnly', 'reduceOnly', 'trailingAmount' ]);
         let response = undefined;
         if (this.capitalize (side) === 'Buy') {
             response = await this.privateGetBuy (this.extend (request, params));
@@ -1904,25 +1909,43 @@ export default class deribit extends Exchange {
     }
 
     async editOrder (id: string, symbol, type, side, amount = undefined, price = undefined, params = {}) {
+        /**
+         * @method
+         * @name deribit#editOrder
+         * @description edit a trade order
+         * @see https://docs.deribit.com/#private-edit
+         * @param {string} id edit order id
+         * @param {string} [symbol] unified symbol of the market to edit an order in
+         * @param {string} [type] 'market' or 'limit'
+         * @param {string} [side] 'buy' or 'sell'
+         * @param {float} amount how much you want to trade in units of the base currency, inverse swap and future use the quote currency
+         * @param {float} [price] the price at which the order is to be fullfilled, in units of the base currency, ignored in market orders
+         * @param {object} [params] extra parameters specific to the exchange API endpoint
+         * @param {float} [params.trailingAmount] the quote amount to trail away from the current market price
+         * @returns {object} an [order structure]{@link https://docs.ccxt.com/#/?id=order-structure}
+         */
         if (amount === undefined) {
             throw new ArgumentsRequired (this.id + ' editOrder() requires an amount argument');
-        }
-        if (price === undefined) {
-            throw new ArgumentsRequired (this.id + ' editOrder() requires a price argument');
         }
         await this.loadMarkets ();
         const request = {
             'order_id': id,
-            // for perpetual and futures the amount is in USD
-            // for options it is in corresponding cryptocurrency contracts, e.g., BTC or ETH
             'amount': this.amountToPrecision (symbol, amount),
-            'price': this.priceToPrecision (symbol, price), // required
             // 'post_only': false, // if the new price would cause the order to be filled immediately (as taker), the price will be changed to be just below the spread.
             // 'reject_post_only': false, // if true the order is put to order book unmodified or request is rejected
             // 'reduce_only': false, // if true, the order is intended to only reduce a current position
             // 'stop_price': false, // stop price, required for stop_limit orders
             // 'advanced': 'usd', // 'implv', advanced option order type, options only
         };
+        if (price !== undefined) {
+            request['price'] = this.priceToPrecision (symbol, price);
+        }
+        const trailingAmount = this.safeString2 (params, 'trailingAmount', 'trigger_offset');
+        const isTrailingAmountOrder = trailingAmount !== undefined;
+        if (isTrailingAmountOrder) {
+            request['trigger_offset'] = this.parseToNumeric (trailingAmount);
+            params = this.omit (params, 'trigger_offset');
+        }
         const response = await this.privateGetEdit (this.extend (request, params));
         const result = this.safeValue (response, 'result', {});
         const order = this.safeValue (result, 'order');
@@ -2412,6 +2435,7 @@ export default class deribit extends Exchange {
          * @method
          * @name deribit#fetchPosition
          * @description fetch data on a single open contract trade position
+         * @see https://docs.deribit.com/#private-get_position
          * @param {string} symbol unified market symbol of the market the position is held in, default is undefined
          * @param {object} [params] extra parameters specific to the exchange API endpoint
          * @returns {object} a [position structure]{@link https://docs.ccxt.com/#/?id=position-structure}
@@ -2457,11 +2481,14 @@ export default class deribit extends Exchange {
          * @method
          * @name deribit#fetchPositions
          * @description fetch all open positions
+         * @see https://docs.deribit.com/#private-get_positions
          * @param {string[]|undefined} symbols list of unified market symbols
          * @param {object} [params] extra parameters specific to the exchange API endpoint
+         * @param {string} [params.kind] market type filter for positions 'future', 'option', 'spot', 'future_combo' or 'option_combo'
          * @returns {object[]} a list of [position structure]{@link https://docs.ccxt.com/#/?id=position-structure}
          */
         await this.loadMarkets ();
+        let kind = this.safeString (params, 'kind');
         let code = undefined;
         if (symbols === undefined) {
             code = this.codeFromOptions ('fetchPositions', params);
@@ -2475,14 +2502,18 @@ export default class deribit extends Exchange {
                     throw new BadRequest (this.id + ' fetchPositions() symbols argument cannot contain more than 1 symbol');
                 }
                 const market = this.market (symbols[0]);
-                code = market['base'];
+                const settle = market['settle'];
+                code = (settle !== undefined) ? settle : market['base'];
+                kind = market['info']['kind'];
             }
         }
         const currency = this.currency (code);
         const request = {
             'currency': currency['id'],
-            // "kind" : "future", "option"
         };
+        if (kind !== undefined) {
+            request['kind'] = kind;
+        }
         const response = await this.privateGetGetPositions (this.extend (request, params));
         //
         //     {
@@ -2890,7 +2921,7 @@ export default class deribit extends Exchange {
         }
         const request = {
             'instrument_name': market['id'],
-            'start_timestamp': since,
+            'start_timestamp': since - 1,
             'end_timestamp': time,
         };
         const response = await this.publicGetGetFundingRateHistory (this.extend (request, params));

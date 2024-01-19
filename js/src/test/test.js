@@ -296,10 +296,12 @@ export default class testMainClass extends baseMainTestClass {
         if (timeout !== undefined) {
             exchange.timeout = timeout;
         }
-        exchange.httpProxy = exchange.safeString(skippedSettingsForExchange, 'httpProxy');
-        exchange.httpsProxy = exchange.safeString(skippedSettingsForExchange, 'httpsProxy');
-        exchange.wsProxy = exchange.safeString(skippedSettingsForExchange, 'wsProxy');
-        exchange.wssProxy = exchange.safeString(skippedSettingsForExchange, 'wssProxy');
+        if (getCliArgValue('--useProxy')) {
+            exchange.httpProxy = exchange.safeString(skippedSettingsForExchange, 'httpProxy');
+            exchange.httpsProxy = exchange.safeString(skippedSettingsForExchange, 'httpsProxy');
+            exchange.wsProxy = exchange.safeString(skippedSettingsForExchange, 'wsProxy');
+            exchange.wssProxy = exchange.safeString(skippedSettingsForExchange, 'wssProxy');
+        }
         this.skippedMethods = exchange.safeValue(skippedSettingsForExchange, 'skipMethods', {});
         this.checkedPublicTests = {};
     }
@@ -471,6 +473,7 @@ export default class testMainClass extends baseMainTestClass {
             'fetchCurrencies': [],
             'fetchTicker': [symbol],
             'fetchTickers': [symbol],
+            'fetchLastPrices': [symbol],
             'fetchOHLCV': [symbol],
             'fetchTrades': [symbol],
             'fetchOrderBook': [symbol],
@@ -485,6 +488,7 @@ export default class testMainClass extends baseMainTestClass {
                 // @ts-ignore
                 'watchOHLCV': [symbol],
                 'watchTicker': [symbol],
+                'watchTickers': [symbol],
                 'watchOrderBook': [symbol],
                 'watchTrades': [symbol],
             };
@@ -916,13 +920,16 @@ export default class testMainClass extends baseMainTestClass {
             throw e;
         }
     }
-    assertStaticError(cond, message, calculatedOutput, storedOutput) {
+    assertStaticError(cond, message, calculatedOutput, storedOutput, key = undefined) {
         //  -----------------------------------------------------------------------------
         //  --- Init of static tests functions------------------------------------------
         //  -----------------------------------------------------------------------------
         const calculatedString = jsonStringify(calculatedOutput);
         const outputString = jsonStringify(storedOutput);
-        const errorMessage = message + ' expected ' + outputString + ' received: ' + calculatedString;
+        let errorMessage = message + ' expected ' + outputString + ' received: ' + calculatedString;
+        if (key !== undefined) {
+            errorMessage = ' | ' + key + ' | ' + 'computed value: ' + outputString + ' stored value: ' + calculatedString;
+        }
         assert(cond, errorMessage);
     }
     loadMarketsFromFile(id) {
@@ -943,7 +950,12 @@ export default class testMainClass extends baseMainTestClass {
         const result = {};
         if (targetExchange) {
             // read a single exchange
-            result[targetExchange] = ioFileRead(folder + targetExchange + '.json');
+            const path = folder + targetExchange + '.json';
+            if (!ioFileExists(path)) {
+                dump('[WARN] tests not found: ' + path);
+                return undefined;
+            }
+            result[targetExchange] = ioFileRead(path);
             return result;
         }
         const files = ioDirRead(folder);
@@ -997,7 +1009,7 @@ export default class testMainClass extends baseMainTestClass {
         }
         return result;
     }
-    assertNewAndStoredOutput(exchange, skipKeys, newOutput, storedOutput, strictTypeCheck = true) {
+    assertNewAndStoredOutput(exchange, skipKeys, newOutput, storedOutput, strictTypeCheck = true, assertingKey = undefined) {
         if (isNullValue(newOutput) && isNullValue(storedOutput)) {
             return;
         }
@@ -1021,7 +1033,7 @@ export default class testMainClass extends baseMainTestClass {
                 }
                 const storedValue = storedOutput[key];
                 const newValue = newOutput[key];
-                this.assertNewAndStoredOutput(exchange, skipKeys, newValue, storedValue, strictTypeCheck);
+                this.assertNewAndStoredOutput(exchange, skipKeys, newValue, storedValue, strictTypeCheck, key);
             }
         }
         else if (Array.isArray(storedOutput) && (Array.isArray(newOutput))) {
@@ -1044,19 +1056,19 @@ export default class testMainClass extends baseMainTestClass {
             if (strictTypeCheck) {
                 // upon building the request we want strict type check to make sure all the types are correct
                 // when comparing the response we want to allow some flexibility, because a 50.0 can be equal to 50 after saving it to the json file
-                this.assertStaticError(sanitizedNewOutput === sanitizedStoredOutput, messageError, storedOutput, newOutput);
+                this.assertStaticError(sanitizedNewOutput === sanitizedStoredOutput, messageError, storedOutput, newOutput, assertingKey);
             }
             else {
                 const isBoolean = (typeof sanitizedNewOutput === 'boolean') || (typeof sanitizedStoredOutput === 'boolean');
                 const isString = (typeof sanitizedNewOutput === 'string') || (typeof sanitizedStoredOutput === 'string');
                 const isUndefined = (sanitizedNewOutput === undefined) || (sanitizedStoredOutput === undefined); // undefined is a perfetly valid value
                 if (isBoolean || isString || isUndefined) {
-                    this.assertStaticError(newOutputString === storedOutputString, messageError, storedOutput, newOutput);
+                    this.assertStaticError(newOutputString === storedOutputString, messageError, storedOutput, newOutput, assertingKey);
                 }
                 else {
                     const numericNewOutput = exchange.parseToNumeric(newOutputString);
                     const numericStoredOutput = exchange.parseToNumeric(storedOutputString);
-                    this.assertStaticError(numericNewOutput === numericStoredOutput, messageError, storedOutput, newOutput);
+                    this.assertStaticError(numericNewOutput === numericStoredOutput, messageError, storedOutput, newOutput, assertingKey);
                 }
             }
         }
@@ -1174,7 +1186,7 @@ export default class testMainClass extends baseMainTestClass {
     initOfflineExchange(exchangeName) {
         const markets = this.loadMarketsFromFile(exchangeName);
         const currencies = this.loadCurrenciesFromFile(exchangeName);
-        const exchange = initExchange(exchangeName, { 'markets': markets, 'enableRateLimit': false, 'rateLimit': 1, 'httpProxy': 'http://fake:8080', 'httpsProxy': 'http://fake:8080', 'apiKey': 'key', 'secret': 'secretsecret', 'password': 'password', 'walletAddress': 'wallet', 'uid': 'uid', 'accounts': [{ 'id': 'myAccount' }], 'options': { 'enableUnifiedAccount': true, 'enableUnifiedMargin': false, 'accessToken': 'token', 'expires': 999999999999999, 'leverageBrackets': {} } });
+        const exchange = initExchange(exchangeName, { 'markets': markets, 'enableRateLimit': false, 'rateLimit': 1, 'httpProxy': 'http://fake:8080', 'httpsProxy': 'http://fake:8080', 'apiKey': 'key', 'secret': 'secretsecret', 'password': 'password', 'walletAddress': 'wallet', 'uid': 'uid', 'accounts': [{ 'id': 'myAccount', 'code': 'USDT' }, { 'id': 'myAccount', 'code': 'USDC' }], 'options': { 'enableUnifiedAccount': true, 'enableUnifiedMargin': false, 'accessToken': 'token', 'expires': 999999999999999, 'leverageBrackets': {} } });
         exchange.currencies = currencies; // not working in python if assigned  in the config dict
         return exchange;
     }
@@ -1190,6 +1202,10 @@ export default class testMainClass extends baseMainTestClass {
                 const result = results[j];
                 const description = exchange.safeValue(result, 'description');
                 if ((testName !== undefined) && (testName !== description)) {
+                    continue;
+                }
+                const isDisabled = exchange.safeValue(result, 'disabled', false);
+                if (isDisabled) {
                     continue;
                 }
                 const type = exchange.safeString(exchangeData, 'outputType');
@@ -1211,6 +1227,14 @@ export default class testMainClass extends baseMainTestClass {
             for (let j = 0; j < results.length; j++) {
                 const result = results[j];
                 const description = exchange.safeValue(result, 'description');
+                const isDisabled = exchange.safeValue(result, 'disabled', false);
+                if (isDisabled) {
+                    continue;
+                }
+                const isDisabledPHP = exchange.safeValue(result, 'disabledPHP', false);
+                if (isDisabledPHP && (this.ext === 'php')) {
+                    continue;
+                }
                 if ((testName !== undefined) && (testName !== description)) {
                     continue;
                 }
@@ -1238,6 +1262,9 @@ export default class testMainClass extends baseMainTestClass {
     async runStaticTests(type, targetExchange = undefined, testName = undefined) {
         const folder = this.rootDir + './ts/src/test/static/' + type + '/';
         const staticData = this.loadStaticData(folder, targetExchange);
+        if (staticData === undefined) {
+            return;
+        }
         const exchanges = Object.keys(staticData);
         const exchange = initExchange('Exchange', {}); // tmp to do the calculations until we have the ast-transpiler transpiling this code
         const promises = [];
@@ -1289,11 +1316,12 @@ export default class testMainClass extends baseMainTestClass {
             this.testKucoinfutures(),
             this.testBitget(),
             this.testMexc(),
-            this.testHuobi(),
+            this.testHtx(),
             this.testWoo(),
             this.testBitmart(),
             this.testCoinex(),
-            this.testBingx()
+            this.testBingx(),
+            this.testPhemex(),
         ];
         await Promise.all(promises);
         const successMessage = '[' + this.lang + '][TEST_SUCCESS] brokerId tests passed.';
@@ -1447,8 +1475,8 @@ export default class testMainClass extends baseMainTestClass {
         assert(reqHeaders['source'] === id, 'id not in headers');
         await close(exchange);
     }
-    async testHuobi() {
-        const exchange = this.initOfflineExchange('huobi');
+    async testHtx() {
+        const exchange = this.initOfflineExchange('htx');
         // spot test
         const id = 'AA03022abc';
         let spotOrderRequest = undefined;
@@ -1549,6 +1577,20 @@ export default class testMainClass extends baseMainTestClass {
             reqHeaders = exchange.last_request_headers;
         }
         assert(reqHeaders['X-SOURCE-KEY'] === id, 'id not in headers');
+        await close(exchange);
+    }
+    async testPhemex() {
+        const exchange = this.initOfflineExchange('phemex');
+        const id = 'CCXT123456';
+        let request = undefined;
+        try {
+            await exchange.createOrder('BTC/USDT', 'limit', 'buy', 1, 20000);
+        }
+        catch (e) {
+            request = jsonParse(exchange.last_request_body);
+        }
+        const clientOrderId = request['clOrdID'];
+        assert(clientOrderId.startsWith(id), 'clOrdID does not start with id');
         await close(exchange);
     }
 }
