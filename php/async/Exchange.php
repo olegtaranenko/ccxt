@@ -3232,6 +3232,10 @@ class Exchange extends \ccxt\Exchange {
         }) ();
     }
 
+    public function fetch_canceled_and_closed_orders(?string $symbol = null, ?int $since = null, ?int $limit = null, $params = array ()) {
+        throw new NotSupported($this->id . ' fetchCanceledAndClosedOrders() is not supported yet');
+    }
+
     public function fetch_closed_orders_ws(?string $symbol = null, ?int $since = null, ?int $limit = null, $params = array ()) {
         return Async\async(function () use ($symbol, $since, $limit, $params) {
             if ($this->has['fetchOrdersWs']) {
@@ -3379,8 +3383,14 @@ class Exchange extends \ccxt\Exchange {
                 }
             }
             return $markets[0];
+        } elseif ((str_ends_with($symbol, '-C')) || (str_ends_with($symbol, '-P')) || (str_starts_with($symbol, 'C-')) || (str_starts_with($symbol, 'P-'))) {
+            return $this->createExpiredOptionMarket ($symbol);
         }
         throw new BadSymbol($this->id . ' does not have $market $symbol ' . $symbol);
+    }
+
+    public function create_expired_option_market(string $symbol) {
+        throw new NotSupported($this->id . ' createExpiredOptionMarket () is not supported yet');
     }
 
     public function handle_withdraw_tag_and_params($tag, $params) {
@@ -4213,8 +4223,10 @@ class Exchange extends \ccxt\Exchange {
                         }
                         $response = Async\await($this->$method ($symbol, null, $maxEntriesPerRequest, $params));
                         $responseLength = count($response);
-                        if ($this->verbose) {
-                            $this->log ('Dynamic pagination call', $calls, 'method', $method, 'response length', $responseLength, 'timestamp', $paginationTimestamp);
+                        if ($this->verbose || $this->verboseTruncate) {
+                            if (!is_callable($this->verboseLogVeto) || $this->verboseLogVeto ('pagination', $method, null, $response)) {
+                                $this->log ('Dynamic pagination call', $calls, 'method', $method, 'response length', $responseLength, 'timestamp', $paginationTimestamp);
+                            }
                         }
                         if ($responseLength === 0) {
                             break;
@@ -4230,8 +4242,10 @@ class Exchange extends \ccxt\Exchange {
                         // do it forwards, starting from the $since
                         $response = Async\await($this->$method ($symbol, $paginationTimestamp, $maxEntriesPerRequest, $params));
                         $responseLength = count($response);
-                        if ($this->verbose) {
-                            $this->log ('Dynamic pagination call', $calls, 'method', $method, 'response length', $responseLength, 'timestamp', $paginationTimestamp);
+                        if ($this->verbose || $this->verboseTruncate) {
+                            if (!is_callable($this->verboseLogVeto) || $this->verboseLogVeto ('pagination', $method, null, $response)) {
+                                $this->log ('Dynamic pagination call', $calls, 'method', $method, 'response length', $responseLength, 'timestamp', $paginationTimestamp);
+                            }
                         }
                         if ($responseLength === 0) {
                             break;
@@ -4345,8 +4359,10 @@ class Exchange extends \ccxt\Exchange {
                     }
                     $errors = 0;
                     $responseLength = count($response);
-                    if ($this->verbose) {
-                        $this->log ('Cursor pagination call', $i + 1, 'method', $method, 'response length', $responseLength, 'cursor', $cursorValue);
+                    if ($this->verbose || $this->verboseTruncate) {
+                        if (!is_callable($this->verboseLogVeto) || $this->verboseLogVeto ('pagination', $method, null, $response)) {
+                            $this->log ('Cursor pagination call', $i + 1, 'method', $method, 'response length', $responseLength, 'cursor', $cursorValue);
+                        }
                     }
                     if ($responseLength === 0) {
                         break;
@@ -4391,8 +4407,10 @@ class Exchange extends \ccxt\Exchange {
                     $response = Async\await($this->$method ($symbol, $since, $maxEntriesPerRequest, $params));
                     $errors = 0;
                     $responseLength = count($response);
-                    if ($this->verbose) {
-                        $this->log ('Incremental pagination call', $i + 1, 'method', $method, 'response length', $responseLength);
+                    if ($this->verbose || $this->verboseTruncate) {
+                        if (!is_callable($this->verboseLogVeto) || $this->verboseLogVeto ('pagination', $method, null, $response)) {
+                            $this->log ('Incremental pagination call', $i + 1, 'method', $method, 'response length', $responseLength);
+                        }
                     }
                     if ($responseLength === 0) {
                         break;
@@ -4500,5 +4518,16 @@ class Exchange extends \ccxt\Exchange {
 
     public function parse_greeks($greeks, ?array $market = null) {
         throw new NotSupported($this->id . ' parseGreeks () is not supported yet');
+    }
+
+    public function get_body_truncated(?string $body) {
+        if ($this->verboseTruncate && $body) {
+            $TRUNCATE_LENGTH = 8192;
+            $length = strlen($body) + 8;
+            if (strlen($body) >= $TRUNCATE_LENGTH) {
+                return $body->substring (0, $TRUNCATE_LENGTH / 2) . '\n ... \n' . $body->substring ($length - $TRUNCATE_LENGTH / 2);
+            }
+        }
+        return $body;
     }
 }

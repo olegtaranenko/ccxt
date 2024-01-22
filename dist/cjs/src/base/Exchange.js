@@ -402,6 +402,7 @@ class Exchange {
                 'fetchBorrowInterest': undefined,
                 'fetchBorrowRateHistory': undefined,
                 'fetchCanceledOrders': undefined,
+                'fetchCanceledAndClosedOrders': undefined,
                 'fetchClosedOrder': undefined,
                 'fetchClosedOrders': undefined,
                 'fetchClosedOrdersWs': undefined,
@@ -804,7 +805,8 @@ class Exchange {
         // log
         if (this.verbose || this.verboseTruncate) {
             if (typeof this.verboseLogVeto !== 'function' || this.verboseLogVeto('fetch', method, url, headers, body)) {
-                this.log("fetch Request:\n", this.id, method, url, "\nRequestHeaders:\n", headers, "\nRequestBody:\n", body, "\n");
+                const truncated = this.getBodyTruncated(body);
+                this.log("fetch Request:\n", this.id, method, url, "\nRequestHeaders:\n", headers, "\nRequestBody:\n", truncated, "\n");
             }
         }
         // end of proxies & headers
@@ -927,10 +929,8 @@ class Exchange {
             }
             if (this.verbose || this.verboseTruncate) {
                 if (typeof this.verboseLogVeto !== 'function' || this.verboseLogVeto('response', method, url, response)) {
-                    const TRUNCATE_LENGTH = 1e4;
-                    const length = responseBody.length;
-                    const truncatedBody = (this.verboseTruncate && (responseBody.length > TRUNCATE_LENGTH + 100)) ? responseBody.substring(0, TRUNCATE_LENGTH / 2) + '\n ... \n' + responseBody.substring(length - TRUNCATE_LENGTH / 2) : responseBody;
-                    this.log("handleRestResponse:\n", this.id, method, url, response.status, response.statusText, "\nResponseHeaders:\n", responseHeaders, "\nResponseBody:\n", truncatedBody, "\n");
+                    const truncated = this.getBodyTruncated(bodyText);
+                    this.log("handleRestResponse:\n", this.id, method, url, response.status, response.statusText, "\nResponseHeaders:\n", responseHeaders, "\nResponseBody:\n", truncated, "\n");
                 }
             }
             const skipFurtherErrorHandling = this.handleErrors(response.status, response.statusText, url, method, responseHeaders, responseBody, json, requestHeaders, requestBody);
@@ -4124,6 +4124,9 @@ class Exchange {
         }
         throw new errors.NotSupported(this.id + ' fetchClosedOrders() is not supported yet');
     }
+    async fetchCanceledAndClosedOrders(symbol = undefined, since = undefined, limit = undefined, params = {}) {
+        throw new errors.NotSupported(this.id + ' fetchCanceledAndClosedOrders() is not supported yet');
+    }
     async fetchClosedOrdersWs(symbol = undefined, since = undefined, limit = undefined, params = {}) {
         if (this.has['fetchOrdersWs']) {
             const orders = await this.fetchOrdersWs(symbol, since, limit, params);
@@ -4252,7 +4255,13 @@ class Exchange {
             }
             return markets[0];
         }
+        else if ((symbol.endsWith('-C')) || (symbol.endsWith('-P')) || (symbol.startsWith('C-')) || (symbol.startsWith('P-'))) {
+            return this.createExpiredOptionMarket(symbol);
+        }
         throw new errors.BadSymbol(this.id + ' does not have market symbol ' + symbol);
+    }
+    createExpiredOptionMarket(symbol) {
+        throw new errors.NotSupported(this.id + ' createExpiredOptionMarket () is not supported yet');
     }
     handleWithdrawTagAndParams(tag, params) {
         if (typeof tag === 'object') {
@@ -5015,8 +5024,10 @@ class Exchange {
                     }
                     const response = await this[method](symbol, undefined, maxEntriesPerRequest, params);
                     const responseLength = response.length;
-                    if (this.verbose) {
-                        this.log('Dynamic pagination call', calls, 'method', method, 'response length', responseLength, 'timestamp', paginationTimestamp);
+                    if (this.verbose || this.verboseTruncate) {
+                        if (typeof this.verboseLogVeto !== 'function' || this.verboseLogVeto('pagination', method, undefined, response)) {
+                            this.log('Dynamic pagination call', calls, 'method', method, 'response length', responseLength, 'timestamp', paginationTimestamp);
+                        }
                     }
                     if (responseLength === 0) {
                         break;
@@ -5033,8 +5044,10 @@ class Exchange {
                     // do it forwards, starting from the since
                     const response = await this[method](symbol, paginationTimestamp, maxEntriesPerRequest, params);
                     const responseLength = response.length;
-                    if (this.verbose) {
-                        this.log('Dynamic pagination call', calls, 'method', method, 'response length', responseLength, 'timestamp', paginationTimestamp);
+                    if (this.verbose || this.verboseTruncate) {
+                        if (typeof this.verboseLogVeto !== 'function' || this.verboseLogVeto('pagination', method, undefined, response)) {
+                            this.log('Dynamic pagination call', calls, 'method', method, 'response length', responseLength, 'timestamp', paginationTimestamp);
+                        }
                     }
                     if (responseLength === 0) {
                         break;
@@ -5143,8 +5156,10 @@ class Exchange {
                 }
                 errors = 0;
                 const responseLength = response.length;
-                if (this.verbose) {
-                    this.log('Cursor pagination call', i + 1, 'method', method, 'response length', responseLength, 'cursor', cursorValue);
+                if (this.verbose || this.verboseTruncate) {
+                    if (typeof this.verboseLogVeto !== 'function' || this.verboseLogVeto('pagination', method, undefined, response)) {
+                        this.log('Cursor pagination call', i + 1, 'method', method, 'response length', responseLength, 'cursor', cursorValue);
+                    }
                 }
                 if (responseLength === 0) {
                     break;
@@ -5187,8 +5202,10 @@ class Exchange {
                 const response = await this[method](symbol, since, maxEntriesPerRequest, params);
                 errors = 0;
                 const responseLength = response.length;
-                if (this.verbose) {
-                    this.log('Incremental pagination call', i + 1, 'method', method, 'response length', responseLength);
+                if (this.verbose || this.verboseTruncate) {
+                    if (typeof this.verboseLogVeto !== 'function' || this.verboseLogVeto('pagination', method, undefined, response)) {
+                        this.log('Incremental pagination call', i + 1, 'method', method, 'response length', responseLength);
+                    }
                 }
                 if (responseLength === 0) {
                     break;
@@ -5291,6 +5308,16 @@ class Exchange {
     }
     parseGreeks(greeks, market = undefined) {
         throw new errors.NotSupported(this.id + ' parseGreeks () is not supported yet');
+    }
+    getBodyTruncated(body) {
+        if (this.verboseTruncate && body) {
+            const TRUNCATE_LENGTH = 8192;
+            const length = body.length + 8;
+            if (body.length >= TRUNCATE_LENGTH) {
+                return body.substring(0, TRUNCATE_LENGTH / 2) + '\n ... \n' + body.substring(length - TRUNCATE_LENGTH / 2);
+            }
+        }
+        return body;
     }
 }
 

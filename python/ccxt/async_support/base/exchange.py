@@ -1183,6 +1183,9 @@ class Exchange(BaseExchange):
             return self.filter_by(orders, 'status', 'closed')
         raise NotSupported(self.id + ' fetchClosedOrders() is not supported yet')
 
+    async def fetch_canceled_and_closed_orders(self, symbol: Str = None, since: Int = None, limit: Int = None, params={}):
+        raise NotSupported(self.id + ' fetchCanceledAndClosedOrders() is not supported yet')
+
     async def fetch_closed_orders_ws(self, symbol: str = None, since: Int = None, limit: Int = None, params={}):
         if self.has['fetchOrdersWs']:
             orders = await self.fetchOrdersWs(symbol, since, limit, params)
@@ -1445,8 +1448,9 @@ class Exchange(BaseExchange):
                         params['until'] = paginationTimestamp - 1
                     response = await getattr(self, method)(symbol, None, maxEntriesPerRequest, params)
                     responseLength = len(response)
-                    if self.verbose:
-                        self.log('Dynamic pagination call', calls, 'method', method, 'response length', responseLength, 'timestamp', paginationTimestamp)
+                    if self.verbose or self.verboseTruncate:
+                        if not callable(self.verboseLogVeto) or self.verboseLogVeto('pagination', method, None, response):
+                            self.log('Dynamic pagination call', calls, 'method', method, 'response length', responseLength, 'timestamp', paginationTimestamp)
                     if responseLength == 0:
                         break
                     errors = 0
@@ -1459,8 +1463,9 @@ class Exchange(BaseExchange):
                     # do it forwards, starting from the since
                     response = await getattr(self, method)(symbol, paginationTimestamp, maxEntriesPerRequest, params)
                     responseLength = len(response)
-                    if self.verbose:
-                        self.log('Dynamic pagination call', calls, 'method', method, 'response length', responseLength, 'timestamp', paginationTimestamp)
+                    if self.verbose or self.verboseTruncate:
+                        if not callable(self.verboseLogVeto) or self.verboseLogVeto('pagination', method, None, response):
+                            self.log('Dynamic pagination call', calls, 'method', method, 'response length', responseLength, 'timestamp', paginationTimestamp)
                     if responseLength == 0:
                         break
                     errors = 0
@@ -1545,8 +1550,9 @@ class Exchange(BaseExchange):
                     response = await getattr(self, method)(symbol, since, maxEntriesPerRequest, params)
                 errors = 0
                 responseLength = len(response)
-                if self.verbose:
-                    self.log('Cursor pagination call', i + 1, 'method', method, 'response length', responseLength, 'cursor', cursorValue)
+                if self.verbose or self.verboseTruncate:
+                    if not callable(self.verboseLogVeto) or self.verboseLogVeto('pagination', method, None, response):
+                        self.log('Cursor pagination call', i + 1, 'method', method, 'response length', responseLength, 'cursor', cursorValue)
                 if responseLength == 0:
                     break
                 result = self.array_concat(result, response)
@@ -1581,8 +1587,9 @@ class Exchange(BaseExchange):
                 response = await getattr(self, method)(symbol, since, maxEntriesPerRequest, params)
                 errors = 0
                 responseLength = len(response)
-                if self.verbose:
-                    self.log('Incremental pagination call', i + 1, 'method', method, 'response length', responseLength)
+                if self.verbose or self.verboseTruncate:
+                    if not callable(self.verboseLogVeto) or self.verboseLogVeto('pagination', method, None, response):
+                        self.log('Incremental pagination call', i + 1, 'method', method, 'response length', responseLength)
                 if responseLength == 0:
                     break
                 result = self.array_concat(result, response)

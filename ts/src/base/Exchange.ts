@@ -5872,12 +5872,13 @@ export default class Exchange {
 
     getBodyTruncated (body?: string) {
         if (this.verboseTruncate && body) {
-            const TRUNCATE_LENGTH = 1e4;
-            const length = body.length;
-            return (this.verboseTruncate && (body.length > TRUNCATE_LENGTH + 100)) ? body.substring (0, TRUNCATE_LENGTH / 2) + '\n ... \n' + body.substring (length - TRUNCATE_LENGTH / 2) : body;
-        } else {
-            return body;
+            const TRUNCATE_LENGTH = 8192;
+            const length = body.length + 8;
+            if (body.length >= TRUNCATE_LENGTH) {
+                return body.substring (0, TRUNCATE_LENGTH / 2) + '\n ... \n' + body.substring (length - TRUNCATE_LENGTH / 2);
+            }
         }
+        return body;
     }
 }
 

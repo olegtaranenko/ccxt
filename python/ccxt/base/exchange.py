@@ -4026,6 +4026,9 @@ class Exchange(object):
             return self.filter_by(orders, 'status', 'closed')
         raise NotSupported(self.id + ' fetchClosedOrders() is not supported yet')
 
+    def fetch_canceled_and_closed_orders(self, symbol: Str = None, since: Int = None, limit: Int = None, params={}):
+        raise NotSupported(self.id + ' fetchCanceledAndClosedOrders() is not supported yet')
+
     def fetch_closed_orders_ws(self, symbol: str = None, since: Int = None, limit: Int = None, params={}):
         if self.has['fetchOrdersWs']:
             orders = self.fetchOrdersWs(symbol, since, limit, params)
@@ -4137,7 +4140,12 @@ class Exchange(object):
                 if market[defaultType]:
                     return market
             return markets[0]
+        elif (symbol.endswith('-C')) or (symbol.endswith('-P')) or (symbol.startswith('C-')) or (symbol.startswith('P-')):
+            return self.createExpiredOptionMarket(symbol)
         raise BadSymbol(self.id + ' does not have market symbol ' + symbol)
+
+    def create_expired_option_market(self, symbol: str):
+        raise NotSupported(self.id + ' createExpiredOptionMarket() is not supported yet')
 
     def handle_withdraw_tag_and_params(self, tag, params):
         if isinstance(tag, dict):
@@ -4796,8 +4804,9 @@ class Exchange(object):
                         params['until'] = paginationTimestamp - 1
                     response = getattr(self, method)(symbol, None, maxEntriesPerRequest, params)
                     responseLength = len(response)
-                    if self.verbose:
-                        self.log('Dynamic pagination call', calls, 'method', method, 'response length', responseLength, 'timestamp', paginationTimestamp)
+                    if self.verbose or self.verboseTruncate:
+                        if not callable(self.verboseLogVeto) or self.verboseLogVeto('pagination', method, None, response):
+                            self.log('Dynamic pagination call', calls, 'method', method, 'response length', responseLength, 'timestamp', paginationTimestamp)
                     if responseLength == 0:
                         break
                     errors = 0
@@ -4810,8 +4819,9 @@ class Exchange(object):
                     # do it forwards, starting from the since
                     response = getattr(self, method)(symbol, paginationTimestamp, maxEntriesPerRequest, params)
                     responseLength = len(response)
-                    if self.verbose:
-                        self.log('Dynamic pagination call', calls, 'method', method, 'response length', responseLength, 'timestamp', paginationTimestamp)
+                    if self.verbose or self.verboseTruncate:
+                        if not callable(self.verboseLogVeto) or self.verboseLogVeto('pagination', method, None, response):
+                            self.log('Dynamic pagination call', calls, 'method', method, 'response length', responseLength, 'timestamp', paginationTimestamp)
                     if responseLength == 0:
                         break
                     errors = 0
@@ -4896,8 +4906,9 @@ class Exchange(object):
                     response = getattr(self, method)(symbol, since, maxEntriesPerRequest, params)
                 errors = 0
                 responseLength = len(response)
-                if self.verbose:
-                    self.log('Cursor pagination call', i + 1, 'method', method, 'response length', responseLength, 'cursor', cursorValue)
+                if self.verbose or self.verboseTruncate:
+                    if not callable(self.verboseLogVeto) or self.verboseLogVeto('pagination', method, None, response):
+                        self.log('Cursor pagination call', i + 1, 'method', method, 'response length', responseLength, 'cursor', cursorValue)
                 if responseLength == 0:
                     break
                 result = self.array_concat(result, response)
@@ -4932,8 +4943,9 @@ class Exchange(object):
                 response = getattr(self, method)(symbol, since, maxEntriesPerRequest, params)
                 errors = 0
                 responseLength = len(response)
-                if self.verbose:
-                    self.log('Incremental pagination call', i + 1, 'method', method, 'response length', responseLength)
+                if self.verbose or self.verboseTruncate:
+                    if not callable(self.verboseLogVeto) or self.verboseLogVeto('pagination', method, None, response):
+                        self.log('Incremental pagination call', i + 1, 'method', method, 'response length', responseLength)
                 if responseLength == 0:
                     break
                 result = self.array_concat(result, response)
@@ -5017,3 +5029,11 @@ class Exchange(object):
 
     def parse_greeks(self, greeks, market: Market = None):
         raise NotSupported(self.id + ' parseGreeks() is not supported yet')
+
+    def get_body_truncated(self, body: str):
+        if self.verboseTruncate and body:
+            TRUNCATE_LENGTH = 8192
+            length = len(body) + 8
+            if len(body) >= TRUNCATE_LENGTH:
+                return body.substring(0, TRUNCATE_LENGTH / 2) + '\n ... \n' + body.substring(length - TRUNCATE_LENGTH / 2)
+        return body
