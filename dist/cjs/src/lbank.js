@@ -24,6 +24,7 @@ class lbank extends lbank$1 {
             // 50 per second for making and cancelling orders 1000ms / 50 = 20
             // 20 per second for all other requests, cost = 50 / 20 = 2.5
             'rateLimit': 20,
+            'pro': true,
             'has': {
                 'CORS': false,
                 'spot': true,

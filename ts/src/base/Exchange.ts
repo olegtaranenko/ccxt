@@ -573,6 +573,7 @@ export default class Exchange {
                 'fetchBorrowInterest': undefined,
                 'fetchBorrowRateHistory': undefined,
                 'fetchCanceledOrders': undefined,
+                'fetchCanceledAndClosedOrders': undefined,
                 'fetchClosedOrder': undefined,
                 'fetchClosedOrders': undefined,
                 'fetchClosedOrdersWs': undefined,
@@ -4610,6 +4611,10 @@ export default class Exchange {
         throw new NotSupported (this.id + ' fetchClosedOrders() is not supported yet');
     }
 
+    async fetchCanceledAndClosedOrders (symbol: Str = undefined, since: Int = undefined, limit: Int = undefined, params = {}): Promise<Order[]> {
+        throw new NotSupported (this.id + ' fetchCanceledAndClosedOrders() is not supported yet');
+    }
+
     async fetchClosedOrdersWs (symbol: string = undefined, since: Int = undefined, limit: Int = undefined, params = {}): Promise<Order[]> {
         if (this.has['fetchOrdersWs']) {
             const orders = await this.fetchOrdersWs (symbol, since, limit, params);
@@ -4755,8 +4760,14 @@ export default class Exchange {
                 }
             }
             return markets[0];
+        } else if ((symbol.endsWith ('-C')) || (symbol.endsWith ('-P')) || (symbol.startsWith ('C-')) || (symbol.startsWith ('P-'))) {
+            return this.createExpiredOptionMarket (symbol);
         }
         throw new BadSymbol (this.id + ' does not have market symbol ' + symbol);
+    }
+
+    createExpiredOptionMarket (symbol: string): MarketInterface {
+        throw new NotSupported (this.id + ' createExpiredOptionMarket () is not supported yet');
     }
 
     handleWithdrawTagAndParams (tag, params): any {
