@@ -396,7 +396,6 @@ export default class Exchange {
                 'fetchBorrowRateHistory': undefined,
                 'fetchCanceledAndClosedOrders': undefined,
                 'fetchCanceledOrders': undefined,
-                'fetchCanceledAndClosedOrders': undefined,
                 'fetchClosedOrder': undefined,
                 'fetchClosedOrders': undefined,
                 'fetchClosedOrdersWs': undefined,

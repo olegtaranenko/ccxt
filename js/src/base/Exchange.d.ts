@@ -339,7 +339,6 @@ export default class Exchange {
             fetchBorrowRateHistory: any;
             fetchCanceledAndClosedOrders: any;
             fetchCanceledOrders: any;
-            fetchCanceledAndClosedOrders: any;
             fetchClosedOrder: any;
             fetchClosedOrders: any;
             fetchClosedOrdersWs: any;

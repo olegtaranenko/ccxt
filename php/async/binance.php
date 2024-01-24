@@ -7884,12 +7884,20 @@ class binance extends Exchange {
     public function fetch_positions(?array $symbols = null, $params = array ()) {
         return Async\async(function () use ($symbols, $params) {
             /**
+             * @see https://binance-docs.github.io/apidocs/futures/en/#position-information-v2-user_data
+             * @see https://binance-docs.github.io/apidocs/delivery/en/#position-information-user_data
+             * @see https://binance-docs.github.io/apidocs/futures/en/#account-information-v2-user_data
+             * @see https://binance-docs.github.io/apidocs/delivery/en/#account-information-user_data
+             * @see https://binance-docs.github.io/apidocs/voptions/en/#option-position-information-user_data
              * fetch all open positions
-             * @param {string[]|null} $symbols list of unified market $symbols
+             * @param {string[]} [$symbols] list of unified market $symbols
              * @param {array} [$params] extra parameters specific to the exchange API endpoint
+             * @param {string} [method] method name to call, "positionRisk", "account" or "option", default is "positionRisk"
              * @return {array[]} a list of ~@link https://docs.ccxt.com/#/?id=position-structure position structure~
              */
-            $defaultMethod = $this->safe_string($this->options, 'fetchPositions', 'positionRisk');
+            $defaultValue = $this->safe_string($this->options, 'fetchPositions', 'positionRisk');
+            $defaultMethod = null;
+            list($defaultMethod, $params) = $this->handle_option_and_params($params, 'fetchPositions', 'method', $defaultValue);
             if ($defaultMethod === 'positionRisk') {
                 return Async\await($this->fetch_positions_risk($symbols, $params));
             } elseif ($defaultMethod === 'account') {
@@ -7897,7 +7905,7 @@ class binance extends Exchange {
             } elseif ($defaultMethod === 'option') {
                 return Async\await($this->fetch_option_positions($symbols, $params));
             } else {
-                throw new NotSupported($this->id . '.options["fetchPositions"] = "' . $defaultMethod . '" is invalid, please choose between "account", "positionRisk" and "option"');
+                throw new NotSupported($this->id . '.options["fetchPositions"]/params["method"] = "' . $defaultMethod . '" is invalid, please choose between "account", "positionRisk" and "option"');
             }
         }) ();
     }

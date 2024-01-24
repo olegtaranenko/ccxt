@@ -56,7 +56,6 @@ class bitget extends bitget$1 {
                 'fetchBorrowRateHistory': false,
                 'fetchCanceledAndClosedOrders': true,
                 'fetchCanceledOrders': true,
-                'fetchCanceledAndClosedOrders': true,
                 'fetchClosedOrders': true,
                 'fetchCrossBorrowRate': true,
                 'fetchCrossBorrowRates': false,

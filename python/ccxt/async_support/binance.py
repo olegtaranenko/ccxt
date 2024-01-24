@@ -7370,12 +7370,20 @@ class binance(Exchange, ImplicitAPI):
 
     async def fetch_positions(self, symbols: Strings = None, params={}):
         """
+        :see: https://binance-docs.github.io/apidocs/futures/en/#position-information-v2-user_data
+        :see: https://binance-docs.github.io/apidocs/delivery/en/#position-information-user_data
+        :see: https://binance-docs.github.io/apidocs/futures/en/#account-information-v2-user_data
+        :see: https://binance-docs.github.io/apidocs/delivery/en/#account-information-user_data
+        :see: https://binance-docs.github.io/apidocs/voptions/en/#option-position-information-user_data
         fetch all open positions
-        :param str[]|None symbols: list of unified market symbols
+        :param str[] [symbols]: list of unified market symbols
         :param dict [params]: extra parameters specific to the exchange API endpoint
+        :param str [method]: method name to call, "positionRisk", "account" or "option", default is "positionRisk"
         :returns dict[]: a list of `position structure <https://docs.ccxt.com/#/?id=position-structure>`
         """
-        defaultMethod = self.safe_string(self.options, 'fetchPositions', 'positionRisk')
+        defaultValue = self.safe_string(self.options, 'fetchPositions', 'positionRisk')
+        defaultMethod = None
+        defaultMethod, params = self.handle_option_and_params(params, 'fetchPositions', 'method', defaultValue)
         if defaultMethod == 'positionRisk':
             return await self.fetch_positions_risk(symbols, params)
         elif defaultMethod == 'account':
@@ -7383,7 +7391,7 @@ class binance(Exchange, ImplicitAPI):
         elif defaultMethod == 'option':
             return await self.fetch_option_positions(symbols, params)
         else:
-            raise NotSupported(self.id + '.options["fetchPositions"] = "' + defaultMethod + '" is invalid, please choose between "account", "positionRisk" and "option"')
+            raise NotSupported(self.id + '.options["fetchPositions"]/params["method"] = "' + defaultMethod + '" is invalid, please choose between "account", "positionRisk" and "option"')
 
     async def fetch_account_positions(self, symbols: Strings = None, params={}):
         """
