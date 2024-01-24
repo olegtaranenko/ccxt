@@ -57,6 +57,7 @@ export default class bitget extends Exchange {
                 'fetchBorrowInterest': true,
                 'fetchBorrowRateHistories': false,
                 'fetchBorrowRateHistory': false,
+                'fetchCanceledAndClosedOrders': true,
                 'fetchCanceledOrders': true,
                 'fetchCanceledAndClosedOrders': true,
                 'fetchClosedOrders': true,

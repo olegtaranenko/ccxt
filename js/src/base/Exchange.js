@@ -394,6 +394,7 @@ export default class Exchange {
                 'fetchBidsAsks': undefined,
                 'fetchBorrowInterest': undefined,
                 'fetchBorrowRateHistory': undefined,
+                'fetchCanceledAndClosedOrders': undefined,
                 'fetchCanceledOrders': undefined,
                 'fetchCanceledAndClosedOrders': undefined,
                 'fetchClosedOrder': undefined,
@@ -402,12 +403,14 @@ export default class Exchange {
                 'fetchCrossBorrowRate': undefined,
                 'fetchCrossBorrowRates': undefined,
                 'fetchCurrencies': 'emulated',
+                'fetchCurrenciesWs': 'emulated',
                 'fetchDeposit': undefined,
                 'fetchDepositAddress': undefined,
                 'fetchDepositAddresses': undefined,
                 'fetchDepositAddressesByNetwork': undefined,
                 'fetchDeposits': undefined,
                 'fetchDepositsWithdrawals': undefined,
+                'fetchDepositsWs': undefined,
                 'fetchFundingHistory': undefined,
                 'fetchFundingRate': undefined,
                 'fetchFundingRateHistory': undefined,
@@ -422,9 +425,11 @@ export default class Exchange {
                 'fetchLeverageTiers': undefined,
                 'fetchMarketLeverageTiers': undefined,
                 'fetchMarkets': true,
+                'fetchMarketsWs': undefined,
                 'fetchMarkOHLCV': undefined,
                 'fetchMyTrades': undefined,
                 'fetchOHLCV': undefined,
+                'fetchOHLCVWs': undefined,
                 'fetchOpenInterest': undefined,
                 'fetchOpenInterestHistory': undefined,
                 'fetchOpenOrder': undefined,
@@ -451,6 +456,7 @@ export default class Exchange {
                 'fetchTradesWs': undefined,
                 'fetchTradingFee': undefined,
                 'fetchTradingFees': undefined,
+                'fetchTradingFeesWs': undefined,
                 'fetchTradingLimits': undefined,
                 'fetchTransactionFee': undefined,
                 'fetchTransactionFees': undefined,
@@ -459,6 +465,7 @@ export default class Exchange {
                 'fetchWithdrawAddresses': undefined,
                 'fetchWithdrawal': undefined,
                 'fetchWithdrawals': undefined,
+                'fetchWithdrawalsWs': undefined,
                 'future': undefined,
                 'margin': undefined,
                 'option': undefined,
@@ -1000,7 +1007,21 @@ export default class Exchange {
         // and may be changed for consistency later
         return new Promise((resolve, reject) => resolve(this.currencies));
     }
+    fetchCurrenciesWs(params = {}) {
+        // markets are returned as a list
+        // currencies are returned as a dict
+        // this is for historical reasons
+        // and may be changed for consistency later
+        return new Promise((resolve, reject) => resolve(this.currencies));
+    }
     fetchMarkets(params = {}) {
+        // markets are returned as a list
+        // currencies are returned as a dict
+        // this is for historical reasons
+        // and may be changed for consistency later
+        return new Promise((resolve, reject) => resolve(Object.values(this.markets)));
+    }
+    fetchMarketsWs(params = {}) {
         // markets are returned as a list
         // currencies are returned as a dict
         // this is for historical reasons
@@ -2791,6 +2812,13 @@ export default class Exchange {
         }
         throw new NotSupported(this.id + ' fetchOHLCV() is not supported yet' + message);
     }
+    async fetchOHLCVWs(symbol, timeframe = '1m', since = undefined, limit = undefined, params = {}) {
+        let message = '';
+        if (this.has['fetchTradesWs']) {
+            message = '. If you want to build OHLCV candles from trade executions data, visit https://github.com/ccxt/ccxt/tree/master/examples/ and see "build-ohlcv-bars" file';
+        }
+        throw new NotSupported(this.id + ' fetchOHLCVWs() is not supported yet. Try using fetchOHLCV instead.' + message);
+    }
     async watchOHLCV(symbol, timeframe = '1m', since = undefined, limit = undefined, params = {}) {
         throw new NotSupported(this.id + ' watchOHLCV() is not supported yet');
     }
@@ -3150,7 +3178,7 @@ export default class Exchange {
         for (let i = 0; i < response.length; i++) {
             const item = response[i];
             const id = this.safeString(item, marketIdKey);
-            const market = this.safeMarket(id, undefined, undefined, this.safeString(this.options, 'defaultType'));
+            const market = this.safeMarket(id, undefined, undefined, 'swap');
             const symbol = market['symbol'];
             const contract = this.safeValue(market, 'contract', false);
             if (contract && ((symbols === undefined) || this.inArray(symbol, symbols))) {
@@ -4144,9 +4172,6 @@ export default class Exchange {
     async watchMyTrades(symbol = undefined, since = undefined, limit = undefined, params = {}) {
         throw new NotSupported(this.id + ' watchMyTrades() is not supported yet');
     }
-    async fetchOHLCVWs(symbol, timeframe = '1m', since = undefined, limit = undefined, params = {}) {
-        throw new NotSupported(this.id + ' fetchOHLCVWs() is not supported yet');
-    }
     async fetchGreeks(symbol, params = {}) {
         throw new NotSupported(this.id + ' fetchGreeks() is not supported yet');
     }
@@ -4166,8 +4191,14 @@ export default class Exchange {
     async fetchDeposits(code = undefined, since = undefined, limit = undefined, params = {}) {
         throw new NotSupported(this.id + ' fetchDeposits() is not supported yet');
     }
+    async fetchDepositsWs(code = undefined, since = undefined, limit = undefined, params = {}) {
+        throw new NotSupported(this.id + ' fetchDepositsWs() is not supported yet');
+    }
     async fetchWithdrawals(code = undefined, since = undefined, limit = undefined, params = {}) {
         throw new NotSupported(this.id + ' fetchWithdrawals() is not supported yet');
+    }
+    async fetchWithdrawalsWs(code = undefined, since = undefined, limit = undefined, params = {}) {
+        throw new NotSupported(this.id + ' fetchWithdrawalsWs() is not supported yet');
     }
     async fetchOpenInterest(symbol, params = {}) {
         throw new NotSupported(this.id + ' fetchOpenInterest() is not supported yet');
@@ -4647,6 +4678,9 @@ export default class Exchange {
     }
     async fetchTradingFees(params = {}) {
         throw new NotSupported(this.id + ' fetchTradingFees() is not supported yet');
+    }
+    async fetchTradingFeesWs(params = {}) {
+        throw new NotSupported(this.id + ' fetchTradingFeesWs() is not supported yet');
     }
     async fetchTradingFee(symbol, params = {}) {
         if (!this.has['fetchTradingFees']) {

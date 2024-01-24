@@ -337,6 +337,7 @@ export default class Exchange {
             fetchBidsAsks: any;
             fetchBorrowInterest: any;
             fetchBorrowRateHistory: any;
+            fetchCanceledAndClosedOrders: any;
             fetchCanceledOrders: any;
             fetchCanceledAndClosedOrders: any;
             fetchClosedOrder: any;
@@ -345,12 +346,14 @@ export default class Exchange {
             fetchCrossBorrowRate: any;
             fetchCrossBorrowRates: any;
             fetchCurrencies: string;
+            fetchCurrenciesWs: string;
             fetchDeposit: any;
             fetchDepositAddress: any;
             fetchDepositAddresses: any;
             fetchDepositAddressesByNetwork: any;
             fetchDeposits: any;
             fetchDepositsWithdrawals: any;
+            fetchDepositsWs: any;
             fetchFundingHistory: any;
             fetchFundingRate: any;
             fetchFundingRateHistory: any;
@@ -365,9 +368,11 @@ export default class Exchange {
             fetchLeverageTiers: any;
             fetchMarketLeverageTiers: any;
             fetchMarkets: boolean;
+            fetchMarketsWs: any;
             fetchMarkOHLCV: any;
             fetchMyTrades: any;
             fetchOHLCV: any;
+            fetchOHLCVWs: any;
             fetchOpenInterest: any;
             fetchOpenInterestHistory: any;
             fetchOpenOrder: any;
@@ -394,6 +399,7 @@ export default class Exchange {
             fetchTradesWs: any;
             fetchTradingFee: any;
             fetchTradingFees: any;
+            fetchTradingFeesWs: any;
             fetchTradingLimits: any;
             fetchTransactionFee: any;
             fetchTransactionFees: any;
@@ -402,6 +408,7 @@ export default class Exchange {
             fetchWithdrawAddresses: any;
             fetchWithdrawal: any;
             fetchWithdrawals: any;
+            fetchWithdrawalsWs: any;
             future: any;
             margin: any;
             option: any;
@@ -535,7 +542,9 @@ export default class Exchange {
     loadMarketsHelper(reload?: boolean, params?: {}): Promise<Dictionary<any>>;
     loadMarkets(reload?: boolean, params?: {}): Promise<Dictionary<Market>>;
     fetchCurrencies(params?: {}): Promise<unknown>;
+    fetchCurrenciesWs(params?: {}): Promise<unknown>;
     fetchMarkets(params?: {}): Promise<Market[]>;
+    fetchMarketsWs(params?: {}): Promise<Market[]>;
     fetchMarketsFromOutside(markets: {}): {};
     checkRequiredDependencies(): void;
     parseNumber(value: any, d?: number): number;
@@ -680,6 +689,7 @@ export default class Exchange {
     borrowMargin(code: string, amount: any, symbol?: Str, params?: {}): Promise<any>;
     repayMargin(code: string, amount: any, symbol?: Str, params?: {}): Promise<any>;
     fetchOHLCV(symbol: string, timeframe?: string, since?: Int, limit?: Int, params?: {}): Promise<OHLCV[]>;
+    fetchOHLCVWs(symbol: string, timeframe?: string, since?: Int, limit?: Int, params?: {}): Promise<OHLCV[]>;
     watchOHLCV(symbol: string, timeframe?: string, since?: Int, limit?: Int, params?: {}): Promise<OHLCV[]>;
     convertTradingViewToOHLCV(ohlcvs: any, timestamp?: string, open?: string, high?: string, low?: string, close?: string, volume?: string, ms?: boolean): any[];
     convertOHLCVToTradingView(ohlcvs: any, timestamp?: string, open?: string, high?: string, low?: string, close?: string, volume?: string, ms?: boolean): {};
@@ -810,11 +820,12 @@ export default class Exchange {
     fetchLiquidations(symbol: string, since?: Int, limit?: Int, params?: {}): Promise<Liquidation[]>;
     fetchMyTradesWs(symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<Trade[]>;
     watchMyTrades(symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<Trade[]>;
-    fetchOHLCVWs(symbol: string, timeframe?: string, since?: Int, limit?: Int, params?: {}): Promise<OHLCV[]>;
     fetchGreeks(symbol: string, params?: {}): Promise<Greeks>;
     fetchDepositsWithdrawals(code?: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
     fetchDeposits(code?: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
+    fetchDepositsWs(code?: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
     fetchWithdrawals(code?: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
+    fetchWithdrawalsWs(code?: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
     fetchOpenInterest(symbol: string, params?: {}): Promise<OpenInterest>;
     fetchFundingRateHistory(symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<FundingRateHistory[]>;
     fetchFundingHistory(symbol?: string, since?: Int, limit?: Int, params?: {}): Promise<FundingHistory[]>;
@@ -872,6 +883,7 @@ export default class Exchange {
     handlePostOnly(isMarketOrder: boolean, exchangeSpecificPostOnlyOption: boolean, params?: any): any[];
     fetchLastPrices(symbols?: string[], params?: {}): Promise<void>;
     fetchTradingFees(params?: {}): Promise<any>;
+    fetchTradingFeesWs(params?: {}): Promise<any>;
     fetchTradingFee(symbol: string, params?: {}): Promise<any>;
     parseOpenInterest(interest: any, market?: Market): OpenInterest;
     parseOpenInterests(response: any, market?: any, since?: Int, limit?: Int): OpenInterest[];

@@ -36,7 +36,7 @@ use Elliptic\EdDSA;
 use BN\BN;
 use Exception;
 
-$version = '4.2.19';
+$version = '4.2.21';
 
 // rounding mode
 const TRUNCATE = 0;
@@ -55,7 +55,7 @@ const PAD_WITH_ZERO = 6;
 
 class Exchange {
 
-    const VERSION = '4.2.19';
+    const VERSION = '4.2.21';
 
     private static $base58_alphabet = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
     private static $base58_encoder = null;
@@ -3592,6 +3592,14 @@ class Exchange {
         throw new NotSupported($this->id . ' fetchOHLCV() is not supported yet' . $message);
     }
 
+    public function fetch_ohlcv_ws(string $symbol, $timeframe = '1m', ?int $since = null, ?int $limit = null, $params = array ()) {
+        $message = '';
+        if ($this->has['fetchTradesWs']) {
+            $message = '. If you want to build OHLCV candles from trade executions data, visit https://github.com/ccxt/ccxt/tree/master/examples/ and see "build-ohlcv-bars" file';
+        }
+        throw new NotSupported($this->id . ' fetchOHLCVWs() is not supported yet. Try using fetchOHLCV instead.' . $message);
+    }
+
     public function watch_ohlcv(string $symbol, $timeframe = '1m', ?int $since = null, ?int $limit = null, $params = array ()) {
         throw new NotSupported($this->id . ' watchOHLCV() is not supported yet');
     }
@@ -3957,7 +3965,7 @@ class Exchange {
         for ($i = 0; $i < count($response); $i++) {
             $item = $response[$i];
             $id = $this->safe_string($item, $marketIdKey);
-            $market = $this->safe_market($id, null, null, $this->safe_string($this->options, 'defaultType'));
+            $market = $this->safe_market($id, null, null, 'swap');
             $symbol = $market['symbol'];
             $contract = $this->safe_value($market, 'contract', false);
             if ($contract && (($symbols === null) || $this->in_array($symbol, $symbols))) {
@@ -5021,10 +5029,6 @@ class Exchange {
         throw new NotSupported($this->id . ' watchMyTrades() is not supported yet');
     }
 
-    public function fetch_ohlcv_ws(string $symbol, string $timeframe = '1m', ?int $since = null, ?int $limit = null, $params = array ()) {
-        throw new NotSupported($this->id . ' fetchOHLCVWs() is not supported yet');
-    }
-
     public function fetch_greeks(string $symbol, $params = array ()) {
         throw new NotSupported($this->id . ' fetchGreeks() is not supported yet');
     }
@@ -5045,8 +5049,16 @@ class Exchange {
         throw new NotSupported($this->id . ' fetchDeposits() is not supported yet');
     }
 
+    public function fetch_deposits_ws(?string $code = null, ?int $since = null, ?int $limit = null, $params = array ()) {
+        throw new NotSupported($this->id . ' fetchDepositsWs() is not supported yet');
+    }
+
     public function fetch_withdrawals(?string $code = null, ?int $since = null, ?int $limit = null, $params = array ()) {
         throw new NotSupported($this->id . ' fetchWithdrawals() is not supported yet');
+    }
+
+    public function fetch_withdrawals_ws(?string $code = null, ?int $since = null, ?int $limit = null, $params = array ()) {
+        throw new NotSupported($this->id . ' fetchWithdrawalsWs() is not supported yet');
     }
 
     public function fetch_open_interest(string $symbol, $params = array ()) {
@@ -5566,6 +5578,10 @@ class Exchange {
 
     public function fetch_trading_fees($params = array ()) {
         throw new NotSupported($this->id . ' fetchTradingFees() is not supported yet');
+    }
+
+    public function fetch_trading_fees_ws($params = array ()) {
+        throw new NotSupported($this->id . ' fetchTradingFeesWs() is not supported yet');
     }
 
     public function fetch_trading_fee(string $symbol, $params = array ()) {
