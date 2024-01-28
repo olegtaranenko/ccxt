@@ -1291,15 +1291,13 @@ class Exchange {
                         client.throttle(cost).then(() => {
                             client.send(message);
                         }).catch((e) => {
-                            delete client.subscriptions[subscribeHash];
-                            future.reject(e);
+                            client.onError(e);
                         });
                     }
                     else {
                         client.send(message)
                             .catch((e) => {
-                            delete client.subscriptions[subscribeHash];
-                            future.reject(e);
+                            client.onError(e);
                         });
                     }
                 }
