@@ -188,13 +188,13 @@ export default class Exchange {
         outputLen: number;
         blockLen: number;
         create(): import("../static_dependencies/noble-hashes/utils.js").Hash<import("../static_dependencies/noble-hashes/utils.js").Hash<any>>;
-    }, digest?: "binary" | "hex" | "base64") => any;
+    }, digest?: "hex" | "base64" | "binary") => any;
     hmac: (request: import("../static_dependencies/noble-hashes/utils.js").Input, secret: import("../static_dependencies/noble-hashes/utils.js").Input, hash: {
         (message: import("../static_dependencies/noble-hashes/utils.js").Input): Uint8Array;
         outputLen: number;
         blockLen: number;
         create(): import("../static_dependencies/noble-hashes/utils.js").Hash<import("../static_dependencies/noble-hashes/utils.js").Hash<any>>;
-    }, digest?: "binary" | "hex" | "base64") => any;
+    }, digest?: "hex" | "base64" | "binary") => any;
     implodeParams: (string: any, params: any) => any;
     inArray: (needle: any, haystack: any) => any;
     indexBy: (x: any, k: any, out?: {}) => {};
@@ -572,6 +572,15 @@ export default class Exchange {
     setProperty(obj: any, property: any, defaultValue?: any): void;
     axolotl(payload: any, hexKey: any, ed25519: any): string;
     fixStringifiedJsonMembers(content: any): any;
+    safeBoolN(dictionaryOrList: any, keys: IndexType[], defaultValue?: boolean): boolean | undefined;
+    safeBool2(dictionary: any, key1: IndexType, key2: IndexType, defaultValue?: boolean): boolean | undefined;
+    safeBool(dictionary: any, key: IndexType, defaultValue?: boolean): boolean | undefined;
+    safeDictN(dictionaryOrList: any, keys: IndexType[], defaultValue?: Dictionary<any>): Dictionary<any> | undefined;
+    safeDict(dictionary: any, key: IndexType, defaultValue?: Dictionary<any>): Dictionary<any> | undefined;
+    safeDict2(dictionary: any, key1: IndexType, key2: string, defaultValue?: Dictionary<any>): Dictionary<any> | undefined;
+    safeListN(dictionaryOrList: any, keys: IndexType[], defaultValue?: any[]): any[] | undefined;
+    safeList2(dictionaryOrList: any, key1: IndexType, key2: string, defaultValue?: any[]): any[] | undefined;
+    safeList(dictionaryOrList: any, key: IndexType, defaultValue?: any[]): any[] | undefined;
     handleDeltas(orderbook: any, deltas: any): void;
     handleDelta(bookside: any, delta: any): void;
     getCacheIndex(orderbook: any, deltas: any): number;
