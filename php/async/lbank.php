@@ -52,6 +52,7 @@ class lbank extends Exchange {
                 'fetchClosedOrders' => false,
                 'fetchCrossBorrowRate' => false,
                 'fetchCrossBorrowRates' => false,
+                'fetchDepositAddress' => true,
                 'fetchDepositWithdrawFee' => 'emulated',
                 'fetchDepositWithdrawFees' => true,
                 'fetchFundingHistory' => false,
@@ -342,7 +343,7 @@ class lbank extends Exchange {
     public function fetch_markets($params = array ()) {
         return Async\async(function () use ($params) {
             /**
-             * retrieves data on all markets for lbank2
+             * retrieves data on all markets for lbank
              * @see https://www.lbank.com/en-US/docs/index.html#trading-pairs
              * @see https://www.lbank.com/en-US/docs/contract.html#query-contract-information-list
              * @param {array} [$params] extra parameters specific to the exchange API endpoint
@@ -1329,7 +1330,7 @@ class lbank extends Exchange {
             Async\await($this->load_markets());
             $market = $this->market($symbol);
             $clientOrderId = $this->safe_string_2($params, 'custom_id', 'clientOrderId');
-            $postOnly = $this->safe_value($params, 'postOnly', false);
+            $postOnly = $this->safe_bool($params, 'postOnly', false);
             $timeInForce = $this->safe_string_upper($params, 'timeInForce');
             $params = $this->omit($params, array( 'custom_id', 'clientOrderId', 'timeInForce', 'postOnly' ));
             $request = array(
@@ -2326,7 +2327,7 @@ class lbank extends Exchange {
             /**
              * @deprecated
              * please use fetchDepositWithdrawFees instead
-             * @param {string[]|null} $codes not used by lbank2 fetchTransactionFees ()
+             * @param {string[]|null} $codes not used by lbank fetchTransactionFees ()
              * @param {array} [$params] extra parameters specific to the exchange API endpoint
              * @return {array} a list of ~@link https://docs.ccxt.com/#/?id=fee-structure fee structures~
              */

@@ -71,7 +71,7 @@
 	- [kucoinfutures](exchanges/kucoinfutures.md)
 	- [kuna()](exchanges/kuna().md)
 	- [latoken](exchanges/latoken.md)
-	- [lbank2](exchanges/lbank2.md)
+	- [lbank](exchanges/lbank.md)
 	- [luno](exchanges/luno.md)
 	- [lykke](exchanges/lykke.md)
 	- [mercado](exchanges/mercado.md)
