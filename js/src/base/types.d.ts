@@ -202,14 +202,33 @@ export interface DepositAddressResponse {
     info: any;
     tag?: string;
 }
+export interface FundingRate {
+    symbol: string;
+    info: any;
+    timestamp?: number;
+    fundingRate?: number;
+    datetime?: string;
+    markPrice?: number;
+    indexPrice?: number;
+    interestRate?: number;
+    estimatedSettlePrice?: number;
+    fundingTimestamp?: number;
+    fundingDatetime?: string;
+    nextFundingTimestamp?: number;
+    nextFundingDatetime?: string;
+    nextFundingRate?: number;
+    previousFundingTimestamp?: number;
+    previousFundingDatetime?: string;
+    previousFundingRate?: number;
+}
 export interface Position {
     collateral?: number;
     contracts?: number;
     contractSize?: number;
-    datetime: string;
+    datetime?: string;
     entryPrice?: number;
     hedged?: boolean;
-    id: string;
+    id?: string;
     info: any;
     initialMargin?: number;
     initialMarginPercentage?: number;
@@ -217,9 +236,9 @@ export interface Position {
     lastUpdateTimestamp?: number;
     leverage?: number;
     liquidationPrice?: number;
-    maintenanceMargin?: number;
     maintenanceMarginPercentage?: number;
-    marginMode: string;
+    maintenenceMargin?: number;
+    marginMode?: string;
     marginRatio?: number;
     markPrice?: number;
     notional?: number;
@@ -231,6 +250,72 @@ export interface Position {
     takeProfitPrice?: number;
     timestamp?: number;
     unrealizedPnl?: number;
+}
+export interface BorrowInterest {
+    account?: string;
+    currency?: string;
+    interest?: number;
+    interestRate?: number;
+    amountBorrowed?: number;
+    marginMode?: string;
+    timestamp?: number;
+    datetime?: string;
+    info: any;
+}
+export interface LeverageTier {
+    tier?: number;
+    currency?: string;
+    minNotional?: number;
+    maxNotional?: number;
+    maintenanceMarginRate?: number;
+    maxLeverage?: number;
+    info: any;
+}
+export interface LedgerEntry {
+    id?: string;
+    info: any;
+    timestamp?: number;
+    datetime?: string;
+    direction?: string;
+    account?: string;
+    referenceId?: string;
+    referenceAccount?: string;
+    type?: string;
+    currency?: string;
+    amount?: number;
+    before?: number;
+    after?: number;
+    status?: string;
+    fee?: Fee;
+}
+export interface DepositWithdrawFeeNetwork {
+    fee?: number;
+    percentage?: boolean;
+}
+export interface DepositWithdrawFee {
+    info: any;
+    withdraw?: DepositWithdrawFeeNetwork;
+    deposit?: DepositWithdrawFeeNetwork;
+    networks?: Dictionary<DepositWithdrawFeeNetwork>;
+}
+export interface TransferEntry {
+    info?: any;
+    id?: string;
+    timestamp?: number;
+    datetime?: string;
+    currency?: string;
+    amount?: number;
+    fromAccount?: string;
+    toAccount?: string;
+    status?: string;
+}
+export interface BorrowRate {
+    currency?: string;
+    rate?: number;
+    period?: number;
+    timestamp?: number;
+    datetime?: string;
+    info: any;
 }
 export interface FundingRateHistory {
     datetime?: string;
