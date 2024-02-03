@@ -4,7 +4,7 @@
 
 # -----------------------------------------------------------------------------
 
-__version__ = '4.2.33'
+__version__ = '4.2.34'
 
 # -----------------------------------------------------------------------------
 
@@ -1776,6 +1776,8 @@ class Exchange(object):
         :returns dict | None:
         """
         value = self.safe_value_n(dictionaryOrList, keys, defaultValue)
+        if value is None:
+            return defaultValue
         if isinstance(value, dict):
             return value
         return defaultValue
@@ -1803,6 +1805,8 @@ class Exchange(object):
         :returns Array | None:
         """
         value = self.safe_value_n(dictionaryOrList, keys, defaultValue)
+        if value is None:
+            return defaultValue
         if isinstance(value, list):
             return value
         return defaultValue
@@ -4937,7 +4941,8 @@ class Exchange(object):
                     responseLength = len(response)
                     if self.verbose or self.verboseTruncate:
                         if not callable(self.verboseLogVeto) or self.verboseLogVeto('pagination', method, None, response):
-                            self.log('Dynamic pagination call', calls, 'method', method, 'response length', responseLength, 'timestamp', paginationTimestamp)
+                            backwardMessage = 'Dynamic pagination call ' + calls + ' method ' + method + ' response length ' + responseLength + ' timestamp ' + paginationTimestamp
+                            self.log(backwardMessage)
                     if responseLength == 0:
                         break
                     errors = 0
@@ -4952,7 +4957,8 @@ class Exchange(object):
                     responseLength = len(response)
                     if self.verbose or self.verboseTruncate:
                         if not callable(self.verboseLogVeto) or self.verboseLogVeto('pagination', method, None, response):
-                            self.log('Dynamic pagination call', calls, 'method', method, 'response length', responseLength, 'timestamp', paginationTimestamp)
+                            forwardMessage = 'Dynamic pagination call ' + calls + ' method ' + method + ' response length ' + responseLength + ' timestamp ' + paginationTimestamp
+                            self.log(forwardMessage)
                     if responseLength == 0:
                         break
                     errors = 0
@@ -5040,7 +5046,9 @@ class Exchange(object):
                 responseLength = len(response)
                 if self.verbose or self.verboseTruncate:
                     if not callable(self.verboseLogVeto) or self.verboseLogVeto('pagination', method, None, response):
-                        self.log('Cursor pagination call', i + 1, 'method', method, 'response length', responseLength, 'cursor', cursorValue)
+                        iteration = (i + str(1))
+                        cursorMessage = 'Cursor pagination call ' + iteration + ' method ' + method + ' response length ' + str(responseLength) + ' cursor ' + cursorValue
+                        self.log(cursorMessage)
                 if responseLength == 0:
                     break
                 result = self.array_concat(result, response)
@@ -5077,7 +5085,9 @@ class Exchange(object):
                 responseLength = len(response)
                 if self.verbose or self.verboseTruncate:
                     if not callable(self.verboseLogVeto) or self.verboseLogVeto('pagination', method, None, response):
-                        self.log('Incremental pagination call', i + 1, 'method', method, 'response length', responseLength)
+                        iteration = (i + str(1))
+                        incrementalMessage = 'Incremental pagination call ' + iteration + ' method ' + method + ' response length ' + str(responseLength)
+                        self.log(incrementalMessage)
                 if responseLength == 0:
                     break
                 result = self.array_concat(result, response)

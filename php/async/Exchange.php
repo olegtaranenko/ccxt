@@ -42,11 +42,11 @@ use React\EventLoop\Loop;
 
 use Exception;
 
-$version = '4.2.33';
+$version = '4.2.34';
 
 class Exchange extends \ccxt\Exchange {
 
-    const VERSION = '4.2.33';
+    const VERSION = '4.2.34';
 
     public $browser;
     public $marketsLoading = null;
@@ -374,6 +374,9 @@ class Exchange extends \ccxt\Exchange {
          * @return array(object | null)
          */
         $value = $this->safe_value_n($dictionaryOrList, $keys, $defaultValue);
+        if ($value === null) {
+            return $defaultValue;
+        }
         if (gettype($value) === 'array') {
             return $value;
         }
@@ -405,6 +408,9 @@ class Exchange extends \ccxt\Exchange {
          * @return array(Array | null)
          */
         $value = $this->safe_value_n($dictionaryOrList, $keys, $defaultValue);
+        if ($value === null) {
+            return $defaultValue;
+        }
         if (gettype($value) === 'array' && array_keys($value) === array_keys(array_keys($value))) {
             return $value;
         }
@@ -4374,7 +4380,8 @@ class Exchange extends \ccxt\Exchange {
                         $responseLength = count($response);
                         if ($this->verbose || $this->verboseTruncate) {
                             if (!is_callable($this->verboseLogVeto) || $this->verboseLogVeto ('pagination', $method, null, $response)) {
-                                $this->log ('Dynamic pagination call', $calls, 'method', $method, 'response length', $responseLength, 'timestamp', $paginationTimestamp);
+                                $backwardMessage = 'Dynamic pagination call ' . $calls . ' $method ' . $method . ' $response length ' . $responseLength . ' timestamp ' . $paginationTimestamp;
+                                $this->log ($backwardMessage);
                             }
                         }
                         if ($responseLength === 0) {
@@ -4393,7 +4400,8 @@ class Exchange extends \ccxt\Exchange {
                         $responseLength = count($response);
                         if ($this->verbose || $this->verboseTruncate) {
                             if (!is_callable($this->verboseLogVeto) || $this->verboseLogVeto ('pagination', $method, null, $response)) {
-                                $this->log ('Dynamic pagination call', $calls, 'method', $method, 'response length', $responseLength, 'timestamp', $paginationTimestamp);
+                                $forwardMessage = 'Dynamic pagination call ' . $calls . ' $method ' . $method . ' $response length ' . $responseLength . ' timestamp ' . $paginationTimestamp;
+                                $this->log ($forwardMessage);
                             }
                         }
                         if ($responseLength === 0) {
@@ -4511,7 +4519,9 @@ class Exchange extends \ccxt\Exchange {
                     $responseLength = count($response);
                     if ($this->verbose || $this->verboseTruncate) {
                         if (!is_callable($this->verboseLogVeto) || $this->verboseLogVeto ('pagination', $method, null, $response)) {
-                            $this->log ('Cursor pagination call', $i + 1, 'method', $method, 'response length', $responseLength, 'cursor', $cursorValue);
+                            $iteration = ($i . (string) 1);
+                            $cursorMessage = 'Cursor pagination call ' . $iteration . ' $method ' . $method . ' $response length ' . (string) $responseLength . ' cursor ' . $cursorValue;
+                            $this->log ($cursorMessage);
                         }
                     }
                     if ($responseLength === 0) {
@@ -4559,7 +4569,9 @@ class Exchange extends \ccxt\Exchange {
                     $responseLength = count($response);
                     if ($this->verbose || $this->verboseTruncate) {
                         if (!is_callable($this->verboseLogVeto) || $this->verboseLogVeto ('pagination', $method, null, $response)) {
-                            $this->log ('Incremental pagination call', $i + 1, 'method', $method, 'response length', $responseLength);
+                            $iteration = ($i . (string) 1);
+                            $incrementalMessage = 'Incremental pagination call ' . $iteration . ' $method ' . $method . ' $response length ' . (string) $responseLength;
+                            $this->log ($incrementalMessage);
                         }
                     }
                     if ($responseLength === 0) {
