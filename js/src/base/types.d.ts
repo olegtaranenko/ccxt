@@ -107,6 +107,7 @@ export interface Order {
     timeInForce?: string;
     timestamp: number;
     trades: Trade[];
+    triggerPrice?: number;
     type: string;
 }
 export interface OrderBook {
