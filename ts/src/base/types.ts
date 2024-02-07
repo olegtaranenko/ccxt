@@ -13,6 +13,11 @@ export type SubType = 'linear' | 'inverse' | undefined;
 export interface Dictionary<T> {
     [key: string]: T;
 }
+
+export type Dict = Dictionary<any>;
+
+export type List = Array<any>;
+
 /** Request parameters */
 // type Params = Dictionary<string | number | boolean | string[]>;
 
