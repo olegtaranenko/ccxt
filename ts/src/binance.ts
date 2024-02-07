@@ -28,12 +28,6 @@ export default class binance extends Exchange {
             'pro': true,
             // new metainfo2 interface
             'has': {
-                'CORS': undefined,
-                'spot': true,
-                'margin': true,
-                'swap': true,
-                'future': true,
-                'option': true,
                 'addMargin': true,
                 'borrowCrossMargin': true,
                 'borrowIsolatedMargin': true,
@@ -42,6 +36,7 @@ export default class binance extends Exchange {
                 'cancelOrders': true,  // contract only
                 'closeAllPositions': false,
                 'closePosition': false,  // exchange specific closePosition parameter for binance createOrder is not synonymous with how CCXT uses closePositions
+                'CORS': undefined,
                 'createDepositAddress': false,
                 'createMarketBuyOrderWithCost': true,
                 'createMarketOrderWithCost': true,
@@ -131,6 +126,9 @@ export default class binance extends Exchange {
                 'fetchWithdrawal': false,
                 'fetchWithdrawals': true,
                 'fetchWithdrawalWhitelist': false,
+                'future': true,
+                'margin': true,
+                'option': true,
                 'reduceMargin': true,
                 'repayCrossMargin': true,
                 'repayIsolatedMargin': true,
@@ -139,6 +137,8 @@ export default class binance extends Exchange {
                 'setMarginMode': true,
                 'setPositionMode': true,
                 'signIn': false,
+                'spot': true,
+                'swap': true,
                 'transfer': true,
                 'withdraw': true,
             },
@@ -163,37 +163,37 @@ export default class binance extends Exchange {
             'urls': {
                 'logo': 'https://user-images.githubusercontent.com/1294454/29604020-d5483cdc-87ee-11e7-94c7-d1a8d9169293.jpg',
                 'test': {
-                    'dapiPublic': 'https://testnet.binancefuture.com/dapi/v1',
                     'dapiPrivate': 'https://testnet.binancefuture.com/dapi/v1',
                     'dapiPrivateV2': 'https://testnet.binancefuture.com/dapi/v2',
-                    'fapiPublic': 'https://testnet.binancefuture.com/fapi/v1',
-                    'fapiPublicV2': 'https://testnet.binancefuture.com/fapi/v2',
+                    'dapiPublic': 'https://testnet.binancefuture.com/dapi/v1',
                     'fapiPrivate': 'https://testnet.binancefuture.com/fapi/v1',
                     'fapiPrivateV2': 'https://testnet.binancefuture.com/fapi/v2',
-                    'public': 'https://testnet.binance.vision/api/v3',
+                    'fapiPublic': 'https://testnet.binancefuture.com/fapi/v1',
+                    'fapiPublicV2': 'https://testnet.binancefuture.com/fapi/v2',
                     'private': 'https://testnet.binance.vision/api/v3',
+                    'public': 'https://testnet.binance.vision/api/v3',
                     'v1': 'https://testnet.binance.vision/api/v1',
                 },
                 'api': {
+                    'dapiData': 'https://dapi.binance.com/futures/data',
+                    'dapiPrivate': 'https://dapi.binance.com/dapi/v1',
+                    'dapiPrivateV2': 'https://dapi.binance.com/dapi/v2',
+                    'dapiPublic': 'https://dapi.binance.com/dapi/v1',
+                    'eapiPrivate': 'https://eapi.binance.com/eapi/v1',
+                    'eapiPublic': 'https://eapi.binance.com/eapi/v1',
+                    'fapiData': 'https://fapi.binance.com/futures/data',
+                    'fapiPrivate': 'https://fapi.binance.com/fapi/v1',
+                    'fapiPrivateV2': 'https://fapi.binance.com/fapi/v2',
+                    'fapiPublic': 'https://fapi.binance.com/fapi/v1',
+                    'fapiPublicV2': 'https://fapi.binance.com/fapi/v2',
+                    'papi': 'https://papi.binance.com/papi/v1',
+                    'private': 'https://api.binance.com/api/v3',
+                    'public': 'https://api.binance.com/api/v3',
                     'sapi': 'https://api.binance.com/sapi/v1',
                     'sapiV2': 'https://api.binance.com/sapi/v2',
                     'sapiV3': 'https://api.binance.com/sapi/v3',
                     'sapiV4': 'https://api.binance.com/sapi/v4',
-                    'dapiPublic': 'https://dapi.binance.com/dapi/v1',
-                    'dapiPrivate': 'https://dapi.binance.com/dapi/v1',
-                    'eapiPublic': 'https://eapi.binance.com/eapi/v1',
-                    'eapiPrivate': 'https://eapi.binance.com/eapi/v1',
-                    'dapiPrivateV2': 'https://dapi.binance.com/dapi/v2',
-                    'dapiData': 'https://dapi.binance.com/futures/data',
-                    'fapiPublic': 'https://fapi.binance.com/fapi/v1',
-                    'fapiPublicV2': 'https://fapi.binance.com/fapi/v2',
-                    'fapiPrivate': 'https://fapi.binance.com/fapi/v1',
-                    'fapiData': 'https://fapi.binance.com/futures/data',
-                    'fapiPrivateV2': 'https://fapi.binance.com/fapi/v2',
-                    'public': 'https://api.binance.com/api/v3',
-                    'private': 'https://api.binance.com/api/v3',
                     'v1': 'https://api.binance.com/api/v1',
-                    'papi': 'https://papi.binance.com/papi/v1',
                 },
                 'www': 'https://www.binance.com',
                 'referral': {
@@ -218,198 +218,198 @@ export default class binance extends Exchange {
                         'system/status': 0.1,
                         // these endpoints require this.apiKey
                         'accountSnapshot': 240, // Weight(IP): 2400 => cost = 0.1 * 2400 = 240
-                        'margin/asset': 1, // Weight(IP): 10 => cost = 0.1 * 10 = 1
-                        'margin/pair': 1,
                         'margin/allAssets': 0.1,
                         'margin/allPairs': 0.1,
+                        'margin/asset': 1, // Weight(IP): 10 => cost = 0.1 * 10 = 1
+                        'margin/pair': 1,
                         'margin/priceIndex': 1,
                         // these endpoints require this.apiKey + this.secret
-                        'spot/delist-schedule': 10,
-                        'asset/assetDividend': 1,
-                        'asset/dribblet': 0.1,
-                        'asset/transfer': 0.1,
-                        'asset/assetDetail': 0.1,
-                        'asset/tradeFee': 0.1,
-                        'asset/ledger-transfer/cloud-mining/queryByPage': 4.0002, // Weight(UID): 600 => cost = 0.006667 * 600 = 4.0002
-                        'asset/convert-transfer/queryByPage': 0.033335,
-                        'asset/wallet/balance': 6, // Weight(IP): 60 => cost = 0.1 * 60 = 6
-                        'asset/custody/transfer-history': 6, // Weight(IP): 60 => cost = 0.1 * 60 = 6
-                        'margin/borrow-repay': 1,
-                        'margin/loan': 1,
-                        'margin/repay': 1,
-                        'margin/account': 1,
-                        'margin/transfer': 0.1,
-                        'margin/interestHistory': 0.1,
-                        'margin/forceLiquidationRec': 0.1,
-                        'margin/order': 1,
-                        'margin/openOrders': 1,
-                        'margin/allOrders': 20, // Weight(IP): 200 => cost = 0.1 * 200 = 20
-                        'margin/myTrades': 1,
-                        'margin/maxBorrowable': 5, // Weight(IP): 50 => cost = 0.1 * 50 = 5
-                        'margin/maxTransferable': 5,
-                        'margin/tradeCoeff': 1,
-                        'margin/isolated/transfer': 0.1,
-                        'margin/isolated/account': 1,
-                        'margin/isolated/pair': 1,
-                        'margin/isolated/allPairs': 1,
-                        'margin/isolated/accountLimit': 0.1,
-                        'margin/interestRateHistory': 0.1,
-                        'margin/orderList': 1,
-                        'margin/allOrderList': 20, // Weight(IP): 200 => cost = 0.1 * 200 = 20
-                        'margin/openOrderList': 1,
-                        'margin/crossMarginData': { 'cost': 0.1, 'noCoin': 0.5 },
-                        'margin/isolatedMarginData': { 'cost': 0.1, 'noCoin': 1 },
-                        'margin/isolatedMarginTier': 0.1,
-                        'margin/rateLimit/order': 2,
-                        'margin/dribblet': 0.1,
-                        'margin/dust': 20.001, // Weight(UID): 3000 => cost = 0.006667 * 3000 = 20
-                        'margin/crossMarginCollateralRatio': 10,
-                        'margin/exchange-small-liability': 0.6667,
-                        'margin/exchange-small-liability-history': 0.6667,
-                        'margin/next-hourly-interest-rate': 0.6667,
-                        'margin/capital-flow': 10, // Weight(IP): 100 => cost = 0.1 * 100 = 10
-                        'margin/delist-schedule': 10, // Weight(IP): 100 => cost = 0.1 * 100 = 10
-                        'margin/available-inventory': 0.3334, // Weight(UID): 50 => cost = 0.006667 * 50 = 0.3334
-                        'margin/leverageBracket': 0.1, // Weight(IP): 1 => cost = 0.1 * 1 = 0.1
-                        'loan/vip/loanable/data': 40, // Weight(IP): 400 => cost = 0.1 * 400 = 40
-                        'loan/vip/collateral/data': 40, // Weight(IP): 400 => cost = 0.1 * 400 = 40
-                        'loan/vip/request/data': 2.6668, // Weight(UID): 400 => cost = 0.006667 * 400 = 2.6668
-                        'loan/vip/request/interestRate': 2.6668, // Weight(UID): 400 => cost = 0.006667 * 400 = 2.6668
-                        'loan/income': 40.002, // Weight(UID): 6000 => cost = 0.006667 * 6000 = 40.002
-                        'loan/ongoing/orders': 40, // Weight(IP): 400 => cost = 0.1 * 400 = 40
-                        'loan/ltv/adjustment/history': 40, // Weight(IP): 400 => cost = 0.1 * 400 = 40
-                        'loan/borrow/history': 40, // Weight(IP): 400 => cost = 0.1 * 400 = 40
-                        'loan/repay/history': 40, // Weight(IP): 400 => cost = 0.1 * 400 = 40
-                        'loan/loanable/data': 40, // Weight(IP): 400 => cost = 0.1 * 400 = 40
-                        'loan/collateral/data': 40, // Weight(IP): 400 => cost = 0.1 * 400 = 40
-                        'loan/repay/collateral/rate': 600, // Weight(IP): 6000 => cost = 0.1 * 6000 = 600
-                        'loan/flexible/ongoing/orders': 30, // Weight(IP): 300 => cost = 0.1 * 300 = 30
-                        'loan/flexible/borrow/history': 40, // Weight(IP): 400 => cost = 0.1 * 400 = 40
-                        'loan/flexible/repay/history': 40, // Weight(IP): 400 => cost = 0.1 * 400 = 40
-                        'loan/flexible/ltv/adjustment/history': 40, // Weight(IP): 400 => cost = 0.1 * 400 = 40
-                        'loan/flexible/loanable/data': 40, // Weight(IP): 400 => cost = 0.1 * 400 = 40
-                        'loan/flexible/collateral/data': 40, // Weight(IP): 400 => cost = 0.1 * 400 = 40
-                        'loan/vip/ongoing/orders': 40, // Weight(IP): 400 => cost = 0.1 * 400 = 40
-                        'loan/vip/repay/history': 40, // Weight(IP): 400 => cost = 0.1 * 400 = 40
-                        'loan/vip/collateral/account': 600, // Weight(IP): 6000 => cost = 0.1 * 6000 = 600
-                        'fiat/orders': 600.03, // Weight(UID): 90000 => cost = 0.006667 * 90000 = 600.03
-                        'fiat/payments': 0.1,
-                        'futures/transfer': 1,
-                        'futures/histDataLink': 0.1, // Weight(IP): 1 => cost = 0.1 * 1 = 0.1
-                        'rebate/taxQuery': 80.004, // Weight(UID): 12000 => cost = 0.006667 * 12000 = 80.004
                         // https://binance-docs.github.io/apidocs/spot/en/#withdraw-sapi
+                        'account/apiRestrictions/ipRestriction': 0.1,
+                        'account/apiTradingStatus': 0.1,
+                        'account/status': 0.1,
+                        'asset/assetDetail': 0.1,
+                        'asset/assetDividend': 1,
+                        'asset/convert-transfer/queryByPage': 0.033335,
+                        'asset/custody/transfer-history': 6, // Weight(IP): 60 => cost = 0.1 * 60 = 6
+                        'asset/dribblet': 0.1,
+                        'asset/ledger-transfer/cloud-mining/queryByPage': 4.0002, // Weight(UID): 600 => cost = 0.006667 * 600 = 4.0002
+                        'asset/tradeFee': 0.1,
+                        'asset/transfer': 0.1,
+                        'asset/wallet/balance': 6, // Weight(IP): 60 => cost = 0.1 * 60 = 6
+                        'bnbBurn': 0.1,
                         'capital/config/getall': 1, // get networks for withdrawing USDT ERC20 vs USDT Omni
+                        'capital/contract/convertible-coins': 4.0002, // Weight(UID): 600 => cost = 0.006667 * 600 = 4.0002
                         'capital/deposit/address': 1,
                         'capital/deposit/address/list': 1,
                         'capital/deposit/hisrec': 0.1,
                         'capital/deposit/subAddress': 0.1,
                         'capital/deposit/subHisrec': 0.1,
                         'capital/withdraw/history': 1800, // Weight(IP): 18000 => cost = 0.1 * 18000 = 1800
-                        'capital/contract/convertible-coins': 4.0002, // Weight(UID): 600 => cost = 0.006667 * 600 = 4.0002
-                        'convert/tradeFlow': 20.001, // Weight(UID): 3000 => cost = 0.006667 * 3000 = 20.001
-                        'convert/exchangeInfo': 50,
                         'convert/assetInfo': 10,
-                        'convert/orderStatus': 0.6667,
+                        'convert/exchangeInfo': 50,
                         'convert/limit/queryOpenOrders': 20.001, // Weight(UID): 3000 => cost = 0.006667 * 3000 = 20.001
-                        'account/status': 0.1,
-                        'account/apiTradingStatus': 0.1,
-                        'account/apiRestrictions/ipRestriction': 0.1,
-                        'bnbBurn': 0.1,
+                        'convert/orderStatus': 0.6667,
+                        'convert/tradeFlow': 20.001, // Weight(UID): 3000 => cost = 0.006667 * 3000 = 20.001
+                        'fiat/orders': 600.03, // Weight(UID): 90000 => cost = 0.006667 * 90000 = 600.03
+                        'fiat/payments': 0.1,
+                        'futures/histDataLink': 0.1, // Weight(IP): 1 => cost = 0.1 * 1 = 0.1
+                        'futures/transfer': 1,
+                        'loan/borrow/history': 40, // Weight(IP): 400 => cost = 0.1 * 400 = 40
+                        'loan/collateral/data': 40, // Weight(IP): 400 => cost = 0.1 * 400 = 40
+                        'loan/flexible/borrow/history': 40, // Weight(IP): 400 => cost = 0.1 * 400 = 40
+                        'loan/flexible/collateral/data': 40, // Weight(IP): 400 => cost = 0.1 * 400 = 40
+                        'loan/flexible/loanable/data': 40, // Weight(IP): 400 => cost = 0.1 * 400 = 40
+                        'loan/flexible/ltv/adjustment/history': 40, // Weight(IP): 400 => cost = 0.1 * 400 = 40
+                        'loan/flexible/ongoing/orders': 30, // Weight(IP): 300 => cost = 0.1 * 300 = 30
+                        'loan/flexible/repay/history': 40, // Weight(IP): 400 => cost = 0.1 * 400 = 40
+                        'loan/income': 40.002, // Weight(UID): 6000 => cost = 0.006667 * 6000 = 40.002
+                        'loan/loanable/data': 40, // Weight(IP): 400 => cost = 0.1 * 400 = 40
+                        'loan/ltv/adjustment/history': 40, // Weight(IP): 400 => cost = 0.1 * 400 = 40
+                        'loan/ongoing/orders': 40, // Weight(IP): 400 => cost = 0.1 * 400 = 40
+                        'loan/repay/collateral/rate': 600, // Weight(IP): 6000 => cost = 0.1 * 6000 = 600
+                        'loan/repay/history': 40, // Weight(IP): 400 => cost = 0.1 * 400 = 40
+                        'loan/vip/collateral/account': 600, // Weight(IP): 6000 => cost = 0.1 * 6000 = 600
+                        'loan/vip/collateral/data': 40, // Weight(IP): 400 => cost = 0.1 * 400 = 40
+                        'loan/vip/loanable/data': 40, // Weight(IP): 400 => cost = 0.1 * 400 = 40
+                        'loan/vip/ongoing/orders': 40, // Weight(IP): 400 => cost = 0.1 * 400 = 40
+                        'loan/vip/repay/history': 40, // Weight(IP): 400 => cost = 0.1 * 400 = 40
+                        'loan/vip/request/data': 2.6668, // Weight(UID): 400 => cost = 0.006667 * 400 = 2.6668
+                        'loan/vip/request/interestRate': 2.6668, // Weight(UID): 400 => cost = 0.006667 * 400 = 2.6668
+                        'managed-subaccount/accountSnapshot': 240,
+                        'managed-subaccount/asset': 0.1,
+                        'managed-subaccount/deposit/address': 0.006667, // Weight(UID): 1 => cost = 0.006667 * 1 = 0.006667
+                        'managed-subaccount/fetch-future-asset': 0.40002, // Weight(UID): 60 => cost = 0.006667 * 60 = 0.40002
+                        'managed-subaccount/info': 0.40002, // Weight(UID): 60 => cost = 0.006667 * 60 = 0.40002
+                        'managed-subaccount/marginAsset': 0.1,
+                        'managed-subaccount/query-trans-log': 0.40002,
+                        'managed-subaccount/queryTransLogForInvestor': 0.1,
+                        'managed-subaccount/queryTransLogForTradeParent': 0.40002, // Weight(UID): 60 => cost = 0.006667 * 60 = 0.40002
+                        'margin/account': 1,
+                        'margin/allOrderList': 20, // Weight(IP): 200 => cost = 0.1 * 200 = 20
+                        'margin/allOrders': 20, // Weight(IP): 200 => cost = 0.1 * 200 = 20
+                        'margin/available-inventory': 0.3334, // Weight(UID): 50 => cost = 0.006667 * 50 = 0.3334
+                        'margin/borrow-repay': 1,
+                        'margin/capital-flow': 10, // Weight(IP): 100 => cost = 0.1 * 100 = 10
+                        'margin/crossMarginCollateralRatio': 10,
+                        'margin/crossMarginData': { 'cost': 0.1, 'noCoin': 0.5 },
+                        'margin/delist-schedule': 10, // Weight(IP): 100 => cost = 0.1 * 100 = 10
+                        'margin/dribblet': 0.1,
+                        'margin/dust': 20.001, // Weight(UID): 3000 => cost = 0.006667 * 3000 = 20
+                        'margin/exchange-small-liability': 0.6667,
+                        'margin/exchange-small-liability-history': 0.6667,
+                        'margin/forceLiquidationRec': 0.1,
+                        'margin/interestHistory': 0.1,
+                        'margin/interestRateHistory': 0.1,
+                        'margin/isolated/account': 1,
+                        'margin/isolated/accountLimit': 0.1,
+                        'margin/isolated/allPairs': 1,
+                        'margin/isolated/pair': 1,
+                        'margin/isolated/transfer': 0.1,
+                        'margin/isolatedMarginData': { 'cost': 0.1, 'noCoin': 1 },
+                        'margin/isolatedMarginTier': 0.1,
+                        'margin/leverageBracket': 0.1, // Weight(IP): 1 => cost = 0.1 * 1 = 0.1
+                        'margin/loan': 1,
+                        'margin/maxBorrowable': 5, // Weight(IP): 50 => cost = 0.1 * 50 = 5
+                        'margin/maxTransferable': 5,
+                        'margin/myTrades': 1,
+                        'margin/next-hourly-interest-rate': 0.6667,
+                        'margin/openOrderList': 1,
+                        'margin/openOrders': 1,
+                        'margin/order': 1,
+                        'margin/orderList': 1,
+                        'margin/rateLimit/order': 2,
+                        'margin/repay': 1,
+                        'margin/tradeCoeff': 1,
+                        'margin/transfer': 0.1,
+                        'rebate/taxQuery': 80.004, // Weight(UID): 12000 => cost = 0.006667 * 12000 = 80.004
+                        'spot/delist-schedule': 10,
+                        'sub-account/apiRestrictions/ipRestriction/thirdPartyList': 1,
                         'sub-account/futures/account': 1,
                         'sub-account/futures/accountSummary': 0.1,
-                        'sub-account/futures/positionRisk': 1,
                         'sub-account/futures/internalTransfer': 0.1,
+                        'sub-account/futures/positionRisk': 1,
                         'sub-account/list': 0.1,
                         'sub-account/margin/account': 1,
                         'sub-account/margin/accountSummary': 1,
                         'sub-account/spotSummary': 0.1,
                         'sub-account/status': 1,
                         'sub-account/sub/transfer/history': 0.1,
+                        'sub-account/subAccountApi/ipRestriction': 20.001, // Weight(UID): 3000 => cost = 0.006667 * 3000 = 20.001
+                        'sub-account/transaction-statistics': 0.40002, // Weight(UID): 60 => cost = 0.006667 * 60 = 0.40002
                         'sub-account/transfer/subUserHistory': 0.1,
                         'sub-account/universalTransfer': 0.1,
-                        'sub-account/apiRestrictions/ipRestriction/thirdPartyList': 1,
-                        'sub-account/transaction-statistics': 0.40002, // Weight(UID): 60 => cost = 0.006667 * 60 = 0.40002
-                        'sub-account/subAccountApi/ipRestriction': 20.001, // Weight(UID): 3000 => cost = 0.006667 * 3000 = 20.001
-                        'managed-subaccount/asset': 0.1,
-                        'managed-subaccount/accountSnapshot': 240,
-                        'managed-subaccount/queryTransLogForInvestor': 0.1,
-                        'managed-subaccount/queryTransLogForTradeParent': 0.40002, // Weight(UID): 60 => cost = 0.006667 * 60 = 0.40002
-                        'managed-subaccount/fetch-future-asset': 0.40002, // Weight(UID): 60 => cost = 0.006667 * 60 = 0.40002
-                        'managed-subaccount/marginAsset': 0.1,
-                        'managed-subaccount/info': 0.40002, // Weight(UID): 60 => cost = 0.006667 * 60 = 0.40002
-                        'managed-subaccount/deposit/address': 0.006667, // Weight(UID): 1 => cost = 0.006667 * 1 = 0.006667
-                        'managed-subaccount/query-trans-log': 0.40002,
                         // lending endpoints
                         'lending/daily/product/list': 0.1,
+                        'lending/daily/token/position': 0.1,
                         'lending/daily/userLeftQuota': 0.1,
                         'lending/daily/userRedemptionQuota': 0.1,
-                        'lending/daily/token/position': 0.1,
-                        'lending/union/account': 0.1,
-                        'lending/union/purchaseRecord': 0.1,
-                        'lending/union/redemptionRecord': 0.1,
-                        'lending/union/interestHistory': 0.1,
                         'lending/project/list': 0.1,
                         'lending/project/position/list': 0.1,
+                        'lending/union/account': 0.1,
+                        'lending/union/interestHistory': 0.1,
+                        'lending/union/purchaseRecord': 0.1,
+                        'lending/union/redemptionRecord': 0.1,
                         // eth-staking
-                        'eth-staking/eth/history/stakingHistory': 15, // Weight(IP): 150 => cost = 0.1 * 150 = 15
+                        'eth-staking/account': 15, // Weight(IP): 150 => cost = 0.1 * 150 = 15
+                        'eth-staking/eth/history/rateHistory': 15, // Weight(IP): 150 => cost = 0.1 * 150 = 15
                         'eth-staking/eth/history/redemptionHistory': 15, // Weight(IP): 150 => cost = 0.1 * 150 = 15
                         'eth-staking/eth/history/rewardsHistory': 15, // Weight(IP): 150 => cost = 0.1 * 150 = 15
-                        'eth-staking/eth/quota': 15, // Weight(IP): 150 => cost = 0.1 * 150 = 15
-                        'eth-staking/eth/history/rateHistory': 15, // Weight(IP): 150 => cost = 0.1 * 150 = 15
-                        'eth-staking/account': 15, // Weight(IP): 150 => cost = 0.1 * 150 = 15
-                        'eth-staking/wbeth/history/wrapHistory': 15, // Weight(IP): 150 => cost = 0.1 * 150 = 15
-                        'eth-staking/wbeth/history/unwrapHistory': 15, // Weight(IP): 150 => cost = 0.1 * 150 = 15
+                        'eth-staking/eth/history/stakingHistory': 15, // Weight(IP): 150 => cost = 0.1 * 150 = 15
                         'eth-staking/eth/history/wbethRewardsHistory': 15, // Weight(IP): 150 => cost = 0.1 * 150 = 15
+                        'eth-staking/eth/quota': 15, // Weight(IP): 150 => cost = 0.1 * 150 = 15
+                        'eth-staking/wbeth/history/unwrapHistory': 15, // Weight(IP): 150 => cost = 0.1 * 150 = 15
+                        'eth-staking/wbeth/history/wrapHistory': 15, // Weight(IP): 150 => cost = 0.1 * 150 = 15
                         // mining endpoints
+                        'mining/payment/list': 0.5,
+                        'mining/payment/uid': 0.5,
                         'mining/pub/algoList': 0.1,
                         'mining/pub/coinList': 0.1,
+                        'mining/statistics/user/list': 0.5,
+                        'mining/statistics/user/status': 0.5,
                         'mining/worker/detail': 0.5, // Weight(IP): 5 => cost = 0.1 * 5 = 0.5
                         'mining/worker/list': 0.5,
-                        'mining/payment/list': 0.5,
-                        'mining/statistics/user/status': 0.5,
-                        'mining/statistics/user/list': 0.5,
-                        'mining/payment/uid': 0.5,
                         // liquid swap endpoints
-                        'bswap/pools': 0.1,
+                        'bswap/addLiquidityPreview': 1.00005, // Weight(UID): 150 => cost = 0.006667 * 150 = 1.00005
+                        'bswap/claimedHistory': 6.667, // Weight(UID): 1000 => cost = 0.006667 * 1000 = 6.667
                         'bswap/liquidity': { 'cost': 0.1, 'noPoolId': 1 },
                         'bswap/liquidityOps': 20.001, // Weight(UID): 3000 => cost = 0.006667 * 3000 = 20.001
-                        'bswap/quote': 1.00005, // Weight(UID): 150 => cost = 0.006667 * 150 = 1.00005
-                        'bswap/swap': 20.001, // Weight(UID): 3000 => cost = 0.006667 * 3000 = 20.001
                         'bswap/poolConfigure': 1.00005, // Weight(UID): 150 => cost = 0.006667 * 150 = 1.00005
-                        'bswap/addLiquidityPreview': 1.00005, // Weight(UID): 150 => cost = 0.006667 * 150 = 1.00005
+                        'bswap/pools': 0.1,
+                        'bswap/quote': 1.00005, // Weight(UID): 150 => cost = 0.006667 * 150 = 1.00005
                         'bswap/removeLiquidityPreview': 1.00005, // Weight(UID): 150 => cost = 0.006667 * 150 = 1.00005
+                        'bswap/swap': 20.001, // Weight(UID): 3000 => cost = 0.006667 * 3000 = 20.001
                         'bswap/unclaimedRewards': 6.667, // Weight(UID): 1000 => cost = 0.006667 * 1000 = 6.667
-                        'bswap/claimedHistory': 6.667, // Weight(UID): 1000 => cost = 0.006667 * 1000 = 6.667
                         // leveraged token endpoints
-                        'blvt/tokenInfo': 0.1,
-                        'blvt/subscribe/record': 0.1,
                         'blvt/redeem/record': 0.1,
+                        'blvt/subscribe/record': 0.1,
+                        'blvt/tokenInfo': 0.1,
                         'blvt/userLimit': 0.1,
                         // broker api TODO (NOT IN DOCS)
-                        'apiReferral/ifNewUser': 1,
                         'apiReferral/customization': 1,
-                        'apiReferral/userCustomization': 1,
-                        'apiReferral/rebate/recentRecord': 1,
-                        'apiReferral/rebate/historicalRecord': 1,
-                        'apiReferral/kickback/recentRecord': 1,
+                        'apiReferral/ifNewUser': 1,
                         'apiReferral/kickback/historicalRecord': 1,
+                        'apiReferral/kickback/recentRecord': 1,
+                        'apiReferral/rebate/historicalRecord': 1,
+                        'apiReferral/rebate/recentRecord': 1,
+                        'apiReferral/userCustomization': 1,
                         // brokerage API TODO https://binance-docs.github.io/Brokerage-API/General/ does not state ratelimits
-                        'broker/subAccountApi': 1,
-                        'broker/subAccount': 1,
-                        'broker/subAccountApi/commission/futures': 1,
-                        'broker/subAccountApi/commission/coinFutures': 1,
                         'broker/info': 1,
-                        'broker/transfer': 1,
-                        'broker/transfer/futures': 1,
-                        'broker/rebate/recentRecord': 1,
+                        'broker/rebate/futures/recentRecord': 1,
                         'broker/rebate/historicalRecord': 1,
+                        'broker/rebate/recentRecord': 1,
+                        'broker/subAccount': 1,
                         'broker/subAccount/bnbBurn/status': 1,
                         'broker/subAccount/depositHist': 1,
-                        'broker/subAccount/spotSummary': 1,
-                        'broker/subAccount/marginSummary': 1,
                         'broker/subAccount/futuresSummary': 1,
-                        'broker/rebate/futures/recentRecord': 1,
+                        'broker/subAccount/marginSummary': 1,
+                        'broker/subAccount/spotSummary': 1,
+                        'broker/subAccountApi': 1,
+                        'broker/subAccountApi/commission/coinFutures': 1,
+                        'broker/subAccountApi/commission/futures': 1,
                         'broker/subAccountApi/ipRestriction': 1,
+                        'broker/transfer': 1,
+                        'broker/transfer/futures': 1,
                         'broker/universalTransfer': 1,
                         // v2 not supported yet
                         // GET /sapi/v2/broker/subAccount/futuresSummary
@@ -439,22 +439,22 @@ export default class binance extends Exchange {
                         'portfolio/repay-futures-switch': 3, // Weight(IP): 30 => cost = 0.1 * 30 = 3
                         'portfolio/margin-asset-leverage': 5, // Weight(IP): 50 => cost = 0.1 * 50 = 5
                         // staking
-                        'staking/productList': 0.1,
-                        'staking/position': 0.1,
-                        'staking/stakingRecord': 0.1,
-                        'staking/personalLeftQuota': 0.1,
-                        'lending/auto-invest/target-asset/list': 0.1, // Weight(IP): 1 => cost = 0.1 * 1 = 0.1
-                        'lending/auto-invest/target-asset/roi/list': 0.1,
                         'lending/auto-invest/all/asset': 0.1,
-                        'lending/auto-invest/source-asset/list': 0.1,
-                        'lending/auto-invest/plan/list': 0.1,
-                        'lending/auto-invest/plan/id': 0.1,
                         'lending/auto-invest/history/list': 0.1,
                         'lending/auto-invest/index/info': 0.1, // Weight(IP): 1 => cost = 0.1 * 1 = 0.1
                         'lending/auto-invest/index/user-summary': 0.1, // Weight(IP): 1 => cost = 0.1 * 1 = 0.1
                         'lending/auto-invest/one-off/status': 0.1, // Weight(IP): 1 => cost = 0.1 * 1 = 0.1
-                        'lending/auto-invest/redeem/history': 0.1, // Weight(IP): 1 => cost = 0.1 * 1 = 0.1
+                        'lending/auto-invest/plan/id': 0.1,
+                        'lending/auto-invest/plan/list': 0.1,
                         'lending/auto-invest/rebalance/history': 0.1, // Weight(IP): 1 => cost = 0.1 * 1 = 0.1
+                        'lending/auto-invest/redeem/history': 0.1, // Weight(IP): 1 => cost = 0.1 * 1 = 0.1
+                        'lending/auto-invest/source-asset/list': 0.1,
+                        'lending/auto-invest/target-asset/list': 0.1, // Weight(IP): 1 => cost = 0.1 * 1 = 0.1
+                        'lending/auto-invest/target-asset/roi/list': 0.1,
+                        'staking/personalLeftQuota': 0.1,
+                        'staking/position': 0.1,
+                        'staking/productList': 0.1,
+                        'staking/stakingRecord': 0.1,
                         // simple earn
                         'simple-earn/flexible/list': 15,
                         'simple-earn/locked/list': 15,
@@ -475,132 +475,132 @@ export default class binance extends Exchange {
                         'simple-earn/flexible/history/collateralRecord': 0.1,
                     },
                     'post': {
-                        'asset/dust': 0.06667, // Weight(UID): 10 => cost = 0.006667 * 10 = 0.06667
-                        'asset/dust-btc': 0.1,
-                        'asset/transfer': 6.0003, // Weight(UID): 900 => cost = 0.006667 * 900 = 6.0003
-                        'asset/get-funding-asset': 0.1,
-                        'asset/convert-transfer': 0.033335,
                         'account/disableFastWithdrawSwitch': 0.1,
                         'account/enableFastWithdrawSwitch': 0.1,
-                        // 'account/apiRestrictions/ipRestriction': 1, discontinued
-                        // 'account/apiRestrictions/ipRestriction/ipList': 1, discontinued
-                        'capital/withdraw/apply': 4.0002, // Weight(UID): 600 => cost = 0.006667 * 600 = 4.0002
+                        'asset/convert-transfer': 0.033335,
+                        'asset/dust': 0.06667, // Weight(UID): 10 => cost = 0.006667 * 10 = 0.06667
+                        'asset/dust-btc': 0.1,
+                        'asset/get-funding-asset': 0.1,
+                        'asset/transfer': 6.0003, // Weight(UID): 900 => cost = 0.006667 * 900 = 6.0003
+                        'bnbBurn': 0.1,
                         'capital/contract/convertible-coins': 4.0002,
                         'capital/deposit/credit-apply': 0.1, // Weight(IP): 1 => cost = 0.1 * 1 = 0.1
-                        'margin/borrow-repay': 20.001,
-                        'margin/transfer': 4.0002,
-                        'margin/loan': 20.001, // Weight(UID): 3000 => cost = 0.006667 * 3000 = 20.001
-                        'margin/repay': 20.001,
-                        'margin/order': 0.040002, // Weight(UID): 6 => cost = 0.006667 * 6 = 0.040002
-                        'margin/order/oco': 0.040002,
-                        'margin/dust': 20.001, // Weight(UID): 3000 => cost = 0.006667 * 3000 = 20.001
-                        'margin/exchange-small-liability': 20.001,
-                        // 'margin/isolated/create': 1, discontinued
-                        'margin/isolated/transfer': 4.0002, // Weight(UID): 600 => cost = 0.006667 * 600 = 4.0002
-                        'margin/isolated/account': 2.0001, // Weight(UID): 300 => cost = 0.006667 * 300 = 2.0001
-                        'margin/max-leverage': 300, // Weight(IP): 3000 => cost = 0.1 * 3000 = 300
-                        'bnbBurn': 0.1,
-                        'sub-account/virtualSubAccount': 0.1,
-                        'sub-account/margin/transfer': 4.0002, // Weight(UID): 600 => cost =  0.006667 * 600 = 4.0002
-                        'sub-account/margin/enable': 0.1,
-                        'sub-account/futures/enable': 0.1,
-                        'sub-account/futures/transfer': 0.1,
-                        'sub-account/futures/internalTransfer': 0.1,
-                        'sub-account/transfer/subToSub': 0.1,
-                        'sub-account/transfer/subToMaster': 0.1,
-                        'sub-account/universalTransfer': 0.1,
-                        'sub-account/options/enable': 0.1,
+                        'capital/withdraw/apply': 4.0002, // Weight(UID): 600 => cost = 0.006667 * 600 = 4.0002
+                        'futures/transfer': 0.1,
                         'managed-subaccount/deposit': 0.1,
                         'managed-subaccount/withdraw': 0.1,
+                        'margin/borrow-repay': 20.001,
+                        'margin/dust': 20.001, // Weight(UID): 3000 => cost = 0.006667 * 3000 = 20.001
+                        'margin/exchange-small-liability': 20.001,
+                        'margin/isolated/account': 2.0001, // Weight(UID): 300 => cost = 0.006667 * 300 = 2.0001
+                        'margin/isolated/transfer': 4.0002, // Weight(UID): 600 => cost = 0.006667 * 600 = 4.0002
+                        'margin/loan': 20.001, // Weight(UID): 3000 => cost = 0.006667 * 3000 = 20.001
+                        'margin/max-leverage': 300, // Weight(IP): 3000 => cost = 0.1 * 3000 = 300
+                        'margin/order': 0.040002, // Weight(UID): 6 => cost = 0.006667 * 6 = 0.040002
+                        'margin/order/oco': 0.040002,
+                        'margin/repay': 20.001,
+                        'margin/transfer': 4.0002,
+                        'sub-account/futures/enable': 0.1,
+                        'sub-account/futures/internalTransfer': 0.1,
+                        'sub-account/futures/transfer': 0.1,
+                        'sub-account/margin/enable': 0.1,
+                        'sub-account/margin/transfer': 4.0002, // Weight(UID): 600 => cost =  0.006667 * 600 = 4.0002
+                        'sub-account/options/enable': 0.1,
+                        'sub-account/transfer/subToMaster': 0.1,
+                        'sub-account/transfer/subToSub': 0.1,
+                        'sub-account/universalTransfer': 0.1,
+                        'sub-account/virtualSubAccount': 0.1,
                         'userDataStream': 0.1,
                         'userDataStream/isolated': 0.1,
-                        'futures/transfer': 0.1,
+                        // 'account/apiRestrictions/ipRestriction': 1, discontinued
+                        // 'account/apiRestrictions/ipRestriction/ipList': 1, discontinued
+                        // 'margin/isolated/create': 1, discontinued
                         // lending
                         'lending/customizedFixed/purchase': 0.1,
                         'lending/daily/purchase': 0.1,
                         'lending/daily/redeem': 0.1,
                         // liquid swap endpoints
+                        'bswap/claimRewards': 6.667, // Weight(UID): 1000 => cost = 0.006667 * 1000 = 6.667
                         'bswap/liquidityAdd': 60, // Weight(UID): 1000 + (Additional: 1 request every 3 seconds =  0.333 requests per second) => cost = ( 1000 / rateLimit ) / 0.333 = 60.0000006
                         'bswap/liquidityRemove': 60, // Weight(UID): 1000 + (Additional: 1 request every three seconds)
                         'bswap/swap': 60, // Weight(UID): 1000 + (Additional: 1 request every three seconds)
-                        'bswap/claimRewards': 6.667, // Weight(UID): 1000 => cost = 0.006667 * 1000 = 6.667
                         // leveraged token endpoints
-                        'blvt/subscribe': 0.1,
                         'blvt/redeem': 0.1,
+                        'blvt/subscribe': 0.1,
                         // brokerage API TODO: NO MENTION OF RATELIMITS IN BROKERAGE DOCS
                         'apiReferral/customization': 1,
-                        'apiReferral/userCustomization': 1,
-                        'apiReferral/rebate/historicalRecord': 1,
                         'apiReferral/kickback/historicalRecord': 1,
-                        'broker/subAccount': 1,
-                        'broker/subAccount/margin': 1,
-                        'broker/subAccount/futures': 1,
-                        'broker/subAccountApi': 1,
-                        'broker/subAccountApi/permission': 1,
-                        'broker/subAccountApi/commission': 1,
-                        'broker/subAccountApi/commission/futures': 1,
-                        'broker/subAccountApi/commission/coinFutures': 1,
-                        'broker/transfer': 1,
-                        'broker/transfer/futures': 1,
+                        'apiReferral/rebate/historicalRecord': 1,
+                        'apiReferral/userCustomization': 1,
                         'broker/rebate/historicalRecord': 1,
-                        'broker/subAccount/bnbBurn/spot': 1,
-                        'broker/subAccount/bnbBurn/marginInterest': 1,
+                        'broker/subAccount': 1,
                         'broker/subAccount/blvt': 1,
+                        'broker/subAccount/bnbBurn/marginInterest': 1,
+                        'broker/subAccount/bnbBurn/spot': 1,
+                        'broker/subAccount/futures': 1,
+                        'broker/subAccount/margin': 1,
+                        'broker/subAccountApi': 1,
+                        'broker/subAccountApi/commission': 1,
+                        'broker/subAccountApi/commission/coinFutures': 1,
+                        'broker/subAccountApi/commission/futures': 1,
                         'broker/subAccountApi/ipRestriction': 1,
                         'broker/subAccountApi/ipRestriction/ipList': 1,
-                        'broker/universalTransfer': 1,
+                        'broker/subAccountApi/permission': 1,
                         'broker/subAccountApi/permission/universalTransfer': 1,
                         'broker/subAccountApi/permission/vanillaOptions': 1,
+                        'broker/transfer': 1,
+                        'broker/transfer/futures': 1,
+                        'broker/universalTransfer': 1,
                         //
+                        'algo/futures/newOrderTwap': 20.001,
+                        'algo/futures/newOrderVp': 20.001,
+                        'algo/spot/newOrderTwap': 20.001,
+                        'giftcard/buyCode': 0.1,
                         'giftcard/createCode': 0.1,
                         'giftcard/redeemCode': 0.1,
-                        'giftcard/buyCode': 0.1,
-                        'algo/spot/newOrderTwap': 20.001,
-                        'algo/futures/newOrderVp': 20.001,
-                        'algo/futures/newOrderTwap': 20.001,
                         // staking
                         'staking/purchase': 0.1,
                         'staking/redeem': 0.1,
                         'staking/setAutoStaking': 0.1,
                         // eth-staking
-                        'eth-staking/eth/stake': 15, // Weight(IP): 150 => cost = 0.1 * 150 = 15
                         'eth-staking/eth/redeem': 15, // Weight(IP): 150 => cost = 0.1 * 150 = 15
+                        'eth-staking/eth/stake': 15, // Weight(IP): 150 => cost = 0.1 * 150 = 15
                         'eth-staking/wbeth/wrap': 15, // Weight(IP): 150 => cost = 0.1 * 150 = 15
                         // mining endpoints
-                        'mining/hash-transfer/config': 0.5, // Weight(IP): 5 => cost = 0.1 * 5 = 0.5
-                        'mining/hash-transfer/config/cancel': 0.5, // Weight(IP): 5 => cost = 0.1 * 5 = 0.5
-                        'portfolio/repay': 20.001,
-                        'loan/vip/renew': 40.002, // Weight(UID): 6000 => cost = 0.006667 * 6000 = 40.002
-                        'loan/vip/borrow': 40.002,
-                        'loan/borrow': 40.002,
-                        'loan/repay': 40.002,
-                        'loan/adjust/ltv': 40.002,
-                        'loan/customize/margin_call': 40.002,
-                        'loan/flexible/borrow': 40.002, // Weight(UID): 6000 => cost = 0.006667 * 6000 = 40.002
-                        'loan/flexible/repay': 40.002, // Weight(UID): 6000 => cost = 0.006667 * 6000 = 40.002
-                        'loan/flexible/adjust/ltv': 40.002, // Weight(UID): 6000 => cost = 0.006667 * 6000 = 40.002
-                        'loan/vip/repay': 40.002,
-                        'convert/getQuote': 1.3334, // Weight(UID): 200 => cost = 0.006667 * 200 = 1.3334
                         'convert/acceptQuote': 3.3335, // Weight(UID): 500 => cost = 0.006667 * 500 = 3.3335
-                        'convert/limit/placeOrder': 3.3335, // Weight(UID): 500 => cost = 0.006667 * 500 = 3.3335
+                        'convert/getQuote': 1.3334, // Weight(UID): 200 => cost = 0.006667 * 200 = 1.3334
                         'convert/limit/cancelOrder': 1.3334, // Weight(UID): 200 => cost = 0.006667 * 200 = 1.3334
-                        'portfolio/auto-collection': 150, // Weight(IP): 1500 => cost = 0.1 * 1500 = 150
-                        'portfolio/asset-collection': 6, // Weight(IP): 60 => cost = 0.1 * 60 = 6
-                        'portfolio/bnb-transfer': 150, // Weight(IP): 1500 => cost = 0.1 * 1500 = 150
-                        'portfolio/repay-futures-switch': 150, // Weight(IP): 1500 => cost = 0.1 * 1500 = 150
-                        'portfolio/repay-futures-negative-balance': 150, // Weight(IP): 1500 => cost = 0.1 * 1500 = 150
+                        'convert/limit/placeOrder': 3.3335, // Weight(UID): 500 => cost = 0.006667 * 500 = 3.3335
+                        'lending/auto-invest/one-off': 0.1, // Weight(IP): 1 => cost = 0.1 * 1 = 0.1
                         'lending/auto-invest/plan/add': 0.1, // Weight(IP): 1 => cost = 0.1 * 1 = 0.1
                         'lending/auto-invest/plan/edit': 0.1, // Weight(IP): 1 => cost = 0.1 * 1 = 0.1
                         'lending/auto-invest/plan/edit-status': 0.1, // Weight(IP): 1 => cost = 0.1 * 1 = 0.1
-                        'lending/auto-invest/one-off': 0.1, // Weight(IP): 1 => cost = 0.1 * 1 = 0.1
                         'lending/auto-invest/redeem': 0.1, // Weight(IP): 1 => cost = 0.1 * 1 = 0.1
+                        'loan/adjust/ltv': 40.002,
+                        'loan/borrow': 40.002,
+                        'loan/customize/margin_call': 40.002,
+                        'loan/flexible/adjust/ltv': 40.002, // Weight(UID): 6000 => cost = 0.006667 * 6000 = 40.002
+                        'loan/flexible/borrow': 40.002, // Weight(UID): 6000 => cost = 0.006667 * 6000 = 40.002
+                        'loan/flexible/repay': 40.002, // Weight(UID): 6000 => cost = 0.006667 * 6000 = 40.002
+                        'loan/repay': 40.002,
+                        'loan/vip/borrow': 40.002,
+                        'loan/vip/renew': 40.002, // Weight(UID): 6000 => cost = 0.006667 * 6000 = 40.002
+                        'loan/vip/repay': 40.002,
+                        'mining/hash-transfer/config': 0.5, // Weight(IP): 5 => cost = 0.1 * 5 = 0.5
+                        'mining/hash-transfer/config/cancel': 0.5, // Weight(IP): 5 => cost = 0.1 * 5 = 0.5
+                        'portfolio/asset-collection': 6, // Weight(IP): 60 => cost = 0.1 * 60 = 6
+                        'portfolio/auto-collection': 150, // Weight(IP): 1500 => cost = 0.1 * 1500 = 150
+                        'portfolio/bnb-transfer': 150, // Weight(IP): 1500 => cost = 0.1 * 1500 = 150
+                        'portfolio/repay': 20.001,
+                        'portfolio/repay-futures-negative-balance': 150, // Weight(IP): 1500 => cost = 0.1 * 1500 = 150
+                        'portfolio/repay-futures-switch': 150, // Weight(IP): 1500 => cost = 0.1 * 1500 = 150
                         // simple earn
-                        'simple-earn/flexible/subscribe': 0.1,
-                        'simple-earn/locked/subscribe': 0.1,
                         'simple-earn/flexible/redeem': 0.1,
-                        'simple-earn/locked/redeem': 0.1,
                         'simple-earn/flexible/setAutoSubscribe': 15,
+                        'simple-earn/flexible/subscribe': 0.1,
+                        'simple-earn/locked/redeem': 0.1,
                         'simple-earn/locked/setAutoSubscribe': 15,
+                        'simple-earn/locked/subscribe': 0.1,
                     },
                     'put': {
                         'userDataStream': 0.1,
@@ -608,17 +608,17 @@ export default class binance extends Exchange {
                     },
                     'delete': {
                         // 'account/apiRestrictions/ipRestriction/ipList': 1, discontinued
+                        'margin/isolated/account': 2.0001, // Weight(UID): 300 => cost =  0.006667 * 300 = 2.0001
                         'margin/openOrders': 0.1,
                         'margin/order': 0.006667, // Weight(UID): 1 => cost = 0.006667
                         'margin/orderList': 0.006667,
-                        'margin/isolated/account': 2.0001, // Weight(UID): 300 => cost =  0.006667 * 300 = 2.0001
                         'userDataStream': 0.1,
                         'userDataStream/isolated': 0.1,
                         // brokerage API TODO NO MENTION OF RATELIMIT IN BROKERAGE DOCS
+                        'algo/futures/order': 0.1,
+                        'algo/spot/order': 0.1,
                         'broker/subAccountApi': 1,
                         'broker/subAccountApi/ipRestriction/ipList': 1,
-                        'algo/spot/order': 0.1,
-                        'algo/futures/order': 0.1,
                         'sub-account/subAccountApi/ipRestriction/ipList': 20.001, // Weight(UID): 3000 => cost = 0.006667 * 3000 = 20.001
                     },
                 },
@@ -649,81 +649,81 @@ export default class binance extends Exchange {
                 },
                 'dapiPublic': {
                     'get': {
-                        'ping': 1,
-                        'time': 1,
-                        'exchangeInfo': 1,
-                        'depth': { 'cost': 2, 'byLimit': [ [ 50, 2 ], [ 100, 5 ], [ 500, 10 ], [ 1000, 20 ] ] },
-                        'trades': 5,
-                        'historicalTrades': 20,
                         'aggTrades': 20,
-                        'premiumIndex': 10,
-                        'fundingRate': 1,
-                        'klines': { 'cost': 1, 'byLimit': [ [ 99, 1 ], [ 499, 2 ], [ 1000, 5 ], [ 10000, 10 ] ] },
+                        'constituents': 2,
                         'continuousKlines': { 'cost': 1, 'byLimit': [ [ 99, 1 ], [ 499, 2 ], [ 1000, 5 ], [ 10000, 10 ] ] },
+                        'depth': { 'cost': 2, 'byLimit': [ [ 50, 2 ], [ 100, 5 ], [ 500, 10 ], [ 1000, 20 ] ] },
+                        'exchangeInfo': 1,
+                        'fundingRate': 1,
+                        'historicalTrades': 20,
                         'indexPriceKlines': { 'cost': 1, 'byLimit': [ [ 99, 1 ], [ 499, 2 ], [ 1000, 5 ], [ 10000, 10 ] ] },
+                        'klines': { 'cost': 1, 'byLimit': [ [ 99, 1 ], [ 499, 2 ], [ 1000, 5 ], [ 10000, 10 ] ] },
                         'markPriceKlines': { 'cost': 1, 'byLimit': [ [ 99, 1 ], [ 499, 2 ], [ 1000, 5 ], [ 10000, 10 ] ] },
+                        'openInterest': 1,
+                        'ping': 1,
+                        'premiumIndex': 10,
                         'premiumIndexKlines': { 'cost': 1, 'byLimit': [ [ 99, 1 ], [ 499, 2 ], [ 1000, 5 ], [ 10000, 10 ] ] },
                         'ticker/24hr': { 'cost': 1, 'noSymbol': 40 },
-                        'ticker/price': { 'cost': 1, 'noSymbol': 2 },
                         'ticker/bookTicker': { 'cost': 2, 'noSymbol': 5 },
-                        'constituents': 2,
-                        'openInterest': 1,
+                        'ticker/price': { 'cost': 1, 'noSymbol': 2 },
+                        'time': 1,
+                        'trades': 5,
                     },
                 },
                 'dapiData': {
                     'get': {
+                        'basis': 1,
                         'delivery-price': 1,
+                        'globalLongShortAccountRatio': 1,
                         'openInterestHist': 1,
+                        'takerBuySellVol': 1,
                         'topLongShortAccountRatio': 1,
                         'topLongShortPositionRatio': 1,
-                        'globalLongShortAccountRatio': 1,
-                        'takerBuySellVol': 1,
-                        'basis': 1,
                     },
                 },
                 'dapiPrivate': {
                     'get': {
-                        'positionSide/dual': 30,
-                        'orderAmendment': 1,
-                        'order': 1,
-                        'openOrder': 1,
-                        'openOrders': { 'cost': 1, 'noSymbol': 5 },
+                        'account': 5,
+                        'adlQuantile': 5,
                         'allOrders': { 'cost': 20, 'noSymbol': 40 },
                         'balance': 1,
-                        'account': 5,
-                        'positionMargin/history': 1,
-                        'positionRisk': 1,
-                        'userTrades': { 'cost': 20, 'noSymbol': 40 },
-                        'income': 20,
-                        'leverageBracket': 1,
-                        'forceOrders': { 'cost': 20, 'noSymbol': 50 },
-                        'adlQuantile': 5,
                         'commissionRate': 20,
+                        'forceOrders': { 'cost': 20, 'noSymbol': 50 },
+                        'income': 20,
                         'income/asyn': 5,
                         'income/asyn/id': 5,
-                        'pmExchangeInfo': 0.5, // Weight(IP): 5 => cost = 0.1 * 5 = 0.5
+                        'leverageBracket': 1,
+                        'openOrder': 1,
+                        'openOrders': { 'cost': 1, 'noSymbol': 5 },
+                        'order': 1,
+                        'orderAmendment': 1,
                         'pmAccountInfo': 0.5, // Weight(IP): 5 => cost = 0.1 * 5 = 0.5
+                        'pmExchangeInfo': 0.5, // Weight(IP): 5 => cost = 0.1 * 5 = 0.5
+                        'positionMargin/history': 1,
+                        'positionRisk': 1,
+                        'positionSide/dual': 30,
+                        'userTrades': { 'cost': 20, 'noSymbol': 40 },
                     },
                     'post': {
-                        'positionSide/dual': 1,
-                        'order': 4,
                         'batchOrders': 5,
                         'countdownCancelAll': 10,
                         'leverage': 1,
-                        'marginType': 1,
-                        'positionMargin': 1,
                         'listenKey': 1,
+                        'marginType': 1,
+                        'order': 4,
+                        'positionMargin': 1,
+                        'positionSide/dual': 1,
                     },
                     'put': {
+                        'batchOrders': 5,
                         'listenKey': 1,
                         'order': 1,
-                        'batchOrders': 5,
                     },
                     'delete': {
-                        'order': 1,
                         'allOpenOrders': 1,
                         'batchOrders': 5,
                         'listenKey': 1,
+                        'order': 1,
                     },
                 },
                 'dapiPrivateV2': {
@@ -733,103 +733,103 @@ export default class binance extends Exchange {
                 },
                 'fapiPublic': {
                     'get': {
-                        'ping': 1,
-                        'time': 1,
-                        'exchangeInfo': 1,
-                        'depth': { 'cost': 2, 'byLimit': [ [ 50, 2 ], [ 100, 5 ], [ 500, 10 ], [ 1000, 20 ] ] },
-                        'trades': 5,
-                        'historicalTrades': 20,
                         'aggTrades': 20,
-                        'klines': { 'cost': 1, 'byLimit': [ [ 99, 1 ], [ 499, 2 ], [ 1000, 5 ], [ 10000, 10 ] ] },
-                        'continuousKlines': { 'cost': 1, 'byLimit': [ [ 99, 1 ], [ 499, 2 ], [ 1000, 5 ], [ 10000, 10 ] ] },
-                        'markPriceKlines': { 'cost': 1, 'byLimit': [ [ 99, 1 ], [ 499, 2 ], [ 1000, 5 ], [ 10000, 10 ] ] },
-                        'indexPriceKlines': { 'cost': 1, 'byLimit': [ [ 99, 1 ], [ 499, 2 ], [ 1000, 5 ], [ 10000, 10 ] ] },
-                        'fundingRate': 1,
-                        'fundingInfo': 1,
-                        'premiumIndex': 1,
-                        'ticker/24hr': { 'cost': 1, 'noSymbol': 40 },
-                        'ticker/price': { 'cost': 1, 'noSymbol': 2 },
-                        'ticker/bookTicker': { 'cost': 1, 'noSymbol': 2 },
-                        'openInterest': 1,
-                        'indexInfo': 1,
+                        'apiTradingStatus': { 'cost': 1, 'noSymbol': 10 },
                         'assetIndex': { 'cost': 1, 'noSymbol': 10 },
                         'constituents': 2,
-                        'apiTradingStatus': { 'cost': 1, 'noSymbol': 10 },
+                        'continuousKlines': { 'cost': 1, 'byLimit': [ [ 99, 1 ], [ 499, 2 ], [ 1000, 5 ], [ 10000, 10 ] ] },
+                        'depth': { 'cost': 2, 'byLimit': [ [ 50, 2 ], [ 100, 5 ], [ 500, 10 ], [ 1000, 20 ] ] },
+                        'exchangeInfo': 1,
+                        'fundingInfo': 1,
+                        'fundingRate': 1,
+                        'historicalTrades': 20,
+                        'indexInfo': 1,
+                        'indexPriceKlines': { 'cost': 1, 'byLimit': [ [ 99, 1 ], [ 499, 2 ], [ 1000, 5 ], [ 10000, 10 ] ] },
+                        'klines': { 'cost': 1, 'byLimit': [ [ 99, 1 ], [ 499, 2 ], [ 1000, 5 ], [ 10000, 10 ] ] },
                         'lvtKlines': 1,
+                        'markPriceKlines': { 'cost': 1, 'byLimit': [ [ 99, 1 ], [ 499, 2 ], [ 1000, 5 ], [ 10000, 10 ] ] },
+                        'openInterest': 1,
+                        'ping': 1,
+                        'premiumIndex': 1,
+                        'ticker/24hr': { 'cost': 1, 'noSymbol': 40 },
+                        'ticker/bookTicker': { 'cost': 1, 'noSymbol': 2 },
+                        'ticker/price': { 'cost': 1, 'noSymbol': 2 },
+                        'time': 1,
+                        'trades': 5,
                     },
                 },
                 'fapiData': {
                     'get': {
+                        'basis': 1,
                         'delivery-price': 1,
+                        'globalLongShortAccountRatio': 1,
                         'openInterestHist': 1,
+                        'takerlongshortRatio': 1,
                         'topLongShortAccountRatio': 1,
                         'topLongShortPositionRatio': 1,
-                        'globalLongShortAccountRatio': 1,
-                        'takerlongshortRatio': 1,
-                        'basis': 1,
                     },
                 },
                 'fapiPrivate': {
                     'get': {
-                        'forceOrders': { 'cost': 20, 'noSymbol': 50 },
+                        'account': 5,
                         'allOrders': 5,
+                        'apiTradingStatus': 1,
+                        'balance': 5,
+                        'commissionRate': 20,
+                        'forceOrders': { 'cost': 20, 'noSymbol': 50 },
+                        'income': 30,
+                        'leverageBracket': 1,
+                        'multiAssetsMargin': 30,
                         'openOrder': 1,
                         'openOrders': 1,
                         'order': 1,
-                        'account': 5,
-                        'balance': 5,
-                        'leverageBracket': 1,
                         'positionMargin/history': 1,
                         'positionRisk': 5,
                         'positionSide/dual': 30,
                         'userTrades': 5,
-                        'income': 30,
-                        'commissionRate': 20,
-                        'apiTradingStatus': 1,
-                        'multiAssetsMargin': 30,
                         // broker endpoints
-                        'apiReferral/ifNewUser': 1,
-                        'apiReferral/customization': 1,
-                        'apiReferral/userCustomization': 1,
-                        'apiReferral/traderNum': 1,
-                        'apiReferral/overview': 1,
-                        'apiReferral/tradeVol': 1,
-                        'apiReferral/rebateVol': 1,
-                        'apiReferral/traderSummary': 1,
                         'adlQuantile': 5,
-                        'pmAccountInfo': 5,
-                        'orderAmendment': 1,
+                        'apiReferral/customization': 1,
+                        'apiReferral/ifNewUser': 1,
+                        'apiReferral/overview': 1,
+                        'apiReferral/rebateVol': 1,
+                        'apiReferral/traderNum': 1,
+                        'apiReferral/traderSummary': 1,
+                        'apiReferral/tradeVol': 1,
+                        'apiReferral/userCustomization': 1,
                         'income/asyn': 1000,
                         'income/asyn/id': 10,
                         'order/asyn': 1000,
                         'order/asyn/id': 10,
+                        'orderAmendment': 1,
+                        'pmAccountInfo': 5,
                         'trade/asyn': 1000,
                         'trade/asyn/id': 10,
                     },
                     'post': {
                         'batchOrders': 5,
-                        'positionSide/dual': 1,
-                        'positionMargin': 1,
-                        'marginType': 1,
-                        'order': 4,
+                        'countdownCancelAll': 10,
                         'leverage': 1,
                         'listenKey': 1,
-                        'countdownCancelAll': 10,
+                        'marginType': 1,
                         'multiAssetsMargin': 1,
+                        'order': 4,
+                        'positionMargin': 1,
+                        'positionSide/dual': 1,
                         // broker endpoints
                         'apiReferral/customization': 1,
                         'apiReferral/userCustomization': 1,
                     },
                     'put': {
+                        'batchOrders': 5,
                         'listenKey': 1,
                         'order': 1,
-                        'batchOrders': 5,
                     },
                     'delete': {
-                        'batchOrders': 1,
-                        'order': 1,
                         'allOpenOrders': 1,
+                        'batchOrders': 1,
                         'listenKey': 1,
+                        'order': 1,
                     },
                 },
                 'fapiPublicV2': {
@@ -846,75 +846,75 @@ export default class binance extends Exchange {
                 },
                 'eapiPublic': {
                     'get': {
-                        'ping': 1,
-                        'time': 1,
-                        'exchangeInfo': 1,
-                        'index': 1,
-                        'ticker': 5,
-                        'mark': 5,
                         'depth': 1,
-                        'klines': 1,
-                        'trades': 5,
-                        'historicalTrades': 20,
+                        'exchangeInfo': 1,
                         'exerciseHistory': 3,
+                        'historicalTrades': 20,
+                        'index': 1,
+                        'klines': 1,
+                        'mark': 5,
                         'openInterest': 3,
+                        'ping': 1,
+                        'ticker': 5,
+                        'time': 1,
+                        'trades': 5,
                     },
                 },
                 'eapiPrivate': {
                     'get': {
                         'account': 3,
-                        'position': 5,
-                        'openOrders': { 'cost': 1, 'noSymbol': 40 },
-                        'historyOrders': 3,
-                        'userTrades': 5,
-                        'exerciseRecord': 5,
                         'bill': 1,
+                        'countdownCancelAll': 1,
+                        'exerciseRecord': 5,
+                        'historyOrders': 3,
                         'income/asyn': 5,
                         'income/asyn/id': 5,
                         'marginAccount': 3,
                         'mmp': 1,
-                        'countdownCancelAll': 1,
+                        'openOrders': { 'cost': 1, 'noSymbol': 40 },
                         'order': 1,
+                        'position': 5,
+                        'userTrades': 5,
                     },
                     'post': {
-                        'order': 1,
                         'batchOrders': 5,
-                        'listenKey': 1,
-                        'mmpSet': 1,
-                        'mmpReset': 1,
                         'countdownCancelAll': 1,
                         'countdownCancelAllHeartBeat': 10,
+                        'listenKey': 1,
+                        'mmpReset': 1,
+                        'mmpSet': 1,
+                        'order': 1,
                     },
                     'put': {
                         'listenKey': 1,
                     },
                     'delete': {
-                        'order': 1,
-                        'batchOrders': 1,
                         'allOpenOrders': 1,
                         'allOpenOrdersByUnderlying': 1,
+                        'batchOrders': 1,
                         'listenKey': 1,
+                        'order': 1,
                     },
                 },
                 'public': {
                     // IP (api) request rate limit of 6000 per minute
                     // 1 IP (api) => cost = 0.2 => (1000 / (50 * 0.2)) * 60 = 6000
                     'get': {
-                        'ping': 0.2, // Weight(IP): 1 => cost = 0.2 * 1 = 0.2
-                        'time': 0.2,
-                        'depth': { 'cost': 1, 'byLimit': [ [ 100, 1 ], [ 500, 5 ], [ 1000, 10 ], [ 5000, 50 ] ] },
-                        'trades': 2, // Weight(IP): 10 => cost = 0.2 * 10 = 2
                         'aggTrades': 0.4,
+                        'avgPrice': 0.4,
+                        'depth': { 'cost': 1, 'byLimit': [ [ 100, 1 ], [ 500, 5 ], [ 1000, 10 ], [ 5000, 50 ] ] },
+                        'exchangeInfo': 4, // Weight(IP): 20 => cost = 0.2 * 20 = 4
                         'historicalTrades': 2, // Weight(IP): 10 => cost = 0.2 * 10 = 2
                         'klines': 0.4,
-                        'uiKlines': 0.4,
-                        'ticker/24hr': { 'cost': 0.4, 'noSymbol': 16 },
+                        'ping': 0.2, // Weight(IP): 1 => cost = 0.2 * 1 = 0.2
                         'ticker': { 'cost': 0.4, 'noSymbol': 16 },
-                        'ticker/tradingDay': 0.8,
-                        'ticker/price': { 'cost': 0.4, 'noSymbol': 0.8 },
+                        'ticker/24hr': { 'cost': 0.4, 'noSymbol': 16 },
                         'ticker/bookTicker': { 'cost': 0.4, 'noSymbol': 0.8 },
-                        'exchangeInfo': 4, // Weight(IP): 20 => cost = 0.2 * 20 = 4
-                        'avgPrice': 0.4,
+                        'ticker/price': { 'cost': 0.4, 'noSymbol': 0.8 },
+                        'ticker/tradingDay': 0.8,
+                        'time': 0.2,
+                        'trades': 2, // Weight(IP): 10 => cost = 0.2 * 10 = 2
+                        'uiKlines': 0.4,
                     },
                     'put': {
                         'userDataStream': 0.4,
@@ -928,135 +928,135 @@ export default class binance extends Exchange {
                 },
                 'private': {
                     'get': {
-                        'allOrderList': 4, // oco Weight(IP): 20 => cost = 0.2 * 20 = 4
-                        'openOrderList': 1.2, // oco Weight(IP): 6 => cost = 0.2 * 6 = 1.2
-                        'orderList': 0.8, // oco
-                        'order': 0.8,
-                        'openOrders': { 'cost': 1.2, 'noSymbol': 16 },
-                        'allOrders': 4,
                         'account': 4,
-                        'myTrades': 4,
-                        'rateLimit/order': 8, // Weight(IP): 40 => cost = 0.2 * 40 = 8
-                        'myPreventedMatches': 4, // Weight(IP): 20 => cost = 0.2 * 20 = 4
-                        'myAllocations': 4,
                         'account/commission': 4,
+                        'allOrderList': 4, // oco Weight(IP): 20 => cost = 0.2 * 20 = 4
+                        'allOrders': 4,
+                        'myAllocations': 4,
+                        'myPreventedMatches': 4, // Weight(IP): 20 => cost = 0.2 * 20 = 4
+                        'myTrades': 4,
+                        'openOrderList': 1.2, // oco Weight(IP): 6 => cost = 0.2 * 6 = 1.2
+                        'openOrders': { 'cost': 1.2, 'noSymbol': 16 },
+                        'order': 0.8,
+                        'orderList': 0.8, // oco
+                        'rateLimit/order': 8, // Weight(IP): 40 => cost = 0.2 * 40 = 8
                     },
                     'post': {
-                        'order/oco': 0.2,
-                        'sor/order': 0.2,
-                        'sor/order/test': 0.2,
                         'order': 0.2,
                         'order/cancelReplace': 0.2,
+                        'order/oco': 0.2,
                         'order/test': 0.2,
+                        'sor/order': 0.2,
+                        'sor/order/test': 0.2,
                     },
                     'delete': {
                         'openOrders': 0.2,
-                        'orderList': 0.2, // oco
                         'order': 0.2,
+                        'orderList': 0.2, // oco
                     },
                 },
                 'papi': {
                     'get': {
-                        'ping': 1,
-                        'um/order': 1, // 1
-                        'um/openOrder': 1, // 1
-                        'um/openOrders': 1, // 1
-                        'um/allOrders': 5, // 5
-                        'cm/order': 1, // 1
-                        'cm/openOrder': 1, // 1
-                        'cm/openOrders': 1, // 1
+                        'account': 20, // 20
+                        'balance': 20, // 20
+                        'cm/account': 5,
+                        'cm/adlQuantile': 5,
                         'cm/allOrders': 20, // 20
-                        'um/conditional/openOrder': 1,
-                        'um/conditional/openOrders': 40,
-                        'um/conditional/orderHistory': 1,
-                        'um/conditional/allOrders': 40,
+                        'cm/commissionRate': 20, // 20
+                        'cm/conditional/allOrders': 40,
                         'cm/conditional/openOrder': 1,
                         'cm/conditional/openOrders': 40,
                         'cm/conditional/orderHistory': 1,
-                        'cm/conditional/allOrders': 40,
-                        'margin/order': 5,
-                        'margin/openOrders': 5,
-                        'margin/allOrders': 100,
-                        'margin/orderList': 5,
+                        'cm/forceOrders': 20, // 20
+                        'cm/income': 30,
+                        'cm/leverageBracket': 1, // 1
+                        'cm/openOrder': 1, // 1
+                        'cm/openOrders': 1, // 1
+                        'cm/order': 1, // 1
+                        'cm/positionRisk': 1, // 1
+                        'cm/positionSide/dual': 30, // 30
+                        'cm/userTrades': 20, // 20
                         'margin/allOrderList': 100,
-                        'margin/openOrderList': 5,
-                        'margin/myTrades': 5,
-                        'balance': 20, // 20
-                        'account': 20, // 20
+                        'margin/allOrders': 100,
+                        'margin/forceOrders': 1, // 1
+                        'margin/marginInterestHistory': 1,
+                        'margin/marginLoan': 10,
                         'margin/maxBorrowable': 5, // 5
                         'margin/maxWithdraw': 5, // 5
-                        'um/positionRisk': 5, // 5
-                        'cm/positionRisk': 1, // 1
-                        'um/positionSide/dual': 30, // 30
-                        'cm/positionSide/dual': 30, // 30
-                        'um/userTrades': 5, // 5
-                        'cm/userTrades': 20, // 20
-                        'um/leverageBracket': 1, // 1
-                        'cm/leverageBracket': 1, // 1
-                        'margin/forceOrders': 1, // 1
-                        'um/forceOrders': 20, // 20
-                        'cm/forceOrders': 20, // 20
+                        'margin/myTrades': 5,
+                        'margin/openOrderList': 5,
+                        'margin/openOrders': 5,
+                        'margin/order': 5,
+                        'margin/orderList': 5,
+                        'margin/repayLoan': 10,
+                        'ping': 1,
+                        'portfolio/interest-history': 50, // 50
+                        'repay-futures-switch': 3, // Weight(IP): 30 => cost = 0.1 * 30 = 3
+                        'um/account': 5,
+                        'um/adlQuantile': 5,
+                        'um/allOrders': 5, // 5
                         'um/apiTradingStatus': 1, // 1
                         'um/commissionRate': 20, // 20
-                        'cm/commissionRate': 20, // 20
-                        'margin/marginLoan': 10,
-                        'margin/repayLoan': 10,
-                        'margin/marginInterestHistory': 1,
-                        'portfolio/interest-history': 50, // 50
+                        'um/conditional/allOrders': 40,
+                        'um/conditional/openOrder': 1,
+                        'um/conditional/openOrders': 40,
+                        'um/conditional/orderHistory': 1,
+                        'um/forceOrders': 20, // 20
                         'um/income': 30,
-                        'cm/income': 30,
-                        'um/account': 5,
-                        'cm/account': 5,
-                        'repay-futures-switch': 3, // Weight(IP): 30 => cost = 0.1 * 30 = 3
-                        'um/adlQuantile': 5,
-                        'cm/adlQuantile': 5,
+                        'um/leverageBracket': 1, // 1
+                        'um/openOrder': 1, // 1
+                        'um/openOrders': 1, // 1
+                        'um/order': 1, // 1
+                        'um/positionRisk': 5, // 5
+                        'um/positionSide/dual': 30, // 30
+                        'um/userTrades': 5, // 5
                     },
                     'post': {
-                        'um/order': 1, // 0
-                        'um/conditional/order': 1,
-                        'cm/order': 1, // 0
-                        'cm/conditional/order': 1,
-                        'margin/order': 0.0133, // Weight(UID): 2 => cost = 0.006667 * 2 = 0.013334
-                        'marginLoan': 0.1333, // Weight(UID): 20 => cost = 0.006667 * 20 = 0.13334
-                        'repayLoan': 0.1333, // Weight(UID): 20 => cost = 0.006667 * 20 = 0.13334
-                        'margin/order/oco': 0.0400, // Weight(UID): 6 => cost = 0.006667 * 6 = 0.040002
-                        'um/leverage': 1, // 1
-                        'cm/leverage': 1, // 1
-                        'um/positionSide/dual': 1, // 1
-                        'cm/positionSide/dual': 1, // 1
+                        'asset-collection': 3,
                         'auto-collection': 0.6667, // Weight(UID): 100 => cost = 0.006667 * 100 = 0.6667
                         'bnb-transfer': 0.6667, // Weight(UID): 100 => cost = 0.006667 * 100 = 0.6667
-                        'repay-futures-switch': 150, // Weight(IP): 1500 => cost = 0.1 * 1500 = 150
-                        'repay-futures-negative-balance': 150, // Weight(IP): 1500 => cost = 0.1 * 1500 = 150
+                        'cm/conditional/order': 1,
+                        'cm/leverage': 1, // 1
+                        'cm/order': 1, // 0
+                        'cm/positionSide/dual': 1, // 1
                         'listenKey': 1, // 1
-                        'asset-collection': 3,
+                        'margin/order': 0.0133, // Weight(UID): 2 => cost = 0.006667 * 2 = 0.013334
+                        'margin/order/oco': 0.0400, // Weight(UID): 6 => cost = 0.006667 * 6 = 0.040002
+                        'marginLoan': 0.1333, // Weight(UID): 20 => cost = 0.006667 * 20 = 0.13334
+                        'repay-futures-negative-balance': 150, // Weight(IP): 1500 => cost = 0.1 * 1500 = 150
+                        'repay-futures-switch': 150, // Weight(IP): 1500 => cost = 0.1 * 1500 = 150
+                        'repayLoan': 0.1333, // Weight(UID): 20 => cost = 0.006667 * 20 = 0.13334
+                        'um/conditional/order': 1,
+                        'um/leverage': 1, // 1
+                        'um/order': 1, // 0
+                        'um/positionSide/dual': 1, // 1
                     },
                     'put': {
                         'listenKey': 1, // 1
                     },
                     'delete': {
-                        'um/order': 1, // 1
-                        'um/conditional/order': 1,
-                        'um/allOpenOrders': 1, // 1
-                        'um/conditional/allOpenOrders': 1,
-                        'cm/order': 1, // 1
-                        'cm/conditional/order': 1,
                         'cm/allOpenOrders': 1, // 1
                         'cm/conditional/allOpenOrders': 1,
-                        'margin/order': 1, // Weight(IP): 10 => cost = 0.1 * 10 = 1
-                        'margin/allOpenOrders': 5, // 5
-                        'margin/orderList': 2, // 2
+                        'cm/conditional/order': 1,
+                        'cm/order': 1, // 1
                         'listenKey': 1, // 1
+                        'margin/allOpenOrders': 5, // 5
+                        'margin/order': 1, // Weight(IP): 10 => cost = 0.1 * 10 = 1
+                        'margin/orderList': 2, // 2
+                        'um/allOpenOrders': 1, // 1
+                        'um/conditional/allOpenOrders': 1,
+                        'um/conditional/order': 1,
+                        'um/order': 1, // 1
                     },
                 },
             },
             'fees': {
                 'trading': {
                     'feeSide': 'get',
-                    'tierBased': false,
+                    'maker': this.parseNumber ('0.001'),
                     'percentage': true,
                     'taker': this.parseNumber ('0.001'),
-                    'maker': this.parseNumber ('0.001'),
+                    'tierBased': false,
                 },
                 'linear': {
                     'trading': {
@@ -1096,10 +1096,10 @@ export default class binance extends Exchange {
                 'inverse': {
                     'trading': {
                         'feeSide': 'base',
-                        'tierBased': true,
+                        'maker': this.parseNumber ('0.000100'),
                         'percentage': true,
                         'taker': this.parseNumber ('0.000500'),
-                        'maker': this.parseNumber ('0.000100'),
+                        'tierBased': true,
                         'tiers': {
                             'taker': [
                                 [ this.parseNumber ('0'), this.parseNumber ('0.000500') ],
@@ -1139,18 +1139,18 @@ export default class binance extends Exchange {
             'options': {
                 'sandboxMode': false,
                 'fetchMarkets': [
-                    'spot', // allows CORS in browsers
-                    'linear', // allows CORS in browsers
                     'inverse', // allows CORS in browsers
+                    'linear', // allows CORS in browsers
+                    'spot', // allows CORS in browsers
                     // 'option', // does not allow CORS, enable outside of the browser only
                 ],
-                'fetchCurrencies': true, // this is a private call and it requires API keys
-                // 'fetchTradesMethod': 'publicGetAggTrades', // publicGetTrades, publicGetHistoricalTrades, eapiPublicGetTrades
+                'defaultSubType': undefined, // 'linear', 'inverse'
                 'defaultTimeInForce': 'GTC', // 'GTC' = Good To Cancel (default), 'IOC' = Immediate Or Cancel
                 'defaultType': 'spot', // 'spot', 'future', 'margin', 'delivery', 'option'
-                'defaultSubType': undefined, // 'linear', 'inverse'
+                'fetchCurrencies': true, // this is a private call and it requires API keys
                 'hasAlreadyAuthenticatedSuccessfully': false,
                 'warnOnFetchOpenOrdersWithoutSymbol': true,
+                // 'fetchTradesMethod': 'publicGetAggTrades', // publicGetTrades, publicGetHistoricalTrades, eapiPublicGetTrades
                 // not an error
                 // https://github.com/ccxt/ccxt/issues/11268
                 // https://github.com/ccxt/ccxt/pull/11624
@@ -1167,268 +1167,268 @@ export default class binance extends Exchange {
                 },
                 'quoteOrderQty': true, // whether market orders support amounts in quote currency
                 'broker': {
-                    'spot': 'x-R4BD3S82',
-                    'margin': 'x-R4BD3S82',
-                    'future': 'x-xcKtGhcu',
                     'delivery': 'x-xcKtGhcu',
-                    'swap': 'x-xcKtGhcu',
+                    'future': 'x-xcKtGhcu',
+                    'margin': 'x-R4BD3S82',
                     'option': 'x-xcKtGhcu',
+                    'spot': 'x-R4BD3S82',
+                    'swap': 'x-xcKtGhcu',
                 },
                 'accountsByType': {
-                    'main': 'MAIN',
-                    'spot': 'MAIN',
-                    'funding': 'FUNDING',
-                    'margin': 'MARGIN',
                     'cross': 'MARGIN',
-                    'future': 'UMFUTURE', // backwards compatibility
                     'delivery': 'CMFUTURE', // backwards compatbility
-                    'linear': 'UMFUTURE',
+                    'funding': 'FUNDING',
+                    'future': 'UMFUTURE', // backwards compatibility
                     'inverse': 'CMFUTURE',
+                    'linear': 'UMFUTURE',
+                    'main': 'MAIN',
+                    'margin': 'MARGIN',
                     'option': 'OPTION',
+                    'spot': 'MAIN',
                 },
                 'accountsById': {
-                    'MAIN': 'spot',
-                    'FUNDING': 'funding',
-                    'MARGIN': 'margin',
-                    'UMFUTURE': 'linear',
                     'CMFUTURE': 'inverse',
+                    'FUNDING': 'funding',
+                    'MAIN': 'spot',
+                    'MARGIN': 'margin',
                     'OPTION': 'option',
+                    'UMFUTURE': 'linear',
                 },
                 'networks': {
-                    'ERC20': 'ETH',
-                    'TRC20': 'TRX',
                     'BEP2': 'BNB',
                     'BEP20': 'BSC',
-                    'OMNI': 'OMNI',
                     'EOS': 'EOS',
+                    'ERC20': 'ETH',
+                    'OMNI': 'OMNI',
                     'SPL': 'SOL',
+                    'TRC20': 'TRX',
                 },
                 // keeping this object for backward-compatibility
                 'reverseNetworks': {
-                    'tronscan.org': 'TRC20',
-                    'etherscan.io': 'ERC20',
-                    'bscscan.com': 'BSC',
-                    'explorer.binance.org': 'BEP2',
+                    'algoexplorer.io': 'ALGO',
+                    'atomscan.com': 'ATOM',
                     'bithomp.com': 'XRP',
-                    'bloks.io': 'EOS',
-                    'stellar.expert': 'XLM',
+                    'block.gxb.io': 'GXS',
                     'blockchair.com/bitcoin': 'BTC',
                     'blockchair.com/bitcoin-cash': 'BCH',
                     'blockchair.com/ecash': 'XEC',
-                    'explorer.litecoin.net': 'LTC',
-                    'explorer.avax.network': 'AVAX',
-                    'solscan.io': 'SOL',
-                    'polkadot.subscan.io': 'DOT',
-                    'dashboard.internetcomputer.org': 'ICP',
-                    'explorer.chiliz.com': 'CHZ',
-                    'cardanoscan.io': 'ADA',
-                    'mainnet.theoan.com': 'AION',
-                    'algoexplorer.io': 'ALGO',
-                    'explorer.ambrosus.com': 'AMB',
-                    'viewblock.io/zilliqa': 'ZIL',
-                    'viewblock.io/arweave': 'AR',
-                    'explorer.ark.io': 'ARK',
-                    'atomscan.com': 'ATOM',
-                    'www.mintscan.io': 'CTK',
-                    'explorer.bitcoindiamond.org': 'BCD',
+                    'blockscout.com': 'ETC',
+                    'bloks.io': 'EOS',
+                    'bscscan.com': 'BSC',
                     'btgexplorer.com': 'BTG',
                     'bts.ai': 'BTS',
-                    'explorer.celo.org': 'CELO',
-                    'explorer.nervos.org': 'CKB',
+                    'cardanoscan.io': 'ADA',
                     'cerebro.cortexlabs.ai': 'CTXC',
+                    'chain.nem.ninja': 'XEM',
                     'chainz.cryptoid.info': 'VIA',
-                    'explorer.dcrdata.org': 'DCR',
+                    'dashboard.internetcomputer.org': 'ICP',
                     'digiexplorer.info': 'DGB',
                     'dock.subscan.io': 'DOCK',
                     'dogechain.info': 'DOGE',
-                    'explorer.elrond.com': 'EGLD',
-                    'blockscout.com': 'ETC',
+                    'etherscan.io': 'ERC20',
                     'explore-fetchhub.fetch.ai': 'FET',
-                    'filfox.info': 'FIL',
-                    'fio.bloks.io': 'FIO',
+                    'explore.vechain.org': 'VET',
+                    'explorer.ambrosus.com': 'AMB',
+                    'explorer.ark.io': 'ARK',
+                    'explorer.avax.network': 'AVAX',
+                    'explorer.binance.org': 'BEP2',
+                    'explorer.bitcoindiamond.org': 'BCD',
+                    'explorer.celo.org': 'CELO',
+                    'explorer.chiliz.com': 'CHZ',
+                    'explorer.dcrdata.org': 'DCR',
+                    'explorer.elrond.com': 'EGLD',
                     'explorer.firo.org': 'FIRO',
-                    'neoscan.io': 'NEO',
-                    'ftmscan.com': 'FTM',
                     'explorer.gochain.io': 'GO',
-                    'block.gxb.io': 'GXS',
-                    'hash-hash.info': 'HBAR',
-                    'www.hiveblockexplorer.com': 'HIVE',
+                    'explorer.harmony.one': 'ONE',
                     'explorer.helium.com': 'HNT',
-                    'tracker.icon.foundation': 'ICX',
-                    'www.iostabc.com': 'IOST',
                     'explorer.iota.org': 'IOTA',
-                    'iotexscan.io': 'IOTX',
-                    'irishub.iobscan.io': 'IRIS',
-                    'kava.mintscan.io': 'KAVA',
-                    'scope.klaytn.com': 'KLAY',
-                    'kmdexplorer.io': 'KMD',
-                    'kusama.subscan.io': 'KSM',
+                    'explorer.litecoin.net': 'LTC',
                     'explorer.lto.network': 'LTO',
-                    'polygonscan.com': 'POLYGON',
-                    'explorer.ont.io': 'ONT',
-                    'minaexplorer.com': 'MINA',
-                    'nanolooker.com': 'NANO',
-                    'explorer.nebulas.io': 'NAS',
                     'explorer.nbs.plus': 'NBS',
                     'explorer.nebl.io': 'NEBL',
-                    'nulscan.io': 'NULS',
-                    'nxscan.com': 'NXS',
-                    'explorer.harmony.one': 'ONE',
+                    'explorer.nebulas.io': 'NAS',
+                    'explorer.nervos.org': 'CKB',
+                    'explorer.ont.io': 'ONT',
                     'explorer.poa.network': 'POA',
-                    'qtum.info': 'QTUM',
                     'explorer.rsk.co': 'RSK',
-                    'www.oasisscan.com': 'ROSE',
-                    'ravencoin.network': 'RVN',
-                    'sc.tokenview.com': 'SC',
-                    'secretnodes.com': 'SCRT',
                     'explorer.skycoin.com': 'SKY',
-                    'steemscan.com': 'STEEM',
                     'explorer.stacks.co': 'STX',
-                    'www.thetascan.io': 'THETA',
-                    'scan.tomochain.com': 'TOMO',
-                    'explore.vechain.org': 'VET',
                     'explorer.vite.net': 'VITE',
-                    'www.wanscan.org': 'WAN',
-                    'wavesexplorer.com': 'WAVES',
-                    'wax.eosx.io': 'WAXP',
-                    'waltonchain.pro': 'WTC',
-                    'chain.nem.ninja': 'XEM',
-                    'verge-blockchain.info': 'XVG',
                     'explorer.yoyow.org': 'YOYOW',
                     'explorer.zcha.in': 'ZEC',
                     'explorer.zensystem.io': 'ZEN',
+                    'filfox.info': 'FIL',
+                    'fio.bloks.io': 'FIO',
+                    'ftmscan.com': 'FTM',
+                    'hash-hash.info': 'HBAR',
+                    'iotexscan.io': 'IOTX',
+                    'irishub.iobscan.io': 'IRIS',
+                    'kava.mintscan.io': 'KAVA',
+                    'kmdexplorer.io': 'KMD',
+                    'kusama.subscan.io': 'KSM',
+                    'mainnet.theoan.com': 'AION',
+                    'minaexplorer.com': 'MINA',
+                    'nanolooker.com': 'NANO',
+                    'neoscan.io': 'NEO',
+                    'nulscan.io': 'NULS',
+                    'nxscan.com': 'NXS',
+                    'polkadot.subscan.io': 'DOT',
+                    'polygonscan.com': 'POLYGON',
+                    'qtum.info': 'QTUM',
+                    'ravencoin.network': 'RVN',
+                    'sc.tokenview.com': 'SC',
+                    'scan.tomochain.com': 'TOMO',
+                    'scope.klaytn.com': 'KLAY',
+                    'secretnodes.com': 'SCRT',
+                    'solscan.io': 'SOL',
+                    'steemscan.com': 'STEEM',
+                    'stellar.expert': 'XLM',
+                    'tracker.icon.foundation': 'ICX',
+                    'tronscan.org': 'TRC20',
+                    'verge-blockchain.info': 'XVG',
+                    'viewblock.io/arweave': 'AR',
+                    'viewblock.io/zilliqa': 'ZIL',
+                    'waltonchain.pro': 'WTC',
+                    'wavesexplorer.com': 'WAVES',
+                    'wax.eosx.io': 'WAXP',
+                    'www.hiveblockexplorer.com': 'HIVE',
+                    'www.iostabc.com': 'IOST',
+                    'www.mintscan.io': 'CTK',
+                    'www.oasisscan.com': 'ROSE',
+                    'www.thetascan.io': 'THETA',
+                    'www.wanscan.org': 'WAN',
                 },
                 'networksById': {
-                    'tronscan.org': 'TRC20',
-                    'etherscan.io': 'ERC20',
-                    'bscscan.com': 'BSC',
-                    'explorer.binance.org': 'BEP2',
+                    'algoexplorer.io': 'ALGO',
+                    'atomscan.com': 'ATOM',
                     'bithomp.com': 'XRP',
-                    'bloks.io': 'EOS',
-                    'stellar.expert': 'XLM',
+                    'block.gxb.io': 'GXS',
                     'blockchair.com/bitcoin': 'BTC',
                     'blockchair.com/bitcoin-cash': 'BCH',
                     'blockchair.com/ecash': 'XEC',
-                    'explorer.litecoin.net': 'LTC',
-                    'explorer.avax.network': 'AVAX',
-                    'solscan.io': 'SOL',
-                    'polkadot.subscan.io': 'DOT',
-                    'dashboard.internetcomputer.org': 'ICP',
-                    'explorer.chiliz.com': 'CHZ',
-                    'cardanoscan.io': 'ADA',
-                    'mainnet.theoan.com': 'AION',
-                    'algoexplorer.io': 'ALGO',
-                    'explorer.ambrosus.com': 'AMB',
-                    'viewblock.io/zilliqa': 'ZIL',
-                    'viewblock.io/arweave': 'AR',
-                    'explorer.ark.io': 'ARK',
-                    'atomscan.com': 'ATOM',
-                    'www.mintscan.io': 'CTK',
-                    'explorer.bitcoindiamond.org': 'BCD',
+                    'blockscout.com': 'ETC',
+                    'bloks.io': 'EOS',
+                    'bscscan.com': 'BSC',
                     'btgexplorer.com': 'BTG',
                     'bts.ai': 'BTS',
-                    'explorer.celo.org': 'CELO',
-                    'explorer.nervos.org': 'CKB',
+                    'cardanoscan.io': 'ADA',
                     'cerebro.cortexlabs.ai': 'CTXC',
+                    'chain.nem.ninja': 'XEM',
                     'chainz.cryptoid.info': 'VIA',
-                    'explorer.dcrdata.org': 'DCR',
+                    'dashboard.internetcomputer.org': 'ICP',
                     'digiexplorer.info': 'DGB',
                     'dock.subscan.io': 'DOCK',
                     'dogechain.info': 'DOGE',
-                    'explorer.elrond.com': 'EGLD',
-                    'blockscout.com': 'ETC',
+                    'etherscan.io': 'ERC20',
                     'explore-fetchhub.fetch.ai': 'FET',
-                    'filfox.info': 'FIL',
-                    'fio.bloks.io': 'FIO',
+                    'explore.vechain.org': 'VET',
+                    'explorer.ambrosus.com': 'AMB',
+                    'explorer.ark.io': 'ARK',
+                    'explorer.avax.network': 'AVAX',
+                    'explorer.binance.org': 'BEP2',
+                    'explorer.bitcoindiamond.org': 'BCD',
+                    'explorer.celo.org': 'CELO',
+                    'explorer.chiliz.com': 'CHZ',
+                    'explorer.dcrdata.org': 'DCR',
+                    'explorer.elrond.com': 'EGLD',
                     'explorer.firo.org': 'FIRO',
-                    'neoscan.io': 'NEO',
-                    'ftmscan.com': 'FTM',
                     'explorer.gochain.io': 'GO',
-                    'block.gxb.io': 'GXS',
-                    'hash-hash.info': 'HBAR',
-                    'www.hiveblockexplorer.com': 'HIVE',
+                    'explorer.harmony.one': 'ONE',
                     'explorer.helium.com': 'HNT',
-                    'tracker.icon.foundation': 'ICX',
-                    'www.iostabc.com': 'IOST',
                     'explorer.iota.org': 'IOTA',
-                    'iotexscan.io': 'IOTX',
-                    'irishub.iobscan.io': 'IRIS',
-                    'kava.mintscan.io': 'KAVA',
-                    'scope.klaytn.com': 'KLAY',
-                    'kmdexplorer.io': 'KMD',
-                    'kusama.subscan.io': 'KSM',
+                    'explorer.litecoin.net': 'LTC',
                     'explorer.lto.network': 'LTO',
-                    'polygonscan.com': 'POLYGON',
-                    'explorer.ont.io': 'ONT',
-                    'minaexplorer.com': 'MINA',
-                    'nanolooker.com': 'NANO',
-                    'explorer.nebulas.io': 'NAS',
                     'explorer.nbs.plus': 'NBS',
                     'explorer.nebl.io': 'NEBL',
-                    'nulscan.io': 'NULS',
-                    'nxscan.com': 'NXS',
-                    'explorer.harmony.one': 'ONE',
+                    'explorer.nebulas.io': 'NAS',
+                    'explorer.nervos.org': 'CKB',
+                    'explorer.ont.io': 'ONT',
                     'explorer.poa.network': 'POA',
-                    'qtum.info': 'QTUM',
                     'explorer.rsk.co': 'RSK',
-                    'www.oasisscan.com': 'ROSE',
-                    'ravencoin.network': 'RVN',
-                    'sc.tokenview.com': 'SC',
-                    'secretnodes.com': 'SCRT',
                     'explorer.skycoin.com': 'SKY',
-                    'steemscan.com': 'STEEM',
                     'explorer.stacks.co': 'STX',
-                    'www.thetascan.io': 'THETA',
-                    'scan.tomochain.com': 'TOMO',
-                    'explore.vechain.org': 'VET',
                     'explorer.vite.net': 'VITE',
-                    'www.wanscan.org': 'WAN',
-                    'wavesexplorer.com': 'WAVES',
-                    'wax.eosx.io': 'WAXP',
-                    'waltonchain.pro': 'WTC',
-                    'chain.nem.ninja': 'XEM',
-                    'verge-blockchain.info': 'XVG',
                     'explorer.yoyow.org': 'YOYOW',
                     'explorer.zcha.in': 'ZEC',
                     'explorer.zensystem.io': 'ZEN',
+                    'filfox.info': 'FIL',
+                    'fio.bloks.io': 'FIO',
+                    'ftmscan.com': 'FTM',
+                    'hash-hash.info': 'HBAR',
+                    'iotexscan.io': 'IOTX',
+                    'irishub.iobscan.io': 'IRIS',
+                    'kava.mintscan.io': 'KAVA',
+                    'kmdexplorer.io': 'KMD',
+                    'kusama.subscan.io': 'KSM',
+                    'mainnet.theoan.com': 'AION',
+                    'minaexplorer.com': 'MINA',
+                    'nanolooker.com': 'NANO',
+                    'neoscan.io': 'NEO',
+                    'nulscan.io': 'NULS',
+                    'nxscan.com': 'NXS',
+                    'polkadot.subscan.io': 'DOT',
+                    'polygonscan.com': 'POLYGON',
+                    'qtum.info': 'QTUM',
+                    'ravencoin.network': 'RVN',
+                    'sc.tokenview.com': 'SC',
+                    'scan.tomochain.com': 'TOMO',
+                    'scope.klaytn.com': 'KLAY',
+                    'secretnodes.com': 'SCRT',
+                    'solscan.io': 'SOL',
+                    'steemscan.com': 'STEEM',
+                    'stellar.expert': 'XLM',
+                    'tracker.icon.foundation': 'ICX',
+                    'tronscan.org': 'TRC20',
+                    'verge-blockchain.info': 'XVG',
+                    'viewblock.io/arweave': 'AR',
+                    'viewblock.io/zilliqa': 'ZIL',
+                    'waltonchain.pro': 'WTC',
+                    'wavesexplorer.com': 'WAVES',
+                    'wax.eosx.io': 'WAXP',
+                    'www.hiveblockexplorer.com': 'HIVE',
+                    'www.iostabc.com': 'IOST',
+                    'www.mintscan.io': 'CTK',
+                    'www.oasisscan.com': 'ROSE',
+                    'www.thetascan.io': 'THETA',
+                    'www.wanscan.org': 'WAN',
                 },
                 'impliedNetworks': {
                     'ETH': { 'ERC20': 'ETH' },
                     'TRX': { 'TRC20': 'TRX' },
                 },
                 'legalMoney': {
-                    'MXN': true,
-                    'UGX': true,
-                    'SEK': true,
-                    'CHF': true,
-                    'VND': true,
                     'AED': true,
-                    'DKK': true,
-                    'KZT': true,
-                    'HUF': true,
-                    'PEN': true,
-                    'PHP': true,
-                    'USD': true,
-                    'TRY': true,
-                    'EUR': true,
-                    'NGN': true,
-                    'PLN': true,
-                    'BRL': true,
-                    'ZAR': true,
-                    'KES': true,
                     'ARS': true,
-                    'RUB': true,
                     'AUD': true,
-                    'NOK': true,
+                    'BRL': true,
+                    'CAD': true,
+                    'CHF': true,
                     'CZK': true,
+                    'DKK': true,
+                    'EUR': true,
                     'GBP': true,
-                    'UAH': true,
                     'GHS': true,
                     'HKD': true,
-                    'CAD': true,
+                    'HUF': true,
                     'INR': true,
                     'JPY': true,
+                    'KES': true,
+                    'KZT': true,
+                    'MXN': true,
+                    'NGN': true,
+                    'NOK': true,
                     'NZD': true,
+                    'PEN': true,
+                    'PHP': true,
+                    'PLN': true,
+                    'RUB': true,
+                    'SEK': true,
+                    'TRY': true,
+                    'UAH': true,
+                    'UGX': true,
+                    'USD': true,
+                    'VND': true,
+                    'ZAR': true,
                 },
                 'legalMoneyCurrenciesById': {
                     'BUSD': 'USD',
@@ -2290,25 +2290,25 @@ export default class binance extends Exchange {
                     },
                 },
                 'exact': {
-                    'System is under maintenance.': OnMaintenance, // {"code":1,"msg":"System is under maintenance."}
-                    'System abnormality': OperationFailed, // {"code":-1000,"msg":"System abnormality"}
-                    'You are not authorized to execute this request.': PermissionDenied, // {"msg":"You are not authorized to execute this request."}
-                    'API key does not exist': AuthenticationError,
-                    'Order would trigger immediately.': OrderImmediatelyFillable,
-                    'Stop price would trigger immediately.': OrderImmediatelyFillable, // {"code":-2010,"msg":"Stop price would trigger immediately."}
-                    'Order would immediately match and take.': OrderImmediatelyFillable, // {"code":-2010,"msg":"Order would immediately match and take."}
-                    'Account has insufficient balance for requested action.': InsufficientFunds,
-                    'Rest API trading is not enabled.': PermissionDenied,
-                    'This account may not place or cancel orders.': PermissionDenied,
                     "You don't have permission.": PermissionDenied, // {"msg":"You don't have permission.","success":false}
-                    'Market is closed.': OperationRejected, // {"code":-1013,"msg":"Market is closed."}
-                    'Too many requests. Please try again later.': RateLimitExceeded, // {"msg":"Too many requests. Please try again later.","success":false}
-                    'This action is disabled on this account.': AccountSuspended, // {"code":-2011,"msg":"This action is disabled on this account."}
+                    'Account has insufficient balance for requested action.': InsufficientFunds,
+                    'API key does not exist': AuthenticationError,
                     'Limit orders require GTC for this phase.': BadRequest,
+                    'Market is closed.': OperationRejected, // {"code":-1013,"msg":"Market is closed."}
+                    'Order would immediately match and take.': OrderImmediatelyFillable, // {"code":-2010,"msg":"Order would immediately match and take."}
+                    'Order would trigger immediately.': OrderImmediatelyFillable,
+                    'Rest API trading is not enabled.': PermissionDenied,
+                    'Stop price would trigger immediately.': OrderImmediatelyFillable, // {"code":-2010,"msg":"Stop price would trigger immediately."}
+                    'System abnormality': OperationFailed, // {"code":-1000,"msg":"System abnormality"}
+                    'System is under maintenance.': OnMaintenance, // {"code":1,"msg":"System is under maintenance."}
+                    'This account may not place or cancel orders.': PermissionDenied,
+                    'This action is disabled on this account.': AccountSuspended, // {"code":-2011,"msg":"This action is disabled on this account."}
                     'This order type is not possible in this trading phase.': BadRequest,
-                    'This type of sub-account exceeds the maximum number limit': OperationRejected, // {"code":-9000,"msg":"This type of sub-account exceeds the maximum number limit"}
-                    'This symbol is restricted for this account.': PermissionDenied,
                     'This symbol is not permitted for this account.': PermissionDenied, // {"code":-2010,"msg":"This symbol is not permitted for this account."}
+                    'This symbol is restricted for this account.': PermissionDenied,
+                    'This type of sub-account exceeds the maximum number limit': OperationRejected, // {"code":-9000,"msg":"This type of sub-account exceeds the maximum number limit"}
+                    'Too many requests. Please try again later.': RateLimitExceeded, // {"msg":"Too many requests. Please try again later.","success":false}
+                    'You are not authorized to execute this request.': PermissionDenied, // {"msg":"You are not authorized to execute this request."}
                 },
                 'broad': {
                     'has no operation privilege': PermissionDenied,
@@ -2366,48 +2366,48 @@ export default class binance extends Exchange {
         const datetime = this.convertExpireDate (expiry);
         const timestamp = this.parse8601 (datetime);
         return {
-            'id': base + '-' + expiry + '-' + strikeAsString + '-' + optionType,
-            'symbol': base + '/' + settle + ':' + settle + '-' + expiry + '-' + strikeAsString + '-' + optionType,
-            'base': base,
-            'quote': settle,
-            'baseId': base,
-            'quoteId': settle,
             'active': undefined,
-            'type': 'option',
-            'linear': undefined,
-            'inverse': undefined,
-            'spot': false,
-            'swap': false,
-            'future': false,
-            'option': true,
-            'margin': false,
+            'base': base,
+            'baseId': base,
             'contract': true,
             'contractSize': undefined,
             'expiry': timestamp,
             'expiryDatetime': datetime,
+            'future': false,
+            'id': base + '-' + expiry + '-' + strikeAsString + '-' + optionType,
+            'inverse': undefined,
+            'info': undefined,
+            'limits': {
+                'amount': {
+                    'max': undefined,
+                    'min': undefined,
+                },
+                'cost': {
+                    'max': undefined,
+                    'min': undefined,
+                },
+                'price': {
+                    'max': undefined,
+                    'min': undefined,
+                },
+            },
+            'linear': undefined,
+            'margin': false,
+            'option': true,
             'optionType': (optionType === 'C') ? 'call' : 'put',
-            'strike': strike,
-            'settle': settle,
-            'settleId': settle,
             'precision': {
                 'amount': undefined,
                 'price': undefined,
             },
-            'limits': {
-                'amount': {
-                    'min': undefined,
-                    'max': undefined,
-                },
-                'price': {
-                    'min': undefined,
-                    'max': undefined,
-                },
-                'cost': {
-                    'min': undefined,
-                    'max': undefined,
-                },
-            },
-            'info': undefined,
+            'quote': settle,
+            'quoteId': settle,
+            'settle': settle,
+            'settleId': settle,
+            'spot': false,
+            'strike': strike,
+            'swap': false,
+            'symbol': base + '/' + settle + ':' + settle + '-' + expiry + '-' + strikeAsString + '-' + optionType,
+            'type': 'option',
         } as MarketInterface;
     }
 
@@ -3708,26 +3708,26 @@ export default class binance extends Exchange {
             quoteVolume = this.safeString2 (ticker, 'quoteVolume', 'amount');
         }
         return this.safeTicker ({
-            'symbol': symbol,
-            'timestamp': timestamp,
-            'datetime': this.iso8601 (timestamp),
-            'high': this.safeString2 (ticker, 'highPrice', 'high'),
-            'low': this.safeString2 (ticker, 'lowPrice', 'low'),
-            'bid': this.safeString (ticker, 'bidPrice'),
-            'bidVolume': this.safeString (ticker, 'bidQty'),
             'ask': this.safeString (ticker, 'askPrice'),
             'askVolume': this.safeString (ticker, 'askQty'),
-            'vwap': this.safeString (ticker, 'weightedAvgPrice'),
-            'open': this.safeString2 (ticker, 'openPrice', 'open'),
-            'close': last,
-            'last': last,
-            'previousClose': this.safeString (ticker, 'prevClosePrice'), // previous day close
-            'change': this.safeString (ticker, 'priceChange'),
-            'percentage': this.safeString (ticker, 'priceChangePercent'),
             'average': undefined,
             'baseVolume': baseVolume,
-            'quoteVolume': quoteVolume,
+            'bid': this.safeString (ticker, 'bidPrice'),
+            'bidVolume': this.safeString (ticker, 'bidQty'),
+            'change': this.safeString (ticker, 'priceChange'),
+            'close': last,
+            'datetime': this.iso8601 (timestamp),
+            'high': this.safeString2 (ticker, 'highPrice', 'high'),
             'info': ticker,
+            'last': last,
+            'low': this.safeString2 (ticker, 'lowPrice', 'low'),
+            'open': this.safeString2 (ticker, 'openPrice', 'open'),
+            'percentage': this.safeString (ticker, 'priceChangePercent'),
+            'previousClose': this.safeString (ticker, 'prevClosePrice'), // previous day close
+            'quoteVolume': quoteVolume,
+            'symbol': symbol,
+            'timestamp': timestamp,
+            'vwap': this.safeString (ticker, 'weightedAvgPrice'),
         }, market);
     }
 
@@ -3933,12 +3933,12 @@ export default class binance extends Exchange {
         market = this.safeMarket (marketId, market, undefined, type);
         const price = this.safeNumber (entry, 'price');
         return {
-            'symbol': market['symbol'],
-            'timestamp': timestamp,
             'datetime': this.iso8601 (timestamp),
+            'info': entry,
             'price': price,
             'side': undefined,
-            'info': entry,
+            'symbol': market['symbol'],
+            'timestamp': timestamp,
         };
     }
 
@@ -4364,19 +4364,19 @@ export default class binance extends Exchange {
             }
         }
         return this.safeTrade ({
-            'info': trade,
-            'timestamp': timestamp,
-            'datetime': this.iso8601 (timestamp),
-            'symbol': symbol,
-            'id': id,
-            'order': orderId,
-            'type': this.safeStringLower (trade, 'type'),
-            'side': side,
-            'takerOrMaker': takerOrMaker,
-            'price': price,
             'amount': amount,
             'cost': cost,
+            'datetime': this.iso8601 (timestamp),
             'fee': fee,
+            'id': id,
+            'info': trade,
+            'order': orderId,
+            'price': price,
+            'side': side,
+            'symbol': symbol,
+            'takerOrMaker': takerOrMaker,
+            'timestamp': timestamp,
+            'type': this.safeStringLower (trade, 'type'),
         }, market);
     }
 
@@ -4818,16 +4818,16 @@ export default class binance extends Exchange {
 
     parseOrderStatus (status) {
         const statuses = {
-            'NEW': 'open',
-            'PARTIALLY_FILLED': 'open',
             'ACCEPTED': 'open',
-            'FILLED': 'closed',
             'CANCELED': 'canceled',
             'CANCELLED': 'canceled',
-            'PENDING_CANCEL': 'canceling', // currently unused
-            'REJECTED': 'rejected',
             'EXPIRED': 'expired',
             'EXPIRED_IN_MATCH': 'expired',
+            'FILLED': 'closed',
+            'NEW': 'open',
+            'PARTIALLY_FILLED': 'open',
+            'PENDING_CANCEL': 'canceling', // currently unused
+            'REJECTED': 'rejected',
         };
         return this.safeString (statuses, status, status);
     }
@@ -5221,29 +5221,29 @@ export default class binance extends Exchange {
             };
         }
         return this.safeOrder ({
-            'info': order,
-            'id': this.safeString2 (order, 'orderId', 'strategyId'),
+            'amount': amount,
+            'average': average,
             'clientOrderId': this.safeString2 (order, 'clientOrderId', 'newClientStrategyId'),
-            'timestamp': timestamp,
+            'cost': cost,
             'datetime': this.iso8601 (timestamp),
+            'fee': fee,
+            'filled': filled,
+            'id': this.safeString2 (order, 'orderId', 'strategyId'),
+            'info': order,
             'lastTradeTimestamp': lastTradeTimestamp,
             'lastUpdateTimestamp': lastUpdateTimestamp,
-            'symbol': symbol,
-            'type': type,
-            'timeInForce': timeInForce,
             'postOnly': postOnly,
-            'reduceOnly': this.safeValue (order, 'reduceOnly'),
-            'side': side,
             'price': price,
-            'triggerPrice': stopPrice,
-            'amount': amount,
-            'cost': cost,
-            'average': average,
-            'filled': filled,
+            'reduceOnly': this.safeValue (order, 'reduceOnly'),
             'remaining': undefined,
+            'side': side,
             'status': status,
-            'fee': fee,
+            'symbol': symbol,
+            'timeInForce': timeInForce,
+            'timestamp': timestamp,
             'trades': fills,
+            'triggerPrice': stopPrice,
+            'type': type,
         }, market);
     }
 
@@ -5295,30 +5295,30 @@ export default class binance extends Exchange {
         //          "msg": "Quantity greater than max quantity."
         //       },
         //       {
-        //          "orderId": 650640530,
-        //          "symbol": "LTCUSDT",
-        //          "status": "NEW",
-        //          "clientOrderId": "x-xcKtGhcu32184eb13585491289bbaf",
-        //          "price": "54.00",
         //          "avgPrice": "0.00",
-        //          "origQty": "0.100",
-        //          "executedQty": "0.000",
+        //          "clientOrderId": "x-xcKtGhcu32184eb13585491289bbaf",
+        //          "closePosition": false,
         //          "cumQty": "0.000",
         //          "cumQuote": "0.00000",
+        //          "executedQty": "0.000",
+        //          "goodTillDate": 0,
+        //          "orderId": 650640530,
+        //          "origQty": "0.100",
+        //          "origType": "LIMIT",
+        //          "positionSide": "BOTH",
+        //          "price": "54.00",
+        //          "priceMatch": "NONE",
+        //          "priceProtect": false,
+        //          "reduceOnly": false,
+        //          "selfTradePreventionMode": "NONE",
+        //          "side": "BUY",
+        //          "status": "NEW",
+        //          "stopPrice": "0.00",
+        //          "symbol": "LTCUSDT",
         //          "timeInForce": "GTC",
         //          "type": "LIMIT",
-        //          "reduceOnly": false,
-        //          "closePosition": false,
-        //          "side": "BUY",
-        //          "positionSide": "BOTH",
-        //          "stopPrice": "0.00",
-        //          "workingType": "CONTRACT_PRICE",
-        //          "priceProtect": false,
-        //          "origType": "LIMIT",
-        //          "priceMatch": "NONE",
-        //          "selfTradePreventionMode": "NONE",
-        //          "goodTillDate": 0,
         //          "updateTime": 1698073926929
+        //          "workingType": "CONTRACT_PRICE",
         //       }
         //   ]
         //
@@ -5559,12 +5559,12 @@ export default class binance extends Exchange {
         // spot/margin
         //
         //     LIMIT                timeInForce, quantity, price
+        //     LIMIT_MAKER          quantity, price
         //     MARKET               quantity or quoteOrderQty
         //     STOP_LOSS            quantity, stopPrice
         //     STOP_LOSS_LIMIT      timeInForce, quantity, price, stopPrice
         //     TAKE_PROFIT          quantity, stopPrice
         //     TAKE_PROFIT_LIMIT    timeInForce, quantity, price, stopPrice
-        //     LIMIT_MAKER          quantity, price
         //
         // futures
         //
@@ -6657,19 +6657,19 @@ export default class binance extends Exchange {
         const type = undefined;
         const takerOrMaker = undefined;
         return {
-            'id': id,
-            'timestamp': timestamp,
-            'datetime': this.iso8601 (timestamp),
-            'symbol': symbol,
-            'order': orderId,
-            'type': type,
-            'takerOrMaker': takerOrMaker,
-            'side': side,
             'amount': amount,
-            'price': price,
             'cost': cost,
+            'datetime': this.iso8601 (timestamp),
             'fee': fee,
+            'id': id,
             'info': trade,
+            'order': orderId,
+            'price': price,
+            'side': side,
+            'symbol': symbol,
+            'takerOrMaker': takerOrMaker,
+            'timestamp': timestamp,
+            'type': type,
         };
     }
 
@@ -6756,28 +6756,28 @@ export default class binance extends Exchange {
             response = await this.sapiGetCapitalDepositHisrec (this.extend (request, params));
             //     [
             //       {
-            //         "amount": "0.01844487",
-            //         "coin": "BCH",
-            //         "network": "BCH",
-            //         "status": 1,
             //         "address": "1NYxAJhW2281HK1KtJeaENBqHeygA88FzR",
             //         "addressTag": "",
-            //         "txId": "bafc5902504d6504a00b7d0306a41154cbf1d1b767ab70f3bc226327362588af",
-            //         "insertTime": 1610784980000,
-            //         "transferType": 0,
+            //         "amount": "0.01844487",
+            //         "coin": "BCH",
             //         "confirmTimes": "2/2"
+            //         "insertTime": 1610784980000,
+            //         "network": "BCH",
+            //         "status": 1,
+            //         "transferType": 0,
+            //         "txId": "bafc5902504d6504a00b7d0306a41154cbf1d1b767ab70f3bc226327362588af",
             //       },
             //       {
-            //         "amount": "4500",
-            //         "coin": "USDT",
-            //         "network": "BSC",
-            //         "status": 1,
             //         "address": "0xc9c923c87347ca0f3451d6d308ce84f691b9f501",
             //         "addressTag": "",
-            //         "txId": "Internal transfer 51376627901",
-            //         "insertTime": 1618394381000,
-            //         "transferType": 1,
+            //         "amount": "4500",
+            //         "coin": "USDT",
             //         "confirmTimes": "1/15"
+            //         "insertTime": 1618394381000,
+            //         "network": "BSC",
+            //         "status": 1,
+            //         "transferType": 1,
+            //         "txId": "Internal transfer 51376627901",
             //     }
             //   ]
         }
@@ -6837,25 +6837,25 @@ export default class binance extends Exchange {
             //       "message": "success",
             //       "data": [
             //         {
-            //           "orderNo": "CJW706452266115170304",
+            //           "amount": "100.00",
+            //           "createTime": 1620037745000,
             //           "fiatCurrency": "GBP",
             //           "indicatedAmount": "10001.50",
-            //           "amount": "100.00",
-            //           "totalFee": "1.50",
             //           "method": "bank transfer",
+            //           "orderNo": "CJW706452266115170304",
             //           "status": "Successful",
-            //           "createTime": 1620037745000,
+            //           "totalFee": "1.50",
             //           "updateTime": 1620038480000
             //         },
             //         {
-            //           "orderNo": "CJW706287492781891584",
+            //           "amount": "100.00",
+            //           "createTime": 1619998460000,
             //           "fiatCurrency": "GBP",
             //           "indicatedAmount": "10001.50",
-            //           "amount": "100.00",
-            //           "totalFee": "1.50",
             //           "method": "bank transfer",
+            //           "orderNo": "CJW706287492781891584",
             //           "status": "Successful",
-            //           "createTime": 1619998460000,
+            //           "totalFee": "1.50",
             //           "updateTime": 1619998823000
             //         }
             //       ],
@@ -6878,29 +6878,29 @@ export default class binance extends Exchange {
             response = await this.sapiGetCapitalWithdrawHistory (this.extend (request, params));
             //     [
             //       {
-            //         "id": "69e53ad305124b96b43668ceab158a18",
-            //         "amount": "28.75",
-            //         "transactionFee": "0.25",
-            //         "coin": "XRP",
-            //         "status": 6,
             //         "address": "r3T75fuLjX51mmfb5Sk1kMNuhBgBPJsjza",
             //         "addressTag": "101286922",
-            //         "txId": "19A5B24ED0B697E4F0E9CD09FCB007170A605BC93C9280B9E6379C5E6EF0F65A",
+            //         "amount": "28.75",
             //         "applyTime": "2021-04-15 12:09:16",
+            //         "coin": "XRP",
+            //         "id": "69e53ad305124b96b43668ceab158a18",
             //         "network": "XRP",
+            //         "status": 6,
+            //         "transactionFee": "0.25",
             //         "transferType": 0
+            //         "txId": "19A5B24ED0B697E4F0E9CD09FCB007170A605BC93C9280B9E6379C5E6EF0F65A",
             //       },
             //       {
-            //         "id": "9a67628b16ba4988ae20d329333f16bc",
-            //         "amount": "20",
-            //         "transactionFee": "20",
-            //         "coin": "USDT",
-            //         "status": 6,
             //         "address": "0x0AB991497116f7F5532a4c2f4f7B1784488628e1",
-            //         "txId": "0x77fbf2cf2c85b552f0fd31fd2e56dc95c08adae031d96f3717d8b17e1aea3e46",
+            //         "amount": "20",
             //         "applyTime": "2021-04-15 12:06:53",
+            //         "coin": "USDT",
+            //         "id": "9a67628b16ba4988ae20d329333f16bc",
             //         "network": "ETH",
+            //         "status": 6,
+            //         "transactionFee": "20",
             //         "transferType": 0
+            //         "txId": "0x77fbf2cf2c85b552f0fd31fd2e56dc95c08adae031d96f3717d8b17e1aea3e46",
             //       },
             //       {
             //         "id": "a7cdc0afbfa44a48bd225c9ece958fe2",
@@ -6930,12 +6930,12 @@ export default class binance extends Exchange {
                 '6': 'ok',
                 // Fiat
                 // Processing, Failed, Successful, Finished, Refunding, Refunded, Refund Failed, Order Partial credit Stopped
-                'Processing': 'pending',
                 'Failed': 'failed',
-                'Successful': 'ok',
-                'Refunding': 'canceled',
-                'Refunded': 'canceled',
+                'Processing': 'pending',
                 'Refund Failed': 'failed',
+                'Refunded': 'canceled',
+                'Refunding': 'canceled',
+                'Successful': 'ok',
             },
             'withdrawal': {
                 '0': 'pending', // Email Sent
@@ -6947,12 +6947,12 @@ export default class binance extends Exchange {
                 '6': 'ok', // Completed
                 // Fiat
                 // Processing, Failed, Successful, Finished, Refunding, Refunded, Refund Failed, Order Partial credit Stopped
-                'Processing': 'pending',
                 'Failed': 'failed',
-                'Successful': 'ok',
-                'Refunding': 'canceled',
-                'Refunded': 'canceled',
+                'Processing': 'pending',
                 'Refund Failed': 'failed',
+                'Refunded': 'canceled',
+                'Refunding': 'canceled',
+                'Successful': 'ok',
             },
         };
         const statuses = this.safeValue (statusesByType, type, {});
@@ -7067,26 +7067,26 @@ export default class binance extends Exchange {
         }
         const network = this.safeString (transaction, 'network');
         return {
-            'info': transaction,
-            'id': id,
-            'txid': txid,
-            'timestamp': timestamp,
-            'datetime': this.iso8601 (timestamp),
-            'network': network,
             'address': address,
-            'addressTo': address,
             'addressFrom': undefined,
-            'tag': tag,
-            'tagTo': tag,
-            'tagFrom': undefined,
-            'type': type,
+            'addressTo': address,
             'amount': amount,
-            'currency': code,
-            'status': status,
-            'updated': updated,
-            'internal': internal,
             'comment': undefined,
+            'currency': code,
+            'datetime': this.iso8601 (timestamp),
             'fee': fee,
+            'id': id,
+            'info': transaction,
+            'internal': internal,
+            'network': network,
+            'status': status,
+            'tag': tag,
+            'tagFrom': undefined,
+            'tagTo': tag,
+            'timestamp': timestamp,
+            'txid': txid,
+            'type': type,
+            'updated': updated,
         };
     }
 
@@ -7134,15 +7134,15 @@ export default class binance extends Exchange {
         const timestamp = this.safeInteger (transfer, 'timestamp');
         const status = this.parseTransferStatus (this.safeString (transfer, 'status'));
         return {
-            'info': transfer,
-            'id': id,
-            'timestamp': timestamp,
-            'datetime': this.iso8601 (timestamp),
-            'currency': code,
             'amount': amount,
+            'currency': code,
+            'datetime': this.iso8601 (timestamp),
             'fromAccount': fromAccount,
-            'toAccount': toAccount,
+            'id': id,
+            'info': transfer,
             'status': status,
+            'timestamp': timestamp,
+            'toAccount': toAccount,
         };
     }
 
@@ -7930,11 +7930,11 @@ export default class binance extends Exchange {
                 const market = this.markets[symbol];
                 if (market['linear']) {
                     result[symbol] = {
+                        'maker': maker,
                         'info': {
                             'feeTier': feeTier,
                         },
                         'symbol': symbol,
-                        'maker': maker,
                         'taker': taker,
                     };
                 }
@@ -7961,11 +7961,11 @@ export default class binance extends Exchange {
                 const market = this.markets[symbol];
                 if (market['inverse']) {
                     result[symbol] = {
+                        'maker': maker,
                         'info': {
                             'feeTier': feeTier,
                         },
                         'symbol': symbol,
-                        'maker': maker,
                         'taker': taker,
                     };
                 }
@@ -8115,11 +8115,11 @@ export default class binance extends Exchange {
             const entry = response[i];
             const timestamp = this.safeInteger (entry, 'fundingTime');
             rates.push ({
+                'datetime': this.iso8601 (timestamp),
+                'fundingRate': this.safeNumber (entry, 'fundingRate'),
                 'info': entry,
                 'symbol': this.safeSymbol (this.safeString (entry, 'symbol'), undefined, undefined, 'swap'),
-                'fundingRate': this.safeNumber (entry, 'fundingRate'),
                 'timestamp': timestamp,
-                'datetime': this.iso8601 (timestamp),
             });
         }
         const sorted = this.sortBy (rates, 'timestamp');
@@ -8185,23 +8185,23 @@ export default class binance extends Exchange {
         const fundingRate = this.safeNumber (contract, 'lastFundingRate');
         const fundingTime = this.safeInteger (contract, 'nextFundingTime');
         return {
-            'info': contract,
-            'symbol': symbol,
-            'markPrice': markPrice,
-            'indexPrice': indexPrice,
-            'interestRate': interestRate,
-            'estimatedSettlePrice': estimatedSettlePrice,
-            'timestamp': timestamp,
             'datetime': this.iso8601 (timestamp),
+            'estimatedSettlePrice': estimatedSettlePrice,
+            'fundingDatetime': this.iso8601 (fundingTime),
             'fundingRate': fundingRate,
             'fundingTimestamp': fundingTime,
-            'fundingDatetime': this.iso8601 (fundingTime),
+            'indexPrice': indexPrice,
+            'info': contract,
+            'interestRate': interestRate,
+            'markPrice': markPrice,
+            'nextFundingDatetime': undefined,
             'nextFundingRate': undefined,
             'nextFundingTimestamp': undefined,
-            'nextFundingDatetime': undefined,
+            'previousFundingDatetime': undefined,
             'previousFundingRate': undefined,
             'previousFundingTimestamp': undefined,
-            'previousFundingDatetime': undefined,
+            'symbol': symbol,
+            'timestamp': timestamp,
         };
     }
 
@@ -8408,29 +8408,29 @@ export default class binance extends Exchange {
         const positionSide = this.safeString (position, 'positionSide');
         const hedged = positionSide !== 'BOTH';
         return {
-            'info': position,
-            'id': undefined,
-            'symbol': symbol,
-            'timestamp': timestamp,
-            'datetime': this.iso8601 (timestamp),
-            'initialMargin': initialMargin,
-            'initialMarginPercentage': this.parseNumber (initialMarginPercentageString),
-            'maintenanceMargin': maintenanceMargin,
-            'maintenanceMarginPercentage': maintenanceMarginPercentage,
-            'entryPrice': entryPrice,
-            'notional': notional,
-            'leverage': this.parseNumber (leverageString),
-            'unrealizedPnl': unrealizedPnl,
+            'collateral': collateral,
             'contracts': contracts,
             'contractSize': contractSize,
-            'marginRatio': marginRatio,
-            'liquidationPrice': liquidationPrice,
-            'markPrice': undefined,
-            'collateral': collateral,
-            'marginMode': marginMode,
-            'side': side,
+            'datetime': this.iso8601 (timestamp),
+            'entryPrice': entryPrice,
             'hedged': hedged,
+            'id': undefined,
+            'info': position,
+            'initialMargin': initialMargin,
+            'initialMarginPercentage': this.parseNumber (initialMarginPercentageString),
+            'leverage': this.parseNumber (leverageString),
+            'liquidationPrice': liquidationPrice,
+            'maintenanceMargin': maintenanceMargin,
+            'maintenanceMarginPercentage': maintenanceMarginPercentage,
+            'marginMode': marginMode,
+            'marginRatio': marginRatio,
+            'markPrice': undefined,
+            'notional': notional,
             'percentage': percentage,
+            'side': side,
+            'symbol': symbol,
+            'timestamp': timestamp,
+            'unrealizedPnl': unrealizedPnl,
         };
     }
 
@@ -8579,32 +8579,32 @@ export default class binance extends Exchange {
         const positionSide = this.safeString (position, 'positionSide');
         const hedged = positionSide !== 'BOTH';
         return {
-            'info': position,
-            'id': undefined,
-            'symbol': symbol,
+            'collateral': collateral,
             'contracts': contracts,
             'contractSize': contractSize,
-            'unrealizedPnl': unrealizedPnl,
-            'leverage': this.parseNumber (leverageString),
-            'liquidationPrice': liquidationPrice,
-            'collateral': collateral,
-            'notional': notional,
-            'markPrice': markPrice,
+            'datetime': this.iso8601 (timestamp),
             'entryPrice': entryPrice,
-            'timestamp': timestamp,
+            'hedged': hedged,
+            'id': undefined,
+            'info': position,
             'initialMargin': initialMargin,
             'initialMarginPercentage': this.parseNumber (initialMarginPercentageString),
+            'leverage': this.parseNumber (leverageString),
+            'liquidationPrice': liquidationPrice,
             'maintenanceMargin': maintenanceMargin,
             'maintenanceMarginPercentage': maintenanceMarginPercentage,
-            'marginRatio': marginRatio,
-            'datetime': this.iso8601 (timestamp),
             'marginMode': marginMode,
+            'marginRatio': marginRatio,
             'marginType': marginMode, // deprecated
-            'side': side,
-            'hedged': hedged,
+            'markPrice': markPrice,
+            'notional': notional,
             'percentage': percentage,
+            'side': side,
             'stopLossPrice': undefined,
+            'symbol': symbol,
             'takeProfitPrice': undefined,
+            'timestamp': timestamp,
+            'unrealizedPnl': unrealizedPnl,
         };
     }
 
@@ -8889,29 +8889,29 @@ export default class binance extends Exchange {
         }
         const timestamp = this.safeInteger (position, 'time');
         return this.safePosition ({
-            'info': position,
-            'id': undefined,
-            'symbol': symbol,
-            'entryPrice': this.safeNumber (position, 'entryPrice'),
-            'markPrice': this.safeNumber (position, 'markPrice'),
-            'notional': this.safeNumber (position, 'markValue'),
             'collateral': this.safeNumber (position, 'positionCost'),
-            'unrealizedPnl': this.safeNumber (position, 'unrealizedPNL'),
-            'side': side,
             'contracts': this.parseNumber (quantity),
             'contractSize': undefined,
-            'timestamp': timestamp,
             'datetime': this.iso8601 (timestamp),
+            'entryPrice': this.safeNumber (position, 'entryPrice'),
             'hedged': undefined,
-            'maintenanceMargin': undefined,
-            'maintenanceMarginPercentage': undefined,
+            'id': undefined,
+            'info': position,
             'initialMargin': undefined,
             'initialMarginPercentage': undefined,
             'leverage': undefined,
             'liquidationPrice': undefined,
-            'marginRatio': undefined,
+            'maintenanceMargin': undefined,
+            'maintenanceMarginPercentage': undefined,
             'marginMode': undefined,
+            'marginRatio': undefined,
+            'markPrice': this.safeNumber (position, 'markPrice'),
+            'notional': this.safeNumber (position, 'markValue'),
             'percentage': undefined,
+            'side': side,
+            'symbol': symbol,
+            'timestamp': timestamp,
+            'unrealizedPnl': this.safeNumber (position, 'unrealizedPNL'),
         });
     }
 
@@ -9550,14 +9550,14 @@ export default class binance extends Exchange {
         //
         //     [
         //         {
-        //             "symbol": "",
-        //             "incomeType": "TRANSFER",
-        //             "income": "10.00000000",
         //             "asset": "USDT",
-        //             "time": 1677645250000,
+        //             "income": "10.00000000",
+        //             "incomeType": "TRANSFER",
         //             "info": "TRANSFER",
-        //             "tranId": 131001573082,
+        //             "symbol": "",
+        //             "time": 1677645250000,
         //             "tradeId": ""
+        //             "tranId": 131001573082,
         //         }
         //     ]
         //
@@ -9569,11 +9569,11 @@ export default class binance extends Exchange {
         // options (eapi)
         //
         //     {
-        //         "id": "1125899906845701870",
-        //         "asset": "USDT",
         //         "amount": "-0.16518203",
-        //         "type": "FEE",
+        //         "asset": "USDT",
         //         "createDate": 1676621042489
+        //         "id": "1125899906845701870",
+        //         "type": "FEE",
         //     }
         //
         // futures (fapi, dapi)
@@ -9601,45 +9601,45 @@ export default class binance extends Exchange {
         const timestamp = this.safeInteger2 (item, 'createDate', 'time');
         const type = this.safeString2 (item, 'type', 'incomeType');
         return {
-            'id': this.safeString2 (item, 'id', 'tranId'),
-            'direction': direction,
             'account': undefined,
+            'after': undefined,
+            'amount': this.parseNumber (amount),
+            'before': undefined,
+            'currency': this.safeCurrencyCode (currencyId, currency),
+            'datetime': this.iso8601 (timestamp),
+            'direction': direction,
+            'fee': undefined,
+            'id': this.safeString2 (item, 'id', 'tranId'),
+            'info': item,
             'referenceAccount': undefined,
             'referenceId': this.safeString (item, 'tradeId'),
-            'type': this.parseLedgerEntryType (type),
-            'currency': this.safeCurrencyCode (currencyId, currency),
-            'amount': this.parseNumber (amount),
-            'timestamp': timestamp,
-            'datetime': this.iso8601 (timestamp),
-            'before': undefined,
-            'after': undefined,
             'status': undefined,
-            'fee': undefined,
-            'info': item,
+            'timestamp': timestamp,
+            'type': this.parseLedgerEntryType (type),
         };
     }
 
     parseLedgerEntryType (type) {
         const ledgerType = {
-            'FEE': 'fee',
-            'FUNDING_FEE': 'fee',
-            'OPTIONS_PREMIUM_FEE': 'fee',
-            'POSITION_LIMIT_INCREASE_FEE': 'fee',
-            'CONTRACT': 'trade',
-            'REALIZED_PNL': 'trade',
-            'TRANSFER': 'transfer',
-            'CROSS_COLLATERAL_TRANSFER': 'transfer',
-            'INTERNAL_TRANSFER': 'transfer',
+            'API_REBATE': 'rebate',
             'COIN_SWAP_DEPOSIT': 'deposit',
             'COIN_SWAP_WITHDRAW': 'withdrawal',
-            'OPTIONS_SETTLE_PROFIT': 'settlement',
-            'DELIVERED_SETTELMENT': 'settlement',
-            'WELCOME_BONUS': 'cashback',
-            'CONTEST_REWARD': 'cashback',
-            'COMMISSION_REBATE': 'rebate',
-            'API_REBATE': 'rebate',
-            'REFERRAL_KICKBACK': 'referral',
             'COMMISSION': 'commission',
+            'COMMISSION_REBATE': 'rebate',
+            'CONTEST_REWARD': 'cashback',
+            'CONTRACT': 'trade',
+            'CROSS_COLLATERAL_TRANSFER': 'transfer',
+            'DELIVERED_SETTELMENT': 'settlement',
+            'FEE': 'fee',
+            'FUNDING_FEE': 'fee',
+            'INTERNAL_TRANSFER': 'transfer',
+            'OPTIONS_PREMIUM_FEE': 'fee',
+            'OPTIONS_SETTLE_PROFIT': 'settlement',
+            'POSITION_LIMIT_INCREASE_FEE': 'fee',
+            'REALIZED_PNL': 'trade',
+            'REFERRAL_KICKBACK': 'referral',
+            'TRANSFER': 'transfer',
+            'WELCOME_BONUS': 'cashback',
         };
         return this.safeString (ledgerType, type, type);
     }
@@ -9910,9 +9910,9 @@ export default class binance extends Exchange {
         const market = this.market (symbol);
         amount = this.costToPrecision (symbol, amount);
         const request = {
-            'type': addOrReduce,
-            'symbol': market['id'],
             'amount': amount,
+            'symbol': market['id'],
+            'type': addOrReduce,
         };
         let response = undefined;
         let code = undefined;
@@ -9943,12 +9943,12 @@ export default class binance extends Exchange {
         const errorCode = this.safeString (data, 'code');
         const status = (errorCode === '200') ? 'ok' : 'failed';
         return {
-            'info': data,
-            'type': resultType,
             'amount': resultAmount,
             'code': undefined,
-            'symbol': market['symbol'],
+            'info': data,
             'status': status,
+            'symbol': market['symbol'],
+            'type': resultType,
         };
     }
 
@@ -10081,11 +10081,11 @@ export default class binance extends Exchange {
         const currencyId = this.safeString (info, 'asset');
         return {
             'currency': this.safeCurrencyCode (currencyId, currency),
-            'rate': this.safeNumber (info, 'dailyInterestRate'),
-            'period': 86400000,
-            'timestamp': timestamp,
             'datetime': this.iso8601 (timestamp),
             'info': info,
+            'period': 86400000,
+            'rate': this.safeNumber (info, 'dailyInterestRate'),
+            'timestamp': timestamp,
         };
     }
 
@@ -10120,11 +10120,11 @@ export default class binance extends Exchange {
         const giftcardCode = this.safeString (data, 'code');
         const id = this.safeString (data, 'referenceNo');
         return {
-            'info': response,
-            'id': id,
+            'amount': amount,
             'code': giftcardCode,
             'currency': code,
-            'amount': amount,
+            'id': id,
+            'info': response,
         };
     }
 
@@ -10239,15 +10239,15 @@ export default class binance extends Exchange {
         const marginMode = (symbol === undefined) ? 'cross' : 'isolated';
         return {
             'account': (symbol === undefined) ? 'cross' : symbol,
-            'symbol': symbol,
-            'marginMode': marginMode,
-            'currency': this.safeCurrencyCode (this.safeString (info, 'asset')),
-            'interest': this.safeNumber (info, 'interest'),
-            'interestRate': this.safeNumber (info, 'interestRate'),
             'amountBorrowed': this.safeNumber (info, 'principal'),
-            'timestamp': timestamp,
+            'currency': this.safeCurrencyCode (this.safeString (info, 'asset')),
             'datetime': this.iso8601 (timestamp),
             'info': info,
+            'interest': this.safeNumber (info, 'interest'),
+            'interestRate': this.safeNumber (info, 'interestRate'),
+            'marginMode': marginMode,
+            'symbol': symbol,
+            'timestamp': timestamp,
         };
     }
 
@@ -10265,8 +10265,8 @@ export default class binance extends Exchange {
         await this.loadMarkets ();
         const currency = this.currency (code);
         const request = {
-            'asset': currency['id'],
             'amount': this.currencyToPrecision (code, amount),
+            'asset': currency['id'],
             'isIsolated': 'FALSE',
             'type': 'REPAY',
         };
@@ -10296,10 +10296,10 @@ export default class binance extends Exchange {
         const currency = this.currency (code);
         const market = this.market (symbol);
         const request = {
-            'asset': currency['id'],
             'amount': this.currencyToPrecision (code, amount),
-            'symbol': market['id'],
+            'asset': currency['id'],
             'isIsolated': 'TRUE',
+            'symbol': market['id'],
             'type': 'REPAY',
         };
         const response = await this.sapiPostMarginBorrowRepay (this.extend (request, params));
@@ -10357,10 +10357,10 @@ export default class binance extends Exchange {
         const currency = this.currency (code);
         const market = this.market (symbol);
         const request = {
-            'asset': currency['id'],
             'amount': this.currencyToPrecision (code, amount),
-            'symbol': market['id'],
+            'asset': currency['id'],
             'isIsolated': 'TRUE',
+            'symbol': market['id'],
             'type': 'BORROW',
         };
         const response = await this.sapiPostMarginBorrowRepay (this.extend (request, params));
@@ -10381,13 +10381,13 @@ export default class binance extends Exchange {
         //     }
         //
         return {
-            'id': this.safeInteger (info, 'tranId'),
-            'currency': this.safeCurrencyCode (undefined, currency),
             'amount': undefined,
+            'currency': this.safeCurrencyCode (undefined, currency),
+            'datetime': undefined,
+            'id': this.safeInteger (info, 'tranId'),
+            'info': info,
             'symbol': undefined,
             'timestamp': undefined,
-            'datetime': undefined,
-            'info': info,
         };
     }
 
@@ -10543,14 +10543,14 @@ export default class binance extends Exchange {
         // Inverse returns the number of contracts different from the base or quote volume in this case
         // compared with https://www.binance.com/en/futures/funding-history/quarterly/4
         return this.safeOpenInterest ({
-            'symbol': this.safeSymbol (id, market, undefined, 'contract'),
             'baseVolume': market['inverse'] ? undefined : amount,  // deprecated
-            'quoteVolume': value,  // deprecated
-            'openInterestAmount': amount,
-            'openInterestValue': value,
-            'timestamp': timestamp,
             'datetime': this.iso8601 (timestamp),
             'info': interest,
+            'openInterestAmount': amount,
+            'openInterestValue': value,
+            'quoteVolume': value,  // deprecated
+            'symbol': this.safeSymbol (id, market, undefined, 'contract'),
+            'timestamp': timestamp,
         }, market);
     }
 
@@ -10766,15 +10766,15 @@ export default class binance extends Exchange {
         const marketId = this.safeString (liquidation, 'symbol');
         const timestamp = this.safeInteger2 (liquidation, 'updatedTime', 'updateTime');
         return this.safeLiquidation ({
-            'info': liquidation,
-            'symbol': this.safeSymbol (marketId, market),
+            'baseValue': this.safeNumber (liquidation, 'cumBase'),
             'contracts': this.safeNumber (liquidation, 'executedQty'),
             'contractSize': this.safeNumber (market, 'contractSize'),
-            'price': this.safeNumber (liquidation, 'avgPrice'),
-            'baseValue': this.safeNumber (liquidation, 'cumBase'),
-            'quoteValue': this.safeNumber (liquidation, 'cumQuote'),
-            'timestamp': timestamp,
             'datetime': this.iso8601 (timestamp),
+            'info': liquidation,
+            'price': this.safeNumber (liquidation, 'avgPrice'),
+            'quoteValue': this.safeNumber (liquidation, 'cumQuote'),
+            'symbol': this.safeSymbol (marketId, market),
+            'timestamp': timestamp,
         });
     }
 
@@ -10833,25 +10833,25 @@ export default class binance extends Exchange {
         const marketId = this.safeString (greeks, 'symbol');
         const symbol = this.safeSymbol (marketId, market);
         return {
-            'symbol': symbol,
-            'timestamp': undefined,
+            'askImpliedVolatility': this.safeNumber (greeks, 'askIV'),
+            'askPrice': undefined,
+            'askSize': undefined,
+            'bidImpliedVolatility': this.safeNumber (greeks, 'bidIV'),
+            'bidPrice': undefined,
+            'bidSize': undefined,
             'datetime': undefined,
             'delta': this.safeNumber (greeks, 'delta'),
             'gamma': this.safeNumber (greeks, 'gamma'),
-            'theta': this.safeNumber (greeks, 'theta'),
-            'vega': this.safeNumber (greeks, 'vega'),
-            'rho': undefined,
-            'bidSize': undefined,
-            'askSize': undefined,
-            'bidImpliedVolatility': this.safeNumber (greeks, 'bidIV'),
-            'askImpliedVolatility': this.safeNumber (greeks, 'askIV'),
-            'markImpliedVolatility': this.safeNumber (greeks, 'markIV'),
-            'bidPrice': undefined,
-            'askPrice': undefined,
-            'markPrice': this.safeNumber (greeks, 'markPrice'),
-            'lastPrice': undefined,
-            'underlyingPrice': undefined,
             'info': greeks,
+            'lastPrice': undefined,
+            'markImpliedVolatility': this.safeNumber (greeks, 'markIV'),
+            'markPrice': this.safeNumber (greeks, 'markPrice'),
+            'rho': undefined,
+            'symbol': symbol,
+            'theta': this.safeNumber (greeks, 'theta'),
+            'timestamp': undefined,
+            'underlyingPrice': undefined,
+            'vega': this.safeNumber (greeks, 'vega'),
         };
     }
 }
