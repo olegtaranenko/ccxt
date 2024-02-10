@@ -4311,7 +4311,11 @@ public partial class mexc : Exchange
             { "coin", getValue(currency, "id") },
         };
         object networkCode = this.safeString(parameters, "network");
-        object networkId = this.networkCodeToId(networkCode, code);
+        object networkId = null;
+        if (isTrue(!isEqual(networkCode, null)))
+        {
+            networkId = this.networkCodeToId(networkCode, code);
+        }
         if (isTrue(!isEqual(networkId, null)))
         {
             ((IDictionary<string,object>)request)["network"] = networkId;
@@ -4770,7 +4774,7 @@ public partial class mexc : Exchange
         object marginType = ((bool) isTrue((isEqual(openType, "1")))) ? "isolated" : "cross";
         object leverage = this.safeNumber(position, "leverage");
         object liquidationPrice = this.safeNumber(position, "liquidatePrice");
-        object timestamp = this.safeNumber(position, "updateTime");
+        object timestamp = this.safeInteger(position, "updateTime");
         return this.safePosition(new Dictionary<string, object>() {
             { "info", position },
             { "id", null },
