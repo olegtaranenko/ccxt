@@ -20,192 +20,6 @@ import { ed25519 } from './static_dependencies/noble-curves/ed25519.js';
 export default class binance extends Exchange {
     describe () {
         return this.deepExtend (super.describe (), {
-            'id': 'binance',
-            'name': 'Binance',
-            'countries': [ 'JP', 'MT' ], // Japan, Malta
-            'rateLimit': 50,
-            'certified': true,
-            'pro': true,
-            // new metainfo2 interface
-            'has': {
-                'addMargin': true,
-                'borrowCrossMargin': true,
-                'borrowIsolatedMargin': true,
-                'cancelAllOrders': true,
-                'cancelOrder': true,
-                'cancelOrders': true,  // contract only
-                'closeAllPositions': false,
-                'closePosition': false,  // exchange specific closePosition parameter for binance createOrder is not synonymous with how CCXT uses closePositions
-                'CORS': undefined,
-                'createDepositAddress': false,
-                'createMarketBuyOrderWithCost': true,
-                'createMarketOrderWithCost': true,
-                'createMarketSellOrderWithCost': true,
-                'createOrder': true,
-                'createOrders': true,
-                'createPostOnlyOrder': true,
-                'createReduceOnlyOrder': true,
-                'createStopLimitOrder': true,
-                'createStopLossOrder': true,
-                'createStopMarketOrder': false,
-                'createStopOrder': true,
-                'createTakeProfitOrder': true,
-                'createTrailingPercentOrder': true,
-                'createTriggerOrder': true,
-                'editOrder': true,
-                'fetchAccounts': undefined,
-                'fetchBalance': true,
-                'fetchBidsAsks': true,
-                'fetchBorrowInterest': true,
-                'fetchBorrowRateHistories': false,
-                'fetchBorrowRateHistory': true,
-                'fetchCanceledOrders': 'emulated',
-                'fetchClosedOrder': false,
-                'fetchClosedOrders': 'emulated',
-                'fetchCrossBorrowRate': true,
-                'fetchCrossBorrowRates': false,
-                'fetchCurrencies': true,
-                'fetchDeposit': false,
-                'fetchDepositAddress': true,
-                'fetchDepositAddresses': false,
-                'fetchDepositAddressesByNetwork': false,
-                'fetchDeposits': true,
-                'fetchDepositsWithdrawals': false,
-                'fetchDepositWithdrawFee': 'emulated',
-                'fetchDepositWithdrawFees': true,
-                'fetchFundingHistory': true,
-                'fetchFundingRate': true,
-                'fetchFundingRateHistory': true,
-                'fetchFundingRates': true,
-                'fetchGreeks': true,
-                'fetchIndexOHLCV': true,
-                'fetchIsolatedBorrowRate': false,
-                'fetchIsolatedBorrowRates': false,
-                'fetchL3OrderBook': false,
-                'fetchLastPrices': true,
-                'fetchLedger': true,
-                'fetchLeverage': false,
-                'fetchLeverageTiers': true,
-                'fetchLiquidations': false,
-                'fetchMarketLeverageTiers': 'emulated',
-                'fetchMarkets': true,
-                'fetchMarkOHLCV': true,
-                'fetchMyLiquidations': true,
-                'fetchMySettlementHistory': true,
-                'fetchMyTrades': true,
-                'fetchOHLCV': true,
-                'fetchOpenInterest': true,
-                'fetchOpenInterestHistory': true,
-                'fetchOpenOrder': false,
-                'fetchOpenOrders': true,
-                'fetchOrder': true,
-                'fetchOrderBook': true,
-                'fetchOrderBooks': false,
-                'fetchOrders': true,
-                'fetchOrderTrades': true,
-                'fetchPosition': true,
-                'fetchPositions': true,
-                'fetchPositionsRisk': true,
-                'fetchPremiumIndexOHLCV': false,
-                'fetchSettlementHistory': true,
-                'fetchStatus': true,
-                'fetchTicker': true,
-                'fetchTickers': true,
-                'fetchTime': true,
-                'fetchTrades': true,
-                'fetchTradingFee': true,
-                'fetchTradingFees': true,
-                'fetchTradingLimits': undefined,
-                'fetchTransactionFee': undefined,
-                'fetchTransactionFees': true,
-                'fetchTransactions': false,
-                'fetchTransfers': true,
-                'fetchUnderlyingAssets': false,
-                'fetchVolatilityHistory': false,
-                'fetchWithdrawAddresses': false,
-                'fetchWithdrawal': false,
-                'fetchWithdrawals': true,
-                'fetchWithdrawalWhitelist': false,
-                'future': true,
-                'margin': true,
-                'option': true,
-                'reduceMargin': true,
-                'repayCrossMargin': true,
-                'repayIsolatedMargin': true,
-                'setLeverage': true,
-                'setMargin': false,
-                'setMarginMode': true,
-                'setPositionMode': true,
-                'signIn': false,
-                'spot': true,
-                'swap': true,
-                'transfer': true,
-                'withdraw': true,
-            },
-            'timeframes': {
-                '1s': '1s', // spot only for now
-                '1m': '1m',
-                '3m': '3m',
-                '5m': '5m',
-                '15m': '15m',
-                '30m': '30m',
-                '1h': '1h',
-                '2h': '2h',
-                '4h': '4h',
-                '6h': '6h',
-                '8h': '8h',
-                '12h': '12h',
-                '1d': '1d',
-                '3d': '3d',
-                '1w': '1w',
-                '1M': '1M',
-            },
-            'urls': {
-                'logo': 'https://user-images.githubusercontent.com/1294454/29604020-d5483cdc-87ee-11e7-94c7-d1a8d9169293.jpg',
-                'test': {
-                    'dapiPrivate': 'https://testnet.binancefuture.com/dapi/v1',
-                    'dapiPrivateV2': 'https://testnet.binancefuture.com/dapi/v2',
-                    'dapiPublic': 'https://testnet.binancefuture.com/dapi/v1',
-                    'fapiPrivate': 'https://testnet.binancefuture.com/fapi/v1',
-                    'fapiPrivateV2': 'https://testnet.binancefuture.com/fapi/v2',
-                    'fapiPublic': 'https://testnet.binancefuture.com/fapi/v1',
-                    'fapiPublicV2': 'https://testnet.binancefuture.com/fapi/v2',
-                    'private': 'https://testnet.binance.vision/api/v3',
-                    'public': 'https://testnet.binance.vision/api/v3',
-                    'v1': 'https://testnet.binance.vision/api/v1',
-                },
-                'api': {
-                    'dapiData': 'https://dapi.binance.com/futures/data',
-                    'dapiPrivate': 'https://dapi.binance.com/dapi/v1',
-                    'dapiPrivateV2': 'https://dapi.binance.com/dapi/v2',
-                    'dapiPublic': 'https://dapi.binance.com/dapi/v1',
-                    'eapiPrivate': 'https://eapi.binance.com/eapi/v1',
-                    'eapiPublic': 'https://eapi.binance.com/eapi/v1',
-                    'fapiData': 'https://fapi.binance.com/futures/data',
-                    'fapiPrivate': 'https://fapi.binance.com/fapi/v1',
-                    'fapiPrivateV2': 'https://fapi.binance.com/fapi/v2',
-                    'fapiPublic': 'https://fapi.binance.com/fapi/v1',
-                    'fapiPublicV2': 'https://fapi.binance.com/fapi/v2',
-                    'papi': 'https://papi.binance.com/papi/v1',
-                    'private': 'https://api.binance.com/api/v3',
-                    'public': 'https://api.binance.com/api/v3',
-                    'sapi': 'https://api.binance.com/sapi/v1',
-                    'sapiV2': 'https://api.binance.com/sapi/v2',
-                    'sapiV3': 'https://api.binance.com/sapi/v3',
-                    'sapiV4': 'https://api.binance.com/sapi/v4',
-                    'v1': 'https://api.binance.com/api/v1',
-                },
-                'www': 'https://www.binance.com',
-                'referral': {
-                    'url': 'https://accounts.binance.com/en/register?ref=D7YA7CLY',
-                    'discount': 0.1,
-                },
-                'doc': [
-                    'https://binance-docs.github.io/apidocs/spot/en',
-                ],
-                'api_management': 'https://www.binance.com/en/usercenter/settings/api-management',
-                'fees': 'https://www.binance.com/en/fee/schedule',
-            },
             'api': {
                 // the API structure below will need 3-layer apidefs
                 'sapi': {
@@ -651,18 +465,30 @@ export default class binance extends Exchange {
                     'get': {
                         'aggTrades': 20,
                         'constituents': 2,
-                        'continuousKlines': { 'cost': 1, 'byLimit': [ [ 99, 1 ], [ 499, 2 ], [ 1000, 5 ], [ 10000, 10 ] ] },
+                        'continuousKlines': {
+                            'cost': 1,
+                            'byLimit': [ [ 99, 1 ], [ 499, 2 ], [ 1000, 5 ], [ 10000, 10 ] ],
+                        },
                         'depth': { 'cost': 2, 'byLimit': [ [ 50, 2 ], [ 100, 5 ], [ 500, 10 ], [ 1000, 20 ] ] },
                         'exchangeInfo': 1,
                         'fundingRate': 1,
                         'historicalTrades': 20,
-                        'indexPriceKlines': { 'cost': 1, 'byLimit': [ [ 99, 1 ], [ 499, 2 ], [ 1000, 5 ], [ 10000, 10 ] ] },
+                        'indexPriceKlines': {
+                            'cost': 1,
+                            'byLimit': [ [ 99, 1 ], [ 499, 2 ], [ 1000, 5 ], [ 10000, 10 ] ],
+                        },
                         'klines': { 'cost': 1, 'byLimit': [ [ 99, 1 ], [ 499, 2 ], [ 1000, 5 ], [ 10000, 10 ] ] },
-                        'markPriceKlines': { 'cost': 1, 'byLimit': [ [ 99, 1 ], [ 499, 2 ], [ 1000, 5 ], [ 10000, 10 ] ] },
+                        'markPriceKlines': {
+                            'cost': 1,
+                            'byLimit': [ [ 99, 1 ], [ 499, 2 ], [ 1000, 5 ], [ 10000, 10 ] ],
+                        },
                         'openInterest': 1,
                         'ping': 1,
                         'premiumIndex': 10,
-                        'premiumIndexKlines': { 'cost': 1, 'byLimit': [ [ 99, 1 ], [ 499, 2 ], [ 1000, 5 ], [ 10000, 10 ] ] },
+                        'premiumIndexKlines': {
+                            'cost': 1,
+                            'byLimit': [ [ 99, 1 ], [ 499, 2 ], [ 1000, 5 ], [ 10000, 10 ] ],
+                        },
                         'ticker/24hr': { 'cost': 1, 'noSymbol': 40 },
                         'ticker/bookTicker': { 'cost': 2, 'noSymbol': 5 },
                         'ticker/price': { 'cost': 1, 'noSymbol': 2 },
@@ -737,17 +563,26 @@ export default class binance extends Exchange {
                         'apiTradingStatus': { 'cost': 1, 'noSymbol': 10 },
                         'assetIndex': { 'cost': 1, 'noSymbol': 10 },
                         'constituents': 2,
-                        'continuousKlines': { 'cost': 1, 'byLimit': [ [ 99, 1 ], [ 499, 2 ], [ 1000, 5 ], [ 10000, 10 ] ] },
+                        'continuousKlines': {
+                            'cost': 1,
+                            'byLimit': [ [ 99, 1 ], [ 499, 2 ], [ 1000, 5 ], [ 10000, 10 ] ],
+                        },
                         'depth': { 'cost': 2, 'byLimit': [ [ 50, 2 ], [ 100, 5 ], [ 500, 10 ], [ 1000, 20 ] ] },
                         'exchangeInfo': 1,
                         'fundingInfo': 1,
                         'fundingRate': 1,
                         'historicalTrades': 20,
                         'indexInfo': 1,
-                        'indexPriceKlines': { 'cost': 1, 'byLimit': [ [ 99, 1 ], [ 499, 2 ], [ 1000, 5 ], [ 10000, 10 ] ] },
+                        'indexPriceKlines': {
+                            'cost': 1,
+                            'byLimit': [ [ 99, 1 ], [ 499, 2 ], [ 1000, 5 ], [ 10000, 10 ] ],
+                        },
                         'klines': { 'cost': 1, 'byLimit': [ [ 99, 1 ], [ 499, 2 ], [ 1000, 5 ], [ 10000, 10 ] ] },
                         'lvtKlines': 1,
-                        'markPriceKlines': { 'cost': 1, 'byLimit': [ [ 99, 1 ], [ 499, 2 ], [ 1000, 5 ], [ 10000, 10 ] ] },
+                        'markPriceKlines': {
+                            'cost': 1,
+                            'byLimit': [ [ 99, 1 ], [ 499, 2 ], [ 1000, 5 ], [ 10000, 10 ] ],
+                        },
                         'openInterest': 1,
                         'ping': 1,
                         'premiumIndex': 1,
@@ -1050,390 +885,12 @@ export default class binance extends Exchange {
                     },
                 },
             },
-            'fees': {
-                'trading': {
-                    'feeSide': 'get',
-                    'maker': this.parseNumber ('0.001'),
-                    'percentage': true,
-                    'taker': this.parseNumber ('0.001'),
-                    'tierBased': false,
-                },
-                'linear': {
-                    'trading': {
-                        'feeSide': 'quote',
-                        'tierBased': true,
-                        'percentage': true,
-                        'taker': this.parseNumber ('0.000400'),
-                        'maker': this.parseNumber ('0.000200'),
-                        'tiers': {
-                            'taker': [
-                                [ this.parseNumber ('0'), this.parseNumber ('0.000400') ],
-                                [ this.parseNumber ('250'), this.parseNumber ('0.000400') ],
-                                [ this.parseNumber ('2500'), this.parseNumber ('0.000350') ],
-                                [ this.parseNumber ('7500'), this.parseNumber ('0.000320') ],
-                                [ this.parseNumber ('22500'), this.parseNumber ('0.000300') ],
-                                [ this.parseNumber ('50000'), this.parseNumber ('0.000270') ],
-                                [ this.parseNumber ('100000'), this.parseNumber ('0.000250') ],
-                                [ this.parseNumber ('200000'), this.parseNumber ('0.000220') ],
-                                [ this.parseNumber ('400000'), this.parseNumber ('0.000200') ],
-                                [ this.parseNumber ('750000'), this.parseNumber ('0.000170') ],
-                            ],
-                            'maker': [
-                                [ this.parseNumber ('0'), this.parseNumber ('0.000200') ],
-                                [ this.parseNumber ('250'), this.parseNumber ('0.000160') ],
-                                [ this.parseNumber ('2500'), this.parseNumber ('0.000140') ],
-                                [ this.parseNumber ('7500'), this.parseNumber ('0.000120') ],
-                                [ this.parseNumber ('22500'), this.parseNumber ('0.000100') ],
-                                [ this.parseNumber ('50000'), this.parseNumber ('0.000080') ],
-                                [ this.parseNumber ('100000'), this.parseNumber ('0.000060') ],
-                                [ this.parseNumber ('200000'), this.parseNumber ('0.000040') ],
-                                [ this.parseNumber ('400000'), this.parseNumber ('0.000020') ],
-                                [ this.parseNumber ('750000'), this.parseNumber ('0') ],
-                            ],
-                        },
-                    },
-                },
-                'inverse': {
-                    'trading': {
-                        'feeSide': 'base',
-                        'maker': this.parseNumber ('0.000100'),
-                        'percentage': true,
-                        'taker': this.parseNumber ('0.000500'),
-                        'tierBased': true,
-                        'tiers': {
-                            'taker': [
-                                [ this.parseNumber ('0'), this.parseNumber ('0.000500') ],
-                                [ this.parseNumber ('250'), this.parseNumber ('0.000450') ],
-                                [ this.parseNumber ('2500'), this.parseNumber ('0.000400') ],
-                                [ this.parseNumber ('7500'), this.parseNumber ('0.000300') ],
-                                [ this.parseNumber ('22500'), this.parseNumber ('0.000250') ],
-                                [ this.parseNumber ('50000'), this.parseNumber ('0.000240') ],
-                                [ this.parseNumber ('100000'), this.parseNumber ('0.000240') ],
-                                [ this.parseNumber ('200000'), this.parseNumber ('0.000240') ],
-                                [ this.parseNumber ('400000'), this.parseNumber ('0.000240') ],
-                                [ this.parseNumber ('750000'), this.parseNumber ('0.000240') ],
-                            ],
-                            'maker': [
-                                [ this.parseNumber ('0'), this.parseNumber ('0.000100') ],
-                                [ this.parseNumber ('250'), this.parseNumber ('0.000080') ],
-                                [ this.parseNumber ('2500'), this.parseNumber ('0.000050') ],
-                                [ this.parseNumber ('7500'), this.parseNumber ('0.0000030') ],
-                                [ this.parseNumber ('22500'), this.parseNumber ('0') ],
-                                [ this.parseNumber ('50000'), this.parseNumber ('-0.000050') ],
-                                [ this.parseNumber ('100000'), this.parseNumber ('-0.000060') ],
-                                [ this.parseNumber ('200000'), this.parseNumber ('-0.000070') ],
-                                [ this.parseNumber ('400000'), this.parseNumber ('-0.000080') ],
-                                [ this.parseNumber ('750000'), this.parseNumber ('-0.000090') ],
-                            ],
-                        },
-                    },
-                },
-                'option': {},
-            },
+            'certified': true,
             'commonCurrencies': {
                 'BCC': 'BCC', // kept for backward-compatibility https://github.com/ccxt/ccxt/issues/4848
                 'YOYO': 'YOYOW',
             },
-            'precisionMode': DECIMAL_PLACES,
-            // exchange-specific options
-            'options': {
-                'sandboxMode': false,
-                'fetchMarkets': [
-                    'inverse', // allows CORS in browsers
-                    'linear', // allows CORS in browsers
-                    'spot', // allows CORS in browsers
-                    // 'option', // does not allow CORS, enable outside of the browser only
-                ],
-                'defaultSubType': undefined, // 'linear', 'inverse'
-                'defaultTimeInForce': 'GTC', // 'GTC' = Good To Cancel (default), 'IOC' = Immediate Or Cancel
-                'defaultType': 'spot', // 'spot', 'future', 'margin', 'delivery', 'option'
-                'fetchCurrencies': true, // this is a private call and it requires API keys
-                'hasAlreadyAuthenticatedSuccessfully': false,
-                'warnOnFetchOpenOrdersWithoutSymbol': true,
-                // 'fetchTradesMethod': 'publicGetAggTrades', // publicGetTrades, publicGetHistoricalTrades, eapiPublicGetTrades
-                // not an error
-                // https://github.com/ccxt/ccxt/issues/11268
-                // https://github.com/ccxt/ccxt/pull/11624
-                // POST https://fapi.binance.com/fapi/v1/marginType 400 Bad Request
-                // binanceusdm
-                'throwMarginModeAlreadySet': false,
-                'fetchPositions': 'positionRisk', // or 'account' or 'option'
-                'recvWindow': 10 * 1000, // 10 sec
-                'timeDifference': 0, // the difference between system clock and Binance clock
-                'adjustForTimeDifference': false, // controls the adjustment logic upon instantiation
-                'newOrderRespType': {
-                    'market': 'FULL', // 'ACK' for order id, 'RESULT' for full order or 'FULL' for order with fills
-                    'limit': 'FULL', // we change it from 'ACK' by default to 'FULL' (returns immediately if limit is not hit)
-                },
-                'quoteOrderQty': true, // whether market orders support amounts in quote currency
-                'broker': {
-                    'delivery': 'x-xcKtGhcu',
-                    'future': 'x-xcKtGhcu',
-                    'margin': 'x-R4BD3S82',
-                    'option': 'x-xcKtGhcu',
-                    'spot': 'x-R4BD3S82',
-                    'swap': 'x-xcKtGhcu',
-                },
-                'accountsByType': {
-                    'cross': 'MARGIN',
-                    'delivery': 'CMFUTURE', // backwards compatbility
-                    'funding': 'FUNDING',
-                    'future': 'UMFUTURE', // backwards compatibility
-                    'inverse': 'CMFUTURE',
-                    'linear': 'UMFUTURE',
-                    'main': 'MAIN',
-                    'margin': 'MARGIN',
-                    'option': 'OPTION',
-                    'spot': 'MAIN',
-                },
-                'accountsById': {
-                    'CMFUTURE': 'inverse',
-                    'FUNDING': 'funding',
-                    'MAIN': 'spot',
-                    'MARGIN': 'margin',
-                    'OPTION': 'option',
-                    'UMFUTURE': 'linear',
-                },
-                'networks': {
-                    'BEP2': 'BNB',
-                    'BEP20': 'BSC',
-                    'EOS': 'EOS',
-                    'ERC20': 'ETH',
-                    'OMNI': 'OMNI',
-                    'SPL': 'SOL',
-                    'TRC20': 'TRX',
-                },
-                // keeping this object for backward-compatibility
-                'reverseNetworks': {
-                    'algoexplorer.io': 'ALGO',
-                    'atomscan.com': 'ATOM',
-                    'bithomp.com': 'XRP',
-                    'block.gxb.io': 'GXS',
-                    'blockchair.com/bitcoin': 'BTC',
-                    'blockchair.com/bitcoin-cash': 'BCH',
-                    'blockchair.com/ecash': 'XEC',
-                    'blockscout.com': 'ETC',
-                    'bloks.io': 'EOS',
-                    'bscscan.com': 'BSC',
-                    'btgexplorer.com': 'BTG',
-                    'bts.ai': 'BTS',
-                    'cardanoscan.io': 'ADA',
-                    'cerebro.cortexlabs.ai': 'CTXC',
-                    'chain.nem.ninja': 'XEM',
-                    'chainz.cryptoid.info': 'VIA',
-                    'dashboard.internetcomputer.org': 'ICP',
-                    'digiexplorer.info': 'DGB',
-                    'dock.subscan.io': 'DOCK',
-                    'dogechain.info': 'DOGE',
-                    'etherscan.io': 'ERC20',
-                    'explore-fetchhub.fetch.ai': 'FET',
-                    'explore.vechain.org': 'VET',
-                    'explorer.ambrosus.com': 'AMB',
-                    'explorer.ark.io': 'ARK',
-                    'explorer.avax.network': 'AVAX',
-                    'explorer.binance.org': 'BEP2',
-                    'explorer.bitcoindiamond.org': 'BCD',
-                    'explorer.celo.org': 'CELO',
-                    'explorer.chiliz.com': 'CHZ',
-                    'explorer.dcrdata.org': 'DCR',
-                    'explorer.elrond.com': 'EGLD',
-                    'explorer.firo.org': 'FIRO',
-                    'explorer.gochain.io': 'GO',
-                    'explorer.harmony.one': 'ONE',
-                    'explorer.helium.com': 'HNT',
-                    'explorer.iota.org': 'IOTA',
-                    'explorer.litecoin.net': 'LTC',
-                    'explorer.lto.network': 'LTO',
-                    'explorer.nbs.plus': 'NBS',
-                    'explorer.nebl.io': 'NEBL',
-                    'explorer.nebulas.io': 'NAS',
-                    'explorer.nervos.org': 'CKB',
-                    'explorer.ont.io': 'ONT',
-                    'explorer.poa.network': 'POA',
-                    'explorer.rsk.co': 'RSK',
-                    'explorer.skycoin.com': 'SKY',
-                    'explorer.stacks.co': 'STX',
-                    'explorer.vite.net': 'VITE',
-                    'explorer.yoyow.org': 'YOYOW',
-                    'explorer.zcha.in': 'ZEC',
-                    'explorer.zensystem.io': 'ZEN',
-                    'filfox.info': 'FIL',
-                    'fio.bloks.io': 'FIO',
-                    'ftmscan.com': 'FTM',
-                    'hash-hash.info': 'HBAR',
-                    'iotexscan.io': 'IOTX',
-                    'irishub.iobscan.io': 'IRIS',
-                    'kava.mintscan.io': 'KAVA',
-                    'kmdexplorer.io': 'KMD',
-                    'kusama.subscan.io': 'KSM',
-                    'mainnet.theoan.com': 'AION',
-                    'minaexplorer.com': 'MINA',
-                    'nanolooker.com': 'NANO',
-                    'neoscan.io': 'NEO',
-                    'nulscan.io': 'NULS',
-                    'nxscan.com': 'NXS',
-                    'polkadot.subscan.io': 'DOT',
-                    'polygonscan.com': 'POLYGON',
-                    'qtum.info': 'QTUM',
-                    'ravencoin.network': 'RVN',
-                    'sc.tokenview.com': 'SC',
-                    'scan.tomochain.com': 'TOMO',
-                    'scope.klaytn.com': 'KLAY',
-                    'secretnodes.com': 'SCRT',
-                    'solscan.io': 'SOL',
-                    'steemscan.com': 'STEEM',
-                    'stellar.expert': 'XLM',
-                    'tracker.icon.foundation': 'ICX',
-                    'tronscan.org': 'TRC20',
-                    'verge-blockchain.info': 'XVG',
-                    'viewblock.io/arweave': 'AR',
-                    'viewblock.io/zilliqa': 'ZIL',
-                    'waltonchain.pro': 'WTC',
-                    'wavesexplorer.com': 'WAVES',
-                    'wax.eosx.io': 'WAXP',
-                    'www.hiveblockexplorer.com': 'HIVE',
-                    'www.iostabc.com': 'IOST',
-                    'www.mintscan.io': 'CTK',
-                    'www.oasisscan.com': 'ROSE',
-                    'www.thetascan.io': 'THETA',
-                    'www.wanscan.org': 'WAN',
-                },
-                'networksById': {
-                    'algoexplorer.io': 'ALGO',
-                    'atomscan.com': 'ATOM',
-                    'bithomp.com': 'XRP',
-                    'block.gxb.io': 'GXS',
-                    'blockchair.com/bitcoin': 'BTC',
-                    'blockchair.com/bitcoin-cash': 'BCH',
-                    'blockchair.com/ecash': 'XEC',
-                    'blockscout.com': 'ETC',
-                    'bloks.io': 'EOS',
-                    'bscscan.com': 'BSC',
-                    'btgexplorer.com': 'BTG',
-                    'bts.ai': 'BTS',
-                    'cardanoscan.io': 'ADA',
-                    'cerebro.cortexlabs.ai': 'CTXC',
-                    'chain.nem.ninja': 'XEM',
-                    'chainz.cryptoid.info': 'VIA',
-                    'dashboard.internetcomputer.org': 'ICP',
-                    'digiexplorer.info': 'DGB',
-                    'dock.subscan.io': 'DOCK',
-                    'dogechain.info': 'DOGE',
-                    'etherscan.io': 'ERC20',
-                    'explore-fetchhub.fetch.ai': 'FET',
-                    'explore.vechain.org': 'VET',
-                    'explorer.ambrosus.com': 'AMB',
-                    'explorer.ark.io': 'ARK',
-                    'explorer.avax.network': 'AVAX',
-                    'explorer.binance.org': 'BEP2',
-                    'explorer.bitcoindiamond.org': 'BCD',
-                    'explorer.celo.org': 'CELO',
-                    'explorer.chiliz.com': 'CHZ',
-                    'explorer.dcrdata.org': 'DCR',
-                    'explorer.elrond.com': 'EGLD',
-                    'explorer.firo.org': 'FIRO',
-                    'explorer.gochain.io': 'GO',
-                    'explorer.harmony.one': 'ONE',
-                    'explorer.helium.com': 'HNT',
-                    'explorer.iota.org': 'IOTA',
-                    'explorer.litecoin.net': 'LTC',
-                    'explorer.lto.network': 'LTO',
-                    'explorer.nbs.plus': 'NBS',
-                    'explorer.nebl.io': 'NEBL',
-                    'explorer.nebulas.io': 'NAS',
-                    'explorer.nervos.org': 'CKB',
-                    'explorer.ont.io': 'ONT',
-                    'explorer.poa.network': 'POA',
-                    'explorer.rsk.co': 'RSK',
-                    'explorer.skycoin.com': 'SKY',
-                    'explorer.stacks.co': 'STX',
-                    'explorer.vite.net': 'VITE',
-                    'explorer.yoyow.org': 'YOYOW',
-                    'explorer.zcha.in': 'ZEC',
-                    'explorer.zensystem.io': 'ZEN',
-                    'filfox.info': 'FIL',
-                    'fio.bloks.io': 'FIO',
-                    'ftmscan.com': 'FTM',
-                    'hash-hash.info': 'HBAR',
-                    'iotexscan.io': 'IOTX',
-                    'irishub.iobscan.io': 'IRIS',
-                    'kava.mintscan.io': 'KAVA',
-                    'kmdexplorer.io': 'KMD',
-                    'kusama.subscan.io': 'KSM',
-                    'mainnet.theoan.com': 'AION',
-                    'minaexplorer.com': 'MINA',
-                    'nanolooker.com': 'NANO',
-                    'neoscan.io': 'NEO',
-                    'nulscan.io': 'NULS',
-                    'nxscan.com': 'NXS',
-                    'polkadot.subscan.io': 'DOT',
-                    'polygonscan.com': 'POLYGON',
-                    'qtum.info': 'QTUM',
-                    'ravencoin.network': 'RVN',
-                    'sc.tokenview.com': 'SC',
-                    'scan.tomochain.com': 'TOMO',
-                    'scope.klaytn.com': 'KLAY',
-                    'secretnodes.com': 'SCRT',
-                    'solscan.io': 'SOL',
-                    'steemscan.com': 'STEEM',
-                    'stellar.expert': 'XLM',
-                    'tracker.icon.foundation': 'ICX',
-                    'tronscan.org': 'TRC20',
-                    'verge-blockchain.info': 'XVG',
-                    'viewblock.io/arweave': 'AR',
-                    'viewblock.io/zilliqa': 'ZIL',
-                    'waltonchain.pro': 'WTC',
-                    'wavesexplorer.com': 'WAVES',
-                    'wax.eosx.io': 'WAXP',
-                    'www.hiveblockexplorer.com': 'HIVE',
-                    'www.iostabc.com': 'IOST',
-                    'www.mintscan.io': 'CTK',
-                    'www.oasisscan.com': 'ROSE',
-                    'www.thetascan.io': 'THETA',
-                    'www.wanscan.org': 'WAN',
-                },
-                'impliedNetworks': {
-                    'ETH': { 'ERC20': 'ETH' },
-                    'TRX': { 'TRC20': 'TRX' },
-                },
-                'legalMoney': {
-                    'AED': true,
-                    'ARS': true,
-                    'AUD': true,
-                    'BRL': true,
-                    'CAD': true,
-                    'CHF': true,
-                    'CZK': true,
-                    'DKK': true,
-                    'EUR': true,
-                    'GBP': true,
-                    'GHS': true,
-                    'HKD': true,
-                    'HUF': true,
-                    'INR': true,
-                    'JPY': true,
-                    'KES': true,
-                    'KZT': true,
-                    'MXN': true,
-                    'NGN': true,
-                    'NOK': true,
-                    'NZD': true,
-                    'PEN': true,
-                    'PHP': true,
-                    'PLN': true,
-                    'RUB': true,
-                    'SEK': true,
-                    'TRY': true,
-                    'UAH': true,
-                    'UGX': true,
-                    'USD': true,
-                    'VND': true,
-                    'ZAR': true,
-                },
-                'legalMoneyCurrenciesById': {
-                    'BUSD': 'USD',
-                },
-            },
+            'countries': [ 'JP', 'MT' ],
             'exceptions': {
                 'spot': {
                     // https://binance-docs.github.io/apidocs/spot/en/#error-codes
@@ -2314,6 +1771,570 @@ export default class binance extends Exchange {
                     'has no operation privilege': PermissionDenied,
                     'MAX_POSITION': BadRequest, // {"code":-2010,"msg":"Filter failure: MAX_POSITION"}
                 },
+            }, // Japan, Malta
+            'fees': {
+                'trading': {
+                    'feeSide': 'get',
+                    'maker': this.parseNumber ('0.001'),
+                    'percentage': true,
+                    'taker': this.parseNumber ('0.001'),
+                    'tierBased': false,
+                },
+                'linear': {
+                    'trading': {
+                        'feeSide': 'quote',
+                        'tierBased': true,
+                        'percentage': true,
+                        'taker': this.parseNumber ('0.000400'),
+                        'maker': this.parseNumber ('0.000200'),
+                        'tiers': {
+                            'taker': [
+                                [ this.parseNumber ('0'), this.parseNumber ('0.000400') ],
+                                [ this.parseNumber ('250'), this.parseNumber ('0.000400') ],
+                                [ this.parseNumber ('2500'), this.parseNumber ('0.000350') ],
+                                [ this.parseNumber ('7500'), this.parseNumber ('0.000320') ],
+                                [ this.parseNumber ('22500'), this.parseNumber ('0.000300') ],
+                                [ this.parseNumber ('50000'), this.parseNumber ('0.000270') ],
+                                [ this.parseNumber ('100000'), this.parseNumber ('0.000250') ],
+                                [ this.parseNumber ('200000'), this.parseNumber ('0.000220') ],
+                                [ this.parseNumber ('400000'), this.parseNumber ('0.000200') ],
+                                [ this.parseNumber ('750000'), this.parseNumber ('0.000170') ],
+                            ],
+                            'maker': [
+                                [ this.parseNumber ('0'), this.parseNumber ('0.000200') ],
+                                [ this.parseNumber ('250'), this.parseNumber ('0.000160') ],
+                                [ this.parseNumber ('2500'), this.parseNumber ('0.000140') ],
+                                [ this.parseNumber ('7500'), this.parseNumber ('0.000120') ],
+                                [ this.parseNumber ('22500'), this.parseNumber ('0.000100') ],
+                                [ this.parseNumber ('50000'), this.parseNumber ('0.000080') ],
+                                [ this.parseNumber ('100000'), this.parseNumber ('0.000060') ],
+                                [ this.parseNumber ('200000'), this.parseNumber ('0.000040') ],
+                                [ this.parseNumber ('400000'), this.parseNumber ('0.000020') ],
+                                [ this.parseNumber ('750000'), this.parseNumber ('0') ],
+                            ],
+                        },
+                    },
+                },
+                'inverse': {
+                    'trading': {
+                        'feeSide': 'base',
+                        'maker': this.parseNumber ('0.000100'),
+                        'percentage': true,
+                        'taker': this.parseNumber ('0.000500'),
+                        'tierBased': true,
+                        'tiers': {
+                            'taker': [
+                                [ this.parseNumber ('0'), this.parseNumber ('0.000500') ],
+                                [ this.parseNumber ('250'), this.parseNumber ('0.000450') ],
+                                [ this.parseNumber ('2500'), this.parseNumber ('0.000400') ],
+                                [ this.parseNumber ('7500'), this.parseNumber ('0.000300') ],
+                                [ this.parseNumber ('22500'), this.parseNumber ('0.000250') ],
+                                [ this.parseNumber ('50000'), this.parseNumber ('0.000240') ],
+                                [ this.parseNumber ('100000'), this.parseNumber ('0.000240') ],
+                                [ this.parseNumber ('200000'), this.parseNumber ('0.000240') ],
+                                [ this.parseNumber ('400000'), this.parseNumber ('0.000240') ],
+                                [ this.parseNumber ('750000'), this.parseNumber ('0.000240') ],
+                            ],
+                            'maker': [
+                                [ this.parseNumber ('0'), this.parseNumber ('0.000100') ],
+                                [ this.parseNumber ('250'), this.parseNumber ('0.000080') ],
+                                [ this.parseNumber ('2500'), this.parseNumber ('0.000050') ],
+                                [ this.parseNumber ('7500'), this.parseNumber ('0.0000030') ],
+                                [ this.parseNumber ('22500'), this.parseNumber ('0') ],
+                                [ this.parseNumber ('50000'), this.parseNumber ('-0.000050') ],
+                                [ this.parseNumber ('100000'), this.parseNumber ('-0.000060') ],
+                                [ this.parseNumber ('200000'), this.parseNumber ('-0.000070') ],
+                                [ this.parseNumber ('400000'), this.parseNumber ('-0.000080') ],
+                                [ this.parseNumber ('750000'), this.parseNumber ('-0.000090') ],
+                            ],
+                        },
+                    },
+                },
+                'option': {},
+            },
+            'has': {
+                'addMargin': true,
+                'borrowCrossMargin': true,
+                'borrowIsolatedMargin': true,
+                'cancelAllOrders': true,
+                'cancelOrder': true,
+                'cancelOrders': true,  // contract only
+                'closeAllPositions': false,
+                'closePosition': false,  // exchange specific closePosition parameter for binance createOrder is not synonymous with how CCXT uses closePositions
+                'CORS': undefined,
+                'createDepositAddress': false,
+                'createMarketBuyOrderWithCost': true,
+                'createMarketOrderWithCost': true,
+                'createMarketSellOrderWithCost': true,
+                'createOrder': true,
+                'createOrders': true,
+                'createPostOnlyOrder': true,
+                'createReduceOnlyOrder': true,
+                'createStopLimitOrder': true,
+                'createStopLossOrder': true,
+                'createStopMarketOrder': false,
+                'createStopOrder': true,
+                'createTakeProfitOrder': true,
+                'createTrailingPercentOrder': true,
+                'createTriggerOrder': true,
+                'editOrder': true,
+                'fetchAccounts': undefined,
+                'fetchBalance': true,
+                'fetchBidsAsks': true,
+                'fetchBorrowInterest': true,
+                'fetchBorrowRateHistories': false,
+                'fetchBorrowRateHistory': true,
+                'fetchCanceledOrders': 'emulated',
+                'fetchClosedOrder': false,
+                'fetchClosedOrders': 'emulated',
+                'fetchCrossBorrowRate': true,
+                'fetchCrossBorrowRates': false,
+                'fetchCurrencies': true,
+                'fetchDeposit': false,
+                'fetchDepositAddress': true,
+                'fetchDepositAddresses': false,
+                'fetchDepositAddressesByNetwork': false,
+                'fetchDeposits': true,
+                'fetchDepositsWithdrawals': false,
+                'fetchDepositWithdrawFee': 'emulated',
+                'fetchDepositWithdrawFees': true,
+                'fetchFundingHistory': true,
+                'fetchFundingRate': true,
+                'fetchFundingRateHistory': true,
+                'fetchFundingRates': true,
+                'fetchGreeks': true,
+                'fetchIndexOHLCV': true,
+                'fetchIsolatedBorrowRate': false,
+                'fetchIsolatedBorrowRates': false,
+                'fetchL3OrderBook': false,
+                'fetchLastPrices': true,
+                'fetchLedger': true,
+                'fetchLeverage': false,
+                'fetchLeverageTiers': true,
+                'fetchLiquidations': false,
+                'fetchMarketLeverageTiers': 'emulated',
+                'fetchMarkets': true,
+                'fetchMarkOHLCV': true,
+                'fetchMyLiquidations': true,
+                'fetchMySettlementHistory': true,
+                'fetchMyTrades': true,
+                'fetchOHLCV': true,
+                'fetchOpenInterest': true,
+                'fetchOpenInterestHistory': true,
+                'fetchOpenOrder': false,
+                'fetchOpenOrders': true,
+                'fetchOrder': true,
+                'fetchOrderBook': true,
+                'fetchOrderBooks': false,
+                'fetchOrders': true,
+                'fetchOrderTrades': true,
+                'fetchPosition': true,
+                'fetchPositions': true,
+                'fetchPositionsRisk': true,
+                'fetchPremiumIndexOHLCV': false,
+                'fetchSettlementHistory': true,
+                'fetchStatus': true,
+                'fetchTicker': true,
+                'fetchTickers': true,
+                'fetchTime': true,
+                'fetchTrades': true,
+                'fetchTradingFee': true,
+                'fetchTradingFees': true,
+                'fetchTradingLimits': undefined,
+                'fetchTransactionFee': undefined,
+                'fetchTransactionFees': true,
+                'fetchTransactions': false,
+                'fetchTransfers': true,
+                'fetchUnderlyingAssets': false,
+                'fetchVolatilityHistory': false,
+                'fetchWithdrawAddresses': false,
+                'fetchWithdrawal': false,
+                'fetchWithdrawals': true,
+                'fetchWithdrawalWhitelist': false,
+                'future': true,
+                'margin': true,
+                'option': true,
+                'reduceMargin': true,
+                'repayCrossMargin': true,
+                'repayIsolatedMargin': true,
+                'setLeverage': true,
+                'setMargin': false,
+                'setMarginMode': true,
+                'setPositionMode': true,
+                'signIn': false,
+                'spot': true,
+                'swap': true,
+                'transfer': true,
+                'withdraw': true,
+            },
+            'id': 'binance',
+            'name': 'Binance',
+            // exchange-specific options
+            'options': {
+                'sandboxMode': false,
+                'fetchMarkets': [
+                    'inverse', // allows CORS in browsers
+                    'linear', // allows CORS in browsers
+                    'spot', // allows CORS in browsers
+                    // 'option', // does not allow CORS, enable outside of the browser only
+                ],
+                'defaultSubType': undefined, // 'linear', 'inverse'
+                'defaultTimeInForce': 'GTC', // 'GTC' = Good To Cancel (default), 'IOC' = Immediate Or Cancel
+                'defaultType': 'spot', // 'spot', 'future', 'margin', 'delivery', 'option'
+                'fetchCurrencies': true, // this is a private call and it requires API keys
+                'hasAlreadyAuthenticatedSuccessfully': false,
+                'warnOnFetchOpenOrdersWithoutSymbol': true,
+                // 'fetchTradesMethod': 'publicGetAggTrades', // publicGetTrades, publicGetHistoricalTrades, eapiPublicGetTrades
+                // not an error
+                // https://github.com/ccxt/ccxt/issues/11268
+                // https://github.com/ccxt/ccxt/pull/11624
+                // POST https://fapi.binance.com/fapi/v1/marginType 400 Bad Request
+                // binanceusdm
+                'throwMarginModeAlreadySet': false,
+                'fetchPositions': 'positionRisk', // or 'account' or 'option'
+                'recvWindow': 10 * 1000, // 10 sec
+                'timeDifference': 0, // the difference between system clock and Binance clock
+                'adjustForTimeDifference': false, // controls the adjustment logic upon instantiation
+                'newOrderRespType': {
+                    'market': 'FULL', // 'ACK' for order id, 'RESULT' for full order or 'FULL' for order with fills
+                    'limit': 'FULL', // we change it from 'ACK' by default to 'FULL' (returns immediately if limit is not hit)
+                },
+                'quoteOrderQty': true, // whether market orders support amounts in quote currency
+                'broker': {
+                    'delivery': 'x-xcKtGhcu',
+                    'future': 'x-xcKtGhcu',
+                    'margin': 'x-R4BD3S82',
+                    'option': 'x-xcKtGhcu',
+                    'spot': 'x-R4BD3S82',
+                    'swap': 'x-xcKtGhcu',
+                },
+                'accountsByType': {
+                    'cross': 'MARGIN',
+                    'delivery': 'CMFUTURE', // backwards compatbility
+                    'funding': 'FUNDING',
+                    'future': 'UMFUTURE', // backwards compatibility
+                    'inverse': 'CMFUTURE',
+                    'linear': 'UMFUTURE',
+                    'main': 'MAIN',
+                    'margin': 'MARGIN',
+                    'option': 'OPTION',
+                    'spot': 'MAIN',
+                },
+                'accountsById': {
+                    'CMFUTURE': 'inverse',
+                    'FUNDING': 'funding',
+                    'MAIN': 'spot',
+                    'MARGIN': 'margin',
+                    'OPTION': 'option',
+                    'UMFUTURE': 'linear',
+                },
+                'networks': {
+                    'BEP2': 'BNB',
+                    'BEP20': 'BSC',
+                    'EOS': 'EOS',
+                    'ERC20': 'ETH',
+                    'OMNI': 'OMNI',
+                    'SPL': 'SOL',
+                    'TRC20': 'TRX',
+                },
+                // keeping this object for backward-compatibility
+                'reverseNetworks': {
+                    'algoexplorer.io': 'ALGO',
+                    'atomscan.com': 'ATOM',
+                    'bithomp.com': 'XRP',
+                    'block.gxb.io': 'GXS',
+                    'blockchair.com/bitcoin': 'BTC',
+                    'blockchair.com/bitcoin-cash': 'BCH',
+                    'blockchair.com/ecash': 'XEC',
+                    'blockscout.com': 'ETC',
+                    'bloks.io': 'EOS',
+                    'bscscan.com': 'BSC',
+                    'btgexplorer.com': 'BTG',
+                    'bts.ai': 'BTS',
+                    'cardanoscan.io': 'ADA',
+                    'cerebro.cortexlabs.ai': 'CTXC',
+                    'chain.nem.ninja': 'XEM',
+                    'chainz.cryptoid.info': 'VIA',
+                    'dashboard.internetcomputer.org': 'ICP',
+                    'digiexplorer.info': 'DGB',
+                    'dock.subscan.io': 'DOCK',
+                    'dogechain.info': 'DOGE',
+                    'etherscan.io': 'ERC20',
+                    'explore-fetchhub.fetch.ai': 'FET',
+                    'explore.vechain.org': 'VET',
+                    'explorer.ambrosus.com': 'AMB',
+                    'explorer.ark.io': 'ARK',
+                    'explorer.avax.network': 'AVAX',
+                    'explorer.binance.org': 'BEP2',
+                    'explorer.bitcoindiamond.org': 'BCD',
+                    'explorer.celo.org': 'CELO',
+                    'explorer.chiliz.com': 'CHZ',
+                    'explorer.dcrdata.org': 'DCR',
+                    'explorer.elrond.com': 'EGLD',
+                    'explorer.firo.org': 'FIRO',
+                    'explorer.gochain.io': 'GO',
+                    'explorer.harmony.one': 'ONE',
+                    'explorer.helium.com': 'HNT',
+                    'explorer.iota.org': 'IOTA',
+                    'explorer.litecoin.net': 'LTC',
+                    'explorer.lto.network': 'LTO',
+                    'explorer.nbs.plus': 'NBS',
+                    'explorer.nebl.io': 'NEBL',
+                    'explorer.nebulas.io': 'NAS',
+                    'explorer.nervos.org': 'CKB',
+                    'explorer.ont.io': 'ONT',
+                    'explorer.poa.network': 'POA',
+                    'explorer.rsk.co': 'RSK',
+                    'explorer.skycoin.com': 'SKY',
+                    'explorer.stacks.co': 'STX',
+                    'explorer.vite.net': 'VITE',
+                    'explorer.yoyow.org': 'YOYOW',
+                    'explorer.zcha.in': 'ZEC',
+                    'explorer.zensystem.io': 'ZEN',
+                    'filfox.info': 'FIL',
+                    'fio.bloks.io': 'FIO',
+                    'ftmscan.com': 'FTM',
+                    'hash-hash.info': 'HBAR',
+                    'iotexscan.io': 'IOTX',
+                    'irishub.iobscan.io': 'IRIS',
+                    'kava.mintscan.io': 'KAVA',
+                    'kmdexplorer.io': 'KMD',
+                    'kusama.subscan.io': 'KSM',
+                    'mainnet.theoan.com': 'AION',
+                    'minaexplorer.com': 'MINA',
+                    'nanolooker.com': 'NANO',
+                    'neoscan.io': 'NEO',
+                    'nulscan.io': 'NULS',
+                    'nxscan.com': 'NXS',
+                    'polkadot.subscan.io': 'DOT',
+                    'polygonscan.com': 'POLYGON',
+                    'qtum.info': 'QTUM',
+                    'ravencoin.network': 'RVN',
+                    'sc.tokenview.com': 'SC',
+                    'scan.tomochain.com': 'TOMO',
+                    'scope.klaytn.com': 'KLAY',
+                    'secretnodes.com': 'SCRT',
+                    'solscan.io': 'SOL',
+                    'steemscan.com': 'STEEM',
+                    'stellar.expert': 'XLM',
+                    'tracker.icon.foundation': 'ICX',
+                    'tronscan.org': 'TRC20',
+                    'verge-blockchain.info': 'XVG',
+                    'viewblock.io/arweave': 'AR',
+                    'viewblock.io/zilliqa': 'ZIL',
+                    'waltonchain.pro': 'WTC',
+                    'wavesexplorer.com': 'WAVES',
+                    'wax.eosx.io': 'WAXP',
+                    'www.hiveblockexplorer.com': 'HIVE',
+                    'www.iostabc.com': 'IOST',
+                    'www.mintscan.io': 'CTK',
+                    'www.oasisscan.com': 'ROSE',
+                    'www.thetascan.io': 'THETA',
+                    'www.wanscan.org': 'WAN',
+                },
+                'networksById': {
+                    'algoexplorer.io': 'ALGO',
+                    'atomscan.com': 'ATOM',
+                    'bithomp.com': 'XRP',
+                    'block.gxb.io': 'GXS',
+                    'blockchair.com/bitcoin': 'BTC',
+                    'blockchair.com/bitcoin-cash': 'BCH',
+                    'blockchair.com/ecash': 'XEC',
+                    'blockscout.com': 'ETC',
+                    'bloks.io': 'EOS',
+                    'bscscan.com': 'BSC',
+                    'btgexplorer.com': 'BTG',
+                    'bts.ai': 'BTS',
+                    'cardanoscan.io': 'ADA',
+                    'cerebro.cortexlabs.ai': 'CTXC',
+                    'chain.nem.ninja': 'XEM',
+                    'chainz.cryptoid.info': 'VIA',
+                    'dashboard.internetcomputer.org': 'ICP',
+                    'digiexplorer.info': 'DGB',
+                    'dock.subscan.io': 'DOCK',
+                    'dogechain.info': 'DOGE',
+                    'etherscan.io': 'ERC20',
+                    'explore-fetchhub.fetch.ai': 'FET',
+                    'explore.vechain.org': 'VET',
+                    'explorer.ambrosus.com': 'AMB',
+                    'explorer.ark.io': 'ARK',
+                    'explorer.avax.network': 'AVAX',
+                    'explorer.binance.org': 'BEP2',
+                    'explorer.bitcoindiamond.org': 'BCD',
+                    'explorer.celo.org': 'CELO',
+                    'explorer.chiliz.com': 'CHZ',
+                    'explorer.dcrdata.org': 'DCR',
+                    'explorer.elrond.com': 'EGLD',
+                    'explorer.firo.org': 'FIRO',
+                    'explorer.gochain.io': 'GO',
+                    'explorer.harmony.one': 'ONE',
+                    'explorer.helium.com': 'HNT',
+                    'explorer.iota.org': 'IOTA',
+                    'explorer.litecoin.net': 'LTC',
+                    'explorer.lto.network': 'LTO',
+                    'explorer.nbs.plus': 'NBS',
+                    'explorer.nebl.io': 'NEBL',
+                    'explorer.nebulas.io': 'NAS',
+                    'explorer.nervos.org': 'CKB',
+                    'explorer.ont.io': 'ONT',
+                    'explorer.poa.network': 'POA',
+                    'explorer.rsk.co': 'RSK',
+                    'explorer.skycoin.com': 'SKY',
+                    'explorer.stacks.co': 'STX',
+                    'explorer.vite.net': 'VITE',
+                    'explorer.yoyow.org': 'YOYOW',
+                    'explorer.zcha.in': 'ZEC',
+                    'explorer.zensystem.io': 'ZEN',
+                    'filfox.info': 'FIL',
+                    'fio.bloks.io': 'FIO',
+                    'ftmscan.com': 'FTM',
+                    'hash-hash.info': 'HBAR',
+                    'iotexscan.io': 'IOTX',
+                    'irishub.iobscan.io': 'IRIS',
+                    'kava.mintscan.io': 'KAVA',
+                    'kmdexplorer.io': 'KMD',
+                    'kusama.subscan.io': 'KSM',
+                    'mainnet.theoan.com': 'AION',
+                    'minaexplorer.com': 'MINA',
+                    'nanolooker.com': 'NANO',
+                    'neoscan.io': 'NEO',
+                    'nulscan.io': 'NULS',
+                    'nxscan.com': 'NXS',
+                    'polkadot.subscan.io': 'DOT',
+                    'polygonscan.com': 'POLYGON',
+                    'qtum.info': 'QTUM',
+                    'ravencoin.network': 'RVN',
+                    'sc.tokenview.com': 'SC',
+                    'scan.tomochain.com': 'TOMO',
+                    'scope.klaytn.com': 'KLAY',
+                    'secretnodes.com': 'SCRT',
+                    'solscan.io': 'SOL',
+                    'steemscan.com': 'STEEM',
+                    'stellar.expert': 'XLM',
+                    'tracker.icon.foundation': 'ICX',
+                    'tronscan.org': 'TRC20',
+                    'verge-blockchain.info': 'XVG',
+                    'viewblock.io/arweave': 'AR',
+                    'viewblock.io/zilliqa': 'ZIL',
+                    'waltonchain.pro': 'WTC',
+                    'wavesexplorer.com': 'WAVES',
+                    'wax.eosx.io': 'WAXP',
+                    'www.hiveblockexplorer.com': 'HIVE',
+                    'www.iostabc.com': 'IOST',
+                    'www.mintscan.io': 'CTK',
+                    'www.oasisscan.com': 'ROSE',
+                    'www.thetascan.io': 'THETA',
+                    'www.wanscan.org': 'WAN',
+                },
+                'impliedNetworks': {
+                    'ETH': { 'ERC20': 'ETH' },
+                    'TRX': { 'TRC20': 'TRX' },
+                },
+                'legalMoney': {
+                    'AED': true,
+                    'ARS': true,
+                    'AUD': true,
+                    'BRL': true,
+                    'CAD': true,
+                    'CHF': true,
+                    'CZK': true,
+                    'DKK': true,
+                    'EUR': true,
+                    'GBP': true,
+                    'GHS': true,
+                    'HKD': true,
+                    'HUF': true,
+                    'INR': true,
+                    'JPY': true,
+                    'KES': true,
+                    'KZT': true,
+                    'MXN': true,
+                    'NGN': true,
+                    'NOK': true,
+                    'NZD': true,
+                    'PEN': true,
+                    'PHP': true,
+                    'PLN': true,
+                    'RUB': true,
+                    'SEK': true,
+                    'TRY': true,
+                    'UAH': true,
+                    'UGX': true,
+                    'USD': true,
+                    'VND': true,
+                    'ZAR': true,
+                },
+                'legalMoneyCurrenciesById': {
+                    'BUSD': 'USD',
+                },
+            },
+            'precisionMode': DECIMAL_PLACES,
+            'pro': true,
+            'rateLimit': 50,
+            // new metainfo2 interface
+            'timeframes': {
+                '1s': '1s', // spot only for now
+                '1m': '1m',
+                '3m': '3m',
+                '5m': '5m',
+                '15m': '15m',
+                '30m': '30m',
+                '1h': '1h',
+                '2h': '2h',
+                '4h': '4h',
+                '6h': '6h',
+                '8h': '8h',
+                '12h': '12h',
+                '1d': '1d',
+                '3d': '3d',
+                '1w': '1w',
+                '1M': '1M',
+            },
+            'urls': {
+                'api': {
+                    'dapiData': 'https://dapi.binance.com/futures/data',
+                    'dapiPrivate': 'https://dapi.binance.com/dapi/v1',
+                    'dapiPrivateV2': 'https://dapi.binance.com/dapi/v2',
+                    'dapiPublic': 'https://dapi.binance.com/dapi/v1',
+                    'eapiPrivate': 'https://eapi.binance.com/eapi/v1',
+                    'eapiPublic': 'https://eapi.binance.com/eapi/v1',
+                    'fapiData': 'https://fapi.binance.com/futures/data',
+                    'fapiPrivate': 'https://fapi.binance.com/fapi/v1',
+                    'fapiPrivateV2': 'https://fapi.binance.com/fapi/v2',
+                    'fapiPublic': 'https://fapi.binance.com/fapi/v1',
+                    'fapiPublicV2': 'https://fapi.binance.com/fapi/v2',
+                    'papi': 'https://papi.binance.com/papi/v1',
+                    'private': 'https://api.binance.com/api/v3',
+                    'public': 'https://api.binance.com/api/v3',
+                    'sapi': 'https://api.binance.com/sapi/v1',
+                    'sapiV2': 'https://api.binance.com/sapi/v2',
+                    'sapiV3': 'https://api.binance.com/sapi/v3',
+                    'sapiV4': 'https://api.binance.com/sapi/v4',
+                    'v1': 'https://api.binance.com/api/v1',
+                },
+                'api_management': 'https://www.binance.com/en/usercenter/settings/api-management',
+                'doc': [
+                    'https://binance-docs.github.io/apidocs/spot/en',
+                ],
+                'fees': 'https://www.binance.com/en/fee/schedule',
+                'logo': 'https://user-images.githubusercontent.com/1294454/29604020-d5483cdc-87ee-11e7-94c7-d1a8d9169293.jpg',
+                'referral': {
+                    'discount': 0.1,
+                    'url': 'https://accounts.binance.com/en/register?ref=D7YA7CLY',
+                },
+                'test': {
+                    'dapiPrivate': 'https://testnet.binancefuture.com/dapi/v1',
+                    'dapiPrivateV2': 'https://testnet.binancefuture.com/dapi/v2',
+                    'dapiPublic': 'https://testnet.binancefuture.com/dapi/v1',
+                    'fapiPrivate': 'https://testnet.binancefuture.com/fapi/v1',
+                    'fapiPrivateV2': 'https://testnet.binancefuture.com/fapi/v2',
+                    'fapiPublic': 'https://testnet.binancefuture.com/fapi/v1',
+                    'fapiPublicV2': 'https://testnet.binancefuture.com/fapi/v2',
+                    'private': 'https://testnet.binance.vision/api/v3',
+                    'public': 'https://testnet.binance.vision/api/v3',
+                    'v1': 'https://testnet.binance.vision/api/v1',
+                },
+                'www': 'https://www.binance.com',
             },
         });
     }
@@ -2375,8 +2396,8 @@ export default class binance extends Exchange {
             'expiryDatetime': datetime,
             'future': false,
             'id': base + '-' + expiry + '-' + strikeAsString + '-' + optionType,
-            'inverse': undefined,
             'info': undefined,
+            'inverse': undefined,
             'limits': {
                 'amount': {
                     'max': undefined,
@@ -2553,95 +2574,95 @@ export default class binance extends Exchange {
             //    {
             //        "coin": "LINK",
             //        "depositAllEnable": true,
-            //        "withdrawAllEnable": true,
-            //        "name": "ChainLink",
             //        "free": "0",
-            //        "locked": "0",
             //        "freeze": "0",
-            //        "withdrawing": "0",
-            //        "ipoing": "0",
             //        "ipoable": "0",
-            //        "storage": "0",
+            //        "ipoing": "0",
             //        "isLegalMoney": false,
-            //        "trading": true,
+            //        "locked": "0",
+            //        "name": "ChainLink",
             //        "networkList": [
             //            {
-            //                "network": "BSC",
+            //                "addressRegex": "^(0x)[0-9A-Fa-f]{40}$",
+            //                "addressRule": "",
+            //                "busy": false,
             //                "coin": "LINK",
-            //                "withdrawIntegerMultiple": "0.00000001",
-            //                "isDefault": false,
-            //                "depositEnable": true,
-            //                "withdrawEnable": true,
+            //                "country": "AE,BINANCE_BAHRAIN_BSC",
             //                "depositDesc": "",
-            //                "withdrawDesc": "",
+            //                "depositEnable": true,
+            //                "estimatedArrivalTime": "5",
+            //                "isDefault": false,
+            //                "memoRegex": "",
+            //                "minConfirm": "15",
+            //                "name": "BNB Smart Chain (BEP20)",
+            //                "network": "BSC",
+            //                "resetAddressStatus": false,
+            //                "sameAddress": false,
             //                "specialTips": "",
             //                "specialWithdrawTips": "The network you have selected is BSC. Please ensure that the withdrawal address supports the Binance Smart Chain network. You will lose your assets if the chosen platform does not support retrievals.",
-            //                "name": "BNB Smart Chain (BEP20)",
-            //                "resetAddressStatus": false,
-            //                "addressRegex": "^(0x)[0-9A-Fa-f]{40}$",
-            //                "addressRule": "",
-            //                "memoRegex": "",
-            //                "withdrawFee": "0.012",
-            //                "withdrawMin": "0.024",
-            //                "withdrawMax": "9999999999.99999999",
-            //                "minConfirm": "15",
             //                "unLockConfirm": "0",
-            //                "sameAddress": false,
-            //                "estimatedArrivalTime": "5",
-            //                "busy": false,
-            //                "country": "AE,BINANCE_BAHRAIN_BSC"
+            //                "withdrawDesc": "",
+            //                "withdrawEnable": true,
+            //                "withdrawFee": "0.012",
+            //                "withdrawIntegerMultiple": "0.00000001",
+            //                "withdrawMax": "9999999999.99999999",
+            //                "withdrawMin": "0.024",
             //            },
             //            {
-            //                "network": "BNB",
-            //                "coin": "LINK",
-            //                "withdrawIntegerMultiple": "0.00000001",
-            //                "isDefault": false,
-            //                "depositEnable": true,
-            //                "withdrawEnable": true,
-            //                "depositDesc": "",
-            //                "withdrawDesc": "",
-            //                "specialTips": "Both a MEMO and an Address are required to successfully deposit your LINK BEP2 tokens to Binance.",
-            //                "specialWithdrawTips": "",
-            //                "name": "BNB Beacon Chain (BEP2)",
-            //                "resetAddressStatus": false,
             //                "addressRegex": "^(bnb1)[0-9a-z]{38}$",
             //                "addressRule": "",
-            //                "memoRegex": "^[0-9A-Za-z\\-_]{1,120}$",
-            //                "withdrawFee": "0.002",
-            //                "withdrawMin": "0.01",
-            //                "withdrawMax": "10000000000",
-            //                "minConfirm": "1",
-            //                "unLockConfirm": "0",
-            //                "sameAddress": true,
-            //                "estimatedArrivalTime": "5",
             //                "busy": false,
-            //                "country": "AE,BINANCE_BAHRAIN_BSC"
+            //                "coin": "LINK",
+            //                "country": "AE,BINANCE_BAHRAIN_BSC",
+            //                "depositDesc": "",
+            //                "depositEnable": true,
+            //                "estimatedArrivalTime": "5",
+            //                "isDefault": false,
+            //                "memoRegex": "^[0-9A-Za-z\\-_]{1,120}$",
+            //                "minConfirm": "1",
+            //                "name": "BNB Beacon Chain (BEP2)",
+            //                "network": "BNB",
+            //                "resetAddressStatus": false,
+            //                "sameAddress": true,
+            //                "specialTips": "Both a MEMO and an Address are required to successfully deposit your LINK BEP2 tokens to Binance.",
+            //                "specialWithdrawTips": "",
+            //                "unLockConfirm": "0",
+            //                "withdrawDesc": "",
+            //                "withdrawEnable": true,
+            //                "withdrawFee": "0.002",
+            //                "withdrawIntegerMultiple": "0.00000001",
+            //                "withdrawMax": "10000000000",
+            //                "withdrawMin": "0.01",
             //            },
             //            {
-            //                "network": "ETH",
-            //                "coin": "LINK",
-            //                "withdrawIntegerMultiple": "0.00000001",
-            //                "isDefault": true,
-            //                "depositEnable": true,
-            //                "withdrawEnable": true,
-            //                "depositDesc": "",
-            //                "withdrawDesc": "",
-            //                "name": "Ethereum (ERC20)",
-            //                "resetAddressStatus": false,
             //                "addressRegex": "^(0x)[0-9A-Fa-f]{40}$",
             //                "addressRule": "",
-            //                "memoRegex": "",
-            //                "withdrawFee": "0.55",
-            //                "withdrawMin": "1.1",
-            //                "withdrawMax": "10000000000",
-            //                "minConfirm": "12",
-            //                "unLockConfirm": "0",
-            //                "sameAddress": false,
-            //                "estimatedArrivalTime": "5",
             //                "busy": false,
-            //                "country": "AE,BINANCE_BAHRAIN_BSC"
+            //                "coin": "LINK",
+            //                "country": "AE,BINANCE_BAHRAIN_BSC",
+            //                "depositDesc": "",
+            //                "depositEnable": true,
+            //                "estimatedArrivalTime": "5",
+            //                "isDefault": true,
+            //                "memoRegex": "",
+            //                "minConfirm": "12",
+            //                "name": "Ethereum (ERC20)",
+            //                "network": "ETH",
+            //                "resetAddressStatus": false,
+            //                "sameAddress": false,
+            //                "unLockConfirm": "0",
+            //                "withdrawDesc": "",
+            //                "withdrawEnable": true,
+            //                "withdrawFee": "0.55",
+            //                "withdrawIntegerMultiple": "0.00000001",
+            //                "withdrawMax": "10000000000",
+            //                "withdrawMin": "1.1",
             //            }
-            //        ]
+            //        ],
+            //        "storage": "0",
+            //        "trading": true,
+            //        "withdrawAllEnable": true,
+            //        "withdrawing": "0",
             //    }
             //
             const entry = response[i];
@@ -2682,18 +2703,18 @@ export default class binance extends Exchange {
                 maxDecimalPlaces = parseInt (this.numberToString (this.precisionFromString (minPrecision)));
             }
             result[code] = {
-                'id': id,
-                'name': name,
-                'code': code,
-                'precision': maxDecimalPlaces,
-                'info': entry,
                 'active': active,
+                'code': code,
                 'deposit': isDepositEnabled,
-                'withdraw': isWithdrawEnabled,
-                'networks': networkList,
                 'fee': fee,
                 'fees': fees,
+                'id': id,
+                'info': entry,
                 'limits': this.limits,
+                'name': name,
+                'networks': networkList,
+                'precision': maxDecimalPlaces,
+                'withdraw': isWithdrawEnabled,
             };
         }
         return result;
@@ -2749,31 +2770,19 @@ export default class binance extends Exchange {
         // spot / margin
         //
         //     {
-        //         "timezone":"UTC",
-        //         "serverTime":1575416692969,
+        //         "exchangeFilters":[],
         //         "rateLimits":[
         //             {"rateLimitType":"REQUEST_WEIGHT","interval":"MINUTE","intervalNum":1,"limit":1200},
         //             {"rateLimitType":"ORDERS","interval":"SECOND","intervalNum":10,"limit":100},
         //             {"rateLimitType":"ORDERS","interval":"DAY","intervalNum":1,"limit":200000}
         //         ],
-        //         "exchangeFilters":[],
+        //         "serverTime":1575416692969,
         //         "symbols":[
         //             {
-        //                 "symbol":"ETHBTC",
-        //                 "status":"TRADING",
+        //                 "allowTrailingStop":false,
         //                 "baseAsset":"ETH",
         //                 "baseAssetPrecision":8,
-        //                 "quoteAsset":"BTC",
-        //                 "quotePrecision":8,
         //                 "baseCommissionPrecision":8,
-        //                 "quoteCommissionPrecision":8,
-        //                 "orderTypes":["LIMIT","LIMIT_MAKER","MARKET","STOP_LOSS_LIMIT","TAKE_PROFIT_LIMIT"],
-        //                 "icebergAllowed":true,
-        //                 "ocoAllowed":true,
-        //                 "quoteOrderQtyMarketAllowed":true,
-        //                 "allowTrailingStop":false,
-        //                 "isSpotTradingAllowed":true,
-        //                 "isMarginTradingAllowed":true,
         //                 "filters":[
         //                     {"filterType":"PRICE_FILTER","minPrice":"0.00000100","maxPrice":"100000.00000000","tickSize":"0.00000100"},
         //                     {"filterType":"PERCENT_PRICE","multiplierUp":"5","multiplierDown":"0.2","avgPriceMins":5},
@@ -2784,33 +2793,36 @@ export default class binance extends Exchange {
         //                     {"filterType":"MAX_NUM_ORDERS","maxNumOrders":200},
         //                     {"filterType":"MAX_NUM_ALGO_ORDERS","maxNumAlgoOrders":5}
         //                 ],
+        //                 "icebergAllowed":true,
+        //                 "isMarginTradingAllowed":true,
+        //                 "isSpotTradingAllowed":true,
+        //                 "ocoAllowed":true,
+        //                 "orderTypes":["LIMIT","LIMIT_MAKER","MARKET","STOP_LOSS_LIMIT","TAKE_PROFIT_LIMIT"],
         //                 "permissions":["SPOT","MARGIN"]}
+        //                 "quoteAsset":"BTC",
+        //                 "quoteCommissionPrecision":8,
+        //                 "quoteOrderQtyMarketAllowed":true,
+        //                 "quotePrecision":8,
+        //                 "status":"TRADING",
+        //                 "symbol":"ETHBTC",
         //             },
         //         ],
+        //         "timezone":"UTC",
         //     }
         //
         // futures/usdt-margined (fapi)
         //
         //     {
-        //         "timezone":"UTC",
-        //         "serverTime":1575417244353,
+        //         "exchangeFilters":[],
         //         "rateLimits":[
         //             {"rateLimitType":"REQUEST_WEIGHT","interval":"MINUTE","intervalNum":1,"limit":1200},
         //             {"rateLimitType":"ORDERS","interval":"MINUTE","intervalNum":1,"limit":1200}
         //         ],
-        //         "exchangeFilters":[],
+        //         "serverTime":1575417244353,
         //         "symbols":[
         //             {
-        //                 "symbol":"BTCUSDT",
-        //                 "status":"TRADING",
-        //                 "maintMarginPercent":"2.5000",
-        //                 "requiredMarginPercent":"5.0000",
         //                 "baseAsset":"BTC",
-        //                 "quoteAsset":"USDT",
-        //                 "pricePrecision":2,
-        //                 "quantityPrecision":3,
         //                 "baseAssetPrecision":8,
-        //                 "quotePrecision":8,
         //                 "filters":[
         //                     {"minPrice":"0.01","maxPrice":"100000","filterType":"PRICE_FILTER","tickSize":"0.01"},
         //                     {"stepSize":"0.001","filterType":"LOT_SIZE","maxQty":"1000","minQty":"0.001"},
@@ -2818,40 +2830,39 @@ export default class binance extends Exchange {
         //                     {"limit":200,"filterType":"MAX_NUM_ORDERS"},
         //                     {"multiplierDown":"0.8500","multiplierUp":"1.1500","multiplierDecimal":"4","filterType":"PERCENT_PRICE"}
         //                 ],
+        //                 "maintMarginPercent":"2.5000",
         //                 "orderTypes":["LIMIT","MARKET","STOP"],
+        //                 "pricePrecision":2,
+        //                 "quantityPrecision":3,
+        //                 "quoteAsset":"USDT",
+        //                 "quotePrecision":8,
+        //                 "requiredMarginPercent":"5.0000",
+        //                 "status":"TRADING",
+        //                 "symbol":"BTCUSDT",
         //                 "timeInForce":["GTC","IOC","FOK","GTX"]
         //             }
-        //         ]
+        //         ],
+        //         "timezone":"UTC",
         //     }
         //
         // delivery/coin-margined (dapi)
         //
         //     {
-        //         "timezone": "UTC",
+        //         "exchangeFilters": [],
         //         "serverTime": 1597667052958,
+        //         "timezone": "UTC",
         //         "rateLimits": [
         //             {"rateLimitType":"REQUEST_WEIGHT","interval":"MINUTE","intervalNum":1,"limit":6000},
         //             {"rateLimitType":"ORDERS","interval":"MINUTE","intervalNum":1,"limit":6000}
         //         ],
-        //         "exchangeFilters": [],
         //         "symbols": [
         //             {
-        //                 "symbol": "BTCUSD_200925",
-        //                 "pair": "BTCUSD",
+        //                 "baseAsset": "BTC",
+        //                 "baseAssetPrecision": 8,
+        //                 "contractSize": 100,
+        //                 "contractStatus": "TRADING",
         //                 "contractType": "CURRENT_QUARTER",
         //                 "deliveryDate": 1601020800000,
-        //                 "onboardDate": 1590739200000,
-        //                 "contractStatus": "TRADING",
-        //                 "contractSize": 100,
-        //                 "marginAsset": "BTC",
-        //                 "maintMarginPercent": "2.5000",
-        //                 "requiredMarginPercent": "5.0000",
-        //                 "baseAsset": "BTC",
-        //                 "quoteAsset": "USD",
-        //                 "pricePrecision": 1,
-        //                 "quantityPrecision": 0,
-        //                 "baseAssetPrecision": 8,
-        //                 "quotePrecision": 8,
         //                 "equalQtyPrecision": 4,
         //                 "filters": [
         //                     {"minPrice":"0.1","maxPrice":"100000","filterType":"PRICE_FILTER","tickSize":"0.1"},
@@ -2860,26 +2871,26 @@ export default class binance extends Exchange {
         //                     {"limit":200,"filterType":"MAX_NUM_ORDERS"},
         //                     {"multiplierDown":"0.9500","multiplierUp":"1.0500","multiplierDecimal":"4","filterType":"PERCENT_PRICE"}
         //                 ],
+        //                 "maintMarginPercent": "2.5000",
+        //                 "marginAsset": "BTC",
+        //                 "onboardDate": 1590739200000,
         //                 "orderTypes": ["LIMIT","MARKET","STOP","STOP_MARKET","TAKE_PROFIT","TAKE_PROFIT_MARKET","TRAILING_STOP_MARKET"],
+        //                 "pair": "BTCUSD",
+        //                 "pricePrecision": 1,
+        //                 "quantityPrecision": 0,
+        //                 "quoteAsset": "USD",
+        //                 "quotePrecision": 8,
+        //                 "requiredMarginPercent": "5.0000",
+        //                 "symbol": "BTCUSD_200925",
         //                 "timeInForce": ["GTC","IOC","FOK","GTX"]
         //             },
         //             {
-        //                 "symbol": "BTCUSD_PERP",
-        //                 "pair": "BTCUSD",
+        //                 "baseAsset": "BTC",
+        //                 "baseAssetPrecision": 8,
+        //                 "contractSize": 100,
+        //                 "contractStatus": "TRADING",
         //                 "contractType": "PERPETUAL",
         //                 "deliveryDate": 4133404800000,
-        //                 "onboardDate": 1596006000000,
-        //                 "contractStatus": "TRADING",
-        //                 "contractSize": 100,
-        //                 "marginAsset": "BTC",
-        //                 "maintMarginPercent": "2.5000",
-        //                 "requiredMarginPercent": "5.0000",
-        //                 "baseAsset": "BTC",
-        //                 "quoteAsset": "USD",
-        //                 "pricePrecision": 1,
-        //                 "quantityPrecision": 0,
-        //                 "baseAssetPrecision": 8,
-        //                 "quotePrecision": 8,
         //                 "equalQtyPrecision": 4,
         //                 "filters": [
         //                     {"minPrice":"0.1","maxPrice":"100000","filterType":"PRICE_FILTER","tickSize":"0.1"},
@@ -2888,7 +2899,17 @@ export default class binance extends Exchange {
         //                     {"limit":200,"filterType":"MAX_NUM_ORDERS"},
         //                     {"multiplierDown":"0.8500","multiplierUp":"1.1500","multiplierDecimal":"4","filterType":"PERCENT_PRICE"}
         //                 ],
+        //                 "maintMarginPercent": "2.5000",
+        //                 "marginAsset": "BTC",
+        //                 "onboardDate": 1596006000000,
         //                 "orderTypes": ["LIMIT","MARKET","STOP","STOP_MARKET","TAKE_PROFIT","TAKE_PROFIT_MARKET","TRAILING_STOP_MARKET"],
+        //                 "pair": "BTCUSD",
+        //                 "pricePrecision": 1,
+        //                 "quantityPrecision": 0,
+        //                 "quoteAsset": "USD",
+        //                 "quotePrecision": 8,
+        //                 "requiredMarginPercent": "5.0000",
+        //                 "symbol": "BTCUSD_PERP",
         //                 "timeInForce": ["GTC","IOC","FOK","GTX"]
         //             }
         //         ]
@@ -2897,20 +2918,23 @@ export default class binance extends Exchange {
         // options (eapi)
         //
         //     {
-        //         "timezone": "UTC",
-        //         "serverTime": 1675912490405,
-        //         "optionContracts": [
-        //             {
-        //                 "id": 1,
-        //                 "baseAsset": "SOL",
-        //                 "quoteAsset": "USDT",
-        //                 "underlying": "SOLUSDT",
-        //                 "settleAsset": "USDT"
-        //             },
-        //             ...
+        //         "rateLimits": [
+        //             {"rateLimitType":"REQUEST_WEIGHT","interval":"MINUTE","intervalNum":1,"limit":400},
+        //             {"rateLimitType":"ORDERS","interval":"MINUTE","intervalNum":1,"limit":100},
+        //             {"rateLimitType":"ORDERS","interval":"SECOND","intervalNum":10,"limit":30}
         //         ],
         //         "optionAssets": [
         //             {"id":1,"name":"USDT"}
+        //         ],
+        //         "optionContracts": [
+        //             {
+        //                 "baseAsset": "SOL",
+        //                 "id": 1,
+        //                 "quoteAsset": "USDT",
+        //                 "settleAsset": "USDT",
+        //                 "underlying": "SOLUSDT",
+        //             },
+        //             ...
         //         ],
         //         "optionSymbols": [
         //             {
@@ -2921,30 +2945,27 @@ export default class binance extends Exchange {
         //                     {"filterType":"LOT_SIZE","minQty":"0.01","maxQty":"1000","stepSize":"0.01"}
         //                 ],
         //                 "id": 2474,
-        //                 "symbol": "ETH-230224-800-C",
-        //                 "side": "CALL",
-        //                 "strikePrice": "800.00000000",
-        //                 "underlying": "ETHUSDT",
-        //                 "unit": 1,
-        //                 "makerFeeRate": "0.00020000",
-        //                 "takerFeeRate": "0.00020000",
-        //                 "minQty": "0.01",
-        //                 "maxQty": "1000",
         //                 "initialMargin": "0.15000000",
         //                 "maintenanceMargin": "0.07500000",
+        //                 "makerFeeRate": "0.00020000",
+        //                 "maxQty": "1000",
         //                 "minInitialMargin": "0.10000000",
         //                 "minMaintenanceMargin": "0.05000000",
+        //                 "minQty": "0.01",
         //                 "priceScale": 1,
         //                 "quantityScale": 2,
-        //                 "quoteAsset": "USDT"
+        //                 "quoteAsset": "USDT",
+        //                 "side": "CALL",
+        //                 "strikePrice": "800.00000000",
+        //                 "symbol": "ETH-230224-800-C",
+        //                 "takerFeeRate": "0.00020000",
+        //                 "underlying": "ETHUSDT",
+        //                 "unit": 1,
         //             },
         //             ...
         //         ],
-        //         "rateLimits": [
-        //             {"rateLimitType":"REQUEST_WEIGHT","interval":"MINUTE","intervalNum":1,"limit":400},
-        //             {"rateLimitType":"ORDERS","interval":"MINUTE","intervalNum":1,"limit":100},
-        //             {"rateLimitType":"ORDERS","interval":"SECOND","intervalNum":10,"limit":30}
-        //         ]
+        //         "timezone": "UTC",
+        //         "serverTime": 1675912490405,
         //     }
         //
         if (this.options['adjustForTimeDifference']) {
@@ -3032,58 +3053,58 @@ export default class binance extends Exchange {
             active = undefined;
         }
         const entry = {
-            'id': id,
-            'lowercaseId': lowercaseId,
-            'symbol': symbol,
-            'base': base,
-            'quote': quote,
-            'settle': settle,
-            'baseId': baseId,
-            'quoteId': quoteId,
-            'settleId': settleId,
-            'type': unifiedType,
-            'spot': spot,
-            'margin': spot && isMarginTradingAllowed,
-            'swap': swap,
-            'future': future,
-            'option': option,
             'active': active,
+            'base': base,
+            'baseId': baseId,
             'contract': contract,
-            'linear': linear,
-            'inverse': inverse,
-            'taker': fees['trading']['taker'],
-            'maker': fees['trading']['maker'],
             'contractSize': contractSize,
+            'created': this.safeInteger (market, 'onboardDate'),
             'expiry': expiry,
             'expiryDatetime': this.iso8601 (expiry),
-            'strike': strike,
+            'future': future,
+            'id': id,
+            'info': market,
+            'inverse': inverse,
+            'limits': {
+                'amount': {
+                    'max': this.safeNumber (market, 'maxQty'),
+                    'min': this.safeNumber (market, 'minQty'),
+                },
+                'cost': {
+                    'max': undefined,
+                    'min': undefined,
+                },
+                'leverage': {
+                    'max': undefined,
+                    'min': undefined,
+                },
+                'price': {
+                    'max': undefined,
+                    'min': undefined,
+                },
+            },
+            'linear': linear,
+            'lowercaseId': lowercaseId,
+            'maker': fees['trading']['maker'],
+            'margin': spot && isMarginTradingAllowed,
+            'option': option,
             'optionType': this.safeStringLower (market, 'side'),
             'precision': {
                 'amount': this.safeInteger2 (market, 'quantityPrecision', 'quantityScale'),
-                'price': this.safeInteger2 (market, 'pricePrecision', 'priceScale'),
                 'base': this.safeInteger (market, 'baseAssetPrecision'),
+                'price': this.safeInteger2 (market, 'pricePrecision', 'priceScale'),
                 'quote': this.safeInteger (market, 'quotePrecision'),
             },
-            'limits': {
-                'leverage': {
-                    'min': undefined,
-                    'max': undefined,
-                },
-                'amount': {
-                    'min': this.safeNumber (market, 'minQty'),
-                    'max': this.safeNumber (market, 'maxQty'),
-                },
-                'price': {
-                    'min': undefined,
-                    'max': undefined,
-                },
-                'cost': {
-                    'min': undefined,
-                    'max': undefined,
-                },
-            },
-            'info': market,
-            'created': this.safeInteger (market, 'onboardDate'), // present in inverse & linear apis
+            'quote': quote,
+            'quoteId': quoteId,
+            'settle': settle,
+            'settleId': settleId,
+            'spot': spot,
+            'strike': strike,
+            'swap': swap,
+            'symbol': symbol,
+            'taker': fees['trading']['taker'],
+            'type': unifiedType, // present in inverse & linear apis
         };
         if ('PRICE_FILTER' in filtersByType) {
             const filter = this.safeDict (filtersByType, 'PRICE_FILTER', {});
@@ -3304,18 +3325,18 @@ export default class binance extends Exchange {
         // spot
         //
         //     {
-        //         "makerCommission": 10,
-        //         "takerCommission": 10,
-        //         "buyerCommission": 0,
-        //         "sellerCommission": 0,
-        //         "canTrade": true,
-        //         "canWithdraw": true,
-        //         "canDeposit": true,
-        //         "updateTime": 1575357359602,
         //         "accountType": "MARGIN",
         //         "balances": [
         //             { asset: "BTC", free: "0.00219821", locked: "0.00000000"  },
-        //         ]
+        //         ],
+        //         "buyerCommission": 0,
+        //         "canDeposit": true,
+        //         "canTrade": true,
+        //         "canWithdraw": true,
+        //         "makerCommission": 10,
+        //         "sellerCommission": 0,
+        //         "takerCommission": 10,
+        //         "updateTime": 1575357359602,
         //     }
         //
         // margin (cross)
@@ -3343,8 +3364,8 @@ export default class binance extends Exchange {
         //                {
         //                    "baseAsset": {
         //                        "asset": "1INCH",
-        //                        "borrowEnabled": true,
         //                        "borrowed": "0",
+        //                        "borrowEnabled": true,
         //                        "free": "0",
         //                        "interest": "0",
         //                        "locked": "0",
@@ -3353,10 +3374,18 @@ export default class binance extends Exchange {
         //                        "repayEnabled": true,
         //                        "totalAsset": "0"
         //                    },
+        //                    "enabled": true,
+        //                    "indexPrice": "0.59184331",
+        //                    "isolatedCreated": true,
+        //                    "liquidatePrice": "0",
+        //                    "liquidateRate": "0",
+        //                    "marginLevel": "999",
+        //                    "marginLevelStatus": "EXCESSIVE",
+        //                    "marginRatio": "5",
         //                    "quoteAsset": {
         //                        "asset": "USDT",
-        //                        "borrowEnabled": true,
         //                        "borrowed": "0",
+        //                        "borrowEnabled": true,
         //                        "free": "11",
         //                        "interest": "0",
         //                        "locked": "0",
@@ -3366,15 +3395,7 @@ export default class binance extends Exchange {
         //                        "totalAsset": "11"
         //                    },
         //                    "symbol": "1INCHUSDT",
-        //                    "isolatedCreated": true,
-        //                    "marginLevel": "999",
-        //                    "marginLevelStatus": "EXCESSIVE",
-        //                    "marginRatio": "5",
-        //                    "indexPrice": "0.59184331",
-        //                    "liquidatePrice": "0",
-        //                    "liquidateRate": "0",
         //                    "tradeEnabled": true,
-        //                    "enabled": true
         //                },
         //            ]
         //        }
@@ -3385,53 +3406,53 @@ export default class binance extends Exchange {
         //     fapiPrivateV2GetAccount
         //
         //     {
-        //         "feeTier":0,
-        //         "canTrade":true,
-        //         "canDeposit":true,
-        //         "canWithdraw":true,
-        //         "updateTime":0,
-        //         "totalInitialMargin":"0.00000000",
-        //         "totalMaintMargin":"0.00000000",
-        //         "totalWalletBalance":"0.00000000",
-        //         "totalUnrealizedProfit":"0.00000000",
-        //         "totalMarginBalance":"0.00000000",
-        //         "totalPositionInitialMargin":"0.00000000",
-        //         "totalOpenOrderInitialMargin":"0.00000000",
-        //         "totalCrossWalletBalance":"0.00000000",
-        //         "totalCrossUnPnl":"0.00000000",
-        //         "availableBalance":"0.00000000",
-        //         "maxWithdrawAmount":"0.00000000",
         //         "assets":[
         //             {
         //                 "asset":"BNB",
-        //                 "walletBalance":"0.01000000",
-        //                 "unrealizedProfit":"0.00000000",
-        //                 "marginBalance":"0.01000000",
-        //                 "maintMargin":"0.00000000",
-        //                 "initialMargin":"0.00000000",
-        //                 "positionInitialMargin":"0.00000000",
-        //                 "openOrderInitialMargin":"0.00000000",
-        //                 "maxWithdrawAmount":"0.01000000",
-        //                 "crossWalletBalance":"0.01000000",
+        //                 "availableBalance":"0.01000000",
         //                 "crossUnPnl":"0.00000000",
-        //                 "availableBalance":"0.01000000"
+        //                 "crossWalletBalance":"0.01000000",
+        //                 "initialMargin":"0.00000000",
+        //                 "maintMargin":"0.00000000",
+        //                 "marginBalance":"0.01000000",
+        //                 "maxWithdrawAmount":"0.01000000",
+        //                 "openOrderInitialMargin":"0.00000000",
+        //                 "positionInitialMargin":"0.00000000",
+        //                 "unrealizedProfit":"0.00000000",
+        //                 "walletBalance":"0.01000000",
         //             }
         //         ],
+        //         "availableBalance":"0.00000000",
+        //         "canDeposit":true,
+        //         "canTrade":true,
+        //         "canWithdraw":true,
+        //         "feeTier":0,
+        //         "maxWithdrawAmount":"0.00000000",
         //         "positions":[
         //             {
-        //                 "symbol":"BTCUSDT",
-        //                 "initialMargin":"0",
-        //                 "maintMargin":"0",
-        //                 "unrealizedProfit":"0.00000000",
-        //                 "positionInitialMargin":"0",
-        //                 "openOrderInitialMargin":"0",
-        //                 "leverage":"21",
-        //                 "isolated":false,
         //                 "entryPrice":"0.00000",
+        //                 "initialMargin":"0",
+        //                 "isolated":false,
+        //                 "leverage":"21",
+        //                 "maintMargin":"0",
         //                 "maxNotional":"5000000",
-        //                 "positionSide":"BOTH"
+        //                 "openOrderInitialMargin":"0",
+        //                 "positionInitialMargin":"0",
+        //                 "positionSide":"BOTH",
+        //                 "symbol":"BTCUSDT",
+        //                 "unrealizedProfit":"0.00000000",
         //             },
-        //         ]
+        //         ],
+        //         "totalCrossUnPnl":"0.00000000",
+        //         "totalCrossWalletBalance":"0.00000000",
+        //         "totalInitialMargin":"0.00000000",
+        //         "totalMaintMargin":"0.00000000",
+        //         "totalMarginBalance":"0.00000000",
+        //         "totalOpenOrderInitialMargin":"0.00000000",
+        //         "totalPositionInitialMargin":"0.00000000",
+        //         "totalUnrealizedProfit":"0.00000000",
+        //         "totalWalletBalance":"0.00000000",
+        //         "updateTime":0,
         //     }
         //
         //     fapiPrivateV2GetBalance
@@ -3440,10 +3461,10 @@ export default class binance extends Exchange {
         //         {
         //             "accountAlias":"FzFzXquXXqoC",
         //             "asset":"BNB",
-        //             "balance":"0.01000000",
-        //             "crossWalletBalance":"0.01000000",
-        //             "crossUnPnl":"0.00000000",
         //             "availableBalance":"0.01000000",
+        //             "balance":"0.01000000",
+        //             "crossUnPnl":"0.00000000",
+        //             "crossWalletBalance":"0.01000000",
         //             "maxWithdrawAmount":"0.01000000"
         //         }
         //     ]
@@ -3451,26 +3472,26 @@ export default class binance extends Exchange {
         // savings
         //
         //     {
+        //       "positionAmountVos": [
+        //         {
+        //           "amount": "10000",
+        //           "amountInBTC": "0.3172",
+        //           "amountInUSDT": "10000",
+        //           "asset": "USDT",
+        //         },
+        //         {
+        //           "amount": "0",
+        //           "amountInBTC": "0",
+        //           "amountInUSDT": "0",
+        //           "asset": "BUSD",
+        //         }
+        //       ],
         //       "totalAmountInBTC": "0.3172",
         //       "totalAmountInUSDT": "10000",
         //       "totalFixedAmountInBTC": "0.3172",
         //       "totalFixedAmountInUSDT": "10000",
         //       "totalFlexibleInBTC": "0",
         //       "totalFlexibleInUSDT": "0",
-        //       "positionAmountVos": [
-        //         {
-        //           "asset": "USDT",
-        //           "amount": "10000",
-        //           "amountInBTC": "0.3172",
-        //           "amountInUSDT": "10000"
-        //         },
-        //         {
-        //           "asset": "BUSD",
-        //           "amount": "0",
-        //           "amountInBTC": "0",
-        //           "amountInUSDT": "0"
-        //         }
-        //       ]
         //     }
         //
         // binance pay
@@ -3479,9 +3500,9 @@ export default class binance extends Exchange {
         //       {
         //         "asset": "BUSD",
         //         "free": "1129.83",
-        //         "locked": "0",
         //         "freeze": "0",
-        //         "withdrawing": "0"
+        //         "locked": "0",
+        //         "withdrawing": "0",
         //       }
         //     ]
         //
@@ -3490,18 +3511,18 @@ export default class binance extends Exchange {
         //     [
         //         {
         //             "asset": "USDT",
-        //             "totalWalletBalance": "66.9923261",
+        //             "cmUnrealizedPNL": "0.0",
+        //             "cmWalletBalance": "0.0",
         //             "crossMarginAsset": "35.9697141",
         //             "crossMarginBorrowed": "0.0",
         //             "crossMarginFree": "35.9697141",
         //             "crossMarginInterest": "0.0",
         //             "crossMarginLocked": "0.0",
-        //             "umWalletBalance": "31.022612",
+        //             "negativeBalance": "0.0",
+        //             "totalWalletBalance": "66.9923261",
         //             "umUnrealizedPNL": "0.0",
-        //             "cmWalletBalance": "0.0",
-        //             "cmUnrealizedPNL": "0.0",
+        //             "umWalletBalance": "31.022612",
         //             "updateTime": 0,
-        //             "negativeBalance": "0.0"
         //         },
         //     ]
         //
@@ -3544,33 +3565,33 @@ export default class binance extends Exchange {
         // future
         //
         //     {
-        //         "lastUpdateId":333598053905,
-        //         "E":1618631511986,
-        //         "T":1618631511964,
+        //         "asks":[
+        //             ["2493.57","0.877"],
+        //             ["2493.62","0.063"],
+        //             ["2493.71","12.054"],
+        //         ],
         //         "bids":[
         //             ["2493.56","20.189"],
         //             ["2493.54","1.000"],
         //             ["2493.51","0.005"]
         //         ],
-        //         "asks":[
-        //             ["2493.57","0.877"],
-        //             ["2493.62","0.063"],
-        //             ["2493.71","12.054"],
-        //         ]
+        //         "E":1618631511986,
+        //         "lastUpdateId":333598053905,
+        //         "T":1618631511964,
         //     }
         //
         // options (eapi)
         //
         //     {
-        //         "bids": [
-        //             ["108.7","16.08"],
-        //             ["106","21.29"],
-        //             ["82.4","0.02"]
-        //         ],
         //         "asks": [
         //             ["111.4","19.52"],
         //             ["119.9","17.6"],
         //             ["141.2","31"]
+        //         ],
+        //         "bids": [
+        //             ["108.7","16.08"],
+        //             ["106","21.29"],
+        //             ["82.4","0.02"]
         //         ],
         //         "T": 1676771382078,
         //         "u": 1015939
@@ -3585,27 +3606,27 @@ export default class binance extends Exchange {
     parseTicker (ticker, market: Market = undefined): Ticker {
         //
         //     {
-        //         "symbol": "ETHBTC",
-        //         "priceChange": "0.00068700",
-        //         "priceChangePercent": "2.075",
-        //         "weightedAvgPrice": "0.03342681",
-        //         "prevClosePrice": "0.03310300",
-        //         "lastPrice": "0.03378900",
-        //         "lastQty": "0.07700000",
-        //         "bidPrice": "0.03378900",
-        //         "bidQty": "7.16800000",
         //         "askPrice": "0.03379000",
         //         "askQty": "24.00000000",
-        //         "openPrice": "0.03310200",
-        //         "highPrice": "0.03388900",
-        //         "lowPrice": "0.03306900",
-        //         "volume": "205478.41000000",
-        //         "quoteVolume": "6868.48826294",
-        //         "openTime": 1601469986932,
+        //         "bidPrice": "0.03378900",
+        //         "bidQty": "7.16800000",
         //         "closeTime": 1601556386932,
+        //         "count": 87544,
         //         "firstId": 196098772,
+        //         "highPrice": "0.03388900",
         //         "lastId": 196186315,
-        //         "count": 87544
+        //         "lastPrice": "0.03378900",
+        //         "lastQty": "0.07700000",
+        //         "lowPrice": "0.03306900",
+        //         "openPrice": "0.03310200",
+        //         "openTime": 1601469986932,
+        //         "prevClosePrice": "0.03310300",
+        //         "priceChange": "0.00068700",
+        //         "priceChangePercent": "2.075",
+        //         "quoteVolume": "6868.48826294",
+        //         "symbol": "ETHBTC",
+        //         "volume": "205478.41000000",
+        //         "weightedAvgPrice": "0.03342681",
         //     }
         //
         // coinm
@@ -3627,62 +3648,62 @@ export default class binance extends Exchange {
         //         "priceChangePercent": "0.556",
         //         "symbol": "BTCUSD_PERP",
         //         "volume": "81990451",
-        //         "weightedAvgPrice": "38215.08713747"
+        //         "weightedAvgPrice": "38215.08713747",
         //     }
         //
         // eapi: fetchTicker, fetchTickers
         //
         //     {
-        //         "symbol": "ETH-230510-1825-C",
-        //         "priceChange": "-5.1",
-        //         "priceChangePercent": "-0.1854",
+        //         "amount": "201.44",
+        //         "askPrice": "22.4",
+        //         "bidPrice": "21.9",
+        //         "closeTime": 1683695017784,
+        //         "exercisePrice": "1845.95341176",
+        //         "firstTradeId": 12,
+        //         "high": "34.1",
         //         "lastPrice": "22.4",
         //         "lastQty": "0",
-        //         "open": "27.5",
-        //         "high": "34.1",
         //         "low": "22.4",
-        //         "volume": "6.83",
-        //         "amount": "201.44",
-        //         "bidPrice": "21.9",
-        //         "askPrice": "22.4",
+        //         "open": "27.5",
         //         "openTime": 1683614771898,
-        //         "closeTime": 1683695017784,
-        //         "firstTradeId": 12,
-        //         "tradeCount": 22,
+        //         "priceChange": "-5.1",
+        //         "priceChangePercent": "-0.1854",
         //         "strikePrice": "1825",
-        //         "exercisePrice": "1845.95341176"
+        //         "symbol": "ETH-230510-1825-C",
+        //         "tradeCount": 22,
+        //         "volume": "6.83",
         //     }
         //
         // spot bidsAsks
         //
         //     {
-        //         "symbol":"ETHBTC",
+        //         "askPrice":"0.07466900",
+        //         "askQty":"10.93540000",
         //         "bidPrice":"0.07466800",
         //         "bidQty":"5.31990000",
-        //         "askPrice":"0.07466900",
-        //         "askQty":"10.93540000"
+        //         "symbol":"ETHBTC",
         //     }
         //
         // usdm bidsAsks
         //
         //     {
-        //         "symbol":"BTCUSDT",
-        //         "bidPrice":"21321.90",
-        //         "bidQty":"33.592",
         //         "askPrice":"21322.00",
         //         "askQty":"1.427",
+        //         "bidPrice":"21321.90",
+        //         "bidQty":"33.592",
+        //         "symbol":"BTCUSDT",
         //         "time":"1673899207538"
         //     }
         //
         // coinm bidsAsks
         //
         //     {
-        //         "symbol":"BTCUSD_PERP",
-        //         "pair":"BTCUSD",
-        //         "bidPrice":"21301.2",
-        //         "bidQty":"188",
         //         "askPrice":"21301.3",
         //         "askQty":"10302",
+        //         "bidPrice":"21301.2",
+        //         "bidQty":"188",
+        //         "pair":"BTCUSD",
+        //         "symbol":"BTCUSD_PERP",
         //         "time":"1673899278514"
         //     }
         //
@@ -3743,8 +3764,8 @@ export default class binance extends Exchange {
         const response = await this.sapiGetSystemStatus (params);
         //
         //     {
+        //         "msg": "normal",          // "normal", "system_maintenance"
         //         "status": 0,              // 0: normal，1：system maintenance
-        //         "msg": "normal"           // "normal", "system_maintenance"
         //     }
         //
         const statusRaw = this.safeString (response, 'status');
@@ -3864,9 +3885,9 @@ export default class binance extends Exchange {
             //
             //     [
             //         {
-            //             "symbol": "LTCBTC",
             //             "price": "4.00000200"
-            //             "time": 1589437530011
+            //             "symbol": "LTCBTC",
+            //             "time": 1589437530011,
             //         },
             //         ...
             //     ]
@@ -3876,10 +3897,10 @@ export default class binance extends Exchange {
             //
             //     [
             //         {
-            //             "symbol": "BTCUSD_200626",
-            //             "ps": "9647.8",
             //             "price": "9647.8",
-            //             "time": 1591257246176
+            //             "ps": "9647.8",
+            //             "symbol": "BTCUSD_200626",
+            //             "time": 1591257246176,
             //         }
             //     ]
             //
@@ -3888,8 +3909,8 @@ export default class binance extends Exchange {
             //
             //     [
             //         {
+            //             "price": "4.00000200",
             //             "symbol": "LTCBTC",
-            //             "price": "4.00000200"
             //         },
             //         ...
             //     ]
@@ -3905,15 +3926,15 @@ export default class binance extends Exchange {
         // spot
         //
         //     {
+        //         "price": "4.00000200",
         //         "symbol": "LTCBTC",
-        //         "price": "4.00000200"
         //     }
         //
         // usdm (swap/future)
         //
         //     {
-        //         "symbol": "BTCUSDT",
         //         "price": "6000.01",
+        //         "symbol": "BTCUSDT",
         //         "time": 1589437530011   // Transaction time
         //     }
         //
@@ -3921,9 +3942,9 @@ export default class binance extends Exchange {
         // coinm (swap/future)
         //
         //     {
-        //         "symbol": "BTCUSD_200626", // symbol ("BTCUSD_200626", "BTCUSD_PERP", etc..)
-        //         "ps": "BTCUSD", // pair
         //         "price": "9647.8",
+        //         "ps": "BTCUSD", // pair
+        //         "symbol": "BTCUSD_200626", // symbol ("BTCUSD_200626", "BTCUSD_PERP", etc..)
         //         "time": 1591257246176
         //     }
         //
@@ -4015,25 +4036,25 @@ export default class binance extends Exchange {
         //         60,                     // Number of bisic data
         //         "0",                    // Ignore
         //         "0",                    // Ignore
-        //         "0"                     // Ignore
+        //         "0",                    // Ignore
         //         ]
         //     ]
         //
         // options
         //
         //     {
-        //         "open": "32.2",
-        //         "high": "32.2",
-        //         "low": "32.2",
-        //         "close": "32.2",
-        //         "volume": "0",
-        //         "interval": "5m",
-        //         "tradeCount": 0,
-        //         "takerVolume": "0",
-        //         "takerAmount": "0",
         //         "amount": "0",
+        //         "close": "32.2",
+        //         "closeTime": 1677097200000,
+        //         "high": "32.2",
+        //         "interval": "5m",
+        //         "low": "32.2",
+        //         "open": "32.2",
         //         "openTime": 1677096900000,
-        //         "closeTime": 1677097200000
+        //         "takerAmount": "0",
+        //         "takerVolume": "0",
+        //         "tradeCount": 0,
+        //         "volume": "0",
         //     }
         //
         const volumeIndex = (market['inverse']) ? 7 : 5;
@@ -4146,18 +4167,18 @@ export default class binance extends Exchange {
         //
         //     [
         //         {
-        //             "open": "32.2",
-        //             "high": "32.2",
-        //             "low": "32.2",
-        //             "close": "32.2",
-        //             "volume": "0",
-        //             "interval": "5m",
-        //             "tradeCount": 0,
-        //             "takerVolume": "0",
-        //             "takerAmount": "0",
         //             "amount": "0",
+        //             "close": "32.2",
+        //             "closeTime": 1677097200000,
+        //             "high": "32.2",
+        //             "interval": "5m",
+        //             "low": "32.2",
+        //             "open": "32.2",
         //             "openTime": 1677096900000,
-        //             "closeTime": 1677097200000
+        //             "takerAmount": "0",
+        //             "takerVolume": "0",
+        //             "tradeCount": 0,
+        //             "volume": "0",
         //         }
         //     ]
         //
@@ -4174,25 +4195,25 @@ export default class binance extends Exchange {
         //
         //     {
         //         "a": 26129,         // Aggregate tradeId
-        //         "p": "0.01633102",  // Price
-        //         "q": "4.70443515",  // Quantity
         //         "f": 27781,         // First tradeId
         //         "l": 27781,         // Last tradeId
-        //         "T": 1498793709153, // Timestamp
         //         "m": true,          // Was the buyer the maker?
-        //         "M": true           // Was the trade the best price match?
+        //         "M": true,          // Was the trade the best price match?
+        //         "p": "0.01633102",  // Price
+        //         "q": "4.70443515",  // Quantity
+        //         "T": 1498793709153, // Timestamp
         //     }
         //
         // REST: aggregate trades for swap & future (both linear and inverse)
         //
         //     {
         //         "a": "269772814",
-        //         "p": "25864.1",
-        //         "q": "3",
         //         "f": "662149354",
         //         "l": "662149355",
-        //         "T": "1694209776022",
         //         "m": false,
+        //         "p": "25864.1",
+        //         "q": "3",
+        //         "T": "1694209776022",
         //     }
         //
         // recent public trades and old public trades
@@ -4201,28 +4222,28 @@ export default class binance extends Exchange {
         //
         //     {
         //         "id": 28457,
+        //         "isBestMatch": true,
+        //         "isBuyerMaker": true,
         //         "price": "4.00000100",
         //         "qty": "12.00000000",
         //         "time": 1499865549590,
-        //         "isBuyerMaker": true,
-        //         "isBestMatch": true
         //     }
         //
         // private trades
         // https://github.com/binance-exchange/binance-official-api-docs/blob/master/rest-api.md#account-trade-list-user_data
         //
         //     {
-        //         "symbol": "BNBBTC",
+        //         "commission": "10.10000000",
+        //         "commissionAsset": "BNB",
         //         "id": 28457,
+        //         "isBestMatch": true,
+        //         "isBuyer": true,
+        //         "isMaker": false,
         //         "orderId": 100234,
         //         "price": "4.00000100",
         //         "qty": "12.00000000",
-        //         "commission": "10.10000000",
-        //         "commissionAsset": "BNB",
+        //         "symbol": "BNBBTC",
         //         "time": 1499865549590,
-        //         "isBuyer": true,
-        //         "isMaker": false,
-        //         "isBestMatch": true
         //     }
         //
         // futures trades
@@ -4243,126 +4264,126 @@ export default class binance extends Exchange {
         //       "realizedPnl": "-0.91539999",
         //       "side": "SELL",
         //       "symbol": "BTCUSDT",
-        //       "time": 1569514978020
+        //       "time": 1569514978020,
         //     }
         //     {
-        //       "symbol": "BTCUSDT",
-        //       "id": 477128891,
-        //       "orderId": 13809777875,
-        //       "side": "SELL",
-        //       "price": "38479.55",
-        //       "qty": "0.001",
-        //       "realizedPnl": "-0.00009534",
-        //       "marginAsset": "USDT",
-        //       "quoteQty": "38.47955",
+        //       "buyer": false,
         //       "commission": "-0.00076959",
         //       "commissionAsset": "USDT",
-        //       "time": 1612733566708,
-        //       "positionSide": "BOTH",
+        //       "id": 477128891,
         //       "maker": true,
-        //       "buyer": false
+        //       "marginAsset": "USDT",
+        //       "orderId": 13809777875,
+        //       "positionSide": "BOTH",
+        //       "price": "38479.55",
+        //       "qty": "0.001",
+        //       "quoteQty": "38.47955",
+        //       "realizedPnl": "-0.00009534",
+        //       "side": "SELL",
+        //       "symbol": "BTCUSDT",
+        //       "time": 1612733566708,
         //     }
         //
         // { respType: FULL }
         //
         //     {
-        //       "price": "4000.00000000",
-        //       "qty": "1.00000000",
         //       "commission": "4.00000000",
         //       "commissionAsset": "USDT",
+        //       "price": "4000.00000000",
+        //       "qty": "1.00000000",
         //       "tradeId": "1234",
         //     }
         //
         // options: fetchMyTrades
         //
         //     {
-        //         "id": 1125899906844226012,
-        //         "tradeId": 73,
-        //         "orderId": 4638761100843040768,
-        //         "symbol": "ETH-230211-1500-C",
-        //         "price": "18.70000000",
-        //         "quantity": "-0.57000000",
         //         "fee": "0.17305890",
+        //         "id": 1125899906844226012,
+        //         "liquidity": "MAKER",
+        //         "optionSide": "CALL",
+        //         "orderId": 4638761100843040768,
+        //         "price": "18.70000000",
+        //         "priceScale": 1,
+        //         "quantity": "-0.57000000",
+        //         "quantityScale": 2,
+        //         "quoteAsset": "USDT",
         //         "realizedProfit": "-3.53400000",
         //         "side": "SELL",
+        //         "symbol": "ETH-230211-1500-C",
+        //         "time": 1676085216845,
+        //         "tradeId": 73,
         //         "type": "LIMIT",
         //         "volatility": "0.30000000",
-        //         "liquidity": "MAKER",
-        //         "time": 1676085216845,
-        //         "priceScale": 1,
-        //         "quantityScale": 2,
-        //         "optionSide": "CALL",
-        //         "quoteAsset": "USDT"
         //     }
         //
         // options: fetchTrades
         //
         //     {
         //         "id": 1,
-        //         "symbol": "ETH-230216-1500-C",
         //         "price": "35.5",
         //         "qty": "0.03",
         //         "quoteQty": "1.065",
         //         "side": 1,
-        //         "time": 1676366446072
+        //         "symbol": "ETH-230216-1500-C",
+        //         "time": 1676366446072,
         //     }
         //
         // fetchMyTrades: linear portfolio margin
         //
         //     {
-        //         "symbol": "BTCUSDT",
-        //         "id": 4575108247,
-        //         "orderId": 261942655610,
-        //         "side": "SELL",
-        //         "price": "47263.40",
-        //         "qty": "0.010",
-        //         "realizedPnl": "27.38400000",
-        //         "marginAsset": "USDT",
-        //         "quoteQty": "472.63",
+        //         "buyer": false,
         //         "commission": "0.18905360",
         //         "commissionAsset": "USDT",
-        //         "time": 1707530039409,
-        //         "buyer": false,
+        //         "id": 4575108247,
         //         "maker": false,
-        //         "positionSide": "LONG"
+        //         "marginAsset": "USDT",
+        //         "orderId": 261942655610,
+        //         "positionSide": "LONG",
+        //         "price": "47263.40",
+        //         "qty": "0.010",
+        //         "quoteQty": "472.63",
+        //         "realizedPnl": "27.38400000",
+        //         "side": "SELL",
+        //         "symbol": "BTCUSDT",
+        //         "time": 1707530039409,
         //     }
         //
         // fetchMyTrades: inverse portfolio margin
         //
         //     {
-        //         "symbol": "ETHUSD_PERP",
+        //         "baseQty": "0.00400296",
+        //         "buyer": false,
+        //         "commission": "0.00000160",
+        //         "commissionAsset": "ETH",
         //         "id": 701907838,
+        //         "maker": false,
+        //         "marginAsset": "ETH",
         //         "orderId": 71548909034,
         //         "pair": "ETHUSD",
-        //         "side": "SELL",
+        //         "positionSide": "LONG",
         //         "price": "2498.15",
         //         "qty": "1",
         //         "realizedPnl": "0.00012517",
-        //         "marginAsset": "ETH",
-        //         "baseQty": "0.00400296",
-        //         "commission": "0.00000160",
-        //         "commissionAsset": "ETH",
+        //         "side": "SELL",
+        //         "symbol": "ETHUSD_PERP",
         //         "time": 1707530317519,
-        //         "positionSide": "LONG",
-        //         "buyer": false,
-        //         "maker": false
         //     }
         //
         // fetchMyTrades: spot margin portfolio margin
         //
         //     {
-        //         "symbol": "ADAUSDT",
+        //         "commission": "0.00538800",
+        //         "commissionAsset": "USDT",
         //         "id": 470227543,
+        //         "isBestMatch": true,
+        //         "isBuyer": false,
+        //         "isMaker": false,
         //         "orderId": 4421170947,
         //         "price": "0.53880000",
         //         "qty": "10.00000000",
         //         "quoteQty": "5.38800000",
-        //         "commission": "0.00538800",
-        //         "commissionAsset": "USDT",
+        //         "symbol": "ADAUSDT",
         //         "time": 1707545780522,
-        //         "isBuyer": false,
-        //         "isMaker": false,
-        //         "isBestMatch": true
         //     }
         //
         const timestamp = this.safeInteger2 (trade, 'T', 'time');
@@ -4521,13 +4542,13 @@ export default class binance extends Exchange {
         //     [
         //         {
         //             "a": 26129,         // Aggregate tradeId
-        //             "p": "0.01633102",  // Price
-        //             "q": "4.70443515",  // Quantity
         //             "f": 27781,         // First tradeId
         //             "l": 27781,         // Last tradeId
-        //             "T": 1498793709153, // Timestamp
+        //             "M": true,           // Was the trade the best price match?
         //             "m": true,          // Was the buyer the maker?
-        //             "M": true           // Was the trade the best price match?
+        //             "p": "0.01633102",  // Price
+        //             "q": "4.70443515",  // Quantity
+        //             "T": 1498793709153, // Timestamp
         //         }
         //     ]
         //
@@ -4536,12 +4557,12 @@ export default class binance extends Exchange {
         //     [
         //      {
         //         "a": "269772814",
-        //         "p": "25864.1",
-        //         "q": "3",
         //         "f": "662149354",
         //         "l": "662149355",
-        //         "T": "1694209776022",
         //         "m": false,
+        //         "p": "25864.1",
+        //         "q": "3",
+        //         "T": "1694209776022",
         //      },
         //     ]
         //
@@ -4550,11 +4571,11 @@ export default class binance extends Exchange {
         //     [
         //         {
         //             "id": 28457,
+        //             "isBestMatch": true,
+        //             "isBuyerMaker": true,
         //             "price": "4.00000100",
         //             "qty": "12.00000000",
         //             "time": 1499865549590,
-        //             "isBuyerMaker": true,
-        //             "isBestMatch": true
         //         }
         //     ]
         //
@@ -4563,12 +4584,12 @@ export default class binance extends Exchange {
         //     [
         //         {
         //             "id": 1,
-        //             "symbol": "ETH-230216-1500-C",
         //             "price": "35.5",
         //             "qty": "0.03",
         //             "quoteQty": "1.065",
         //             "side": 1,
-        //             "time": 1676366446072
+        //             "symbol": "ETH-230216-1500-C",
+        //             "time": 1676366446072,
         //         },
         //     ]
         //
@@ -4603,39 +4624,39 @@ export default class binance extends Exchange {
         // spot
         //
         //     {
-        //         "cancelResult": "SUCCESS",
-        //         "newOrderResult": "SUCCESS",
         //         "cancelResponse": {
-        //             "symbol": "BTCUSDT",
-        //             "origClientOrderId": "web_3f6286480b194b079870ac75fb6978b7",
+        //             "clientOrderId": "Azt6foVTTgHPNhqBf41TTt",
+        //             "cummulativeQuoteQty": "0.00000000",
+        //             "executedQty": "0.00000000",
         //             "orderId": 16383156620,
         //             "orderListId": -1,
-        //             "clientOrderId": "Azt6foVTTgHPNhqBf41TTt",
-        //             "price": "14000.00000000",
+        //             "origClientOrderId": "web_3f6286480b194b079870ac75fb6978b7",
         //             "origQty": "0.00110000",
-        //             "executedQty": "0.00000000",
-        //             "cummulativeQuoteQty": "0.00000000",
+        //             "price": "14000.00000000",
+        //             "side": "BUY",
         //             "status": "CANCELED",
+        //             "symbol": "BTCUSDT",
         //             "timeInForce": "GTC",
         //             "type": "LIMIT",
-        //             "side": "BUY"
         //         },
+        //         "cancelResult": "SUCCESS",
         //         "newOrderResponse": {
-        //             "symbol": "BTCUSDT",
+        //             "clientOrderId": "x-R4BD3S8222ecb58eb9074fb1be018c",
+        //             "cummulativeQuoteQty": "0.00000000",
+        //             "executedQty": "0.00000000",
+        //             "fills": [],
         //             "orderId": 16383176297,
         //             "orderListId": -1,
-        //             "clientOrderId": "x-R4BD3S8222ecb58eb9074fb1be018c",
-        //             "transactTime": 1670891847932,
-        //             "price": "13500.00000000",
         //             "origQty": "0.00085000",
-        //             "executedQty": "0.00000000",
-        //             "cummulativeQuoteQty": "0.00000000",
-        //             "status": "NEW",
-        //             "timeInForce": "GTC",
-        //             "type": "LIMIT",
+        //             "price": "13500.00000000",
         //             "side": "BUY",
-        //             "fills": []
-        //         }
+        //             "status": "NEW",
+        //             "symbol": "BTCUSDT",
+        //             "timeInForce": "GTC",
+        //             "transactTime": 1670891847932,
+        //             "type": "LIMIT",
+        //         },
+        //         "newOrderResult": "SUCCESS",
         //     }
         //
         const data = this.safeValue (response, 'newOrderResponse');
@@ -4814,27 +4835,27 @@ export default class binance extends Exchange {
         // swap and future
         //
         //     {
-        //         "orderId": 151007482392,
-        //         "symbol": "BTCUSDT",
-        //         "status": "NEW",
-        //         "clientOrderId": "web_pCCGp9AIHjziKLlpGpXI",
-        //         "price": "25000",
         //         "avgPrice": "0.00000",
-        //         "origQty": "0.001",
-        //         "executedQty": "0",
+        //         "clientOrderId": "web_pCCGp9AIHjziKLlpGpXI",
+        //         "closePosition": false,
         //         "cumQty": "0",
         //         "cumQuote": "0",
+        //         "executedQty": "0",
+        //         "orderId": 151007482392,
+        //         "origQty": "0.001",
+        //         "origType": "LIMIT",
+        //         "positionSide": "BOTH",
+        //         "price": "25000",
+        //         "priceProtect": false,
+        //         "reduceOnly": false,
+        //         "side": "BUY",
+        //         "status": "NEW",
+        //         "stopPrice": "0",
+        //         "symbol": "BTCUSDT",
         //         "timeInForce": "GTC",
         //         "type": "LIMIT",
-        //         "reduceOnly": false,
-        //         "closePosition": false,
-        //         "side": "BUY",
-        //         "positionSide": "BOTH",
-        //         "stopPrice": "0",
+        //         "updateTime": 1684300587845,
         //         "workingType": "CONTRACT_PRICE",
-        //         "priceProtect": false,
-        //         "origType": "LIMIT",
-        //         "updateTime": 1684300587845
         //     }
         //
         return this.parseOrder (response, market);
@@ -4890,167 +4911,167 @@ export default class binance extends Exchange {
         // spot
         //
         //     {
-        //         "symbol": "LTCBTC",
-        //         "orderId": 1,
         //         "clientOrderId": "myOrder1",
-        //         "price": "0.1",
-        //         "origQty": "1.0",
-        //         "executedQty": "0.0",
         //         "cummulativeQuoteQty": "0.0",
+        //         "executedQty": "0.0",
+        //         "icebergQty": "0.0",
+        //         "isWorking": true,
+        //         "orderId": 1,
+        //         "origQty": "1.0",
+        //         "price": "0.1",
+        //         "side": "BUY",
         //         "status": "NEW",
+        //         "stopPrice": "0.0",
+        //         "symbol": "LTCBTC",
+        //         "time": 1499827319559,
         //         "timeInForce": "GTC",
         //         "type": "LIMIT",
-        //         "side": "BUY",
-        //         "stopPrice": "0.0",
-        //         "icebergQty": "0.0",
-        //         "time": 1499827319559,
         //         "updateTime": 1499827319559,
-        //         "isWorking": true
         //     }
         //
         // spot: editOrder
         //
         //     {
-        //         "symbol": "BTCUSDT",
+        //         "clientOrderId": "x-R4BD3S8222ecb58eb9074fb1be018c",
+        //         "cummulativeQuoteQty": "0.00000000",
+        //         "executedQty": "0.00000000",
+        //         "fills": [],
         //         "orderId": 16383176297,
         //         "orderListId": -1,
-        //         "clientOrderId": "x-R4BD3S8222ecb58eb9074fb1be018c",
-        //         "transactTime": 1670891847932,
-        //         "price": "13500.00000000",
         //         "origQty": "0.00085000",
-        //         "executedQty": "0.00000000",
-        //         "cummulativeQuoteQty": "0.00000000",
-        //         "status": "NEW",
-        //         "timeInForce": "GTC",
-        //         "type": "LIMIT",
+        //         "price": "13500.00000000",
         //         "side": "BUY",
-        //         "fills": []
+        //         "status": "NEW",
+        //         "symbol": "BTCUSDT",
+        //         "timeInForce": "GTC",
+        //         "transactTime": 1670891847932,
+        //         "type": "LIMIT",
         //     }
         //
         // swap and future: editOrder
         //
         //     {
-        //         "orderId": 151007482392,
-        //         "symbol": "BTCUSDT",
-        //         "status": "NEW",
-        //         "clientOrderId": "web_pCCGp9AIHjziKLlpGpXI",
-        //         "price": "25000",
         //         "avgPrice": "0.00000",
-        //         "origQty": "0.001",
-        //         "executedQty": "0",
+        //         "clientOrderId": "web_pCCGp9AIHjziKLlpGpXI",
+        //         "closePosition": false,
         //         "cumQty": "0",
         //         "cumQuote": "0",
+        //         "executedQty": "0",
+        //         "orderId": 151007482392,
+        //         "origQty": "0.001",
+        //         "origType": "LIMIT",
+        //         "positionSide": "BOTH",
+        //         "price": "25000",
+        //         "priceProtect": false,
+        //         "reduceOnly": false,
+        //         "side": "BUY",
+        //         "status": "NEW",
+        //         "stopPrice": "0",
+        //         "symbol": "BTCUSDT",
         //         "timeInForce": "GTC",
         //         "type": "LIMIT",
-        //         "reduceOnly": false,
-        //         "closePosition": false,
-        //         "side": "BUY",
-        //         "positionSide": "BOTH",
-        //         "stopPrice": "0",
+        //         "updateTime": 1684300587845,
         //         "workingType": "CONTRACT_PRICE",
-        //         "priceProtect": false,
-        //         "origType": "LIMIT",
-        //         "updateTime": 1684300587845
         //     }
         //
         // futures
         //
         //     {
-        //         "symbol": "BTCUSDT",
-        //         "orderId": 1,
         //         "clientOrderId": "myOrder1",
-        //         "price": "0.1",
-        //         "origQty": "1.0",
-        //         "executedQty": "1.0",
         //         "cumQuote": "10.0",
+        //         "executedQty": "1.0",
+        //         "orderId": 1,
+        //         "origQty": "1.0",
+        //         "price": "0.1",
+        //         "side": "BUY",
         //         "status": "NEW",
+        //         "stopPrice": "0.0",
+        //         "symbol": "BTCUSDT",
         //         "timeInForce": "GTC",
         //         "type": "LIMIT",
-        //         "side": "BUY",
-        //         "stopPrice": "0.0",
         //         "updateTime": 1499827319559
         //     }
         //
         // createOrder with { "newOrderRespType": "FULL" }
         //
         //     {
-        //       "symbol": "BTCUSDT",
-        //       "orderId": 5403233939,
-        //       "orderListId": -1,
         //       "clientOrderId": "x-R4BD3S825e669e75b6c14f69a2c43e",
-        //       "transactTime": 1617151923742,
-        //       "price": "0.00000000",
-        //       "origQty": "0.00050000",
-        //       "executedQty": "0.00050000",
         //       "cummulativeQuoteQty": "29.47081500",
-        //       "status": "FILLED",
-        //       "timeInForce": "GTC",
-        //       "type": "MARKET",
-        //       "side": "BUY",
+        //       "executedQty": "0.00050000",
         //       "fills": [
         //         {
-        //           "price": "58941.63000000",
-        //           "qty": "0.00050000",
         //           "commission": "0.00007050",
         //           "commissionAsset": "BNB",
+        //           "price": "58941.63000000",
+        //           "qty": "0.00050000",
         //           "tradeId": 737466631
         //         }
-        //       ]
+        //       ],
+        //       "orderId": 5403233939,
+        //       "orderListId": -1,
+        //       "origQty": "0.00050000",
+        //       "price": "0.00000000",
+        //       "side": "BUY",
+        //       "status": "FILLED",
+        //       "symbol": "BTCUSDT",
+        //       "timeInForce": "GTC",
+        //       "transactTime": 1617151923742,
+        //       "type": "MARKET",
         //     }
         //
         // delivery
         //
         //     {
-        //       "orderId": "18742727411",
-        //       "symbol": "ETHUSD_PERP",
-        //       "pair": "ETHUSD",
-        //       "status": "FILLED",
-        //       "clientOrderId": "x-xcKtGhcu3e2d1503fdd543b3b02419",
-        //       "price": "0",
         //       "avgPrice": "4522.14",
-        //       "origQty": "1",
-        //       "executedQty": "1",
+        //       "clientOrderId": "x-xcKtGhcu3e2d1503fdd543b3b02419",
+        //       "closePosition": false,
         //       "cumBase": "0.00221134",
+        //       "executedQty": "1",
+        //       "orderId": "18742727411",
+        //       "origQty": "1",
+        //       "origType": "MARKET",
+        //       "pair": "ETHUSD",
+        //       "positionSide": "BOTH",
+        //       "price": "0",
+        //       "priceProtect": false,
+        //       "reduceOnly": false,
+        //       "side": "SELL",
+        //       "status": "FILLED",
+        //       "stopPrice": "0",
+        //       "symbol": "ETHUSD_PERP",
+        //       "time": "1636061952660",
         //       "timeInForce": "GTC",
         //       "type": "MARKET",
-        //       "reduceOnly": false,
-        //       "closePosition": false,
-        //       "side": "SELL",
-        //       "positionSide": "BOTH",
-        //       "stopPrice": "0",
-        //       "workingType": "CONTRACT_PRICE",
-        //       "priceProtect": false,
-        //       "origType": "MARKET",
-        //       "time": "1636061952660",
         //       "updateTime": "1636061952660"
+        //       "workingType": "CONTRACT_PRICE",
         //     }
         //
         // option: createOrder, fetchOrder, fetchOpenOrders, fetchOrders
         //
         //     {
-        //         "orderId": 4728833085436977152,
-        //         "symbol": "ETH-230211-1500-C",
-        //         "price": "10.0",
-        //         "quantity": "1.00",
+        //         "avgPrice": "0",
+        //         "clientOrderId": "",
+        //         "createTime": 1676083034462,
         //         "executedQty": "0.00",
         //         "fee": "0",
-        //         "side": "BUY",
-        //         "type": "LIMIT",
-        //         "timeInForce": "GTC",
-        //         "reduceOnly": false,
-        //         "postOnly": false,
-        //         "createTime": 1676083034462,
-        //         "updateTime": 1676083034462,
-        //         "status": "ACCEPTED",
-        //         "avgPrice": "0",
-        //         "source": "API",
-        //         "clientOrderId": "",
-        //         "priceScale": 1,
-        //         "quantityScale": 2,
-        //         "optionSide": "CALL",
-        //         "quoteAsset": "USDT",
         //         "lastTrade": {"id":"69","time":"1676084430567","price":"24.9","qty":"1.00"},
-        //         "mmp": false
+        //         "mmp": false,
+        //         "optionSide": "CALL",
+        //         "orderId": 4728833085436977152,
+        //         "postOnly": false,
+        //         "price": "10.0",
+        //         "priceScale": 1,
+        //         "quantity": "1.00",
+        //         "quantityScale": 2,
+        //         "quoteAsset": "USDT",
+        //         "reduceOnly": false,
+        //         "side": "BUY",
+        //         "source": "API",
+        //         "status": "ACCEPTED",
+        //         "symbol": "ETH-230211-1500-C",
+        //         "timeInForce": "GTC",
+        //         "type": "LIMIT",
+        //         "updateTime": 1676083034462,
         //     }
         //
         // cancelOrders/createOrders
@@ -5063,90 +5084,90 @@ export default class binance extends Exchange {
         // createOrder, fetchOpenOrders, fetchOrder, cancelOrder: portfolio margin linear swap and future
         //
         //     {
-        //         "symbol": "BTCUSDT",
-        //         "side": "BUY",
-        //         "executedQty": "0.000",
-        //         "orderId": 258649539704,
-        //         "goodTillDate": 0,
         //         "avgPrice": "0",
-        //         "origQty": "0.010",
         //         "clientOrderId": "x-xcKtGhcu02573c6f15e544e990057b",
-        //         "positionSide": "BOTH",
         //         "cumQty": "0.000",
-        //         "updateTime": 1707110415436,
-        //         "type": "LIMIT",
-        //         "reduceOnly": false,
-        //         "price": "35000.00",
         //         "cumQuote": "0.00000",
+        //         "executedQty": "0.000",
+        //         "goodTillDate": 0,
+        //         "orderId": 258649539704,
+        //         "origQty": "0.010",
+        //         "positionSide": "BOTH",
+        //         "price": "35000.00",
+        //         "reduceOnly": false,
         //         "selfTradePreventionMode": "NONE",
-        //         "timeInForce": "GTC",
+        //         "side": "BUY",
         //         "status": "NEW"
+        //         "symbol": "BTCUSDT",
+        //         "timeInForce": "GTC",
+        //         "type": "LIMIT",
+        //         "updateTime": 1707110415436,
         //     }
         //
         // createOrder, fetchOpenOrders, fetchOrder, cancelOrder: portfolio margin inverse swap and future
         //
         //     {
-        //         "symbol": "ETHUSD_PERP",
-        //         "side": "BUY",
+        //         "avgPrice": "0.00",
+        //         "clientOrderId": "x-xcKtGhcuca5af3acfb5044198c5398",
         //         "cumBase": "0",
+        //         "cumQty": "0",
         //         "executedQty": "0",
         //         "orderId": 71275227732,
-        //         "avgPrice": "0.00",
         //         "origQty": "1",
-        //         "clientOrderId": "x-xcKtGhcuca5af3acfb5044198c5398",
-        //         "positionSide": "BOTH",
-        //         "cumQty": "0",
-        //         "updateTime": 1707110994334,
-        //         "type": "LIMIT",
         //         "pair": "ETHUSD",
-        //         "reduceOnly": false,
+        //         "positionSide": "BOTH",
         //         "price": "2000",
-        //         "timeInForce": "GTC",
+        //         "reduceOnly": false,
+        //         "side": "BUY",
         //         "status": "NEW"
+        //         "symbol": "ETHUSD_PERP",
+        //         "timeInForce": "GTC",
+        //         "type": "LIMIT",
+        //         "updateTime": 1707110994334,
         //     }
         //
         // createOrder, fetchOpenOrders: portfolio margin linear swap and future conditional
         //
         //     {
+        //         "bookTime": 1707112625879,
+        //         "goodTillDate": 0,
         //         "newClientStrategyId": "x-xcKtGhcu27f109953d6e4dc0974006",
+        //         "origQty": "0.010",
+        //         "positionSide": "BOTH",
+        //         "price": "35000.00",
+        //         "priceProtect": false,
+        //         "reduceOnly": false,
+        //         "selfTradePreventionMode": "NONE"
+        //         "side": "BUY",
+        //         "stopPrice": "45000.00",
         //         "strategyId": 3645916,
         //         "strategyStatus": "NEW",
         //         "strategyType": "STOP",
-        //         "origQty": "0.010",
-        //         "price": "35000.00",
-        //         "reduceOnly": false,
-        //         "side": "BUY",
-        //         "positionSide": "BOTH",
-        //         "stopPrice": "45000.00",
         //         "symbol": "BTCUSDT",
         //         "timeInForce": "GTC",
-        //         "bookTime": 1707112625879,
         //         "updateTime": 1707112625879,
         //         "workingType": "CONTRACT_PRICE",
-        //         "priceProtect": false,
-        //         "goodTillDate": 0,
-        //         "selfTradePreventionMode": "NONE"
         //     }
         //
         // createOrder, fetchOpenOrders: portfolio margin inverse swap and future conditional
         //
         //     {
+        //         "bookTime": 1707113098840,
         //         "newClientStrategyId": "x-xcKtGhcuc6b86f053bb34933850739",
+        //         "origQty": "1",
+        //         "positionSide": "BOTH",
+        //         "price": "2000",
+        //         "priceProtect": false
+        //         "reduceOnly": false,
+        //         "side": "BUY",
+        //         "stopPrice": "3000",
         //         "strategyId": 1423462,
         //         "strategyStatus": "NEW",
         //         "strategyType": "STOP",
-        //         "origQty": "1",
-        //         "price": "2000",
-        //         "reduceOnly": false,
-        //         "side": "BUY",
-        //         "positionSide": "BOTH",
-        //         "stopPrice": "3000",
         //         "symbol": "ETHUSD_PERP",
         //         "timeInForce": "GTC",
-        //         "bookTime": 1707113098840,
         //         "updateTime": 1707113098840,
         //         "workingType": "CONTRACT_PRICE",
-        //         "priceProtect": false
         //     }
         //
         // createOrder, cancelAllOrders, cancelOrder: portfolio margin spot margin
@@ -5171,51 +5192,51 @@ export default class binance extends Exchange {
         // fetchOpenOrders, fetchOrder: portfolio margin spot margin
         //
         //     {
-        //         "symbol": "BTCUSDT",
-        //         "orderId": 24700763749,
-        //         "clientOrderId": "x-R4BD3S826f724c2a4af6425f98c7b6",
-        //         "price": "35000.00000000",
-        //         "origQty": "0.00100000",
-        //         "executedQty": "0.00000000",
-        //         "cummulativeQuoteQty": "0.00000000",
-        //         "status": "NEW",
-        //         "timeInForce": "GTC",
-        //         "type": "LIMIT",
-        //         "side": "BUY",
-        //         "stopPrice": "0.00000000",
-        //         "icebergQty": "0.00000000",
-        //         "time": 1707199187679,
-        //         "updateTime": 1707199187679,
-        //         "isWorking": true,
         //         "accountId": 200180970,
-        //         "selfTradePreventionMode": "EXPIRE_MAKER",
+        //         "clientOrderId": "x-R4BD3S826f724c2a4af6425f98c7b6",
+        //         "cummulativeQuoteQty": "0.00000000",
+        //         "executedQty": "0.00000000",
+        //         "icebergQty": "0.00000000",
+        //         "isWorking": true,
+        //         "orderId": 24700763749,
+        //         "origQty": "0.00100000",
         //         "preventedMatchId": null,
         //         "preventedQuantity": null
+        //         "price": "35000.00000000",
+        //         "selfTradePreventionMode": "EXPIRE_MAKER",
+        //         "side": "BUY",
+        //         "status": "NEW",
+        //         "stopPrice": "0.00000000",
+        //         "symbol": "BTCUSDT",
+        //         "time": 1707199187679,
+        //         "timeInForce": "GTC",
+        //         "type": "LIMIT",
+        //         "updateTime": 1707199187679,
         //     }
         //
         // cancelOrder: portfolio margin linear and inverse swap conditional
         //
         //     {
-        //         "strategyId": 3733211,
+        //         "activatePrice": null,  // only return with trailing orders
+        //         "bookTime": 1707270098774,
+        //         "goodTillDate": 0,
         //         "newClientStrategyId": "x-xcKtGhcuaf166172ed504cd1bc0396",
-        //         "strategyType": "STOP",
-        //         "strategyStatus": "CANCELED",
         //         "origQty": "0.010",
-        //         "price": "35000.00",
-        //         "reduceOnly": false,
-        //         "side": "BUY",
         //         "positionSide": "BOTH",
+        //         "price": "35000.00",
+        //         "priceProtect": false,
+        //         "priceRate": null,      // only return with trailing orders
+        //         "reduceOnly": false,
+        //         "selfTradePreventionMode": "NONE",
+        //         "side": "BUY",
         //         "stopPrice": "50000.00", // ignored with trailing orders
+        //         "strategyId": 3733211,
+        //         "strategyStatus": "CANCELED",
+        //         "strategyType": "STOP",
         //         "symbol": "BTCUSDT",
         //         "timeInForce": "GTC",
-        //         "activatePrice": null,  // only return with trailing orders
-        //         "priceRate": null,      // only return with trailing orders
-        //         "bookTime": 1707270098774,
         //         "updateTime": 1707270119261,
         //         "workingType": "CONTRACT_PRICE",
-        //         "priceProtect": false,
-        //         "goodTillDate": 0,
-        //         "selfTradePreventionMode": "NONE"
         //     }
         //
         const code = this.safeString (order, 'code');
@@ -5929,22 +5950,22 @@ export default class binance extends Exchange {
         //
         //     [
         //         {
-        //             "symbol": "LTCBTC",
-        //             "orderId": 1,
         //             "clientOrderId": "myOrder1",
-        //             "price": "0.1",
-        //             "origQty": "1.0",
-        //             "executedQty": "0.0",
         //             "cummulativeQuoteQty": "0.0",
+        //             "executedQty": "0.0",
+        //             "icebergQty": "0.0",
+        //             "isWorking": true,
+        //             "orderId": 1,
+        //             "origQty": "1.0",
+        //             "price": "0.1",
+        //             "side": "BUY",
         //             "status": "NEW",
+        //             "stopPrice": "0.0",
+        //             "symbol": "LTCBTC",
+        //             "time": 1499827319559,
         //             "timeInForce": "GTC",
         //             "type": "LIMIT",
-        //             "side": "BUY",
-        //             "stopPrice": "0.0",
-        //             "icebergQty": "0.0",
-        //             "time": 1499827319559,
         //             "updateTime": 1499827319559,
-        //             "isWorking": true
         //         }
         //     ]
         //
@@ -5952,18 +5973,18 @@ export default class binance extends Exchange {
         //
         //     [
         //         {
-        //             "symbol": "BTCUSDT",
-        //             "orderId": 1,
         //             "clientOrderId": "myOrder1",
-        //             "price": "0.1",
-        //             "origQty": "1.0",
-        //             "executedQty": "1.0",
         //             "cumQuote": "10.0",
+        //             "executedQty": "1.0",
+        //             "orderId": 1,
+        //             "origQty": "1.0",
+        //             "price": "0.1",
+        //             "side": "BUY",
         //             "status": "NEW",
+        //             "stopPrice": "0.0",
+        //             "symbol": "BTCUSDT",
         //             "timeInForce": "GTC",
         //             "type": "LIMIT",
-        //             "side": "BUY",
-        //             "stopPrice": "0.0",
         //             "updateTime": 1499827319559
         //         }
         //     ]
@@ -5972,29 +5993,29 @@ export default class binance extends Exchange {
         //
         //     [
         //         {
-        //             "orderId": 4728833085436977152,
-        //             "symbol": "ETH-230211-1500-C",
-        //             "price": "10.0",
-        //             "quantity": "1.00",
+        //             "avgPrice": "0",
+        //             "clientOrderId": "",
+        //             "createTime": 1676083034462,
         //             "executedQty": "0.00",
         //             "fee": "0",
-        //             "side": "BUY",
-        //             "type": "LIMIT",
-        //             "timeInForce": "GTC",
-        //             "reduceOnly": false,
-        //             "postOnly": false,
-        //             "createTime": 1676083034462,
-        //             "updateTime": 1676083034462,
-        //             "status": "ACCEPTED",
-        //             "avgPrice": "0",
-        //             "source": "API",
-        //             "clientOrderId": "",
-        //             "priceScale": 1,
-        //             "quantityScale": 2,
-        //             "optionSide": "CALL",
-        //             "quoteAsset": "USDT",
         //             "lastTrade": {"id":"69","time":"1676084430567","price":"24.9","qty":"1.00"},
-        //             "mmp": false
+        //             "mmp": false,
+        //             "optionSide": "CALL",
+        //             "orderId": 4728833085436977152,
+        //             "postOnly": false,
+        //             "price": "10.0",
+        //             "priceScale": 1,
+        //             "quantity": "1.00",
+        //             "quantityScale": 2,
+        //             "quoteAsset": "USDT",
+        //             "reduceOnly": false,
+        //             "side": "BUY",
+        //             "source": "API",
+        //             "status": "ACCEPTED",
+        //             "symbol": "ETH-230211-1500-C",
+        //             "timeInForce": "GTC",
+        //             "type": "LIMIT",
+        //             "updateTime": 1676083034462,
         //         }
         //     ]
         //
@@ -6363,31 +6384,31 @@ export default class binance extends Exchange {
         //
         //    [
         //        {
+        //            "activatePrice": "9020",              // activation price, only return with TRAILING_STOP_MARKET order
         //            "clientOrderId": "myOrder1",
+        //            "closePosition": false,               // if Close-All
         //            "cumQty": "0",
         //            "cumQuote": "0",
         //            "executedQty": "0",
+        //            "goodTillDate": 0                     // order pre-set auot cancel time for TIF GTD order
         //            "orderId": 283194212,
         //            "origQty": "11",
         //            "origType": "TRAILING_STOP_MARKET",
-        //            "price": "0",
-        //            "reduceOnly": false,
-        //            "side": "BUY",
         //            "positionSide": "SHORT",
+        //            "price": "0",
+        //            "priceMatch": "NONE",                 // price match mode
+        //            "priceProtect": false,                // if conditional order trigger is protected
+        //            "priceRate": "0.3",                   // callback rate, only return with TRAILING_STOP_MARKET order
+        //            "reduceOnly": false,
+        //            "selfTradePreventionMode": "NONE",    // self trading preventation mode
+        //            "side": "BUY",
         //            "status": "CANCELED",
         //            "stopPrice": "9300",                  // please ignore when order type is TRAILING_STOP_MARKET
-        //            "closePosition": false,               // if Close-All
         //            "symbol": "BTCUSDT",
         //            "timeInForce": "GTC",
         //            "type": "TRAILING_STOP_MARKET",
-        //            "activatePrice": "9020",              // activation price, only return with TRAILING_STOP_MARKET order
-        //            "priceRate": "0.3",                   // callback rate, only return with TRAILING_STOP_MARKET order
         //            "updateTime": 1571110484038,
         //            "workingType": "CONTRACT_PRICE",
-        //            "priceProtect": false,                // if conditional order trigger is protected
-        //            "priceMatch": "NONE",                 // price match mode
-        //            "selfTradePreventionMode": "NONE",    // self trading preventation mode
-        //            "goodTillDate": 0                     // order pre-set auot cancel time for TIF GTD order
         //        },
         //        {
         //            "code": -2011,
@@ -6533,17 +6554,17 @@ export default class binance extends Exchange {
         //
         //     [
         //         {
-        //             "symbol": "BNBBTC",
+        //             "commission": "10.10000000",
+        //             "commissionAsset": "BNB",
         //             "id": 28457,
+        //             "isBestMatch": true,
+        //             "isBuyer": true,
+        //             "isMaker": false,
         //             "orderId": 100234,
         //             "price": "4.00000100",
         //             "qty": "12.00000000",
-        //             "commission": "10.10000000",
-        //             "commissionAsset": "BNB",
+        //             "symbol": "BNBBTC",
         //             "time": 1499865549590,
-        //             "isBuyer": true,
-        //             "isMaker": false,
-        //             "isBestMatch": true,
         //         }
         //     ]
         //
@@ -6573,23 +6594,23 @@ export default class binance extends Exchange {
         //
         //     [
         //         {
-        //             "id": 1125899906844226012,
-        //             "tradeId": 73,
-        //             "orderId": 4638761100843040768,
-        //             "symbol": "ETH-230211-1500-C",
-        //             "price": "18.70000000",
-        //             "quantity": "-0.57000000",
         //             "fee": "0.17305890",
+        //             "id": 1125899906844226012,
+        //             "liquidity": "MAKER",
+        //             "optionSide": "CALL",
+        //             "orderId": 4638761100843040768,
+        //             "price": "18.70000000",
+        //             "priceScale": 1,
+        //             "quantity": "-0.57000000",
+        //             "quantityScale": 2,
+        //             "quoteAsset": "USDT"
         //             "realizedProfit": "-3.53400000",
         //             "side": "SELL",
+        //             "symbol": "ETH-230211-1500-C",
+        //             "time": 1676085216845,
+        //             "tradeId": 73,
         //             "type": "LIMIT",
         //             "volatility": "0.30000000",
-        //             "liquidity": "MAKER",
-        //             "time": 1676085216845,
-        //             "priceScale": 1,
-        //             "quantityScale": 2,
-        //             "optionSide": "CALL",
-        //             "quoteAsset": "USDT"
         //         }
         //     ]
         //
@@ -6597,21 +6618,21 @@ export default class binance extends Exchange {
         //
         //     [
         //         {
-        //             "symbol": "BTCUSDT",
-        //             "id": 4575108247,
-        //             "orderId": 261942655610,
-        //             "side": "SELL",
-        //             "price": "47263.40",
-        //             "qty": "0.010",
-        //             "realizedPnl": "27.38400000",
-        //             "marginAsset": "USDT",
-        //             "quoteQty": "472.63",
+        //             "buyer": false,
         //             "commission": "0.18905360",
         //             "commissionAsset": "USDT",
-        //             "time": 1707530039409,
-        //             "buyer": false,
+        //             "id": 4575108247,
         //             "maker": false,
-        //             "positionSide": "LONG"
+        //             "marginAsset": "USDT",
+        //             "orderId": 261942655610,
+        //             "positionSide": "LONG",
+        //             "price": "47263.40",
+        //             "qty": "0.010",
+        //             "quoteQty": "472.63",
+        //             "realizedPnl": "27.38400000",
+        //             "side": "SELL",
+        //             "symbol": "BTCUSDT",
+        //             "time": 1707530039409,
         //         }
         //     ]
         //
@@ -6619,22 +6640,22 @@ export default class binance extends Exchange {
         //
         //     [
         //         {
-        //             "symbol": "ETHUSD_PERP",
+        //             "baseQty": "0.00400296",
+        //             "buyer": false,
+        //             "commission": "0.00000160",
+        //             "commissionAsset": "ETH",
         //             "id": 701907838,
+        //             "maker": false,
+        //             "marginAsset": "ETH",
         //             "orderId": 71548909034,
         //             "pair": "ETHUSD",
-        //             "side": "SELL",
+        //             "positionSide": "LONG",
         //             "price": "2498.15",
         //             "qty": "1",
         //             "realizedPnl": "0.00012517",
-        //             "marginAsset": "ETH",
-        //             "baseQty": "0.00400296",
-        //             "commission": "0.00000160",
-        //             "commissionAsset": "ETH",
+        //             "side": "SELL",
+        //             "symbol": "ETHUSD_PERP",
         //             "time": 1707530317519,
-        //             "positionSide": "LONG",
-        //             "buyer": false,
-        //             "maker": false
         //         }
         //     ]
         //
@@ -6642,18 +6663,18 @@ export default class binance extends Exchange {
         //
         //     [
         //         {
-        //             "symbol": "ADAUSDT",
+        //             "commission": "0.00538800",
+        //             "commissionAsset": "USDT",
         //             "id": 470227543,
+        //             "isBestMatch": true,
+        //             "isBuyer": false,
+        //             "isMaker": false,
         //             "orderId": 4421170947,
         //             "price": "0.53880000",
         //             "qty": "10.00000000",
         //             "quoteQty": "5.38800000",
-        //             "commission": "0.00538800",
-        //             "commissionAsset": "USDT",
+        //             "symbol": "ADAUSDT",
         //             "time": 1707545780522,
-        //             "isBuyer": false,
-        //             "isMaker": false,
-        //             "isBestMatch": true
         //         }
         //     ]
         //
@@ -6701,19 +6722,19 @@ export default class binance extends Exchange {
         //           "transId": "70899815863",
         //           "userAssetDribbletDetails": [
         //             {
-        //               "fromAsset": "LTC",
         //               "amount": "0.000006",
-        //               "transferedAmount": "0.00000267",
-        //               "serviceChargeAmount": "0.00000005",
+        //               "fromAsset": "LTC",
         //               "operateTime": "1627575731000",
+        //               "serviceChargeAmount": "0.00000005",
+        //               "transferedAmount": "0.00000267",
         //               "transId": "70899815863"
         //             },
         //             {
-        //               "fromAsset": "GBP",
         //               "amount": "0.15949157",
-        //               "transferedAmount": "0.00072426",
-        //               "serviceChargeAmount": "0.00001448",
+        //               "fromAsset": "GBP",
         //               "operateTime": "1627575731000",
+        //               "serviceChargeAmount": "0.00001448",
+        //               "transferedAmount": "0.00072426",
         //               "transId": "70899815863"
         //             }
         //           ]
@@ -6737,13 +6758,13 @@ export default class binance extends Exchange {
     parseDustTrade (trade, market: Market = undefined) {
         //
         //     {
-        //       "fromAsset": "USDT",
         //       "amount": "0.009669",
-        //       "transferedAmount": "0.00002992",
-        //       "serviceChargeAmount": "0.00000059",
+        //       "fromAsset": "USDT",
+        //       "isDustTrade": true,
         //       "operateTime": "1628076010000",
+        //       "serviceChargeAmount": "0.00000059",
+        //       "transferedAmount": "0.00002992",
         //       "transId": "71416578712",
-        //       "isDustTrade": true
         //     }
         //
         const orderId = this.safeString (trade, 'transId');
@@ -6852,7 +6873,6 @@ export default class binance extends Exchange {
             response = this.safeValue (raw, 'data');
             //     {
             //       "code": "000000",
-            //       "message": "success",
             //       "data": [
             //         {
             //           "orderNo": "25ced37075c1470ba8939d0df2316e23",
@@ -6866,6 +6886,7 @@ export default class binance extends Exchange {
             //           "updateTime": 1627501027000
             //         }
             //       ],
+            //       "message": "success",
             //       "total": 1,
             //       "success": true
             //     }
@@ -6967,7 +6988,6 @@ export default class binance extends Exchange {
             response = this.safeValue (raw, 'data');
             //     {
             //       "code": "000000",
-            //       "message": "success",
             //       "data": [
             //         {
             //           "amount": "100.00",
@@ -6992,6 +7012,7 @@ export default class binance extends Exchange {
             //           "updateTime": 1619998823000
             //         }
             //       ],
+            //       "message": "success",
             //       "total": 39,
             //       "success": true
             //     }
@@ -7036,16 +7057,16 @@ export default class binance extends Exchange {
             //         "txId": "0x77fbf2cf2c85b552f0fd31fd2e56dc95c08adae031d96f3717d8b17e1aea3e46",
             //       },
             //       {
-            //         "id": "a7cdc0afbfa44a48bd225c9ece958fe2",
-            //         "amount": "51",
-            //         "transactionFee": "1",
-            //         "coin": "USDT",
-            //         "status": 6,
             //         "address": "TYDmtuWL8bsyjvcauUTerpfYyVhFtBjqyo",
-            //         "txId": "168a75112bce6ceb4823c66726ad47620ad332e69fe92d9cb8ceb76023f9a028",
+            //         "amount": "51",
             //         "applyTime": "2021-04-13 12:46:59",
+            //         "coin": "USDT",
+            //         "id": "a7cdc0afbfa44a48bd225c9ece958fe2",
             //         "network": "TRX",
-            //         "transferType": 0
+            //         "status": 6,
+            //         "transactionFee": "1",
+            //         "transferType": 0,
+            //         "txId": "168a75112bce6ceb4823c66726ad47620ad332e69fe92d9cb8ceb76023f9a028",
             //       }
             //     ]
         }
@@ -7097,59 +7118,59 @@ export default class binance extends Exchange {
         // fetchDeposits
         //
         //     {
-        //       "amount": "4500",
-        //       "coin": "USDT",
-        //       "network": "BSC",
-        //       "status": 1,
         //       "address": "0xc9c923c87347ca0f3451d6d308ce84f691b9f501",
         //       "addressTag": "",
-        //       "txId": "Internal transfer 51376627901",
-        //       "insertTime": 1618394381000,
-        //       "transferType": 1,
+        //       "amount": "4500",
+        //       "coin": "USDT",
         //       "confirmTimes": "1/15"
+        //       "insertTime": 1618394381000,
+        //       "network": "BSC",
+        //       "status": 1,
+        //       "transferType": 1,
+        //       "txId": "Internal transfer 51376627901",
         //     }
         //
         // fetchWithdrawals
         //
         //     {
-        //       "id": "69e53ad305124b96b43668ceab158a18",
-        //       "amount": "28.75",
-        //       "transactionFee": "0.25",
-        //       "coin": "XRP",
-        //       "status": 6,
         //       "address": "r3T75fuLjX51mmfb5Sk1kMNuhBgBPJsjza",
         //       "addressTag": "101286922",
-        //       "txId": "19A5B24ED0B697E4F0E9CD09FCB007170A605BC93C9280B9E6379C5E6EF0F65A",
+        //       "amount": "28.75",
         //       "applyTime": "2021-04-15 12:09:16",
+        //       "coin": "XRP",
+        //       "id": "69e53ad305124b96b43668ceab158a18",
         //       "network": "XRP",
-        //       "transferType": 0
+        //       "status": 6,
+        //       "transactionFee": "0.25",
+        //       "transferType": 0,
+        //       "txId": "19A5B24ED0B697E4F0E9CD09FCB007170A605BC93C9280B9E6379C5E6EF0F65A",
         //     }
         //
         // fiat transaction
         // withdraw
         //     {
-        //       "orderNo": "CJW684897551397171200",
+        //       "amount": "28.49",
+        //       "createTime": 1614898701000,
         //       "fiatCurrency": "GBP",
         //       "indicatedAmount": "29.99",
-        //       "amount": "28.49",
-        //       "totalFee": "1.50",
         //       "method": "bank transfer",
+        //       "orderNo": "CJW684897551397171200",
         //       "status": "Successful",
-        //       "createTime": 1614898701000,
+        //       "totalFee": "1.50",
         //       "updateTime": 1614898820000
         //     }
         //
         // deposit
         //     {
-        //       "orderNo": "25ced37075c1470ba8939d0df2316e23",
-        //       "fiatCurrency": "EUR",
-        //       "transactionType": 0,
-        //       "indicatedAmount": "15.00",
         //       "amount": "15.00",
-        //       "totalFee": "0.00",
-        //       "method": "card",
-        //       "status": "Failed",
         //       "createTime": "1627501026000",
+        //       "fiatCurrency": "EUR",
+        //       "indicatedAmount": "15.00",
+        //       "method": "card",
+        //       "orderNo": "25ced37075c1470ba8939d0df2316e23",
+        //       "status": "Failed",
+        //       "totalFee": "0.00",
+        //       "transactionType": 0,
         //       "updateTime": "1627501027000"
         //     }
         //
@@ -7241,12 +7262,12 @@ export default class binance extends Exchange {
         // fetchTransfers
         //
         //     {
-        //         "timestamp": 1614640878000,
-        //         "asset": "USDT",
         //         "amount": "25",
-        //         "type": "MAIN_UMFUTURE",
+        //         "asset": "USDT",
         //         "status": "CONFIRMED",
+        //         "timestamp": 1614640878000,
         //         "tranId": 43000126248
+        //         "type": "MAIN_UMFUTURE",
         //     }
         //
         const id = this.safeString (transfer, 'tranId');
@@ -7282,14 +7303,14 @@ export default class binance extends Exchange {
     parseIncome (income, market: Market = undefined) {
         //
         //     {
-        //       "symbol": "ETHUSDT",
-        //       "incomeType": "FUNDING_FEE",
-        //       "income": "0.00134317",
         //       "asset": "USDT",
-        //       "time": "1621584000000",
+        //       "income": "0.00134317",
+        //       "incomeType": "FUNDING_FEE",
         //       "info": "FUNDING_FEE",
-        //       "tranId": "4480321991774044580",
+        //       "symbol": "ETHUSDT",
+        //       "time": "1621584000000",
         //       "tradeId": ""
+        //       "tranId": "4480321991774044580",
         //     }
         //
         const marketId = this.safeString (income, 'symbol');
@@ -7469,17 +7490,17 @@ export default class binance extends Exchange {
         const response = await this.sapiGetAssetTransfer (this.extend (request, params));
         //
         //     {
-        //         "total": 3,
         //         "rows": [
         //             {
-        //                 "timestamp": 1614640878000,
-        //                 "asset": "USDT",
         //                 "amount": "25",
-        //                 "type": "MAIN_UMFUTURE",
+        //                 "asset": "USDT",
         //                 "status": "CONFIRMED",
+        //                 "timestamp": 1614640878000,
         //                 "tranId": 43000126248
+        //                 "type": "MAIN_UMFUTURE",
         //             },
-        //         ]
+        //         ],
+        //         "total": 3,
         //     }
         //
         const rows = this.safeList (response, 'rows', []);
@@ -7514,15 +7535,15 @@ export default class binance extends Exchange {
         const response = await this.sapiGetCapitalDepositAddress (this.extend (request, params));
         //
         //     {
-        //         "currency": "XRP",
         //         "address": "rEb8TK3gBgk5auZkwc6sHnwrGVJH8DuaLh",
-        //         "tag": "108618262",
+        //         "currency": "XRP",
         //         "info": {
-        //             "coin": "XRP",
         //             "address": "rEb8TK3gBgk5auZkwc6sHnwrGVJH8DuaLh",
+        //             "coin": "XRP",
         //             "tag": "108618262",
         //             "url": "https://bithomp.com/explorer/rEb8TK3gBgk5auZkwc6sHnwrGVJH8DuaLh"
-        //         }
+        //         },
+        //         "tag": "108618262",
         //     }
         //
         const address = this.safeString (response, 'address');
@@ -7554,11 +7575,11 @@ export default class binance extends Exchange {
         }
         this.checkAddress (address);
         return {
-            'currency': code,
             'address': address,
-            'tag': tag,
-            'network': impliedNetwork,
+            'currency': code,
             'info': response,
+            'network': impliedNetwork,
+            'tag': tag,
         };
     }
 
@@ -7580,79 +7601,79 @@ export default class binance extends Exchange {
         //     {
         //       "coin": "BAT",
         //       "depositAllEnable": true,
-        //       "withdrawAllEnable": true,
-        //       "name": "Basic Attention Token",
         //       "free": "0",
-        //       "locked": "0",
         //       "freeze": "0",
-        //       "withdrawing": "0",
-        //       "ipoing": "0",
         //       "ipoable": "0",
-        //       "storage": "0",
+        //       "ipoing": "0",
         //       "isLegalMoney": false,
-        //       "trading": true,
+        //       "locked": "0",
+        //       "name": "Basic Attention Token",
         //       "networkList": [
         //         {
-        //           "network": "BNB",
-        //           "coin": "BAT",
-        //           "withdrawIntegerMultiple": "0.00000001",
-        //           "isDefault": false,
-        //           "depositEnable": true,
-        //           "withdrawEnable": true,
-        //           "depositDesc": '',
-        //           "withdrawDesc": '',
-        //           "specialTips": "The name of this asset is Basic Attention Token (BAT). Both a MEMO and an Address are required to successfully deposit your BEP2 tokens to Binance.",
-        //           "name": "BEP2",
-        //           "resetAddressStatus": false,
         //           "addressRegex": "^(bnb1)[0-9a-z]{38}$",
-        //           "memoRegex": "^[0-9A-Za-z\\-_]{1,120}$",
-        //           "withdrawFee": "0.27",
-        //           "withdrawMin": "0.54",
-        //           "withdrawMax": "10000000000",
-        //           "minConfirm": "1",
-        //           "unLockConfirm": "0"
-        //         },
-        //         {
-        //           "network": "BSC",
         //           "coin": "BAT",
-        //           "withdrawIntegerMultiple": "0.00000001",
+        //           "depositDesc": '',
+        //           "depositEnable": true,
         //           "isDefault": false,
-        //           "depositEnable": true,
-        //           "withdrawEnable": true,
-        //           "depositDesc": '',
-        //           "withdrawDesc": '',
-        //           "specialTips": "The name of this asset is Basic Attention Token. Please ensure you are depositing Basic Attention Token (BAT) tokens under the contract address ending in 9766e.",
-        //           "name": "BEP20 (BSC)",
+        //           "memoRegex": "^[0-9A-Za-z\\-_]{1,120}$",
+        //           "minConfirm": "1",
+        //           "name": "BEP2",
+        //           "network": "BNB",
         //           "resetAddressStatus": false,
-        //           "addressRegex": "^(0x)[0-9A-Fa-f]{40}$",
-        //           "memoRegex": '',
-        //           "withdrawFee": "0.27",
-        //           "withdrawMin": "0.54",
-        //           "withdrawMax": "10000000000",
-        //           "minConfirm": "15",
+        //           "specialTips": "The name of this asset is Basic Attention Token (BAT). Both a MEMO and an Address are required to successfully deposit your BEP2 tokens to Binance.",
         //           "unLockConfirm": "0"
+        //           "withdrawDesc": '',
+        //           "withdrawEnable": true,
+        //           "withdrawFee": "0.27",
+        //           "withdrawIntegerMultiple": "0.00000001",
+        //           "withdrawMax": "10000000000",
+        //           "withdrawMin": "0.54",
         //         },
         //         {
-        //           "network": "ETH",
-        //           "coin": "BAT",
-        //           "withdrawIntegerMultiple": "0.00000001",
-        //           "isDefault": true,
-        //           "depositEnable": true,
-        //           "withdrawEnable": true,
-        //           "depositDesc": '',
-        //           "withdrawDesc": '',
-        //           "specialTips": "The name of this asset is Basic Attention Token. Please ensure you are depositing Basic Attention Token (BAT) tokens under the contract address ending in 887ef.",
-        //           "name": "ERC20",
-        //           "resetAddressStatus": false,
         //           "addressRegex": "^(0x)[0-9A-Fa-f]{40}$",
+        //           "coin": "BAT",
+        //           "depositDesc": '',
+        //           "depositEnable": true,
+        //           "isDefault": false,
         //           "memoRegex": '',
-        //           "withdrawFee": "27",
-        //           "withdrawMin": "54",
-        //           "withdrawMax": "10000000000",
-        //           "minConfirm": "12",
+        //           "minConfirm": "15",
+        //           "name": "BEP20 (BSC)",
+        //           "network": "BSC",
+        //           "resetAddressStatus": false,
+        //           "specialTips": "The name of this asset is Basic Attention Token. Please ensure you are depositing Basic Attention Token (BAT) tokens under the contract address ending in 9766e.",
         //           "unLockConfirm": "0"
+        //           "withdrawDesc": '',
+        //           "withdrawEnable": true,
+        //           "withdrawFee": "0.27",
+        //           "withdrawIntegerMultiple": "0.00000001",
+        //           "withdrawMax": "10000000000",
+        //           "withdrawMin": "0.54",
+        //         },
+        //         {
+        //           "addressRegex": "^(0x)[0-9A-Fa-f]{40}$",
+        //           "coin": "BAT",
+        //           "depositDesc": '',
+        //           "depositEnable": true,
+        //           "isDefault": true,
+        //           "memoRegex": '',
+        //           "minConfirm": "12",
+        //           "name": "ERC20",
+        //           "network": "ETH",
+        //           "resetAddressStatus": false,
+        //           "specialTips": "The name of this asset is Basic Attention Token. Please ensure you are depositing Basic Attention Token (BAT) tokens under the contract address ending in 887ef.",
+        //           "unLockConfirm": "0"
+        //           "withdrawDesc": '',
+        //           "withdrawEnable": true,
+        //           "withdrawFee": "27",
+        //           "withdrawIntegerMultiple": "0.00000001",
+        //           "withdrawMax": "10000000000",
+        //           "withdrawMin": "54",
         //         }
-        //       ]
+        //       ],
+        //       "storage": "0",
+        //       "trading": true,
+        //       "withdrawAllEnable": true,
+        //       "withdrawing": "0",
         //     }
         //  ]
         //
@@ -7695,40 +7716,40 @@ export default class binance extends Exchange {
         //        {
         //            "coin": "BAT",
         //            "depositAllEnable": true,
-        //            "withdrawAllEnable": true,
-        //            "name": "Basic Attention Token",
         //            "free": "0",
-        //            "locked": "0",
         //            "freeze": "0",
-        //            "withdrawing": "0",
-        //            "ipoing": "0",
         //            "ipoable": "0",
-        //            "storage": "0",
+        //            "ipoing": "0",
         //            "isLegalMoney": false,
-        //            "trading": true,
+        //            "locked": "0",
+        //            "name": "Basic Attention Token",
         //            "networkList": [
         //                {
-        //                    "network": "BNB",
-        //                    "coin": "BAT",
-        //                    "withdrawIntegerMultiple": "0.00000001",
-        //                    "isDefault": false,
-        //                    "depositEnable": true,
-        //                    "withdrawEnable": true,
-        //                    "depositDesc": '',
-        //                    "withdrawDesc": '',
-        //                    "specialTips": "The name of this asset is Basic Attention Token (BAT). Both a MEMO and an Address are required to successfully deposit your BEP2 tokens to Binance.",
-        //                    "name": "BEP2",
-        //                    "resetAddressStatus": false,
         //                    "addressRegex": "^(bnb1)[0-9a-z]{38}$",
+        //                    "coin": "BAT",
+        //                    "depositDesc": '',
+        //                    "depositEnable": true,
+        //                    "isDefault": false,
         //                    "memoRegex": "^[0-9A-Za-z\\-_]{1,120}$",
-        //                    "withdrawFee": "0.27",
-        //                    "withdrawMin": "0.54",
-        //                    "withdrawMax": "10000000000",
         //                    "minConfirm": "1",
+        //                    "name": "BEP2",
+        //                    "network": "BNB",
+        //                    "resetAddressStatus": false,
+        //                    "specialTips": "The name of this asset is Basic Attention Token (BAT). Both a MEMO and an Address are required to successfully deposit your BEP2 tokens to Binance.",
         //                    "unLockConfirm": "0"
+        //                    "withdrawDesc": '',
+        //                    "withdrawEnable": true,
+        //                    "withdrawFee": "0.27",
+        //                    "withdrawIntegerMultiple": "0.00000001",
+        //                    "withdrawMax": "10000000000",
+        //                    "withdrawMin": "0.54",
         //                },
         //                ...
-        //            ]
+        //            ],
+        //            "storage": "0",
+        //            "trading": true,
+        //            "withdrawAllEnable": true,
+        //            "withdrawing": "0",
         //        }
         //    ]
         //
@@ -7740,40 +7761,40 @@ export default class binance extends Exchange {
         //    {
         //        "coin": "BAT",
         //        "depositAllEnable": true,
-        //        "withdrawAllEnable": true,
-        //        "name": "Basic Attention Token",
         //        "free": "0",
-        //        "locked": "0",
         //        "freeze": "0",
-        //        "withdrawing": "0",
-        //        "ipoing": "0",
         //        "ipoable": "0",
-        //        "storage": "0",
+        //        "ipoing": "0",
         //        "isLegalMoney": false,
-        //        "trading": true,
+        //        "locked": "0",
+        //        "name": "Basic Attention Token",
         //        "networkList": [
         //            {
-        //                "network": "BNB",
-        //                "coin": "BAT",
-        //                "withdrawIntegerMultiple": "0.00000001",
-        //                "isDefault": false,
-        //                "depositEnable": true,
-        //                "withdrawEnable": true,
-        //                "depositDesc": '',
-        //                "withdrawDesc": '',
-        //                "specialTips": "The name of this asset is Basic Attention Token (BAT). Both a MEMO and an Address are required to successfully deposit your BEP2 tokens to Binance.",
-        //                "name": "BEP2",
-        //                "resetAddressStatus": false,
         //                "addressRegex": "^(bnb1)[0-9a-z]{38}$",
+        //                "coin": "BAT",
+        //                "depositDesc": '',
+        //                "depositEnable": true,
+        //                "isDefault": false,
         //                "memoRegex": "^[0-9A-Za-z\\-_]{1,120}$",
-        //                "withdrawFee": "0.27",
-        //                "withdrawMin": "0.54",
-        //                "withdrawMax": "10000000000",
         //                "minConfirm": "1",
+        //                "name": "BEP2",
+        //                "network": "BNB",
+        //                "resetAddressStatus": false,
+        //                "specialTips": "The name of this asset is Basic Attention Token (BAT). Both a MEMO and an Address are required to successfully deposit your BEP2 tokens to Binance.",
         //                "unLockConfirm": "0"
+        //                "withdrawDesc": '',
+        //                "withdrawEnable": true,
+        //                "withdrawFee": "0.27",
+        //                "withdrawIntegerMultiple": "0.00000001",
+        //                "withdrawMax": "10000000000",
+        //                "withdrawMin": "0.54",
         //            },
         //            ...
-        //        ]
+        //        ],
+        //        "storage": "0",
+        //        "trading": true,
+        //        "withdrawAllEnable": true,
+        //        "withdrawing": "0",
         //    }
         //
         const networkList = this.safeList (fee, 'networkList', []);
@@ -7849,16 +7870,16 @@ export default class binance extends Exchange {
         // spot
         //     [
         //       {
-        //         "symbol": "BTCUSDT",
         //         "makerCommission": "0.001",
+        //         "symbol": "BTCUSDT",
         //         "takerCommission": "0.001"
         //       }
         //     ]
         //
         // swap
         //     {
-        //         "symbol": "BTCUSD_PERP",
         //         "makerCommissionRate": "0.00015",  // 0.015%
+        //         "symbol": "BTCUSD_PERP",
         //         "takerCommissionRate": "0.00040"   // 0.040%
         //     }
         //
@@ -7909,16 +7930,16 @@ export default class binance extends Exchange {
         // spot
         //     [
         //       {
-        //         "symbol": "BTCUSDT",
         //         "makerCommission": "0.001",
+        //         "symbol": "BTCUSDT",
         //         "takerCommission": "0.001"
         //       }
         //     ]
         //
         // swap
         //     {
-        //         "symbol": "BTCUSD_PERP",
         //         "makerCommissionRate": "0.00015",  // 0.015%
+        //         "symbol": "BTCUSD_PERP",
         //         "takerCommissionRate": "0.00040"   // 0.040%
         //     }
         //
@@ -7961,13 +7982,13 @@ export default class binance extends Exchange {
         //
         //    [
         //       {
-        //         "symbol": "ZRXBNB",
         //         "makerCommission": "0.001",
+        //         "symbol": "ZRXBNB",
         //         "takerCommission": "0.001"
         //       },
         //       {
-        //         "symbol": "ZRXBTC",
         //         "makerCommission": "0.001",
+        //         "symbol": "ZRXBTC",
         //         "takerCommission": "0.001"
         //       },
         //    ]
@@ -7975,22 +7996,22 @@ export default class binance extends Exchange {
         // fapi / future / linear
         //
         //     {
-        //         "feeTier": 0,       // account commisssion tier
-        //         "canTrade": true,   // if can trade
+        //         "availableBalance": "23.72469206",       // available balance, only for USDT asset
         //         "canDeposit": true,     // if can transfer in asset
+        //         "canTrade": true,   // if can trade
         //         "canWithdraw": true,    // if can transfer out asset
-        //         "updateTime": 0,
+        //         "feeTier": 0,       // account commisssion tier
+        //         "maxWithdrawAmount": "23.72469206"     // maximum amount for transfer out, only for USDT asset
+        //         "totalCrossUnPnl": "0.00000000",      // unrealized profit of crossed positions, only for USDT asset
+        //         "totalCrossWalletBalance": "23.72469206",      // crossed wallet balance, only for USDT asset
         //         "totalInitialMargin": "0.00000000",    // total initial margin required with current mark price (useless with isolated positions), only for USDT asset
         //         "totalMaintMargin": "0.00000000",     // total maintenance margin required, only for USDT asset
-        //         "totalWalletBalance": "23.72469206",     // total wallet balance, only for USDT asset
-        //         "totalUnrealizedProfit": "0.00000000",   // total unrealized profit, only for USDT asset
         //         "totalMarginBalance": "23.72469206",     // total margin balance, only for USDT asset
-        //         "totalPositionInitialMargin": "0.00000000",    // initial margin required for positions with current mark price, only for USDT asset
         //         "totalOpenOrderInitialMargin": "0.00000000",   // initial margin required for open orders with current mark price, only for USDT asset
-        //         "totalCrossWalletBalance": "23.72469206",      // crossed wallet balance, only for USDT asset
-        //         "totalCrossUnPnl": "0.00000000",      // unrealized profit of crossed positions, only for USDT asset
-        //         "availableBalance": "23.72469206",       // available balance, only for USDT asset
-        //         "maxWithdrawAmount": "23.72469206"     // maximum amount for transfer out, only for USDT asset
+        //         "totalPositionInitialMargin": "0.00000000",    // initial margin required for positions with current mark price, only for USDT asset
+        //         "totalUnrealizedProfit": "0.00000000",   // total unrealized profit, only for USDT asset
+        //         "totalWalletBalance": "23.72469206",     // total wallet balance, only for USDT asset
+        //         "updateTime": 0,
         //         ...
         //     }
         //
@@ -8008,13 +8029,13 @@ export default class binance extends Exchange {
             //
             //    [
             //       {
-            //         "symbol": "ZRXBNB",
             //         "makerCommission": "0.001",
+            //         "symbol": "ZRXBNB",
             //         "takerCommission": "0.001"
             //       },
             //       {
-            //         "symbol": "ZRXBTC",
             //         "makerCommission": "0.001",
+            //         "symbol": "ZRXBTC",
             //         "takerCommission": "0.001"
             //       },
             //    ]
@@ -8029,22 +8050,22 @@ export default class binance extends Exchange {
         } else if (isLinear) {
             //
             //     {
-            //         "feeTier": 0,       // account commisssion tier
-            //         "canTrade": true,   // if can trade
+            //         "availableBalance": "23.72469206",       // available balance, only for USDT asset
             //         "canDeposit": true,     // if can transfer in asset
+            //         "canTrade": true,   // if can trade
             //         "canWithdraw": true,    // if can transfer out asset
-            //         "updateTime": 0,
+            //         "feeTier": 0,       // account commisssion tier
+            //         "maxWithdrawAmount": "23.72469206"     // maximum amount for transfer out, only for USDT asset
+            //         "totalCrossUnPnl": "0.00000000",      // unrealized profit of crossed positions, only for USDT asset
+            //         "totalCrossWalletBalance": "23.72469206",      // crossed wallet balance, only for USDT asset
             //         "totalInitialMargin": "0.00000000",    // total initial margin required with current mark price (useless with isolated positions), only for USDT asset
             //         "totalMaintMargin": "0.00000000",     // total maintenance margin required, only for USDT asset
-            //         "totalWalletBalance": "23.72469206",     // total wallet balance, only for USDT asset
-            //         "totalUnrealizedProfit": "0.00000000",   // total unrealized profit, only for USDT asset
             //         "totalMarginBalance": "23.72469206",     // total margin balance, only for USDT asset
-            //         "totalPositionInitialMargin": "0.00000000",    // initial margin required for positions with current mark price, only for USDT asset
             //         "totalOpenOrderInitialMargin": "0.00000000",   // initial margin required for open orders with current mark price, only for USDT asset
-            //         "totalCrossWalletBalance": "23.72469206",      // crossed wallet balance, only for USDT asset
-            //         "totalCrossUnPnl": "0.00000000",      // unrealized profit of crossed positions, only for USDT asset
-            //         "availableBalance": "23.72469206",       // available balance, only for USDT asset
-            //         "maxWithdrawAmount": "23.72469206"     // maximum amount for transfer out, only for USDT asset
+            //         "totalPositionInitialMargin": "0.00000000",    // initial margin required for positions with current mark price, only for USDT asset
+            //         "totalUnrealizedProfit": "0.00000000",   // total unrealized profit, only for USDT asset
+            //         "totalWalletBalance": "23.72469206",     // total wallet balance, only for USDT asset
+            //         "updateTime": 0,
             //         ...
             //     }
             //
@@ -8166,13 +8187,13 @@ export default class binance extends Exchange {
         }
         //
         //     {
-        //         "symbol": "BTCUSDT",
-        //         "markPrice": "45802.81129892",
-        //         "indexPrice": "45745.47701915",
         //         "estimatedSettlePrice": "45133.91753671",
-        //         "lastFundingRate": "0.00063521",
+        //         "indexPrice": "45745.47701915",
         //         "interestRate": "0.00010000",
+        //         "lastFundingRate": "0.00063521",
+        //         "markPrice": "45802.81129892",
         //         "nextFundingTime": "1621267200000",
+        //         "symbol": "BTCUSDT",
         //         "time": "1621252344001"
         //     }
         //
@@ -8234,9 +8255,9 @@ export default class binance extends Exchange {
         }
         //
         //     {
-        //         "symbol": "BTCUSDT",
         //         "fundingRate": "0.00063521",
         //         "fundingTime": "1621267200000",
+        //         "symbol": "BTCUSDT",
         //     }
         //
         const rates = [];
@@ -8294,13 +8315,13 @@ export default class binance extends Exchange {
         // ensure it matches with https://www.binance.com/en/futures/funding-history/0
         //
         //   {
-        //     "symbol": "BTCUSDT",
-        //     "markPrice": "45802.81129892",
-        //     "indexPrice": "45745.47701915",
         //     "estimatedSettlePrice": "45133.91753671",
-        //     "lastFundingRate": "0.00063521",
+        //     "indexPrice": "45745.47701915",
         //     "interestRate": "0.00010000",
+        //     "lastFundingRate": "0.00063521",
+        //     "markPrice": "45802.81129892",
         //     "nextFundingTime": "1621267200000",
+        //     "symbol": "BTCUSDT",
         //     "time": "1621252344001"
         //  }
         //
@@ -8376,82 +8397,82 @@ export default class binance extends Exchange {
         // usdm
         //
         //    {
-        //       "symbol": "BTCBUSD",
-        //       "initialMargin": "0",
-        //       "maintMargin": "0",
-        //       "unrealizedProfit": "0.00000000",
-        //       "positionInitialMargin": "0",
-        //       "openOrderInitialMargin": "0",
-        //       "leverage": "20",
-        //       "isolated": false,
-        //       "entryPrice": "0.0000",
-        //       "maxNotional": "100000",
-        //       "positionSide": "BOTH",
-        //       "positionAmt": "0.000",
-        //       "notional": "0",
-        //       "isolatedWallet": "0",
-        //       "updateTime": "0",
         //       "crossMargin": "100.93634809",
+        //       "entryPrice": "0.0000",
+        //       "initialMargin": "0",
+        //       "isolated": false,
+        //       "isolatedWallet": "0",
+        //       "leverage": "20",
+        //       "maintMargin": "0",
+        //       "maxNotional": "100000",
+        //       "notional": "0",
+        //       "openOrderInitialMargin": "0",
+        //       "positionAmt": "0.000",
+        //       "positionInitialMargin": "0",
+        //       "positionSide": "BOTH",
+        //       "symbol": "BTCBUSD",
+        //       "unrealizedProfit": "0.00000000",
+        //       "updateTime": "0",
         //     }
         //
         // coinm
         //
         //     {
-        //       "symbol": "BTCUSD_210625",
-        //       "initialMargin": "0.00024393",
-        //       "maintMargin": "0.00002439",
-        //       "unrealizedProfit": "-0.00000163",
-        //       "positionInitialMargin": "0.00024393",
-        //       "openOrderInitialMargin": "0",
-        //       "leverage": "10",
-        //       "isolated": false,
-        //       "positionSide": "BOTH",
-        //       "entryPrice": "41021.20000069",
-        //       "maxQty": "100",
-        //       "notionalValue": "0.00243939",
-        //       "isolatedWallet": "0",
         //       "crossMargin": "0.314"
         //       "crossWalletBalance": "34",
+        //       "entryPrice": "41021.20000069",
+        //       "initialMargin": "0.00024393",
+        //       "isolated": false,
+        //       "isolatedWallet": "0",
+        //       "leverage": "10",
+        //       "maintMargin": "0.00002439",
+        //       "maxQty": "100",
+        //       "notionalValue": "0.00243939",
+        //       "openOrderInitialMargin": "0",
+        //       "positionInitialMargin": "0.00024393",
+        //       "positionSide": "BOTH",
+        //       "symbol": "BTCUSD_210625",
+        //       "unrealizedProfit": "-0.00000163",
         //     }
         //
         // linear portfolio margin
         //
         //     {
-        //         "symbol": "CTSIUSDT",
-        //         "initialMargin": "0",
-        //         "maintMargin": "0",
-        //         "unrealizedProfit": "0.00000000",
-        //         "positionInitialMargin": "0",
-        //         "openOrderInitialMargin": "0",
-        //         "leverage": "20",
-        //         "entryPrice": "0.0",
-        //         "maxNotional": "25000",
-        //         "bidNotional": "0",
         //         "askNotional": "0",
-        //         "positionSide": "SHORT",
-        //         "positionAmt": "0",
-        //         "updateTime": 0,
-        //         "notional": "0",
+        //         "bidNotional": "0",
         //         "breakEvenPrice": "0.0"
+        //         "entryPrice": "0.0",
+        //         "initialMargin": "0",
+        //         "leverage": "20",
+        //         "maintMargin": "0",
+        //         "maxNotional": "25000",
+        //         "notional": "0",
+        //         "openOrderInitialMargin": "0",
+        //         "positionAmt": "0",
+        //         "positionInitialMargin": "0",
+        //         "positionSide": "SHORT",
+        //         "symbol": "CTSIUSDT",
+        //         "unrealizedProfit": "0.00000000",
+        //         "updateTime": 0,
         //     }
         //
         // inverse portoflio margin
         //
         //     {
-        //         "symbol": "TRXUSD_PERP",
-        //         "initialMargin": "0",
-        //         "maintMargin": "0",
-        //         "unrealizedProfit": "0.00000000",
-        //         "positionInitialMargin": "0",
-        //         "openOrderInitialMargin": "0",
-        //         "leverage": "20",
-        //         "entryPrice": "0.00000000",
-        //         "positionSide": "SHORT",
-        //         "positionAmt": "0",
-        //         "maxQty": "5000000",
-        //         "updateTime": 0,
-        //         "notionalValue": "0",
         //         "breakEvenPrice": "0.00000000"
+        //         "entryPrice": "0.00000000",
+        //         "initialMargin": "0",
+        //         "leverage": "20",
+        //         "maintMargin": "0",
+        //         "maxQty": "5000000",
+        //         "notionalValue": "0",
+        //         "openOrderInitialMargin": "0",
+        //         "positionAmt": "0",
+        //         "positionInitialMargin": "0",
+        //         "positionSide": "SHORT",
+        //         "symbol": "TRXUSD_PERP",
+        //         "unrealizedProfit": "0.00000000",
+        //         "updateTime": 0,
         //     }
         //
         const marketId = this.safeString (position, 'symbol');
@@ -8614,74 +8635,74 @@ export default class binance extends Exchange {
         // usdm
         //
         //     {
-        //       "symbol": "BTCUSDT",
-        //       "positionAmt": "0.001",
         //       "entryPrice": "43578.07000",
-        //       "markPrice": "43532.30000000",
-        //       "unRealizedProfit": "-0.04577000",
-        //       "liquidationPrice": "21841.24993976",
-        //       "leverage": "2",
-        //       "maxNotionalValue": "300000000",
-        //       "marginType": "isolated",
-        //       "isolatedMargin": "21.77841506",
         //       "isAutoAddMargin": "false",
-        //       "positionSide": "BOTH",
-        //       "notional": "43.53230000",
+        //       "isolatedMargin": "21.77841506",
         //       "isolatedWallet": "21.82418506",
+        //       "leverage": "2",
+        //       "liquidationPrice": "21841.24993976",
+        //       "marginType": "isolated",
+        //       "markPrice": "43532.30000000",
+        //       "maxNotionalValue": "300000000",
+        //       "notional": "43.53230000",
+        //       "positionAmt": "0.001",
+        //       "positionSide": "BOTH",
+        //       "symbol": "BTCUSDT",
+        //       "unRealizedProfit": "-0.04577000",
         //       "updateTime": "1621358023886"
         //     }
         //
         // coinm
         //
         //     {
-        //       "symbol": "BTCUSD_PERP",
-        //       "positionAmt": "2",
         //       "entryPrice": "37643.10000021",
-        //       "markPrice": "38103.05510455",
-        //       "unRealizedProfit": "0.00006413",
-        //       "liquidationPrice": "25119.97445760",
-        //       "leverage": "2",
-        //       "maxQty": "1500",
-        //       "marginType": "isolated",
-        //       "isolatedMargin": "0.00274471",
         //       "isAutoAddMargin": "false",
-        //       "positionSide": "BOTH",
-        //       "notionalValue": "0.00524892",
+        //       "isolatedMargin": "0.00274471",
         //       "isolatedWallet": "0.00268058"
+        //       "leverage": "2",
+        //       "liquidationPrice": "25119.97445760",
+        //       "marginType": "isolated",
+        //       "markPrice": "38103.05510455",
+        //       "maxQty": "1500",
+        //       "notionalValue": "0.00524892",
+        //       "positionAmt": "2",
+        //       "positionSide": "BOTH",
+        //       "symbol": "BTCUSD_PERP",
+        //       "unRealizedProfit": "0.00006413",
         //     }
         //
         // inverse portfolio margin
         //
         //     {
-        //         "symbol": "ETHUSD_PERP",
-        //         "positionAmt": "1",
+        //         "breakEvenPrice": "2423.368960034"
         //         "entryPrice": "2422.400000007",
-        //         "markPrice": "2424.51267823",
-        //         "unRealizedProfit": "0.0000036",
-        //         "liquidationPrice": "293.57678898",
         //         "leverage": "100",
-        //         "positionSide": "LONG",
-        //         "updateTime": 1707371941861,
+        //         "liquidationPrice": "293.57678898",
+        //         "markPrice": "2424.51267823",
         //         "maxQty": "15",
         //         "notionalValue": "0.00412454",
-        //         "breakEvenPrice": "2423.368960034"
+        //         "positionAmt": "1",
+        //         "positionSide": "LONG",
+        //         "symbol": "ETHUSD_PERP",
+        //         "unRealizedProfit": "0.0000036",
+        //         "updateTime": 1707371941861,
         //     }
         //
         // linear portfolio margin
         //
         //     {
-        //         "symbol": "BTCUSDT",
-        //         "positionAmt": "0.01",
+        //         "breakEvenPrice": "44542.81"
         //         "entryPrice": "44525.0",
-        //         "markPrice": "45464.1735922",
-        //         "unRealizedProfit": "9.39173592",
-        //         "liquidationPrice": "38007.16308568",
         //         "leverage": "100",
-        //         "positionSide": "LONG",
-        //         "updateTime": 1707371879042,
+        //         "liquidationPrice": "38007.16308568",
+        //         "markPrice": "45464.1735922",
         //         "maxNotionalValue": "500000.0",
         //         "notional": "454.64173592",
-        //         "breakEvenPrice": "44542.81"
+        //         "positionAmt": "0.01",
+        //         "positionSide": "LONG",
+        //         "symbol": "BTCUSDT",
+        //         "unRealizedProfit": "9.39173592",
+        //         "updateTime": 1707371879042,
         //     }
         //
         const marketId = this.safeString (position, 'symbol');
@@ -8789,8 +8810,8 @@ export default class binance extends Exchange {
         const hedged = positionSide !== 'BOTH';
         return {
             'collateral': collateral,
-            'contracts': contracts,
             'contractSize': contractSize,
+            'contracts': contracts,
             'datetime': this.iso8601 (timestamp),
             'entryPrice': entryPrice,
             'hedged': hedged,
@@ -8907,18 +8928,18 @@ export default class binance extends Exchange {
         //
         //    [
         //        {
-        //            "symbol": "SUSHIUSDT",
         //            "brackets": [
         //                {
         //                    "bracket": 1,
+        //                    "cum": 0.0
         //                    "initialLeverage": 50,
+        //                    "maintMarginRatio": 0.01,
         //                    "notionalCap": 50000,
         //                    "notionalFloor": 0,
-        //                    "maintMarginRatio": 0.01,
-        //                    "cum": 0.0
         //                },
         //                ...
-        //            ]
+        //            ],
+        //            "symbol": "SUSHIUSDT",
         //        }
         //    ]
         //
@@ -8926,17 +8947,17 @@ export default class binance extends Exchange {
         //
         //     [
         //         {
-        //             "symbol":"XRPUSD_210326",
         //             "brackets":[
         //                 {
         //                     "bracket":1,
+        //                     "cum":0.0
         //                     "initialLeverage":20,
+        //                     "maintMarginRatio":0.0185,
         //                     "qtyCap":500000,
         //                     "qtyFloor":0,
-        //                     "maintMarginRatio":0.0185,
-        //                     "cum":0.0
         //                 }
-        //             ]
+        //             ],
+        //             "symbol":"XRPUSD_210326",
         //         }
         //     ]
         //
@@ -8952,18 +8973,18 @@ export default class binance extends Exchange {
          */
         //
         //    {
-        //        "symbol": "SUSHIUSDT",
         //        "brackets": [
         //            {
         //                "bracket": 1,
+        //                "cum": 0.0
         //                "initialLeverage": 50,
+        //                "maintMarginRatio": 0.01,
         //                "notionalCap": 50000,
         //                "notionalFloor": 0,
-        //                "maintMarginRatio": 0.01,
-        //                "cum": 0.0
         //            },
         //            ...
-        //        ]
+        //        ],
+        //        "symbol": "SUSHIUSDT",
         //    }
         //
         const marketId = this.safeString (info, 'symbol');
@@ -8973,13 +8994,13 @@ export default class binance extends Exchange {
         for (let j = 0; j < brackets.length; j++) {
             const bracket = brackets[j];
             tiers.push ({
-                'tier': this.safeNumber (bracket, 'bracket'),
                 'currency': market['quote'],
-                'minNotional': this.safeNumber2 (bracket, 'notionalFloor', 'qtyFloor'),
-                'maxNotional': this.safeNumber2 (bracket, 'notionalCap', 'qtyCap'),
+                'info': bracket,
                 'maintenanceMarginRate': this.safeNumber (bracket, 'maintMarginRatio'),
                 'maxLeverage': this.safeNumber (bracket, 'initialLeverage'),
-                'info': bracket,
+                'maxNotional': this.safeNumber2 (bracket, 'notionalCap', 'qtyCap'),
+                'minNotional': this.safeNumber2 (bracket, 'notionalFloor', 'qtyFloor'),
+                'tier': this.safeNumber (bracket, 'bracket'),
             });
         }
         return tiers;
@@ -9008,22 +9029,22 @@ export default class binance extends Exchange {
         //     [
         //         {
         //             "entryPrice": "27.70000000",
-        //             "symbol": "ETH-230426-1850-C",
-        //             "side": "LONG",
-        //             "quantity": "0.50000000",
-        //             "reducibleQty": "0.50000000",
-        //             "markValue": "10.250000000",
-        //             "ror": "-0.2599",
-        //             "unrealizedPNL": "-3.600000000",
-        //             "markPrice": "20.5",
-        //             "strikePrice": "1850.00000000",
-        //             "positionCost": "13.85000000",
         //             "expiryDate": 1682496000000,
-        //             "priceScale": 1,
-        //             "quantityScale": 2,
+        //             "markPrice": "20.5",
+        //             "markValue": "10.250000000",
         //             "optionSide": "CALL",
+        //             "positionCost": "13.85000000",
+        //             "priceScale": 1,
+        //             "quantity": "0.50000000",
+        //             "quantityScale": 2,
         //             "quoteAsset": "USDT",
-        //             "time": 1682492427106
+        //             "reducibleQty": "0.50000000",
+        //             "ror": "-0.2599",
+        //             "side": "LONG",
+        //             "strikePrice": "1850.00000000",
+        //             "symbol": "ETH-230426-1850-C",
+        //             "time": 1682492427106,
+        //             "unrealizedPNL": "-3.600000000",
         //         }
         //     ]
         //
@@ -9063,22 +9084,22 @@ export default class binance extends Exchange {
         //     [
         //         {
         //             "entryPrice": "27.70000000",
-        //             "symbol": "ETH-230426-1850-C",
-        //             "side": "LONG",
-        //             "quantity": "0.50000000",
-        //             "reducibleQty": "0.50000000",
-        //             "markValue": "10.250000000",
-        //             "ror": "-0.2599",
-        //             "unrealizedPNL": "-3.600000000",
-        //             "markPrice": "20.5",
-        //             "strikePrice": "1850.00000000",
-        //             "positionCost": "13.85000000",
         //             "expiryDate": 1682496000000,
-        //             "priceScale": 1,
-        //             "quantityScale": 2,
+        //             "markPrice": "20.5",
+        //             "markValue": "10.250000000",
         //             "optionSide": "CALL",
+        //             "positionCost": "13.85000000",
+        //             "priceScale": 1,
+        //             "quantity": "0.50000000",
+        //             "quantityScale": 2,
         //             "quoteAsset": "USDT",
-        //             "time": 1682492427106
+        //             "reducibleQty": "0.50000000",
+        //             "ror": "-0.2599",
+        //             "side": "LONG",
+        //             "strikePrice": "1850.00000000",
+        //             "symbol": "ETH-230426-1850-C",
+        //             "time": 1682492427106,
+        //             "unrealizedPNL": "-3.600000000",
         //         }
         //     ]
         //
@@ -9093,22 +9114,22 @@ export default class binance extends Exchange {
         //
         //     {
         //         "entryPrice": "27.70000000",
-        //         "symbol": "ETH-230426-1850-C",
-        //         "side": "LONG",
-        //         "quantity": "0.50000000",
-        //         "reducibleQty": "0.50000000",
-        //         "markValue": "10.250000000",
-        //         "ror": "-0.2599",
-        //         "unrealizedPNL": "-3.600000000",
-        //         "markPrice": "20.5",
-        //         "strikePrice": "1850.00000000",
-        //         "positionCost": "13.85000000",
         //         "expiryDate": 1682496000000,
-        //         "priceScale": 1,
-        //         "quantityScale": 2,
+        //         "markPrice": "20.5",
+        //         "markValue": "10.250000000",
         //         "optionSide": "CALL",
+        //         "positionCost": "13.85000000",
+        //         "priceScale": 1,
+        //         "quantity": "0.50000000",
+        //         "quantityScale": 2,
         //         "quoteAsset": "USDT",
-        //         "time": 1682492427106
+        //         "reducibleQty": "0.50000000",
+        //         "ror": "-0.2599",
+        //         "side": "LONG",
+        //         "strikePrice": "1850.00000000",
+        //         "symbol": "ETH-230426-1850-C",
+        //         "time": 1682492427106,
+        //         "unrealizedPNL": "-3.600000000",
         //     }
         //
         const marketId = this.safeString (position, 'symbol');
@@ -9280,17 +9301,17 @@ export default class binance extends Exchange {
         //     [
         //         {
         //             "entryPrice": "0.00000",
-        //             "marginType": "isolated",
         //             "isAutoAddMargin": "false",
         //             "isolatedMargin": "0.00000000",
         //             "leverage": "10",
         //             "liquidationPrice": "0",
+        //             "marginType": "isolated",
         //             "markPrice": "6679.50671178",
         //             "maxNotionalValue": "20000000",
         //             "positionAmt": "0.000",
+        //             "positionSide": "BOTH",
         //             "symbol": "BTCUSDT",
         //             "unRealizedProfit": "0.00000000",
-        //             "positionSide": "BOTH",
         //             "updateTime": 0
         //        }
         //     ]
@@ -9300,32 +9321,32 @@ export default class binance extends Exchange {
         //     [
         //         {
         //             "entryPrice": "6563.66500",
-        //             "marginType": "isolated",
         //             "isAutoAddMargin": "false",
         //             "isolatedMargin": "15517.54150468",
         //             "leverage": "10",
         //             "liquidationPrice": "5930.78",
+        //             "marginType": "isolated",
         //             "markPrice": "6679.50671178",
         //             "maxNotionalValue": "20000000",
         //             "positionAmt": "20.000",
-        //             "symbol": "BTCUSDT",
-        //             "unRealizedProfit": "2316.83423560"
         //             "positionSide": "LONG",
+        //             "symbol": "BTCUSDT",
+        //             "unRealizedProfit": "2316.83423560",
         //             "updateTime": 1625474304765
         //         },
         //         {
         //             "entryPrice": "0.00000",
-        //             "marginType": "isolated",
         //             "isAutoAddMargin": "false",
         //             "isolatedMargin": "5413.95799991",
         //             "leverage": "10",
         //             "liquidationPrice": "7189.95",
+        //             "marginType": "isolated",
         //             "markPrice": "6679.50671178",
         //             "maxNotionalValue": "20000000",
         //             "positionAmt": "-10.000",
+        //             "positionSide": "SHORT",
         //             "symbol": "BTCUSDT",
         //             "unRealizedProfit": "-1156.46711780",
-        //             "positionSide": "SHORT",
         //             "updateTime": 0
         //         }
         //     ]
@@ -9334,18 +9355,18 @@ export default class binance extends Exchange {
         //
         //     [
         //         {
-        //             "symbol": "ETHUSD_PERP",
-        //             "positionAmt": "1",
+        //             "breakEvenPrice": "2423.368960034",
         //             "entryPrice": "2422.400000007",
-        //             "markPrice": "2424.51267823",
-        //             "unRealizedProfit": "0.0000036",
-        //             "liquidationPrice": "293.57678898",
         //             "leverage": "100",
-        //             "positionSide": "LONG",
-        //             "updateTime": 1707371941861,
+        //             "liquidationPrice": "293.57678898",
+        //             "markPrice": "2424.51267823",
         //             "maxQty": "15",
         //             "notionalValue": "0.00412454",
-        //             "breakEvenPrice": "2423.368960034"
+        //             "positionAmt": "1",
+        //             "positionSide": "LONG",
+        //             "symbol": "ETHUSD_PERP",
+        //             "unRealizedProfit": "0.0000036",
+        //             "updateTime": 1707371941861,
         //         }
         //     ]
         //
@@ -9353,18 +9374,18 @@ export default class binance extends Exchange {
         //
         //     [
         //         {
-        //             "symbol": "BTCUSDT",
-        //             "positionAmt": "0.01",
+        //             "breakEvenPrice": "44542.81",
         //             "entryPrice": "44525.0",
-        //             "markPrice": "45464.1735922",
-        //             "unRealizedProfit": "9.39173592",
-        //             "liquidationPrice": "38007.16308568",
         //             "leverage": "100",
-        //             "positionSide": "LONG",
-        //             "updateTime": 1707371879042,
+        //             "liquidationPrice": "38007.16308568",
+        //             "markPrice": "45464.1735922",
         //             "maxNotionalValue": "500000.0",
         //             "notional": "454.64173592",
-        //             "breakEvenPrice": "44542.81"
+        //             "positionAmt": "0.01",
+        //             "positionSide": "LONG",
+        //             "symbol": "BTCUSDT",
+        //             "unRealizedProfit": "9.39173592",
+        //             "updateTime": 1707371879042,
         //         }
         //     ]
         //
@@ -9465,8 +9486,8 @@ export default class binance extends Exchange {
         await this.loadMarkets ();
         const market = this.market (symbol);
         const request = {
-            'symbol': market['id'],
             'leverage': leverage,
+            'symbol': market['id'],
         };
         let isPortfolioMargin = undefined;
         [ isPortfolioMargin, params ] = this.handleOptionAndParams2 (params, 'setLeverage', 'papi', 'portfolioMargin', false);
@@ -9641,11 +9662,11 @@ export default class binance extends Exchange {
         //
         //     [
         //         {
-        //             "symbol": "ETH-230223-1900-P",
-        //             "strikePrice": "1900",
-        //             "realStrikePrice": "1665.5897334",
         //             "expiryDate": 1677139200000,
-        //             "strikeResult": "REALISTIC_VALUE_STRICKEN"
+        //             "realStrikePrice": "1665.5897334",
+        //             "strikePrice": "1900",
+        //             "strikeResult": "REALISTIC_VALUE_STRICKEN",
+        //             "symbol": "ETH-230223-1900-P",
         //         }
         //     ]
         //
@@ -9687,20 +9708,20 @@ export default class binance extends Exchange {
         //
         //     [
         //         {
-        //             "id": "1125899906842897036",
-        //             "currency": "USDT",
-        //             "symbol": "BTC-230728-30000-C",
-        //             "exercisePrice": "30000.00000000",
-        //             "markPrice": "29160.71284993",
-        //             "quantity": "1.00000000",
         //             "amount": "0.00000000",
-        //             "fee": "0.00000000",
         //             "createDate": 1690531200000,
-        //             "priceScale": 0,
-        //             "quantityScale": 2,
+        //             "currency": "USDT",
+        //             "exercisePrice": "30000.00000000",
+        //             "fee": "0.00000000",
+        //             "id": "1125899906842897036",
+        //             "markPrice": "29160.71284993",
         //             "optionSide": "CALL",
         //             "positionSide": "LONG",
-        //             "quoteAsset": "USDT"
+        //             "priceScale": 0,
+        //             "quantity": "1.00000000",
+        //             "quantityScale": 2,
+        //             "quoteAsset": "USDT",
+        //             "symbol": "BTC-230728-30000-C",
         //         }
         //     ]
         //
@@ -9714,30 +9735,30 @@ export default class binance extends Exchange {
         // fetchSettlementHistory
         //
         //     {
-        //         "symbol": "ETH-230223-1900-P",
-        //         "strikePrice": "1900",
-        //         "realStrikePrice": "1665.5897334",
         //         "expiryDate": 1677139200000,
-        //         "strikeResult": "REALISTIC_VALUE_STRICKEN"
+        //         "realStrikePrice": "1665.5897334",
+        //         "strikePrice": "1900",
+        //         "strikeResult": "REALISTIC_VALUE_STRICKEN",
+        //         "symbol": "ETH-230223-1900-P",
         //     }
         //
         // fetchMySettlementHistory
         //
         //     {
-        //         "id": "1125899906842897036",
-        //         "currency": "USDT",
-        //         "symbol": "BTC-230728-30000-C",
-        //         "exercisePrice": "30000.00000000",
-        //         "markPrice": "29160.71284993",
-        //         "quantity": "1.00000000",
         //         "amount": "0.00000000",
-        //         "fee": "0.00000000",
         //         "createDate": 1690531200000,
-        //         "priceScale": 0,
-        //         "quantityScale": 2,
+        //         "currency": "USDT",
+        //         "exercisePrice": "30000.00000000",
+        //         "fee": "0.00000000",
+        //         "id": "1125899906842897036",
+        //         "markPrice": "29160.71284993",
         //         "optionSide": "CALL",
         //         "positionSide": "LONG",
-        //         "quoteAsset": "USDT"
+        //         "priceScale": 0,
+        //         "quantity": "1.00000000",
+        //         "quantityScale": 2,
+        //         "quoteAsset": "USDT",
+        //         "symbol": "BTC-230728-30000-C",
         //     }
         //
         const timestamp = this.safeInteger2 (settlement, 'expiryDate', 'createDate');
@@ -9757,11 +9778,11 @@ export default class binance extends Exchange {
         //
         //     [
         //         {
-        //             "symbol": "ETH-230223-1900-P",
-        //             "strikePrice": "1900",
-        //             "realStrikePrice": "1665.5897334",
         //             "expiryDate": 1677139200000,
-        //             "strikeResult": "EXTRINSIC_VALUE_EXPIRED"
+        //             "realStrikePrice": "1665.5897334",
+        //             "strikePrice": "1900",
+        //             "strikeResult": "EXTRINSIC_VALUE_EXPIRED",
+        //             "symbol": "ETH-230223-1900-P",
         //         }
         //     ]
         //
@@ -9769,20 +9790,20 @@ export default class binance extends Exchange {
         //
         //     [
         //         {
-        //             "id": "1125899906842897036",
-        //             "currency": "USDT",
-        //             "symbol": "BTC-230728-30000-C",
-        //             "exercisePrice": "30000.00000000",
-        //             "markPrice": "29160.71284993",
-        //             "quantity": "1.00000000",
         //             "amount": "0.00000000",
-        //             "fee": "0.00000000",
         //             "createDate": 1690531200000,
-        //             "priceScale": 0,
-        //             "quantityScale": 2,
+        //             "currency": "USDT",
+        //             "exercisePrice": "30000.00000000",
+        //             "fee": "0.00000000",
+        //             "id": "1125899906842897036",
+        //             "markPrice": "29160.71284993",
         //             "optionSide": "CALL",
         //             "positionSide": "LONG",
-        //             "quoteAsset": "USDT"
+        //             "priceScale": 0,
+        //             "quantity": "1.00000000",
+        //             "quantityScale": 2,
+        //             "quoteAsset": "USDT",
+        //             "symbol": "BTC-230728-30000-C",
         //         }
         //     ]
         //
@@ -9865,11 +9886,11 @@ export default class binance extends Exchange {
         //
         //     [
         //         {
-        //             "id": "1125899906845701870",
-        //             "asset": "USDT",
         //             "amount": "-0.16518203",
+        //             "asset": "USDT",
+        //             "createDate": 1676621042489,
+        //             "id": "1125899906845701870",
         //             "type": "FEE",
-        //             "createDate": 1676621042489
         //         }
         //     ]
         //
@@ -9906,14 +9927,14 @@ export default class binance extends Exchange {
         // futures (fapi, dapi, papi)
         //
         //     {
-        //         "symbol": "",
-        //         "incomeType": "TRANSFER",
-        //         "income": "10.00000000",
         //         "asset": "USDT",
-        //         "time": 1677645250000,
+        //         "income": "10.00000000",
+        //         "incomeType": "TRANSFER",
         //         "info": "TRANSFER",
+        //         "symbol": "",
+        //         "time": 1677645250000,
+        //         "tradeId": "",
         //         "tranId": 131001573082,
-        //         "tradeId": ""
         //     }
         //
         let amount = this.safeString2 (item, 'amount', 'income');
@@ -10252,9 +10273,9 @@ export default class binance extends Exchange {
         }
         //
         //     {
+        //         "amount": 0.001,
         //         "code": 200,
         //         "msg": "Successfully modify position margin.",
-        //         "amount": 0.001,
         //         "type": 1
         //     }
         //
@@ -10330,8 +10351,8 @@ export default class binance extends Exchange {
         //     [
         //         {
         //             "asset": "USDT",
-        //             "timestamp": 1638230400000,
         //             "dailyInterestRate": "0.0006",
+        //             "timestamp": 1638230400000,
         //             "vipLevel": 0
         //         },
         //     ]
@@ -10375,8 +10396,8 @@ export default class binance extends Exchange {
         //     [
         //         {
         //             "asset": "USDT",
-        //             "timestamp": 1638230400000,
         //             "dailyInterestRate": "0.0006",
+        //             "timestamp": 1638230400000,
         //             "vipLevel": 0
         //         },
         //     ]
@@ -10399,8 +10420,8 @@ export default class binance extends Exchange {
         //
         //    {
         //        "asset": "USDT",
-        //        "timestamp": 1638230400000,
         //        "dailyInterestRate": "0.0006",
+        //        "timestamp": 1638230400000,
         //        "vipLevel": 0
         //    }
         //
@@ -10438,8 +10459,8 @@ export default class binance extends Exchange {
         //
         //     {
         //         "code": "000000",
-        //         "message": "success",
         //         "data": { referenceNo: "0033002404219823", code: "AP6EXTLKNHM6CEX7" },
+        //         "message": "success",
         //         "success": true
         //     }
         //
@@ -10472,11 +10493,11 @@ export default class binance extends Exchange {
         //
         //     {
         //         "code": "000000",
-        //         "message": "success",
         //         "data": {
+        //             "identityNo": "10316431732801474560",
         //             "referenceNo": "0033002404219823",
-        //             "identityNo": "10316431732801474560"
         //         },
+        //         "message": "success",
         //         "success": true
         //     }
         //
@@ -10500,8 +10521,8 @@ export default class binance extends Exchange {
         //
         //     {
         //         "code": "000000",
-        //         "message": "success",
         //         "data": { valid: true },
+        //         "message": "success",
         //         "success": true
         //     }
         //
@@ -10555,11 +10576,11 @@ export default class binance extends Exchange {
         //     {
         //         "rows":[
         //             {
-        //                 "isolatedSymbol": "BNBUSDT", // isolated symbol, will not be returned for crossed margin
         //                 "asset": "BNB",
         //                 "interest": "0.02414667",
         //                 "interestAccuredTime": 1566813600000,
         //                 "interestRate": "0.01600000",
+        //                 "isolatedSymbol": "BNBUSDT", // isolated symbol, will not be returned for crossed margin
         //                 "principal": "36.22000000",
         //                 "type": "ON_BORROW"
         //             }
@@ -10573,13 +10594,13 @@ export default class binance extends Exchange {
         //         "total": 49,
         //         "rows": [
         //             {
-        //                 "txId": 1656187724899910076,
-        //                 "interestAccuredTime": 1707541200000,
         //                 "asset": "USDT",
-        //                 "rawAsset": "USDT",
-        //                 "principal": "0.00011146",
         //                 "interest": "0.00000001",
+        //                 "interestAccuredTime": 1707541200000,
         //                 "interestRate": "0.00089489",
+        //                 "principal": "0.00011146",
+        //                 "rawAsset": "USDT",
+        //                 "txId": 1656187724899910076,
         //                 "type": "PERIODIC"
         //             },
         //         ]
@@ -10639,8 +10660,8 @@ export default class binance extends Exchange {
         }
         //
         //     {
+        //         "clientTag":"",
         //         "tranId": 108988250265,
-        //         "clientTag":""
         //     }
         //
         return this.parseMarginLoan (response, currency);
@@ -10671,8 +10692,8 @@ export default class binance extends Exchange {
         const response = await this.sapiPostMarginBorrowRepay (this.extend (request, params));
         //
         //     {
+        //         "clientTag":"",
         //         "tranId": 108988250265,
-        //         "clientTag":""
         //     }
         //
         return this.parseMarginLoan (response, currency);
@@ -10709,8 +10730,8 @@ export default class binance extends Exchange {
         }
         //
         //     {
+        //         "clientTag":"",
         //         "tranId": 108988250265,
-        //         "clientTag":""
         //     }
         //
         return this.parseMarginLoan (response, currency);
@@ -10741,8 +10762,8 @@ export default class binance extends Exchange {
         const response = await this.sapiPostMarginBorrowRepay (this.extend (request, params));
         //
         //     {
+        //         "clientTag":"",
         //         "tranId": 108988250265,
-        //         "clientTag":""
         //     }
         //
         return this.parseMarginLoan (response, currency);
@@ -10751,8 +10772,8 @@ export default class binance extends Exchange {
     parseMarginLoan (info, currency: Currency = undefined) {
         //
         //     {
+        //         "clientTag":"",
         //         "tranId": 108988250265,
-        //         "clientTag":""
         //     }
         //
         return {
@@ -10826,9 +10847,9 @@ export default class binance extends Exchange {
         //
         //  [
         //      {
-        //          "symbol":"BTCUSDT",
         //          "sumOpenInterest":"75375.61700000",
         //          "sumOpenInterestValue":"3248828883.71251440",
+        //          "symbol":"BTCUSDT",
         //          "timestamp":1642179900000
         //      },
         //      ...
@@ -10870,18 +10891,18 @@ export default class binance extends Exchange {
         // futures (fapi)
         //
         //     {
-        //         "symbol": "ETHUSDT_230331",
         //         "openInterest": "23581.677",
+        //         "symbol": "ETHUSDT_230331",
         //         "time": 1677356872265
         //     }
         //
         // futures (dapi)
         //
         //     {
-        //         "symbol": "ETHUSD_PERP",
-        //         "pair": "ETHUSD",
-        //         "openInterest": "26542436",
         //         "contractType": "PERPETUAL",
+        //         "openInterest": "26542436",
+        //         "pair": "ETHUSD",
+        //         "symbol": "ETHUSD_PERP",
         //         "time": 1677360272224
         //     }
         //
@@ -10889,9 +10910,9 @@ export default class binance extends Exchange {
         //
         //     [
         //         {
-        //             "symbol": "ETH-230225-1625-C",
         //             "sumOpenInterest": "460.50",
         //             "sumOpenInterestUsd": "734957.4358092150",
+        //             "symbol": "ETH-230225-1625-C",
         //             "timestamp": "1677304860000"
         //         }
         //     ]
@@ -10996,13 +11017,13 @@ export default class binance extends Exchange {
         //             {
         //                 "avgPrice": "0.00388359",
         //                 "executedQty": "31.39000000",
+        //                 "isIsolated": true,
         //                 "orderId": 180015097,
         //                 "price": "0.00388110",
         //                 "qty": "31.39000000",
         //                 "side": "SELL",
         //                 "symbol": "BNBBTC",
         //                 "timeInForce": "GTC",
-        //                 "isIsolated": true,
         //                 "updatedTime": 1558941374745
         //             }
         //         ],
@@ -11013,26 +11034,26 @@ export default class binance extends Exchange {
         //
         //     [
         //         {
-        //             "orderId": 6071832819,
-        //             "symbol": "BTCUSDT",
-        //             "status": "FILLED",
-        //             "clientOrderId": "autoclose-1596107620040000020",
-        //             "price": "10871.09",
         //             "avgPrice": "10913.21000",
-        //             "origQty": "0.001",
-        //             "executedQty": "0.001",
+        //             "clientOrderId": "autoclose-1596107620040000020",
+        //             "closePosition": false,
         //             "cumQuote": "10.91321",
+        //             "executedQty": "0.001",
+        //             "orderId": 6071832819,
+        //             "origQty": "0.001",
+        //             "origType": "LIMIT",
+        //             "positionSide": "BOTH",
+        //             "price": "10871.09",
+        //             "reduceOnly": false,
+        //             "side": "SELL",
+        //             "status": "FILLED",
+        //             "stopPrice": "0",
+        //             "symbol": "BTCUSDT",
+        //             "time": 1596107620044,
         //             "timeInForce": "IOC",
         //             "type": "LIMIT",
-        //             "reduceOnly": false,
-        //             "closePosition": false,
-        //             "side": "SELL",
-        //             "positionSide": "BOTH",
-        //             "stopPrice": "0",
+        //             "updateTime": 1596107620087,
         //             "workingType": "CONTRACT_PRICE",
-        //             "origType": "LIMIT",
-        //             "time": 1596107620044,
-        //             "updateTime": 1596107620087
         //         },
         //     ]
         //
@@ -11040,28 +11061,28 @@ export default class binance extends Exchange {
         //
         //     [
         //         {
-        //             "orderId": 165123080,
-        //             "symbol": "BTCUSD_200925",
-        //             "pair": "BTCUSD",
-        //             "status": "FILLED",
-        //             "clientOrderId": "autoclose-1596542005017000006",
-        //             "price": "11326.9",
         //             "avgPrice": "11326.9",
-        //             "origQty": "1",
-        //             "executedQty": "1",
+        //             "clientOrderId": "autoclose-1596542005017000006",
+        //             "closePosition": false,
         //             "cumBase": "0.00882854",
+        //             "executedQty": "1",
+        //             "orderId": 165123080,
+        //             "origQty": "1",
+        //             "origType": "LIMIT",
+        //             "pair": "BTCUSD",
+        //             "positionSide": "BOTH",
+        //             "price": "11326.9",
+        //             "priceProtect": false,
+        //             "reduceOnly": false,
+        //             "side": "SELL",
+        //             "status": "FILLED",
+        //             "stopPrice": "0",
+        //             "symbol": "BTCUSD_200925",
+        //             "time": 1596542005019,
         //             "timeInForce": "IOC",
         //             "type": "LIMIT",
-        //             "reduceOnly": false,
-        //             "closePosition": false,
-        //             "side": "SELL",
-        //             "positionSide": "BOTH",
-        //             "stopPrice": "0",
+        //             "updateTime": 1596542005050,
         //             "workingType": "CONTRACT_PRICE",
-        //             "priceProtect": false,
-        //             "origType": "LIMIT",
-        //             "time": 1596542005019,
-        //             "updateTime": 1596542005050
         //         },
         //     ]
         //
@@ -11076,66 +11097,66 @@ export default class binance extends Exchange {
         //     {
         //         "avgPrice": "0.00388359",
         //         "executedQty": "31.39000000",
+        //         "isIsolated": true,
         //         "orderId": 180015097,
         //         "price": "0.00388110",
         //         "qty": "31.39000000",
         //         "side": "SELL",
         //         "symbol": "BNBBTC",
         //         "timeInForce": "GTC",
-        //         "isIsolated": true,
         //         "updatedTime": 1558941374745
         //     }
         //
         // linear
         //
         //     {
-        //         "orderId": 6071832819,
-        //         "symbol": "BTCUSDT",
-        //         "status": "FILLED",
-        //         "clientOrderId": "autoclose-1596107620040000020",
-        //         "price": "10871.09",
         //         "avgPrice": "10913.21000",
-        //         "origQty": "0.001",
-        //         "executedQty": "0.001",
+        //         "clientOrderId": "autoclose-1596107620040000020",
+        //         "closePosition": false,
         //         "cumQuote": "10.91321",
+        //         "executedQty": "0.001",
+        //         "orderId": 6071832819,
+        //         "origQty": "0.001",
+        //         "origType": "LIMIT",
+        //         "positionSide": "BOTH",
+        //         "price": "10871.09",
+        //         "reduceOnly": false,
+        //         "side": "SELL",
+        //         "status": "FILLED",
+        //         "stopPrice": "0",
+        //         "symbol": "BTCUSDT",
+        //         "time": 1596107620044,
         //         "timeInForce": "IOC",
         //         "type": "LIMIT",
-        //         "reduceOnly": false,
-        //         "closePosition": false,
-        //         "side": "SELL",
-        //         "positionSide": "BOTH",
-        //         "stopPrice": "0",
+        //         "updateTime": 1596107620087,
         //         "workingType": "CONTRACT_PRICE",
-        //         "origType": "LIMIT",
-        //         "time": 1596107620044,
-        //         "updateTime": 1596107620087
         //     }
         //
         // inverse
         //
         //     {
-        //         "orderId": 165123080,
-        //         "symbol": "BTCUSD_200925",
-        //         "pair": "BTCUSD",
-        //         "status": "FILLED",
-        //         "clientOrderId": "autoclose-1596542005017000006",
-        //         "price": "11326.9",
         //         "avgPrice": "11326.9",
-        //         "origQty": "1",
-        //         "executedQty": "1",
+        //         "clientOrderId": "autoclose-1596542005017000006",
+        //         "closePosition": false,
         //         "cumBase": "0.00882854",
+        //         "executedQty": "1",
+        //         "orderId": 165123080,
+        //         "origQty": "1",
+        //         "origType": "LIMIT",
+        //         "pair": "BTCUSD",
+        //         "positionSide": "BOTH",
+        //         "price": "11326.9",
+        //         "priceProtect": false,
+        //         "reduceOnly": false,
+        //         "side": "SELL",
+        //         "status": "FILLED",
+        //         "stopPrice": "0",
+        //         "symbol": "BTCUSD_200925",
+        //         "time": 1596542005019,
         //         "timeInForce": "IOC",
         //         "type": "LIMIT",
-        //         "reduceOnly": false,
-        //         "closePosition": false,
-        //         "side": "SELL",
-        //         "positionSide": "BOTH",
-        //         "stopPrice": "0",
+        //         "updateTime": 1596542005050,
         //         "workingType": "CONTRACT_PRICE",
-        //         "priceProtect": false,
-        //         "origType": "LIMIT",
-        //         "time": 1596542005019,
-        //         "updateTime": 1596542005050
         //     }
         //
         const marketId = this.safeString (liquidation, 'symbol');
@@ -11172,17 +11193,17 @@ export default class binance extends Exchange {
         //
         //     [
         //         {
-        //             "symbol": "BTC-231229-40000-C",
-        //             "markPrice": "2012",
-        //             "bidIV": "0.60236275",
         //             "askIV": "0.62267244",
-        //             "markIV": "0.6125176",
+        //             "bidIV": "0.60236275",
         //             "delta": "0.39111646",
-        //             "theta": "-32.13948531",
         //             "gamma": "0.00004656",
-        //             "vega": "51.70062218",
         //             "highPriceLimit": "6474",
-        //             "lowPriceLimit": "5"
+        //             "lowPriceLimit": "5",
+        //             "markIV": "0.6125176",
+        //             "markPrice": "2012",
+        //             "symbol": "BTC-231229-40000-C",
+        //             "theta": "-32.13948531",
+        //             "vega": "51.70062218",
         //         }
         //     ]
         //
@@ -11192,17 +11213,17 @@ export default class binance extends Exchange {
     parseGreeks (greeks, market: Market = undefined) {
         //
         //     {
-        //         "symbol": "BTC-231229-40000-C",
-        //         "markPrice": "2012",
-        //         "bidIV": "0.60236275",
         //         "askIV": "0.62267244",
-        //         "markIV": "0.6125176",
+        //         "bidIV": "0.60236275",
         //         "delta": "0.39111646",
-        //         "theta": "-32.13948531",
         //         "gamma": "0.00004656",
-        //         "vega": "51.70062218",
         //         "highPriceLimit": "6474",
         //         "lowPriceLimit": "5"
+        //         "markIV": "0.6125176",
+        //         "markPrice": "2012",
+        //         "symbol": "BTC-231229-40000-C",
+        //         "theta": "-32.13948531",
+        //         "vega": "51.70062218",
         //     }
         //
         const marketId = this.safeString (greeks, 'symbol');
