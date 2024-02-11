@@ -7,28 +7,28 @@ var binance = require('./binance.js');
 class binancecoinm extends binance {
     describe() {
         return this.deepExtend(super.describe(), {
+            'has': {
+                'CORS': undefined,
+                'createStopMarketOrder': true,
+                'future': true,
+                'margin': false,
+                'option': undefined,
+                'spot': false,
+                'swap': true,
+            },
             'id': 'binancecoinm',
             'name': 'Binance COIN-M',
+            'options': {
+                'defaultSubType': 'inverse',
+                'fetchMarkets': ['inverse'],
+                'leverageBrackets': undefined,
+            },
             'urls': {
                 'logo': 'https://user-images.githubusercontent.com/1294454/117738721-668c8d80-b205-11eb-8c49-3fad84c4a07f.jpg',
                 'doc': [
                     'https://binance-docs.github.io/apidocs/delivery/en/',
                     'https://binance-docs.github.io/apidocs/spot/en',
                 ],
-            },
-            'has': {
-                'CORS': undefined,
-                'spot': false,
-                'margin': false,
-                'swap': true,
-                'future': true,
-                'option': undefined,
-                'createStopMarketOrder': true,
-            },
-            'options': {
-                'fetchMarkets': ['inverse'],
-                'defaultSubType': 'inverse',
-                'leverageBrackets': undefined,
             },
         });
     }

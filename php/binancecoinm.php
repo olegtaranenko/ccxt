@@ -12,15 +12,6 @@ class binancecoinm extends binance {
 
     public function describe() {
         return $this->deep_extend(parent::describe(), array(
-            'id' => 'binancecoinm',
-            'name' => 'Binance COIN-M',
-            'urls' => array(
-                'logo' => 'https://user-images.githubusercontent.com/1294454/117738721-668c8d80-b205-11eb-8c49-3fad84c4a07f.jpg',
-                'doc' => array(
-                    'https://binance-docs.github.io/apidocs/delivery/en/',
-                    'https://binance-docs.github.io/apidocs/spot/en',
-                ),
-            ),
             'has' => array(
                 'CORS' => null,
                 'spot' => false,
@@ -30,10 +21,19 @@ class binancecoinm extends binance {
                 'option' => null,
                 'createStopMarketOrder' => true,
             ),
+            'id' => 'binancecoinm',
+            'name' => 'Binance COIN-M',
             'options' => array(
-                'fetchMarkets' => array( 'inverse' ),
                 'defaultSubType' => 'inverse',
+                'fetchMarkets' => array( 'inverse' ),
                 'leverageBrackets' => null,
+            ),
+            'urls' => array(
+                'logo' => 'https://user-images.githubusercontent.com/1294454/117738721-668c8d80-b205-11eb-8c49-3fad84c4a07f.jpg',
+                'doc' => array(
+                    'https://binance-docs.github.io/apidocs/delivery/en/',
+                    'https://binance-docs.github.io/apidocs/spot/en',
+                ),
             ),
         ));
     }

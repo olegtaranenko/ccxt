@@ -2,25 +2,25 @@ import binance from './binance.js';
 export default class binancecoinm extends binance {
     describe(): any;
     transferIn(code: string, amount: any, params?: {}): Promise<{
-        info: any;
-        id: string;
-        timestamp: number;
-        datetime: string;
-        currency: string;
         amount: number;
+        currency: string;
+        datetime: string;
         fromAccount: any;
-        toAccount: any;
+        id: string;
+        info: any;
         status: string;
+        timestamp: number;
+        toAccount: any;
     }>;
     transferOut(code: string, amount: any, params?: {}): Promise<{
-        info: any;
-        id: string;
-        timestamp: number;
-        datetime: string;
-        currency: string;
         amount: number;
+        currency: string;
+        datetime: string;
         fromAccount: any;
-        toAccount: any;
+        id: string;
+        info: any;
         status: string;
+        timestamp: number;
+        toAccount: any;
     }>;
 }
