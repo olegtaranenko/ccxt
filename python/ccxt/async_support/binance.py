@@ -2662,9 +2662,11 @@ class binance(Exchange, ImplicitAPI):
             networkList = self.safe_list(entry, 'networkList', [])
             fees = {}
             fee = None
+            networks = {}
             for j in range(0, len(networkList)):
                 networkItem = networkList[j]
                 network = self.safe_string(networkItem, 'network')
+                networkCode = self.network_id_to_code(network)
                 # name = self.safe_string(networkItem, 'name')
                 withdrawFee = self.safe_number(networkItem, 'withdrawFee')
                 depositEnable = self.safe_bool(networkItem, 'depositEnable')
@@ -2680,6 +2682,26 @@ class binance(Exchange, ImplicitAPI):
                 # so, when there is zero instead of i.e. 0.001, then we skip those cases, because we don't know the precision - it might be because of network is suspended or other reasons
                 if not Precise.string_eq(precisionTick, '0'):
                     minPrecision = precisionTick if (minPrecision is None) else Precise.string_min(minPrecision, precisionTick)
+                networks[networkCode] = {
+                    'info': networkItem,
+                    'id': network,
+                    'network': networkCode,
+                    'active': depositEnable and withdrawEnable,
+                    'deposit': depositEnable,
+                    'withdraw': withdrawEnable,
+                    'fee': self.parse_number(fee),
+                    'precision': minPrecision,
+                    'limits': {
+                        'withdraw': {
+                            'min': self.safe_number(networkItem, 'withdrawMin'),
+                            'max': self.safe_number(networkItem, 'withdrawMax'),
+                        },
+                        'deposit': {
+                            'min': None,
+                            'max': None,
+                        },
+                    },
+                }
             trading = self.safe_bool(entry, 'trading')
             active = (isWithdrawEnabled and isDepositEnabled and trading)
             maxDecimalPlaces = None
@@ -2695,7 +2717,7 @@ class binance(Exchange, ImplicitAPI):
                 'info': entry,
                 'limits': self.limits,
                 'name': name,
-                'networks': networkList,
+                'networks': networks,
                 'precision': maxDecimalPlaces,
                 'withdraw': isWithdrawEnabled,
             }

@@ -12,12 +12,12 @@ export default class binancecoinm extends binance {
         return this.deepExtend(super.describe(), {
             'has': {
                 'CORS': undefined,
-                'createStopMarketOrder': true,
-                'future': true,
-                'margin': false,
-                'option': undefined,
                 'spot': false,
+                'margin': false,
                 'swap': true,
+                'future': true,
+                'option': undefined,
+                'createStopMarketOrder': true,
             },
             'id': 'binancecoinm',
             'name': 'Binance COIN-M',

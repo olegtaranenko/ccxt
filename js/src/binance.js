@@ -1854,6 +1854,12 @@ export default class binance extends Exchange {
                 'option': {},
             },
             'has': {
+                'CORS': undefined,
+                'spot': true,
+                'margin': true,
+                'swap': true,
+                'future': true,
+                'option': true,
                 'addMargin': true,
                 'borrowCrossMargin': true,
                 'borrowIsolatedMargin': true,
@@ -1862,7 +1868,6 @@ export default class binance extends Exchange {
                 'cancelOrders': true,
                 'closeAllPositions': false,
                 'closePosition': false,
-                'CORS': undefined,
                 'createDepositAddress': false,
                 'createMarketBuyOrderWithCost': true,
                 'createMarketOrderWithCost': true,
@@ -1952,9 +1957,6 @@ export default class binance extends Exchange {
                 'fetchWithdrawal': false,
                 'fetchWithdrawals': true,
                 'fetchWithdrawalWhitelist': false,
-                'future': true,
-                'margin': true,
-                'option': true,
                 'reduceMargin': true,
                 'repayCrossMargin': true,
                 'repayIsolatedMargin': true,
@@ -1963,8 +1965,6 @@ export default class binance extends Exchange {
                 'setMarginMode': true,
                 'setPositionMode': true,
                 'signIn': false,
-                'spot': true,
-                'swap': true,
                 'transfer': true,
                 'withdraw': true,
             },
@@ -2676,9 +2676,11 @@ export default class binance extends Exchange {
             const networkList = this.safeList(entry, 'networkList', []);
             const fees = {};
             let fee = undefined;
+            const networks = {};
             for (let j = 0; j < networkList.length; j++) {
                 const networkItem = networkList[j];
                 const network = this.safeString(networkItem, 'network');
+                const networkCode = this.networkIdToCode(network);
                 // const name = this.safeString (networkItem, 'name');
                 const withdrawFee = this.safeNumber(networkItem, 'withdrawFee');
                 const depositEnable = this.safeBool(networkItem, 'depositEnable');
@@ -2696,6 +2698,26 @@ export default class binance extends Exchange {
                 if (!Precise.stringEq(precisionTick, '0')) {
                     minPrecision = (minPrecision === undefined) ? precisionTick : Precise.stringMin(minPrecision, precisionTick);
                 }
+                networks[networkCode] = {
+                    'info': networkItem,
+                    'id': network,
+                    'network': networkCode,
+                    'active': depositEnable && withdrawEnable,
+                    'deposit': depositEnable,
+                    'withdraw': withdrawEnable,
+                    'fee': this.parseNumber(fee),
+                    'precision': minPrecision,
+                    'limits': {
+                        'withdraw': {
+                            'min': this.safeNumber(networkItem, 'withdrawMin'),
+                            'max': this.safeNumber(networkItem, 'withdrawMax'),
+                        },
+                        'deposit': {
+                            'min': undefined,
+                            'max': undefined,
+                        },
+                    },
+                };
             }
             const trading = this.safeBool(entry, 'trading');
             const active = (isWithdrawEnabled && isDepositEnabled && trading);
@@ -2713,7 +2735,7 @@ export default class binance extends Exchange {
                 'info': entry,
                 'limits': this.limits,
                 'name': name,
-                'networks': networkList,
+                'networks': networks,
                 'precision': maxDecimalPlaces,
                 'withdraw': isWithdrawEnabled,
             };
