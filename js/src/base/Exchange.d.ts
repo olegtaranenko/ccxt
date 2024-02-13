@@ -74,10 +74,10 @@ export default class Exchange {
     uid: string;
     walletAddress: string;
     balance: {};
+    bidsasks: {};
     myTrades: any;
     ohlcvs: any;
     orderbooks: {};
-    bidsasks: {};
     orders: any;
     positions: any;
     tickers: {};

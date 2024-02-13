@@ -5305,27 +5305,27 @@ class binance extends binance$1 {
         // fetchOrders: portfolio margin linear and inverse swap conditional
         //
         //     {
+        //         "bookTime": 1707270098774,
+        //         "goodTillDate": 0,
         //         "newClientStrategyId": "x-xcKtGhcuaf166172ed504cd1bc0396",
+        //         "orderId": 0,
+        //         "origQty": "0.010",
+        //         "positionSide": "BOTH",
+        //         "price": "35000",
+        //         "priceProtect": false,
+        //         "reduceOnly": false,
+        //         "selfTradePreventionMode": "NONE"
+        //         "side": "BUY",
+        //         "stopPrice": "50000",
         //         "strategyId": 3733211,
         //         "strategyStatus": "CANCELLED",
         //         "strategyType": "STOP",
-        //         "origQty": "0.010",
-        //         "price": "35000",
-        //         "orderId": 0,
-        //         "reduceOnly": false,
-        //         "side": "BUY",
-        //         "positionSide": "BOTH",
-        //         "stopPrice": "50000",
         //         "symbol": "BTCUSDT",
-        //         "type": "LIMIT",
-        //         "bookTime": 1707270098774,
-        //         "updateTime": 1707270119261,
         //         "timeInForce": "GTC",
         //         "triggerTime": 0,
+        //         "type": "LIMIT",
+        //         "updateTime": 1707270119261,
         //         "workingType": "CONTRACT_PRICE",
-        //         "priceProtect": false,
-        //         "goodTillDate": 0,
-        //         "selfTradePreventionMode": "NONE"
         //     }
         //
         const code = this.safeString(order, 'code');

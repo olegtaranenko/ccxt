@@ -88,6 +88,9 @@ class binance extends binance$1 {
                 'watchTrades': {
                     'name': 'trade', // 'trade' or 'aggTrade'
                 },
+                'watchTradesForSymbols': {
+                    'name': 'aggTrade', // 'trade' or 'aggTrade'
+                },
                 'ws': {
                     'cost': 5,
                 },

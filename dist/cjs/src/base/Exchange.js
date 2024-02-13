@@ -53,7 +53,6 @@ class Exchange {
         this.origin = '*'; // CORS origin
         //
         this.agent = undefined; // maintained for backwards compatibility
-        this.bidsasks = {};
         this.nodeHttpModuleLoaded = false;
         this.httpAgent = undefined;
         this.httpsAgent = undefined;
@@ -71,9 +70,9 @@ class Exchange {
         this.verboseTruncate = false;
         this.twofa = undefined; // two-factor authentication (2FA)
         this.balance = {};
+        this.bidsasks = {};
         this.orderbooks = {};
         this.orders = undefined;
-        this.positions = undefined;
         this.tickers = {};
         this.transactions = {};
         this.triggerOrders = undefined;
@@ -277,7 +276,6 @@ class Exchange {
         this.positions = {};
         this.tickers = {};
         this.trades = {};
-        this.transactions = undefined;
         // web3 and cryptography flags
         this.requiresEddsa = false;
         this.requiresWeb3 = false;

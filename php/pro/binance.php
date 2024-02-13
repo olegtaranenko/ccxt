@@ -91,6 +91,9 @@ class binance extends \ccxt\async\binance {
                 'watchTrades' => array(
                     'name' => 'trade', // 'trade' or 'aggTrade'
                 ), // 20 mins
+                'watchTradesForSymbols' => array(
+                    'name' => 'aggTrade', // 'trade' or 'aggTrade'
+                ),
                 'ws' => array(
                     'cost' => 5,
                 ),

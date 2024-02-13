@@ -93,6 +93,9 @@ class binance(ccxt.async_support.binance):
                 'watchTrades': {
                     'name': 'trade',  # 'trade' or 'aggTrade'
                 },  # 20 mins
+                'watchTradesForSymbols': {
+                    'name': 'aggTrade',  # 'trade' or 'aggTrade'
+                },
                 'ws': {
                     'cost': 5,
                 },
