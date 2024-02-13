@@ -52,35 +52,27 @@ class Exchange {
         this.headers = {};
         this.origin = '*'; // CORS origin
         //
+        this.accounts = undefined;
+        this.accountsById = undefined;
         this.agent = undefined; // maintained for backwards compatibility
-        this.nodeHttpModuleLoaded = false;
-        this.httpAgent = undefined;
-        this.httpsAgent = undefined;
-        this.handleContentTypeApplicationZip = false;
-        this.minFundingAddressLength = 1; // used in checkAddress
-        this.number = Number; // or String (a pointer to a function)
-        this.quoteJsonNumbers = true; // treat numbers in json as quoted precise strings
-        this.substituteCommonCurrencyCodes = true; // reserved
-        // whether fees should be summed by currency code
-        this.reduceFees = true;
-        this.validateClientSsl = false;
-        this.validateServerSsl = true;
-        this.timeout = 10000; // milliseconds
-        this.verbose = false;
-        this.verboseTruncate = false;
-        this.twofa = undefined; // two-factor authentication (2FA)
         this.balance = {};
-        this.orderbooks = {};
-        this.orders = undefined;
-        this.positions = undefined;
-        this.tickers = {};
-        this.transactions = {};
-        this.triggerOrders = undefined;
-        this.requiresEddsa = false;
-        this.requiresWeb3 = false;
+        this.baseCurrencies = undefined;
+        this.bidsasks = {};
+        this.codes = undefined;
+        this.commonCurrencies = undefined;
+        this.currencies = undefined;
+        this.currencies_by_id = undefined;
         this.enableLastHttpResponse = true;
         this.enableLastJsonResponse = true;
         this.enableLastResponseHeaders = true;
+        this.exceptions = {};
+        this.handleContentTypeApplicationZip = false;
+        this.hostname = undefined;
+        this.httpAgent = undefined;
+        this.httpExceptions = undefined;
+        this.httpsAgent = undefined;
+        this.id = undefined;
+        this.ids = undefined;
         this.last_http_response = undefined;
         this.last_json_response = undefined;
         this.last_request_body = undefined;
@@ -88,36 +80,46 @@ class Exchange {
         this.last_request_path = undefined;
         this.last_request_url = undefined;
         this.last_response_headers = undefined;
-        this.id = undefined;
         this.markets = undefined;
-        this.status = undefined;
-        this.rateLimit = undefined; // milliseconds
-        this.throttler = undefined;
-        this.tokenBucket = undefined;
-        this.httpExceptions = undefined;
-        this.currencies = undefined;
-        this.ids = undefined;
         this.markets_by_id = undefined;
-        this.symbols = undefined;
-        this.baseCurrencies = undefined;
-        this.codes = undefined;
-        this.currencies_by_id = undefined;
-        this.quoteCurrencies = undefined;
-        this.marketsLoading = undefined;
-        this.reloadingMarkets = undefined;
-        this.accounts = undefined;
-        this.accountsById = undefined;
-        this.commonCurrencies = undefined;
-        this.hostname = undefined;
-        this.paddingMode = undefined;
-        this.precisionMode = undefined;
-        this.exceptions = {};
-        this.timeframes = {};
-        this.version = undefined;
         this.marketsByAltname = undefined;
+        this.marketsLoading = undefined;
+        this.minFundingAddressLength = 1; // used in checkAddress
         this.name = undefined;
-        this.targetAccount = undefined;
+        this.nodeHttpModuleLoaded = false;
+        this.number = Number; // or String (a pointer to a function)
+        this.orderbooks = {};
+        this.orders = undefined;
+        this.paddingMode = undefined;
+        this.positions = undefined;
+        this.precisionMode = undefined;
+        this.quoteCurrencies = undefined;
+        this.quoteJsonNumbers = true; // treat numbers in json as quoted precise strings
+        this.rateLimit = undefined; // milliseconds
+        // whether fees should be summed by currency code
+        this.reduceFees = true;
+        this.reloadingMarkets = undefined;
+        this.requiresEddsa = false;
+        this.requiresWeb3 = false;
         this.stablePairs = {};
+        this.status = undefined;
+        this.substituteCommonCurrencyCodes = true; // reserved
+        this.symbols = undefined;
+        this.targetAccount = undefined;
+        this.throttler = undefined;
+        this.tickers = {};
+        this.timeframes = {};
+        this.timeout = 10000; // milliseconds
+        this.timeout = 10000; // milliseconds
+        this.tokenBucket = undefined;
+        this.transactions = {};
+        this.triggerOrders = undefined;
+        this.twofa = undefined; // two-factor authentication (2FA)
+        this.validateClientSsl = false;
+        this.validateServerSsl = true;
+        this.verbose = false;
+        this.verboseTruncate = false;
+        this.version = undefined;
         // WS/PRO options
         this.aggregate = aggregate;
         this.alias = false;
@@ -3469,11 +3471,45 @@ class Exchange {
         const market = this.market(symbol);
         return this.safeString(market, 'symbol', symbol);
     }
+    handleParamString(params, paramName, defaultValue = undefined) {
+        const value = this.safeString(params, paramName, defaultValue);
+        if (value !== undefined) {
+            params = this.omit(params, paramName);
+        }
+        return [value, params];
+    }
     resolvePath(path, params) {
         return [
             this.implodeParams(path, params),
             this.omit(params, this.extractParams(path)),
         ];
+    }
+    getListFromObjectValues(objects, key) {
+        const newArray = this.toArray(objects);
+        const results = [];
+        for (let i = 0; i < newArray.length; i++) {
+            results.push(newArray[i][key]);
+        }
+        return results;
+    }
+    getSymbolsForMarketType(marketType = undefined, subType = undefined, symbolWithActiveStatus = true, symbolWithUnknownStatus = true) {
+        let filteredMarkets = this.markets;
+        if (marketType !== undefined) {
+            filteredMarkets = this.filterBy(filteredMarkets, 'type', marketType);
+        }
+        if (subType !== undefined) {
+            this.checkRequiredArgument('getSymbolsForMarketType', subType, 'subType', ['linear', 'inverse', 'quanto']);
+            filteredMarkets = this.filterBy(filteredMarkets, 'subType', subType);
+        }
+        const activeStatuses = [];
+        if (symbolWithActiveStatus) {
+            activeStatuses.push(true);
+        }
+        if (symbolWithUnknownStatus) {
+            activeStatuses.push(undefined);
+        }
+        filteredMarkets = this.filterByArray(filteredMarkets, 'active', activeStatuses, false);
+        return this.getListFromObjectValues(filteredMarkets, 'symbol');
     }
     filterByArray(objects, key, values = undefined, indexed = true) {
         objects = this.toArray(objects);
