@@ -305,7 +305,7 @@ export default class Exchange {
     walletAddress: string; // a wallet address "0x"-prefixed hexstring
 
     balance = {};
-    bidsasks     = {}
+    bidsasks = {};
     myTrades: any;
     ohlcvs: any;
     orderbooks = {};
@@ -800,6 +800,7 @@ export default class Exchange {
         this.positions = {};
         this.tickers = {};
         this.trades = {};
+        this.transactions = undefined;
         // web3 and cryptography flags
         this.requiresEddsa = false;
         this.requiresWeb3 = false;

@@ -263,6 +263,7 @@ export default class Exchange {
         this.positions = {};
         this.tickers = {};
         this.trades = {};
+        this.transactions = undefined;
         // web3 and cryptography flags
         this.requiresEddsa = false;
         this.requiresWeb3 = false;
