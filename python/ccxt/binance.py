@@ -5097,27 +5097,27 @@ class binance(Exchange, ImplicitAPI):
         # fetchOrders: portfolio margin linear and inverse swap conditional
         #
         #     {
+        #         "bookTime": 1707270098774,
+        #         "goodTillDate": 0,
         #         "newClientStrategyId": "x-xcKtGhcuaf166172ed504cd1bc0396",
+        #         "orderId": 0,
+        #         "origQty": "0.010",
+        #         "positionSide": "BOTH",
+        #         "price": "35000",
+        #         "priceProtect": False,
+        #         "reduceOnly": False,
+        #         "selfTradePreventionMode": "NONE"
+        #         "side": "BUY",
+        #         "stopPrice": "50000",
         #         "strategyId": 3733211,
         #         "strategyStatus": "CANCELLED",
         #         "strategyType": "STOP",
-        #         "origQty": "0.010",
-        #         "price": "35000",
-        #         "orderId": 0,
-        #         "reduceOnly": False,
-        #         "side": "BUY",
-        #         "positionSide": "BOTH",
-        #         "stopPrice": "50000",
         #         "symbol": "BTCUSDT",
-        #         "type": "LIMIT",
-        #         "bookTime": 1707270098774,
-        #         "updateTime": 1707270119261,
         #         "timeInForce": "GTC",
         #         "triggerTime": 0,
+        #         "type": "LIMIT",
+        #         "updateTime": 1707270119261,
         #         "workingType": "CONTRACT_PRICE",
-        #         "priceProtect": False,
-        #         "goodTillDate": 0,
-        #         "selfTradePreventionMode": "NONE"
         #     }
         #
         # fetchOpenOrder: linear swap
@@ -9147,12 +9147,12 @@ class binance(Exchange, ImplicitAPI):
 
     def fetch_positions(self, symbols: Strings = None, params={}):
         """
+        fetch all open positions
         :see: https://binance-docs.github.io/apidocs/futures/en/#position-information-v2-user_data
         :see: https://binance-docs.github.io/apidocs/delivery/en/#position-information-user_data
         :see: https://binance-docs.github.io/apidocs/futures/en/#account-information-v2-user_data
         :see: https://binance-docs.github.io/apidocs/delivery/en/#account-information-user_data
         :see: https://binance-docs.github.io/apidocs/voptions/en/#option-position-information-user_data
-        fetch all open positions
         :param str[] [symbols]: list of unified market symbols
         :param dict [params]: extra parameters specific to the exchange API endpoint
         :param str [method]: method name to call, "positionRisk", "account" or "option", default is "positionRisk"
@@ -9350,7 +9350,9 @@ class binance(Exchange, ImplicitAPI):
         result = []
         for i in range(0, len(response)):
             parsed = self.parse_position_risk(response[i])
-            result.append(parsed)
+            entryPrice = self.safe_string(parsed, 'entryPrice')
+            if (entryPrice != '0') and (entryPrice != '0.0') and (entryPrice != '0.00000000'):
+                result.append(parsed)
         symbols = self.market_symbols(symbols)
         return self.filter_by_array_positions(result, 'symbol', symbols, False)
 

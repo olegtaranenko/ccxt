@@ -9848,12 +9848,12 @@ class binance extends binance$1 {
         /**
          * @method
          * @name binance#fetchPositions
+         * @description fetch all open positions
          * @see https://binance-docs.github.io/apidocs/futures/en/#position-information-v2-user_data
          * @see https://binance-docs.github.io/apidocs/delivery/en/#position-information-user_data
          * @see https://binance-docs.github.io/apidocs/futures/en/#account-information-v2-user_data
          * @see https://binance-docs.github.io/apidocs/delivery/en/#account-information-user_data
          * @see https://binance-docs.github.io/apidocs/voptions/en/#option-position-information-user_data
-         * @description fetch all open positions
          * @param {string[]} [symbols] list of unified market symbols
          * @param {object} [params] extra parameters specific to the exchange API endpoint
          * @param {string} [method] method name to call, "positionRisk", "account" or "option", default is "positionRisk"
@@ -10077,7 +10077,10 @@ class binance extends binance$1 {
         const result = [];
         for (let i = 0; i < response.length; i++) {
             const parsed = this.parsePositionRisk(response[i]);
-            result.push(parsed);
+            const entryPrice = this.safeString(parsed, 'entryPrice');
+            if ((entryPrice !== '0') && (entryPrice !== '0.0') && (entryPrice !== '0.00000000')) {
+                result.push(parsed);
+            }
         }
         symbols = this.marketSymbols(symbols);
         return this.filterByArrayPositions(result, 'symbol', symbols, false);
