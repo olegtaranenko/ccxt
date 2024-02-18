@@ -86,6 +86,8 @@ import {
     ArrayCacheBySymbolBySide,
     ArrayCacheByTimestamp,
 } from './ws/Cache.js'
+import {OrderBook as Ob} from './ws/OrderBook.js';
+
 import totp from './functions/totp.js';
 
 const {
@@ -305,16 +307,16 @@ export default class Exchange {
     walletAddress: string; // a wallet address "0x"-prefixed hexstring
 
     balance = {};
-    bidsasks = {};
-    myTrades: any;
+    bidsasks: Dictionary<Ticker> = {};
+    myTrades: ArrayCache;
     ohlcvs: any;
-    orderbooks = {};
-    orders = undefined;
-    positions: any
-    tickers = {};
-    trades: any;
-    transactions = {};
-    triggerOrders = undefined;
+    orderbooks: Dictionary<Ob> = {};
+    orders: ArrayCache = undefined;
+    positions: any;
+    tickers: Dictionary<Ticker> = {};
+    trades: Dictionary<ArrayCache>;
+    transactions = {}
+    triggerOrders: ArrayCache = undefined;
     urls: {
         api?: string | Dictionary<string>;
         api_management?: string;

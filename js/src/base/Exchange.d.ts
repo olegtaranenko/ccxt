@@ -3,6 +3,8 @@ import { AuthenticationError, DDoSProtection, ExchangeError, ExchangeNotAvailabl
 import WsClient from './ws/WsClient.js';
 import { CountedOrderBook, IndexedOrderBook, OrderBook as WsOrderBook } from './ws/OrderBook.js';
 import type { Account, Balance, Balances, BorrowInterest, Currency, CurrencyInterface, DepositAddressResponse, DepositWithdrawFeeNetwork, Dictionary, FundingHistory, FundingRate, FundingRateHistory, Greeks, IndexType, Int, LedgerEntry, LeverageTier, Liquidation, MarginMode, Market, MarketInterface, MinMax, Num, OHLCV, OHLCVC, OpenInterest, Order, OrderBook, OrderRequest, OrderSide, OrderType, Position, Str, Ticker, Tickers, Trade, Transaction, TransferEntry } from './types.js';
+import { ArrayCache } from './ws/Cache.js';
+import { OrderBook as Ob } from './ws/OrderBook.js';
 export type { Balance, Balances, Currency, DepositAddressResponse, Dictionary, Fee, FundingHistory, FundingRateHistory, Greeks, IndexType, Int, Liquidation, Market, MinMax, OHLCV, OHLCVC, Order, OrderBook, OrderSide, OrderType, Position, Ticker, Trade, Transaction } from './types.js';
 /**
  * @class Exchange
@@ -74,16 +76,16 @@ export default class Exchange {
     uid: string;
     walletAddress: string;
     balance: {};
-    bidsasks: {};
-    myTrades: any;
+    bidsasks: Dictionary<Ticker>;
+    myTrades: ArrayCache;
     ohlcvs: any;
-    orderbooks: {};
-    orders: any;
+    orderbooks: Dictionary<Ob>;
+    orders: ArrayCache;
     positions: any;
-    tickers: {};
-    trades: any;
+    tickers: Dictionary<Ticker>;
+    trades: Dictionary<ArrayCache>;
     transactions: {};
-    triggerOrders: any;
+    triggerOrders: ArrayCache;
     urls: {
         api?: string | Dictionary<string>;
         api_management?: string;
