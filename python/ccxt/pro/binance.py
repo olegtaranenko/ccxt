@@ -94,6 +94,9 @@ class binance(ccxt.async_support.binance):
                 'watchTrades': {
                     'name': 'trade',  # 'trade' or 'aggTrade'
                 },
+                'watchTradesForSymbols': {
+                    'name': 'trade',  # 'trade' or 'aggTrade'
+                },
                 'watchTicker': {
                     'name': 'ticker',  # ticker = 1000ms L1+OHLCV, bookTicker = real-time L1
                 },
@@ -439,6 +442,7 @@ class binance(ccxt.async_support.binance):
         :param int [since]: timestamp in ms of the earliest trade to fetch
         :param int [limit]: the maximum amount of trades to fetch
         :param dict [params]: extra parameters specific to the exchange API endpoint
+        :param str [params.name]: stream to use can be trade or aggTrade
         :returns dict[]: a list of `trade structures <https://docs.ccxt.com/#/?id=public-trades>`
         """
         await self.load_markets()
@@ -449,8 +453,10 @@ class binance(ccxt.async_support.binance):
             if symbolsLength > 200:
                 raise BadRequest(self.id + ' watchTradesForSymbols() accepts 200 symbols at most. To watch more symbols call watchTradesForSymbols() multiple times')
             streamHash += '::' + ','.join(symbols)
-        options = self.safe_value(self.options, 'watchTradesForSymbols', {})
-        name = self.safe_string(options, 'name', 'trade')
+        name = self.safe_string(params, 'name', None)
+        if name is None:
+            options = self.safe_value(self.options, 'watchTradesForSymbols', {})
+            name = self.safe_string(options, 'name', 'trade')
         firstMarket = self.market(symbols[0])
         type = firstMarket['type']
         if firstMarket['contract']:
@@ -461,7 +467,7 @@ class binance(ccxt.async_support.binance):
             market = self.market(symbol)
             currentMessageHash = market['lowercaseId'] + '@' + name
             subParams.append(currentMessageHash)
-        query = self.omit(params, 'type')
+        query = self.omit(params, 'type', 'name')
         subParamsLength = len(subParams)
         url = self.urls['api']['ws'][type] + '/' + self.stream(type, streamHash, subParamsLength)
         requestId = self.request_id(url)
@@ -487,8 +493,15 @@ class binance(ccxt.async_support.binance):
         :param int [since]: timestamp in ms of the earliest trade to fetch
         :param int [limit]: the maximum amount of trades to fetch
         :param dict [params]: extra parameters specific to the exchange API endpoint
+        :param str [params.name]: stream to use can be trade or aggTrade
         :returns dict[]: a list of `trade structures <https://docs.ccxt.com/#/?id=public-trades>`
         """
+        name = self.safe_string(params, 'name', None)
+        if name is None:
+            options = self.safe_value(self.options, 'watchTrades', {})
+            name = self.safe_string(options, 'name', None)
+            if name is not None:
+                params['name'] = name
         return await self.watch_trades_for_symbols([symbol], since, limit, params)
 
     def parse_ws_trade(self, trade, market=None) -> Trade:

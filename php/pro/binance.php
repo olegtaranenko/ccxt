@@ -92,6 +92,9 @@ class binance extends \ccxt\async\binance {
                 'watchTrades' => array(
                     'name' => 'trade', // 'trade' or 'aggTrade'
                 ),
+                'watchTradesForSymbols' => array(
+                    'name' => 'trade', // 'trade' or 'aggTrade'
+                ),
                 'watchTicker' => array(
                     'name' => 'ticker', // ticker = 1000ms L1+OHLCV, bookTicker = real-time L1
                 ),
@@ -486,6 +489,7 @@ class binance extends \ccxt\async\binance {
              * @param {int} [$since] timestamp in ms of the earliest trade to fetch
              * @param {int} [$limit] the maximum amount of $trades to fetch
              * @param {array} [$params] extra parameters specific to the exchange API endpoint
+             * @param {string} [$params->name] stream to use can be trade or aggTrade
              * @return {array[]} a list of ~@link https://docs.ccxt.com/#/?id=public-$trades trade structures~
              */
             Async\await($this->load_markets());
@@ -498,8 +502,11 @@ class binance extends \ccxt\async\binance {
                 }
                 $streamHash .= '::' . implode(',', $symbols);
             }
-            $options = $this->safe_value($this->options, 'watchTradesForSymbols', array());
-            $name = $this->safe_string($options, 'name', 'trade');
+            $name = $this->safe_string($params, 'name', null);
+            if ($name === null) {
+                $options = $this->safe_value($this->options, 'watchTradesForSymbols', array());
+                $name = $this->safe_string($options, 'name', 'trade');
+            }
             $firstMarket = $this->market($symbols[0]);
             $type = $firstMarket['type'];
             if ($firstMarket['contract']) {
@@ -512,7 +519,7 @@ class binance extends \ccxt\async\binance {
                 $currentMessageHash = $market['lowercaseId'] . '@' . $name;
                 $subParams[] = $currentMessageHash;
             }
-            $query = $this->omit($params, 'type');
+            $query = $this->omit($params, 'type', 'name');
             $subParamsLength = count($subParams);
             $url = $this->urls['api']['ws'][$type] . '/' . $this->stream($type, $streamHash, $subParamsLength);
             $requestId = $this->request_id($url);
@@ -542,8 +549,17 @@ class binance extends \ccxt\async\binance {
              * @param {int} [$since] timestamp in ms of the earliest trade to fetch
              * @param {int} [$limit] the maximum amount of trades to fetch
              * @param {array} [$params] extra parameters specific to the exchange API endpoint
+             * @param {string} [$params->name] stream to use can be trade or aggTrade
              * @return {array[]} a list of ~@link https://docs.ccxt.com/#/?id=public-trades trade structures~
              */
+            $name = $this->safe_string($params, 'name', null);
+            if ($name === null) {
+                $options = $this->safe_value($this->options, 'watchTrades', array());
+                $name = $this->safe_string($options, 'name', null);
+                if ($name !== null) {
+                    $params['name'] = $name;
+                }
+            }
             return Async\await($this->watch_trades_for_symbols(array( $symbol ), $since, $limit, $params));
         }) ();
     }
