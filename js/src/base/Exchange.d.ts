@@ -4,6 +4,8 @@ import WsClient from './ws/WsClient.js';
 import { CountedOrderBook, IndexedOrderBook, OrderBook as WsOrderBook } from './ws/OrderBook.js';
 import type { Account, Balance, Balances, BorrowInterest, Currency, CurrencyInterface, DepositAddressResponse, DepositWithdrawFeeNetwork, Dictionary, FundingHistory, FundingRate, FundingRateHistory, Greeks, IndexType, Int, LedgerEntry, LeverageTier, Liquidation, MarginMode, Market, MarketInterface, MinMax, Num, OHLCV, OHLCVC, OpenInterest, Order, OrderBook, OrderRequest, OrderSide, OrderType, Position, Str, Ticker, Tickers, Trade, Transaction, TransferEntry } from './types.js';
 export type { Balance, Balances, Currency, DepositAddressResponse, Dictionary, Fee, FundingHistory, FundingRateHistory, Greeks, IndexType, Int, Liquidation, Market, MinMax, OHLCV, OHLCVC, Order, OrderBook, OrderSide, OrderType, Position, Ticker, Trade, Transaction } from './types.js';
+import { ArrayCache } from './ws/Cache.js';
+import { OrderBook as Ob } from './ws/OrderBook.js';
 /**
  * @class Exchange
  */
@@ -22,7 +24,7 @@ export default class Exchange {
     api: any;
     apiKey: string;
     balance: {};
-    bidsasks: {};
+    bidsasks: Dictionary<Ticker>;
     FetchError: any;
     fetchImplementation: any;
     handleContentTypeApplicationZip: boolean;
@@ -38,12 +40,12 @@ export default class Exchange {
     httpsProxyCallback: any;
     login: string;
     minFundingAddressLength: number;
-    myTrades: any;
+    myTrades: ArrayCache;
     nodeHttpModuleLoaded: boolean;
     number: (numberString: string) => number;
     ohlcvs: any;
-    orderbooks: {};
-    orders: any;
+    orderbooks: Dictionary<Ob>;
+    orders: ArrayCache;
     origin: string;
     password: string;
     positions: any;
@@ -62,12 +64,12 @@ export default class Exchange {
     socksProxyCallback: any;
     substituteCommonCurrencyCodes: boolean;
     throttleProp: any;
-    tickers: {};
+    tickers: Dictionary<Ticker>;
     timeout: number;
     token: string;
-    trades: any;
+    trades: Dictionary<ArrayCache>;
     transactions: {};
-    triggerOrders: any;
+    triggerOrders: ArrayCache;
     twofa: any;
     uid: string;
     userAgents: any;
