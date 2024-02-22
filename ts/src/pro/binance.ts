@@ -43,7 +43,7 @@ export default class binance extends binanceRest {
                 'ws': true,
             },
             'options': {
-                'listenKeyRefreshRate': 1200000,
+                'listenKeyRefreshRate': 1200000, // 20 mins
                 'OHLCVLimit': 1000,
                 'ordersLimit': 1000,
                 'requestId': {},
@@ -51,10 +51,10 @@ export default class binance extends binanceRest {
                 'streamBySubscriptionsHash': {},
                 'streamIndex': -1,
                 'streamLimits': {
-                    'delivery': 50, // max 1024
-                    'future': 50, // max 1024
-                    'margin': 50, // max 200
-                    'spot': 50, // max 200
+                    'delivery': 50, // max 200
+                    'future': 50, // max 200
+                    'margin': 50, // max 1024
+                    'spot': 50, // max 1024
                 },
                 'subscriptionLimitByStream': {
                     'delivery': 200,
@@ -63,7 +63,7 @@ export default class binance extends binanceRest {
                     'spot': 200,
                 },
                 'tradesLimit': 1000,
-                'wallet': 'wb', // default limit
+                'wallet': 'wb',  // wb = wallet balance, cw = cross balance
                 'watchBalance': {
                     'awaitBalanceSnapshot': true, // whether to wait for the balance snapshot before providing updates
                     'fetchBalanceSnapshot': false, // or true
@@ -74,7 +74,7 @@ export default class binance extends binanceRest {
                 'watchOrderBook': {
                     'maxRetries': 3,
                 },
-                'watchOrderBookLimit': 1000,
+                'watchOrderBookLimit': 1000, // default limit
                 // get updates every 1000ms or 100ms
                 // or every 0ms in real-time for futures
                 'watchOrderBookRate': 100,
@@ -87,10 +87,10 @@ export default class binance extends binanceRest {
                 },
                 'watchTickers': {
                     'name': 'ticker', // ticker or miniTicker or bookTicker
-                }, // wb = wallet balance, cw = cross balance
+                },
                 'watchTrades': {
                     'name': 'trade', // 'trade' or 'aggTrade'
-                }, // 20 mins
+                },
                 'ws': {
                     'cost': 5,
                 },
