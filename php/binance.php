@@ -3022,7 +3022,7 @@ class binance extends Exchange {
         $fees = $this->fees;
         $linear = null;
         $inverse = null;
-        $strike = $this->safe_integer($market, 'strikePrice');
+        $strike = $this->safe_string($market, 'strikePrice');
         $symbol = $base . '/' . $quote;
         if ($contract) {
             if ($swap) {
@@ -3030,7 +3030,7 @@ class binance extends Exchange {
             } elseif ($future) {
                 $symbol = $symbol . ':' . $settle . '-' . $this->yymmdd($expiry);
             } elseif ($option) {
-                $symbol = $symbol . ':' . $settle . '-' . $this->yymmdd($expiry) . '-' . $this->number_to_string($strike) . '-' . $this->safe_string($optionParts, 3);
+                $symbol = $symbol . ':' . $settle . '-' . $this->yymmdd($expiry) . '-' . $strike . '-' . $this->safe_string($optionParts, 3);
             }
             $contractSize = $this->safe_number_2($market, 'contractSize', 'unit', $this->parse_number('1'));
             $linear = $settle === $quote;
@@ -3059,6 +3059,10 @@ class binance extends Exchange {
         } elseif ($option) {
             $unifiedType = 'option';
             $active = null;
+        }
+        $parsedStrike = null;
+        if ($strike !== null) {
+            $parsedStrike = $this->parse_to_numeric($strike);
         }
         $entry = array(
             'active' => $active,
@@ -3108,7 +3112,7 @@ class binance extends Exchange {
             'settle' => $settle,
             'settleId' => $settleId,
             'spot' => $spot,
-            'strike' => $strike,
+            'strike' => $parsedStrike,
             'swap' => $swap,
             'symbol' => $symbol,
             'taker' => $fees['trading']['taker'],
@@ -5688,12 +5692,14 @@ class binance extends Exchange {
         $trailingDelta = $this->safe_string($params, 'trailingDelta');
         $trailingTriggerPrice = $this->safe_string_2($params, 'trailingTriggerPrice', 'activationPrice', $this->number_to_string($price));
         $trailingPercent = $this->safe_string_2($params, 'trailingPercent', 'callbackRate');
+        $priceMatch = $this->safe_string($params, 'priceMatch');
         $isTrailingPercentOrder = $trailingPercent !== null;
         $isStopLoss = $stopLossPrice !== null || $trailingDelta !== null;
         $isTakeProfit = $takeProfitPrice !== null;
         $isTriggerOrder = $triggerPrice !== null;
         $isConditional = $isTriggerOrder || $isTrailingPercentOrder || $isStopLoss || $isTakeProfit;
         $isPortfolioMarginConditional = ($isPortfolioMargin && $isConditional);
+        $isPriceMatch = $priceMatch !== null;
         $uppercaseType = strtoupper($type);
         $stopPrice = null;
         if ($isTrailingPercentOrder) {
@@ -5854,7 +5860,7 @@ class binance extends Exchange {
                 $request['quantity'] = $this->amount_to_precision($symbol, $amount);
             }
         }
-        if ($priceIsRequired) {
+        if ($priceIsRequired && !$isPriceMatch) {
             if ($price === null) {
                 throw new InvalidOrder($this->id . ' createOrder() requires a $price argument for a ' . $type . ' order');
             }

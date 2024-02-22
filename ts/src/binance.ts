@@ -3036,7 +3036,7 @@ export default class binance extends Exchange {
         let fees = this.fees;
         let linear = undefined;
         let inverse = undefined;
-        const strike = this.safeInteger (market, 'strikePrice');
+        const strike = this.safeString (market, 'strikePrice');
         let symbol = base + '/' + quote;
         if (contract) {
             if (swap) {
@@ -3044,7 +3044,7 @@ export default class binance extends Exchange {
             } else if (future) {
                 symbol = symbol + ':' + settle + '-' + this.yymmdd (expiry);
             } else if (option) {
-                symbol = symbol + ':' + settle + '-' + this.yymmdd (expiry) + '-' + this.numberToString (strike) + '-' + this.safeString (optionParts, 3);
+                symbol = symbol + ':' + settle + '-' + this.yymmdd (expiry) + '-' + strike + '-' + this.safeString (optionParts, 3);
             }
             contractSize = this.safeNumber2 (market, 'contractSize', 'unit', this.parseNumber ('1'));
             linear = settle === quote;
@@ -3073,6 +3073,10 @@ export default class binance extends Exchange {
         } else if (option) {
             unifiedType = 'option';
             active = undefined;
+        }
+        let parsedStrike = undefined;
+        if (strike !== undefined) {
+            parsedStrike = this.parseToNumeric (strike);
         }
         const entry = {
             'active': active,
@@ -3122,7 +3126,7 @@ export default class binance extends Exchange {
             'settle': settle,
             'settleId': settleId,
             'spot': spot,
-            'strike': strike,
+            'strike': parsedStrike,
             'swap': swap,
             'symbol': symbol,
             'taker': fees['trading']['taker'],
@@ -5734,12 +5738,14 @@ export default class binance extends Exchange {
         const trailingDelta = this.safeString (params, 'trailingDelta');
         const trailingTriggerPrice = this.safeString2 (params, 'trailingTriggerPrice', 'activationPrice', this.numberToString (price));
         const trailingPercent = this.safeString2 (params, 'trailingPercent', 'callbackRate');
+        const priceMatch = this.safeString (params, 'priceMatch');
         const isTrailingPercentOrder = trailingPercent !== undefined;
         const isStopLoss = stopLossPrice !== undefined || trailingDelta !== undefined;
         const isTakeProfit = takeProfitPrice !== undefined;
         const isTriggerOrder = triggerPrice !== undefined;
         const isConditional = isTriggerOrder || isTrailingPercentOrder || isStopLoss || isTakeProfit;
         const isPortfolioMarginConditional = (isPortfolioMargin && isConditional);
+        const isPriceMatch = priceMatch !== undefined;
         let uppercaseType = type.toUpperCase ();
         let stopPrice = undefined;
         if (isTrailingPercentOrder) {
@@ -5900,7 +5906,7 @@ export default class binance extends Exchange {
                 request['quantity'] = this.amountToPrecision (symbol, amount);
             }
         }
-        if (priceIsRequired) {
+        if (priceIsRequired && !isPriceMatch) {
             if (price === undefined) {
                 throw new InvalidOrder (this.id + ' createOrder() requires a price argument for a ' + type + ' order');
             }
