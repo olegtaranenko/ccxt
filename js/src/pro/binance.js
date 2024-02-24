@@ -19,14 +19,19 @@ export default class binance extends binanceRest {
         return this.deepExtend(super.describe(), {
             'has': {
                 'cancelAllOrdersWs': true,
-                'cancelOrderWs': true,
                 'cancelOrdersWs': false,
+                'cancelOrderWs': true,
                 'createOrderWs': true,
                 'editOrderWs': true,
                 'fetchBalanceWs': true,
+                'fetchDepositsWs': false,
+                'fetchMarketsWs': false,
                 'fetchMyTradesWs': true,
-                'fetchOrderWs': true,
+                'fetchOpenOrdersWs': true,
                 'fetchOrdersWs': true,
+                'fetchOrderWs': true,
+                'fetchTradingFeesWs': false,
+                'fetchWithdrawalsWs': false,
                 'watchBalance': true,
                 'watchMyTrades': true,
                 'watchOHLCV': true,
@@ -54,7 +59,7 @@ export default class binance extends binanceRest {
                     'delivery': 50,
                     'future': 50,
                     'margin': 50,
-                    'spot': 50, // max 200
+                    'spot': 50, // max 1024
                 },
                 'subscriptionLimitByStream': {
                     'delivery': 200,
@@ -1956,6 +1961,28 @@ export default class binance extends binanceRest {
         };
         const orders = await this.watch(url, messageHash, message, messageHash, subscription);
         return this.filterBySymbolSinceLimit(orders, symbol, since, limit);
+    }
+    async fetchClosedOrdersWs(symbol = undefined, since = undefined, limit = undefined, params = {}) {
+        /**
+         * @method
+         * @name binance#fetchClosedOrdersWs
+         * @see https://binance-docs.github.io/apidocs/websocket_api/en/#account-order-history-user_data
+         * @description fetch closed orders
+         * @param {string} symbol unified market symbol
+         * @param {int} [since] the earliest time in ms to fetch open orders for
+         * @param {int} [limit] the maximum number of open orders structures to retrieve
+         * @param {object} [params] extra parameters specific to the exchange API endpoint
+         * @returns {object[]} a list of [order structures]{@link https://docs.ccxt.com/#/?id=order-structure}
+         */
+        const orders = await this.fetchOrdersWs(symbol, since, limit, params);
+        const closedOrders = [];
+        for (let i = 0; i < orders.length; i++) {
+            const order = orders[i];
+            if (order['status'] === 'closed') {
+                closedOrders.push(order);
+            }
+        }
+        return closedOrders;
     }
     async fetchOpenOrdersWs(symbol = undefined, since = undefined, limit = undefined, params = {}) {
         /**

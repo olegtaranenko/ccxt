@@ -16,14 +16,19 @@ class binance extends binance$1 {
         return this.deepExtend(super.describe(), {
             'has': {
                 'cancelAllOrdersWs': true,
-                'cancelOrderWs': true,
                 'cancelOrdersWs': false,
+                'cancelOrderWs': true,
                 'createOrderWs': true,
                 'editOrderWs': true,
                 'fetchBalanceWs': true,
+                'fetchDepositsWs': false,
+                'fetchMarketsWs': false,
                 'fetchMyTradesWs': true,
-                'fetchOrderWs': true,
+                'fetchOpenOrdersWs': true,
                 'fetchOrdersWs': true,
+                'fetchOrderWs': true,
+                'fetchTradingFeesWs': false,
+                'fetchWithdrawalsWs': false,
                 'watchBalance': true,
                 'watchMyTrades': true,
                 'watchOHLCV': true,
@@ -51,7 +56,7 @@ class binance extends binance$1 {
                     'delivery': 50,
                     'future': 50,
                     'margin': 50,
-                    'spot': 50, // max 200
+                    'spot': 50, // max 1024
                 },
                 'subscriptionLimitByStream': {
                     'delivery': 200,
