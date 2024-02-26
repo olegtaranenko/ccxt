@@ -243,6 +243,9 @@ interface Exchange {
     sapiGetSimpleEarnFlexibleHistoryRewardsRecord(params?: {}): Promise<implicitReturnType>;
     sapiGetSimpleEarnLockedHistoryRewardsRecord(params?: {}): Promise<implicitReturnType>;
     sapiGetSimpleEarnFlexibleHistoryCollateralRecord(params?: {}): Promise<implicitReturnType>;
+    sapiGetDciProductList(params?: {}): Promise<implicitReturnType>;
+    sapiGetDciProductPositions(params?: {}): Promise<implicitReturnType>;
+    sapiGetDciProductAccounts(params?: {}): Promise<implicitReturnType>;
     sapiPostAccountDisableFastWithdrawSwitch(params?: {}): Promise<implicitReturnType>;
     sapiPostAccountEnableFastWithdrawSwitch(params?: {}): Promise<implicitReturnType>;
     sapiPostAssetConvertTransfer(params?: {}): Promise<implicitReturnType>;
@@ -357,6 +360,8 @@ interface Exchange {
     sapiPostSimpleEarnLockedRedeem(params?: {}): Promise<implicitReturnType>;
     sapiPostSimpleEarnLockedSetAutoSubscribe(params?: {}): Promise<implicitReturnType>;
     sapiPostSimpleEarnLockedSubscribe(params?: {}): Promise<implicitReturnType>;
+    sapiPostDciProductSubscribe(params?: {}): Promise<implicitReturnType>;
+    sapiPostDciProductAutoCompoundEdit(params?: {}): Promise<implicitReturnType>;
     sapiPutUserDataStream(params?: {}): Promise<implicitReturnType>;
     sapiPutUserDataStreamIsolated(params?: {}): Promise<implicitReturnType>;
     sapiDeleteMarginIsolatedAccount(params?: {}): Promise<implicitReturnType>;

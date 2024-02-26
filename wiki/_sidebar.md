@@ -20,7 +20,6 @@
 	- [bitfinex](exchanges/bitfinex.md)
 	- [bitfinex2](exchanges/bitfinex2.md)
 	- [bitflyer](exchanges/bitflyer.md)
-	- [bitforex](exchanges/bitforex.md)
 	- [bitget](exchanges/bitget.md)
 	- [bithumb](exchanges/bithumb.md)
 	- [bitmart](exchanges/bitmart.md)

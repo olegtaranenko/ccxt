@@ -251,6 +251,9 @@ interface binance {
     sapiGetSimpleEarnFlexibleHistoryRewardsRecord (params?: {}): Promise<implicitReturnType>;
     sapiGetSimpleEarnLockedHistoryRewardsRecord (params?: {}): Promise<implicitReturnType>;
     sapiGetSimpleEarnFlexibleHistoryCollateralRecord (params?: {}): Promise<implicitReturnType>;
+    sapiGetDciProductList (params?: {}): Promise<implicitReturnType>;
+    sapiGetDciProductPositions (params?: {}): Promise<implicitReturnType>;
+    sapiGetDciProductAccounts (params?: {}): Promise<implicitReturnType>;
     sapiGetApipartnerCheckEligibility (params?: {}): Promise<implicitReturnType>;
     sapiGetApipartnerRebateHistory (params?: {}): Promise<implicitReturnType>;
     sapiGetAssetAssetDistributionHistory (params?: {}): Promise<implicitReturnType>;
@@ -396,6 +399,8 @@ interface binance {
     sapiPostSimpleEarnLockedRedeem (params?: {}): Promise<implicitReturnType>;
     sapiPostSimpleEarnLockedSetAutoSubscribe (params?: {}): Promise<implicitReturnType>;
     sapiPostSimpleEarnLockedSubscribe (params?: {}): Promise<implicitReturnType>;
+    sapiPostDciProductSubscribe (params?: {}): Promise<implicitReturnType>;
+    sapiPostDciProductAutoCompoundEdit (params?: {}): Promise<implicitReturnType>;
     sapiPostClTransfer (params?: {}): Promise<implicitReturnType>;
     sapiPostCustodianCustodianTransfer (params?: {}): Promise<implicitReturnType>;
     sapiPostCustodianOcoOrder (params?: {}): Promise<implicitReturnType>;

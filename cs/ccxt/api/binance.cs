@@ -1221,6 +1221,21 @@ public partial class binance : Exchange
         return await this.callAsync ("sapiGetSimpleEarnFlexibleHistoryCollateralRecord",parameters);
     }
 
+    public async Task<object> sapiGetDciProductList (object parameters = null)
+    {
+        return await this.callAsync ("sapiGetDciProductList",parameters);
+    }
+
+    public async Task<object> sapiGetDciProductPositions (object parameters = null)
+    {
+        return await this.callAsync ("sapiGetDciProductPositions",parameters);
+    }
+
+    public async Task<object> sapiGetDciProductAccounts (object parameters = null)
+    {
+        return await this.callAsync ("sapiGetDciProductAccounts",parameters);
+    }
+
     public async Task<object> sapiPostAccountDisableFastWithdrawSwitch (object parameters = null)
     {
         return await this.callAsync ("sapiPostAccountDisableFastWithdrawSwitch",parameters);
@@ -1789,6 +1804,16 @@ public partial class binance : Exchange
     public async Task<object> sapiPostSimpleEarnLockedSubscribe (object parameters = null)
     {
         return await this.callAsync ("sapiPostSimpleEarnLockedSubscribe",parameters);
+    }
+
+    public async Task<object> sapiPostDciProductSubscribe (object parameters = null)
+    {
+        return await this.callAsync ("sapiPostDciProductSubscribe",parameters);
+    }
+
+    public async Task<object> sapiPostDciProductAutoCompoundEdit (object parameters = null)
+    {
+        return await this.callAsync ("sapiPostDciProductAutoCompoundEdit",parameters);
     }
 
     public async Task<object> sapiPutUserDataStream (object parameters = null)

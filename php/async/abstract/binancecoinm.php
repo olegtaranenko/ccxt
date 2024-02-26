@@ -733,6 +733,15 @@ abstract class binancecoinm extends \ccxt\async\binance {
     public function sapi_get_simple_earn_flexible_history_collateralrecord($params = array()) {
         return $this->request('simple-earn/flexible/history/collateralRecord', 'sapi', 'GET', $params, null, null, array("cost" => 0.1));
     }
+    public function sapi_get_dci_product_list($params = array()) {
+        return $this->request('dci/product/list', 'sapi', 'GET', $params, null, null, array("cost" => 0.1));
+    }
+    public function sapi_get_dci_product_positions($params = array()) {
+        return $this->request('dci/product/positions', 'sapi', 'GET', $params, null, null, array("cost" => 0.1));
+    }
+    public function sapi_get_dci_product_accounts($params = array()) {
+        return $this->request('dci/product/accounts', 'sapi', 'GET', $params, null, null, array("cost" => 0.1));
+    }
     public function sapi_post_account_disablefastwithdrawswitch($params = array()) {
         return $this->request('account/disableFastWithdrawSwitch', 'sapi', 'POST', $params, null, null, array("cost" => 0.1));
     }
@@ -1074,6 +1083,12 @@ abstract class binancecoinm extends \ccxt\async\binance {
     }
     public function sapi_post_simple_earn_locked_subscribe($params = array()) {
         return $this->request('simple-earn/locked/subscribe', 'sapi', 'POST', $params, null, null, array("cost" => 0.1));
+    }
+    public function sapi_post_dci_product_subscribe($params = array()) {
+        return $this->request('dci/product/subscribe', 'sapi', 'POST', $params, null, null, array("cost" => 0.1));
+    }
+    public function sapi_post_dci_product_auto_compound_edit($params = array()) {
+        return $this->request('dci/product/auto_compound/edit', 'sapi', 'POST', $params, null, null, array("cost" => 0.1));
     }
     public function sapi_put_userdatastream($params = array()) {
         return $this->request('userDataStream', 'sapi', 'PUT', $params, null, null, array("cost" => 0.1));
@@ -2791,6 +2806,15 @@ abstract class binancecoinm extends \ccxt\async\binance {
     public function sapiGetSimpleEarnFlexibleHistoryCollateralRecord($params = array()) {
         return $this->request('simple-earn/flexible/history/collateralRecord', 'sapi', 'GET', $params, null, null, array("cost" => 0.1));
     }
+    public function sapiGetDciProductList($params = array()) {
+        return $this->request('dci/product/list', 'sapi', 'GET', $params, null, null, array("cost" => 0.1));
+    }
+    public function sapiGetDciProductPositions($params = array()) {
+        return $this->request('dci/product/positions', 'sapi', 'GET', $params, null, null, array("cost" => 0.1));
+    }
+    public function sapiGetDciProductAccounts($params = array()) {
+        return $this->request('dci/product/accounts', 'sapi', 'GET', $params, null, null, array("cost" => 0.1));
+    }
     public function sapiPostAccountDisableFastWithdrawSwitch($params = array()) {
         return $this->request('account/disableFastWithdrawSwitch', 'sapi', 'POST', $params, null, null, array("cost" => 0.1));
     }
@@ -3132,6 +3156,12 @@ abstract class binancecoinm extends \ccxt\async\binance {
     }
     public function sapiPostSimpleEarnLockedSubscribe($params = array()) {
         return $this->request('simple-earn/locked/subscribe', 'sapi', 'POST', $params, null, null, array("cost" => 0.1));
+    }
+    public function sapiPostDciProductSubscribe($params = array()) {
+        return $this->request('dci/product/subscribe', 'sapi', 'POST', $params, null, null, array("cost" => 0.1));
+    }
+    public function sapiPostDciProductAutoCompoundEdit($params = array()) {
+        return $this->request('dci/product/auto_compound/edit', 'sapi', 'POST', $params, null, null, array("cost" => 0.1));
     }
     public function sapiPutUserDataStream($params = array()) {
         return $this->request('userDataStream', 'sapi', 'PUT', $params, null, null, array("cost" => 0.1));

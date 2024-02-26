@@ -425,4 +425,8 @@ export default class binance extends Exchange {
         underlyingPrice: any;
         vega: number;
     };
+    fetchPositionMode(symbol?: Str, params?: {}): Promise<{
+        info: any;
+        hedged: boolean;
+    }>;
 }
