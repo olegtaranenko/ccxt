@@ -315,7 +315,7 @@ export default class Exchange {
     positions: any;
     tickers: Dictionary<Ticker> = {};
     trades: Dictionary<ArrayCache>;
-    transactions = {}
+    transactions = {};
     triggerOrders: ArrayCache = undefined;
     urls: {
         api?: string | Dictionary<string>;
@@ -565,6 +565,7 @@ export default class Exchange {
                 'createLimitOrder': true,
                 'createLimitSellOrder': undefined,
                 'createMarketBuyOrder': undefined,
+                'createMarketBuyOrderWithCost': undefined,
                 'createMarketBuyOrderWithCost': undefined,
                 'createMarketOrder': true,
                 'createMarketOrderWithCost': undefined,
