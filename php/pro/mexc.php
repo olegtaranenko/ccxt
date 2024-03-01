@@ -474,6 +474,7 @@ class mexc extends \ccxt\async\mexc {
         $symbol = $this->safe_symbol($marketId);
         $messageHash = 'orderbook:' . $symbol;
         $subscription = $this->safe_value($client->subscriptions, $messageHash);
+        $limit = $this->safe_integer($subscription, 'limit');
         if ($subscription === true) {
             // we set $client->subscriptions[$messageHash] to 1
             // once we have received the first delta and initialized the orderbook
@@ -486,14 +487,14 @@ class mexc extends \ccxt\async\mexc {
             $cacheLength = count($storedOrderBook->cache);
             $snapshotDelay = $this->handle_option('watchOrderBook', 'snapshotDelay', 25);
             if ($cacheLength === $snapshotDelay) {
-                $this->spawn(array($this, 'load_order_book'), $client, $messageHash, $symbol);
+                $this->spawn(array($this, 'load_order_book'), $client, $messageHash, $symbol, $limit, array());
             }
             $storedOrderBook->cache[] = $data;
             return;
         }
         try {
             $this->handle_delta($storedOrderBook, $data);
-            $timestamp = $this->safe_integer($message, 't');
+            $timestamp = $this->safe_integer_2($message, 't', 'ts');
             $storedOrderBook['timestamp'] = $timestamp;
             $storedOrderBook['datetime'] = $this->iso8601($timestamp);
         } catch (Exception $e) {

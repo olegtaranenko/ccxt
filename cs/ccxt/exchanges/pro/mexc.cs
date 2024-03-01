@@ -487,6 +487,7 @@ public partial class mexc : ccxt.mexc
         object symbol = this.safeSymbol(marketId);
         object messageHash = add("orderbook:", symbol);
         object subscription = this.safeValue(((WebSocketClient)client).subscriptions, messageHash);
+        object limit = this.safeInteger(subscription, "limit");
         if (isTrue(isEqual(subscription, true)))
         {
             // we set ((WebSocketClient)client).subscriptions[messageHash] to 1
@@ -502,7 +503,7 @@ public partial class mexc : ccxt.mexc
             object snapshotDelay = this.handleOption("watchOrderBook", "snapshotDelay", 25);
             if (isTrue(isEqual(cacheLength, snapshotDelay)))
             {
-                this.spawn(this.loadOrderBook, new object[] { client, messageHash, symbol});
+                this.spawn(this.loadOrderBook, new object[] { client, messageHash, symbol, limit, new Dictionary<string, object>() {}});
             }
             ((IList<object>)(storedOrderBook as ccxt.pro.OrderBook).cache).Add(data);
             return;
@@ -510,7 +511,7 @@ public partial class mexc : ccxt.mexc
         try
         {
             this.handleDelta(storedOrderBook, data);
-            object timestamp = this.safeInteger(message, "t");
+            object timestamp = this.safeInteger2(message, "t", "ts");
             ((IDictionary<string,object>)storedOrderBook)["timestamp"] = timestamp;
             ((IDictionary<string,object>)storedOrderBook)["datetime"] = this.iso8601(timestamp);
         } catch(Exception e)

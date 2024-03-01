@@ -439,6 +439,7 @@ class mexc(ccxt.async_support.mexc):
         symbol = self.safe_symbol(marketId)
         messageHash = 'orderbook:' + symbol
         subscription = self.safe_value(client.subscriptions, messageHash)
+        limit = self.safe_integer(subscription, 'limit')
         if subscription is True:
             # we set client.subscriptions[messageHash] to 1
             # once we have received the first delta and initialized the orderbook
@@ -450,12 +451,12 @@ class mexc(ccxt.async_support.mexc):
             cacheLength = len(storedOrderBook.cache)
             snapshotDelay = self.handle_option('watchOrderBook', 'snapshotDelay', 25)
             if cacheLength == snapshotDelay:
-                self.spawn(self.load_order_book, client, messageHash, symbol)
+                self.spawn(self.load_order_book, client, messageHash, symbol, limit, {})
             storedOrderBook.cache.append(data)
             return
         try:
             self.handle_delta(storedOrderBook, data)
-            timestamp = self.safe_integer(message, 't')
+            timestamp = self.safe_integer_2(message, 't', 'ts')
             storedOrderBook['timestamp'] = timestamp
             storedOrderBook['datetime'] = self.iso8601(timestamp)
         except Exception as e:
