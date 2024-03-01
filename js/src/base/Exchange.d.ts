@@ -2,7 +2,7 @@ import * as functions from './functions.js';
 import { AuthenticationError, DDoSProtection, ExchangeError, ExchangeNotAvailable, RateLimitExceeded, RequestTimeout } from "./errors.js";
 import WsClient from './ws/WsClient.js';
 import { CountedOrderBook, IndexedOrderBook, OrderBook as WsOrderBook } from './ws/OrderBook.js';
-import type { Account, Balance, Balances, BorrowInterest, Currency, CurrencyInterface, DepositAddressResponse, DepositWithdrawFeeNetwork, Dictionary, FundingHistory, FundingRate, FundingRateHistory, Greeks, IndexType, Int, LedgerEntry, LeverageTier, Liquidation, MarginMode, Market, MarketInterface, MinMax, Num, OHLCV, OHLCVC, OpenInterest, Order, OrderBook, OrderRequest, OrderSide, OrderType, Position, Str, Ticker, Tickers, Trade, Transaction, TransferEntry } from './types.js';
+import type { Account, Balance, Balances, BorrowInterest, Currency, CurrencyInterface, DepositAddressResponse, DepositWithdrawFeeNetwork, Dictionary, FundingHistory, FundingRate, FundingRateHistory, Greeks, IndexType, Int, LedgerEntry, LeverageTier, Liquidation, MarginMode, MarginModes, Market, MarketInterface, MarketType, MinMax, Num, OHLCV, OHLCVC, OpenInterest, Order, OrderBook, OrderRequest, OrderSide, OrderType, Position, Str, Ticker, Tickers, Trade, Transaction, TransferEntry } from './types.js';
 import { ArrayCache } from './ws/Cache.js';
 import { OrderBook as Ob } from './ws/OrderBook.js';
 export type { Balance, Balances, Currency, DepositAddressResponse, Dictionary, Fee, FundingHistory, FundingRateHistory, Greeks, IndexType, Int, Liquidation, Market, MinMax, OHLCV, OHLCVC, Order, OrderBook, OrderSide, OrderType, Position, Ticker, Trade, Transaction } from './types.js';
@@ -387,9 +387,11 @@ export default class Exchange {
             fetchLedger: any;
             fetchLedgerEntry: any;
             fetchLeverage: any;
+            fetchLeverages: any;
             fetchLeverageTiers: any;
             fetchLiquidations: any;
             fetchMarginMode: any;
+            fetchMarginModes: any;
             fetchMarketLeverageTiers: any;
             fetchMarkets: boolean;
             fetchMarketsWs: any;
@@ -638,7 +640,7 @@ export default class Exchange {
     filterByLimit(array: object[], limit?: Int, key?: IndexType, fromStart?: boolean): any;
     filterBySinceLimit(array: object[], since?: Int, limit?: Int, key?: IndexType, tail?: boolean): any;
     filterByValueSinceLimit(array: object[], field: IndexType, value?: any, since?: Int, limit?: Int, key?: string, tail?: boolean): any;
-    setSandboxMode(enabled: any): void;
+    setSandboxMode(enabled: boolean): void;
     sign(path: any, api?: any, method?: string, params?: {}, headers?: any, body?: any): {};
     fetchAccounts(params?: {}): Promise<{}>;
     fetchTrades(symbol: string, since?: Int, limit?: Int, params?: {}): Promise<Trade[]>;
@@ -651,7 +653,8 @@ export default class Exchange {
     watchOrderBookForSymbols(symbols: string[], limit?: Int, params?: {}): Promise<OrderBook>;
     fetchDepositAddresses(codes?: string[], params?: {}): Promise<{}>;
     fetchOrderBook(symbol: string, limit?: Int, params?: {}): Promise<OrderBook>;
-    fetchMarginMode(symbol?: string, params?: {}): Promise<MarginMode>;
+    fetchMarginMode(symbol: string, params?: {}): Promise<MarginMode>;
+    fetchMarginModes(symbols?: string[], params?: {}): Promise<MarginModes>;
     fetchRestOrderBookSafe(symbol: any, limit?: any, params?: {}): Promise<OrderBook>;
     watchOrderBook(symbol: string, limit?: Int, params?: {}): Promise<OrderBook>;
     fetchTime(params?: {}): Promise<Int>;
@@ -683,6 +686,7 @@ export default class Exchange {
     createDepositAddress(code: string, params?: {}): Promise<DepositAddressResponse>;
     setLeverage(leverage: Int, symbol?: string, params?: {}): Promise<{}>;
     fetchLeverage(symbol: string, params?: {}): Promise<{}>;
+    fetchLeverages(symbols?: string[], params?: {}): Promise<{}>;
     setPositionMode(hedged: boolean, symbol?: Str, params?: {}): Promise<{}>;
     addMargin(symbol: string, amount: number, params?: {}): Promise<{}>;
     reduceMargin(symbol: string, amount: number, params?: {}): Promise<{}>;
@@ -991,5 +995,7 @@ export default class Exchange {
     parseLiquidations(liquidations: any, market?: any, since?: Int, limit?: Int): Liquidation[];
     parseGreeks(greeks: any, market?: Market): Greeks;
     getBodyTruncated(body?: string): string;
+    parseMarginModes(response: object[], symbols?: string[], symbolKey?: string, marketType?: MarketType): MarginModes;
+    parseMarginMode(marginMode: any, market?: Market): MarginMode;
 }
 export { Exchange, };
