@@ -4,7 +4,7 @@
 
 # -----------------------------------------------------------------------------
 
-__version__ = '4.2.56'
+__version__ = '4.2.57'
 
 # -----------------------------------------------------------------------------
 
@@ -2087,8 +2087,15 @@ class Exchange(object):
     def fetch_order_book(self, symbol: str, limit: Int = None, params={}):
         raise NotSupported(self.id + ' fetchOrderBook() is not supported yet')
 
-    def fetch_margin_mode(self, symbol: str = None, params={}):
-        raise NotSupported(self.id + ' fetchMarginMode() is not supported yet')
+    def fetch_margin_mode(self, symbol: str, params={}):
+        if self.has['fetchMarginModes']:
+            marginModes = self.fetchMarginModes([symbol], params)
+            return self.safe_dict(marginModes, symbol)
+        else:
+            raise NotSupported(self.id + ' fetchMarginMode() is not supported yet')
+
+    def fetch_margin_modes(self, symbols: List[str] = None, params={}):
+        raise NotSupported(self.id + ' fetchMarginModes() is not supported yet')
 
     def fetch_rest_order_book_safe(self, symbol, limit=None, params={}):
         fetchSnapshotMaxRetries = self.handleOption('watchOrderBook', 'maxRetries', 3)
@@ -2193,6 +2200,9 @@ class Exchange(object):
 
     def fetch_leverage(self, symbol: str, params={}):
         raise NotSupported(self.id + ' fetchLeverage() is not supported yet')
+
+    def fetch_leverages(self, symbols: List[str] = None, params={}):
+        raise NotSupported(self.id + ' fetchLeverages() is not supported yet')
 
     def set_position_mode(self, hedged: bool, symbol: Str = None, params={}):
         raise NotSupported(self.id + ' setPositionMode() is not supported yet')
@@ -2306,13 +2316,19 @@ class Exchange(object):
 
     def safe_currency_structure(self, currency: object):
         return self.extend({
-            'active': None,
+            'info': None,
+            'id': None,
+            'numericId': None,
             'code': None,
+            'precision': None,
+            'type': None,
+            'name': None,
+            'active': None,
             'deposit': None,
+            'withdraw': None,
             'fee': None,
             'fees': {},
-            'id': None,
-            'info': None,
+            'networks': {},
             'limits': {
                 'deposit': {
                     'min': None,
@@ -2323,69 +2339,63 @@ class Exchange(object):
                     'max': None,
                 },
             },
-            'name': None,
-            'networks': {},
-            'numericId': None,
-            'precision': None,
-            'type': None,
-            'withdraw': None,
         }, currency)
 
     def safe_market_structure(self, market=None):
         cleanStructure = {
-            'active': None,
+            'id': None,
+            'lowercaseId': None,
+            'symbol': None,
             'base': None,
+            'quote': None,
+            'settle': None,
             'baseId': None,
+            'quoteId': None,
+            'settleId': None,
+            'type': None,
+            'spot': None,
+            'margin': None,
+            'swap': None,
+            'future': None,
+            'option': None,
+            'index': None,
+            'active': None,
             'contract': None,
+            'linear': None,
+            'inverse': None,
+            'subType': None,
+            'taker': None,
+            'maker': None,
             'contractSize': None,
             'expiry': None,
             'expiryDatetime': None,
-            'future': None,
-            'id': None,
-            'index': None,
-            'inverse': None,
-            'limits': {
-                'leverage': {
-                    'max': None,
-                    'min': None,
-                },
-                'amount': {
-                    'max': None,
-                    'min': None,
-                },
-                'price': {
-                    'max': None,
-                    'min': None,
-                },
-                'cost': {
-                    'max': None,
-                    'min': None,
-                },
-            },
-            'linear': None,
-            'lowercaseId': None,
-            'maker': None,
-            'margin': None,
-            'option': None,
+            'strike': None,
             'optionType': None,
             'precision': {
                 'amount': None,
-                'base': None,
-                'cost': None,
                 'price': None,
+                'cost': None,
+                'base': None,
                 'quote': None,
             },
-            'quote': None,
-            'quoteId': None,
-            'settle': None,
-            'settleId': None,
-            'spot': None,
-            'strike': None,
-            'subType': None,
-            'swap': None,
-            'symbol': None,
-            'taker': None,
-            'type': None,
+            'limits': {
+                'leverage': {
+                    'min': None,
+                    'max': None,
+                },
+                'amount': {
+                    'min': None,
+                    'max': None,
+                },
+                'price': {
+                    'min': None,
+                    'max': None,
+                },
+                'cost': {
+                    'min': None,
+                    'max': None,
+                },
+            },
             'created': None,
             'info': None,
         }
@@ -2716,31 +2726,31 @@ class Exchange(object):
         takeProfitPrice = self.parse_number(self.safe_string(order, 'takeProfitPrice'))
         stopLossPrice = self.parse_number(self.safe_string(order, 'stopLossPrice'))
         return self.extend(order, {
-            'amount': self.parse_number(amount),
-            'average': self.parse_number(average),
-            'clientOrderId': self.safe_string(order, 'clientOrderId'),
-            'cost': self.parse_number(cost),
-            'datetime': datetime,
-            'fee': self.safe_value(order, 'fee'),
-            'filled': self.parse_number(filled),
             'id': self.safe_string(order, 'id'),
+            'clientOrderId': self.safe_string(order, 'clientOrderId'),
+            'timestamp': timestamp,
+            'datetime': datetime,
+            'symbol': symbol,
+            'type': self.safe_string(order, 'type'),
+            'side': side,
             'lastTradeTimestamp': lastTradeTimeTimestamp,
             'lastUpdateTimestamp': lastUpdateTimestamp,
-            'postOnly': postOnly,
             'price': self.parse_number(price),
-            'reduceOnly': self.safe_value(order, 'reduceOnly'),
+            'amount': self.parse_number(amount),
+            'cost': self.parse_number(cost),
+            'average': self.parse_number(average),
+            'filled': self.parse_number(filled),
             'remaining': self.parse_number(remaining),
-            'side': side,
-            'status': status,
-            'stopLossPrice': stopLossPrice,
-            'stopPrice': triggerPrice,  # ! deprecated, use triggerPrice instead
-            'symbol': symbol,
-            'takeProfitPrice': takeProfitPrice,
             'timeInForce': timeInForce,
-            'timestamp': timestamp,
+            'postOnly': postOnly,
             'trades': trades,
+            'reduceOnly': self.safe_value(order, 'reduceOnly'),
+            'stopPrice': triggerPrice,  # ! deprecated, use triggerPrice instead
             'triggerPrice': triggerPrice,
-            'type': self.safe_string(order, 'type'),
+            'takeProfitPrice': takeProfitPrice,
+            'stopLossPrice': stopLossPrice,
+            'status': status,
+            'fee': self.safe_value(order, 'fee'),
         })
 
     def parse_orders(self, orders: object, market: Market = None, since: Int = None, limit: Int = None, params={}):
@@ -2812,10 +2822,10 @@ class Exchange(object):
         rate = self.safe_string(market, takerOrMaker)
         cost = Precise.string_mul(cost, rate)
         return {
-            'cost': self.parse_number(cost),
+            'type': takerOrMaker,
             'currency': market[key],
             'rate': self.parse_number(rate),
-            'type': takerOrMaker,
+            'cost': self.parse_number(cost),
         }
 
     def safe_liquidation(self, liquidation: object, market: Market = None):
@@ -2879,8 +2889,8 @@ class Exchange(object):
                     tradeFee['rate'] = self.safe_number(tradeFee, 'rate')
                 trade['fee'] = tradeFee
         trade['amount'] = self.parse_number(amount)
-        trade['cost'] = self.parse_number(cost)
         trade['price'] = self.parse_number(price)
+        trade['cost'] = self.parse_number(cost)
         return trade
 
     def invert_flat_string_dictionary(self, dict):
@@ -2956,8 +2966,8 @@ class Exchange(object):
                     reduced[feeCurrencyCode][rateKey]['cost'] = Precise.string_add(reduced[feeCurrencyCode][rateKey]['cost'], cost)
                 else:
                     reduced[feeCurrencyCode][rateKey] = {
-                        'cost': cost,
                         'currency': feeCurrencyCode,
+                        'cost': cost,
                     }
                     if rate is not None:
                         reduced[feeCurrencyCode][rateKey]['rate'] = rate
@@ -2998,22 +3008,22 @@ class Exchange(object):
         # timestamp and symbol operations don't belong in safeTicker
         # they should be done in the derived classes
         return self.extend(ticker, {
-            'ask': self.parse_number(self.omit_zero(self.safe_number(ticker, 'ask'))),
-            'askVolume': self.safe_number(ticker, 'askVolume'),
-            'average': self.parse_number(average),
-            'baseVolume': self.parse_number(baseVolume),
             'bid': self.parse_number(self.omit_zero(self.safe_number(ticker, 'bid'))),
             'bidVolume': self.safe_number(ticker, 'bidVolume'),
-            'change': self.parse_number(change),
-            'close': self.parse_number(self.omit_zero(self.parse_number(close))),
+            'ask': self.parse_number(self.omit_zero(self.safe_number(ticker, 'ask'))),
+            'askVolume': self.safe_number(ticker, 'askVolume'),
             'high': self.parse_number(self.omit_zero(self.safe_string(ticker, 'high'))),
-            'last': self.parse_number(self.omit_zero(self.parse_number(last))),
             'low': self.parse_number(self.omit_zero(self.safe_number(ticker, 'low'))),
             'open': self.parse_number(self.omit_zero(self.parse_number(open))),
+            'close': self.parse_number(self.omit_zero(self.parse_number(close))),
+            'last': self.parse_number(self.omit_zero(self.parse_number(last))),
+            'change': self.parse_number(change),
             'percentage': self.parse_number(percentage),
-            'previousClose': self.safe_number(ticker, 'previousClose'),
-            'quoteVolume': self.parse_number(quoteVolume),
+            'average': self.parse_number(average),
             'vwap': self.parse_number(vwap),
+            'baseVolume': self.parse_number(baseVolume),
+            'quoteVolume': self.parse_number(quoteVolume),
+            'previousClose': self.safe_number(ticker, 'previousClose'),
         })
 
     def fetch_borrow_rate(self, code: str, amount, params={}):
@@ -3073,11 +3083,11 @@ class Exchange(object):
 
     def convert_ohlcv_to_trading_view(self, ohlcvs, timestamp='t', open='o', high='h', low='l', close='c', volume='v', ms=False):
         result = {}
-        result[close] = []
+        result[timestamp] = []
+        result[open] = []
         result[high] = []
         result[low] = []
-        result[open] = []
-        result[timestamp] = []
+        result[close] = []
         result[volume] = []
         for i in range(0, len(ohlcvs)):
             ts = ohlcvs[i][0] if ms else self.parseToInt(ohlcvs[i][0] / 1000)
@@ -3327,12 +3337,12 @@ class Exchange(object):
         bids = self.parse_bids_asks(self.safe_value(orderbook, bidsKey, []), priceKey, amountKey, countOrIdKey)
         asks = self.parse_bids_asks(self.safe_value(orderbook, asksKey, []), priceKey, amountKey, countOrIdKey)
         return {
-            'asks': self.sort_by(asks, 0),
+            'symbol': symbol,
             'bids': self.sort_by(bids, 0, True),
+            'asks': self.sort_by(asks, 0),
+            'timestamp': timestamp,
             'datetime': self.iso8601(timestamp),
             'nonce': None,
-            'symbol': symbol,
-            'timestamp': timestamp,
         }
 
     def parse_ohlcvs(self, ohlcvs: List[object], market: Any = None, timeframe: str = '1m', since: Int = None, limit: Int = None):
@@ -4870,16 +4880,16 @@ class Exchange(object):
 
     def deposit_withdraw_fee(self, info):
         return {
-            'deposit': {
-                'fee': None,
-                'percentage': None,
-            },
             'info': info,
-            'networks': {},
             'withdraw': {
                 'fee': None,
                 'percentage': None,
             },
+            'deposit': {
+                'fee': None,
+                'percentage': None,
+            },
+            'networks': {},
         }
 
     def assign_default_deposit_withdraw_fees(self, fee, currency=None):
@@ -4900,8 +4910,8 @@ class Exchange(object):
         for i in range(0, numNetworks):
             network = networkKeys[i]
             if network == currencyCode:
-                fee['deposit'] = fee['networks'][networkKeys[i]]['deposit']
                 fee['withdraw'] = fee['networks'][networkKeys[i]]['withdraw']
+                fee['deposit'] = fee['networks'][networkKeys[i]]['deposit']
         return fee
 
     def parse_income(self, info, market: Market = None):
@@ -5009,10 +5019,9 @@ class Exchange(object):
                         params['until'] = paginationTimestamp - 1
                     response = getattr(self, method)(symbol, None, maxEntriesPerRequest, params)
                     responseLength = len(response)
-                    if self.verbose or self.verboseTruncate:
-                        if not callable(self.verboseLogVeto) or self.verboseLogVeto('pagination', method, None, response):
-                            backwardMessage = 'Dynamic pagination call ' + calls + ' method ' + method + ' response length ' + responseLength + ' timestamp ' + paginationTimestamp
-                            self.log(backwardMessage)
+                    if self.verbose:
+                        backwardMessage = 'Dynamic pagination call ' + calls + ' method ' + method + ' response length ' + responseLength + ' timestamp ' + paginationTimestamp
+                        self.log(backwardMessage)
                     if responseLength == 0:
                         break
                     errors = 0
@@ -5025,10 +5034,9 @@ class Exchange(object):
                     # do it forwards, starting from the since
                     response = getattr(self, method)(symbol, paginationTimestamp, maxEntriesPerRequest, params)
                     responseLength = len(response)
-                    if self.verbose or self.verboseTruncate:
-                        if not callable(self.verboseLogVeto) or self.verboseLogVeto('pagination', method, None, response):
-                            forwardMessage = 'Dynamic pagination call ' + calls + ' method ' + method + ' response length ' + responseLength + ' timestamp ' + paginationTimestamp
-                            self.log(forwardMessage)
+                    if self.verbose:
+                        forwardMessage = 'Dynamic pagination call ' + calls + ' method ' + method + ' response length ' + responseLength + ' timestamp ' + paginationTimestamp
+                        self.log(forwardMessage)
                     if responseLength == 0:
                         break
                     errors = 0
@@ -5114,11 +5122,10 @@ class Exchange(object):
                     response = getattr(self, method)(symbol, since, maxEntriesPerRequest, params)
                 errors = 0
                 responseLength = len(response)
-                if self.verbose or self.verboseTruncate:
-                    if not callable(self.verboseLogVeto) or self.verboseLogVeto('pagination', method, None, response):
-                        iteration = (i + str(1))
-                        cursorMessage = 'Cursor pagination call ' + iteration + ' method ' + method + ' response length ' + str(responseLength) + ' cursor ' + cursorValue
-                        self.log(cursorMessage)
+                if self.verbose:
+                    iteration = (i + str(1))
+                    cursorMessage = 'Cursor pagination call ' + iteration + ' method ' + method + ' response length ' + str(responseLength) + ' cursor ' + cursorValue
+                    self.log(cursorMessage)
                 if responseLength == 0:
                     break
                 result = self.array_concat(result, response)
@@ -5153,11 +5160,10 @@ class Exchange(object):
                 response = getattr(self, method)(symbol, since, maxEntriesPerRequest, params)
                 errors = 0
                 responseLength = len(response)
-                if self.verbose or self.verboseTruncate:
-                    if not callable(self.verboseLogVeto) or self.verboseLogVeto('pagination', method, None, response):
-                        iteration = (i + str(1))
-                        incrementalMessage = 'Incremental pagination call ' + iteration + ' method ' + method + ' response length ' + str(responseLength)
-                        self.log(incrementalMessage)
+                if self.verbose:
+                    iteration = (i + str(1))
+                    incrementalMessage = 'Incremental pagination call ' + iteration + ' method ' + method + ' response length ' + str(responseLength)
+                    self.log(incrementalMessage)
                 if responseLength == 0:
                     break
                 result = self.array_concat(result, response)
@@ -5207,14 +5213,14 @@ class Exchange(object):
 
     def safe_open_interest(self, interest, market: Market = None):
         return self.extend(interest, {
+            'symbol': self.safe_string(market, 'symbol'),
             'baseVolume': self.safe_number(interest, 'baseVolume'),  # deprecated
-            'datetime': self.safe_string(interest, 'datetime'),
-            'info': self.safe_value(interest, 'info'),
+            'quoteVolume': self.safe_number(interest, 'quoteVolume'),  # deprecated
             'openInterestAmount': self.safe_number(interest, 'openInterestAmount'),
             'openInterestValue': self.safe_number(interest, 'openInterestValue'),
-            'quoteVolume': self.safe_number(interest, 'quoteVolume'),  # deprecated
-            'symbol': self.safe_string(market, 'symbol'),
             'timestamp': self.safe_integer(interest, 'timestamp'),
+            'datetime': self.safe_string(interest, 'datetime'),
+            'info': self.safe_value(interest, 'info'),
         })
 
     def parse_liquidation(self, liquidation, market: Market = None):
@@ -5242,10 +5248,15 @@ class Exchange(object):
     def parse_greeks(self, greeks, market: Market = None):
         raise NotSupported(self.id + ' parseGreeks() is not supported yet')
 
-    def get_body_truncated(self, body: str):
-        if self.verboseTruncate and body:
-            TRUNCATE_LENGTH = 8192
-            length = len(body) + 8
-            if len(body) >= TRUNCATE_LENGTH:
-                return body.substring(0, TRUNCATE_LENGTH / 2) + '\n ... \n' + body.substring(length - TRUNCATE_LENGTH / 2)
-        return body
+    def parse_margin_modes(self, response: List[object], symbols: List[str] = None, symbolKey: str = None, marketType: MarketType = None):
+        marginModeStructures = {}
+        for i in range(0, len(response)):
+            info = response[i]
+            marketId = self.safe_string(info, symbolKey)
+            market = self.safe_market(marketId, None, None, marketType)
+            if (symbols is None) or self.in_array(market['symbol'], symbols):
+                marginModeStructures[market['symbol']] = self.parse_margin_mode(info, market)
+        return marginModeStructures
+
+    def parse_margin_mode(self, marginMode, market: Market = None):
+        raise NotSupported(self.id + ' parseMarginMode() is not supported yet')

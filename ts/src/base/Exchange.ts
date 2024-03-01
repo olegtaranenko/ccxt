@@ -311,7 +311,7 @@ export default class Exchange {
     balance = {};
     bidsasks: Dictionary<Ticker> = {};
     myTrades: ArrayCache;
-    ohlcvs: any;
+    ohlcvs: Dictionary<Dictionary<ArrayCacheByTimestamp>>
     orderbooks: Dictionary<Ob> = {};
     orders: ArrayCache = undefined;
     positions: any;
