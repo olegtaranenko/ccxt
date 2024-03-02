@@ -668,9 +668,6 @@ class Exchange(BaseExchange):
     async def fetch_leverages(self, symbols: List[str] = None, params={}):
         raise NotSupported(self.id + ' fetchLeverages() is not supported yet')
 
-    async def fetch_leverages(self, symbols: List[str] = None, params={}):
-        raise NotSupported(self.id + ' fetchLeverages() is not supported yet')
-
     async def set_position_mode(self, hedged: bool, symbol: Str = None, params={}):
         raise NotSupported(self.id + ' setPositionMode() is not supported yet')
 
