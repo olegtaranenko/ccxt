@@ -2480,7 +2480,7 @@ export default class binance extends binanceRest {
         this.setBalanceCache (client, type, isPortfolioMargin);
         this.setPositionsCache (client, type, symbols, isPortfolioMargin);
         const fetchPositionsSnapshot = this.handleOption ('watchPositions', 'fetchPositionsSnapshot', true);
-        const awaitPositionsSnapshot = this.safeValue ('watchPositions', 'awaitPositionsSnapshot', true);
+        const awaitPositionsSnapshot = this.safeBool ('watchPositions', 'awaitPositionsSnapshot', true);
         const cache = this.safeValue (this.positions, type);
         if (fetchPositionsSnapshot && awaitPositionsSnapshot && cache === undefined) {
             const snapshot = await client.future (type + ':fetchPositionsSnapshot');
@@ -2617,12 +2617,24 @@ export default class binance extends binanceRest {
         //     }
         //
         const marketId = this.safeString (position, 's');
-        const positionSide = this.safeStringLower (position, 'ps');
-        const hedged = positionSide !== 'both';
+        const contracts = this.safeString (position, 'pa');
+        const contractsAbs = Precise.stringAbs (this.safeString (position, 'pa'));
+        let positionSide = this.safeStringLower (position, 'ps');
+        let hedged = true;
+        if (positionSide === 'both') {
+            hedged = false;
+            if (!Precise.stringEq (contracts, '0')) {
+                if (Precise.stringLt (contracts, '0')) {
+                    positionSide = 'short';
+                } else {
+                    positionSide = 'long';
+                }
+            }
+        }
         return this.safePosition ({
             'collateral': undefined,
             'contractSize': undefined,
-            'contracts': this.safeNumber (position, 'pa'),
+            'contracts': parseNumber (contractsAbs),
             'datetime': undefined,
             'entryPrice': this.safeNumber (position, 'ep'),
             'hedged': hedged,
