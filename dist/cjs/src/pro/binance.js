@@ -2615,12 +2615,25 @@ class binance extends binance$1 {
         //     }
         //
         const marketId = this.safeString(position, 's');
-        const positionSide = this.safeStringLower(position, 'ps');
-        const hedged = positionSide !== 'both';
+        const contracts = this.safeString(position, 'pa');
+        const contractsAbs = Precise["default"].stringAbs(this.safeString(position, 'pa'));
+        let positionSide = this.safeStringLower(position, 'ps');
+        let hedged = true;
+        if (positionSide === 'both') {
+            hedged = false;
+            if (!Precise["default"].stringEq(contracts, '0')) {
+                if (Precise["default"].stringLt(contracts, '0')) {
+                    positionSide = 'short';
+                }
+                else {
+                    positionSide = 'long';
+                }
+            }
+        }
         return this.safePosition({
             'collateral': undefined,
             'contractSize': undefined,
-            'contracts': this.safeNumber(position, 'pa'),
+            'contracts': this.parseNumber(contractsAbs),
             'datetime': undefined,
             'entryPrice': this.safeNumber(position, 'ep'),
             'hedged': hedged,

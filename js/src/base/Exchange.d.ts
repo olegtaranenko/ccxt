@@ -224,6 +224,7 @@ export default class Exchange {
     omit: (x: any, ...args: any[]) => any;
     omitZero: typeof functions.omitZero;
     ordered: (x: any) => any;
+    packb: typeof functions.packb;
     parse8601: (x: any) => number;
     parseDate: (x: any) => number;
     parseTimeframe: (timeframe: string) => number;
@@ -619,6 +620,9 @@ export default class Exchange {
     setProperty(obj: any, property: any, defaultValue?: any): void;
     axolotl(payload: any, hexKey: any, ed25519: any): string;
     fixStringifiedJsonMembers(content: string): any;
+    ethAbiEncode(types: any, args: any): Uint8Array;
+    ethEncodeStructuredData(domain: any, messageTypes: any, messageData: any): Uint8Array;
+    intToBase16(elem: any): string;
     safeBoolN(dictionaryOrList: any, keys: IndexType[], defaultValue?: boolean): boolean | undefined;
     safeBool2(dictionary: any, key1: IndexType, key2: IndexType, defaultValue?: boolean): boolean | undefined;
     safeBool(dictionary: any, key: IndexType, defaultValue?: boolean): boolean | undefined;

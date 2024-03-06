@@ -65,6 +65,7 @@
 	- [hollaex](exchanges/hollaex.md)
 	- [huobi](exchanges/huobi.md)
 	- [huobijp](exchanges/huobijp.md)
+	- [hyperliquid](exchanges/hyperliquid.md)
 	- [idex](exchanges/idex.md)
 	- [independentreserve](exchanges/independentreserve.md)
 	- [indodax](exchanges/indodax.md)
