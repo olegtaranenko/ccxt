@@ -2,10 +2,10 @@
 //  ---------------------------------------------------------------------------
 
 import Exchange from './abstract/binance.js';
-import { ExchangeError, ArgumentsRequired, OperationFailed, OperationRejected, InsufficientFunds, OrderNotFound, InvalidOrder, DDoSProtection, InvalidNonce, AuthenticationError, RateLimitExceeded, PermissionDenied, NotSupported, BadRequest, BadSymbol, AccountSuspended, OrderImmediatelyFillable, OnMaintenance, BadResponse, RequestTimeout, OrderNotFillable, MarginModeAlreadySet } from './base/errors.js';
+import { AccountSuspended, ArgumentsRequired, AuthenticationError, BadRequest, BadResponse, BadSymbol, DDoSProtection, ExchangeError, InsufficientFunds, InvalidNonce, InvalidOrder, MarginModeAlreadySet, NotSupported, OnMaintenance, OperationFailed, OperationRejected, OrderImmediatelyFillable, OrderNotFillable, OrderNotFound, PermissionDenied, RateLimitExceeded, RequestTimeout } from './base/errors.js';
 import { Precise } from './base/Precise.js';
-import type { TransferEntry, Int, OrderSide, Balances, OrderType, Trade, OHLCV, Order, FundingRateHistory, OpenInterest, Liquidation, OrderRequest, Str, Transaction, Ticker, OrderBook, Tickers, Market, Greeks, Strings, Currency, MarketInterface, MarginMode, MarginModes, Leverage, Leverages } from './base/types.js';
-import { TRUNCATE, DECIMAL_PLACES } from './base/functions/number.js';
+import type { Balances, Currency, FundingRateHistory, Greeks, Int, Leverage, Leverages, Liquidation, MarginMode, MarginModes, Market, MarketInterface, OHLCV, OpenInterest, Order, OrderBook, OrderRequest, OrderSide, OrderType, Str, Strings, Ticker, Tickers, Trade, Transaction, TransferEntry } from './base/types.js';
+import { DECIMAL_PLACES, TRUNCATE } from './base/functions/number.js';
 import { sha256 } from './static_dependencies/noble-hashes/sha256.js';
 import { rsa } from './base/functions/rsa.js';
 import { eddsa } from './base/functions/crypto.js';
@@ -1868,6 +1868,7 @@ export default class binance extends Exchange {
                     'tierBased': false,
                 },
             },
+            // new metainfo2 interface
             'has': {
                 'addMargin': true,
                 'borrowCrossMargin': true,
@@ -2299,7 +2300,6 @@ export default class binance extends Exchange {
             'precisionMode': DECIMAL_PLACES,
             'pro': true,
             'rateLimit': 50,
-            // new metainfo2 interface
             'timeframes': {
                 '1s': '1s', // spot only for now
                 '1m': '1m',
