@@ -7,6 +7,930 @@ namespace ccxt\abstract;
 
 
 abstract class binanceus extends \ccxt\binance {
+    public function dapidata_get_basis($params = array()) {
+        return $this->request('basis', 'dapiData', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function dapidata_get_delivery_price($params = array()) {
+        return $this->request('delivery-price', 'dapiData', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function dapidata_get_globallongshortaccountratio($params = array()) {
+        return $this->request('globalLongShortAccountRatio', 'dapiData', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function dapidata_get_openinteresthist($params = array()) {
+        return $this->request('openInterestHist', 'dapiData', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function dapidata_get_takerbuysellvol($params = array()) {
+        return $this->request('takerBuySellVol', 'dapiData', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function dapidata_get_toplongshortaccountratio($params = array()) {
+        return $this->request('topLongShortAccountRatio', 'dapiData', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function dapidata_get_toplongshortpositionratio($params = array()) {
+        return $this->request('topLongShortPositionRatio', 'dapiData', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function dapiprivate_delete_allopenorders($params = array()) {
+        return $this->request('allOpenOrders', 'dapiPrivate', 'DELETE', $params, null, null, array("cost" => 1));
+    }
+    public function dapiprivate_delete_batchorders($params = array()) {
+        return $this->request('batchOrders', 'dapiPrivate', 'DELETE', $params, null, null, array("cost" => 5));
+    }
+    public function dapiprivate_delete_listenkey($params = array()) {
+        return $this->request('listenKey', 'dapiPrivate', 'DELETE', $params, null, null, array("cost" => 1));
+    }
+    public function dapiprivate_delete_order($params = array()) {
+        return $this->request('order', 'dapiPrivate', 'DELETE', $params, null, null, array("cost" => 1));
+    }
+    public function dapiprivate_get_account($params = array()) {
+        return $this->request('account', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 5));
+    }
+    public function dapiprivate_get_adlquantile($params = array()) {
+        return $this->request('adlQuantile', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 5));
+    }
+    public function dapiprivate_get_allorders($params = array()) {
+        return $this->request('allOrders', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 20, "noSymbol" => 40));
+    }
+    public function dapiprivate_get_balance($params = array()) {
+        return $this->request('balance', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function dapiprivate_get_commissionrate($params = array()) {
+        return $this->request('commissionRate', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 20));
+    }
+    public function dapiprivate_get_forceorders($params = array()) {
+        return $this->request('forceOrders', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 20, "noSymbol" => 50));
+    }
+    public function dapiprivate_get_income($params = array()) {
+        return $this->request('income', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 20));
+    }
+    public function dapiprivate_get_income_asyn($params = array()) {
+        return $this->request('income/asyn', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 5));
+    }
+    public function dapiprivate_get_income_asyn_id($params = array()) {
+        return $this->request('income/asyn/id', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 5));
+    }
+    public function dapiprivate_get_leveragebracket($params = array()) {
+        return $this->request('leverageBracket', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function dapiprivate_get_openorder($params = array()) {
+        return $this->request('openOrder', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function dapiprivate_get_openorders($params = array()) {
+        return $this->request('openOrders', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 1, "noSymbol" => 5));
+    }
+    public function dapiprivate_get_order($params = array()) {
+        return $this->request('order', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function dapiprivate_get_orderamendment($params = array()) {
+        return $this->request('orderAmendment', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function dapiprivate_get_pmaccountinfo($params = array()) {
+        return $this->request('pmAccountInfo', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 0.5));
+    }
+    public function dapiprivate_get_pmexchangeinfo($params = array()) {
+        return $this->request('pmExchangeInfo', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 0.5));
+    }
+    public function dapiprivate_get_positionmargin_history($params = array()) {
+        return $this->request('positionMargin/history', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function dapiprivate_get_positionrisk($params = array()) {
+        return $this->request('positionRisk', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function dapiprivate_get_positionside_dual($params = array()) {
+        return $this->request('positionSide/dual', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 30));
+    }
+    public function dapiprivate_get_usertrades($params = array()) {
+        return $this->request('userTrades', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 20, "noSymbol" => 40));
+    }
+    public function dapiprivate_post_batchorders($params = array()) {
+        return $this->request('batchOrders', 'dapiPrivate', 'POST', $params, null, null, array("cost" => 5));
+    }
+    public function dapiprivate_post_countdowncancelall($params = array()) {
+        return $this->request('countdownCancelAll', 'dapiPrivate', 'POST', $params, null, null, array("cost" => 10));
+    }
+    public function dapiprivate_post_leverage($params = array()) {
+        return $this->request('leverage', 'dapiPrivate', 'POST', $params, null, null, array("cost" => 1));
+    }
+    public function dapiprivate_post_listenkey($params = array()) {
+        return $this->request('listenKey', 'dapiPrivate', 'POST', $params, null, null, array("cost" => 1));
+    }
+    public function dapiprivate_post_margintype($params = array()) {
+        return $this->request('marginType', 'dapiPrivate', 'POST', $params, null, null, array("cost" => 1));
+    }
+    public function dapiprivate_post_order($params = array()) {
+        return $this->request('order', 'dapiPrivate', 'POST', $params, null, null, array("cost" => 4));
+    }
+    public function dapiprivate_post_positionmargin($params = array()) {
+        return $this->request('positionMargin', 'dapiPrivate', 'POST', $params, null, null, array("cost" => 1));
+    }
+    public function dapiprivate_post_positionside_dual($params = array()) {
+        return $this->request('positionSide/dual', 'dapiPrivate', 'POST', $params, null, null, array("cost" => 1));
+    }
+    public function dapiprivate_put_batchorders($params = array()) {
+        return $this->request('batchOrders', 'dapiPrivate', 'PUT', $params, null, null, array("cost" => 5));
+    }
+    public function dapiprivate_put_listenkey($params = array()) {
+        return $this->request('listenKey', 'dapiPrivate', 'PUT', $params, null, null, array("cost" => 1));
+    }
+    public function dapiprivate_put_order($params = array()) {
+        return $this->request('order', 'dapiPrivate', 'PUT', $params, null, null, array("cost" => 1));
+    }
+    public function dapiprivatev2_get_leveragebracket($params = array()) {
+        return $this->request('leverageBracket', 'dapiPrivateV2', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function dapipublic_get_aggtrades($params = array()) {
+        return $this->request('aggTrades', 'dapiPublic', 'GET', $params, null, null, array("cost" => 20));
+    }
+    public function dapipublic_get_constituents($params = array()) {
+        return $this->request('constituents', 'dapiPublic', 'GET', $params, null, null, array("cost" => 2));
+    }
+    public function dapipublic_get_continuousklines($params = array()) {
+        return $this->request('continuousKlines', 'dapiPublic', 'GET', $params, null, null, array("cost" => 1, "byLimit" => [[99, 1], [499, 2], [1000, 5], [10000, 10]]));
+    }
+    public function dapipublic_get_depth($params = array()) {
+        return $this->request('depth', 'dapiPublic', 'GET', $params, null, null, array("cost" => 2, "byLimit" => [[50, 2], [100, 5], [500, 10], [1000, 20]]));
+    }
+    public function dapipublic_get_exchangeinfo($params = array()) {
+        return $this->request('exchangeInfo', 'dapiPublic', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function dapipublic_get_fundingrate($params = array()) {
+        return $this->request('fundingRate', 'dapiPublic', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function dapipublic_get_historicaltrades($params = array()) {
+        return $this->request('historicalTrades', 'dapiPublic', 'GET', $params, null, null, array("cost" => 20));
+    }
+    public function dapipublic_get_indexpriceklines($params = array()) {
+        return $this->request('indexPriceKlines', 'dapiPublic', 'GET', $params, null, null, array("cost" => 1, "byLimit" => [[99, 1], [499, 2], [1000, 5], [10000, 10]]));
+    }
+    public function dapipublic_get_klines($params = array()) {
+        return $this->request('klines', 'dapiPublic', 'GET', $params, null, null, array("cost" => 1, "byLimit" => [[99, 1], [499, 2], [1000, 5], [10000, 10]]));
+    }
+    public function dapipublic_get_markpriceklines($params = array()) {
+        return $this->request('markPriceKlines', 'dapiPublic', 'GET', $params, null, null, array("cost" => 1, "byLimit" => [[99, 1], [499, 2], [1000, 5], [10000, 10]]));
+    }
+    public function dapipublic_get_openinterest($params = array()) {
+        return $this->request('openInterest', 'dapiPublic', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function dapipublic_get_ping($params = array()) {
+        return $this->request('ping', 'dapiPublic', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function dapipublic_get_premiumindex($params = array()) {
+        return $this->request('premiumIndex', 'dapiPublic', 'GET', $params, null, null, array("cost" => 10));
+    }
+    public function dapipublic_get_premiumindexklines($params = array()) {
+        return $this->request('premiumIndexKlines', 'dapiPublic', 'GET', $params, null, null, array("cost" => 1, "byLimit" => [[99, 1], [499, 2], [1000, 5], [10000, 10]]));
+    }
+    public function dapipublic_get_ticker_24hr($params = array()) {
+        return $this->request('ticker/24hr', 'dapiPublic', 'GET', $params, null, null, array("cost" => 1, "noSymbol" => 40));
+    }
+    public function dapipublic_get_ticker_bookticker($params = array()) {
+        return $this->request('ticker/bookTicker', 'dapiPublic', 'GET', $params, null, null, array("cost" => 2, "noSymbol" => 5));
+    }
+    public function dapipublic_get_ticker_price($params = array()) {
+        return $this->request('ticker/price', 'dapiPublic', 'GET', $params, null, null, array("cost" => 1, "noSymbol" => 2));
+    }
+    public function dapipublic_get_time($params = array()) {
+        return $this->request('time', 'dapiPublic', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function dapipublic_get_trades($params = array()) {
+        return $this->request('trades', 'dapiPublic', 'GET', $params, null, null, array("cost" => 5));
+    }
+    public function eapiprivate_delete_allopenorders($params = array()) {
+        return $this->request('allOpenOrders', 'eapiPrivate', 'DELETE', $params, null, null, array("cost" => 1));
+    }
+    public function eapiprivate_delete_allopenordersbyunderlying($params = array()) {
+        return $this->request('allOpenOrdersByUnderlying', 'eapiPrivate', 'DELETE', $params, null, null, array("cost" => 1));
+    }
+    public function eapiprivate_delete_batchorders($params = array()) {
+        return $this->request('batchOrders', 'eapiPrivate', 'DELETE', $params, null, null, array("cost" => 1));
+    }
+    public function eapiprivate_delete_listenkey($params = array()) {
+        return $this->request('listenKey', 'eapiPrivate', 'DELETE', $params, null, null, array("cost" => 1));
+    }
+    public function eapiprivate_delete_order($params = array()) {
+        return $this->request('order', 'eapiPrivate', 'DELETE', $params, null, null, array("cost" => 1));
+    }
+    public function eapiprivate_get_account($params = array()) {
+        return $this->request('account', 'eapiPrivate', 'GET', $params, null, null, array("cost" => 3));
+    }
+    public function eapiprivate_get_bill($params = array()) {
+        return $this->request('bill', 'eapiPrivate', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function eapiprivate_get_countdowncancelall($params = array()) {
+        return $this->request('countdownCancelAll', 'eapiPrivate', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function eapiprivate_get_exerciserecord($params = array()) {
+        return $this->request('exerciseRecord', 'eapiPrivate', 'GET', $params, null, null, array("cost" => 5));
+    }
+    public function eapiprivate_get_historyorders($params = array()) {
+        return $this->request('historyOrders', 'eapiPrivate', 'GET', $params, null, null, array("cost" => 3));
+    }
+    public function eapiprivate_get_income_asyn($params = array()) {
+        return $this->request('income/asyn', 'eapiPrivate', 'GET', $params, null, null, array("cost" => 5));
+    }
+    public function eapiprivate_get_income_asyn_id($params = array()) {
+        return $this->request('income/asyn/id', 'eapiPrivate', 'GET', $params, null, null, array("cost" => 5));
+    }
+    public function eapiprivate_get_marginaccount($params = array()) {
+        return $this->request('marginAccount', 'eapiPrivate', 'GET', $params, null, null, array("cost" => 3));
+    }
+    public function eapiprivate_get_mmp($params = array()) {
+        return $this->request('mmp', 'eapiPrivate', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function eapiprivate_get_openorders($params = array()) {
+        return $this->request('openOrders', 'eapiPrivate', 'GET', $params, null, null, array("cost" => 1, "noSymbol" => 40));
+    }
+    public function eapiprivate_get_order($params = array()) {
+        return $this->request('order', 'eapiPrivate', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function eapiprivate_get_position($params = array()) {
+        return $this->request('position', 'eapiPrivate', 'GET', $params, null, null, array("cost" => 5));
+    }
+    public function eapiprivate_get_usertrades($params = array()) {
+        return $this->request('userTrades', 'eapiPrivate', 'GET', $params, null, null, array("cost" => 5));
+    }
+    public function eapiprivate_post_batchorders($params = array()) {
+        return $this->request('batchOrders', 'eapiPrivate', 'POST', $params, null, null, array("cost" => 5));
+    }
+    public function eapiprivate_post_countdowncancelall($params = array()) {
+        return $this->request('countdownCancelAll', 'eapiPrivate', 'POST', $params, null, null, array("cost" => 1));
+    }
+    public function eapiprivate_post_countdowncancelallheartbeat($params = array()) {
+        return $this->request('countdownCancelAllHeartBeat', 'eapiPrivate', 'POST', $params, null, null, array("cost" => 10));
+    }
+    public function eapiprivate_post_listenkey($params = array()) {
+        return $this->request('listenKey', 'eapiPrivate', 'POST', $params, null, null, array("cost" => 1));
+    }
+    public function eapiprivate_post_mmpreset($params = array()) {
+        return $this->request('mmpReset', 'eapiPrivate', 'POST', $params, null, null, array("cost" => 1));
+    }
+    public function eapiprivate_post_mmpset($params = array()) {
+        return $this->request('mmpSet', 'eapiPrivate', 'POST', $params, null, null, array("cost" => 1));
+    }
+    public function eapiprivate_post_order($params = array()) {
+        return $this->request('order', 'eapiPrivate', 'POST', $params, null, null, array("cost" => 1));
+    }
+    public function eapiprivate_put_listenkey($params = array()) {
+        return $this->request('listenKey', 'eapiPrivate', 'PUT', $params, null, null, array("cost" => 1));
+    }
+    public function eapipublic_get_depth($params = array()) {
+        return $this->request('depth', 'eapiPublic', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function eapipublic_get_exchangeinfo($params = array()) {
+        return $this->request('exchangeInfo', 'eapiPublic', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function eapipublic_get_exercisehistory($params = array()) {
+        return $this->request('exerciseHistory', 'eapiPublic', 'GET', $params, null, null, array("cost" => 3));
+    }
+    public function eapipublic_get_historicaltrades($params = array()) {
+        return $this->request('historicalTrades', 'eapiPublic', 'GET', $params, null, null, array("cost" => 20));
+    }
+    public function eapipublic_get_index($params = array()) {
+        return $this->request('index', 'eapiPublic', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function eapipublic_get_klines($params = array()) {
+        return $this->request('klines', 'eapiPublic', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function eapipublic_get_mark($params = array()) {
+        return $this->request('mark', 'eapiPublic', 'GET', $params, null, null, array("cost" => 5));
+    }
+    public function eapipublic_get_openinterest($params = array()) {
+        return $this->request('openInterest', 'eapiPublic', 'GET', $params, null, null, array("cost" => 3));
+    }
+    public function eapipublic_get_ping($params = array()) {
+        return $this->request('ping', 'eapiPublic', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function eapipublic_get_ticker($params = array()) {
+        return $this->request('ticker', 'eapiPublic', 'GET', $params, null, null, array("cost" => 5));
+    }
+    public function eapipublic_get_time($params = array()) {
+        return $this->request('time', 'eapiPublic', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function eapipublic_get_trades($params = array()) {
+        return $this->request('trades', 'eapiPublic', 'GET', $params, null, null, array("cost" => 5));
+    }
+    public function fapidata_get_basis($params = array()) {
+        return $this->request('basis', 'fapiData', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function fapidata_get_delivery_price($params = array()) {
+        return $this->request('delivery-price', 'fapiData', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function fapidata_get_globallongshortaccountratio($params = array()) {
+        return $this->request('globalLongShortAccountRatio', 'fapiData', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function fapidata_get_openinteresthist($params = array()) {
+        return $this->request('openInterestHist', 'fapiData', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function fapidata_get_takerlongshortratio($params = array()) {
+        return $this->request('takerlongshortRatio', 'fapiData', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function fapidata_get_toplongshortaccountratio($params = array()) {
+        return $this->request('topLongShortAccountRatio', 'fapiData', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function fapidata_get_toplongshortpositionratio($params = array()) {
+        return $this->request('topLongShortPositionRatio', 'fapiData', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function fapiprivate_delete_allopenorders($params = array()) {
+        return $this->request('allOpenOrders', 'fapiPrivate', 'DELETE', $params, null, null, array("cost" => 1));
+    }
+    public function fapiprivate_delete_batchorders($params = array()) {
+        return $this->request('batchOrders', 'fapiPrivate', 'DELETE', $params, null, null, array("cost" => 1));
+    }
+    public function fapiprivate_delete_listenkey($params = array()) {
+        return $this->request('listenKey', 'fapiPrivate', 'DELETE', $params, null, null, array("cost" => 1));
+    }
+    public function fapiprivate_delete_order($params = array()) {
+        return $this->request('order', 'fapiPrivate', 'DELETE', $params, null, null, array("cost" => 1));
+    }
+    public function fapiprivate_get_account($params = array()) {
+        return $this->request('account', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 5));
+    }
+    public function fapiprivate_get_allorders($params = array()) {
+        return $this->request('allOrders', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 5));
+    }
+    public function fapiprivate_get_apitradingstatus($params = array()) {
+        return $this->request('apiTradingStatus', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function fapiprivate_get_balance($params = array()) {
+        return $this->request('balance', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 5));
+    }
+    public function fapiprivate_get_commissionrate($params = array()) {
+        return $this->request('commissionRate', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 20));
+    }
+    public function fapiprivate_get_forceorders($params = array()) {
+        return $this->request('forceOrders', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 20, "noSymbol" => 50));
+    }
+    public function fapiprivate_get_income($params = array()) {
+        return $this->request('income', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 30));
+    }
+    public function fapiprivate_get_leveragebracket($params = array()) {
+        return $this->request('leverageBracket', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function fapiprivate_get_multiassetsmargin($params = array()) {
+        return $this->request('multiAssetsMargin', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 30));
+    }
+    public function fapiprivate_get_openorder($params = array()) {
+        return $this->request('openOrder', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function fapiprivate_get_openorders($params = array()) {
+        return $this->request('openOrders', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function fapiprivate_get_order($params = array()) {
+        return $this->request('order', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function fapiprivate_get_positionmargin_history($params = array()) {
+        return $this->request('positionMargin/history', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function fapiprivate_get_positionrisk($params = array()) {
+        return $this->request('positionRisk', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 5));
+    }
+    public function fapiprivate_get_positionside_dual($params = array()) {
+        return $this->request('positionSide/dual', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 30));
+    }
+    public function fapiprivate_get_usertrades($params = array()) {
+        return $this->request('userTrades', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 5));
+    }
+    public function fapiprivate_get_adlquantile($params = array()) {
+        return $this->request('adlQuantile', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 5));
+    }
+    public function fapiprivate_get_apireferral_customization($params = array()) {
+        return $this->request('apiReferral/customization', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function fapiprivate_get_apireferral_ifnewuser($params = array()) {
+        return $this->request('apiReferral/ifNewUser', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function fapiprivate_get_apireferral_overview($params = array()) {
+        return $this->request('apiReferral/overview', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function fapiprivate_get_apireferral_rebatevol($params = array()) {
+        return $this->request('apiReferral/rebateVol', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function fapiprivate_get_apireferral_tradernum($params = array()) {
+        return $this->request('apiReferral/traderNum', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function fapiprivate_get_apireferral_tradersummary($params = array()) {
+        return $this->request('apiReferral/traderSummary', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function fapiprivate_get_apireferral_tradevol($params = array()) {
+        return $this->request('apiReferral/tradeVol', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function fapiprivate_get_apireferral_usercustomization($params = array()) {
+        return $this->request('apiReferral/userCustomization', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function fapiprivate_get_income_asyn($params = array()) {
+        return $this->request('income/asyn', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1000));
+    }
+    public function fapiprivate_get_income_asyn_id($params = array()) {
+        return $this->request('income/asyn/id', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 10));
+    }
+    public function fapiprivate_get_order_asyn($params = array()) {
+        return $this->request('order/asyn', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1000));
+    }
+    public function fapiprivate_get_order_asyn_id($params = array()) {
+        return $this->request('order/asyn/id', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 10));
+    }
+    public function fapiprivate_get_orderamendment($params = array()) {
+        return $this->request('orderAmendment', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function fapiprivate_get_pmaccountinfo($params = array()) {
+        return $this->request('pmAccountInfo', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 5));
+    }
+    public function fapiprivate_get_trade_asyn($params = array()) {
+        return $this->request('trade/asyn', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1000));
+    }
+    public function fapiprivate_get_trade_asyn_id($params = array()) {
+        return $this->request('trade/asyn/id', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 10));
+    }
+    public function fapiprivate_post_batchorders($params = array()) {
+        return $this->request('batchOrders', 'fapiPrivate', 'POST', $params, null, null, array("cost" => 5));
+    }
+    public function fapiprivate_post_countdowncancelall($params = array()) {
+        return $this->request('countdownCancelAll', 'fapiPrivate', 'POST', $params, null, null, array("cost" => 10));
+    }
+    public function fapiprivate_post_leverage($params = array()) {
+        return $this->request('leverage', 'fapiPrivate', 'POST', $params, null, null, array("cost" => 1));
+    }
+    public function fapiprivate_post_listenkey($params = array()) {
+        return $this->request('listenKey', 'fapiPrivate', 'POST', $params, null, null, array("cost" => 1));
+    }
+    public function fapiprivate_post_margintype($params = array()) {
+        return $this->request('marginType', 'fapiPrivate', 'POST', $params, null, null, array("cost" => 1));
+    }
+    public function fapiprivate_post_multiassetsmargin($params = array()) {
+        return $this->request('multiAssetsMargin', 'fapiPrivate', 'POST', $params, null, null, array("cost" => 1));
+    }
+    public function fapiprivate_post_order($params = array()) {
+        return $this->request('order', 'fapiPrivate', 'POST', $params, null, null, array("cost" => 4));
+    }
+    public function fapiprivate_post_positionmargin($params = array()) {
+        return $this->request('positionMargin', 'fapiPrivate', 'POST', $params, null, null, array("cost" => 1));
+    }
+    public function fapiprivate_post_positionside_dual($params = array()) {
+        return $this->request('positionSide/dual', 'fapiPrivate', 'POST', $params, null, null, array("cost" => 1));
+    }
+    public function fapiprivate_post_apireferral_customization($params = array()) {
+        return $this->request('apiReferral/customization', 'fapiPrivate', 'POST', $params, null, null, array("cost" => 1));
+    }
+    public function fapiprivate_post_apireferral_usercustomization($params = array()) {
+        return $this->request('apiReferral/userCustomization', 'fapiPrivate', 'POST', $params, null, null, array("cost" => 1));
+    }
+    public function fapiprivate_put_batchorders($params = array()) {
+        return $this->request('batchOrders', 'fapiPrivate', 'PUT', $params, null, null, array("cost" => 5));
+    }
+    public function fapiprivate_put_listenkey($params = array()) {
+        return $this->request('listenKey', 'fapiPrivate', 'PUT', $params, null, null, array("cost" => 1));
+    }
+    public function fapiprivate_put_order($params = array()) {
+        return $this->request('order', 'fapiPrivate', 'PUT', $params, null, null, array("cost" => 1));
+    }
+    public function fapiprivatev2_get_account($params = array()) {
+        return $this->request('account', 'fapiPrivateV2', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function fapiprivatev2_get_balance($params = array()) {
+        return $this->request('balance', 'fapiPrivateV2', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function fapiprivatev2_get_positionrisk($params = array()) {
+        return $this->request('positionRisk', 'fapiPrivateV2', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function fapipublic_get_aggtrades($params = array()) {
+        return $this->request('aggTrades', 'fapiPublic', 'GET', $params, null, null, array("cost" => 20));
+    }
+    public function fapipublic_get_apitradingstatus($params = array()) {
+        return $this->request('apiTradingStatus', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1, "noSymbol" => 10));
+    }
+    public function fapipublic_get_assetindex($params = array()) {
+        return $this->request('assetIndex', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1, "noSymbol" => 10));
+    }
+    public function fapipublic_get_constituents($params = array()) {
+        return $this->request('constituents', 'fapiPublic', 'GET', $params, null, null, array("cost" => 2));
+    }
+    public function fapipublic_get_continuousklines($params = array()) {
+        return $this->request('continuousKlines', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1, "byLimit" => [[99, 1], [499, 2], [1000, 5], [10000, 10]]));
+    }
+    public function fapipublic_get_depth($params = array()) {
+        return $this->request('depth', 'fapiPublic', 'GET', $params, null, null, array("cost" => 2, "byLimit" => [[50, 2], [100, 5], [500, 10], [1000, 20]]));
+    }
+    public function fapipublic_get_exchangeinfo($params = array()) {
+        return $this->request('exchangeInfo', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function fapipublic_get_fundinginfo($params = array()) {
+        return $this->request('fundingInfo', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function fapipublic_get_fundingrate($params = array()) {
+        return $this->request('fundingRate', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function fapipublic_get_historicaltrades($params = array()) {
+        return $this->request('historicalTrades', 'fapiPublic', 'GET', $params, null, null, array("cost" => 20));
+    }
+    public function fapipublic_get_indexinfo($params = array()) {
+        return $this->request('indexInfo', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function fapipublic_get_indexpriceklines($params = array()) {
+        return $this->request('indexPriceKlines', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1, "byLimit" => [[99, 1], [499, 2], [1000, 5], [10000, 10]]));
+    }
+    public function fapipublic_get_klines($params = array()) {
+        return $this->request('klines', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1, "byLimit" => [[99, 1], [499, 2], [1000, 5], [10000, 10]]));
+    }
+    public function fapipublic_get_lvtklines($params = array()) {
+        return $this->request('lvtKlines', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function fapipublic_get_markpriceklines($params = array()) {
+        return $this->request('markPriceKlines', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1, "byLimit" => [[99, 1], [499, 2], [1000, 5], [10000, 10]]));
+    }
+    public function fapipublic_get_openinterest($params = array()) {
+        return $this->request('openInterest', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function fapipublic_get_ping($params = array()) {
+        return $this->request('ping', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function fapipublic_get_premiumindex($params = array()) {
+        return $this->request('premiumIndex', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function fapipublic_get_ticker_24hr($params = array()) {
+        return $this->request('ticker/24hr', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1, "noSymbol" => 40));
+    }
+    public function fapipublic_get_ticker_bookticker($params = array()) {
+        return $this->request('ticker/bookTicker', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1, "noSymbol" => 2));
+    }
+    public function fapipublic_get_ticker_price($params = array()) {
+        return $this->request('ticker/price', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1, "noSymbol" => 2));
+    }
+    public function fapipublic_get_time($params = array()) {
+        return $this->request('time', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function fapipublic_get_trades($params = array()) {
+        return $this->request('trades', 'fapiPublic', 'GET', $params, null, null, array("cost" => 5));
+    }
+    public function fapipublicv2_get_ticker_price($params = array()) {
+        return $this->request('ticker/price', 'fapiPublicV2', 'GET', $params, null, null, array("cost" => 0));
+    }
+    public function papi_delete_cm_allopenorders($params = array()) {
+        return $this->request('cm/allOpenOrders', 'papi', 'DELETE', $params, null, null, array("cost" => 1));
+    }
+    public function papi_delete_cm_conditional_allopenorders($params = array()) {
+        return $this->request('cm/conditional/allOpenOrders', 'papi', 'DELETE', $params, null, null, array("cost" => 1));
+    }
+    public function papi_delete_cm_conditional_order($params = array()) {
+        return $this->request('cm/conditional/order', 'papi', 'DELETE', $params, null, null, array("cost" => 1));
+    }
+    public function papi_delete_cm_order($params = array()) {
+        return $this->request('cm/order', 'papi', 'DELETE', $params, null, null, array("cost" => 1));
+    }
+    public function papi_delete_listenkey($params = array()) {
+        return $this->request('listenKey', 'papi', 'DELETE', $params, null, null, array("cost" => 1));
+    }
+    public function papi_delete_margin_allopenorders($params = array()) {
+        return $this->request('margin/allOpenOrders', 'papi', 'DELETE', $params, null, null, array("cost" => 5));
+    }
+    public function papi_delete_margin_order($params = array()) {
+        return $this->request('margin/order', 'papi', 'DELETE', $params, null, null, array("cost" => 1));
+    }
+    public function papi_delete_margin_orderlist($params = array()) {
+        return $this->request('margin/orderList', 'papi', 'DELETE', $params, null, null, array("cost" => 2));
+    }
+    public function papi_delete_um_allopenorders($params = array()) {
+        return $this->request('um/allOpenOrders', 'papi', 'DELETE', $params, null, null, array("cost" => 1));
+    }
+    public function papi_delete_um_conditional_allopenorders($params = array()) {
+        return $this->request('um/conditional/allOpenOrders', 'papi', 'DELETE', $params, null, null, array("cost" => 1));
+    }
+    public function papi_delete_um_conditional_order($params = array()) {
+        return $this->request('um/conditional/order', 'papi', 'DELETE', $params, null, null, array("cost" => 1));
+    }
+    public function papi_delete_um_order($params = array()) {
+        return $this->request('um/order', 'papi', 'DELETE', $params, null, null, array("cost" => 1));
+    }
+    public function papi_get_account($params = array()) {
+        return $this->request('account', 'papi', 'GET', $params, null, null, array("cost" => 20));
+    }
+    public function papi_get_balance($params = array()) {
+        return $this->request('balance', 'papi', 'GET', $params, null, null, array("cost" => 20));
+    }
+    public function papi_get_cm_account($params = array()) {
+        return $this->request('cm/account', 'papi', 'GET', $params, null, null, array("cost" => 5));
+    }
+    public function papi_get_cm_adlquantile($params = array()) {
+        return $this->request('cm/adlQuantile', 'papi', 'GET', $params, null, null, array("cost" => 5));
+    }
+    public function papi_get_cm_allorders($params = array()) {
+        return $this->request('cm/allOrders', 'papi', 'GET', $params, null, null, array("cost" => 20));
+    }
+    public function papi_get_cm_commissionrate($params = array()) {
+        return $this->request('cm/commissionRate', 'papi', 'GET', $params, null, null, array("cost" => 20));
+    }
+    public function papi_get_cm_conditional_allorders($params = array()) {
+        return $this->request('cm/conditional/allOrders', 'papi', 'GET', $params, null, null, array("cost" => 40));
+    }
+    public function papi_get_cm_conditional_openorder($params = array()) {
+        return $this->request('cm/conditional/openOrder', 'papi', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function papi_get_cm_conditional_openorders($params = array()) {
+        return $this->request('cm/conditional/openOrders', 'papi', 'GET', $params, null, null, array("cost" => 40));
+    }
+    public function papi_get_cm_conditional_orderhistory($params = array()) {
+        return $this->request('cm/conditional/orderHistory', 'papi', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function papi_get_cm_forceorders($params = array()) {
+        return $this->request('cm/forceOrders', 'papi', 'GET', $params, null, null, array("cost" => 20));
+    }
+    public function papi_get_cm_income($params = array()) {
+        return $this->request('cm/income', 'papi', 'GET', $params, null, null, array("cost" => 30));
+    }
+    public function papi_get_cm_leveragebracket($params = array()) {
+        return $this->request('cm/leverageBracket', 'papi', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function papi_get_cm_openorder($params = array()) {
+        return $this->request('cm/openOrder', 'papi', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function papi_get_cm_openorders($params = array()) {
+        return $this->request('cm/openOrders', 'papi', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function papi_get_cm_order($params = array()) {
+        return $this->request('cm/order', 'papi', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function papi_get_cm_positionrisk($params = array()) {
+        return $this->request('cm/positionRisk', 'papi', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function papi_get_cm_positionside_dual($params = array()) {
+        return $this->request('cm/positionSide/dual', 'papi', 'GET', $params, null, null, array("cost" => 30));
+    }
+    public function papi_get_cm_usertrades($params = array()) {
+        return $this->request('cm/userTrades', 'papi', 'GET', $params, null, null, array("cost" => 20));
+    }
+    public function papi_get_margin_allorderlist($params = array()) {
+        return $this->request('margin/allOrderList', 'papi', 'GET', $params, null, null, array("cost" => 100));
+    }
+    public function papi_get_margin_allorders($params = array()) {
+        return $this->request('margin/allOrders', 'papi', 'GET', $params, null, null, array("cost" => 100));
+    }
+    public function papi_get_margin_forceorders($params = array()) {
+        return $this->request('margin/forceOrders', 'papi', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function papi_get_margin_margininteresthistory($params = array()) {
+        return $this->request('margin/marginInterestHistory', 'papi', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function papi_get_margin_marginloan($params = array()) {
+        return $this->request('margin/marginLoan', 'papi', 'GET', $params, null, null, array("cost" => 10));
+    }
+    public function papi_get_margin_maxborrowable($params = array()) {
+        return $this->request('margin/maxBorrowable', 'papi', 'GET', $params, null, null, array("cost" => 5));
+    }
+    public function papi_get_margin_maxwithdraw($params = array()) {
+        return $this->request('margin/maxWithdraw', 'papi', 'GET', $params, null, null, array("cost" => 5));
+    }
+    public function papi_get_margin_mytrades($params = array()) {
+        return $this->request('margin/myTrades', 'papi', 'GET', $params, null, null, array("cost" => 5));
+    }
+    public function papi_get_margin_openorderlist($params = array()) {
+        return $this->request('margin/openOrderList', 'papi', 'GET', $params, null, null, array("cost" => 5));
+    }
+    public function papi_get_margin_openorders($params = array()) {
+        return $this->request('margin/openOrders', 'papi', 'GET', $params, null, null, array("cost" => 5));
+    }
+    public function papi_get_margin_order($params = array()) {
+        return $this->request('margin/order', 'papi', 'GET', $params, null, null, array("cost" => 5));
+    }
+    public function papi_get_margin_orderlist($params = array()) {
+        return $this->request('margin/orderList', 'papi', 'GET', $params, null, null, array("cost" => 5));
+    }
+    public function papi_get_margin_repayloan($params = array()) {
+        return $this->request('margin/repayLoan', 'papi', 'GET', $params, null, null, array("cost" => 10));
+    }
+    public function papi_get_ping($params = array()) {
+        return $this->request('ping', 'papi', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function papi_get_portfolio_interest_history($params = array()) {
+        return $this->request('portfolio/interest-history', 'papi', 'GET', $params, null, null, array("cost" => 50));
+    }
+    public function papi_get_repay_futures_switch($params = array()) {
+        return $this->request('repay-futures-switch', 'papi', 'GET', $params, null, null, array("cost" => 3));
+    }
+    public function papi_get_um_account($params = array()) {
+        return $this->request('um/account', 'papi', 'GET', $params, null, null, array("cost" => 5));
+    }
+    public function papi_get_um_adlquantile($params = array()) {
+        return $this->request('um/adlQuantile', 'papi', 'GET', $params, null, null, array("cost" => 5));
+    }
+    public function papi_get_um_allorders($params = array()) {
+        return $this->request('um/allOrders', 'papi', 'GET', $params, null, null, array("cost" => 5));
+    }
+    public function papi_get_um_apitradingstatus($params = array()) {
+        return $this->request('um/apiTradingStatus', 'papi', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function papi_get_um_commissionrate($params = array()) {
+        return $this->request('um/commissionRate', 'papi', 'GET', $params, null, null, array("cost" => 20));
+    }
+    public function papi_get_um_conditional_allorders($params = array()) {
+        return $this->request('um/conditional/allOrders', 'papi', 'GET', $params, null, null, array("cost" => 40));
+    }
+    public function papi_get_um_conditional_openorder($params = array()) {
+        return $this->request('um/conditional/openOrder', 'papi', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function papi_get_um_conditional_openorders($params = array()) {
+        return $this->request('um/conditional/openOrders', 'papi', 'GET', $params, null, null, array("cost" => 40));
+    }
+    public function papi_get_um_conditional_orderhistory($params = array()) {
+        return $this->request('um/conditional/orderHistory', 'papi', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function papi_get_um_forceorders($params = array()) {
+        return $this->request('um/forceOrders', 'papi', 'GET', $params, null, null, array("cost" => 20));
+    }
+    public function papi_get_um_income($params = array()) {
+        return $this->request('um/income', 'papi', 'GET', $params, null, null, array("cost" => 30));
+    }
+    public function papi_get_um_leveragebracket($params = array()) {
+        return $this->request('um/leverageBracket', 'papi', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function papi_get_um_openorder($params = array()) {
+        return $this->request('um/openOrder', 'papi', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function papi_get_um_openorders($params = array()) {
+        return $this->request('um/openOrders', 'papi', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function papi_get_um_order($params = array()) {
+        return $this->request('um/order', 'papi', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function papi_get_um_positionrisk($params = array()) {
+        return $this->request('um/positionRisk', 'papi', 'GET', $params, null, null, array("cost" => 5));
+    }
+    public function papi_get_um_positionside_dual($params = array()) {
+        return $this->request('um/positionSide/dual', 'papi', 'GET', $params, null, null, array("cost" => 30));
+    }
+    public function papi_get_um_usertrades($params = array()) {
+        return $this->request('um/userTrades', 'papi', 'GET', $params, null, null, array("cost" => 5));
+    }
+    public function papi_post_asset_collection($params = array()) {
+        return $this->request('asset-collection', 'papi', 'POST', $params, null, null, array("cost" => 3));
+    }
+    public function papi_post_auto_collection($params = array()) {
+        return $this->request('auto-collection', 'papi', 'POST', $params, null, null, array("cost" => 0.6667));
+    }
+    public function papi_post_bnb_transfer($params = array()) {
+        return $this->request('bnb-transfer', 'papi', 'POST', $params, null, null, array("cost" => 0.6667));
+    }
+    public function papi_post_cm_conditional_order($params = array()) {
+        return $this->request('cm/conditional/order', 'papi', 'POST', $params, null, null, array("cost" => 1));
+    }
+    public function papi_post_cm_leverage($params = array()) {
+        return $this->request('cm/leverage', 'papi', 'POST', $params, null, null, array("cost" => 1));
+    }
+    public function papi_post_cm_order($params = array()) {
+        return $this->request('cm/order', 'papi', 'POST', $params, null, null, array("cost" => 1));
+    }
+    public function papi_post_cm_positionside_dual($params = array()) {
+        return $this->request('cm/positionSide/dual', 'papi', 'POST', $params, null, null, array("cost" => 1));
+    }
+    public function papi_post_listenkey($params = array()) {
+        return $this->request('listenKey', 'papi', 'POST', $params, null, null, array("cost" => 1));
+    }
+    public function papi_post_margin_order($params = array()) {
+        return $this->request('margin/order', 'papi', 'POST', $params, null, null, array("cost" => 0.0133));
+    }
+    public function papi_post_margin_order_oco($params = array()) {
+        return $this->request('margin/order/oco', 'papi', 'POST', $params, null, null, array("cost" => 0.04));
+    }
+    public function papi_post_marginloan($params = array()) {
+        return $this->request('marginLoan', 'papi', 'POST', $params, null, null, array("cost" => 0.1333));
+    }
+    public function papi_post_repay_futures_negative_balance($params = array()) {
+        return $this->request('repay-futures-negative-balance', 'papi', 'POST', $params, null, null, array("cost" => 150));
+    }
+    public function papi_post_repay_futures_switch($params = array()) {
+        return $this->request('repay-futures-switch', 'papi', 'POST', $params, null, null, array("cost" => 150));
+    }
+    public function papi_post_repayloan($params = array()) {
+        return $this->request('repayLoan', 'papi', 'POST', $params, null, null, array("cost" => 0.1333));
+    }
+    public function papi_post_um_conditional_order($params = array()) {
+        return $this->request('um/conditional/order', 'papi', 'POST', $params, null, null, array("cost" => 1));
+    }
+    public function papi_post_um_leverage($params = array()) {
+        return $this->request('um/leverage', 'papi', 'POST', $params, null, null, array("cost" => 1));
+    }
+    public function papi_post_um_order($params = array()) {
+        return $this->request('um/order', 'papi', 'POST', $params, null, null, array("cost" => 1));
+    }
+    public function papi_post_um_positionside_dual($params = array()) {
+        return $this->request('um/positionSide/dual', 'papi', 'POST', $params, null, null, array("cost" => 1));
+    }
+    public function papi_put_listenkey($params = array()) {
+        return $this->request('listenKey', 'papi', 'PUT', $params, null, null, array("cost" => 1));
+    }
+    public function private_delete_openorders($params = array()) {
+        return $this->request('openOrders', 'private', 'DELETE', $params, null, null, array("cost" => 0.2));
+    }
+    public function private_delete_order($params = array()) {
+        return $this->request('order', 'private', 'DELETE', $params, null, null, array("cost" => 0.2));
+    }
+    public function private_delete_orderlist($params = array()) {
+        return $this->request('orderList', 'private', 'DELETE', $params, null, null, array("cost" => 0.2));
+    }
+    public function private_get_account($params = array()) {
+        return $this->request('account', 'private', 'GET', $params, null, null, array("cost" => 4));
+    }
+    public function private_get_account_commission($params = array()) {
+        return $this->request('account/commission', 'private', 'GET', $params, null, null, array("cost" => 4));
+    }
+    public function private_get_allorderlist($params = array()) {
+        return $this->request('allOrderList', 'private', 'GET', $params, null, null, array("cost" => 4));
+    }
+    public function private_get_allorders($params = array()) {
+        return $this->request('allOrders', 'private', 'GET', $params, null, null, array("cost" => 4));
+    }
+    public function private_get_myallocations($params = array()) {
+        return $this->request('myAllocations', 'private', 'GET', $params, null, null, array("cost" => 4));
+    }
+    public function private_get_mypreventedmatches($params = array()) {
+        return $this->request('myPreventedMatches', 'private', 'GET', $params, null, null, array("cost" => 4));
+    }
+    public function private_get_mytrades($params = array()) {
+        return $this->request('myTrades', 'private', 'GET', $params, null, null, array("cost" => 4));
+    }
+    public function private_get_openorderlist($params = array()) {
+        return $this->request('openOrderList', 'private', 'GET', $params, null, null, array("cost" => 1.2));
+    }
+    public function private_get_openorders($params = array()) {
+        return $this->request('openOrders', 'private', 'GET', $params, null, null, array("cost" => 1.2, "noSymbol" => 16));
+    }
+    public function private_get_order($params = array()) {
+        return $this->request('order', 'private', 'GET', $params, null, null, array("cost" => 0.8));
+    }
+    public function private_get_orderlist($params = array()) {
+        return $this->request('orderList', 'private', 'GET', $params, null, null, array("cost" => 0.8));
+    }
+    public function private_get_ratelimit_order($params = array()) {
+        return $this->request('rateLimit/order', 'private', 'GET', $params, null, null, array("cost" => 8));
+    }
+    public function private_post_order($params = array()) {
+        return $this->request('order', 'private', 'POST', $params, null, null, array("cost" => 0.2));
+    }
+    public function private_post_order_cancelreplace($params = array()) {
+        return $this->request('order/cancelReplace', 'private', 'POST', $params, null, null, array("cost" => 0.2));
+    }
+    public function private_post_order_oco($params = array()) {
+        return $this->request('order/oco', 'private', 'POST', $params, null, null, array("cost" => 0.2));
+    }
+    public function private_post_order_test($params = array()) {
+        return $this->request('order/test', 'private', 'POST', $params, null, null, array("cost" => 0.2));
+    }
+    public function private_post_sor_order($params = array()) {
+        return $this->request('sor/order', 'private', 'POST', $params, null, null, array("cost" => 0.2));
+    }
+    public function private_post_sor_order_test($params = array()) {
+        return $this->request('sor/order/test', 'private', 'POST', $params, null, null, array("cost" => 0.2));
+    }
+    public function public_get_aggtrades($params = array()) {
+        return $this->request('aggTrades', 'public', 'GET', $params, null, null, array("cost" => 0.4));
+    }
+    public function public_get_avgprice($params = array()) {
+        return $this->request('avgPrice', 'public', 'GET', $params, null, null, array("cost" => 0.4));
+    }
+    public function public_get_depth($params = array()) {
+        return $this->request('depth', 'public', 'GET', $params, null, null, array("cost" => 1, "byLimit" => [[100, 1], [500, 5], [1000, 10], [5000, 50]]));
+    }
+    public function public_get_exchangeinfo($params = array()) {
+        return $this->request('exchangeInfo', 'public', 'GET', $params, null, null, array("cost" => 4));
+    }
+    public function public_get_historicaltrades($params = array()) {
+        return $this->request('historicalTrades', 'public', 'GET', $params, null, null, array("cost" => 2));
+    }
+    public function public_get_klines($params = array()) {
+        return $this->request('klines', 'public', 'GET', $params, null, null, array("cost" => 0.4));
+    }
+    public function public_get_ping($params = array()) {
+        return $this->request('ping', 'public', 'GET', $params, null, null, array("cost" => 0.2));
+    }
+    public function public_get_ticker($params = array()) {
+        return $this->request('ticker', 'public', 'GET', $params, null, null, array("cost" => 0.4, "noSymbol" => 16));
+    }
+    public function public_get_ticker_24hr($params = array()) {
+        return $this->request('ticker/24hr', 'public', 'GET', $params, null, null, array("cost" => 0.4, "noSymbol" => 16));
+    }
+    public function public_get_ticker_bookticker($params = array()) {
+        return $this->request('ticker/bookTicker', 'public', 'GET', $params, null, null, array("cost" => 0.4, "noSymbol" => 0.8));
+    }
+    public function public_get_ticker_price($params = array()) {
+        return $this->request('ticker/price', 'public', 'GET', $params, null, null, array("cost" => 0.4, "noSymbol" => 0.8));
+    }
+    public function public_get_ticker_tradingday($params = array()) {
+        return $this->request('ticker/tradingDay', 'public', 'GET', $params, null, null, array("cost" => 0.8));
+    }
+    public function public_get_time($params = array()) {
+        return $this->request('time', 'public', 'GET', $params, null, null, array("cost" => 0.2));
+    }
+    public function public_get_trades($params = array()) {
+        return $this->request('trades', 'public', 'GET', $params, null, null, array("cost" => 2));
+    }
+    public function public_get_uiklines($params = array()) {
+        return $this->request('uiKlines', 'public', 'GET', $params, null, null, array("cost" => 0.4));
+    }
+    public function public_put_userdatastream($params = array()) {
+        return $this->request('userDataStream', 'public', 'PUT', $params, null, null, array("cost" => 0.4));
+    }
+    public function public_post_userdatastream($params = array()) {
+        return $this->request('userDataStream', 'public', 'POST', $params, null, null, array("cost" => 0.4));
+    }
+    public function public_delete_userdatastream($params = array()) {
+        return $this->request('userDataStream', 'public', 'DELETE', $params, null, null, array("cost" => 0.4));
+    }
     public function sapi_get_system_status($params = array()) {
         return $this->request('system/status', 'sapi', 'GET', $params, null, null, array("cost" => 0.1));
     }
@@ -1339,929 +2263,929 @@ abstract class binanceus extends \ccxt\binance {
     public function sapiv4_get_sub_account_assets($params = array()) {
         return $this->request('sub-account/assets', 'sapiV4', 'GET', $params, null, null, array("cost" => 0.40002));
     }
-    public function dapipublic_get_aggtrades($params = array()) {
-        return $this->request('aggTrades', 'dapiPublic', 'GET', $params, null, null, array("cost" => 20));
-    }
-    public function dapipublic_get_constituents($params = array()) {
-        return $this->request('constituents', 'dapiPublic', 'GET', $params, null, null, array("cost" => 2));
-    }
-    public function dapipublic_get_continuousklines($params = array()) {
-        return $this->request('continuousKlines', 'dapiPublic', 'GET', $params, null, null, array("cost" => 1, "byLimit" => [[99, 1], [499, 2], [1000, 5], [10000, 10]]));
-    }
-    public function dapipublic_get_depth($params = array()) {
-        return $this->request('depth', 'dapiPublic', 'GET', $params, null, null, array("cost" => 2, "byLimit" => [[50, 2], [100, 5], [500, 10], [1000, 20]]));
-    }
-    public function dapipublic_get_exchangeinfo($params = array()) {
-        return $this->request('exchangeInfo', 'dapiPublic', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function dapipublic_get_fundingrate($params = array()) {
-        return $this->request('fundingRate', 'dapiPublic', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function dapipublic_get_historicaltrades($params = array()) {
-        return $this->request('historicalTrades', 'dapiPublic', 'GET', $params, null, null, array("cost" => 20));
-    }
-    public function dapipublic_get_indexpriceklines($params = array()) {
-        return $this->request('indexPriceKlines', 'dapiPublic', 'GET', $params, null, null, array("cost" => 1, "byLimit" => [[99, 1], [499, 2], [1000, 5], [10000, 10]]));
-    }
-    public function dapipublic_get_klines($params = array()) {
-        return $this->request('klines', 'dapiPublic', 'GET', $params, null, null, array("cost" => 1, "byLimit" => [[99, 1], [499, 2], [1000, 5], [10000, 10]]));
-    }
-    public function dapipublic_get_markpriceklines($params = array()) {
-        return $this->request('markPriceKlines', 'dapiPublic', 'GET', $params, null, null, array("cost" => 1, "byLimit" => [[99, 1], [499, 2], [1000, 5], [10000, 10]]));
-    }
-    public function dapipublic_get_openinterest($params = array()) {
-        return $this->request('openInterest', 'dapiPublic', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function dapipublic_get_ping($params = array()) {
-        return $this->request('ping', 'dapiPublic', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function dapipublic_get_premiumindex($params = array()) {
-        return $this->request('premiumIndex', 'dapiPublic', 'GET', $params, null, null, array("cost" => 10));
-    }
-    public function dapipublic_get_premiumindexklines($params = array()) {
-        return $this->request('premiumIndexKlines', 'dapiPublic', 'GET', $params, null, null, array("cost" => 1, "byLimit" => [[99, 1], [499, 2], [1000, 5], [10000, 10]]));
-    }
-    public function dapipublic_get_ticker_24hr($params = array()) {
-        return $this->request('ticker/24hr', 'dapiPublic', 'GET', $params, null, null, array("cost" => 1, "noSymbol" => 40));
-    }
-    public function dapipublic_get_ticker_bookticker($params = array()) {
-        return $this->request('ticker/bookTicker', 'dapiPublic', 'GET', $params, null, null, array("cost" => 2, "noSymbol" => 5));
-    }
-    public function dapipublic_get_ticker_price($params = array()) {
-        return $this->request('ticker/price', 'dapiPublic', 'GET', $params, null, null, array("cost" => 1, "noSymbol" => 2));
-    }
-    public function dapipublic_get_time($params = array()) {
-        return $this->request('time', 'dapiPublic', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function dapipublic_get_trades($params = array()) {
-        return $this->request('trades', 'dapiPublic', 'GET', $params, null, null, array("cost" => 5));
-    }
-    public function dapidata_get_basis($params = array()) {
+    public function dapiDataGetBasis($params = array()) {
         return $this->request('basis', 'dapiData', 'GET', $params, null, null, array("cost" => 1));
     }
-    public function dapidata_get_delivery_price($params = array()) {
+    public function dapiDataGetDeliveryPrice($params = array()) {
         return $this->request('delivery-price', 'dapiData', 'GET', $params, null, null, array("cost" => 1));
     }
-    public function dapidata_get_globallongshortaccountratio($params = array()) {
+    public function dapiDataGetGlobalLongShortAccountRatio($params = array()) {
         return $this->request('globalLongShortAccountRatio', 'dapiData', 'GET', $params, null, null, array("cost" => 1));
     }
-    public function dapidata_get_openinteresthist($params = array()) {
+    public function dapiDataGetOpenInterestHist($params = array()) {
         return $this->request('openInterestHist', 'dapiData', 'GET', $params, null, null, array("cost" => 1));
     }
-    public function dapidata_get_takerbuysellvol($params = array()) {
+    public function dapiDataGetTakerBuySellVol($params = array()) {
         return $this->request('takerBuySellVol', 'dapiData', 'GET', $params, null, null, array("cost" => 1));
     }
-    public function dapidata_get_toplongshortaccountratio($params = array()) {
+    public function dapiDataGetTopLongShortAccountRatio($params = array()) {
         return $this->request('topLongShortAccountRatio', 'dapiData', 'GET', $params, null, null, array("cost" => 1));
     }
-    public function dapidata_get_toplongshortpositionratio($params = array()) {
+    public function dapiDataGetTopLongShortPositionRatio($params = array()) {
         return $this->request('topLongShortPositionRatio', 'dapiData', 'GET', $params, null, null, array("cost" => 1));
     }
-    public function dapiprivate_get_account($params = array()) {
-        return $this->request('account', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 5));
-    }
-    public function dapiprivate_get_adlquantile($params = array()) {
-        return $this->request('adlQuantile', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 5));
-    }
-    public function dapiprivate_get_allorders($params = array()) {
-        return $this->request('allOrders', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 20, "noSymbol" => 40));
-    }
-    public function dapiprivate_get_balance($params = array()) {
-        return $this->request('balance', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function dapiprivate_get_commissionrate($params = array()) {
-        return $this->request('commissionRate', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 20));
-    }
-    public function dapiprivate_get_forceorders($params = array()) {
-        return $this->request('forceOrders', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 20, "noSymbol" => 50));
-    }
-    public function dapiprivate_get_income($params = array()) {
-        return $this->request('income', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 20));
-    }
-    public function dapiprivate_get_income_asyn($params = array()) {
-        return $this->request('income/asyn', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 5));
-    }
-    public function dapiprivate_get_income_asyn_id($params = array()) {
-        return $this->request('income/asyn/id', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 5));
-    }
-    public function dapiprivate_get_leveragebracket($params = array()) {
-        return $this->request('leverageBracket', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function dapiprivate_get_openorder($params = array()) {
-        return $this->request('openOrder', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function dapiprivate_get_openorders($params = array()) {
-        return $this->request('openOrders', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 1, "noSymbol" => 5));
-    }
-    public function dapiprivate_get_order($params = array()) {
-        return $this->request('order', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function dapiprivate_get_orderamendment($params = array()) {
-        return $this->request('orderAmendment', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function dapiprivate_get_pmaccountinfo($params = array()) {
-        return $this->request('pmAccountInfo', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 0.5));
-    }
-    public function dapiprivate_get_pmexchangeinfo($params = array()) {
-        return $this->request('pmExchangeInfo', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 0.5));
-    }
-    public function dapiprivate_get_positionmargin_history($params = array()) {
-        return $this->request('positionMargin/history', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function dapiprivate_get_positionrisk($params = array()) {
-        return $this->request('positionRisk', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function dapiprivate_get_positionside_dual($params = array()) {
-        return $this->request('positionSide/dual', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 30));
-    }
-    public function dapiprivate_get_usertrades($params = array()) {
-        return $this->request('userTrades', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 20, "noSymbol" => 40));
-    }
-    public function dapiprivate_post_batchorders($params = array()) {
-        return $this->request('batchOrders', 'dapiPrivate', 'POST', $params, null, null, array("cost" => 5));
-    }
-    public function dapiprivate_post_countdowncancelall($params = array()) {
-        return $this->request('countdownCancelAll', 'dapiPrivate', 'POST', $params, null, null, array("cost" => 10));
-    }
-    public function dapiprivate_post_leverage($params = array()) {
-        return $this->request('leverage', 'dapiPrivate', 'POST', $params, null, null, array("cost" => 1));
-    }
-    public function dapiprivate_post_listenkey($params = array()) {
-        return $this->request('listenKey', 'dapiPrivate', 'POST', $params, null, null, array("cost" => 1));
-    }
-    public function dapiprivate_post_margintype($params = array()) {
-        return $this->request('marginType', 'dapiPrivate', 'POST', $params, null, null, array("cost" => 1));
-    }
-    public function dapiprivate_post_order($params = array()) {
-        return $this->request('order', 'dapiPrivate', 'POST', $params, null, null, array("cost" => 4));
-    }
-    public function dapiprivate_post_positionmargin($params = array()) {
-        return $this->request('positionMargin', 'dapiPrivate', 'POST', $params, null, null, array("cost" => 1));
-    }
-    public function dapiprivate_post_positionside_dual($params = array()) {
-        return $this->request('positionSide/dual', 'dapiPrivate', 'POST', $params, null, null, array("cost" => 1));
-    }
-    public function dapiprivate_put_batchorders($params = array()) {
-        return $this->request('batchOrders', 'dapiPrivate', 'PUT', $params, null, null, array("cost" => 5));
-    }
-    public function dapiprivate_put_listenkey($params = array()) {
-        return $this->request('listenKey', 'dapiPrivate', 'PUT', $params, null, null, array("cost" => 1));
-    }
-    public function dapiprivate_put_order($params = array()) {
-        return $this->request('order', 'dapiPrivate', 'PUT', $params, null, null, array("cost" => 1));
-    }
-    public function dapiprivate_delete_allopenorders($params = array()) {
+    public function dapiPrivateDeleteAllOpenOrders($params = array()) {
         return $this->request('allOpenOrders', 'dapiPrivate', 'DELETE', $params, null, null, array("cost" => 1));
     }
-    public function dapiprivate_delete_batchorders($params = array()) {
+    public function dapiPrivateDeleteBatchOrders($params = array()) {
         return $this->request('batchOrders', 'dapiPrivate', 'DELETE', $params, null, null, array("cost" => 5));
     }
-    public function dapiprivate_delete_listenkey($params = array()) {
+    public function dapiPrivateDeleteListenKey($params = array()) {
         return $this->request('listenKey', 'dapiPrivate', 'DELETE', $params, null, null, array("cost" => 1));
     }
-    public function dapiprivate_delete_order($params = array()) {
+    public function dapiPrivateDeleteOrder($params = array()) {
         return $this->request('order', 'dapiPrivate', 'DELETE', $params, null, null, array("cost" => 1));
     }
-    public function dapiprivatev2_get_leveragebracket($params = array()) {
+    public function dapiPrivateGetAccount($params = array()) {
+        return $this->request('account', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 5));
+    }
+    public function dapiPrivateGetAdlQuantile($params = array()) {
+        return $this->request('adlQuantile', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 5));
+    }
+    public function dapiPrivateGetAllOrders($params = array()) {
+        return $this->request('allOrders', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 20, "noSymbol" => 40));
+    }
+    public function dapiPrivateGetBalance($params = array()) {
+        return $this->request('balance', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function dapiPrivateGetCommissionRate($params = array()) {
+        return $this->request('commissionRate', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 20));
+    }
+    public function dapiPrivateGetForceOrders($params = array()) {
+        return $this->request('forceOrders', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 20, "noSymbol" => 50));
+    }
+    public function dapiPrivateGetIncome($params = array()) {
+        return $this->request('income', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 20));
+    }
+    public function dapiPrivateGetIncomeAsyn($params = array()) {
+        return $this->request('income/asyn', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 5));
+    }
+    public function dapiPrivateGetIncomeAsynId($params = array()) {
+        return $this->request('income/asyn/id', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 5));
+    }
+    public function dapiPrivateGetLeverageBracket($params = array()) {
+        return $this->request('leverageBracket', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function dapiPrivateGetOpenOrder($params = array()) {
+        return $this->request('openOrder', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function dapiPrivateGetOpenOrders($params = array()) {
+        return $this->request('openOrders', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 1, "noSymbol" => 5));
+    }
+    public function dapiPrivateGetOrder($params = array()) {
+        return $this->request('order', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function dapiPrivateGetOrderAmendment($params = array()) {
+        return $this->request('orderAmendment', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function dapiPrivateGetPmAccountInfo($params = array()) {
+        return $this->request('pmAccountInfo', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 0.5));
+    }
+    public function dapiPrivateGetPmExchangeInfo($params = array()) {
+        return $this->request('pmExchangeInfo', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 0.5));
+    }
+    public function dapiPrivateGetPositionMarginHistory($params = array()) {
+        return $this->request('positionMargin/history', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function dapiPrivateGetPositionRisk($params = array()) {
+        return $this->request('positionRisk', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function dapiPrivateGetPositionSideDual($params = array()) {
+        return $this->request('positionSide/dual', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 30));
+    }
+    public function dapiPrivateGetUserTrades($params = array()) {
+        return $this->request('userTrades', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 20, "noSymbol" => 40));
+    }
+    public function dapiPrivatePostBatchOrders($params = array()) {
+        return $this->request('batchOrders', 'dapiPrivate', 'POST', $params, null, null, array("cost" => 5));
+    }
+    public function dapiPrivatePostCountdownCancelAll($params = array()) {
+        return $this->request('countdownCancelAll', 'dapiPrivate', 'POST', $params, null, null, array("cost" => 10));
+    }
+    public function dapiPrivatePostLeverage($params = array()) {
+        return $this->request('leverage', 'dapiPrivate', 'POST', $params, null, null, array("cost" => 1));
+    }
+    public function dapiPrivatePostListenKey($params = array()) {
+        return $this->request('listenKey', 'dapiPrivate', 'POST', $params, null, null, array("cost" => 1));
+    }
+    public function dapiPrivatePostMarginType($params = array()) {
+        return $this->request('marginType', 'dapiPrivate', 'POST', $params, null, null, array("cost" => 1));
+    }
+    public function dapiPrivatePostOrder($params = array()) {
+        return $this->request('order', 'dapiPrivate', 'POST', $params, null, null, array("cost" => 4));
+    }
+    public function dapiPrivatePostPositionMargin($params = array()) {
+        return $this->request('positionMargin', 'dapiPrivate', 'POST', $params, null, null, array("cost" => 1));
+    }
+    public function dapiPrivatePostPositionSideDual($params = array()) {
+        return $this->request('positionSide/dual', 'dapiPrivate', 'POST', $params, null, null, array("cost" => 1));
+    }
+    public function dapiPrivatePutBatchOrders($params = array()) {
+        return $this->request('batchOrders', 'dapiPrivate', 'PUT', $params, null, null, array("cost" => 5));
+    }
+    public function dapiPrivatePutListenKey($params = array()) {
+        return $this->request('listenKey', 'dapiPrivate', 'PUT', $params, null, null, array("cost" => 1));
+    }
+    public function dapiPrivatePutOrder($params = array()) {
+        return $this->request('order', 'dapiPrivate', 'PUT', $params, null, null, array("cost" => 1));
+    }
+    public function dapiPrivateV2GetLeverageBracket($params = array()) {
         return $this->request('leverageBracket', 'dapiPrivateV2', 'GET', $params, null, null, array("cost" => 1));
     }
-    public function fapipublic_get_aggtrades($params = array()) {
-        return $this->request('aggTrades', 'fapiPublic', 'GET', $params, null, null, array("cost" => 20));
+    public function dapiPublicGetAggTrades($params = array()) {
+        return $this->request('aggTrades', 'dapiPublic', 'GET', $params, null, null, array("cost" => 20));
     }
-    public function fapipublic_get_apitradingstatus($params = array()) {
-        return $this->request('apiTradingStatus', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1, "noSymbol" => 10));
+    public function dapiPublicGetConstituents($params = array()) {
+        return $this->request('constituents', 'dapiPublic', 'GET', $params, null, null, array("cost" => 2));
     }
-    public function fapipublic_get_assetindex($params = array()) {
-        return $this->request('assetIndex', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1, "noSymbol" => 10));
+    public function dapiPublicGetContinuousKlines($params = array()) {
+        return $this->request('continuousKlines', 'dapiPublic', 'GET', $params, null, null, array("cost" => 1, "byLimit" => [[99, 1], [499, 2], [1000, 5], [10000, 10]]));
     }
-    public function fapipublic_get_constituents($params = array()) {
-        return $this->request('constituents', 'fapiPublic', 'GET', $params, null, null, array("cost" => 2));
+    public function dapiPublicGetDepth($params = array()) {
+        return $this->request('depth', 'dapiPublic', 'GET', $params, null, null, array("cost" => 2, "byLimit" => [[50, 2], [100, 5], [500, 10], [1000, 20]]));
     }
-    public function fapipublic_get_continuousklines($params = array()) {
-        return $this->request('continuousKlines', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1, "byLimit" => [[99, 1], [499, 2], [1000, 5], [10000, 10]]));
+    public function dapiPublicGetExchangeInfo($params = array()) {
+        return $this->request('exchangeInfo', 'dapiPublic', 'GET', $params, null, null, array("cost" => 1));
     }
-    public function fapipublic_get_depth($params = array()) {
-        return $this->request('depth', 'fapiPublic', 'GET', $params, null, null, array("cost" => 2, "byLimit" => [[50, 2], [100, 5], [500, 10], [1000, 20]]));
+    public function dapiPublicGetFundingRate($params = array()) {
+        return $this->request('fundingRate', 'dapiPublic', 'GET', $params, null, null, array("cost" => 1));
     }
-    public function fapipublic_get_exchangeinfo($params = array()) {
-        return $this->request('exchangeInfo', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1));
+    public function dapiPublicGetHistoricalTrades($params = array()) {
+        return $this->request('historicalTrades', 'dapiPublic', 'GET', $params, null, null, array("cost" => 20));
     }
-    public function fapipublic_get_fundinginfo($params = array()) {
-        return $this->request('fundingInfo', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1));
+    public function dapiPublicGetIndexPriceKlines($params = array()) {
+        return $this->request('indexPriceKlines', 'dapiPublic', 'GET', $params, null, null, array("cost" => 1, "byLimit" => [[99, 1], [499, 2], [1000, 5], [10000, 10]]));
     }
-    public function fapipublic_get_fundingrate($params = array()) {
-        return $this->request('fundingRate', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1));
+    public function dapiPublicGetKlines($params = array()) {
+        return $this->request('klines', 'dapiPublic', 'GET', $params, null, null, array("cost" => 1, "byLimit" => [[99, 1], [499, 2], [1000, 5], [10000, 10]]));
     }
-    public function fapipublic_get_historicaltrades($params = array()) {
-        return $this->request('historicalTrades', 'fapiPublic', 'GET', $params, null, null, array("cost" => 20));
+    public function dapiPublicGetMarkPriceKlines($params = array()) {
+        return $this->request('markPriceKlines', 'dapiPublic', 'GET', $params, null, null, array("cost" => 1, "byLimit" => [[99, 1], [499, 2], [1000, 5], [10000, 10]]));
     }
-    public function fapipublic_get_indexinfo($params = array()) {
-        return $this->request('indexInfo', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1));
+    public function dapiPublicGetOpenInterest($params = array()) {
+        return $this->request('openInterest', 'dapiPublic', 'GET', $params, null, null, array("cost" => 1));
     }
-    public function fapipublic_get_indexpriceklines($params = array()) {
-        return $this->request('indexPriceKlines', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1, "byLimit" => [[99, 1], [499, 2], [1000, 5], [10000, 10]]));
+    public function dapiPublicGetPing($params = array()) {
+        return $this->request('ping', 'dapiPublic', 'GET', $params, null, null, array("cost" => 1));
     }
-    public function fapipublic_get_klines($params = array()) {
-        return $this->request('klines', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1, "byLimit" => [[99, 1], [499, 2], [1000, 5], [10000, 10]]));
+    public function dapiPublicGetPremiumIndex($params = array()) {
+        return $this->request('premiumIndex', 'dapiPublic', 'GET', $params, null, null, array("cost" => 10));
     }
-    public function fapipublic_get_lvtklines($params = array()) {
-        return $this->request('lvtKlines', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1));
+    public function dapiPublicGetPremiumIndexKlines($params = array()) {
+        return $this->request('premiumIndexKlines', 'dapiPublic', 'GET', $params, null, null, array("cost" => 1, "byLimit" => [[99, 1], [499, 2], [1000, 5], [10000, 10]]));
     }
-    public function fapipublic_get_markpriceklines($params = array()) {
-        return $this->request('markPriceKlines', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1, "byLimit" => [[99, 1], [499, 2], [1000, 5], [10000, 10]]));
+    public function dapiPublicGetTicker24hr($params = array()) {
+        return $this->request('ticker/24hr', 'dapiPublic', 'GET', $params, null, null, array("cost" => 1, "noSymbol" => 40));
     }
-    public function fapipublic_get_openinterest($params = array()) {
-        return $this->request('openInterest', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1));
+    public function dapiPublicGetTickerBookTicker($params = array()) {
+        return $this->request('ticker/bookTicker', 'dapiPublic', 'GET', $params, null, null, array("cost" => 2, "noSymbol" => 5));
     }
-    public function fapipublic_get_ping($params = array()) {
-        return $this->request('ping', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1));
+    public function dapiPublicGetTickerPrice($params = array()) {
+        return $this->request('ticker/price', 'dapiPublic', 'GET', $params, null, null, array("cost" => 1, "noSymbol" => 2));
     }
-    public function fapipublic_get_premiumindex($params = array()) {
-        return $this->request('premiumIndex', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1));
+    public function dapiPublicGetTime($params = array()) {
+        return $this->request('time', 'dapiPublic', 'GET', $params, null, null, array("cost" => 1));
     }
-    public function fapipublic_get_ticker_24hr($params = array()) {
-        return $this->request('ticker/24hr', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1, "noSymbol" => 40));
+    public function dapiPublicGetTrades($params = array()) {
+        return $this->request('trades', 'dapiPublic', 'GET', $params, null, null, array("cost" => 5));
     }
-    public function fapipublic_get_ticker_bookticker($params = array()) {
-        return $this->request('ticker/bookTicker', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1, "noSymbol" => 2));
-    }
-    public function fapipublic_get_ticker_price($params = array()) {
-        return $this->request('ticker/price', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1, "noSymbol" => 2));
-    }
-    public function fapipublic_get_time($params = array()) {
-        return $this->request('time', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function fapipublic_get_trades($params = array()) {
-        return $this->request('trades', 'fapiPublic', 'GET', $params, null, null, array("cost" => 5));
-    }
-    public function fapidata_get_basis($params = array()) {
-        return $this->request('basis', 'fapiData', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function fapidata_get_delivery_price($params = array()) {
-        return $this->request('delivery-price', 'fapiData', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function fapidata_get_globallongshortaccountratio($params = array()) {
-        return $this->request('globalLongShortAccountRatio', 'fapiData', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function fapidata_get_openinteresthist($params = array()) {
-        return $this->request('openInterestHist', 'fapiData', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function fapidata_get_takerlongshortratio($params = array()) {
-        return $this->request('takerlongshortRatio', 'fapiData', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function fapidata_get_toplongshortaccountratio($params = array()) {
-        return $this->request('topLongShortAccountRatio', 'fapiData', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function fapidata_get_toplongshortpositionratio($params = array()) {
-        return $this->request('topLongShortPositionRatio', 'fapiData', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function fapiprivate_get_account($params = array()) {
-        return $this->request('account', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 5));
-    }
-    public function fapiprivate_get_allorders($params = array()) {
-        return $this->request('allOrders', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 5));
-    }
-    public function fapiprivate_get_apitradingstatus($params = array()) {
-        return $this->request('apiTradingStatus', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function fapiprivate_get_balance($params = array()) {
-        return $this->request('balance', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 5));
-    }
-    public function fapiprivate_get_commissionrate($params = array()) {
-        return $this->request('commissionRate', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 20));
-    }
-    public function fapiprivate_get_forceorders($params = array()) {
-        return $this->request('forceOrders', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 20, "noSymbol" => 50));
-    }
-    public function fapiprivate_get_income($params = array()) {
-        return $this->request('income', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 30));
-    }
-    public function fapiprivate_get_leveragebracket($params = array()) {
-        return $this->request('leverageBracket', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function fapiprivate_get_multiassetsmargin($params = array()) {
-        return $this->request('multiAssetsMargin', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 30));
-    }
-    public function fapiprivate_get_openorder($params = array()) {
-        return $this->request('openOrder', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function fapiprivate_get_openorders($params = array()) {
-        return $this->request('openOrders', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function fapiprivate_get_order($params = array()) {
-        return $this->request('order', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function fapiprivate_get_positionmargin_history($params = array()) {
-        return $this->request('positionMargin/history', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function fapiprivate_get_positionrisk($params = array()) {
-        return $this->request('positionRisk', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 5));
-    }
-    public function fapiprivate_get_positionside_dual($params = array()) {
-        return $this->request('positionSide/dual', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 30));
-    }
-    public function fapiprivate_get_usertrades($params = array()) {
-        return $this->request('userTrades', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 5));
-    }
-    public function fapiprivate_get_adlquantile($params = array()) {
-        return $this->request('adlQuantile', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 5));
-    }
-    public function fapiprivate_get_apireferral_customization($params = array()) {
-        return $this->request('apiReferral/customization', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function fapiprivate_get_apireferral_ifnewuser($params = array()) {
-        return $this->request('apiReferral/ifNewUser', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function fapiprivate_get_apireferral_overview($params = array()) {
-        return $this->request('apiReferral/overview', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function fapiprivate_get_apireferral_rebatevol($params = array()) {
-        return $this->request('apiReferral/rebateVol', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function fapiprivate_get_apireferral_tradernum($params = array()) {
-        return $this->request('apiReferral/traderNum', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function fapiprivate_get_apireferral_tradersummary($params = array()) {
-        return $this->request('apiReferral/traderSummary', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function fapiprivate_get_apireferral_tradevol($params = array()) {
-        return $this->request('apiReferral/tradeVol', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function fapiprivate_get_apireferral_usercustomization($params = array()) {
-        return $this->request('apiReferral/userCustomization', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function fapiprivate_get_income_asyn($params = array()) {
-        return $this->request('income/asyn', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1000));
-    }
-    public function fapiprivate_get_income_asyn_id($params = array()) {
-        return $this->request('income/asyn/id', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 10));
-    }
-    public function fapiprivate_get_order_asyn($params = array()) {
-        return $this->request('order/asyn', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1000));
-    }
-    public function fapiprivate_get_order_asyn_id($params = array()) {
-        return $this->request('order/asyn/id', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 10));
-    }
-    public function fapiprivate_get_orderamendment($params = array()) {
-        return $this->request('orderAmendment', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function fapiprivate_get_pmaccountinfo($params = array()) {
-        return $this->request('pmAccountInfo', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 5));
-    }
-    public function fapiprivate_get_trade_asyn($params = array()) {
-        return $this->request('trade/asyn', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1000));
-    }
-    public function fapiprivate_get_trade_asyn_id($params = array()) {
-        return $this->request('trade/asyn/id', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 10));
-    }
-    public function fapiprivate_post_batchorders($params = array()) {
-        return $this->request('batchOrders', 'fapiPrivate', 'POST', $params, null, null, array("cost" => 5));
-    }
-    public function fapiprivate_post_countdowncancelall($params = array()) {
-        return $this->request('countdownCancelAll', 'fapiPrivate', 'POST', $params, null, null, array("cost" => 10));
-    }
-    public function fapiprivate_post_leverage($params = array()) {
-        return $this->request('leverage', 'fapiPrivate', 'POST', $params, null, null, array("cost" => 1));
-    }
-    public function fapiprivate_post_listenkey($params = array()) {
-        return $this->request('listenKey', 'fapiPrivate', 'POST', $params, null, null, array("cost" => 1));
-    }
-    public function fapiprivate_post_margintype($params = array()) {
-        return $this->request('marginType', 'fapiPrivate', 'POST', $params, null, null, array("cost" => 1));
-    }
-    public function fapiprivate_post_multiassetsmargin($params = array()) {
-        return $this->request('multiAssetsMargin', 'fapiPrivate', 'POST', $params, null, null, array("cost" => 1));
-    }
-    public function fapiprivate_post_order($params = array()) {
-        return $this->request('order', 'fapiPrivate', 'POST', $params, null, null, array("cost" => 4));
-    }
-    public function fapiprivate_post_positionmargin($params = array()) {
-        return $this->request('positionMargin', 'fapiPrivate', 'POST', $params, null, null, array("cost" => 1));
-    }
-    public function fapiprivate_post_positionside_dual($params = array()) {
-        return $this->request('positionSide/dual', 'fapiPrivate', 'POST', $params, null, null, array("cost" => 1));
-    }
-    public function fapiprivate_post_apireferral_customization($params = array()) {
-        return $this->request('apiReferral/customization', 'fapiPrivate', 'POST', $params, null, null, array("cost" => 1));
-    }
-    public function fapiprivate_post_apireferral_usercustomization($params = array()) {
-        return $this->request('apiReferral/userCustomization', 'fapiPrivate', 'POST', $params, null, null, array("cost" => 1));
-    }
-    public function fapiprivate_put_batchorders($params = array()) {
-        return $this->request('batchOrders', 'fapiPrivate', 'PUT', $params, null, null, array("cost" => 5));
-    }
-    public function fapiprivate_put_listenkey($params = array()) {
-        return $this->request('listenKey', 'fapiPrivate', 'PUT', $params, null, null, array("cost" => 1));
-    }
-    public function fapiprivate_put_order($params = array()) {
-        return $this->request('order', 'fapiPrivate', 'PUT', $params, null, null, array("cost" => 1));
-    }
-    public function fapiprivate_delete_allopenorders($params = array()) {
-        return $this->request('allOpenOrders', 'fapiPrivate', 'DELETE', $params, null, null, array("cost" => 1));
-    }
-    public function fapiprivate_delete_batchorders($params = array()) {
-        return $this->request('batchOrders', 'fapiPrivate', 'DELETE', $params, null, null, array("cost" => 1));
-    }
-    public function fapiprivate_delete_listenkey($params = array()) {
-        return $this->request('listenKey', 'fapiPrivate', 'DELETE', $params, null, null, array("cost" => 1));
-    }
-    public function fapiprivate_delete_order($params = array()) {
-        return $this->request('order', 'fapiPrivate', 'DELETE', $params, null, null, array("cost" => 1));
-    }
-    public function fapipublicv2_get_ticker_price($params = array()) {
-        return $this->request('ticker/price', 'fapiPublicV2', 'GET', $params, null, null, array("cost" => 0));
-    }
-    public function fapiprivatev2_get_account($params = array()) {
-        return $this->request('account', 'fapiPrivateV2', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function fapiprivatev2_get_balance($params = array()) {
-        return $this->request('balance', 'fapiPrivateV2', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function fapiprivatev2_get_positionrisk($params = array()) {
-        return $this->request('positionRisk', 'fapiPrivateV2', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function eapipublic_get_depth($params = array()) {
-        return $this->request('depth', 'eapiPublic', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function eapipublic_get_exchangeinfo($params = array()) {
-        return $this->request('exchangeInfo', 'eapiPublic', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function eapipublic_get_exercisehistory($params = array()) {
-        return $this->request('exerciseHistory', 'eapiPublic', 'GET', $params, null, null, array("cost" => 3));
-    }
-    public function eapipublic_get_historicaltrades($params = array()) {
-        return $this->request('historicalTrades', 'eapiPublic', 'GET', $params, null, null, array("cost" => 20));
-    }
-    public function eapipublic_get_index($params = array()) {
-        return $this->request('index', 'eapiPublic', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function eapipublic_get_klines($params = array()) {
-        return $this->request('klines', 'eapiPublic', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function eapipublic_get_mark($params = array()) {
-        return $this->request('mark', 'eapiPublic', 'GET', $params, null, null, array("cost" => 5));
-    }
-    public function eapipublic_get_openinterest($params = array()) {
-        return $this->request('openInterest', 'eapiPublic', 'GET', $params, null, null, array("cost" => 3));
-    }
-    public function eapipublic_get_ping($params = array()) {
-        return $this->request('ping', 'eapiPublic', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function eapipublic_get_ticker($params = array()) {
-        return $this->request('ticker', 'eapiPublic', 'GET', $params, null, null, array("cost" => 5));
-    }
-    public function eapipublic_get_time($params = array()) {
-        return $this->request('time', 'eapiPublic', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function eapipublic_get_trades($params = array()) {
-        return $this->request('trades', 'eapiPublic', 'GET', $params, null, null, array("cost" => 5));
-    }
-    public function eapiprivate_get_account($params = array()) {
-        return $this->request('account', 'eapiPrivate', 'GET', $params, null, null, array("cost" => 3));
-    }
-    public function eapiprivate_get_bill($params = array()) {
-        return $this->request('bill', 'eapiPrivate', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function eapiprivate_get_countdowncancelall($params = array()) {
-        return $this->request('countdownCancelAll', 'eapiPrivate', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function eapiprivate_get_exerciserecord($params = array()) {
-        return $this->request('exerciseRecord', 'eapiPrivate', 'GET', $params, null, null, array("cost" => 5));
-    }
-    public function eapiprivate_get_historyorders($params = array()) {
-        return $this->request('historyOrders', 'eapiPrivate', 'GET', $params, null, null, array("cost" => 3));
-    }
-    public function eapiprivate_get_income_asyn($params = array()) {
-        return $this->request('income/asyn', 'eapiPrivate', 'GET', $params, null, null, array("cost" => 5));
-    }
-    public function eapiprivate_get_income_asyn_id($params = array()) {
-        return $this->request('income/asyn/id', 'eapiPrivate', 'GET', $params, null, null, array("cost" => 5));
-    }
-    public function eapiprivate_get_marginaccount($params = array()) {
-        return $this->request('marginAccount', 'eapiPrivate', 'GET', $params, null, null, array("cost" => 3));
-    }
-    public function eapiprivate_get_mmp($params = array()) {
-        return $this->request('mmp', 'eapiPrivate', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function eapiprivate_get_openorders($params = array()) {
-        return $this->request('openOrders', 'eapiPrivate', 'GET', $params, null, null, array("cost" => 1, "noSymbol" => 40));
-    }
-    public function eapiprivate_get_order($params = array()) {
-        return $this->request('order', 'eapiPrivate', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function eapiprivate_get_position($params = array()) {
-        return $this->request('position', 'eapiPrivate', 'GET', $params, null, null, array("cost" => 5));
-    }
-    public function eapiprivate_get_usertrades($params = array()) {
-        return $this->request('userTrades', 'eapiPrivate', 'GET', $params, null, null, array("cost" => 5));
-    }
-    public function eapiprivate_post_batchorders($params = array()) {
-        return $this->request('batchOrders', 'eapiPrivate', 'POST', $params, null, null, array("cost" => 5));
-    }
-    public function eapiprivate_post_countdowncancelall($params = array()) {
-        return $this->request('countdownCancelAll', 'eapiPrivate', 'POST', $params, null, null, array("cost" => 1));
-    }
-    public function eapiprivate_post_countdowncancelallheartbeat($params = array()) {
-        return $this->request('countdownCancelAllHeartBeat', 'eapiPrivate', 'POST', $params, null, null, array("cost" => 10));
-    }
-    public function eapiprivate_post_listenkey($params = array()) {
-        return $this->request('listenKey', 'eapiPrivate', 'POST', $params, null, null, array("cost" => 1));
-    }
-    public function eapiprivate_post_mmpreset($params = array()) {
-        return $this->request('mmpReset', 'eapiPrivate', 'POST', $params, null, null, array("cost" => 1));
-    }
-    public function eapiprivate_post_mmpset($params = array()) {
-        return $this->request('mmpSet', 'eapiPrivate', 'POST', $params, null, null, array("cost" => 1));
-    }
-    public function eapiprivate_post_order($params = array()) {
-        return $this->request('order', 'eapiPrivate', 'POST', $params, null, null, array("cost" => 1));
-    }
-    public function eapiprivate_put_listenkey($params = array()) {
-        return $this->request('listenKey', 'eapiPrivate', 'PUT', $params, null, null, array("cost" => 1));
-    }
-    public function eapiprivate_delete_allopenorders($params = array()) {
+    public function eapiPrivateDeleteAllOpenOrders($params = array()) {
         return $this->request('allOpenOrders', 'eapiPrivate', 'DELETE', $params, null, null, array("cost" => 1));
     }
-    public function eapiprivate_delete_allopenordersbyunderlying($params = array()) {
+    public function eapiPrivateDeleteAllOpenOrdersByUnderlying($params = array()) {
         return $this->request('allOpenOrdersByUnderlying', 'eapiPrivate', 'DELETE', $params, null, null, array("cost" => 1));
     }
-    public function eapiprivate_delete_batchorders($params = array()) {
+    public function eapiPrivateDeleteBatchOrders($params = array()) {
         return $this->request('batchOrders', 'eapiPrivate', 'DELETE', $params, null, null, array("cost" => 1));
     }
-    public function eapiprivate_delete_listenkey($params = array()) {
+    public function eapiPrivateDeleteListenKey($params = array()) {
         return $this->request('listenKey', 'eapiPrivate', 'DELETE', $params, null, null, array("cost" => 1));
     }
-    public function eapiprivate_delete_order($params = array()) {
+    public function eapiPrivateDeleteOrder($params = array()) {
         return $this->request('order', 'eapiPrivate', 'DELETE', $params, null, null, array("cost" => 1));
     }
-    public function public_get_aggtrades($params = array()) {
-        return $this->request('aggTrades', 'public', 'GET', $params, null, null, array("cost" => 0.4));
+    public function eapiPrivateGetAccount($params = array()) {
+        return $this->request('account', 'eapiPrivate', 'GET', $params, null, null, array("cost" => 3));
     }
-    public function public_get_avgprice($params = array()) {
-        return $this->request('avgPrice', 'public', 'GET', $params, null, null, array("cost" => 0.4));
+    public function eapiPrivateGetBill($params = array()) {
+        return $this->request('bill', 'eapiPrivate', 'GET', $params, null, null, array("cost" => 1));
     }
-    public function public_get_depth($params = array()) {
-        return $this->request('depth', 'public', 'GET', $params, null, null, array("cost" => 1, "byLimit" => [[100, 1], [500, 5], [1000, 10], [5000, 50]]));
+    public function eapiPrivateGetCountdownCancelAll($params = array()) {
+        return $this->request('countdownCancelAll', 'eapiPrivate', 'GET', $params, null, null, array("cost" => 1));
     }
-    public function public_get_exchangeinfo($params = array()) {
-        return $this->request('exchangeInfo', 'public', 'GET', $params, null, null, array("cost" => 4));
+    public function eapiPrivateGetExerciseRecord($params = array()) {
+        return $this->request('exerciseRecord', 'eapiPrivate', 'GET', $params, null, null, array("cost" => 5));
     }
-    public function public_get_historicaltrades($params = array()) {
-        return $this->request('historicalTrades', 'public', 'GET', $params, null, null, array("cost" => 2));
+    public function eapiPrivateGetHistoryOrders($params = array()) {
+        return $this->request('historyOrders', 'eapiPrivate', 'GET', $params, null, null, array("cost" => 3));
     }
-    public function public_get_klines($params = array()) {
-        return $this->request('klines', 'public', 'GET', $params, null, null, array("cost" => 0.4));
+    public function eapiPrivateGetIncomeAsyn($params = array()) {
+        return $this->request('income/asyn', 'eapiPrivate', 'GET', $params, null, null, array("cost" => 5));
     }
-    public function public_get_ping($params = array()) {
-        return $this->request('ping', 'public', 'GET', $params, null, null, array("cost" => 0.2));
+    public function eapiPrivateGetIncomeAsynId($params = array()) {
+        return $this->request('income/asyn/id', 'eapiPrivate', 'GET', $params, null, null, array("cost" => 5));
     }
-    public function public_get_ticker($params = array()) {
-        return $this->request('ticker', 'public', 'GET', $params, null, null, array("cost" => 0.4, "noSymbol" => 16));
+    public function eapiPrivateGetMarginAccount($params = array()) {
+        return $this->request('marginAccount', 'eapiPrivate', 'GET', $params, null, null, array("cost" => 3));
     }
-    public function public_get_ticker_24hr($params = array()) {
-        return $this->request('ticker/24hr', 'public', 'GET', $params, null, null, array("cost" => 0.4, "noSymbol" => 16));
+    public function eapiPrivateGetMmp($params = array()) {
+        return $this->request('mmp', 'eapiPrivate', 'GET', $params, null, null, array("cost" => 1));
     }
-    public function public_get_ticker_bookticker($params = array()) {
-        return $this->request('ticker/bookTicker', 'public', 'GET', $params, null, null, array("cost" => 0.4, "noSymbol" => 0.8));
+    public function eapiPrivateGetOpenOrders($params = array()) {
+        return $this->request('openOrders', 'eapiPrivate', 'GET', $params, null, null, array("cost" => 1, "noSymbol" => 40));
     }
-    public function public_get_ticker_price($params = array()) {
-        return $this->request('ticker/price', 'public', 'GET', $params, null, null, array("cost" => 0.4, "noSymbol" => 0.8));
+    public function eapiPrivateGetOrder($params = array()) {
+        return $this->request('order', 'eapiPrivate', 'GET', $params, null, null, array("cost" => 1));
     }
-    public function public_get_ticker_tradingday($params = array()) {
-        return $this->request('ticker/tradingDay', 'public', 'GET', $params, null, null, array("cost" => 0.8));
+    public function eapiPrivateGetPosition($params = array()) {
+        return $this->request('position', 'eapiPrivate', 'GET', $params, null, null, array("cost" => 5));
     }
-    public function public_get_time($params = array()) {
-        return $this->request('time', 'public', 'GET', $params, null, null, array("cost" => 0.2));
+    public function eapiPrivateGetUserTrades($params = array()) {
+        return $this->request('userTrades', 'eapiPrivate', 'GET', $params, null, null, array("cost" => 5));
     }
-    public function public_get_trades($params = array()) {
-        return $this->request('trades', 'public', 'GET', $params, null, null, array("cost" => 2));
+    public function eapiPrivatePostBatchOrders($params = array()) {
+        return $this->request('batchOrders', 'eapiPrivate', 'POST', $params, null, null, array("cost" => 5));
     }
-    public function public_get_uiklines($params = array()) {
-        return $this->request('uiKlines', 'public', 'GET', $params, null, null, array("cost" => 0.4));
+    public function eapiPrivatePostCountdownCancelAll($params = array()) {
+        return $this->request('countdownCancelAll', 'eapiPrivate', 'POST', $params, null, null, array("cost" => 1));
     }
-    public function public_put_userdatastream($params = array()) {
-        return $this->request('userDataStream', 'public', 'PUT', $params, null, null, array("cost" => 0.4));
+    public function eapiPrivatePostCountdownCancelAllHeartBeat($params = array()) {
+        return $this->request('countdownCancelAllHeartBeat', 'eapiPrivate', 'POST', $params, null, null, array("cost" => 10));
     }
-    public function public_post_userdatastream($params = array()) {
-        return $this->request('userDataStream', 'public', 'POST', $params, null, null, array("cost" => 0.4));
+    public function eapiPrivatePostListenKey($params = array()) {
+        return $this->request('listenKey', 'eapiPrivate', 'POST', $params, null, null, array("cost" => 1));
     }
-    public function public_delete_userdatastream($params = array()) {
-        return $this->request('userDataStream', 'public', 'DELETE', $params, null, null, array("cost" => 0.4));
+    public function eapiPrivatePostMmpReset($params = array()) {
+        return $this->request('mmpReset', 'eapiPrivate', 'POST', $params, null, null, array("cost" => 1));
     }
-    public function private_get_account($params = array()) {
-        return $this->request('account', 'private', 'GET', $params, null, null, array("cost" => 4));
+    public function eapiPrivatePostMmpSet($params = array()) {
+        return $this->request('mmpSet', 'eapiPrivate', 'POST', $params, null, null, array("cost" => 1));
     }
-    public function private_get_account_commission($params = array()) {
-        return $this->request('account/commission', 'private', 'GET', $params, null, null, array("cost" => 4));
+    public function eapiPrivatePostOrder($params = array()) {
+        return $this->request('order', 'eapiPrivate', 'POST', $params, null, null, array("cost" => 1));
     }
-    public function private_get_allorderlist($params = array()) {
-        return $this->request('allOrderList', 'private', 'GET', $params, null, null, array("cost" => 4));
+    public function eapiPrivatePutListenKey($params = array()) {
+        return $this->request('listenKey', 'eapiPrivate', 'PUT', $params, null, null, array("cost" => 1));
     }
-    public function private_get_allorders($params = array()) {
-        return $this->request('allOrders', 'private', 'GET', $params, null, null, array("cost" => 4));
+    public function eapiPublicGetDepth($params = array()) {
+        return $this->request('depth', 'eapiPublic', 'GET', $params, null, null, array("cost" => 1));
     }
-    public function private_get_myallocations($params = array()) {
-        return $this->request('myAllocations', 'private', 'GET', $params, null, null, array("cost" => 4));
+    public function eapiPublicGetExchangeInfo($params = array()) {
+        return $this->request('exchangeInfo', 'eapiPublic', 'GET', $params, null, null, array("cost" => 1));
     }
-    public function private_get_mypreventedmatches($params = array()) {
-        return $this->request('myPreventedMatches', 'private', 'GET', $params, null, null, array("cost" => 4));
+    public function eapiPublicGetExerciseHistory($params = array()) {
+        return $this->request('exerciseHistory', 'eapiPublic', 'GET', $params, null, null, array("cost" => 3));
     }
-    public function private_get_mytrades($params = array()) {
-        return $this->request('myTrades', 'private', 'GET', $params, null, null, array("cost" => 4));
+    public function eapiPublicGetHistoricalTrades($params = array()) {
+        return $this->request('historicalTrades', 'eapiPublic', 'GET', $params, null, null, array("cost" => 20));
     }
-    public function private_get_openorderlist($params = array()) {
-        return $this->request('openOrderList', 'private', 'GET', $params, null, null, array("cost" => 1.2));
+    public function eapiPublicGetIndex($params = array()) {
+        return $this->request('index', 'eapiPublic', 'GET', $params, null, null, array("cost" => 1));
     }
-    public function private_get_openorders($params = array()) {
-        return $this->request('openOrders', 'private', 'GET', $params, null, null, array("cost" => 1.2, "noSymbol" => 16));
+    public function eapiPublicGetKlines($params = array()) {
+        return $this->request('klines', 'eapiPublic', 'GET', $params, null, null, array("cost" => 1));
     }
-    public function private_get_order($params = array()) {
-        return $this->request('order', 'private', 'GET', $params, null, null, array("cost" => 0.8));
+    public function eapiPublicGetMark($params = array()) {
+        return $this->request('mark', 'eapiPublic', 'GET', $params, null, null, array("cost" => 5));
     }
-    public function private_get_orderlist($params = array()) {
-        return $this->request('orderList', 'private', 'GET', $params, null, null, array("cost" => 0.8));
+    public function eapiPublicGetOpenInterest($params = array()) {
+        return $this->request('openInterest', 'eapiPublic', 'GET', $params, null, null, array("cost" => 3));
     }
-    public function private_get_ratelimit_order($params = array()) {
-        return $this->request('rateLimit/order', 'private', 'GET', $params, null, null, array("cost" => 8));
+    public function eapiPublicGetPing($params = array()) {
+        return $this->request('ping', 'eapiPublic', 'GET', $params, null, null, array("cost" => 1));
     }
-    public function private_post_order($params = array()) {
-        return $this->request('order', 'private', 'POST', $params, null, null, array("cost" => 0.2));
+    public function eapiPublicGetTicker($params = array()) {
+        return $this->request('ticker', 'eapiPublic', 'GET', $params, null, null, array("cost" => 5));
     }
-    public function private_post_order_cancelreplace($params = array()) {
-        return $this->request('order/cancelReplace', 'private', 'POST', $params, null, null, array("cost" => 0.2));
+    public function eapiPublicGetTime($params = array()) {
+        return $this->request('time', 'eapiPublic', 'GET', $params, null, null, array("cost" => 1));
     }
-    public function private_post_order_oco($params = array()) {
-        return $this->request('order/oco', 'private', 'POST', $params, null, null, array("cost" => 0.2));
+    public function eapiPublicGetTrades($params = array()) {
+        return $this->request('trades', 'eapiPublic', 'GET', $params, null, null, array("cost" => 5));
     }
-    public function private_post_order_test($params = array()) {
-        return $this->request('order/test', 'private', 'POST', $params, null, null, array("cost" => 0.2));
+    public function fapiDataGetBasis($params = array()) {
+        return $this->request('basis', 'fapiData', 'GET', $params, null, null, array("cost" => 1));
     }
-    public function private_post_sor_order($params = array()) {
-        return $this->request('sor/order', 'private', 'POST', $params, null, null, array("cost" => 0.2));
+    public function fapiDataGetDeliveryPrice($params = array()) {
+        return $this->request('delivery-price', 'fapiData', 'GET', $params, null, null, array("cost" => 1));
     }
-    public function private_post_sor_order_test($params = array()) {
-        return $this->request('sor/order/test', 'private', 'POST', $params, null, null, array("cost" => 0.2));
+    public function fapiDataGetGlobalLongShortAccountRatio($params = array()) {
+        return $this->request('globalLongShortAccountRatio', 'fapiData', 'GET', $params, null, null, array("cost" => 1));
     }
-    public function private_delete_openorders($params = array()) {
-        return $this->request('openOrders', 'private', 'DELETE', $params, null, null, array("cost" => 0.2));
+    public function fapiDataGetOpenInterestHist($params = array()) {
+        return $this->request('openInterestHist', 'fapiData', 'GET', $params, null, null, array("cost" => 1));
     }
-    public function private_delete_order($params = array()) {
-        return $this->request('order', 'private', 'DELETE', $params, null, null, array("cost" => 0.2));
+    public function fapiDataGetTakerlongshortRatio($params = array()) {
+        return $this->request('takerlongshortRatio', 'fapiData', 'GET', $params, null, null, array("cost" => 1));
     }
-    public function private_delete_orderlist($params = array()) {
-        return $this->request('orderList', 'private', 'DELETE', $params, null, null, array("cost" => 0.2));
+    public function fapiDataGetTopLongShortAccountRatio($params = array()) {
+        return $this->request('topLongShortAccountRatio', 'fapiData', 'GET', $params, null, null, array("cost" => 1));
     }
-    public function papi_get_account($params = array()) {
-        return $this->request('account', 'papi', 'GET', $params, null, null, array("cost" => 20));
+    public function fapiDataGetTopLongShortPositionRatio($params = array()) {
+        return $this->request('topLongShortPositionRatio', 'fapiData', 'GET', $params, null, null, array("cost" => 1));
     }
-    public function papi_get_balance($params = array()) {
-        return $this->request('balance', 'papi', 'GET', $params, null, null, array("cost" => 20));
+    public function fapiPrivateDeleteAllOpenOrders($params = array()) {
+        return $this->request('allOpenOrders', 'fapiPrivate', 'DELETE', $params, null, null, array("cost" => 1));
     }
-    public function papi_get_cm_account($params = array()) {
-        return $this->request('cm/account', 'papi', 'GET', $params, null, null, array("cost" => 5));
+    public function fapiPrivateDeleteBatchOrders($params = array()) {
+        return $this->request('batchOrders', 'fapiPrivate', 'DELETE', $params, null, null, array("cost" => 1));
     }
-    public function papi_get_cm_adlquantile($params = array()) {
-        return $this->request('cm/adlQuantile', 'papi', 'GET', $params, null, null, array("cost" => 5));
+    public function fapiPrivateDeleteListenKey($params = array()) {
+        return $this->request('listenKey', 'fapiPrivate', 'DELETE', $params, null, null, array("cost" => 1));
     }
-    public function papi_get_cm_allorders($params = array()) {
-        return $this->request('cm/allOrders', 'papi', 'GET', $params, null, null, array("cost" => 20));
+    public function fapiPrivateDeleteOrder($params = array()) {
+        return $this->request('order', 'fapiPrivate', 'DELETE', $params, null, null, array("cost" => 1));
     }
-    public function papi_get_cm_commissionrate($params = array()) {
-        return $this->request('cm/commissionRate', 'papi', 'GET', $params, null, null, array("cost" => 20));
+    public function fapiPrivateGetAccount($params = array()) {
+        return $this->request('account', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 5));
     }
-    public function papi_get_cm_conditional_allorders($params = array()) {
-        return $this->request('cm/conditional/allOrders', 'papi', 'GET', $params, null, null, array("cost" => 40));
+    public function fapiPrivateGetAllOrders($params = array()) {
+        return $this->request('allOrders', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 5));
     }
-    public function papi_get_cm_conditional_openorder($params = array()) {
-        return $this->request('cm/conditional/openOrder', 'papi', 'GET', $params, null, null, array("cost" => 1));
+    public function fapiPrivateGetApiTradingStatus($params = array()) {
+        return $this->request('apiTradingStatus', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
     }
-    public function papi_get_cm_conditional_openorders($params = array()) {
-        return $this->request('cm/conditional/openOrders', 'papi', 'GET', $params, null, null, array("cost" => 40));
+    public function fapiPrivateGetBalance($params = array()) {
+        return $this->request('balance', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 5));
     }
-    public function papi_get_cm_conditional_orderhistory($params = array()) {
-        return $this->request('cm/conditional/orderHistory', 'papi', 'GET', $params, null, null, array("cost" => 1));
+    public function fapiPrivateGetCommissionRate($params = array()) {
+        return $this->request('commissionRate', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 20));
     }
-    public function papi_get_cm_forceorders($params = array()) {
-        return $this->request('cm/forceOrders', 'papi', 'GET', $params, null, null, array("cost" => 20));
+    public function fapiPrivateGetForceOrders($params = array()) {
+        return $this->request('forceOrders', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 20, "noSymbol" => 50));
     }
-    public function papi_get_cm_income($params = array()) {
-        return $this->request('cm/income', 'papi', 'GET', $params, null, null, array("cost" => 30));
+    public function fapiPrivateGetIncome($params = array()) {
+        return $this->request('income', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 30));
     }
-    public function papi_get_cm_leveragebracket($params = array()) {
-        return $this->request('cm/leverageBracket', 'papi', 'GET', $params, null, null, array("cost" => 1));
+    public function fapiPrivateGetLeverageBracket($params = array()) {
+        return $this->request('leverageBracket', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
     }
-    public function papi_get_cm_openorder($params = array()) {
-        return $this->request('cm/openOrder', 'papi', 'GET', $params, null, null, array("cost" => 1));
+    public function fapiPrivateGetMultiAssetsMargin($params = array()) {
+        return $this->request('multiAssetsMargin', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 30));
     }
-    public function papi_get_cm_openorders($params = array()) {
-        return $this->request('cm/openOrders', 'papi', 'GET', $params, null, null, array("cost" => 1));
+    public function fapiPrivateGetOpenOrder($params = array()) {
+        return $this->request('openOrder', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
     }
-    public function papi_get_cm_order($params = array()) {
-        return $this->request('cm/order', 'papi', 'GET', $params, null, null, array("cost" => 1));
+    public function fapiPrivateGetOpenOrders($params = array()) {
+        return $this->request('openOrders', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
     }
-    public function papi_get_cm_positionrisk($params = array()) {
-        return $this->request('cm/positionRisk', 'papi', 'GET', $params, null, null, array("cost" => 1));
+    public function fapiPrivateGetOrder($params = array()) {
+        return $this->request('order', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
     }
-    public function papi_get_cm_positionside_dual($params = array()) {
-        return $this->request('cm/positionSide/dual', 'papi', 'GET', $params, null, null, array("cost" => 30));
+    public function fapiPrivateGetPositionMarginHistory($params = array()) {
+        return $this->request('positionMargin/history', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
     }
-    public function papi_get_cm_usertrades($params = array()) {
-        return $this->request('cm/userTrades', 'papi', 'GET', $params, null, null, array("cost" => 20));
+    public function fapiPrivateGetPositionRisk($params = array()) {
+        return $this->request('positionRisk', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 5));
     }
-    public function papi_get_margin_allorderlist($params = array()) {
-        return $this->request('margin/allOrderList', 'papi', 'GET', $params, null, null, array("cost" => 100));
+    public function fapiPrivateGetPositionSideDual($params = array()) {
+        return $this->request('positionSide/dual', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 30));
     }
-    public function papi_get_margin_allorders($params = array()) {
-        return $this->request('margin/allOrders', 'papi', 'GET', $params, null, null, array("cost" => 100));
+    public function fapiPrivateGetUserTrades($params = array()) {
+        return $this->request('userTrades', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 5));
     }
-    public function papi_get_margin_forceorders($params = array()) {
-        return $this->request('margin/forceOrders', 'papi', 'GET', $params, null, null, array("cost" => 1));
+    public function fapiPrivateGetAdlQuantile($params = array()) {
+        return $this->request('adlQuantile', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 5));
     }
-    public function papi_get_margin_margininteresthistory($params = array()) {
-        return $this->request('margin/marginInterestHistory', 'papi', 'GET', $params, null, null, array("cost" => 1));
+    public function fapiPrivateGetApiReferralCustomization($params = array()) {
+        return $this->request('apiReferral/customization', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
     }
-    public function papi_get_margin_marginloan($params = array()) {
-        return $this->request('margin/marginLoan', 'papi', 'GET', $params, null, null, array("cost" => 10));
+    public function fapiPrivateGetApiReferralIfNewUser($params = array()) {
+        return $this->request('apiReferral/ifNewUser', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
     }
-    public function papi_get_margin_maxborrowable($params = array()) {
-        return $this->request('margin/maxBorrowable', 'papi', 'GET', $params, null, null, array("cost" => 5));
+    public function fapiPrivateGetApiReferralOverview($params = array()) {
+        return $this->request('apiReferral/overview', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
     }
-    public function papi_get_margin_maxwithdraw($params = array()) {
-        return $this->request('margin/maxWithdraw', 'papi', 'GET', $params, null, null, array("cost" => 5));
+    public function fapiPrivateGetApiReferralRebateVol($params = array()) {
+        return $this->request('apiReferral/rebateVol', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
     }
-    public function papi_get_margin_mytrades($params = array()) {
-        return $this->request('margin/myTrades', 'papi', 'GET', $params, null, null, array("cost" => 5));
+    public function fapiPrivateGetApiReferralTraderNum($params = array()) {
+        return $this->request('apiReferral/traderNum', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
     }
-    public function papi_get_margin_openorderlist($params = array()) {
-        return $this->request('margin/openOrderList', 'papi', 'GET', $params, null, null, array("cost" => 5));
+    public function fapiPrivateGetApiReferralTraderSummary($params = array()) {
+        return $this->request('apiReferral/traderSummary', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
     }
-    public function papi_get_margin_openorders($params = array()) {
-        return $this->request('margin/openOrders', 'papi', 'GET', $params, null, null, array("cost" => 5));
+    public function fapiPrivateGetApiReferralTradeVol($params = array()) {
+        return $this->request('apiReferral/tradeVol', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
     }
-    public function papi_get_margin_order($params = array()) {
-        return $this->request('margin/order', 'papi', 'GET', $params, null, null, array("cost" => 5));
+    public function fapiPrivateGetApiReferralUserCustomization($params = array()) {
+        return $this->request('apiReferral/userCustomization', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
     }
-    public function papi_get_margin_orderlist($params = array()) {
-        return $this->request('margin/orderList', 'papi', 'GET', $params, null, null, array("cost" => 5));
+    public function fapiPrivateGetIncomeAsyn($params = array()) {
+        return $this->request('income/asyn', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1000));
     }
-    public function papi_get_margin_repayloan($params = array()) {
-        return $this->request('margin/repayLoan', 'papi', 'GET', $params, null, null, array("cost" => 10));
+    public function fapiPrivateGetIncomeAsynId($params = array()) {
+        return $this->request('income/asyn/id', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 10));
     }
-    public function papi_get_ping($params = array()) {
-        return $this->request('ping', 'papi', 'GET', $params, null, null, array("cost" => 1));
+    public function fapiPrivateGetOrderAsyn($params = array()) {
+        return $this->request('order/asyn', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1000));
     }
-    public function papi_get_portfolio_interest_history($params = array()) {
-        return $this->request('portfolio/interest-history', 'papi', 'GET', $params, null, null, array("cost" => 50));
+    public function fapiPrivateGetOrderAsynId($params = array()) {
+        return $this->request('order/asyn/id', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 10));
     }
-    public function papi_get_repay_futures_switch($params = array()) {
-        return $this->request('repay-futures-switch', 'papi', 'GET', $params, null, null, array("cost" => 3));
+    public function fapiPrivateGetOrderAmendment($params = array()) {
+        return $this->request('orderAmendment', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
     }
-    public function papi_get_um_account($params = array()) {
-        return $this->request('um/account', 'papi', 'GET', $params, null, null, array("cost" => 5));
+    public function fapiPrivateGetPmAccountInfo($params = array()) {
+        return $this->request('pmAccountInfo', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 5));
     }
-    public function papi_get_um_adlquantile($params = array()) {
-        return $this->request('um/adlQuantile', 'papi', 'GET', $params, null, null, array("cost" => 5));
+    public function fapiPrivateGetTradeAsyn($params = array()) {
+        return $this->request('trade/asyn', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1000));
     }
-    public function papi_get_um_allorders($params = array()) {
-        return $this->request('um/allOrders', 'papi', 'GET', $params, null, null, array("cost" => 5));
+    public function fapiPrivateGetTradeAsynId($params = array()) {
+        return $this->request('trade/asyn/id', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 10));
     }
-    public function papi_get_um_apitradingstatus($params = array()) {
-        return $this->request('um/apiTradingStatus', 'papi', 'GET', $params, null, null, array("cost" => 1));
+    public function fapiPrivatePostBatchOrders($params = array()) {
+        return $this->request('batchOrders', 'fapiPrivate', 'POST', $params, null, null, array("cost" => 5));
     }
-    public function papi_get_um_commissionrate($params = array()) {
-        return $this->request('um/commissionRate', 'papi', 'GET', $params, null, null, array("cost" => 20));
+    public function fapiPrivatePostCountdownCancelAll($params = array()) {
+        return $this->request('countdownCancelAll', 'fapiPrivate', 'POST', $params, null, null, array("cost" => 10));
     }
-    public function papi_get_um_conditional_allorders($params = array()) {
-        return $this->request('um/conditional/allOrders', 'papi', 'GET', $params, null, null, array("cost" => 40));
+    public function fapiPrivatePostLeverage($params = array()) {
+        return $this->request('leverage', 'fapiPrivate', 'POST', $params, null, null, array("cost" => 1));
     }
-    public function papi_get_um_conditional_openorder($params = array()) {
-        return $this->request('um/conditional/openOrder', 'papi', 'GET', $params, null, null, array("cost" => 1));
+    public function fapiPrivatePostListenKey($params = array()) {
+        return $this->request('listenKey', 'fapiPrivate', 'POST', $params, null, null, array("cost" => 1));
     }
-    public function papi_get_um_conditional_openorders($params = array()) {
-        return $this->request('um/conditional/openOrders', 'papi', 'GET', $params, null, null, array("cost" => 40));
+    public function fapiPrivatePostMarginType($params = array()) {
+        return $this->request('marginType', 'fapiPrivate', 'POST', $params, null, null, array("cost" => 1));
     }
-    public function papi_get_um_conditional_orderhistory($params = array()) {
-        return $this->request('um/conditional/orderHistory', 'papi', 'GET', $params, null, null, array("cost" => 1));
+    public function fapiPrivatePostMultiAssetsMargin($params = array()) {
+        return $this->request('multiAssetsMargin', 'fapiPrivate', 'POST', $params, null, null, array("cost" => 1));
     }
-    public function papi_get_um_forceorders($params = array()) {
-        return $this->request('um/forceOrders', 'papi', 'GET', $params, null, null, array("cost" => 20));
+    public function fapiPrivatePostOrder($params = array()) {
+        return $this->request('order', 'fapiPrivate', 'POST', $params, null, null, array("cost" => 4));
     }
-    public function papi_get_um_income($params = array()) {
-        return $this->request('um/income', 'papi', 'GET', $params, null, null, array("cost" => 30));
+    public function fapiPrivatePostPositionMargin($params = array()) {
+        return $this->request('positionMargin', 'fapiPrivate', 'POST', $params, null, null, array("cost" => 1));
     }
-    public function papi_get_um_leveragebracket($params = array()) {
-        return $this->request('um/leverageBracket', 'papi', 'GET', $params, null, null, array("cost" => 1));
+    public function fapiPrivatePostPositionSideDual($params = array()) {
+        return $this->request('positionSide/dual', 'fapiPrivate', 'POST', $params, null, null, array("cost" => 1));
     }
-    public function papi_get_um_openorder($params = array()) {
-        return $this->request('um/openOrder', 'papi', 'GET', $params, null, null, array("cost" => 1));
+    public function fapiPrivatePostApiReferralCustomization($params = array()) {
+        return $this->request('apiReferral/customization', 'fapiPrivate', 'POST', $params, null, null, array("cost" => 1));
     }
-    public function papi_get_um_openorders($params = array()) {
-        return $this->request('um/openOrders', 'papi', 'GET', $params, null, null, array("cost" => 1));
+    public function fapiPrivatePostApiReferralUserCustomization($params = array()) {
+        return $this->request('apiReferral/userCustomization', 'fapiPrivate', 'POST', $params, null, null, array("cost" => 1));
     }
-    public function papi_get_um_order($params = array()) {
-        return $this->request('um/order', 'papi', 'GET', $params, null, null, array("cost" => 1));
+    public function fapiPrivatePutBatchOrders($params = array()) {
+        return $this->request('batchOrders', 'fapiPrivate', 'PUT', $params, null, null, array("cost" => 5));
     }
-    public function papi_get_um_positionrisk($params = array()) {
-        return $this->request('um/positionRisk', 'papi', 'GET', $params, null, null, array("cost" => 5));
+    public function fapiPrivatePutListenKey($params = array()) {
+        return $this->request('listenKey', 'fapiPrivate', 'PUT', $params, null, null, array("cost" => 1));
     }
-    public function papi_get_um_positionside_dual($params = array()) {
-        return $this->request('um/positionSide/dual', 'papi', 'GET', $params, null, null, array("cost" => 30));
+    public function fapiPrivatePutOrder($params = array()) {
+        return $this->request('order', 'fapiPrivate', 'PUT', $params, null, null, array("cost" => 1));
     }
-    public function papi_get_um_usertrades($params = array()) {
-        return $this->request('um/userTrades', 'papi', 'GET', $params, null, null, array("cost" => 5));
+    public function fapiPrivateV2GetAccount($params = array()) {
+        return $this->request('account', 'fapiPrivateV2', 'GET', $params, null, null, array("cost" => 1));
     }
-    public function papi_post_asset_collection($params = array()) {
-        return $this->request('asset-collection', 'papi', 'POST', $params, null, null, array("cost" => 3));
+    public function fapiPrivateV2GetBalance($params = array()) {
+        return $this->request('balance', 'fapiPrivateV2', 'GET', $params, null, null, array("cost" => 1));
     }
-    public function papi_post_auto_collection($params = array()) {
-        return $this->request('auto-collection', 'papi', 'POST', $params, null, null, array("cost" => 0.6667));
+    public function fapiPrivateV2GetPositionRisk($params = array()) {
+        return $this->request('positionRisk', 'fapiPrivateV2', 'GET', $params, null, null, array("cost" => 1));
     }
-    public function papi_post_bnb_transfer($params = array()) {
-        return $this->request('bnb-transfer', 'papi', 'POST', $params, null, null, array("cost" => 0.6667));
+    public function fapiPublicGetAggTrades($params = array()) {
+        return $this->request('aggTrades', 'fapiPublic', 'GET', $params, null, null, array("cost" => 20));
     }
-    public function papi_post_cm_conditional_order($params = array()) {
-        return $this->request('cm/conditional/order', 'papi', 'POST', $params, null, null, array("cost" => 1));
+    public function fapiPublicGetApiTradingStatus($params = array()) {
+        return $this->request('apiTradingStatus', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1, "noSymbol" => 10));
     }
-    public function papi_post_cm_leverage($params = array()) {
-        return $this->request('cm/leverage', 'papi', 'POST', $params, null, null, array("cost" => 1));
+    public function fapiPublicGetAssetIndex($params = array()) {
+        return $this->request('assetIndex', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1, "noSymbol" => 10));
     }
-    public function papi_post_cm_order($params = array()) {
-        return $this->request('cm/order', 'papi', 'POST', $params, null, null, array("cost" => 1));
+    public function fapiPublicGetConstituents($params = array()) {
+        return $this->request('constituents', 'fapiPublic', 'GET', $params, null, null, array("cost" => 2));
     }
-    public function papi_post_cm_positionside_dual($params = array()) {
-        return $this->request('cm/positionSide/dual', 'papi', 'POST', $params, null, null, array("cost" => 1));
+    public function fapiPublicGetContinuousKlines($params = array()) {
+        return $this->request('continuousKlines', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1, "byLimit" => [[99, 1], [499, 2], [1000, 5], [10000, 10]]));
     }
-    public function papi_post_listenkey($params = array()) {
-        return $this->request('listenKey', 'papi', 'POST', $params, null, null, array("cost" => 1));
+    public function fapiPublicGetDepth($params = array()) {
+        return $this->request('depth', 'fapiPublic', 'GET', $params, null, null, array("cost" => 2, "byLimit" => [[50, 2], [100, 5], [500, 10], [1000, 20]]));
     }
-    public function papi_post_margin_order($params = array()) {
-        return $this->request('margin/order', 'papi', 'POST', $params, null, null, array("cost" => 0.0133));
+    public function fapiPublicGetExchangeInfo($params = array()) {
+        return $this->request('exchangeInfo', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1));
     }
-    public function papi_post_margin_order_oco($params = array()) {
-        return $this->request('margin/order/oco', 'papi', 'POST', $params, null, null, array("cost" => 0.04));
+    public function fapiPublicGetFundingInfo($params = array()) {
+        return $this->request('fundingInfo', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1));
     }
-    public function papi_post_marginloan($params = array()) {
-        return $this->request('marginLoan', 'papi', 'POST', $params, null, null, array("cost" => 0.1333));
+    public function fapiPublicGetFundingRate($params = array()) {
+        return $this->request('fundingRate', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1));
     }
-    public function papi_post_repay_futures_negative_balance($params = array()) {
-        return $this->request('repay-futures-negative-balance', 'papi', 'POST', $params, null, null, array("cost" => 150));
+    public function fapiPublicGetHistoricalTrades($params = array()) {
+        return $this->request('historicalTrades', 'fapiPublic', 'GET', $params, null, null, array("cost" => 20));
     }
-    public function papi_post_repay_futures_switch($params = array()) {
-        return $this->request('repay-futures-switch', 'papi', 'POST', $params, null, null, array("cost" => 150));
+    public function fapiPublicGetIndexInfo($params = array()) {
+        return $this->request('indexInfo', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1));
     }
-    public function papi_post_repayloan($params = array()) {
-        return $this->request('repayLoan', 'papi', 'POST', $params, null, null, array("cost" => 0.1333));
+    public function fapiPublicGetIndexPriceKlines($params = array()) {
+        return $this->request('indexPriceKlines', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1, "byLimit" => [[99, 1], [499, 2], [1000, 5], [10000, 10]]));
     }
-    public function papi_post_um_conditional_order($params = array()) {
-        return $this->request('um/conditional/order', 'papi', 'POST', $params, null, null, array("cost" => 1));
+    public function fapiPublicGetKlines($params = array()) {
+        return $this->request('klines', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1, "byLimit" => [[99, 1], [499, 2], [1000, 5], [10000, 10]]));
     }
-    public function papi_post_um_leverage($params = array()) {
-        return $this->request('um/leverage', 'papi', 'POST', $params, null, null, array("cost" => 1));
+    public function fapiPublicGetLvtKlines($params = array()) {
+        return $this->request('lvtKlines', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1));
     }
-    public function papi_post_um_order($params = array()) {
-        return $this->request('um/order', 'papi', 'POST', $params, null, null, array("cost" => 1));
+    public function fapiPublicGetMarkPriceKlines($params = array()) {
+        return $this->request('markPriceKlines', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1, "byLimit" => [[99, 1], [499, 2], [1000, 5], [10000, 10]]));
     }
-    public function papi_post_um_positionside_dual($params = array()) {
-        return $this->request('um/positionSide/dual', 'papi', 'POST', $params, null, null, array("cost" => 1));
+    public function fapiPublicGetOpenInterest($params = array()) {
+        return $this->request('openInterest', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1));
     }
-    public function papi_put_listenkey($params = array()) {
-        return $this->request('listenKey', 'papi', 'PUT', $params, null, null, array("cost" => 1));
+    public function fapiPublicGetPing($params = array()) {
+        return $this->request('ping', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1));
     }
-    public function papi_delete_cm_allopenorders($params = array()) {
+    public function fapiPublicGetPremiumIndex($params = array()) {
+        return $this->request('premiumIndex', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function fapiPublicGetTicker24hr($params = array()) {
+        return $this->request('ticker/24hr', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1, "noSymbol" => 40));
+    }
+    public function fapiPublicGetTickerBookTicker($params = array()) {
+        return $this->request('ticker/bookTicker', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1, "noSymbol" => 2));
+    }
+    public function fapiPublicGetTickerPrice($params = array()) {
+        return $this->request('ticker/price', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1, "noSymbol" => 2));
+    }
+    public function fapiPublicGetTime($params = array()) {
+        return $this->request('time', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function fapiPublicGetTrades($params = array()) {
+        return $this->request('trades', 'fapiPublic', 'GET', $params, null, null, array("cost" => 5));
+    }
+    public function fapiPublicV2GetTickerPrice($params = array()) {
+        return $this->request('ticker/price', 'fapiPublicV2', 'GET', $params, null, null, array("cost" => 0));
+    }
+    public function papiDeleteCmAllOpenOrders($params = array()) {
         return $this->request('cm/allOpenOrders', 'papi', 'DELETE', $params, null, null, array("cost" => 1));
     }
-    public function papi_delete_cm_conditional_allopenorders($params = array()) {
+    public function papiDeleteCmConditionalAllOpenOrders($params = array()) {
         return $this->request('cm/conditional/allOpenOrders', 'papi', 'DELETE', $params, null, null, array("cost" => 1));
     }
-    public function papi_delete_cm_conditional_order($params = array()) {
+    public function papiDeleteCmConditionalOrder($params = array()) {
         return $this->request('cm/conditional/order', 'papi', 'DELETE', $params, null, null, array("cost" => 1));
     }
-    public function papi_delete_cm_order($params = array()) {
+    public function papiDeleteCmOrder($params = array()) {
         return $this->request('cm/order', 'papi', 'DELETE', $params, null, null, array("cost" => 1));
     }
-    public function papi_delete_listenkey($params = array()) {
+    public function papiDeleteListenKey($params = array()) {
         return $this->request('listenKey', 'papi', 'DELETE', $params, null, null, array("cost" => 1));
     }
-    public function papi_delete_margin_allopenorders($params = array()) {
+    public function papiDeleteMarginAllOpenOrders($params = array()) {
         return $this->request('margin/allOpenOrders', 'papi', 'DELETE', $params, null, null, array("cost" => 5));
     }
-    public function papi_delete_margin_order($params = array()) {
+    public function papiDeleteMarginOrder($params = array()) {
         return $this->request('margin/order', 'papi', 'DELETE', $params, null, null, array("cost" => 1));
     }
-    public function papi_delete_margin_orderlist($params = array()) {
+    public function papiDeleteMarginOrderList($params = array()) {
         return $this->request('margin/orderList', 'papi', 'DELETE', $params, null, null, array("cost" => 2));
     }
-    public function papi_delete_um_allopenorders($params = array()) {
+    public function papiDeleteUmAllOpenOrders($params = array()) {
         return $this->request('um/allOpenOrders', 'papi', 'DELETE', $params, null, null, array("cost" => 1));
     }
-    public function papi_delete_um_conditional_allopenorders($params = array()) {
+    public function papiDeleteUmConditionalAllOpenOrders($params = array()) {
         return $this->request('um/conditional/allOpenOrders', 'papi', 'DELETE', $params, null, null, array("cost" => 1));
     }
-    public function papi_delete_um_conditional_order($params = array()) {
+    public function papiDeleteUmConditionalOrder($params = array()) {
         return $this->request('um/conditional/order', 'papi', 'DELETE', $params, null, null, array("cost" => 1));
     }
-    public function papi_delete_um_order($params = array()) {
+    public function papiDeleteUmOrder($params = array()) {
         return $this->request('um/order', 'papi', 'DELETE', $params, null, null, array("cost" => 1));
+    }
+    public function papiGetAccount($params = array()) {
+        return $this->request('account', 'papi', 'GET', $params, null, null, array("cost" => 20));
+    }
+    public function papiGetBalance($params = array()) {
+        return $this->request('balance', 'papi', 'GET', $params, null, null, array("cost" => 20));
+    }
+    public function papiGetCmAccount($params = array()) {
+        return $this->request('cm/account', 'papi', 'GET', $params, null, null, array("cost" => 5));
+    }
+    public function papiGetCmAdlQuantile($params = array()) {
+        return $this->request('cm/adlQuantile', 'papi', 'GET', $params, null, null, array("cost" => 5));
+    }
+    public function papiGetCmAllOrders($params = array()) {
+        return $this->request('cm/allOrders', 'papi', 'GET', $params, null, null, array("cost" => 20));
+    }
+    public function papiGetCmCommissionRate($params = array()) {
+        return $this->request('cm/commissionRate', 'papi', 'GET', $params, null, null, array("cost" => 20));
+    }
+    public function papiGetCmConditionalAllOrders($params = array()) {
+        return $this->request('cm/conditional/allOrders', 'papi', 'GET', $params, null, null, array("cost" => 40));
+    }
+    public function papiGetCmConditionalOpenOrder($params = array()) {
+        return $this->request('cm/conditional/openOrder', 'papi', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function papiGetCmConditionalOpenOrders($params = array()) {
+        return $this->request('cm/conditional/openOrders', 'papi', 'GET', $params, null, null, array("cost" => 40));
+    }
+    public function papiGetCmConditionalOrderHistory($params = array()) {
+        return $this->request('cm/conditional/orderHistory', 'papi', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function papiGetCmForceOrders($params = array()) {
+        return $this->request('cm/forceOrders', 'papi', 'GET', $params, null, null, array("cost" => 20));
+    }
+    public function papiGetCmIncome($params = array()) {
+        return $this->request('cm/income', 'papi', 'GET', $params, null, null, array("cost" => 30));
+    }
+    public function papiGetCmLeverageBracket($params = array()) {
+        return $this->request('cm/leverageBracket', 'papi', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function papiGetCmOpenOrder($params = array()) {
+        return $this->request('cm/openOrder', 'papi', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function papiGetCmOpenOrders($params = array()) {
+        return $this->request('cm/openOrders', 'papi', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function papiGetCmOrder($params = array()) {
+        return $this->request('cm/order', 'papi', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function papiGetCmPositionRisk($params = array()) {
+        return $this->request('cm/positionRisk', 'papi', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function papiGetCmPositionSideDual($params = array()) {
+        return $this->request('cm/positionSide/dual', 'papi', 'GET', $params, null, null, array("cost" => 30));
+    }
+    public function papiGetCmUserTrades($params = array()) {
+        return $this->request('cm/userTrades', 'papi', 'GET', $params, null, null, array("cost" => 20));
+    }
+    public function papiGetMarginAllOrderList($params = array()) {
+        return $this->request('margin/allOrderList', 'papi', 'GET', $params, null, null, array("cost" => 100));
+    }
+    public function papiGetMarginAllOrders($params = array()) {
+        return $this->request('margin/allOrders', 'papi', 'GET', $params, null, null, array("cost" => 100));
+    }
+    public function papiGetMarginForceOrders($params = array()) {
+        return $this->request('margin/forceOrders', 'papi', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function papiGetMarginMarginInterestHistory($params = array()) {
+        return $this->request('margin/marginInterestHistory', 'papi', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function papiGetMarginMarginLoan($params = array()) {
+        return $this->request('margin/marginLoan', 'papi', 'GET', $params, null, null, array("cost" => 10));
+    }
+    public function papiGetMarginMaxBorrowable($params = array()) {
+        return $this->request('margin/maxBorrowable', 'papi', 'GET', $params, null, null, array("cost" => 5));
+    }
+    public function papiGetMarginMaxWithdraw($params = array()) {
+        return $this->request('margin/maxWithdraw', 'papi', 'GET', $params, null, null, array("cost" => 5));
+    }
+    public function papiGetMarginMyTrades($params = array()) {
+        return $this->request('margin/myTrades', 'papi', 'GET', $params, null, null, array("cost" => 5));
+    }
+    public function papiGetMarginOpenOrderList($params = array()) {
+        return $this->request('margin/openOrderList', 'papi', 'GET', $params, null, null, array("cost" => 5));
+    }
+    public function papiGetMarginOpenOrders($params = array()) {
+        return $this->request('margin/openOrders', 'papi', 'GET', $params, null, null, array("cost" => 5));
+    }
+    public function papiGetMarginOrder($params = array()) {
+        return $this->request('margin/order', 'papi', 'GET', $params, null, null, array("cost" => 5));
+    }
+    public function papiGetMarginOrderList($params = array()) {
+        return $this->request('margin/orderList', 'papi', 'GET', $params, null, null, array("cost" => 5));
+    }
+    public function papiGetMarginRepayLoan($params = array()) {
+        return $this->request('margin/repayLoan', 'papi', 'GET', $params, null, null, array("cost" => 10));
+    }
+    public function papiGetPing($params = array()) {
+        return $this->request('ping', 'papi', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function papiGetPortfolioInterestHistory($params = array()) {
+        return $this->request('portfolio/interest-history', 'papi', 'GET', $params, null, null, array("cost" => 50));
+    }
+    public function papiGetRepayFuturesSwitch($params = array()) {
+        return $this->request('repay-futures-switch', 'papi', 'GET', $params, null, null, array("cost" => 3));
+    }
+    public function papiGetUmAccount($params = array()) {
+        return $this->request('um/account', 'papi', 'GET', $params, null, null, array("cost" => 5));
+    }
+    public function papiGetUmAdlQuantile($params = array()) {
+        return $this->request('um/adlQuantile', 'papi', 'GET', $params, null, null, array("cost" => 5));
+    }
+    public function papiGetUmAllOrders($params = array()) {
+        return $this->request('um/allOrders', 'papi', 'GET', $params, null, null, array("cost" => 5));
+    }
+    public function papiGetUmApiTradingStatus($params = array()) {
+        return $this->request('um/apiTradingStatus', 'papi', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function papiGetUmCommissionRate($params = array()) {
+        return $this->request('um/commissionRate', 'papi', 'GET', $params, null, null, array("cost" => 20));
+    }
+    public function papiGetUmConditionalAllOrders($params = array()) {
+        return $this->request('um/conditional/allOrders', 'papi', 'GET', $params, null, null, array("cost" => 40));
+    }
+    public function papiGetUmConditionalOpenOrder($params = array()) {
+        return $this->request('um/conditional/openOrder', 'papi', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function papiGetUmConditionalOpenOrders($params = array()) {
+        return $this->request('um/conditional/openOrders', 'papi', 'GET', $params, null, null, array("cost" => 40));
+    }
+    public function papiGetUmConditionalOrderHistory($params = array()) {
+        return $this->request('um/conditional/orderHistory', 'papi', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function papiGetUmForceOrders($params = array()) {
+        return $this->request('um/forceOrders', 'papi', 'GET', $params, null, null, array("cost" => 20));
+    }
+    public function papiGetUmIncome($params = array()) {
+        return $this->request('um/income', 'papi', 'GET', $params, null, null, array("cost" => 30));
+    }
+    public function papiGetUmLeverageBracket($params = array()) {
+        return $this->request('um/leverageBracket', 'papi', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function papiGetUmOpenOrder($params = array()) {
+        return $this->request('um/openOrder', 'papi', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function papiGetUmOpenOrders($params = array()) {
+        return $this->request('um/openOrders', 'papi', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function papiGetUmOrder($params = array()) {
+        return $this->request('um/order', 'papi', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function papiGetUmPositionRisk($params = array()) {
+        return $this->request('um/positionRisk', 'papi', 'GET', $params, null, null, array("cost" => 5));
+    }
+    public function papiGetUmPositionSideDual($params = array()) {
+        return $this->request('um/positionSide/dual', 'papi', 'GET', $params, null, null, array("cost" => 30));
+    }
+    public function papiGetUmUserTrades($params = array()) {
+        return $this->request('um/userTrades', 'papi', 'GET', $params, null, null, array("cost" => 5));
+    }
+    public function papiPostAssetCollection($params = array()) {
+        return $this->request('asset-collection', 'papi', 'POST', $params, null, null, array("cost" => 3));
+    }
+    public function papiPostAutoCollection($params = array()) {
+        return $this->request('auto-collection', 'papi', 'POST', $params, null, null, array("cost" => 0.6667));
+    }
+    public function papiPostBnbTransfer($params = array()) {
+        return $this->request('bnb-transfer', 'papi', 'POST', $params, null, null, array("cost" => 0.6667));
+    }
+    public function papiPostCmConditionalOrder($params = array()) {
+        return $this->request('cm/conditional/order', 'papi', 'POST', $params, null, null, array("cost" => 1));
+    }
+    public function papiPostCmLeverage($params = array()) {
+        return $this->request('cm/leverage', 'papi', 'POST', $params, null, null, array("cost" => 1));
+    }
+    public function papiPostCmOrder($params = array()) {
+        return $this->request('cm/order', 'papi', 'POST', $params, null, null, array("cost" => 1));
+    }
+    public function papiPostCmPositionSideDual($params = array()) {
+        return $this->request('cm/positionSide/dual', 'papi', 'POST', $params, null, null, array("cost" => 1));
+    }
+    public function papiPostListenKey($params = array()) {
+        return $this->request('listenKey', 'papi', 'POST', $params, null, null, array("cost" => 1));
+    }
+    public function papiPostMarginOrder($params = array()) {
+        return $this->request('margin/order', 'papi', 'POST', $params, null, null, array("cost" => 0.0133));
+    }
+    public function papiPostMarginOrderOco($params = array()) {
+        return $this->request('margin/order/oco', 'papi', 'POST', $params, null, null, array("cost" => 0.04));
+    }
+    public function papiPostMarginLoan($params = array()) {
+        return $this->request('marginLoan', 'papi', 'POST', $params, null, null, array("cost" => 0.1333));
+    }
+    public function papiPostRepayFuturesNegativeBalance($params = array()) {
+        return $this->request('repay-futures-negative-balance', 'papi', 'POST', $params, null, null, array("cost" => 150));
+    }
+    public function papiPostRepayFuturesSwitch($params = array()) {
+        return $this->request('repay-futures-switch', 'papi', 'POST', $params, null, null, array("cost" => 150));
+    }
+    public function papiPostRepayLoan($params = array()) {
+        return $this->request('repayLoan', 'papi', 'POST', $params, null, null, array("cost" => 0.1333));
+    }
+    public function papiPostUmConditionalOrder($params = array()) {
+        return $this->request('um/conditional/order', 'papi', 'POST', $params, null, null, array("cost" => 1));
+    }
+    public function papiPostUmLeverage($params = array()) {
+        return $this->request('um/leverage', 'papi', 'POST', $params, null, null, array("cost" => 1));
+    }
+    public function papiPostUmOrder($params = array()) {
+        return $this->request('um/order', 'papi', 'POST', $params, null, null, array("cost" => 1));
+    }
+    public function papiPostUmPositionSideDual($params = array()) {
+        return $this->request('um/positionSide/dual', 'papi', 'POST', $params, null, null, array("cost" => 1));
+    }
+    public function papiPutListenKey($params = array()) {
+        return $this->request('listenKey', 'papi', 'PUT', $params, null, null, array("cost" => 1));
+    }
+    public function privateDeleteOpenOrders($params = array()) {
+        return $this->request('openOrders', 'private', 'DELETE', $params, null, null, array("cost" => 0.2));
+    }
+    public function privateDeleteOrder($params = array()) {
+        return $this->request('order', 'private', 'DELETE', $params, null, null, array("cost" => 0.2));
+    }
+    public function privateDeleteOrderList($params = array()) {
+        return $this->request('orderList', 'private', 'DELETE', $params, null, null, array("cost" => 0.2));
+    }
+    public function privateGetAccount($params = array()) {
+        return $this->request('account', 'private', 'GET', $params, null, null, array("cost" => 4));
+    }
+    public function privateGetAccountCommission($params = array()) {
+        return $this->request('account/commission', 'private', 'GET', $params, null, null, array("cost" => 4));
+    }
+    public function privateGetAllOrderList($params = array()) {
+        return $this->request('allOrderList', 'private', 'GET', $params, null, null, array("cost" => 4));
+    }
+    public function privateGetAllOrders($params = array()) {
+        return $this->request('allOrders', 'private', 'GET', $params, null, null, array("cost" => 4));
+    }
+    public function privateGetMyAllocations($params = array()) {
+        return $this->request('myAllocations', 'private', 'GET', $params, null, null, array("cost" => 4));
+    }
+    public function privateGetMyPreventedMatches($params = array()) {
+        return $this->request('myPreventedMatches', 'private', 'GET', $params, null, null, array("cost" => 4));
+    }
+    public function privateGetMyTrades($params = array()) {
+        return $this->request('myTrades', 'private', 'GET', $params, null, null, array("cost" => 4));
+    }
+    public function privateGetOpenOrderList($params = array()) {
+        return $this->request('openOrderList', 'private', 'GET', $params, null, null, array("cost" => 1.2));
+    }
+    public function privateGetOpenOrders($params = array()) {
+        return $this->request('openOrders', 'private', 'GET', $params, null, null, array("cost" => 1.2, "noSymbol" => 16));
+    }
+    public function privateGetOrder($params = array()) {
+        return $this->request('order', 'private', 'GET', $params, null, null, array("cost" => 0.8));
+    }
+    public function privateGetOrderList($params = array()) {
+        return $this->request('orderList', 'private', 'GET', $params, null, null, array("cost" => 0.8));
+    }
+    public function privateGetRateLimitOrder($params = array()) {
+        return $this->request('rateLimit/order', 'private', 'GET', $params, null, null, array("cost" => 8));
+    }
+    public function privatePostOrder($params = array()) {
+        return $this->request('order', 'private', 'POST', $params, null, null, array("cost" => 0.2));
+    }
+    public function privatePostOrderCancelReplace($params = array()) {
+        return $this->request('order/cancelReplace', 'private', 'POST', $params, null, null, array("cost" => 0.2));
+    }
+    public function privatePostOrderOco($params = array()) {
+        return $this->request('order/oco', 'private', 'POST', $params, null, null, array("cost" => 0.2));
+    }
+    public function privatePostOrderTest($params = array()) {
+        return $this->request('order/test', 'private', 'POST', $params, null, null, array("cost" => 0.2));
+    }
+    public function privatePostSorOrder($params = array()) {
+        return $this->request('sor/order', 'private', 'POST', $params, null, null, array("cost" => 0.2));
+    }
+    public function privatePostSorOrderTest($params = array()) {
+        return $this->request('sor/order/test', 'private', 'POST', $params, null, null, array("cost" => 0.2));
+    }
+    public function publicGetAggTrades($params = array()) {
+        return $this->request('aggTrades', 'public', 'GET', $params, null, null, array("cost" => 0.4));
+    }
+    public function publicGetAvgPrice($params = array()) {
+        return $this->request('avgPrice', 'public', 'GET', $params, null, null, array("cost" => 0.4));
+    }
+    public function publicGetDepth($params = array()) {
+        return $this->request('depth', 'public', 'GET', $params, null, null, array("cost" => 1, "byLimit" => [[100, 1], [500, 5], [1000, 10], [5000, 50]]));
+    }
+    public function publicGetExchangeInfo($params = array()) {
+        return $this->request('exchangeInfo', 'public', 'GET', $params, null, null, array("cost" => 4));
+    }
+    public function publicGetHistoricalTrades($params = array()) {
+        return $this->request('historicalTrades', 'public', 'GET', $params, null, null, array("cost" => 2));
+    }
+    public function publicGetKlines($params = array()) {
+        return $this->request('klines', 'public', 'GET', $params, null, null, array("cost" => 0.4));
+    }
+    public function publicGetPing($params = array()) {
+        return $this->request('ping', 'public', 'GET', $params, null, null, array("cost" => 0.2));
+    }
+    public function publicGetTicker($params = array()) {
+        return $this->request('ticker', 'public', 'GET', $params, null, null, array("cost" => 0.4, "noSymbol" => 16));
+    }
+    public function publicGetTicker24hr($params = array()) {
+        return $this->request('ticker/24hr', 'public', 'GET', $params, null, null, array("cost" => 0.4, "noSymbol" => 16));
+    }
+    public function publicGetTickerBookTicker($params = array()) {
+        return $this->request('ticker/bookTicker', 'public', 'GET', $params, null, null, array("cost" => 0.4, "noSymbol" => 0.8));
+    }
+    public function publicGetTickerPrice($params = array()) {
+        return $this->request('ticker/price', 'public', 'GET', $params, null, null, array("cost" => 0.4, "noSymbol" => 0.8));
+    }
+    public function publicGetTickerTradingDay($params = array()) {
+        return $this->request('ticker/tradingDay', 'public', 'GET', $params, null, null, array("cost" => 0.8));
+    }
+    public function publicGetTime($params = array()) {
+        return $this->request('time', 'public', 'GET', $params, null, null, array("cost" => 0.2));
+    }
+    public function publicGetTrades($params = array()) {
+        return $this->request('trades', 'public', 'GET', $params, null, null, array("cost" => 2));
+    }
+    public function publicGetUiKlines($params = array()) {
+        return $this->request('uiKlines', 'public', 'GET', $params, null, null, array("cost" => 0.4));
+    }
+    public function publicPutUserDataStream($params = array()) {
+        return $this->request('userDataStream', 'public', 'PUT', $params, null, null, array("cost" => 0.4));
+    }
+    public function publicPostUserDataStream($params = array()) {
+        return $this->request('userDataStream', 'public', 'POST', $params, null, null, array("cost" => 0.4));
+    }
+    public function publicDeleteUserDataStream($params = array()) {
+        return $this->request('userDataStream', 'public', 'DELETE', $params, null, null, array("cost" => 0.4));
     }
     public function sapiGetSystemStatus($params = array()) {
         return $this->request('system/status', 'sapi', 'GET', $params, null, null, array("cost" => 0.1));
@@ -3594,929 +4518,5 @@ abstract class binanceus extends \ccxt\binance {
     }
     public function sapiV4GetSubAccountAssets($params = array()) {
         return $this->request('sub-account/assets', 'sapiV4', 'GET', $params, null, null, array("cost" => 0.40002));
-    }
-    public function dapiPublicGetAggTrades($params = array()) {
-        return $this->request('aggTrades', 'dapiPublic', 'GET', $params, null, null, array("cost" => 20));
-    }
-    public function dapiPublicGetConstituents($params = array()) {
-        return $this->request('constituents', 'dapiPublic', 'GET', $params, null, null, array("cost" => 2));
-    }
-    public function dapiPublicGetContinuousKlines($params = array()) {
-        return $this->request('continuousKlines', 'dapiPublic', 'GET', $params, null, null, array("cost" => 1, "byLimit" => [[99, 1], [499, 2], [1000, 5], [10000, 10]]));
-    }
-    public function dapiPublicGetDepth($params = array()) {
-        return $this->request('depth', 'dapiPublic', 'GET', $params, null, null, array("cost" => 2, "byLimit" => [[50, 2], [100, 5], [500, 10], [1000, 20]]));
-    }
-    public function dapiPublicGetExchangeInfo($params = array()) {
-        return $this->request('exchangeInfo', 'dapiPublic', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function dapiPublicGetFundingRate($params = array()) {
-        return $this->request('fundingRate', 'dapiPublic', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function dapiPublicGetHistoricalTrades($params = array()) {
-        return $this->request('historicalTrades', 'dapiPublic', 'GET', $params, null, null, array("cost" => 20));
-    }
-    public function dapiPublicGetIndexPriceKlines($params = array()) {
-        return $this->request('indexPriceKlines', 'dapiPublic', 'GET', $params, null, null, array("cost" => 1, "byLimit" => [[99, 1], [499, 2], [1000, 5], [10000, 10]]));
-    }
-    public function dapiPublicGetKlines($params = array()) {
-        return $this->request('klines', 'dapiPublic', 'GET', $params, null, null, array("cost" => 1, "byLimit" => [[99, 1], [499, 2], [1000, 5], [10000, 10]]));
-    }
-    public function dapiPublicGetMarkPriceKlines($params = array()) {
-        return $this->request('markPriceKlines', 'dapiPublic', 'GET', $params, null, null, array("cost" => 1, "byLimit" => [[99, 1], [499, 2], [1000, 5], [10000, 10]]));
-    }
-    public function dapiPublicGetOpenInterest($params = array()) {
-        return $this->request('openInterest', 'dapiPublic', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function dapiPublicGetPing($params = array()) {
-        return $this->request('ping', 'dapiPublic', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function dapiPublicGetPremiumIndex($params = array()) {
-        return $this->request('premiumIndex', 'dapiPublic', 'GET', $params, null, null, array("cost" => 10));
-    }
-    public function dapiPublicGetPremiumIndexKlines($params = array()) {
-        return $this->request('premiumIndexKlines', 'dapiPublic', 'GET', $params, null, null, array("cost" => 1, "byLimit" => [[99, 1], [499, 2], [1000, 5], [10000, 10]]));
-    }
-    public function dapiPublicGetTicker24hr($params = array()) {
-        return $this->request('ticker/24hr', 'dapiPublic', 'GET', $params, null, null, array("cost" => 1, "noSymbol" => 40));
-    }
-    public function dapiPublicGetTickerBookTicker($params = array()) {
-        return $this->request('ticker/bookTicker', 'dapiPublic', 'GET', $params, null, null, array("cost" => 2, "noSymbol" => 5));
-    }
-    public function dapiPublicGetTickerPrice($params = array()) {
-        return $this->request('ticker/price', 'dapiPublic', 'GET', $params, null, null, array("cost" => 1, "noSymbol" => 2));
-    }
-    public function dapiPublicGetTime($params = array()) {
-        return $this->request('time', 'dapiPublic', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function dapiPublicGetTrades($params = array()) {
-        return $this->request('trades', 'dapiPublic', 'GET', $params, null, null, array("cost" => 5));
-    }
-    public function dapiDataGetBasis($params = array()) {
-        return $this->request('basis', 'dapiData', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function dapiDataGetDeliveryPrice($params = array()) {
-        return $this->request('delivery-price', 'dapiData', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function dapiDataGetGlobalLongShortAccountRatio($params = array()) {
-        return $this->request('globalLongShortAccountRatio', 'dapiData', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function dapiDataGetOpenInterestHist($params = array()) {
-        return $this->request('openInterestHist', 'dapiData', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function dapiDataGetTakerBuySellVol($params = array()) {
-        return $this->request('takerBuySellVol', 'dapiData', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function dapiDataGetTopLongShortAccountRatio($params = array()) {
-        return $this->request('topLongShortAccountRatio', 'dapiData', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function dapiDataGetTopLongShortPositionRatio($params = array()) {
-        return $this->request('topLongShortPositionRatio', 'dapiData', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function dapiPrivateGetAccount($params = array()) {
-        return $this->request('account', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 5));
-    }
-    public function dapiPrivateGetAdlQuantile($params = array()) {
-        return $this->request('adlQuantile', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 5));
-    }
-    public function dapiPrivateGetAllOrders($params = array()) {
-        return $this->request('allOrders', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 20, "noSymbol" => 40));
-    }
-    public function dapiPrivateGetBalance($params = array()) {
-        return $this->request('balance', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function dapiPrivateGetCommissionRate($params = array()) {
-        return $this->request('commissionRate', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 20));
-    }
-    public function dapiPrivateGetForceOrders($params = array()) {
-        return $this->request('forceOrders', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 20, "noSymbol" => 50));
-    }
-    public function dapiPrivateGetIncome($params = array()) {
-        return $this->request('income', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 20));
-    }
-    public function dapiPrivateGetIncomeAsyn($params = array()) {
-        return $this->request('income/asyn', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 5));
-    }
-    public function dapiPrivateGetIncomeAsynId($params = array()) {
-        return $this->request('income/asyn/id', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 5));
-    }
-    public function dapiPrivateGetLeverageBracket($params = array()) {
-        return $this->request('leverageBracket', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function dapiPrivateGetOpenOrder($params = array()) {
-        return $this->request('openOrder', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function dapiPrivateGetOpenOrders($params = array()) {
-        return $this->request('openOrders', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 1, "noSymbol" => 5));
-    }
-    public function dapiPrivateGetOrder($params = array()) {
-        return $this->request('order', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function dapiPrivateGetOrderAmendment($params = array()) {
-        return $this->request('orderAmendment', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function dapiPrivateGetPmAccountInfo($params = array()) {
-        return $this->request('pmAccountInfo', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 0.5));
-    }
-    public function dapiPrivateGetPmExchangeInfo($params = array()) {
-        return $this->request('pmExchangeInfo', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 0.5));
-    }
-    public function dapiPrivateGetPositionMarginHistory($params = array()) {
-        return $this->request('positionMargin/history', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function dapiPrivateGetPositionRisk($params = array()) {
-        return $this->request('positionRisk', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function dapiPrivateGetPositionSideDual($params = array()) {
-        return $this->request('positionSide/dual', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 30));
-    }
-    public function dapiPrivateGetUserTrades($params = array()) {
-        return $this->request('userTrades', 'dapiPrivate', 'GET', $params, null, null, array("cost" => 20, "noSymbol" => 40));
-    }
-    public function dapiPrivatePostBatchOrders($params = array()) {
-        return $this->request('batchOrders', 'dapiPrivate', 'POST', $params, null, null, array("cost" => 5));
-    }
-    public function dapiPrivatePostCountdownCancelAll($params = array()) {
-        return $this->request('countdownCancelAll', 'dapiPrivate', 'POST', $params, null, null, array("cost" => 10));
-    }
-    public function dapiPrivatePostLeverage($params = array()) {
-        return $this->request('leverage', 'dapiPrivate', 'POST', $params, null, null, array("cost" => 1));
-    }
-    public function dapiPrivatePostListenKey($params = array()) {
-        return $this->request('listenKey', 'dapiPrivate', 'POST', $params, null, null, array("cost" => 1));
-    }
-    public function dapiPrivatePostMarginType($params = array()) {
-        return $this->request('marginType', 'dapiPrivate', 'POST', $params, null, null, array("cost" => 1));
-    }
-    public function dapiPrivatePostOrder($params = array()) {
-        return $this->request('order', 'dapiPrivate', 'POST', $params, null, null, array("cost" => 4));
-    }
-    public function dapiPrivatePostPositionMargin($params = array()) {
-        return $this->request('positionMargin', 'dapiPrivate', 'POST', $params, null, null, array("cost" => 1));
-    }
-    public function dapiPrivatePostPositionSideDual($params = array()) {
-        return $this->request('positionSide/dual', 'dapiPrivate', 'POST', $params, null, null, array("cost" => 1));
-    }
-    public function dapiPrivatePutBatchOrders($params = array()) {
-        return $this->request('batchOrders', 'dapiPrivate', 'PUT', $params, null, null, array("cost" => 5));
-    }
-    public function dapiPrivatePutListenKey($params = array()) {
-        return $this->request('listenKey', 'dapiPrivate', 'PUT', $params, null, null, array("cost" => 1));
-    }
-    public function dapiPrivatePutOrder($params = array()) {
-        return $this->request('order', 'dapiPrivate', 'PUT', $params, null, null, array("cost" => 1));
-    }
-    public function dapiPrivateDeleteAllOpenOrders($params = array()) {
-        return $this->request('allOpenOrders', 'dapiPrivate', 'DELETE', $params, null, null, array("cost" => 1));
-    }
-    public function dapiPrivateDeleteBatchOrders($params = array()) {
-        return $this->request('batchOrders', 'dapiPrivate', 'DELETE', $params, null, null, array("cost" => 5));
-    }
-    public function dapiPrivateDeleteListenKey($params = array()) {
-        return $this->request('listenKey', 'dapiPrivate', 'DELETE', $params, null, null, array("cost" => 1));
-    }
-    public function dapiPrivateDeleteOrder($params = array()) {
-        return $this->request('order', 'dapiPrivate', 'DELETE', $params, null, null, array("cost" => 1));
-    }
-    public function dapiPrivateV2GetLeverageBracket($params = array()) {
-        return $this->request('leverageBracket', 'dapiPrivateV2', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function fapiPublicGetAggTrades($params = array()) {
-        return $this->request('aggTrades', 'fapiPublic', 'GET', $params, null, null, array("cost" => 20));
-    }
-    public function fapiPublicGetApiTradingStatus($params = array()) {
-        return $this->request('apiTradingStatus', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1, "noSymbol" => 10));
-    }
-    public function fapiPublicGetAssetIndex($params = array()) {
-        return $this->request('assetIndex', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1, "noSymbol" => 10));
-    }
-    public function fapiPublicGetConstituents($params = array()) {
-        return $this->request('constituents', 'fapiPublic', 'GET', $params, null, null, array("cost" => 2));
-    }
-    public function fapiPublicGetContinuousKlines($params = array()) {
-        return $this->request('continuousKlines', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1, "byLimit" => [[99, 1], [499, 2], [1000, 5], [10000, 10]]));
-    }
-    public function fapiPublicGetDepth($params = array()) {
-        return $this->request('depth', 'fapiPublic', 'GET', $params, null, null, array("cost" => 2, "byLimit" => [[50, 2], [100, 5], [500, 10], [1000, 20]]));
-    }
-    public function fapiPublicGetExchangeInfo($params = array()) {
-        return $this->request('exchangeInfo', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function fapiPublicGetFundingInfo($params = array()) {
-        return $this->request('fundingInfo', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function fapiPublicGetFundingRate($params = array()) {
-        return $this->request('fundingRate', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function fapiPublicGetHistoricalTrades($params = array()) {
-        return $this->request('historicalTrades', 'fapiPublic', 'GET', $params, null, null, array("cost" => 20));
-    }
-    public function fapiPublicGetIndexInfo($params = array()) {
-        return $this->request('indexInfo', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function fapiPublicGetIndexPriceKlines($params = array()) {
-        return $this->request('indexPriceKlines', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1, "byLimit" => [[99, 1], [499, 2], [1000, 5], [10000, 10]]));
-    }
-    public function fapiPublicGetKlines($params = array()) {
-        return $this->request('klines', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1, "byLimit" => [[99, 1], [499, 2], [1000, 5], [10000, 10]]));
-    }
-    public function fapiPublicGetLvtKlines($params = array()) {
-        return $this->request('lvtKlines', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function fapiPublicGetMarkPriceKlines($params = array()) {
-        return $this->request('markPriceKlines', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1, "byLimit" => [[99, 1], [499, 2], [1000, 5], [10000, 10]]));
-    }
-    public function fapiPublicGetOpenInterest($params = array()) {
-        return $this->request('openInterest', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function fapiPublicGetPing($params = array()) {
-        return $this->request('ping', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function fapiPublicGetPremiumIndex($params = array()) {
-        return $this->request('premiumIndex', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function fapiPublicGetTicker24hr($params = array()) {
-        return $this->request('ticker/24hr', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1, "noSymbol" => 40));
-    }
-    public function fapiPublicGetTickerBookTicker($params = array()) {
-        return $this->request('ticker/bookTicker', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1, "noSymbol" => 2));
-    }
-    public function fapiPublicGetTickerPrice($params = array()) {
-        return $this->request('ticker/price', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1, "noSymbol" => 2));
-    }
-    public function fapiPublicGetTime($params = array()) {
-        return $this->request('time', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function fapiPublicGetTrades($params = array()) {
-        return $this->request('trades', 'fapiPublic', 'GET', $params, null, null, array("cost" => 5));
-    }
-    public function fapiDataGetBasis($params = array()) {
-        return $this->request('basis', 'fapiData', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function fapiDataGetDeliveryPrice($params = array()) {
-        return $this->request('delivery-price', 'fapiData', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function fapiDataGetGlobalLongShortAccountRatio($params = array()) {
-        return $this->request('globalLongShortAccountRatio', 'fapiData', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function fapiDataGetOpenInterestHist($params = array()) {
-        return $this->request('openInterestHist', 'fapiData', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function fapiDataGetTakerlongshortRatio($params = array()) {
-        return $this->request('takerlongshortRatio', 'fapiData', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function fapiDataGetTopLongShortAccountRatio($params = array()) {
-        return $this->request('topLongShortAccountRatio', 'fapiData', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function fapiDataGetTopLongShortPositionRatio($params = array()) {
-        return $this->request('topLongShortPositionRatio', 'fapiData', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function fapiPrivateGetAccount($params = array()) {
-        return $this->request('account', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 5));
-    }
-    public function fapiPrivateGetAllOrders($params = array()) {
-        return $this->request('allOrders', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 5));
-    }
-    public function fapiPrivateGetApiTradingStatus($params = array()) {
-        return $this->request('apiTradingStatus', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function fapiPrivateGetBalance($params = array()) {
-        return $this->request('balance', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 5));
-    }
-    public function fapiPrivateGetCommissionRate($params = array()) {
-        return $this->request('commissionRate', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 20));
-    }
-    public function fapiPrivateGetForceOrders($params = array()) {
-        return $this->request('forceOrders', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 20, "noSymbol" => 50));
-    }
-    public function fapiPrivateGetIncome($params = array()) {
-        return $this->request('income', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 30));
-    }
-    public function fapiPrivateGetLeverageBracket($params = array()) {
-        return $this->request('leverageBracket', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function fapiPrivateGetMultiAssetsMargin($params = array()) {
-        return $this->request('multiAssetsMargin', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 30));
-    }
-    public function fapiPrivateGetOpenOrder($params = array()) {
-        return $this->request('openOrder', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function fapiPrivateGetOpenOrders($params = array()) {
-        return $this->request('openOrders', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function fapiPrivateGetOrder($params = array()) {
-        return $this->request('order', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function fapiPrivateGetPositionMarginHistory($params = array()) {
-        return $this->request('positionMargin/history', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function fapiPrivateGetPositionRisk($params = array()) {
-        return $this->request('positionRisk', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 5));
-    }
-    public function fapiPrivateGetPositionSideDual($params = array()) {
-        return $this->request('positionSide/dual', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 30));
-    }
-    public function fapiPrivateGetUserTrades($params = array()) {
-        return $this->request('userTrades', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 5));
-    }
-    public function fapiPrivateGetAdlQuantile($params = array()) {
-        return $this->request('adlQuantile', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 5));
-    }
-    public function fapiPrivateGetApiReferralCustomization($params = array()) {
-        return $this->request('apiReferral/customization', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function fapiPrivateGetApiReferralIfNewUser($params = array()) {
-        return $this->request('apiReferral/ifNewUser', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function fapiPrivateGetApiReferralOverview($params = array()) {
-        return $this->request('apiReferral/overview', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function fapiPrivateGetApiReferralRebateVol($params = array()) {
-        return $this->request('apiReferral/rebateVol', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function fapiPrivateGetApiReferralTraderNum($params = array()) {
-        return $this->request('apiReferral/traderNum', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function fapiPrivateGetApiReferralTraderSummary($params = array()) {
-        return $this->request('apiReferral/traderSummary', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function fapiPrivateGetApiReferralTradeVol($params = array()) {
-        return $this->request('apiReferral/tradeVol', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function fapiPrivateGetApiReferralUserCustomization($params = array()) {
-        return $this->request('apiReferral/userCustomization', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function fapiPrivateGetIncomeAsyn($params = array()) {
-        return $this->request('income/asyn', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1000));
-    }
-    public function fapiPrivateGetIncomeAsynId($params = array()) {
-        return $this->request('income/asyn/id', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 10));
-    }
-    public function fapiPrivateGetOrderAsyn($params = array()) {
-        return $this->request('order/asyn', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1000));
-    }
-    public function fapiPrivateGetOrderAsynId($params = array()) {
-        return $this->request('order/asyn/id', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 10));
-    }
-    public function fapiPrivateGetOrderAmendment($params = array()) {
-        return $this->request('orderAmendment', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function fapiPrivateGetPmAccountInfo($params = array()) {
-        return $this->request('pmAccountInfo', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 5));
-    }
-    public function fapiPrivateGetTradeAsyn($params = array()) {
-        return $this->request('trade/asyn', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1000));
-    }
-    public function fapiPrivateGetTradeAsynId($params = array()) {
-        return $this->request('trade/asyn/id', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 10));
-    }
-    public function fapiPrivatePostBatchOrders($params = array()) {
-        return $this->request('batchOrders', 'fapiPrivate', 'POST', $params, null, null, array("cost" => 5));
-    }
-    public function fapiPrivatePostCountdownCancelAll($params = array()) {
-        return $this->request('countdownCancelAll', 'fapiPrivate', 'POST', $params, null, null, array("cost" => 10));
-    }
-    public function fapiPrivatePostLeverage($params = array()) {
-        return $this->request('leverage', 'fapiPrivate', 'POST', $params, null, null, array("cost" => 1));
-    }
-    public function fapiPrivatePostListenKey($params = array()) {
-        return $this->request('listenKey', 'fapiPrivate', 'POST', $params, null, null, array("cost" => 1));
-    }
-    public function fapiPrivatePostMarginType($params = array()) {
-        return $this->request('marginType', 'fapiPrivate', 'POST', $params, null, null, array("cost" => 1));
-    }
-    public function fapiPrivatePostMultiAssetsMargin($params = array()) {
-        return $this->request('multiAssetsMargin', 'fapiPrivate', 'POST', $params, null, null, array("cost" => 1));
-    }
-    public function fapiPrivatePostOrder($params = array()) {
-        return $this->request('order', 'fapiPrivate', 'POST', $params, null, null, array("cost" => 4));
-    }
-    public function fapiPrivatePostPositionMargin($params = array()) {
-        return $this->request('positionMargin', 'fapiPrivate', 'POST', $params, null, null, array("cost" => 1));
-    }
-    public function fapiPrivatePostPositionSideDual($params = array()) {
-        return $this->request('positionSide/dual', 'fapiPrivate', 'POST', $params, null, null, array("cost" => 1));
-    }
-    public function fapiPrivatePostApiReferralCustomization($params = array()) {
-        return $this->request('apiReferral/customization', 'fapiPrivate', 'POST', $params, null, null, array("cost" => 1));
-    }
-    public function fapiPrivatePostApiReferralUserCustomization($params = array()) {
-        return $this->request('apiReferral/userCustomization', 'fapiPrivate', 'POST', $params, null, null, array("cost" => 1));
-    }
-    public function fapiPrivatePutBatchOrders($params = array()) {
-        return $this->request('batchOrders', 'fapiPrivate', 'PUT', $params, null, null, array("cost" => 5));
-    }
-    public function fapiPrivatePutListenKey($params = array()) {
-        return $this->request('listenKey', 'fapiPrivate', 'PUT', $params, null, null, array("cost" => 1));
-    }
-    public function fapiPrivatePutOrder($params = array()) {
-        return $this->request('order', 'fapiPrivate', 'PUT', $params, null, null, array("cost" => 1));
-    }
-    public function fapiPrivateDeleteAllOpenOrders($params = array()) {
-        return $this->request('allOpenOrders', 'fapiPrivate', 'DELETE', $params, null, null, array("cost" => 1));
-    }
-    public function fapiPrivateDeleteBatchOrders($params = array()) {
-        return $this->request('batchOrders', 'fapiPrivate', 'DELETE', $params, null, null, array("cost" => 1));
-    }
-    public function fapiPrivateDeleteListenKey($params = array()) {
-        return $this->request('listenKey', 'fapiPrivate', 'DELETE', $params, null, null, array("cost" => 1));
-    }
-    public function fapiPrivateDeleteOrder($params = array()) {
-        return $this->request('order', 'fapiPrivate', 'DELETE', $params, null, null, array("cost" => 1));
-    }
-    public function fapiPublicV2GetTickerPrice($params = array()) {
-        return $this->request('ticker/price', 'fapiPublicV2', 'GET', $params, null, null, array("cost" => 0));
-    }
-    public function fapiPrivateV2GetAccount($params = array()) {
-        return $this->request('account', 'fapiPrivateV2', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function fapiPrivateV2GetBalance($params = array()) {
-        return $this->request('balance', 'fapiPrivateV2', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function fapiPrivateV2GetPositionRisk($params = array()) {
-        return $this->request('positionRisk', 'fapiPrivateV2', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function eapiPublicGetDepth($params = array()) {
-        return $this->request('depth', 'eapiPublic', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function eapiPublicGetExchangeInfo($params = array()) {
-        return $this->request('exchangeInfo', 'eapiPublic', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function eapiPublicGetExerciseHistory($params = array()) {
-        return $this->request('exerciseHistory', 'eapiPublic', 'GET', $params, null, null, array("cost" => 3));
-    }
-    public function eapiPublicGetHistoricalTrades($params = array()) {
-        return $this->request('historicalTrades', 'eapiPublic', 'GET', $params, null, null, array("cost" => 20));
-    }
-    public function eapiPublicGetIndex($params = array()) {
-        return $this->request('index', 'eapiPublic', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function eapiPublicGetKlines($params = array()) {
-        return $this->request('klines', 'eapiPublic', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function eapiPublicGetMark($params = array()) {
-        return $this->request('mark', 'eapiPublic', 'GET', $params, null, null, array("cost" => 5));
-    }
-    public function eapiPublicGetOpenInterest($params = array()) {
-        return $this->request('openInterest', 'eapiPublic', 'GET', $params, null, null, array("cost" => 3));
-    }
-    public function eapiPublicGetPing($params = array()) {
-        return $this->request('ping', 'eapiPublic', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function eapiPublicGetTicker($params = array()) {
-        return $this->request('ticker', 'eapiPublic', 'GET', $params, null, null, array("cost" => 5));
-    }
-    public function eapiPublicGetTime($params = array()) {
-        return $this->request('time', 'eapiPublic', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function eapiPublicGetTrades($params = array()) {
-        return $this->request('trades', 'eapiPublic', 'GET', $params, null, null, array("cost" => 5));
-    }
-    public function eapiPrivateGetAccount($params = array()) {
-        return $this->request('account', 'eapiPrivate', 'GET', $params, null, null, array("cost" => 3));
-    }
-    public function eapiPrivateGetBill($params = array()) {
-        return $this->request('bill', 'eapiPrivate', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function eapiPrivateGetCountdownCancelAll($params = array()) {
-        return $this->request('countdownCancelAll', 'eapiPrivate', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function eapiPrivateGetExerciseRecord($params = array()) {
-        return $this->request('exerciseRecord', 'eapiPrivate', 'GET', $params, null, null, array("cost" => 5));
-    }
-    public function eapiPrivateGetHistoryOrders($params = array()) {
-        return $this->request('historyOrders', 'eapiPrivate', 'GET', $params, null, null, array("cost" => 3));
-    }
-    public function eapiPrivateGetIncomeAsyn($params = array()) {
-        return $this->request('income/asyn', 'eapiPrivate', 'GET', $params, null, null, array("cost" => 5));
-    }
-    public function eapiPrivateGetIncomeAsynId($params = array()) {
-        return $this->request('income/asyn/id', 'eapiPrivate', 'GET', $params, null, null, array("cost" => 5));
-    }
-    public function eapiPrivateGetMarginAccount($params = array()) {
-        return $this->request('marginAccount', 'eapiPrivate', 'GET', $params, null, null, array("cost" => 3));
-    }
-    public function eapiPrivateGetMmp($params = array()) {
-        return $this->request('mmp', 'eapiPrivate', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function eapiPrivateGetOpenOrders($params = array()) {
-        return $this->request('openOrders', 'eapiPrivate', 'GET', $params, null, null, array("cost" => 1, "noSymbol" => 40));
-    }
-    public function eapiPrivateGetOrder($params = array()) {
-        return $this->request('order', 'eapiPrivate', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function eapiPrivateGetPosition($params = array()) {
-        return $this->request('position', 'eapiPrivate', 'GET', $params, null, null, array("cost" => 5));
-    }
-    public function eapiPrivateGetUserTrades($params = array()) {
-        return $this->request('userTrades', 'eapiPrivate', 'GET', $params, null, null, array("cost" => 5));
-    }
-    public function eapiPrivatePostBatchOrders($params = array()) {
-        return $this->request('batchOrders', 'eapiPrivate', 'POST', $params, null, null, array("cost" => 5));
-    }
-    public function eapiPrivatePostCountdownCancelAll($params = array()) {
-        return $this->request('countdownCancelAll', 'eapiPrivate', 'POST', $params, null, null, array("cost" => 1));
-    }
-    public function eapiPrivatePostCountdownCancelAllHeartBeat($params = array()) {
-        return $this->request('countdownCancelAllHeartBeat', 'eapiPrivate', 'POST', $params, null, null, array("cost" => 10));
-    }
-    public function eapiPrivatePostListenKey($params = array()) {
-        return $this->request('listenKey', 'eapiPrivate', 'POST', $params, null, null, array("cost" => 1));
-    }
-    public function eapiPrivatePostMmpReset($params = array()) {
-        return $this->request('mmpReset', 'eapiPrivate', 'POST', $params, null, null, array("cost" => 1));
-    }
-    public function eapiPrivatePostMmpSet($params = array()) {
-        return $this->request('mmpSet', 'eapiPrivate', 'POST', $params, null, null, array("cost" => 1));
-    }
-    public function eapiPrivatePostOrder($params = array()) {
-        return $this->request('order', 'eapiPrivate', 'POST', $params, null, null, array("cost" => 1));
-    }
-    public function eapiPrivatePutListenKey($params = array()) {
-        return $this->request('listenKey', 'eapiPrivate', 'PUT', $params, null, null, array("cost" => 1));
-    }
-    public function eapiPrivateDeleteAllOpenOrders($params = array()) {
-        return $this->request('allOpenOrders', 'eapiPrivate', 'DELETE', $params, null, null, array("cost" => 1));
-    }
-    public function eapiPrivateDeleteAllOpenOrdersByUnderlying($params = array()) {
-        return $this->request('allOpenOrdersByUnderlying', 'eapiPrivate', 'DELETE', $params, null, null, array("cost" => 1));
-    }
-    public function eapiPrivateDeleteBatchOrders($params = array()) {
-        return $this->request('batchOrders', 'eapiPrivate', 'DELETE', $params, null, null, array("cost" => 1));
-    }
-    public function eapiPrivateDeleteListenKey($params = array()) {
-        return $this->request('listenKey', 'eapiPrivate', 'DELETE', $params, null, null, array("cost" => 1));
-    }
-    public function eapiPrivateDeleteOrder($params = array()) {
-        return $this->request('order', 'eapiPrivate', 'DELETE', $params, null, null, array("cost" => 1));
-    }
-    public function publicGetAggTrades($params = array()) {
-        return $this->request('aggTrades', 'public', 'GET', $params, null, null, array("cost" => 0.4));
-    }
-    public function publicGetAvgPrice($params = array()) {
-        return $this->request('avgPrice', 'public', 'GET', $params, null, null, array("cost" => 0.4));
-    }
-    public function publicGetDepth($params = array()) {
-        return $this->request('depth', 'public', 'GET', $params, null, null, array("cost" => 1, "byLimit" => [[100, 1], [500, 5], [1000, 10], [5000, 50]]));
-    }
-    public function publicGetExchangeInfo($params = array()) {
-        return $this->request('exchangeInfo', 'public', 'GET', $params, null, null, array("cost" => 4));
-    }
-    public function publicGetHistoricalTrades($params = array()) {
-        return $this->request('historicalTrades', 'public', 'GET', $params, null, null, array("cost" => 2));
-    }
-    public function publicGetKlines($params = array()) {
-        return $this->request('klines', 'public', 'GET', $params, null, null, array("cost" => 0.4));
-    }
-    public function publicGetPing($params = array()) {
-        return $this->request('ping', 'public', 'GET', $params, null, null, array("cost" => 0.2));
-    }
-    public function publicGetTicker($params = array()) {
-        return $this->request('ticker', 'public', 'GET', $params, null, null, array("cost" => 0.4, "noSymbol" => 16));
-    }
-    public function publicGetTicker24hr($params = array()) {
-        return $this->request('ticker/24hr', 'public', 'GET', $params, null, null, array("cost" => 0.4, "noSymbol" => 16));
-    }
-    public function publicGetTickerBookTicker($params = array()) {
-        return $this->request('ticker/bookTicker', 'public', 'GET', $params, null, null, array("cost" => 0.4, "noSymbol" => 0.8));
-    }
-    public function publicGetTickerPrice($params = array()) {
-        return $this->request('ticker/price', 'public', 'GET', $params, null, null, array("cost" => 0.4, "noSymbol" => 0.8));
-    }
-    public function publicGetTickerTradingDay($params = array()) {
-        return $this->request('ticker/tradingDay', 'public', 'GET', $params, null, null, array("cost" => 0.8));
-    }
-    public function publicGetTime($params = array()) {
-        return $this->request('time', 'public', 'GET', $params, null, null, array("cost" => 0.2));
-    }
-    public function publicGetTrades($params = array()) {
-        return $this->request('trades', 'public', 'GET', $params, null, null, array("cost" => 2));
-    }
-    public function publicGetUiKlines($params = array()) {
-        return $this->request('uiKlines', 'public', 'GET', $params, null, null, array("cost" => 0.4));
-    }
-    public function publicPutUserDataStream($params = array()) {
-        return $this->request('userDataStream', 'public', 'PUT', $params, null, null, array("cost" => 0.4));
-    }
-    public function publicPostUserDataStream($params = array()) {
-        return $this->request('userDataStream', 'public', 'POST', $params, null, null, array("cost" => 0.4));
-    }
-    public function publicDeleteUserDataStream($params = array()) {
-        return $this->request('userDataStream', 'public', 'DELETE', $params, null, null, array("cost" => 0.4));
-    }
-    public function privateGetAccount($params = array()) {
-        return $this->request('account', 'private', 'GET', $params, null, null, array("cost" => 4));
-    }
-    public function privateGetAccountCommission($params = array()) {
-        return $this->request('account/commission', 'private', 'GET', $params, null, null, array("cost" => 4));
-    }
-    public function privateGetAllOrderList($params = array()) {
-        return $this->request('allOrderList', 'private', 'GET', $params, null, null, array("cost" => 4));
-    }
-    public function privateGetAllOrders($params = array()) {
-        return $this->request('allOrders', 'private', 'GET', $params, null, null, array("cost" => 4));
-    }
-    public function privateGetMyAllocations($params = array()) {
-        return $this->request('myAllocations', 'private', 'GET', $params, null, null, array("cost" => 4));
-    }
-    public function privateGetMyPreventedMatches($params = array()) {
-        return $this->request('myPreventedMatches', 'private', 'GET', $params, null, null, array("cost" => 4));
-    }
-    public function privateGetMyTrades($params = array()) {
-        return $this->request('myTrades', 'private', 'GET', $params, null, null, array("cost" => 4));
-    }
-    public function privateGetOpenOrderList($params = array()) {
-        return $this->request('openOrderList', 'private', 'GET', $params, null, null, array("cost" => 1.2));
-    }
-    public function privateGetOpenOrders($params = array()) {
-        return $this->request('openOrders', 'private', 'GET', $params, null, null, array("cost" => 1.2, "noSymbol" => 16));
-    }
-    public function privateGetOrder($params = array()) {
-        return $this->request('order', 'private', 'GET', $params, null, null, array("cost" => 0.8));
-    }
-    public function privateGetOrderList($params = array()) {
-        return $this->request('orderList', 'private', 'GET', $params, null, null, array("cost" => 0.8));
-    }
-    public function privateGetRateLimitOrder($params = array()) {
-        return $this->request('rateLimit/order', 'private', 'GET', $params, null, null, array("cost" => 8));
-    }
-    public function privatePostOrder($params = array()) {
-        return $this->request('order', 'private', 'POST', $params, null, null, array("cost" => 0.2));
-    }
-    public function privatePostOrderCancelReplace($params = array()) {
-        return $this->request('order/cancelReplace', 'private', 'POST', $params, null, null, array("cost" => 0.2));
-    }
-    public function privatePostOrderOco($params = array()) {
-        return $this->request('order/oco', 'private', 'POST', $params, null, null, array("cost" => 0.2));
-    }
-    public function privatePostOrderTest($params = array()) {
-        return $this->request('order/test', 'private', 'POST', $params, null, null, array("cost" => 0.2));
-    }
-    public function privatePostSorOrder($params = array()) {
-        return $this->request('sor/order', 'private', 'POST', $params, null, null, array("cost" => 0.2));
-    }
-    public function privatePostSorOrderTest($params = array()) {
-        return $this->request('sor/order/test', 'private', 'POST', $params, null, null, array("cost" => 0.2));
-    }
-    public function privateDeleteOpenOrders($params = array()) {
-        return $this->request('openOrders', 'private', 'DELETE', $params, null, null, array("cost" => 0.2));
-    }
-    public function privateDeleteOrder($params = array()) {
-        return $this->request('order', 'private', 'DELETE', $params, null, null, array("cost" => 0.2));
-    }
-    public function privateDeleteOrderList($params = array()) {
-        return $this->request('orderList', 'private', 'DELETE', $params, null, null, array("cost" => 0.2));
-    }
-    public function papiGetAccount($params = array()) {
-        return $this->request('account', 'papi', 'GET', $params, null, null, array("cost" => 20));
-    }
-    public function papiGetBalance($params = array()) {
-        return $this->request('balance', 'papi', 'GET', $params, null, null, array("cost" => 20));
-    }
-    public function papiGetCmAccount($params = array()) {
-        return $this->request('cm/account', 'papi', 'GET', $params, null, null, array("cost" => 5));
-    }
-    public function papiGetCmAdlQuantile($params = array()) {
-        return $this->request('cm/adlQuantile', 'papi', 'GET', $params, null, null, array("cost" => 5));
-    }
-    public function papiGetCmAllOrders($params = array()) {
-        return $this->request('cm/allOrders', 'papi', 'GET', $params, null, null, array("cost" => 20));
-    }
-    public function papiGetCmCommissionRate($params = array()) {
-        return $this->request('cm/commissionRate', 'papi', 'GET', $params, null, null, array("cost" => 20));
-    }
-    public function papiGetCmConditionalAllOrders($params = array()) {
-        return $this->request('cm/conditional/allOrders', 'papi', 'GET', $params, null, null, array("cost" => 40));
-    }
-    public function papiGetCmConditionalOpenOrder($params = array()) {
-        return $this->request('cm/conditional/openOrder', 'papi', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function papiGetCmConditionalOpenOrders($params = array()) {
-        return $this->request('cm/conditional/openOrders', 'papi', 'GET', $params, null, null, array("cost" => 40));
-    }
-    public function papiGetCmConditionalOrderHistory($params = array()) {
-        return $this->request('cm/conditional/orderHistory', 'papi', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function papiGetCmForceOrders($params = array()) {
-        return $this->request('cm/forceOrders', 'papi', 'GET', $params, null, null, array("cost" => 20));
-    }
-    public function papiGetCmIncome($params = array()) {
-        return $this->request('cm/income', 'papi', 'GET', $params, null, null, array("cost" => 30));
-    }
-    public function papiGetCmLeverageBracket($params = array()) {
-        return $this->request('cm/leverageBracket', 'papi', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function papiGetCmOpenOrder($params = array()) {
-        return $this->request('cm/openOrder', 'papi', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function papiGetCmOpenOrders($params = array()) {
-        return $this->request('cm/openOrders', 'papi', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function papiGetCmOrder($params = array()) {
-        return $this->request('cm/order', 'papi', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function papiGetCmPositionRisk($params = array()) {
-        return $this->request('cm/positionRisk', 'papi', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function papiGetCmPositionSideDual($params = array()) {
-        return $this->request('cm/positionSide/dual', 'papi', 'GET', $params, null, null, array("cost" => 30));
-    }
-    public function papiGetCmUserTrades($params = array()) {
-        return $this->request('cm/userTrades', 'papi', 'GET', $params, null, null, array("cost" => 20));
-    }
-    public function papiGetMarginAllOrderList($params = array()) {
-        return $this->request('margin/allOrderList', 'papi', 'GET', $params, null, null, array("cost" => 100));
-    }
-    public function papiGetMarginAllOrders($params = array()) {
-        return $this->request('margin/allOrders', 'papi', 'GET', $params, null, null, array("cost" => 100));
-    }
-    public function papiGetMarginForceOrders($params = array()) {
-        return $this->request('margin/forceOrders', 'papi', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function papiGetMarginMarginInterestHistory($params = array()) {
-        return $this->request('margin/marginInterestHistory', 'papi', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function papiGetMarginMarginLoan($params = array()) {
-        return $this->request('margin/marginLoan', 'papi', 'GET', $params, null, null, array("cost" => 10));
-    }
-    public function papiGetMarginMaxBorrowable($params = array()) {
-        return $this->request('margin/maxBorrowable', 'papi', 'GET', $params, null, null, array("cost" => 5));
-    }
-    public function papiGetMarginMaxWithdraw($params = array()) {
-        return $this->request('margin/maxWithdraw', 'papi', 'GET', $params, null, null, array("cost" => 5));
-    }
-    public function papiGetMarginMyTrades($params = array()) {
-        return $this->request('margin/myTrades', 'papi', 'GET', $params, null, null, array("cost" => 5));
-    }
-    public function papiGetMarginOpenOrderList($params = array()) {
-        return $this->request('margin/openOrderList', 'papi', 'GET', $params, null, null, array("cost" => 5));
-    }
-    public function papiGetMarginOpenOrders($params = array()) {
-        return $this->request('margin/openOrders', 'papi', 'GET', $params, null, null, array("cost" => 5));
-    }
-    public function papiGetMarginOrder($params = array()) {
-        return $this->request('margin/order', 'papi', 'GET', $params, null, null, array("cost" => 5));
-    }
-    public function papiGetMarginOrderList($params = array()) {
-        return $this->request('margin/orderList', 'papi', 'GET', $params, null, null, array("cost" => 5));
-    }
-    public function papiGetMarginRepayLoan($params = array()) {
-        return $this->request('margin/repayLoan', 'papi', 'GET', $params, null, null, array("cost" => 10));
-    }
-    public function papiGetPing($params = array()) {
-        return $this->request('ping', 'papi', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function papiGetPortfolioInterestHistory($params = array()) {
-        return $this->request('portfolio/interest-history', 'papi', 'GET', $params, null, null, array("cost" => 50));
-    }
-    public function papiGetRepayFuturesSwitch($params = array()) {
-        return $this->request('repay-futures-switch', 'papi', 'GET', $params, null, null, array("cost" => 3));
-    }
-    public function papiGetUmAccount($params = array()) {
-        return $this->request('um/account', 'papi', 'GET', $params, null, null, array("cost" => 5));
-    }
-    public function papiGetUmAdlQuantile($params = array()) {
-        return $this->request('um/adlQuantile', 'papi', 'GET', $params, null, null, array("cost" => 5));
-    }
-    public function papiGetUmAllOrders($params = array()) {
-        return $this->request('um/allOrders', 'papi', 'GET', $params, null, null, array("cost" => 5));
-    }
-    public function papiGetUmApiTradingStatus($params = array()) {
-        return $this->request('um/apiTradingStatus', 'papi', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function papiGetUmCommissionRate($params = array()) {
-        return $this->request('um/commissionRate', 'papi', 'GET', $params, null, null, array("cost" => 20));
-    }
-    public function papiGetUmConditionalAllOrders($params = array()) {
-        return $this->request('um/conditional/allOrders', 'papi', 'GET', $params, null, null, array("cost" => 40));
-    }
-    public function papiGetUmConditionalOpenOrder($params = array()) {
-        return $this->request('um/conditional/openOrder', 'papi', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function papiGetUmConditionalOpenOrders($params = array()) {
-        return $this->request('um/conditional/openOrders', 'papi', 'GET', $params, null, null, array("cost" => 40));
-    }
-    public function papiGetUmConditionalOrderHistory($params = array()) {
-        return $this->request('um/conditional/orderHistory', 'papi', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function papiGetUmForceOrders($params = array()) {
-        return $this->request('um/forceOrders', 'papi', 'GET', $params, null, null, array("cost" => 20));
-    }
-    public function papiGetUmIncome($params = array()) {
-        return $this->request('um/income', 'papi', 'GET', $params, null, null, array("cost" => 30));
-    }
-    public function papiGetUmLeverageBracket($params = array()) {
-        return $this->request('um/leverageBracket', 'papi', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function papiGetUmOpenOrder($params = array()) {
-        return $this->request('um/openOrder', 'papi', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function papiGetUmOpenOrders($params = array()) {
-        return $this->request('um/openOrders', 'papi', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function papiGetUmOrder($params = array()) {
-        return $this->request('um/order', 'papi', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function papiGetUmPositionRisk($params = array()) {
-        return $this->request('um/positionRisk', 'papi', 'GET', $params, null, null, array("cost" => 5));
-    }
-    public function papiGetUmPositionSideDual($params = array()) {
-        return $this->request('um/positionSide/dual', 'papi', 'GET', $params, null, null, array("cost" => 30));
-    }
-    public function papiGetUmUserTrades($params = array()) {
-        return $this->request('um/userTrades', 'papi', 'GET', $params, null, null, array("cost" => 5));
-    }
-    public function papiPostAssetCollection($params = array()) {
-        return $this->request('asset-collection', 'papi', 'POST', $params, null, null, array("cost" => 3));
-    }
-    public function papiPostAutoCollection($params = array()) {
-        return $this->request('auto-collection', 'papi', 'POST', $params, null, null, array("cost" => 0.6667));
-    }
-    public function papiPostBnbTransfer($params = array()) {
-        return $this->request('bnb-transfer', 'papi', 'POST', $params, null, null, array("cost" => 0.6667));
-    }
-    public function papiPostCmConditionalOrder($params = array()) {
-        return $this->request('cm/conditional/order', 'papi', 'POST', $params, null, null, array("cost" => 1));
-    }
-    public function papiPostCmLeverage($params = array()) {
-        return $this->request('cm/leverage', 'papi', 'POST', $params, null, null, array("cost" => 1));
-    }
-    public function papiPostCmOrder($params = array()) {
-        return $this->request('cm/order', 'papi', 'POST', $params, null, null, array("cost" => 1));
-    }
-    public function papiPostCmPositionSideDual($params = array()) {
-        return $this->request('cm/positionSide/dual', 'papi', 'POST', $params, null, null, array("cost" => 1));
-    }
-    public function papiPostListenKey($params = array()) {
-        return $this->request('listenKey', 'papi', 'POST', $params, null, null, array("cost" => 1));
-    }
-    public function papiPostMarginOrder($params = array()) {
-        return $this->request('margin/order', 'papi', 'POST', $params, null, null, array("cost" => 0.0133));
-    }
-    public function papiPostMarginOrderOco($params = array()) {
-        return $this->request('margin/order/oco', 'papi', 'POST', $params, null, null, array("cost" => 0.04));
-    }
-    public function papiPostMarginLoan($params = array()) {
-        return $this->request('marginLoan', 'papi', 'POST', $params, null, null, array("cost" => 0.1333));
-    }
-    public function papiPostRepayFuturesNegativeBalance($params = array()) {
-        return $this->request('repay-futures-negative-balance', 'papi', 'POST', $params, null, null, array("cost" => 150));
-    }
-    public function papiPostRepayFuturesSwitch($params = array()) {
-        return $this->request('repay-futures-switch', 'papi', 'POST', $params, null, null, array("cost" => 150));
-    }
-    public function papiPostRepayLoan($params = array()) {
-        return $this->request('repayLoan', 'papi', 'POST', $params, null, null, array("cost" => 0.1333));
-    }
-    public function papiPostUmConditionalOrder($params = array()) {
-        return $this->request('um/conditional/order', 'papi', 'POST', $params, null, null, array("cost" => 1));
-    }
-    public function papiPostUmLeverage($params = array()) {
-        return $this->request('um/leverage', 'papi', 'POST', $params, null, null, array("cost" => 1));
-    }
-    public function papiPostUmOrder($params = array()) {
-        return $this->request('um/order', 'papi', 'POST', $params, null, null, array("cost" => 1));
-    }
-    public function papiPostUmPositionSideDual($params = array()) {
-        return $this->request('um/positionSide/dual', 'papi', 'POST', $params, null, null, array("cost" => 1));
-    }
-    public function papiPutListenKey($params = array()) {
-        return $this->request('listenKey', 'papi', 'PUT', $params, null, null, array("cost" => 1));
-    }
-    public function papiDeleteCmAllOpenOrders($params = array()) {
-        return $this->request('cm/allOpenOrders', 'papi', 'DELETE', $params, null, null, array("cost" => 1));
-    }
-    public function papiDeleteCmConditionalAllOpenOrders($params = array()) {
-        return $this->request('cm/conditional/allOpenOrders', 'papi', 'DELETE', $params, null, null, array("cost" => 1));
-    }
-    public function papiDeleteCmConditionalOrder($params = array()) {
-        return $this->request('cm/conditional/order', 'papi', 'DELETE', $params, null, null, array("cost" => 1));
-    }
-    public function papiDeleteCmOrder($params = array()) {
-        return $this->request('cm/order', 'papi', 'DELETE', $params, null, null, array("cost" => 1));
-    }
-    public function papiDeleteListenKey($params = array()) {
-        return $this->request('listenKey', 'papi', 'DELETE', $params, null, null, array("cost" => 1));
-    }
-    public function papiDeleteMarginAllOpenOrders($params = array()) {
-        return $this->request('margin/allOpenOrders', 'papi', 'DELETE', $params, null, null, array("cost" => 5));
-    }
-    public function papiDeleteMarginOrder($params = array()) {
-        return $this->request('margin/order', 'papi', 'DELETE', $params, null, null, array("cost" => 1));
-    }
-    public function papiDeleteMarginOrderList($params = array()) {
-        return $this->request('margin/orderList', 'papi', 'DELETE', $params, null, null, array("cost" => 2));
-    }
-    public function papiDeleteUmAllOpenOrders($params = array()) {
-        return $this->request('um/allOpenOrders', 'papi', 'DELETE', $params, null, null, array("cost" => 1));
-    }
-    public function papiDeleteUmConditionalAllOpenOrders($params = array()) {
-        return $this->request('um/conditional/allOpenOrders', 'papi', 'DELETE', $params, null, null, array("cost" => 1));
-    }
-    public function papiDeleteUmConditionalOrder($params = array()) {
-        return $this->request('um/conditional/order', 'papi', 'DELETE', $params, null, null, array("cost" => 1));
-    }
-    public function papiDeleteUmOrder($params = array()) {
-        return $this->request('um/order', 'papi', 'DELETE', $params, null, null, array("cost" => 1));
     }
 }

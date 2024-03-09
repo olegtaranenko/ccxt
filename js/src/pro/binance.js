@@ -7,8 +7,8 @@
 // ----------------------------------------------------------------------------
 import binanceRest from '../binance.js';
 import { Precise } from '../base/Precise.js';
-import { ExchangeError, ArgumentsRequired, BadRequest } from '../base/errors.js';
-import { ArrayCache, ArrayCacheByTimestamp, ArrayCacheBySymbolById, ArrayCacheBySymbolBySide } from '../base/ws/Cache.js';
+import { ArgumentsRequired, BadRequest, ExchangeError } from '../base/errors.js';
+import { ArrayCache, ArrayCacheBySymbolById, ArrayCacheBySymbolBySide, ArrayCacheByTimestamp } from '../base/ws/Cache.js';
 import { sha256 } from '../static_dependencies/noble-hashes/sha256.js';
 import { rsa } from '../base/functions/rsa.js';
 import { eddsa } from '../base/functions/crypto.js';
@@ -86,8 +86,8 @@ export default class binance extends binanceRest {
                 // or every 0ms in real-time for futures
                 'watchOrderBookRate': 100,
                 'watchPositions': {
-                    'fetchPositionsSnapshot': true,
-                    'awaitPositionsSnapshot': true, // whether to wait for the positions snapshot before providing updates
+                    'awaitPositionsSnapshot': true,
+                    'fetchPositionsSnapshot': true, // or false
                 },
                 'watchTicker': {
                     'name': 'ticker', // ticker = 1000ms L1+OHLCV, bookTicker = real-time L1
@@ -2781,7 +2781,6 @@ export default class binance extends binanceRest {
         //
         //    {
         //        "id": "f4ce6a53-a29d-4f70-823b-4ab59391d6e8",
-        //        "status": 200,
         //        "result": [
         //            {
         //                "id": 0,
@@ -2794,6 +2793,7 @@ export default class binance extends binanceRest {
         //            }
         //            ...
         //        ],
+        //        "status": 200,
         //    }
         //
         //
@@ -3027,7 +3027,6 @@ export default class binance extends binanceRest {
             '24hrTicker': this.handleTicker,
             '24hrTicker@arr': this.handleTickers,
             'ACCOUNT_UPDATE': this.handleAcountUpdate,
-            'ORDER_TRADE_UPDATE': this.handleOrderUpdate,
             'aggTrade': this.handleTrade,
             'balanceUpdate': this.handleBalance,
             'bookTicker': this.handleTicker,
@@ -3036,6 +3035,7 @@ export default class binance extends binanceRest {
             'indexPrice_kline': this.handleOHLCV,
             'kline': this.handleOHLCV,
             'markPrice_kline': this.handleOHLCV,
+            'ORDER_TRADE_UPDATE': this.handleOrderUpdate,
             'outboundAccountPosition': this.handleBalance,
             'trade': this.handleTrade,
         };

@@ -14,6 +14,429 @@ class binance extends Exchange {
         return $this->deep_extend(parent::describe(), array(
             'api' => array(
                 // the API structure below will need 3-layer apidefs
+                'dapiData' => array(
+                    'get' => array(
+                        'basis' => 1,
+                        'delivery-price' => 1,
+                        'globalLongShortAccountRatio' => 1,
+                        'openInterestHist' => 1,
+                        'takerBuySellVol' => 1,
+                        'topLongShortAccountRatio' => 1,
+                        'topLongShortPositionRatio' => 1,
+                    ),
+                ),
+                'dapiPrivate' => array(
+                    'delete' => array(
+                        'allOpenOrders' => 1,
+                        'batchOrders' => 5,
+                        'listenKey' => 1,
+                        'order' => 1,
+                    ),
+                    'get' => array(
+                        'account' => 5,
+                        'adlQuantile' => 5,
+                        'allOrders' => array( 'cost' => 20, 'noSymbol' => 40 ),
+                        'balance' => 1,
+                        'commissionRate' => 20,
+                        'forceOrders' => array( 'cost' => 20, 'noSymbol' => 50 ),
+                        'income' => 20,
+                        'income/asyn' => 5,
+                        'income/asyn/id' => 5,
+                        'leverageBracket' => 1,
+                        'openOrder' => 1,
+                        'openOrders' => array( 'cost' => 1, 'noSymbol' => 5 ),
+                        'order' => 1,
+                        'orderAmendment' => 1,
+                        'pmAccountInfo' => 0.5, // Weight(IP) => 5 => cost = 0.1 * 5 = 0.5
+                        'pmExchangeInfo' => 0.5, // Weight(IP) => 5 => cost = 0.1 * 5 = 0.5
+                        'positionMargin/history' => 1,
+                        'positionRisk' => 1,
+                        'positionSide/dual' => 30,
+                        'userTrades' => array( 'cost' => 20, 'noSymbol' => 40 ),
+                    ),
+                    'post' => array(
+                        'batchOrders' => 5,
+                        'countdownCancelAll' => 10,
+                        'leverage' => 1,
+                        'listenKey' => 1,
+                        'marginType' => 1,
+                        'order' => 4,
+                        'positionMargin' => 1,
+                        'positionSide/dual' => 1,
+                    ),
+                    'put' => array(
+                        'batchOrders' => 5,
+                        'listenKey' => 1,
+                        'order' => 1,
+                    ),
+                ),
+                'dapiPrivateV2' => array(
+                    'get' => array(
+                        'leverageBracket' => 1,
+                    ),
+                ),
+                'dapiPublic' => array(
+                    'get' => array(
+                        'aggTrades' => 20,
+                        'constituents' => 2,
+                        'continuousKlines' => array(
+                            'cost' => 1,
+                            'byLimit' => array( array( 99, 1 ), array( 499, 2 ), array( 1000, 5 ), array( 10000, 10 ) ),
+                        ),
+                        'depth' => array( 'cost' => 2, 'byLimit' => array( array( 50, 2 ), array( 100, 5 ), array( 500, 10 ), array( 1000, 20 ) ) ),
+                        'exchangeInfo' => 1,
+                        'fundingRate' => 1,
+                        'historicalTrades' => 20,
+                        'indexPriceKlines' => array(
+                            'cost' => 1,
+                            'byLimit' => array( array( 99, 1 ), array( 499, 2 ), array( 1000, 5 ), array( 10000, 10 ) ),
+                        ),
+                        'klines' => array( 'cost' => 1, 'byLimit' => array( array( 99, 1 ), array( 499, 2 ), array( 1000, 5 ), array( 10000, 10 ) ) ),
+                        'markPriceKlines' => array(
+                            'cost' => 1,
+                            'byLimit' => array( array( 99, 1 ), array( 499, 2 ), array( 1000, 5 ), array( 10000, 10 ) ),
+                        ),
+                        'openInterest' => 1,
+                        'ping' => 1,
+                        'premiumIndex' => 10,
+                        'premiumIndexKlines' => array(
+                            'cost' => 1,
+                            'byLimit' => array( array( 99, 1 ), array( 499, 2 ), array( 1000, 5 ), array( 10000, 10 ) ),
+                        ),
+                        'ticker/24hr' => array( 'cost' => 1, 'noSymbol' => 40 ),
+                        'ticker/bookTicker' => array( 'cost' => 2, 'noSymbol' => 5 ),
+                        'ticker/price' => array( 'cost' => 1, 'noSymbol' => 2 ),
+                        'time' => 1,
+                        'trades' => 5,
+                    ),
+                ),
+                'eapiPrivate' => array(
+                    'delete' => array(
+                        'allOpenOrders' => 1,
+                        'allOpenOrdersByUnderlying' => 1,
+                        'batchOrders' => 1,
+                        'listenKey' => 1,
+                        'order' => 1,
+                    ),
+                    'get' => array(
+                        'account' => 3,
+                        'bill' => 1,
+                        'countdownCancelAll' => 1,
+                        'exerciseRecord' => 5,
+                        'historyOrders' => 3,
+                        'income/asyn' => 5,
+                        'income/asyn/id' => 5,
+                        'marginAccount' => 3,
+                        'mmp' => 1,
+                        'openOrders' => array( 'cost' => 1, 'noSymbol' => 40 ),
+                        'order' => 1,
+                        'position' => 5,
+                        'userTrades' => 5,
+                    ),
+                    'post' => array(
+                        'batchOrders' => 5,
+                        'countdownCancelAll' => 1,
+                        'countdownCancelAllHeartBeat' => 10,
+                        'listenKey' => 1,
+                        'mmpReset' => 1,
+                        'mmpSet' => 1,
+                        'order' => 1,
+                    ),
+                    'put' => array(
+                        'listenKey' => 1,
+                    ),
+                ),
+                'eapiPublic' => array(
+                    'get' => array(
+                        'depth' => 1,
+                        'exchangeInfo' => 1,
+                        'exerciseHistory' => 3,
+                        'historicalTrades' => 20,
+                        'index' => 1,
+                        'klines' => 1,
+                        'mark' => 5,
+                        'openInterest' => 3,
+                        'ping' => 1,
+                        'ticker' => 5,
+                        'time' => 1,
+                        'trades' => 5,
+                    ),
+                ),
+                'fapiData' => array(
+                    'get' => array(
+                        'basis' => 1,
+                        'delivery-price' => 1,
+                        'globalLongShortAccountRatio' => 1,
+                        'openInterestHist' => 1,
+                        'takerlongshortRatio' => 1,
+                        'topLongShortAccountRatio' => 1,
+                        'topLongShortPositionRatio' => 1,
+                    ),
+                ),
+                'fapiPrivate' => array(
+                    'delete' => array(
+                        'allOpenOrders' => 1,
+                        'batchOrders' => 1,
+                        'listenKey' => 1,
+                        'order' => 1,
+                    ),
+                    'get' => array(
+                        'account' => 5,
+                        'allOrders' => 5,
+                        'apiTradingStatus' => 1,
+                        'balance' => 5,
+                        'commissionRate' => 20,
+                        'forceOrders' => array( 'cost' => 20, 'noSymbol' => 50 ),
+                        'income' => 30,
+                        'leverageBracket' => 1,
+                        'multiAssetsMargin' => 30,
+                        'openOrder' => 1,
+                        'openOrders' => 1,
+                        'order' => 1,
+                        'positionMargin/history' => 1,
+                        'positionRisk' => 5,
+                        'positionSide/dual' => 30,
+                        'userTrades' => 5,
+                        // broker endpoints
+                        'adlQuantile' => 5,
+                        'apiReferral/customization' => 1,
+                        'apiReferral/ifNewUser' => 1,
+                        'apiReferral/overview' => 1,
+                        'apiReferral/rebateVol' => 1,
+                        'apiReferral/traderNum' => 1,
+                        'apiReferral/traderSummary' => 1,
+                        'apiReferral/tradeVol' => 1,
+                        'apiReferral/userCustomization' => 1,
+                        'income/asyn' => 1000,
+                        'income/asyn/id' => 10,
+                        'order/asyn' => 1000,
+                        'order/asyn/id' => 10,
+                        'orderAmendment' => 1,
+                        'pmAccountInfo' => 5,
+                        'trade/asyn' => 1000,
+                        'trade/asyn/id' => 10,
+                    ),
+                    'post' => array(
+                        'batchOrders' => 5,
+                        'countdownCancelAll' => 10,
+                        'leverage' => 1,
+                        'listenKey' => 1,
+                        'marginType' => 1,
+                        'multiAssetsMargin' => 1,
+                        'order' => 4,
+                        'positionMargin' => 1,
+                        'positionSide/dual' => 1,
+                        // broker endpoints
+                        'apiReferral/customization' => 1,
+                        'apiReferral/userCustomization' => 1,
+                    ),
+                    'put' => array(
+                        'batchOrders' => 5,
+                        'listenKey' => 1,
+                        'order' => 1,
+                    ),
+                ),
+                'fapiPrivateV2' => array(
+                    'get' => array(
+                        'account' => 1,
+                        'balance' => 1,
+                        'positionRisk' => 1,
+                    ),
+                ),
+                'fapiPublic' => array(
+                    'get' => array(
+                        'aggTrades' => 20,
+                        'apiTradingStatus' => array( 'cost' => 1, 'noSymbol' => 10 ),
+                        'assetIndex' => array( 'cost' => 1, 'noSymbol' => 10 ),
+                        'constituents' => 2,
+                        'continuousKlines' => array(
+                            'cost' => 1,
+                            'byLimit' => array( array( 99, 1 ), array( 499, 2 ), array( 1000, 5 ), array( 10000, 10 ) ),
+                        ),
+                        'depth' => array( 'cost' => 2, 'byLimit' => array( array( 50, 2 ), array( 100, 5 ), array( 500, 10 ), array( 1000, 20 ) ) ),
+                        'exchangeInfo' => 1,
+                        'fundingInfo' => 1,
+                        'fundingRate' => 1,
+                        'historicalTrades' => 20,
+                        'indexInfo' => 1,
+                        'indexPriceKlines' => array(
+                            'cost' => 1,
+                            'byLimit' => array( array( 99, 1 ), array( 499, 2 ), array( 1000, 5 ), array( 10000, 10 ) ),
+                        ),
+                        'klines' => array( 'cost' => 1, 'byLimit' => array( array( 99, 1 ), array( 499, 2 ), array( 1000, 5 ), array( 10000, 10 ) ) ),
+                        'lvtKlines' => 1,
+                        'markPriceKlines' => array(
+                            'cost' => 1,
+                            'byLimit' => array( array( 99, 1 ), array( 499, 2 ), array( 1000, 5 ), array( 10000, 10 ) ),
+                        ),
+                        'openInterest' => 1,
+                        'ping' => 1,
+                        'premiumIndex' => 1,
+                        'ticker/24hr' => array( 'cost' => 1, 'noSymbol' => 40 ),
+                        'ticker/bookTicker' => array( 'cost' => 1, 'noSymbol' => 2 ),
+                        'ticker/price' => array( 'cost' => 1, 'noSymbol' => 2 ),
+                        'time' => 1,
+                        'trades' => 5,
+                    ),
+                ),
+                'fapiPublicV2' => array(
+                    'get' => array(
+                        'ticker/price' => 0,
+                    ),
+                ),
+                'papi' => array(
+                    'delete' => array(
+                        'cm/allOpenOrders' => 1, // 1
+                        'cm/conditional/allOpenOrders' => 1,
+                        'cm/conditional/order' => 1,
+                        'cm/order' => 1, // 1
+                        'listenKey' => 1, // 1
+                        'margin/allOpenOrders' => 5, // 5
+                        'margin/order' => 1, // Weight(IP) => 10 => cost = 0.1 * 10 = 1
+                        'margin/orderList' => 2, // 2
+                        'um/allOpenOrders' => 1, // 1
+                        'um/conditional/allOpenOrders' => 1,
+                        'um/conditional/order' => 1,
+                        'um/order' => 1, // 1
+                    ),
+                    'get' => array(
+                        'account' => 20, // 20
+                        'balance' => 20, // 20
+                        'cm/account' => 5,
+                        'cm/adlQuantile' => 5,
+                        'cm/allOrders' => 20, // 20
+                        'cm/commissionRate' => 20, // 20
+                        'cm/conditional/allOrders' => 40,
+                        'cm/conditional/openOrder' => 1,
+                        'cm/conditional/openOrders' => 40,
+                        'cm/conditional/orderHistory' => 1,
+                        'cm/forceOrders' => 20, // 20
+                        'cm/income' => 30,
+                        'cm/leverageBracket' => 1, // 1
+                        'cm/openOrder' => 1, // 1
+                        'cm/openOrders' => 1, // 1
+                        'cm/order' => 1, // 1
+                        'cm/positionRisk' => 1, // 1
+                        'cm/positionSide/dual' => 30, // 30
+                        'cm/userTrades' => 20, // 20
+                        'margin/allOrderList' => 100,
+                        'margin/allOrders' => 100,
+                        'margin/forceOrders' => 1, // 1
+                        'margin/marginInterestHistory' => 1,
+                        'margin/marginLoan' => 10,
+                        'margin/maxBorrowable' => 5, // 5
+                        'margin/maxWithdraw' => 5, // 5
+                        'margin/myTrades' => 5,
+                        'margin/openOrderList' => 5,
+                        'margin/openOrders' => 5,
+                        'margin/order' => 5,
+                        'margin/orderList' => 5,
+                        'margin/repayLoan' => 10,
+                        'ping' => 1,
+                        'portfolio/interest-history' => 50, // 50
+                        'repay-futures-switch' => 3, // Weight(IP) => 30 => cost = 0.1 * 30 = 3
+                        'um/account' => 5,
+                        'um/adlQuantile' => 5,
+                        'um/allOrders' => 5, // 5
+                        'um/apiTradingStatus' => 1, // 1
+                        'um/commissionRate' => 20, // 20
+                        'um/conditional/allOrders' => 40,
+                        'um/conditional/openOrder' => 1,
+                        'um/conditional/openOrders' => 40,
+                        'um/conditional/orderHistory' => 1,
+                        'um/forceOrders' => 20, // 20
+                        'um/income' => 30,
+                        'um/leverageBracket' => 1, // 1
+                        'um/openOrder' => 1, // 1
+                        'um/openOrders' => 1, // 1
+                        'um/order' => 1, // 1
+                        'um/positionRisk' => 5, // 5
+                        'um/positionSide/dual' => 30, // 30
+                        'um/userTrades' => 5, // 5
+                    ),
+                    'post' => array(
+                        'asset-collection' => 3,
+                        'auto-collection' => 0.6667, // Weight(UID) => 100 => cost = 0.006667 * 100 = 0.6667
+                        'bnb-transfer' => 0.6667, // Weight(UID) => 100 => cost = 0.006667 * 100 = 0.6667
+                        'cm/conditional/order' => 1,
+                        'cm/leverage' => 1, // 1
+                        'cm/order' => 1, // 0
+                        'cm/positionSide/dual' => 1, // 1
+                        'listenKey' => 1, // 1
+                        'margin/order' => 0.0133, // Weight(UID) => 2 => cost = 0.006667 * 2 = 0.013334
+                        'margin/order/oco' => 0.0400, // Weight(UID) => 6 => cost = 0.006667 * 6 = 0.040002
+                        'marginLoan' => 0.1333, // Weight(UID) => 20 => cost = 0.006667 * 20 = 0.13334
+                        'repay-futures-negative-balance' => 150, // Weight(IP) => 1500 => cost = 0.1 * 1500 = 150
+                        'repay-futures-switch' => 150, // Weight(IP) => 1500 => cost = 0.1 * 1500 = 150
+                        'repayLoan' => 0.1333, // Weight(UID) => 20 => cost = 0.006667 * 20 = 0.13334
+                        'um/conditional/order' => 1,
+                        'um/leverage' => 1, // 1
+                        'um/order' => 1, // 0
+                        'um/positionSide/dual' => 1, // 1
+                    ),
+                    'put' => array(
+                        'listenKey' => 1, // 1
+                    ),
+                ),
+                'private' => array(
+                    'delete' => array(
+                        'openOrders' => 0.2,
+                        'order' => 0.2,
+                        'orderList' => 0.2, // oco
+                    ),
+                    'get' => array(
+                        'account' => 4,
+                        'account/commission' => 4,
+                        'allOrderList' => 4, // oco Weight(IP) => 20 => cost = 0.2 * 20 = 4
+                        'allOrders' => 4,
+                        'myAllocations' => 4,
+                        'myPreventedMatches' => 4, // Weight(IP) => 20 => cost = 0.2 * 20 = 4
+                        'myTrades' => 4,
+                        'openOrderList' => 1.2, // oco Weight(IP) => 6 => cost = 0.2 * 6 = 1.2
+                        'openOrders' => array( 'cost' => 1.2, 'noSymbol' => 16 ),
+                        'order' => 0.8,
+                        'orderList' => 0.8, // oco
+                        'rateLimit/order' => 8, // Weight(IP) => 40 => cost = 0.2 * 40 = 8
+                    ),
+                    'post' => array(
+                        'order' => 0.2,
+                        'order/cancelReplace' => 0.2,
+                        'order/oco' => 0.2,
+                        'order/test' => 0.2,
+                        'sor/order' => 0.2,
+                        'sor/order/test' => 0.2,
+                    ),
+                ),
+                'public' => array(
+                    // IP (api) request rate limit of 6000 per minute
+                    // 1 IP (api) => cost = 0.2 => (1000 / (50 * 0.2)) * 60 = 6000
+                    'get' => array(
+                        'aggTrades' => 0.4,
+                        'avgPrice' => 0.4,
+                        'depth' => array( 'cost' => 1, 'byLimit' => array( array( 100, 1 ), array( 500, 5 ), array( 1000, 10 ), array( 5000, 50 ) ) ),
+                        'exchangeInfo' => 4, // Weight(IP) => 20 => cost = 0.2 * 20 = 4
+                        'historicalTrades' => 2, // Weight(IP) => 10 => cost = 0.2 * 10 = 2
+                        'klines' => 0.4,
+                        'ping' => 0.2, // Weight(IP) => 1 => cost = 0.2 * 1 = 0.2
+                        'ticker' => array( 'cost' => 0.4, 'noSymbol' => 16 ),
+                        'ticker/24hr' => array( 'cost' => 0.4, 'noSymbol' => 16 ),
+                        'ticker/bookTicker' => array( 'cost' => 0.4, 'noSymbol' => 0.8 ),
+                        'ticker/price' => array( 'cost' => 0.4, 'noSymbol' => 0.8 ),
+                        'ticker/tradingDay' => 0.8,
+                        'time' => 0.2,
+                        'trades' => 2, // Weight(IP) => 10 => cost = 0.2 * 10 = 2
+                        'uiKlines' => 0.4,
+                    ),
+                    'put' => array(
+                        'userDataStream' => 0.4,
+                    ),
+                    'post' => array(
+                        'userDataStream' => 0.4,
+                    ),
+                    'delete' => array(
+                        'userDataStream' => 0.4,
+                    ),
+                ),
                 'sapi' => array(
                     // IP (sapi) request rate limit of 12 000 per minute
                     // 1 IP (sapi) => cost = 0.1 => (1000 / (50 * 0.1)) * 60 = 12000
@@ -469,437 +892,635 @@ class binance extends Exchange {
                         'sub-account/assets' => 0.40002, // Weight(UID) => 60 => cost = 0.006667 * 60 = 0.40002
                     ),
                 ),
-                'dapiPublic' => array(
-                    'get' => array(
-                        'aggTrades' => 20,
-                        'constituents' => 2,
-                        'continuousKlines' => array(
-                            'cost' => 1,
-                            'byLimit' => array( array( 99, 1 ), array( 499, 2 ), array( 1000, 5 ), array( 10000, 10 ) ),
-                        ),
-                        'depth' => array( 'cost' => 2, 'byLimit' => array( array( 50, 2 ), array( 100, 5 ), array( 500, 10 ), array( 1000, 20 ) ) ),
-                        'exchangeInfo' => 1,
-                        'fundingRate' => 1,
-                        'historicalTrades' => 20,
-                        'indexPriceKlines' => array(
-                            'cost' => 1,
-                            'byLimit' => array( array( 99, 1 ), array( 499, 2 ), array( 1000, 5 ), array( 10000, 10 ) ),
-                        ),
-                        'klines' => array( 'cost' => 1, 'byLimit' => array( array( 99, 1 ), array( 499, 2 ), array( 1000, 5 ), array( 10000, 10 ) ) ),
-                        'markPriceKlines' => array(
-                            'cost' => 1,
-                            'byLimit' => array( array( 99, 1 ), array( 499, 2 ), array( 1000, 5 ), array( 10000, 10 ) ),
-                        ),
-                        'openInterest' => 1,
-                        'ping' => 1,
-                        'premiumIndex' => 10,
-                        'premiumIndexKlines' => array(
-                            'cost' => 1,
-                            'byLimit' => array( array( 99, 1 ), array( 499, 2 ), array( 1000, 5 ), array( 10000, 10 ) ),
-                        ),
-                        'ticker/24hr' => array( 'cost' => 1, 'noSymbol' => 40 ),
-                        'ticker/bookTicker' => array( 'cost' => 2, 'noSymbol' => 5 ),
-                        'ticker/price' => array( 'cost' => 1, 'noSymbol' => 2 ),
-                        'time' => 1,
-                        'trades' => 5,
-                    ),
-                ),
-                'dapiData' => array(
-                    'get' => array(
-                        'basis' => 1,
-                        'delivery-price' => 1,
-                        'globalLongShortAccountRatio' => 1,
-                        'openInterestHist' => 1,
-                        'takerBuySellVol' => 1,
-                        'topLongShortAccountRatio' => 1,
-                        'topLongShortPositionRatio' => 1,
-                    ),
-                ),
-                'dapiPrivate' => array(
-                    'get' => array(
-                        'account' => 5,
-                        'adlQuantile' => 5,
-                        'allOrders' => array( 'cost' => 20, 'noSymbol' => 40 ),
-                        'balance' => 1,
-                        'commissionRate' => 20,
-                        'forceOrders' => array( 'cost' => 20, 'noSymbol' => 50 ),
-                        'income' => 20,
-                        'income/asyn' => 5,
-                        'income/asyn/id' => 5,
-                        'leverageBracket' => 1,
-                        'openOrder' => 1,
-                        'openOrders' => array( 'cost' => 1, 'noSymbol' => 5 ),
-                        'order' => 1,
-                        'orderAmendment' => 1,
-                        'pmAccountInfo' => 0.5, // Weight(IP) => 5 => cost = 0.1 * 5 = 0.5
-                        'pmExchangeInfo' => 0.5, // Weight(IP) => 5 => cost = 0.1 * 5 = 0.5
-                        'positionMargin/history' => 1,
-                        'positionRisk' => 1,
-                        'positionSide/dual' => 30,
-                        'userTrades' => array( 'cost' => 20, 'noSymbol' => 40 ),
-                    ),
-                    'post' => array(
-                        'batchOrders' => 5,
-                        'countdownCancelAll' => 10,
-                        'leverage' => 1,
-                        'listenKey' => 1,
-                        'marginType' => 1,
-                        'order' => 4,
-                        'positionMargin' => 1,
-                        'positionSide/dual' => 1,
-                    ),
-                    'put' => array(
-                        'batchOrders' => 5,
-                        'listenKey' => 1,
-                        'order' => 1,
-                    ),
-                    'delete' => array(
-                        'allOpenOrders' => 1,
-                        'batchOrders' => 5,
-                        'listenKey' => 1,
-                        'order' => 1,
-                    ),
-                ),
-                'dapiPrivateV2' => array(
-                    'get' => array(
-                        'leverageBracket' => 1,
-                    ),
-                ),
-                'fapiPublic' => array(
-                    'get' => array(
-                        'aggTrades' => 20,
-                        'apiTradingStatus' => array( 'cost' => 1, 'noSymbol' => 10 ),
-                        'assetIndex' => array( 'cost' => 1, 'noSymbol' => 10 ),
-                        'constituents' => 2,
-                        'continuousKlines' => array(
-                            'cost' => 1,
-                            'byLimit' => array( array( 99, 1 ), array( 499, 2 ), array( 1000, 5 ), array( 10000, 10 ) ),
-                        ),
-                        'depth' => array( 'cost' => 2, 'byLimit' => array( array( 50, 2 ), array( 100, 5 ), array( 500, 10 ), array( 1000, 20 ) ) ),
-                        'exchangeInfo' => 1,
-                        'fundingInfo' => 1,
-                        'fundingRate' => 1,
-                        'historicalTrades' => 20,
-                        'indexInfo' => 1,
-                        'indexPriceKlines' => array(
-                            'cost' => 1,
-                            'byLimit' => array( array( 99, 1 ), array( 499, 2 ), array( 1000, 5 ), array( 10000, 10 ) ),
-                        ),
-                        'klines' => array( 'cost' => 1, 'byLimit' => array( array( 99, 1 ), array( 499, 2 ), array( 1000, 5 ), array( 10000, 10 ) ) ),
-                        'lvtKlines' => 1,
-                        'markPriceKlines' => array(
-                            'cost' => 1,
-                            'byLimit' => array( array( 99, 1 ), array( 499, 2 ), array( 1000, 5 ), array( 10000, 10 ) ),
-                        ),
-                        'openInterest' => 1,
-                        'ping' => 1,
-                        'premiumIndex' => 1,
-                        'ticker/24hr' => array( 'cost' => 1, 'noSymbol' => 40 ),
-                        'ticker/bookTicker' => array( 'cost' => 1, 'noSymbol' => 2 ),
-                        'ticker/price' => array( 'cost' => 1, 'noSymbol' => 2 ),
-                        'time' => 1,
-                        'trades' => 5,
-                    ),
-                ),
-                'fapiData' => array(
-                    'get' => array(
-                        'basis' => 1,
-                        'delivery-price' => 1,
-                        'globalLongShortAccountRatio' => 1,
-                        'openInterestHist' => 1,
-                        'takerlongshortRatio' => 1,
-                        'topLongShortAccountRatio' => 1,
-                        'topLongShortPositionRatio' => 1,
-                    ),
-                ),
-                'fapiPrivate' => array(
-                    'get' => array(
-                        'account' => 5,
-                        'allOrders' => 5,
-                        'apiTradingStatus' => 1,
-                        'balance' => 5,
-                        'commissionRate' => 20,
-                        'forceOrders' => array( 'cost' => 20, 'noSymbol' => 50 ),
-                        'income' => 30,
-                        'leverageBracket' => 1,
-                        'multiAssetsMargin' => 30,
-                        'openOrder' => 1,
-                        'openOrders' => 1,
-                        'order' => 1,
-                        'positionMargin/history' => 1,
-                        'positionRisk' => 5,
-                        'positionSide/dual' => 30,
-                        'userTrades' => 5,
-                        // broker endpoints
-                        'adlQuantile' => 5,
-                        'apiReferral/customization' => 1,
-                        'apiReferral/ifNewUser' => 1,
-                        'apiReferral/overview' => 1,
-                        'apiReferral/rebateVol' => 1,
-                        'apiReferral/traderNum' => 1,
-                        'apiReferral/traderSummary' => 1,
-                        'apiReferral/tradeVol' => 1,
-                        'apiReferral/userCustomization' => 1,
-                        'income/asyn' => 1000,
-                        'income/asyn/id' => 10,
-                        'order/asyn' => 1000,
-                        'order/asyn/id' => 10,
-                        'orderAmendment' => 1,
-                        'pmAccountInfo' => 5,
-                        'trade/asyn' => 1000,
-                        'trade/asyn/id' => 10,
-                    ),
-                    'post' => array(
-                        'batchOrders' => 5,
-                        'countdownCancelAll' => 10,
-                        'leverage' => 1,
-                        'listenKey' => 1,
-                        'marginType' => 1,
-                        'multiAssetsMargin' => 1,
-                        'order' => 4,
-                        'positionMargin' => 1,
-                        'positionSide/dual' => 1,
-                        // broker endpoints
-                        'apiReferral/customization' => 1,
-                        'apiReferral/userCustomization' => 1,
-                    ),
-                    'put' => array(
-                        'batchOrders' => 5,
-                        'listenKey' => 1,
-                        'order' => 1,
-                    ),
-                    'delete' => array(
-                        'allOpenOrders' => 1,
-                        'batchOrders' => 1,
-                        'listenKey' => 1,
-                        'order' => 1,
-                    ),
-                ),
-                'fapiPublicV2' => array(
-                    'get' => array(
-                        'ticker/price' => 0,
-                    ),
-                ),
-                'fapiPrivateV2' => array(
-                    'get' => array(
-                        'account' => 1,
-                        'balance' => 1,
-                        'positionRisk' => 1,
-                    ),
-                ),
-                'eapiPublic' => array(
-                    'get' => array(
-                        'depth' => 1,
-                        'exchangeInfo' => 1,
-                        'exerciseHistory' => 3,
-                        'historicalTrades' => 20,
-                        'index' => 1,
-                        'klines' => 1,
-                        'mark' => 5,
-                        'openInterest' => 3,
-                        'ping' => 1,
-                        'ticker' => 5,
-                        'time' => 1,
-                        'trades' => 5,
-                    ),
-                ),
-                'eapiPrivate' => array(
-                    'get' => array(
-                        'account' => 3,
-                        'bill' => 1,
-                        'countdownCancelAll' => 1,
-                        'exerciseRecord' => 5,
-                        'historyOrders' => 3,
-                        'income/asyn' => 5,
-                        'income/asyn/id' => 5,
-                        'marginAccount' => 3,
-                        'mmp' => 1,
-                        'openOrders' => array( 'cost' => 1, 'noSymbol' => 40 ),
-                        'order' => 1,
-                        'position' => 5,
-                        'userTrades' => 5,
-                    ),
-                    'post' => array(
-                        'batchOrders' => 5,
-                        'countdownCancelAll' => 1,
-                        'countdownCancelAllHeartBeat' => 10,
-                        'listenKey' => 1,
-                        'mmpReset' => 1,
-                        'mmpSet' => 1,
-                        'order' => 1,
-                    ),
-                    'put' => array(
-                        'listenKey' => 1,
-                    ),
-                    'delete' => array(
-                        'allOpenOrders' => 1,
-                        'allOpenOrdersByUnderlying' => 1,
-                        'batchOrders' => 1,
-                        'listenKey' => 1,
-                        'order' => 1,
-                    ),
-                ),
-                'public' => array(
-                    // IP (api) request rate limit of 6000 per minute
-                    // 1 IP (api) => cost = 0.2 => (1000 / (50 * 0.2)) * 60 = 6000
-                    'get' => array(
-                        'aggTrades' => 0.4,
-                        'avgPrice' => 0.4,
-                        'depth' => array( 'cost' => 1, 'byLimit' => array( array( 100, 1 ), array( 500, 5 ), array( 1000, 10 ), array( 5000, 50 ) ) ),
-                        'exchangeInfo' => 4, // Weight(IP) => 20 => cost = 0.2 * 20 = 4
-                        'historicalTrades' => 2, // Weight(IP) => 10 => cost = 0.2 * 10 = 2
-                        'klines' => 0.4,
-                        'ping' => 0.2, // Weight(IP) => 1 => cost = 0.2 * 1 = 0.2
-                        'ticker' => array( 'cost' => 0.4, 'noSymbol' => 16 ),
-                        'ticker/24hr' => array( 'cost' => 0.4, 'noSymbol' => 16 ),
-                        'ticker/bookTicker' => array( 'cost' => 0.4, 'noSymbol' => 0.8 ),
-                        'ticker/price' => array( 'cost' => 0.4, 'noSymbol' => 0.8 ),
-                        'ticker/tradingDay' => 0.8,
-                        'time' => 0.2,
-                        'trades' => 2, // Weight(IP) => 10 => cost = 0.2 * 10 = 2
-                        'uiKlines' => 0.4,
-                    ),
-                    'put' => array(
-                        'userDataStream' => 0.4,
-                    ),
-                    'post' => array(
-                        'userDataStream' => 0.4,
-                    ),
-                    'delete' => array(
-                        'userDataStream' => 0.4,
-                    ),
-                ),
-                'private' => array(
-                    'get' => array(
-                        'account' => 4,
-                        'account/commission' => 4,
-                        'allOrderList' => 4, // oco Weight(IP) => 20 => cost = 0.2 * 20 = 4
-                        'allOrders' => 4,
-                        'myAllocations' => 4,
-                        'myPreventedMatches' => 4, // Weight(IP) => 20 => cost = 0.2 * 20 = 4
-                        'myTrades' => 4,
-                        'openOrderList' => 1.2, // oco Weight(IP) => 6 => cost = 0.2 * 6 = 1.2
-                        'openOrders' => array( 'cost' => 1.2, 'noSymbol' => 16 ),
-                        'order' => 0.8,
-                        'orderList' => 0.8, // oco
-                        'rateLimit/order' => 8, // Weight(IP) => 40 => cost = 0.2 * 40 = 8
-                    ),
-                    'post' => array(
-                        'order' => 0.2,
-                        'order/cancelReplace' => 0.2,
-                        'order/oco' => 0.2,
-                        'order/test' => 0.2,
-                        'sor/order' => 0.2,
-                        'sor/order/test' => 0.2,
-                    ),
-                    'delete' => array(
-                        'openOrders' => 0.2,
-                        'order' => 0.2,
-                        'orderList' => 0.2, // oco
-                    ),
-                ),
-                'papi' => array(
-                    'get' => array(
-                        'account' => 20, // 20
-                        'balance' => 20, // 20
-                        'cm/account' => 5,
-                        'cm/adlQuantile' => 5,
-                        'cm/allOrders' => 20, // 20
-                        'cm/commissionRate' => 20, // 20
-                        'cm/conditional/allOrders' => 40,
-                        'cm/conditional/openOrder' => 1,
-                        'cm/conditional/openOrders' => 40,
-                        'cm/conditional/orderHistory' => 1,
-                        'cm/forceOrders' => 20, // 20
-                        'cm/income' => 30,
-                        'cm/leverageBracket' => 1, // 1
-                        'cm/openOrder' => 1, // 1
-                        'cm/openOrders' => 1, // 1
-                        'cm/order' => 1, // 1
-                        'cm/positionRisk' => 1, // 1
-                        'cm/positionSide/dual' => 30, // 30
-                        'cm/userTrades' => 20, // 20
-                        'margin/allOrderList' => 100,
-                        'margin/allOrders' => 100,
-                        'margin/forceOrders' => 1, // 1
-                        'margin/marginInterestHistory' => 1,
-                        'margin/marginLoan' => 10,
-                        'margin/maxBorrowable' => 5, // 5
-                        'margin/maxWithdraw' => 5, // 5
-                        'margin/myTrades' => 5,
-                        'margin/openOrderList' => 5,
-                        'margin/openOrders' => 5,
-                        'margin/order' => 5,
-                        'margin/orderList' => 5,
-                        'margin/repayLoan' => 10,
-                        'ping' => 1,
-                        'portfolio/interest-history' => 50, // 50
-                        'repay-futures-switch' => 3, // Weight(IP) => 30 => cost = 0.1 * 30 = 3
-                        'um/account' => 5,
-                        'um/adlQuantile' => 5,
-                        'um/allOrders' => 5, // 5
-                        'um/apiTradingStatus' => 1, // 1
-                        'um/commissionRate' => 20, // 20
-                        'um/conditional/allOrders' => 40,
-                        'um/conditional/openOrder' => 1,
-                        'um/conditional/openOrders' => 40,
-                        'um/conditional/orderHistory' => 1,
-                        'um/forceOrders' => 20, // 20
-                        'um/income' => 30,
-                        'um/leverageBracket' => 1, // 1
-                        'um/openOrder' => 1, // 1
-                        'um/openOrders' => 1, // 1
-                        'um/order' => 1, // 1
-                        'um/positionRisk' => 5, // 5
-                        'um/positionSide/dual' => 30, // 30
-                        'um/userTrades' => 5, // 5
-                    ),
-                    'post' => array(
-                        'asset-collection' => 3,
-                        'auto-collection' => 0.6667, // Weight(UID) => 100 => cost = 0.006667 * 100 = 0.6667
-                        'bnb-transfer' => 0.6667, // Weight(UID) => 100 => cost = 0.006667 * 100 = 0.6667
-                        'cm/conditional/order' => 1,
-                        'cm/leverage' => 1, // 1
-                        'cm/order' => 1, // 0
-                        'cm/positionSide/dual' => 1, // 1
-                        'listenKey' => 1, // 1
-                        'margin/order' => 0.0133, // Weight(UID) => 2 => cost = 0.006667 * 2 = 0.013334
-                        'margin/order/oco' => 0.0400, // Weight(UID) => 6 => cost = 0.006667 * 6 = 0.040002
-                        'marginLoan' => 0.1333, // Weight(UID) => 20 => cost = 0.006667 * 20 = 0.13334
-                        'repay-futures-negative-balance' => 150, // Weight(IP) => 1500 => cost = 0.1 * 1500 = 150
-                        'repay-futures-switch' => 150, // Weight(IP) => 1500 => cost = 0.1 * 1500 = 150
-                        'repayLoan' => 0.1333, // Weight(UID) => 20 => cost = 0.006667 * 20 = 0.13334
-                        'um/conditional/order' => 1,
-                        'um/leverage' => 1, // 1
-                        'um/order' => 1, // 0
-                        'um/positionSide/dual' => 1, // 1
-                    ),
-                    'put' => array(
-                        'listenKey' => 1, // 1
-                    ),
-                    'delete' => array(
-                        'cm/allOpenOrders' => 1, // 1
-                        'cm/conditional/allOpenOrders' => 1,
-                        'cm/conditional/order' => 1,
-                        'cm/order' => 1, // 1
-                        'listenKey' => 1, // 1
-                        'margin/allOpenOrders' => 5, // 5
-                        'margin/order' => 1, // Weight(IP) => 10 => cost = 0.1 * 10 = 1
-                        'margin/orderList' => 2, // 2
-                        'um/allOpenOrders' => 1, // 1
-                        'um/conditional/allOpenOrders' => 1,
-                        'um/conditional/order' => 1,
-                        'um/order' => 1, // 1
-                    ),
-                ),
             ),
             'certified' => true,
             'commonCurrencies' => array(
                 'BCC' => 'BCC', // kept for backward-compatibility https://github.com/ccxt/ccxt/issues/4848
                 'YOYO' => 'YOYOW',
             ),
-            'countries' => array( 'JP', 'MT' ),
+            'countries' => array( 'JP', 'MT' ), // Japan, Malta
             'exceptions' => array(
+                'broad' => array(
+                    'has no operation privilege' => '\\ccxt\\PermissionDenied',
+                    'MAX_POSITION' => '\\ccxt\\BadRequest', // array("code":-2010,"msg":"Filter failure => MAX_POSITION")
+                ),
+                'exact' => array(
+                    "You don't have permission." => '\\ccxt\\PermissionDenied', // array("msg":"You don't have permission.","success":false)
+                    'Account has insufficient balance for requested action.' => '\\ccxt\\InsufficientFunds',
+                    'API key does not exist' => '\\ccxt\\AuthenticationError',
+                    'Limit orders require GTC for this phase.' => '\\ccxt\\BadRequest',
+                    'Market is closed.' => '\\ccxt\\OperationRejected', // array("code":-1013,"msg":"Market is closed.")
+                    'Order would immediately match and take.' => '\\ccxt\\OrderImmediatelyFillable', // array("code":-2010,"msg":"Order would immediately match and take.")
+                    'Order would trigger immediately.' => '\\ccxt\\OrderImmediatelyFillable',
+                    'Rest API trading is not enabled.' => '\\ccxt\\PermissionDenied',
+                    'Stop price would trigger immediately.' => '\\ccxt\\OrderImmediatelyFillable', // array("code":-2010,"msg":"Stop price would trigger immediately.")
+                    'System abnormality' => '\\ccxt\\OperationFailed', // array("code":-1000,"msg":"System abnormality")
+                    'System is under maintenance.' => '\\ccxt\\OnMaintenance', // array("code":1,"msg":"System is under maintenance.")
+                    'This account may not place or cancel orders.' => '\\ccxt\\PermissionDenied',
+                    'This action is disabled on this account.' => '\\ccxt\\AccountSuspended', // array("code":-2011,"msg":"This action is disabled on this account.")
+                    'This order type is not property_exists($this, possible) trading phase.' => '\\ccxt\\BadRequest',
+                    'This symbol is not permitted for this account.' => '\\ccxt\\PermissionDenied', // array("code":-2010,"msg":"This symbol is not permitted for this account.")
+                    'This symbol is restricted for this account.' => '\\ccxt\\PermissionDenied',
+                    'This type of sub-account exceeds the maximum number limit' => '\\ccxt\\OperationRejected', // array("code":-9000,"msg":"This type of sub-account exceeds the maximum number limit")
+                    'Too many requests. Please try again later.' => '\\ccxt\\RateLimitExceeded', // array("msg":"Too many requests. Please try again later.","success":false)
+                    'You are not authorized to execute this request.' => '\\ccxt\\PermissionDenied', // array("msg":"You are not authorized to execute this request.")
+                ),
+                'inverse' => array(
+                    // https://binance-docs.github.io/apidocs/delivery/en/#error-codes
+                    'exact' => array(
+                        '-1000' => '\\ccxt\\OperationFailed', // array("code":-1000,"msg":"An unknown error occured while processing the request.")
+                        '-1001' => '\\ccxt\\OperationFailed', // array("code":-1001,"msg":"'Internal error; unable to process your request. Please try again.'")
+                        '-1002' => '\\ccxt\\AuthenticationError', // array("code":-1002,"msg":"'You are not authorized to execute this request.'")
+                        '-1003' => '\\ccxt\\RateLimitExceeded', // array("code":-1003,"msg":"Too much request weight used, current limit is 1200 request weight per 1 MINUTE. Please use the websocket for live updates to avoid polling the API.")
+                        '-1004' => '\\ccxt\\OperationRejected', // DUPLICATE_IP : This IP is already on the white list
+                        '-1005' => '\\ccxt\\PermissionDenied', // array("code":-1005,"msg":"No such IP has been white listed")
+                        '-1006' => '\\ccxt\\OperationFailed', // array("code":-1006,"msg":"An unexpected response was received from the message bus. Execution status unknown.")
+                        '-1007' => '\\ccxt\\RequestTimeout', // array("code":-1007,"msg":"Timeout waiting for response from backend server. Send status unknown; execution status unknown.")
+                        '-1010' => '\\ccxt\\OperationFailed', // array("code":-1010,"msg":"ERROR_MSG_RECEIVED.")
+                        '-1011' => '\\ccxt\\PermissionDenied', // array("code":-1011,"msg":"This IP cannot access this route.")
+                        '-1013' => '\\ccxt\\BadRequest', // array("code":-1013,"msg":"createOrder -> 'invalid quantity'/'invalid price'/MIN_NOTIONAL") | -1013 INVALID_MESSAGE
+                        '-1014' => '\\ccxt\\InvalidOrder', // array("code":-1014,"msg":"Unsupported order combination.")
+                        '-1015' => '\\ccxt\\RateLimitExceeded', // array("code":-1015,"msg":"'Too many new orders; current limit is %s orders per %s.'")
+                        '-1016' => '\\ccxt\\BadRequest', // array("code":-1016,"msg":"'This service is no longer available.',")
+                        '-1020' => '\\ccxt\\BadRequest', // array("code":-1020,"msg":"'This operation is not supported.'")
+                        '-1021' => '\\ccxt\\InvalidNonce', // array("code":-1021,"msg":"'your time is ahead of server'")
+                        '-1022' => '\\ccxt\\AuthenticationError', // array("code":-1022,"msg":"Signature for this request is not valid.")
+                        '-1023' => '\\ccxt\\BadRequest', // array("code":-1023,"msg":"Start time is greater than end time.")
+                        '-1100' => '\\ccxt\\BadRequest', // array("code":-1100,"msg":"createOrder(symbol, 1, asdf) -> 'Illegal characters found in parameter 'price'")
+                        '-1101' => '\\ccxt\\BadRequest', // array("code":-1101,"msg":"Too many parameters; expected %s and received %s.")
+                        '-1102' => '\\ccxt\\BadRequest', // array("code":-1102,"msg":"Param %s or %s must be sent, but both were empty")
+                        '-1103' => '\\ccxt\\BadRequest', // array("code":-1103,"msg":"An unknown parameter was sent.")
+                        '-1104' => '\\ccxt\\BadRequest', // array("code":-1104,"msg":"Not all sent parameters were read, read 8 parameters but was sent 9")
+                        '-1105' => '\\ccxt\\BadRequest', // array("code":-1105,"msg":"Parameter %s was empty.")
+                        '-1106' => '\\ccxt\\BadRequest', // array("code":-1106,"msg":"Parameter %s sent when not required.")
+                        '-1108' => '\\ccxt\\BadSymbol', // array("code":-1108,"msg":"Invalid asset.")
+                        '-1109' => '\\ccxt\\AuthenticationError', // array("code":-1109,"msg":"Invalid account.")
+                        '-1110' => '\\ccxt\\BadSymbol', // array("code":-1110,"msg":"Invalid symbolType.")
+                        '-1111' => '\\ccxt\\BadRequest', // array("code":-1111,"msg":"Precision is over the maximum defined for this asset.")
+                        '-1112' => '\\ccxt\\OperationFailed', // array("code":-1112,"msg":"No orders on book for symbol.")
+                        '-1113' => '\\ccxt\\BadRequest', // array("code":-1113,"msg":"Withdrawal amount must be negative.")
+                        '-1114' => '\\ccxt\\BadRequest', // array("code":-1114,"msg":"TimeInForce parameter sent when not required.")
+                        '-1115' => '\\ccxt\\BadRequest', // array("code":-1115,"msg":"Invalid timeInForce.")
+                        '-1116' => '\\ccxt\\BadRequest', // array("code":-1116,"msg":"Invalid orderType.")
+                        '-1117' => '\\ccxt\\BadRequest', // array("code":-1117,"msg":"Invalid side.")
+                        '-1118' => '\\ccxt\\BadRequest', // array("code":-1118,"msg":"New client order ID was empty.")
+                        '-1119' => '\\ccxt\\BadRequest', // array("code":-1119,"msg":"Original client order ID was empty.")
+                        '-1120' => '\\ccxt\\BadRequest', // array("code":-1120,"msg":"Invalid interval.")
+                        '-1121' => '\\ccxt\\BadSymbol', // array("code":-1121,"msg":"Invalid symbol.")
+                        '-1125' => '\\ccxt\\AuthenticationError', // array("code":-1125,"msg":"This listenKey does not exist.")
+                        '-1127' => '\\ccxt\\BadRequest', // array("code":-1127,"msg":"More than %s hours between startTime and endTime.")
+                        '-1128' => '\\ccxt\\BadRequest', // array("code":-1128,"msg":"Combination of optional parameters invalid.")
+                        '-1130' => '\\ccxt\\BadRequest', // array("code":-1130,"msg":"Data sent for paramter %s is not valid.")
+                        '-1136' => '\\ccxt\\BadRequest', // array("code":-1136,"msg":"Invalid newOrderRespType")
+                        '-2010' => '\\ccxt\\InvalidOrder', // NEW_ORDER_REJECTED
+                        '-2011' => '\\ccxt\\OrderNotFound', // array("code":-2011,"msg":"cancelOrder(1, 'BTC/USDT') -> 'UNKNOWN_ORDER'")
+                        '-2013' => '\\ccxt\\OrderNotFound', // array("code":-2013,"msg":"fetchOrder (1, 'BTC/USDT') -> 'Order does not exist'")
+                        '-2014' => '\\ccxt\\AuthenticationError', // array("code":-2014,"msg":"API-key format invalid.")
+                        '-2015' => '\\ccxt\\AuthenticationError', // array("code":-2015,"msg":"Invalid API-key, IP, or permissions for action.")
+                        '-2016' => '\\ccxt\\OperationRejected', // array("code":-2016,"msg":"No trading window could be found for the symbol. Try ticker/24hrs instead.")
+                        '-2018' => '\\ccxt\\InsufficientFunds', // array("code":-2018,"msg":"Balance is insufficient")
+                        '-2019' => '\\ccxt\\InsufficientFunds', // array("code":-2019,"msg":"Margin is insufficient.")
+                        '-2020' => '\\ccxt\\OperationFailed', // array("code":-2020,"msg":"Unable to fill.")
+                        '-2021' => '\\ccxt\\OrderImmediatelyFillable', // array("code":-2021,"msg":"Order would immediately trigger.")
+                        '-2022' => '\\ccxt\\InvalidOrder', // array("code":-2022,"msg":"ReduceOnly Order is rejected.")
+                        '-2023' => '\\ccxt\\OperationFailed', // array(is_array(liquidation mode now.") && array_key_exists("code":-2023,"msg":"User, liquidation mode now."))
+                        '-2024' => '\\ccxt\\BadRequest', // array("code":-2024,"msg":"Position is not sufficient.")
+                        '-2025' => '\\ccxt\\OperationRejected', // array("code":-2025,"msg":"Reach max open order limit.")
+                        '-2026' => '\\ccxt\\InvalidOrder', // array("code":-2026,"msg":"This OrderType is not supported when reduceOnly.")
+                        '-2027' => '\\ccxt\\OperationRejected', // array("code":-2027,"msg":"Exceeded the maximum allowable position at current leverage.")
+                        '-2028' => '\\ccxt\\OperationRejected', // array("code":-2028,"msg":"Leverage is smaller than permitted => insufficient margin balance")
+                        '-4000' => '\\ccxt\\InvalidOrder', // INVALID_ORDER_STATUS
+                        '-4001' => '\\ccxt\\BadRequest', // PRICE_LESS_THAN_ZERO
+                        '-4002' => '\\ccxt\\BadRequest', // PRICE_GREATER_THAN_MAX_PRICE
+                        '-4003' => '\\ccxt\\BadRequest', // QTY_LESS_THAN_ZERO
+                        '-4004' => '\\ccxt\\BadRequest', // QTY_LESS_THAN_MIN_QTY
+                        '-4005' => '\\ccxt\\BadRequest', // QTY_GREATER_THAN_MAX_QTY
+                        '-4006' => '\\ccxt\\BadRequest', // STOP_PRICE_LESS_THAN_ZERO
+                        '-4007' => '\\ccxt\\BadRequest', // STOP_PRICE_GREATER_THAN_MAX_PRICE
+                        '-4008' => '\\ccxt\\BadRequest', // TICK SIZE LESS THAN ZERO
+                        '-4009' => '\\ccxt\\BadRequest', // MAX_PRICE_LESS_THAN_MIN_PRICE
+                        '-4010' => '\\ccxt\\BadRequest', // MAX_QTY_LESS_THAN_MIN_QTY
+                        '-4011' => '\\ccxt\\BadRequest', // STEP_SIZE_LESS_THAN_ZERO
+                        '-4012' => '\\ccxt\\BadRequest', // MAX_NUM_ORDERS_LESS_THAN_ZERO
+                        '-4013' => '\\ccxt\\BadRequest', // PRICE_LESS_THAN_MIN_PRICE
+                        '-4014' => '\\ccxt\\BadRequest', // PRICE NOT INCREASED BY TICK SIZE
+                        '-4015' => '\\ccxt\\BadRequest', // Client order id is not valid
+                        '-4016' => '\\ccxt\\BadRequest', // Price is higher than mark price multiplier cap.
+                        '-4017' => '\\ccxt\\BadRequest', // MULTIPLIER_UP_LESS_THAN_ZERO
+                        '-4018' => '\\ccxt\\BadRequest', // MULTIPLIER_DOWN_LESS_THAN_ZERO
+                        '-4019' => '\\ccxt\\OperationRejected', // COMPOSITE_SCALE_OVERFLOW
+                        '-4020' => '\\ccxt\\BadRequest', // TARGET_STRATEGY_INVALID
+                        '-4021' => '\\ccxt\\BadRequest', // INVALID_DEPTH_LIMIT
+                        '-4022' => '\\ccxt\\BadRequest', // WRONG_MARKET_STATUS
+                        '-4023' => '\\ccxt\\BadRequest', // QTY_NOT_INCREASED_BY_STEP_SIZE
+                        '-4024' => '\\ccxt\\BadRequest', // PRICE_LOWER_THAN_MULTIPLIER_DOWN
+                        '-4025' => '\\ccxt\\BadRequest', // MULTIPLIER_DECIMAL_LESS_THAN_ZERO
+                        '-4026' => '\\ccxt\\BadRequest', // COMMISSION_INVALID
+                        '-4027' => '\\ccxt\\BadRequest', // INVALID_ACCOUNT_TYPE
+                        '-4028' => '\\ccxt\\BadRequest', // INVALID_LEVERAGE
+                        '-4029' => '\\ccxt\\BadRequest', // INVALID TICK SIZE PRECISION
+                        '-4030' => '\\ccxt\\BadRequest', // INVALID_STEP_SIZE_PRECISION
+                        '-4031' => '\\ccxt\\BadRequest', // INVALID_WORKING_TYPE
+                        '-4032' => '\\ccxt\\OperationRejected', // Exceed maximum cancel order size. | Invalid parameter working type => %s
+                        '-4033' => '\\ccxt\\BadRequest', // INSURANCE_ACCOUNT_NOT_FOUND
+                        '-4044' => '\\ccxt\\BadRequest', // INVALID_BALANCE_TYPE
+                        '-4045' => '\\ccxt\\OperationRejected', // Reach max stop order limit.
+                        '-4046' => '\\ccxt\\BadRequest', // NO_NEED_TO_CHANGE_MARGIN_TYPE
+                        '-4047' => '\\ccxt\\OperationRejected', // Margin type cannot be changed if there exists open orders.
+                        '-4048' => '\\ccxt\\OperationRejected', // Margin type cannot be changed if there exists position.
+                        '-4049' => '\\ccxt\\OperationRejected', // ADD_ISOLATED_MARGIN_REJECT
+                        '-4050' => '\\ccxt\\InsufficientFunds', // CROSS_BALANCE_INSUFFICIENT
+                        '-4051' => '\\ccxt\\InsufficientFunds', // ISOLATED_BALANCE_INSUFFICIENT
+                        '-4052' => '\\ccxt\\OperationRejected', // NO_NEED_TO_CHANGE_AUTO_ADD_MARGIN
+                        '-4053' => '\\ccxt\\OperationRejected', // AUTO_ADD_CROSSED_MARGIN_REJECT
+                        '-4054' => '\\ccxt\\OperationRejected', // Cannot add position margin => position is 0.
+                        '-4055' => '\\ccxt\\BadRequest', // AMOUNT_MUST_BE_POSITIVE
+                        '-4056' => '\\ccxt\\AuthenticationError', // INVALID_API_KEY_TYPE
+                        '-4057' => '\\ccxt\\AuthenticationError', // INVALID_RSA_PUBLIC_KEY
+                        '-4058' => '\\ccxt\\BadRequest', // MAX_PRICE_TOO_LARGE
+                        '-4059' => '\\ccxt\\OperationRejected', // NO_NEED_TO_CHANGE_POSITION_SIDE
+                        '-4060' => '\\ccxt\\BadRequest', // INVALID_POSITION_SIDE
+                        '-4061' => '\\ccxt\\OperationRejected', // Order's position side does not match user's setting.
+                        '-4062' => '\\ccxt\\BadRequest', // Invalid or improper reduceOnly value.
+                        //
+                        '-4067' => '\\ccxt\\OperationRejected', // Position side cannot be changed if there exists open orders.
+                        '-4068' => '\\ccxt\\OperationRejected', // Position side cannot be changed if there exists position.
+                        '-4082' => '\\ccxt\\OperationRejected', // Invalid number of batch place orders.
+                        '-4083' => '\\ccxt\\OperationRejected', // PLACE_BATCH_ORDERS_FAIL
+                        '-4084' => '\\ccxt\\BadRequest', // Method is not allowed currently. Upcoming soon.
+                        '-4086' => '\\ccxt\\BadRequest', // Invalid price spread threshold.
+                        '-4087' => '\\ccxt\\BadSymbol', // Invalid pair
+                        '-4088' => '\\ccxt\\BadRequest', // Invalid time interval
+                        '-4089' => '\\ccxt\\PermissionDenied', // User can only place reduce only order.
+                        '-4090' => '\\ccxt\\PermissionDenied', // User can not place order currently.
+                        '-4104' => '\\ccxt\\BadRequest', // Invalid contract type
+                        '-4110' => '\\ccxt\\BadRequest', // clientTranId is not valid
+                        '-4111' => '\\ccxt\\BadRequest', // clientTranId is duplicated.
+                        '-4112' => '\\ccxt\\OperationRejected', // ReduceOnly Order Failed. Please check your existing position and open orders.
+                        '-4113' => '\\ccxt\\OperationRejected', // The counterparty's best price does not meet the PERCENT_PRICE filter limit.
+                        '-4135' => '\\ccxt\\BadRequest', // Invalid activation price.
+                        '-4137' => '\\ccxt\\BadRequest', // Quantity must be zero with closePosition equals true.
+                        '-4138' => '\\ccxt\\BadRequest', // Reduce only must be true with closePosition equals true.
+                        '-4139' => '\\ccxt\\BadRequest', // Order type can not be market if it's unable to cancel.
+                        '-4142' => '\\ccxt\\OrderImmediatelyFillable', // REJECT => take profit or stop order will be triggered immediately.
+                        '-4150' => '\\ccxt\\OperationRejected', // Leverage reduction is not supported in Isolated Margin Mode with open positions.
+                        '-4151' => '\\ccxt\\BadRequest', // Price is higher than stop price multiplier cap.
+                        '-4152' => '\\ccxt\\BadRequest', // Price is lower than stop price multiplier floor.
+                        '-4154' => '\\ccxt\\BadRequest', // Stop price is higher than price multiplier cap.
+                        '-4155' => '\\ccxt\\BadRequest', // Stop price is lower than price multiplier floor
+                        '-4178' => '\\ccxt\\BadRequest', // Order's notional must be no smaller than one (unless you choose reduce only)
+                        '-4192' => '\\ccxt\\PermissionDenied', // Trade forbidden due to Cooling-off Period.
+                        '-4194' => '\\ccxt\\PermissionDenied', // Intermediate Personal Verification is required for adjusting leverage over 20x.
+                        '-4195' => '\\ccxt\\PermissionDenied', // More than 20x leverage is available one month after account registration.
+                        '-4196' => '\\ccxt\\BadRequest', // Only limit order is supported.
+                        '-4197' => '\\ccxt\\OperationRejected', // No need to modify the order.
+                        '-4198' => '\\ccxt\\OperationRejected', // Exceed maximum modify order limit.
+                        '-4199' => '\\ccxt\\BadRequest', // Symbol is not in trading status. Order amendment is not permitted.
+                        '-4200' => '\\ccxt\\PermissionDenied', // More than 20x leverage is available %s days after Futures account registration.
+                        '-4201' => '\\ccxt\\PermissionDenied', // Users in your location/country can only access a maximum leverage of %s
+                        '-4202' => '\\ccxt\\OperationRejected', // Current symbol leverage cannot exceed 20 when using position limit adjustment service.
+                        '-4188' => '\\ccxt\\BadRequest', // Timestamp for this request is outside of the ME recvWindow.
+                        //
+                        // spot & futures algo
+                        //
+                        '-20121' => '\\ccxt\\BadSymbol', // Invalid symbol.
+                        '-20124' => '\\ccxt\\BadRequest', // Invalid algo id or it has been completed.
+                        '-20130' => '\\ccxt\\BadRequest', // Invalid data sent for a parameter
+                        '-20132' => '\\ccxt\\BadRequest', // The client algo id is duplicated
+                        '-20194' => '\\ccxt\\BadRequest', // Duration is too short to execute all required quantity.
+                        '-20195' => '\\ccxt\\BadRequest', // The total size is too small.
+                        '-20196' => '\\ccxt\\BadRequest', // The total size is too large.
+                        '-20198' => '\\ccxt\\OperationRejected', // Reach the max open orders allowed.
+                        '-20204' => '\\ccxt\\BadRequest', // The notional of USD is less or more than the limit.
+                    ),
+                ),
+                'linear' => array(
+                    // https://binance-docs.github.io/apidocs/futures/en/#error-codes
+                    'exact' => array(
+                        '-1000' => '\\ccxt\\OperationFailed', // array("code":-1000,"msg":"An unknown error occured while processing the request.")
+                        '-1001' => '\\ccxt\\OperationFailed', // array("code":-1001,"msg":"'Internal error; unable to process your request. Please try again.'")
+                        '-1002' => '\\ccxt\\AuthenticationError', // array("code":-1002,"msg":"'You are not authorized to execute this request.'")
+                        '-1003' => '\\ccxt\\RateLimitExceeded', // array("code":-1003,"msg":"Too much request weight used, current limit is 1200 request weight per 1 MINUTE. Please use the websocket for live updates to avoid polling the API.")
+                        '-1004' => '\\ccxt\\OperationRejected', // DUPLICATE_IP : This IP is already on the white list
+                        '-1005' => '\\ccxt\\PermissionDenied', // array("code":-1005,"msg":"No such IP has been white listed")
+                        '-1006' => '\\ccxt\\OperationFailed', // array("code":-1006,"msg":"An unexpected response was received from the message bus. Execution status unknown.")
+                        '-1007' => '\\ccxt\\RequestTimeout', // array("code":-1007,"msg":"Timeout waiting for response from backend server. Send status unknown; execution status unknown.")
+                        '-1008' => '\\ccxt\\OperationFailed', // -1008 SERVER_BUSY => Server is currently overloaded with other requests. Please try again in a few minutes.
+                        '-1010' => '\\ccxt\\OperationFailed', // array("code":-1010,"msg":"ERROR_MSG_RECEIVED.")
+                        '-1011' => '\\ccxt\\PermissionDenied', // array("code":-1011,"msg":"This IP cannot access this route.")
+                        '-1013' => '\\ccxt\\BadRequest', // array("code":-1013,"msg":"createOrder -> 'invalid quantity'/'invalid price'/MIN_NOTIONAL") | -1013 INVALID_MESSAGE
+                        '-1014' => '\\ccxt\\InvalidOrder', // array("code":-1014,"msg":"Unsupported order combination.")
+                        '-1015' => '\\ccxt\\RateLimitExceeded', // array("code":-1015,"msg":"'Too many new orders; current limit is %s orders per %s.'")
+                        '-1016' => '\\ccxt\\BadRequest', // array("code":-1016,"msg":"'This service is no longer available.',")
+                        '-1020' => '\\ccxt\\BadRequest', // array("code":-1020,"msg":"'This operation is not supported.'")
+                        '-1021' => '\\ccxt\\InvalidNonce', // array("code":-1021,"msg":"'your time is ahead of server'")
+                        '-1022' => '\\ccxt\\AuthenticationError', // array("code":-1022,"msg":"Signature for this request is not valid.")
+                        '-1023' => '\\ccxt\\BadRequest', // array("code":-1023,"msg":"Start time is greater than end time.")
+                        '-1099' => '\\ccxt\\AuthenticationError', // array("code":-1099,"msg":"Not found, authenticated, or authorized")
+                        '-1100' => '\\ccxt\\BadRequest', // array("code":-1100,"msg":"createOrder(symbol, 1, asdf) -> 'Illegal characters found in parameter 'price'")
+                        '-1101' => '\\ccxt\\BadRequest', // array("code":-1101,"msg":"Too many parameters; expected %s and received %s.")
+                        '-1102' => '\\ccxt\\BadRequest', // array("code":-1102,"msg":"Param %s or %s must be sent, but both were empty")
+                        '-1103' => '\\ccxt\\BadRequest', // array("code":-1103,"msg":"An unknown parameter was sent.")
+                        '-1104' => '\\ccxt\\BadRequest', // array("code":-1104,"msg":"Not all sent parameters were read, read 8 parameters but was sent 9")
+                        '-1105' => '\\ccxt\\BadRequest', // array("code":-1105,"msg":"Parameter %s was empty.")
+                        '-1106' => '\\ccxt\\BadRequest', // array("code":-1106,"msg":"Parameter %s sent when not required.")
+                        '-1108' => '\\ccxt\\BadSymbol', // array("code":-1108,"msg":"Invalid asset.")
+                        '-1109' => '\\ccxt\\PermissionDenied', // array("code":-1109,"msg":"Invalid account.")
+                        '-1110' => '\\ccxt\\BadRequest', // array("code":-1110,"msg":"Invalid symbolType.")
+                        '-1111' => '\\ccxt\\BadRequest', // array("code":-1111,"msg":"Precision is over the maximum defined for this asset.")
+                        '-1112' => '\\ccxt\\OperationFailed', // array("code":-1112,"msg":"No orders on book for symbol.")
+                        '-1113' => '\\ccxt\\BadRequest', // array("code":-1113,"msg":"Withdrawal amount must be negative.")
+                        '-1114' => '\\ccxt\\BadRequest', // array("code":-1114,"msg":"TimeInForce parameter sent when not required.")
+                        '-1115' => '\\ccxt\\BadRequest', // array("code":-1115,"msg":"Invalid timeInForce.")
+                        '-1116' => '\\ccxt\\BadRequest', // array("code":-1116,"msg":"Invalid orderType.")
+                        '-1117' => '\\ccxt\\BadRequest', // array("code":-1117,"msg":"Invalid side.")
+                        '-1118' => '\\ccxt\\BadRequest', // array("code":-1118,"msg":"New client order ID was empty.")
+                        '-1119' => '\\ccxt\\BadRequest', // array("code":-1119,"msg":"Original client order ID was empty.")
+                        '-1120' => '\\ccxt\\BadRequest', // array("code":-1120,"msg":"Invalid interval.")
+                        '-1121' => '\\ccxt\\BadSymbol', // array("code":-1121,"msg":"Invalid symbol.")
+                        '-1122' => '\\ccxt\\BadRequest', // INVALID_SYMBOL_STATUS
+                        '-1125' => '\\ccxt\\AuthenticationError', // array("code":-1125,"msg":"This listenKey does not exist.")
+                        '-1126' => '\\ccxt\\BadSymbol', // ASSET_NOT_SUPPORTED
+                        '-1127' => '\\ccxt\\BadRequest', // array("code":-1127,"msg":"More than %s hours between startTime and endTime.")
+                        '-1128' => '\\ccxt\\BadRequest', // array("code":-1128,"msg":"Combination of optional parameters invalid.")
+                        '-1130' => '\\ccxt\\BadRequest', // array("code":-1130,"msg":"Data sent for paramter %s is not valid.")
+                        '-1136' => '\\ccxt\\BadRequest', // array("code":-1136,"msg":"Invalid newOrderRespType")
+                        '-2010' => '\\ccxt\\OrderNotFound', // NEW_ORDER_REJECTED
+                        '-2011' => '\\ccxt\\OrderNotFound', // array("code":-2011,"msg":"cancelOrder(1, 'BTC/USDT') -> 'UNKNOWN_ORDER'")
+                        '-2012' => '\\ccxt\\OperationFailed', // CANCEL_ALL_FAIL
+                        '-2013' => '\\ccxt\\OrderNotFound', // array("code":-2013,"msg":"fetchOrder (1, 'BTC/USDT') -> 'Order does not exist'")
+                        '-2014' => '\\ccxt\\AuthenticationError', // array("code":-2014,"msg":"API-key format invalid.")
+                        '-2015' => '\\ccxt\\AuthenticationError', // array("code":-2015,"msg":"Invalid API-key, IP, or permissions for action.")
+                        '-2016' => '\\ccxt\\OperationRejected', // array("code":-2016,"msg":"No trading window could be found for the symbol. Try ticker/24hrs instead.")
+                        '-2017' => '\\ccxt\\PermissionDenied', // API Keys are locked on this account.
+                        '-2018' => '\\ccxt\\InsufficientFunds', // array("code":-2018,"msg":"Balance is insufficient")
+                        '-2019' => '\\ccxt\\InsufficientFunds', // array("code":-2019,"msg":"Margin is insufficient.")
+                        '-2020' => '\\ccxt\\OperationFailed', // array("code":-2020,"msg":"Unable to fill.")
+                        '-2021' => '\\ccxt\\OrderImmediatelyFillable', // array("code":-2021,"msg":"Order would immediately trigger.")
+                        '-2022' => '\\ccxt\\InvalidOrder', // array("code":-2022,"msg":"ReduceOnly Order is rejected.")
+                        '-2023' => '\\ccxt\\OperationFailed', // array(is_array(liquidation mode now.") && array_key_exists("code":-2023,"msg":"User, liquidation mode now."))
+                        '-2024' => '\\ccxt\\InsufficientFunds', // array("code":-2024,"msg":"Position is not sufficient.")
+                        '-2025' => '\\ccxt\\OperationRejected', // array("code":-2025,"msg":"Reach max open order limit.")
+                        '-2026' => '\\ccxt\\InvalidOrder', // array("code":-2026,"msg":"This OrderType is not supported when reduceOnly.")
+                        '-2027' => '\\ccxt\\OperationRejected', // array("code":-2027,"msg":"Exceeded the maximum allowable position at current leverage.")
+                        '-2028' => '\\ccxt\\OperationRejected', // array("code":-2028,"msg":"Leverage is smaller than permitted => insufficient margin balance")
+                        '-4000' => '\\ccxt\\InvalidOrder', // INVALID_ORDER_STATUS
+                        '-4001' => '\\ccxt\\BadRequest', // PRICE_LESS_THAN_ZERO
+                        '-4002' => '\\ccxt\\BadRequest', // PRICE_GREATER_THAN_MAX_PRICE
+                        '-4003' => '\\ccxt\\BadRequest', // QTY_LESS_THAN_ZERO
+                        '-4004' => '\\ccxt\\BadRequest', // QTY_LESS_THAN_MIN_QTY
+                        '-4005' => '\\ccxt\\BadRequest', // QTY_GREATER_THAN_MAX_QTY
+                        '-4006' => '\\ccxt\\BadRequest', // STOP_PRICE_LESS_THAN_ZERO
+                        '-4007' => '\\ccxt\\BadRequest', // STOP_PRICE_GREATER_THAN_MAX_PRICE
+                        '-4008' => '\\ccxt\\BadRequest', // TICK SIZE LESS THAN ZERO
+                        '-4009' => '\\ccxt\\BadRequest', // MAX_PRICE_LESS_THAN_MIN_PRICE
+                        '-4010' => '\\ccxt\\BadRequest', // MAX_QTY_LESS_THAN_MIN_QTY
+                        '-4011' => '\\ccxt\\BadRequest', // STEP_SIZE_LESS_THAN_ZERO
+                        '-4012' => '\\ccxt\\BadRequest', // MAX_NUM_ORDERS_LESS_THAN_ZERO
+                        '-4013' => '\\ccxt\\BadRequest', // PRICE_LESS_THAN_MIN_PRICE
+                        '-4014' => '\\ccxt\\BadRequest', // PRICE NOT INCREASED BY TICK SIZE
+                        '-4015' => '\\ccxt\\BadRequest', // Client order id is not valid
+                        '-4016' => '\\ccxt\\OperationRejected', // Price is higher than mark price multiplier cap.
+                        '-4017' => '\\ccxt\\BadRequest', // MULTIPLIER_UP_LESS_THAN_ZERO
+                        '-4018' => '\\ccxt\\BadRequest', // MULTIPLIER_DOWN_LESS_THAN_ZERO
+                        '-4019' => '\\ccxt\\OperationRejected', // COMPOSITE_SCALE_OVERFLOW
+                        '-4020' => '\\ccxt\\BadRequest', // TARGET_STRATEGY_INVALID
+                        '-4021' => '\\ccxt\\BadRequest', // INVALID_DEPTH_LIMIT
+                        '-4022' => '\\ccxt\\BadRequest', // WRONG_MARKET_STATUS
+                        '-4023' => '\\ccxt\\BadRequest', // QTY_NOT_INCREASED_BY_STEP_SIZE
+                        '-4024' => '\\ccxt\\BadRequest', // PRICE_LOWER_THAN_MULTIPLIER_DOWN
+                        '-4025' => '\\ccxt\\BadRequest', // MULTIPLIER_DECIMAL_LESS_THAN_ZERO
+                        '-4026' => '\\ccxt\\BadRequest', // COMMISSION_INVALID
+                        '-4027' => '\\ccxt\\BadRequest', // INVALID_ACCOUNT_TYPE
+                        '-4028' => '\\ccxt\\BadRequest', // INVALID_LEVERAGE
+                        '-4029' => '\\ccxt\\BadRequest', // INVALID TICK SIZE PRECISION
+                        '-4030' => '\\ccxt\\BadRequest', // INVALID_STEP_SIZE_PRECISION
+                        '-4031' => '\\ccxt\\BadRequest', // INVALID_WORKING_TYPE
+                        '-4032' => '\\ccxt\\OperationRejected', // EXCEED_MAX_CANCEL_ORDER_SIZE
+                        '-4033' => '\\ccxt\\BadRequest', // INSURANCE_ACCOUNT_NOT_FOUND
+                        '-4044' => '\\ccxt\\BadRequest', // INVALID_BALANCE_TYPE
+                        '-4045' => '\\ccxt\\OperationRejected', // MAX_STOP_ORDER_EXCEEDED
+                        '-4046' => '\\ccxt\\OperationRejected', // NO_NEED_TO_CHANGE_MARGIN_TYPE
+                        '-4047' => '\\ccxt\\OperationRejected', // Margin type cannot be changed if there exists open orders.
+                        '-4048' => '\\ccxt\\OperationRejected', // Margin type cannot be changed if there exists position.
+                        '-4049' => '\\ccxt\\BadRequest', // Add margin only support for isolated position.
+                        '-4050' => '\\ccxt\\InsufficientFunds', // Cross balance insufficient
+                        '-4051' => '\\ccxt\\InsufficientFunds', // Isolated balance insufficient.
+                        '-4052' => '\\ccxt\\OperationRejected', // No need to change auto add margin.
+                        '-4053' => '\\ccxt\\BadRequest', // Auto add margin only support for isolated position.
+                        '-4054' => '\\ccxt\\OperationRejected', // Cannot add position margin => position is 0.
+                        '-4055' => '\\ccxt\\BadRequest', // Amount must be positive.
+                        '-4056' => '\\ccxt\\AuthenticationError', // Invalid api key type.
+                        '-4057' => '\\ccxt\\AuthenticationError', // Invalid api public key
+                        '-4058' => '\\ccxt\\BadRequest', // MAX_PRICE_TOO_LARGE
+                        '-4059' => '\\ccxt\\OperationRejected', // NO_NEED_TO_CHANGE_POSITION_SIDE
+                        '-4060' => '\\ccxt\\BadRequest', // INVALID_POSITION_SIDE
+                        '-4061' => '\\ccxt\\BadRequest', // POSITION_SIDE_NOT_MATCH
+                        '-4062' => '\\ccxt\\BadRequest', // REDUCE_ONLY_CONFLICT
+                        '-4063' => '\\ccxt\\BadRequest', // INVALID_OPTIONS_REQUEST_TYPE
+                        '-4064' => '\\ccxt\\BadRequest', // INVALID_OPTIONS_TIME_FRAME
+                        '-4065' => '\\ccxt\\BadRequest', // INVALID_OPTIONS_AMOUNT
+                        '-4066' => '\\ccxt\\BadRequest', // INVALID_OPTIONS_EVENT_TYPE
+                        '-4067' => '\\ccxt\\OperationRejected', // Position side cannot be changed if there exists open orders.
+                        '-4068' => '\\ccxt\\OperationRejected', // Position side cannot be changed if there exists position.
+                        '-4069' => '\\ccxt\\BadRequest', // Position INVALID_OPTIONS_PREMIUM_FEE
+                        '-4070' => '\\ccxt\\BadRequest', // Client options id is not valid.
+                        '-4071' => '\\ccxt\\BadRequest', // Invalid options direction
+                        '-4072' => '\\ccxt\\OperationRejected', // premium fee is not updated, reject order
+                        '-4073' => '\\ccxt\\BadRequest', // OPTIONS_PREMIUM_INPUT_LESS_THAN_ZERO
+                        '-4074' => '\\ccxt\\OperationRejected', // Order amount is bigger than upper boundary or less than 0, reject order
+                        '-4075' => '\\ccxt\\BadRequest', // output premium fee is less than 0, reject order
+                        '-4076' => '\\ccxt\\OperationRejected', // original fee is too much higher than last fee
+                        '-4077' => '\\ccxt\\OperationRejected', // place order amount has reached to limit, reject order
+                        '-4078' => '\\ccxt\\OperationFailed', // options internal error
+                        '-4079' => '\\ccxt\\BadRequest', // invalid options id
+                        '-4080' => '\\ccxt\\PermissionDenied', // user not found with id => %s
+                        '-4081' => '\\ccxt\\BadRequest', // OPTIONS_NOT_FOUND
+                        '-4082' => '\\ccxt\\OperationRejected', // Invalid number of batch place orders
+                        '-4083' => '\\ccxt\\OperationFailed', // Fail to place batch orders.
+                        '-4084' => '\\ccxt\\BadRequest', // UPCOMING_METHOD
+                        '-4085' => '\\ccxt\\BadRequest', // Invalid notional limit coefficient
+                        '-4086' => '\\ccxt\\BadRequest', // Invalid price spread threshold
+                        '-4087' => '\\ccxt\\PermissionDenied', // User can only place reduce only order
+                        '-4088' => '\\ccxt\\PermissionDenied', // User can not place order currently
+                        '-4104' => '\\ccxt\\BadRequest', // INVALID_CONTRACT_TYPE
+                        '-4114' => '\\ccxt\\BadRequest', // INVALID_CLIENT_TRAN_ID_LEN
+                        '-4115' => '\\ccxt\\BadRequest', // DUPLICATED_CLIENT_TRAN_ID
+                        '-4118' => '\\ccxt\\OperationRejected', // REDUCE_ONLY_MARGIN_CHECK_FAILED
+                        '-4131' => '\\ccxt\\OperationRejected', // The counterparty's best price does not meet the PERCENT_PRICE filter limit
+                        '-4135' => '\\ccxt\\BadRequest', // Invalid activation price
+                        '-4137' => '\\ccxt\\BadRequest', // Quantity must be zero with closePosition equals true
+                        '-4138' => '\\ccxt\\BadRequest', // Reduce only must be true with closePosition equals true
+                        '-4139' => '\\ccxt\\BadRequest', // Order type can not be market if it's unable to cancel
+                        '-4140' => '\\ccxt\\BadRequest', // Invalid symbol status for opening position
+                        '-4141' => '\\ccxt\\OperationRejected', // Symbol is closed
+                        '-4142' => '\\ccxt\\OrderImmediatelyFillable', // REJECT => take profit or stop order will be triggered immediately
+                        '-4144' => '\\ccxt\\BadSymbol', // Invalid pair
+                        '-4164' => '\\ccxt\\OperationRejected', // Leverage reduction is not supported in Isolated Margin Mode with open positions
+                        '-4165' => '\\ccxt\\BadRequest', // Invalid time interval
+                        '-4167' => '\\ccxt\\BadRequest', // Unable to adjust to Multi-Assets mode with symbols of USDⓈ-M Futures under isolated-margin mode.
+                        '-4168' => '\\ccxt\\BadRequest', // Unable to adjust to isolated-margin mode under the Multi-Assets mode.
+                        '-4169' => '\\ccxt\\OperationRejected', // Unable to adjust Multi-Assets Mode with insufficient margin balance in USDⓈ-M Futures
+                        '-4170' => '\\ccxt\\OperationRejected', // Unable to adjust Multi-Assets Mode with open orders in USDⓈ-M Futures
+                        '-4171' => '\\ccxt\\OperationRejected', // Adjusted asset mode is currently set and does not need to be adjusted repeatedly
+                        '-4172 ' => '\\ccxt\\OperationRejected', // Unable to adjust Multi-Assets Mode with a negative wallet balance of margin available asset in USDⓈ-M Futures account.
+                        '-4183' => '\\ccxt\\BadRequest', // Price is higher than stop price multiplier cap.
+                        '-4184' => '\\ccxt\\BadRequest', // Price is lower than stop price multiplier floor.
+                        '-4192' => '\\ccxt\\PermissionDenied', // Trade forbidden due to Cooling-off Period.
+                        '-4202' => '\\ccxt\\PermissionDenied', // Intermediate Personal Verification is required for adjusting leverage over 20x
+                        '-4203' => '\\ccxt\\PermissionDenied', // More than 20x leverage is available one month after account registration.
+                        '-4205' => '\\ccxt\\PermissionDenied', // More than 20x leverage is available %s days after Futures account registration.
+                        '-4206' => '\\ccxt\\PermissionDenied', // property_exists($this, Users) country has limited adjust leverage.
+                        '-4208' => '\\ccxt\\OperationRejected', // Current symbol leverage cannot exceed 20 when using position limit adjustment service.
+                        '-4209' => '\\ccxt\\OperationRejected', // Leverage adjustment failed. Current symbol max leverage limit is %sx
+                        '-4210' => '\\ccxt\\BadRequest', // Stop price is higher than price multiplier cap
+                        '-4211' => '\\ccxt\\BadRequest', // Stop price is lower than price multiplier floor
+                        '-4400' => '\\ccxt\\PermissionDenied', // Futures Trading Quantitative Rules violated, only reduceOnly order is allowed, please try again later.
+                        '-4401' => '\\ccxt\\PermissionDenied', // Compliance restricted account permission => can only place reduceOnly order.
+                        '-4402' => '\\ccxt\\PermissionDenied', // Dear user, our Terms of Use and compliance with local regulations, this feature is currently not available in your region.
+                        '-4403' => '\\ccxt\\PermissionDenied', // Dear user, our Terms of Use and compliance with local regulations, the leverage can only up to %sx in your region
+                        '-5021' => '\\ccxt\\OrderNotFillable', // Due to the order could not be filled immediately, the FOK order has been rejected.
+                        '-5022' => '\\ccxt\\OrderNotFillable', // Due to the order could not be executed, the Post Only order will be rejected.
+                        '-5024' => '\\ccxt\\OperationRejected', // Symbol is not in trading status. Order amendment is not permitted.
+                        '-5025' => '\\ccxt\\OperationRejected', // Only limit order is supported.
+                        '-5026' => '\\ccxt\\OperationRejected', // Exceed maximum modify order limit.
+                        '-5027' => '\\ccxt\\OperationRejected', // No need to modify the order.
+                        '-5028' => '\\ccxt\\BadRequest', // Timestamp for this request is outside of the ME recvWindow.
+                        '-5037' => '\\ccxt\\BadRequest', // Invalid price match
+                        '-5038' => '\\ccxt\\BadRequest', // Price match only supports order type => LIMIT, STOP AND TAKE_PROFIT
+                        '-5039' => '\\ccxt\\BadRequest', // Invalid self trade prevention mode
+                        '-5040' => '\\ccxt\\BadRequest', // The goodTillDate timestamp must be greater than the current time plus 600 seconds and smaller than 253402300799000
+                        '-5041' => '\\ccxt\\OperationFailed', // No depth matches this BBO order
+                        //
+                        // spot & futures algo (TBD for OPTIONS & PORTFOLIO MARGIN)
+                        //
+                        '-20121' => '\\ccxt\\BadSymbol', // Invalid symbol.
+                        '-20124' => '\\ccxt\\BadRequest', // Invalid algo id or it has been completed.
+                        '-20130' => '\\ccxt\\BadRequest', // Invalid data sent for a parameter
+                        '-20132' => '\\ccxt\\BadRequest', // The client algo id is duplicated
+                        '-20194' => '\\ccxt\\BadRequest', // Duration is too short to execute all required quantity.
+                        '-20195' => '\\ccxt\\BadRequest', // The total size is too small.
+                        '-20196' => '\\ccxt\\BadRequest', // The total size is too large.
+                        '-20198' => '\\ccxt\\OperationRejected', // Reach the max open orders allowed.
+                        '-20204' => '\\ccxt\\BadRequest', // The notional of USD is less or more than the limit.
+                    ),
+                ),
+                'option' => array(
+                    // https://binance-docs.github.io/apidocs/voptions/en/#error-codes
+                    'exact' => array(
+                        '-1000' => '\\ccxt\\OperationFailed', // array("code":-1000,"msg":"An unknown error occured while processing the request.")
+                        '-1001' => '\\ccxt\\OperationFailed', // array("code":-1001,"msg":"'Internal error; unable to process your request. Please try again.'")
+                        '-1002' => '\\ccxt\\AuthenticationError', // array("code":-1002,"msg":"'You are not authorized to execute this request.'")
+                        '-1008' => '\\ccxt\\RateLimitExceeded', // TOO_MANY_REQUESTS
+                        '-1014' => '\\ccxt\\InvalidOrder', // array("code":-1014,"msg":"Unsupported order combination.")
+                        '-1015' => '\\ccxt\\RateLimitExceeded', // array("code":-1015,"msg":"'Too many new orders; current limit is %s orders per %s.'")
+                        '-1016' => '\\ccxt\\BadRequest', // array("code":-1016,"msg":"'This service is no longer available.',")
+                        '-1020' => '\\ccxt\\BadRequest', // array("code":-1020,"msg":"'This operation is not supported.'")
+                        '-1021' => '\\ccxt\\InvalidNonce', // array("code":-1021,"msg":"'your time is ahead of server'")
+                        '-1022' => '\\ccxt\\AuthenticationError', // array("code":-1022,"msg":"Signature for this request is not valid.")
+                        '-1100' => '\\ccxt\\BadRequest', // array("code":-1100,"msg":"createOrder(symbol, 1, asdf) -> 'Illegal characters found in parameter 'price'")
+                        '-1101' => '\\ccxt\\BadRequest', // array("code":-1101,"msg":"Too many parameters; expected %s and received %s.")
+                        '-1102' => '\\ccxt\\BadRequest', // array("code":-1102,"msg":"Param %s or %s must be sent, but both were empty")
+                        '-1103' => '\\ccxt\\BadRequest', // array("code":-1103,"msg":"An unknown parameter was sent.")
+                        '-1104' => '\\ccxt\\BadRequest', // array("code":-1104,"msg":"Not all sent parameters were read, read 8 parameters but was sent 9")
+                        '-1105' => '\\ccxt\\BadRequest', // array("code":-1105,"msg":"Parameter %s was empty.")
+                        '-1106' => '\\ccxt\\BadRequest', // array("code":-1106,"msg":"Parameter %s sent when not required.")
+                        '-1111' => '\\ccxt\\BadRequest', // array("code":-1111,"msg":"Precision is over the maximum defined for this asset.")
+                        '-1115' => '\\ccxt\\BadRequest', // array("code":-1115,"msg":"Invalid timeInForce.")
+                        '-1116' => '\\ccxt\\BadRequest', // array("code":-1116,"msg":"Invalid orderType.")
+                        '-1117' => '\\ccxt\\BadRequest', // array("code":-1117,"msg":"Invalid side.")
+                        '-1118' => '\\ccxt\\BadRequest', // array("code":-1118,"msg":"New client order ID was empty.")
+                        '-1119' => '\\ccxt\\BadRequest', // array("code":-1119,"msg":"Original client order ID was empty.")
+                        '-1120' => '\\ccxt\\BadRequest', // array("code":-1120,"msg":"Invalid interval.")
+                        '-1121' => '\\ccxt\\BadSymbol', // array("code":-1121,"msg":"Invalid symbol.")
+                        '-1125' => '\\ccxt\\AuthenticationError', // array("code":-1125,"msg":"This listenKey does not exist.")
+                        '-1127' => '\\ccxt\\BadRequest', // array("code":-1127,"msg":"More than %s hours between startTime and endTime.")
+                        '-1128' => '\\ccxt\\BadSymbol', // BAD_CONTRACT
+                        '-1129' => '\\ccxt\\BadSymbol', // BAD_CURRENCY
+                        '-1130' => '\\ccxt\\BadRequest', // array("code":-1130,"msg":"Data sent for paramter %s is not valid.")
+                        '-1131' => '\\ccxt\\BadRequest', // array("code":-1131,"msg":"recvWindow must be less than 60000")
+                        '-2010' => '\\ccxt\\InvalidOrder', // NEW_ORDER_REJECTED
+                        '-2013' => '\\ccxt\\OrderNotFound', // array("code":-2013,"msg":"fetchOrder (1, 'BTC/USDT') -> 'Order does not exist'")
+                        '-2014' => '\\ccxt\\AuthenticationError', // array("code":-2014,"msg":"API-key format invalid.")
+                        '-2015' => '\\ccxt\\AuthenticationError', // array("code":-2015,"msg":"Invalid API-key, IP, or permissions for action.")
+                        '-2018' => '\\ccxt\\InsufficientFunds', // BALANCE_NOT_SUFFICIENT
+                        '-2027' => '\\ccxt\\InsufficientFunds', // OPTION_MARGIN_NOT_SUFFICIENT
+                        '-3029' => '\\ccxt\\OperationFailed', // array("code":-3029,"msg":"Transfer failed.")
+                        '-4001' => '\\ccxt\\BadRequest', // PRICE_LESS_THAN_ZERO
+                        '-4002' => '\\ccxt\\BadRequest', // PRICE_GREATER_THAN_MAX_PRICE
+                        '-4003' => '\\ccxt\\BadRequest', // QTY_LESS_THAN_ZERO
+                        '-4004' => '\\ccxt\\BadRequest', // QTY_LESS_THAN_MIN_QTY
+                        '-4005' => '\\ccxt\\BadRequest', // QTY_GREATER_THAN_MAX_QTY
+                        '-4013' => '\\ccxt\\BadRequest', // PRICE_LESS_THAN_MIN_PRICE
+                        '-4029' => '\\ccxt\\BadRequest', // INVALID TICK SIZE PRECISION
+                        '-4030' => '\\ccxt\\BadRequest', // INVALID_QTY_PRECISION
+                        '-4055' => '\\ccxt\\BadRequest', // AMOUNT_MUST_BE_POSITIVE
+                    ),
+                ),
+                'portfolioMargin' => array(
+                    'exact' => array(
+                        '-1000' => '\\ccxt\\OperationFailed', // array("code":-1000,"msg":"An unknown error occured while processing the request.")
+                        '-1001' => '\\ccxt\\OperationFailed', // array("code":-1001,"msg":"'Internal error; unable to process your request. Please try again.'")
+                        '-1002' => '\\ccxt\\AuthenticationError', // array("code":-1002,"msg":"'You are not authorized to execute this request.'")
+                        '-1003' => '\\ccxt\\RateLimitExceeded', // array("code":-1003,"msg":"Too much request weight used, current limit is 1200 request weight per 1 MINUTE. Please use the websocket for live updates to avoid polling the API.")
+                        '-1004' => '\\ccxt\\OperationRejected', // DUPLICATE_IP : This IP is already on the white list
+                        '-1005' => '\\ccxt\\PermissionDenied', // array("code":-1005,"msg":"No such IP has been white listed")
+                        '-1006' => '\\ccxt\\OperationFailed', // array("code":-1006,"msg":"An unexpected response was received from the message bus. Execution status unknown.")
+                        '-1007' => '\\ccxt\\RequestTimeout', // array("code":-1007,"msg":"Timeout waiting for response from backend server. Send status unknown; execution status unknown.")
+                        '-1010' => '\\ccxt\\OperationFailed', // array("code":-1010,"msg":"ERROR_MSG_RECEIVED.")
+                        '-1011' => '\\ccxt\\PermissionDenied', // array("code":-1011,"msg":"This IP cannot access this route.")
+                        '-1013' => '\\ccxt\\OperationFailed', //
+                        '-1014' => '\\ccxt\\InvalidOrder', // array("code":-1014,"msg":"Unsupported order combination.")
+                        '-1015' => '\\ccxt\\RateLimitExceeded', // array("code":-1015,"msg":"'Too many new orders; current limit is %s orders per %s.'")
+                        '-1016' => '\\ccxt\\BadRequest', // array("code":-1016,"msg":"'This service is no longer available.',")
+                        '-1020' => '\\ccxt\\BadRequest', // array("code":-1020,"msg":"'This operation is not supported.'")
+                        '-1021' => '\\ccxt\\InvalidNonce', // array("code":-1021,"msg":"'your time is ahead of server'")
+                        '-1022' => '\\ccxt\\AuthenticationError', // array("code":-1022,"msg":"Signature for this request is not valid.")
+                        '-1023' => '\\ccxt\\BadRequest', // START_TIME_GREATER_THAN_END_TIME
+                        '-1100' => '\\ccxt\\BadRequest', // array("code":-1100,"msg":"createOrder(symbol, 1, asdf) -> 'Illegal characters found in parameter 'price'")
+                        '-1101' => '\\ccxt\\BadRequest', // array("code":-1101,"msg":"Too many parameters; expected %s and received %s.")
+                        '-1102' => '\\ccxt\\BadRequest', // array("code":-1102,"msg":"Param %s or %s must be sent, but both were empty")
+                        '-1103' => '\\ccxt\\BadRequest', // array("code":-1103,"msg":"An unknown parameter was sent.")
+                        '-1104' => '\\ccxt\\BadRequest', // array("code":-1104,"msg":"Not all sent parameters were read, read 8 parameters but was sent 9")
+                        '-1105' => '\\ccxt\\BadRequest', // array("code":-1105,"msg":"Parameter %s was empty.")
+                        '-1106' => '\\ccxt\\BadRequest', // array("code":-1106,"msg":"Parameter %s sent when not required.")
+                        '-1108' => '\\ccxt\\BadSymbol', // BAD_ASSET
+                        '-1109' => '\\ccxt\\BadRequest', // BAD_ACCOUNT
+                        '-1110' => '\\ccxt\\BadSymbol', // BAD_INSTRUMENT_TYPE
+                        '-1111' => '\\ccxt\\BadRequest', // array("code":-1111,"msg":"Precision is over the maximum defined for this asset.")
+                        '-1112' => '\\ccxt\\OperationFailed', // array("code":-1112,"msg":"No orders on book for symbol.")
+                        '-1113' => '\\ccxt\\BadRequest', // array("code":-1113,"msg":"Withdrawal amount must be negative.")
+                        '-1114' => '\\ccxt\\BadRequest', // array("code":-1114,"msg":"TimeInForce parameter sent when not required.")
+                        '-1115' => '\\ccxt\\BadRequest', // array("code":-1115,"msg":"Invalid timeInForce.")
+                        '-1116' => '\\ccxt\\BadRequest', // array("code":-1116,"msg":"Invalid orderType.")
+                        '-1117' => '\\ccxt\\BadRequest', // array("code":-1117,"msg":"Invalid side.")
+                        '-1118' => '\\ccxt\\BadRequest', // array("code":-1118,"msg":"New client order ID was empty.")
+                        '-1119' => '\\ccxt\\BadRequest', // array("code":-1119,"msg":"Original client order ID was empty.")
+                        '-1120' => '\\ccxt\\BadRequest', // array("code":-1120,"msg":"Invalid interval.")
+                        '-1121' => '\\ccxt\\BadSymbol', // array("code":-1121,"msg":"Invalid symbol.")
+                        '-1125' => '\\ccxt\\AuthenticationError', // array("code":-1125,"msg":"This listenKey does not exist.")
+                        '-1127' => '\\ccxt\\BadRequest', // array("code":-1127,"msg":"More than %s hours between startTime and endTime.")
+                        '-1128' => '\\ccxt\\BadRequest', // array("code":-1128,"msg":"Combination of optional parameters invalid.")
+                        '-1130' => '\\ccxt\\BadRequest', // array("code":-1130,"msg":"Data sent for paramter %s is not valid.")
+                        '-1136' => '\\ccxt\\BadRequest', // INVALID_NEW_ORDER_RESP_TYPE
+                        '-2010' => '\\ccxt\\InvalidOrder', // NEW_ORDER_REJECTED
+                        '-2011' => '\\ccxt\\OrderNotFound', // array("code":-2011,"msg":"cancelOrder(1, 'BTC/USDT') -> 'UNKNOWN_ORDER'")
+                        '-2013' => '\\ccxt\\OrderNotFound', // array("code":-2013,"msg":"fetchOrder (1, 'BTC/USDT') -> 'Order does not exist'")
+                        '-2014' => '\\ccxt\\AuthenticationError', // array("code":-2014,"msg":"API-key format invalid.")
+                        '-2015' => '\\ccxt\\AuthenticationError', // array("code":-2015,"msg":"Invalid API-key, IP, or permissions for action.")
+                        '-2016' => '\\ccxt\\OperationRejected', // array("code":-2016,"msg":"No trading window could be found for the symbol. Try ticker/24hrs instead.")
+                        '-2018' => '\\ccxt\\InsufficientFunds', // array("code":-2018,"msg":"Balance is insufficient")
+                        '-2019' => '\\ccxt\\InsufficientFunds', // Margin is insufficient
+                        '-2020' => '\\ccxt\\OrderNotFillable', // UNABLE_TO_FILL
+                        '-2021' => '\\ccxt\\OrderImmediatelyFillable', // Order would immediately trigger.
+                        '-2022' => '\\ccxt\\InvalidOrder', // ReduceOnly Order is rejected
+                        '-2023' => '\\ccxt\\OperationFailed', // User in liquidation mode now
+                        '-2024' => '\\ccxt\\OperationRejected', // Position is not sufficient
+                        '-2025' => '\\ccxt\\OperationRejected', // Reach max open order limit.
+                        '-2026' => '\\ccxt\\InvalidOrder', // This OrderType is not supported when reduceOnly.
+                        '-2027' => '\\ccxt\\OperationRejected', // Exceeded the maximum allowable position at current leverage.
+                        '-2028' => '\\ccxt\\OperationRejected', // Leverage is smaller than permitted => insufficient margin balance.
+                        '-4000' => '\\ccxt\\InvalidOrder', // INVALID_ORDER_STATUS
+                        '-4001' => '\\ccxt\\BadRequest', // PRICE_LESS_THAN_ZERO
+                        '-4002' => '\\ccxt\\BadRequest', // PRICE_GREATER_THAN_MAX_PRICE
+                        '-4003' => '\\ccxt\\BadRequest', // QTY_LESS_THAN_ZERO
+                        '-4004' => '\\ccxt\\BadRequest', // QTY_LESS_THAN_MIN_QTY
+                        '-4005' => '\\ccxt\\BadRequest', // QTY_GREATER_THAN_MAX_QTY
+                        '-4006' => '\\ccxt\\BadRequest', // STOP_PRICE_LESS_THAN_ZERO
+                        '-4007' => '\\ccxt\\BadRequest', // STOP_PRICE_GREATER_THAN_MAX_PRICE
+                        '-4008' => '\\ccxt\\BadRequest', // TICK SIZE LESS THAN ZERO
+                        '-4009' => '\\ccxt\\BadRequest', // MAX_PRICE_LESS_THAN_MIN_PRICE
+                        '-4010' => '\\ccxt\\BadRequest', // MAX_QTY_LESS_THAN_MIN_QTY
+                        '-4011' => '\\ccxt\\BadRequest', // STEP_SIZE_LESS_THAN_ZERO
+                        '-4012' => '\\ccxt\\BadRequest', // MAX_NUM_ORDERS_LESS_THAN_ZERO
+                        '-4013' => '\\ccxt\\BadRequest', // PRICE_LESS_THAN_MIN_PRICE
+                        '-4014' => '\\ccxt\\BadRequest', // PRICE NOT INCREASED BY TICK SIZE
+                        '-4015' => '\\ccxt\\BadRequest', // Client order id is not valid
+                        '-4016' => '\\ccxt\\BadRequest', // Price is higher than mark price multiplier cap.
+                        '-4017' => '\\ccxt\\BadRequest', // MULTIPLIER_UP_LESS_THAN_ZERO
+                        '-4018' => '\\ccxt\\BadRequest', // MULTIPLIER_DOWN_LESS_THAN_ZERO
+                        '-4019' => '\\ccxt\\OperationRejected', // COMPOSITE_SCALE_OVERFLOW
+                        '-4020' => '\\ccxt\\BadRequest', // TARGET_STRATEGY_INVALID
+                        '-4021' => '\\ccxt\\BadRequest', // INVALID_DEPTH_LIMIT
+                        '-4022' => '\\ccxt\\BadRequest', // WRONG_MARKET_STATUS
+                        '-4023' => '\\ccxt\\BadRequest', // QTY_NOT_INCREASED_BY_STEP_SIZE
+                        '-4024' => '\\ccxt\\BadRequest', // PRICE_LOWER_THAN_MULTIPLIER_DOWN
+                        '-4025' => '\\ccxt\\BadRequest', // MULTIPLIER_DECIMAL_LESS_THAN_ZERO
+                        '-4026' => '\\ccxt\\BadRequest', // COMMISSION_INVALID
+                        '-4027' => '\\ccxt\\BadRequest', // INVALID_ACCOUNT_TYPE
+                        '-4028' => '\\ccxt\\BadRequest', // INVALID_LEVERAGE
+                        '-4029' => '\\ccxt\\BadRequest', // INVALID TICK SIZE PRECISION
+                        '-4030' => '\\ccxt\\BadRequest', // INVALID_STEP_SIZE_PRECISION
+                        '-4031' => '\\ccxt\\BadRequest', // INVALID_WORKING_TYPE
+                        '-4032' => '\\ccxt\\OperationRejected', // EXCEED_MAX_CANCEL_ORDER_SIZE
+                        '-4033' => '\\ccxt\\BadRequest', // INSURANCE_ACCOUNT_NOT_FOUND
+                        '-4044' => '\\ccxt\\BadRequest', // INVALID_BALANCE_TYPE
+                        '-4045' => '\\ccxt\\OperationRejected', // MAX_STOP_ORDER_EXCEEDED
+                        '-4046' => '\\ccxt\\OperationRejected', // NO_NEED_TO_CHANGE_MARGIN_TYPE
+                        '-4047' => '\\ccxt\\OperationRejected', // Margin type cannot be changed if there exists open orders.
+                        '-4048' => '\\ccxt\\OperationRejected', // Margin type cannot be changed if there exists position.
+                        '-4049' => '\\ccxt\\BadRequest', // Add margin only support for isolated position.
+                        '-4050' => '\\ccxt\\InsufficientFunds', // Cross balance insufficient
+                        '-4051' => '\\ccxt\\InsufficientFunds', // Isolated balance insufficient.
+                        '-4052' => '\\ccxt\\OperationRejected', // No need to change auto add margin.
+                        '-4053' => '\\ccxt\\BadRequest', // Auto add margin only support for isolated position.
+                        '-4054' => '\\ccxt\\OperationRejected', // Cannot add position margin => position is 0.
+                        '-4055' => '\\ccxt\\BadRequest', // Amount must be positive.
+                        '-4056' => '\\ccxt\\AuthenticationError', // Invalid api key type.
+                        '-4057' => '\\ccxt\\AuthenticationError', // Invalid api public key
+                        '-4058' => '\\ccxt\\BadRequest', // MAX_PRICE_TOO_LARGE
+                        '-4059' => '\\ccxt\\OperationRejected', // NO_NEED_TO_CHANGE_POSITION_SIDE
+                        '-4060' => '\\ccxt\\BadRequest', // INVALID_POSITION_SIDE
+                        '-4061' => '\\ccxt\\BadRequest', // POSITION_SIDE_NOT_MATCH
+                        '-4062' => '\\ccxt\\BadRequest', // REDUCE_ONLY_CONFLICT
+                        '-4063' => '\\ccxt\\BadRequest', // INVALID_OPTIONS_REQUEST_TYPE
+                        '-4064' => '\\ccxt\\BadRequest', // INVALID_OPTIONS_TIME_FRAME
+                        '-4065' => '\\ccxt\\BadRequest', // INVALID_OPTIONS_AMOUNT
+                        '-4066' => '\\ccxt\\BadRequest', // INVALID_OPTIONS_EVENT_TYPE
+                        '-4067' => '\\ccxt\\OperationRejected', // Position side cannot be changed if there exists open orders.
+                        '-4068' => '\\ccxt\\OperationRejected', // Position side cannot be changed if there exists position.
+                        '-4069' => '\\ccxt\\BadRequest', // Position INVALID_OPTIONS_PREMIUM_FEE
+                        '-4070' => '\\ccxt\\BadRequest', // Client options id is not valid.
+                        '-4071' => '\\ccxt\\BadRequest', // Invalid options direction
+                        '-4072' => '\\ccxt\\OperationRejected', // premium fee is not updated, reject order
+                        '-4073' => '\\ccxt\\BadRequest', // OPTIONS_PREMIUM_INPUT_LESS_THAN_ZERO
+                        '-4074' => '\\ccxt\\BadRequest', // Order amount is bigger than upper boundary or less than 0, reject order
+                        '-4075' => '\\ccxt\\BadRequest', // output premium fee is less than 0, reject order
+                        '-4076' => '\\ccxt\\OperationRejected', // original fee is too much higher than last fee
+                        '-4077' => '\\ccxt\\OperationRejected', // place order amount has reached to limit, reject order
+                        '-4078' => '\\ccxt\\OperationFailed', // options internal error
+                        '-4079' => '\\ccxt\\BadRequest', // invalid options id
+                        '-4080' => '\\ccxt\\PermissionDenied', // user not found with id => %s
+                        '-4081' => '\\ccxt\\BadRequest', // OPTIONS_NOT_FOUND
+                        '-4082' => '\\ccxt\\BadRequest', // Invalid number of batch place orders
+                        '-4083' => '\\ccxt\\OperationFailed', // Fail to place batch orders.
+                        '-4084' => '\\ccxt\\BadRequest', // UPCOMING_METHOD
+                        '-4085' => '\\ccxt\\BadRequest', // Invalid notional limit coefficient
+                        '-4086' => '\\ccxt\\BadRequest', // Invalid price spread threshold
+                        '-4087' => '\\ccxt\\PermissionDenied', // User can only place reduce only order
+                        '-4088' => '\\ccxt\\PermissionDenied', // User can not place order currently
+                        '-4104' => '\\ccxt\\BadRequest', // INVALID_CONTRACT_TYPE
+                        '-4114' => '\\ccxt\\BadRequest', // INVALID_CLIENT_TRAN_ID_LEN
+                        '-4115' => '\\ccxt\\BadRequest', // DUPLICATED_CLIENT_TRAN_ID
+                        '-4118' => '\\ccxt\\OperationRejected', // REDUCE_ONLY_MARGIN_CHECK_FAILED
+                        '-4131' => '\\ccxt\\OperationRejected', // The counterparty's best price does not meet the PERCENT_PRICE filter limit
+                        '-4135' => '\\ccxt\\BadRequest', // Invalid activation price
+                        '-4137' => '\\ccxt\\BadRequest', // Quantity must be zero with closePosition equals true
+                        '-4138' => '\\ccxt\\BadRequest', // Reduce only must be true with closePosition equals true
+                        '-4139' => '\\ccxt\\BadRequest', // Order type can not be market if it's unable to cancel
+                        '-4140' => '\\ccxt\\BadRequest', // Invalid symbol status for opening position
+                        '-4141' => '\\ccxt\\BadRequest', // Symbol is closed
+                        '-4142' => '\\ccxt\\OrderImmediatelyFillable', // REJECT => take profit or stop order will be triggered immediately
+                        '-4144' => '\\ccxt\\BadSymbol', // Invalid pair
+                        '-4161' => '\\ccxt\\OperationRejected', // Leverage reduction is not supported in Isolated Margin Mode with open positions
+                        '-4164' => '\\ccxt\\OperationRejected', // Leverage reduction is not supported in Isolated Margin Mode with open positions
+                        '-4165' => '\\ccxt\\BadRequest', // Invalid time interval
+                        '-4183' => '\\ccxt\\BadRequest', // Price is higher than stop price multiplier cap.
+                        '-4184' => '\\ccxt\\BadRequest', // Price is lower than stop price multiplier floor.
+                        '-5021' => '\\ccxt\\OrderNotFillable', // Due to the order could not be filled immediately, the FOK order has been rejected.
+                        '-5022' => '\\ccxt\\OrderNotFillable', // Due to the order could not be executed, the Post Only order will be rejected.
+                    ),
+                ),
                 'spot' => array(
                     // https://binance-docs.github.io/apidocs/spot/en/#error-codes
                     'exact' => array(
@@ -1158,671 +1779,8 @@ class binance extends Exchange {
                         '200003903' => '\\ccxt\\AuthenticationError', // undocumented, array("code":200003903,"msg":"Your identity verification has been rejected. Please complete identity verification again.")
                     ),
                 ),
-                'linear' => array(
-                    // https://binance-docs.github.io/apidocs/futures/en/#error-codes
-                    'exact' => array(
-                        '-1000' => '\\ccxt\\OperationFailed', // array("code":-1000,"msg":"An unknown error occured while processing the request.")
-                        '-1001' => '\\ccxt\\OperationFailed', // array("code":-1001,"msg":"'Internal error; unable to process your request. Please try again.'")
-                        '-1002' => '\\ccxt\\AuthenticationError', // array("code":-1002,"msg":"'You are not authorized to execute this request.'")
-                        '-1003' => '\\ccxt\\RateLimitExceeded', // array("code":-1003,"msg":"Too much request weight used, current limit is 1200 request weight per 1 MINUTE. Please use the websocket for live updates to avoid polling the API.")
-                        '-1004' => '\\ccxt\\OperationRejected', // DUPLICATE_IP : This IP is already on the white list
-                        '-1005' => '\\ccxt\\PermissionDenied', // array("code":-1005,"msg":"No such IP has been white listed")
-                        '-1006' => '\\ccxt\\OperationFailed', // array("code":-1006,"msg":"An unexpected response was received from the message bus. Execution status unknown.")
-                        '-1007' => '\\ccxt\\RequestTimeout', // array("code":-1007,"msg":"Timeout waiting for response from backend server. Send status unknown; execution status unknown.")
-                        '-1008' => '\\ccxt\\OperationFailed', // -1008 SERVER_BUSY => Server is currently overloaded with other requests. Please try again in a few minutes.
-                        '-1010' => '\\ccxt\\OperationFailed', // array("code":-1010,"msg":"ERROR_MSG_RECEIVED.")
-                        '-1011' => '\\ccxt\\PermissionDenied', // array("code":-1011,"msg":"This IP cannot access this route.")
-                        '-1013' => '\\ccxt\\BadRequest', // array("code":-1013,"msg":"createOrder -> 'invalid quantity'/'invalid price'/MIN_NOTIONAL") | -1013 INVALID_MESSAGE
-                        '-1014' => '\\ccxt\\InvalidOrder', // array("code":-1014,"msg":"Unsupported order combination.")
-                        '-1015' => '\\ccxt\\RateLimitExceeded', // array("code":-1015,"msg":"'Too many new orders; current limit is %s orders per %s.'")
-                        '-1016' => '\\ccxt\\BadRequest', // array("code":-1016,"msg":"'This service is no longer available.',")
-                        '-1020' => '\\ccxt\\BadRequest', // array("code":-1020,"msg":"'This operation is not supported.'")
-                        '-1021' => '\\ccxt\\InvalidNonce', // array("code":-1021,"msg":"'your time is ahead of server'")
-                        '-1022' => '\\ccxt\\AuthenticationError', // array("code":-1022,"msg":"Signature for this request is not valid.")
-                        '-1023' => '\\ccxt\\BadRequest', // array("code":-1023,"msg":"Start time is greater than end time.")
-                        '-1099' => '\\ccxt\\AuthenticationError', // array("code":-1099,"msg":"Not found, authenticated, or authorized")
-                        '-1100' => '\\ccxt\\BadRequest', // array("code":-1100,"msg":"createOrder(symbol, 1, asdf) -> 'Illegal characters found in parameter 'price'")
-                        '-1101' => '\\ccxt\\BadRequest', // array("code":-1101,"msg":"Too many parameters; expected %s and received %s.")
-                        '-1102' => '\\ccxt\\BadRequest', // array("code":-1102,"msg":"Param %s or %s must be sent, but both were empty")
-                        '-1103' => '\\ccxt\\BadRequest', // array("code":-1103,"msg":"An unknown parameter was sent.")
-                        '-1104' => '\\ccxt\\BadRequest', // array("code":-1104,"msg":"Not all sent parameters were read, read 8 parameters but was sent 9")
-                        '-1105' => '\\ccxt\\BadRequest', // array("code":-1105,"msg":"Parameter %s was empty.")
-                        '-1106' => '\\ccxt\\BadRequest', // array("code":-1106,"msg":"Parameter %s sent when not required.")
-                        '-1108' => '\\ccxt\\BadSymbol', // array("code":-1108,"msg":"Invalid asset.")
-                        '-1109' => '\\ccxt\\PermissionDenied', // array("code":-1109,"msg":"Invalid account.")
-                        '-1110' => '\\ccxt\\BadRequest', // array("code":-1110,"msg":"Invalid symbolType.")
-                        '-1111' => '\\ccxt\\BadRequest', // array("code":-1111,"msg":"Precision is over the maximum defined for this asset.")
-                        '-1112' => '\\ccxt\\OperationFailed', // array("code":-1112,"msg":"No orders on book for symbol.")
-                        '-1113' => '\\ccxt\\BadRequest', // array("code":-1113,"msg":"Withdrawal amount must be negative.")
-                        '-1114' => '\\ccxt\\BadRequest', // array("code":-1114,"msg":"TimeInForce parameter sent when not required.")
-                        '-1115' => '\\ccxt\\BadRequest', // array("code":-1115,"msg":"Invalid timeInForce.")
-                        '-1116' => '\\ccxt\\BadRequest', // array("code":-1116,"msg":"Invalid orderType.")
-                        '-1117' => '\\ccxt\\BadRequest', // array("code":-1117,"msg":"Invalid side.")
-                        '-1118' => '\\ccxt\\BadRequest', // array("code":-1118,"msg":"New client order ID was empty.")
-                        '-1119' => '\\ccxt\\BadRequest', // array("code":-1119,"msg":"Original client order ID was empty.")
-                        '-1120' => '\\ccxt\\BadRequest', // array("code":-1120,"msg":"Invalid interval.")
-                        '-1121' => '\\ccxt\\BadSymbol', // array("code":-1121,"msg":"Invalid symbol.")
-                        '-1122' => '\\ccxt\\BadRequest', // INVALID_SYMBOL_STATUS
-                        '-1125' => '\\ccxt\\AuthenticationError', // array("code":-1125,"msg":"This listenKey does not exist.")
-                        '-1126' => '\\ccxt\\BadSymbol', // ASSET_NOT_SUPPORTED
-                        '-1127' => '\\ccxt\\BadRequest', // array("code":-1127,"msg":"More than %s hours between startTime and endTime.")
-                        '-1128' => '\\ccxt\\BadRequest', // array("code":-1128,"msg":"Combination of optional parameters invalid.")
-                        '-1130' => '\\ccxt\\BadRequest', // array("code":-1130,"msg":"Data sent for paramter %s is not valid.")
-                        '-1136' => '\\ccxt\\BadRequest', // array("code":-1136,"msg":"Invalid newOrderRespType")
-                        '-2010' => '\\ccxt\\OrderNotFound', // NEW_ORDER_REJECTED
-                        '-2011' => '\\ccxt\\OrderNotFound', // array("code":-2011,"msg":"cancelOrder(1, 'BTC/USDT') -> 'UNKNOWN_ORDER'")
-                        '-2012' => '\\ccxt\\OperationFailed', // CANCEL_ALL_FAIL
-                        '-2013' => '\\ccxt\\OrderNotFound', // array("code":-2013,"msg":"fetchOrder (1, 'BTC/USDT') -> 'Order does not exist'")
-                        '-2014' => '\\ccxt\\AuthenticationError', // array("code":-2014,"msg":"API-key format invalid.")
-                        '-2015' => '\\ccxt\\AuthenticationError', // array("code":-2015,"msg":"Invalid API-key, IP, or permissions for action.")
-                        '-2016' => '\\ccxt\\OperationRejected', // array("code":-2016,"msg":"No trading window could be found for the symbol. Try ticker/24hrs instead.")
-                        '-2017' => '\\ccxt\\PermissionDenied', // API Keys are locked on this account.
-                        '-2018' => '\\ccxt\\InsufficientFunds', // array("code":-2018,"msg":"Balance is insufficient")
-                        '-2019' => '\\ccxt\\InsufficientFunds', // array("code":-2019,"msg":"Margin is insufficient.")
-                        '-2020' => '\\ccxt\\OperationFailed', // array("code":-2020,"msg":"Unable to fill.")
-                        '-2021' => '\\ccxt\\OrderImmediatelyFillable', // array("code":-2021,"msg":"Order would immediately trigger.")
-                        '-2022' => '\\ccxt\\InvalidOrder', // array("code":-2022,"msg":"ReduceOnly Order is rejected.")
-                        '-2023' => '\\ccxt\\OperationFailed', // array(is_array(liquidation mode now.") && array_key_exists("code":-2023,"msg":"User, liquidation mode now."))
-                        '-2024' => '\\ccxt\\InsufficientFunds', // array("code":-2024,"msg":"Position is not sufficient.")
-                        '-2025' => '\\ccxt\\OperationRejected', // array("code":-2025,"msg":"Reach max open order limit.")
-                        '-2026' => '\\ccxt\\InvalidOrder', // array("code":-2026,"msg":"This OrderType is not supported when reduceOnly.")
-                        '-2027' => '\\ccxt\\OperationRejected', // array("code":-2027,"msg":"Exceeded the maximum allowable position at current leverage.")
-                        '-2028' => '\\ccxt\\OperationRejected', // array("code":-2028,"msg":"Leverage is smaller than permitted => insufficient margin balance")
-                        '-4000' => '\\ccxt\\InvalidOrder', // INVALID_ORDER_STATUS
-                        '-4001' => '\\ccxt\\BadRequest', // PRICE_LESS_THAN_ZERO
-                        '-4002' => '\\ccxt\\BadRequest', // PRICE_GREATER_THAN_MAX_PRICE
-                        '-4003' => '\\ccxt\\BadRequest', // QTY_LESS_THAN_ZERO
-                        '-4004' => '\\ccxt\\BadRequest', // QTY_LESS_THAN_MIN_QTY
-                        '-4005' => '\\ccxt\\BadRequest', // QTY_GREATER_THAN_MAX_QTY
-                        '-4006' => '\\ccxt\\BadRequest', // STOP_PRICE_LESS_THAN_ZERO
-                        '-4007' => '\\ccxt\\BadRequest', // STOP_PRICE_GREATER_THAN_MAX_PRICE
-                        '-4008' => '\\ccxt\\BadRequest', // TICK SIZE LESS THAN ZERO
-                        '-4009' => '\\ccxt\\BadRequest', // MAX_PRICE_LESS_THAN_MIN_PRICE
-                        '-4010' => '\\ccxt\\BadRequest', // MAX_QTY_LESS_THAN_MIN_QTY
-                        '-4011' => '\\ccxt\\BadRequest', // STEP_SIZE_LESS_THAN_ZERO
-                        '-4012' => '\\ccxt\\BadRequest', // MAX_NUM_ORDERS_LESS_THAN_ZERO
-                        '-4013' => '\\ccxt\\BadRequest', // PRICE_LESS_THAN_MIN_PRICE
-                        '-4014' => '\\ccxt\\BadRequest', // PRICE NOT INCREASED BY TICK SIZE
-                        '-4015' => '\\ccxt\\BadRequest', // Client order id is not valid
-                        '-4016' => '\\ccxt\\OperationRejected', // Price is higher than mark price multiplier cap.
-                        '-4017' => '\\ccxt\\BadRequest', // MULTIPLIER_UP_LESS_THAN_ZERO
-                        '-4018' => '\\ccxt\\BadRequest', // MULTIPLIER_DOWN_LESS_THAN_ZERO
-                        '-4019' => '\\ccxt\\OperationRejected', // COMPOSITE_SCALE_OVERFLOW
-                        '-4020' => '\\ccxt\\BadRequest', // TARGET_STRATEGY_INVALID
-                        '-4021' => '\\ccxt\\BadRequest', // INVALID_DEPTH_LIMIT
-                        '-4022' => '\\ccxt\\BadRequest', // WRONG_MARKET_STATUS
-                        '-4023' => '\\ccxt\\BadRequest', // QTY_NOT_INCREASED_BY_STEP_SIZE
-                        '-4024' => '\\ccxt\\BadRequest', // PRICE_LOWER_THAN_MULTIPLIER_DOWN
-                        '-4025' => '\\ccxt\\BadRequest', // MULTIPLIER_DECIMAL_LESS_THAN_ZERO
-                        '-4026' => '\\ccxt\\BadRequest', // COMMISSION_INVALID
-                        '-4027' => '\\ccxt\\BadRequest', // INVALID_ACCOUNT_TYPE
-                        '-4028' => '\\ccxt\\BadRequest', // INVALID_LEVERAGE
-                        '-4029' => '\\ccxt\\BadRequest', // INVALID TICK SIZE PRECISION
-                        '-4030' => '\\ccxt\\BadRequest', // INVALID_STEP_SIZE_PRECISION
-                        '-4031' => '\\ccxt\\BadRequest', // INVALID_WORKING_TYPE
-                        '-4032' => '\\ccxt\\OperationRejected', // EXCEED_MAX_CANCEL_ORDER_SIZE
-                        '-4033' => '\\ccxt\\BadRequest', // INSURANCE_ACCOUNT_NOT_FOUND
-                        '-4044' => '\\ccxt\\BadRequest', // INVALID_BALANCE_TYPE
-                        '-4045' => '\\ccxt\\OperationRejected', // MAX_STOP_ORDER_EXCEEDED
-                        '-4046' => '\\ccxt\\OperationRejected', // NO_NEED_TO_CHANGE_MARGIN_TYPE
-                        '-4047' => '\\ccxt\\OperationRejected', // Margin type cannot be changed if there exists open orders.
-                        '-4048' => '\\ccxt\\OperationRejected', // Margin type cannot be changed if there exists position.
-                        '-4049' => '\\ccxt\\BadRequest', // Add margin only support for isolated position.
-                        '-4050' => '\\ccxt\\InsufficientFunds', // Cross balance insufficient
-                        '-4051' => '\\ccxt\\InsufficientFunds', // Isolated balance insufficient.
-                        '-4052' => '\\ccxt\\OperationRejected', // No need to change auto add margin.
-                        '-4053' => '\\ccxt\\BadRequest', // Auto add margin only support for isolated position.
-                        '-4054' => '\\ccxt\\OperationRejected', // Cannot add position margin => position is 0.
-                        '-4055' => '\\ccxt\\BadRequest', // Amount must be positive.
-                        '-4056' => '\\ccxt\\AuthenticationError', // Invalid api key type.
-                        '-4057' => '\\ccxt\\AuthenticationError', // Invalid api public key
-                        '-4058' => '\\ccxt\\BadRequest', // MAX_PRICE_TOO_LARGE
-                        '-4059' => '\\ccxt\\OperationRejected', // NO_NEED_TO_CHANGE_POSITION_SIDE
-                        '-4060' => '\\ccxt\\BadRequest', // INVALID_POSITION_SIDE
-                        '-4061' => '\\ccxt\\BadRequest', // POSITION_SIDE_NOT_MATCH
-                        '-4062' => '\\ccxt\\BadRequest', // REDUCE_ONLY_CONFLICT
-                        '-4063' => '\\ccxt\\BadRequest', // INVALID_OPTIONS_REQUEST_TYPE
-                        '-4064' => '\\ccxt\\BadRequest', // INVALID_OPTIONS_TIME_FRAME
-                        '-4065' => '\\ccxt\\BadRequest', // INVALID_OPTIONS_AMOUNT
-                        '-4066' => '\\ccxt\\BadRequest', // INVALID_OPTIONS_EVENT_TYPE
-                        '-4067' => '\\ccxt\\OperationRejected', // Position side cannot be changed if there exists open orders.
-                        '-4068' => '\\ccxt\\OperationRejected', // Position side cannot be changed if there exists position.
-                        '-4069' => '\\ccxt\\BadRequest', // Position INVALID_OPTIONS_PREMIUM_FEE
-                        '-4070' => '\\ccxt\\BadRequest', // Client options id is not valid.
-                        '-4071' => '\\ccxt\\BadRequest', // Invalid options direction
-                        '-4072' => '\\ccxt\\OperationRejected', // premium fee is not updated, reject order
-                        '-4073' => '\\ccxt\\BadRequest', // OPTIONS_PREMIUM_INPUT_LESS_THAN_ZERO
-                        '-4074' => '\\ccxt\\OperationRejected', // Order amount is bigger than upper boundary or less than 0, reject order
-                        '-4075' => '\\ccxt\\BadRequest', // output premium fee is less than 0, reject order
-                        '-4076' => '\\ccxt\\OperationRejected', // original fee is too much higher than last fee
-                        '-4077' => '\\ccxt\\OperationRejected', // place order amount has reached to limit, reject order
-                        '-4078' => '\\ccxt\\OperationFailed', // options internal error
-                        '-4079' => '\\ccxt\\BadRequest', // invalid options id
-                        '-4080' => '\\ccxt\\PermissionDenied', // user not found with id => %s
-                        '-4081' => '\\ccxt\\BadRequest', // OPTIONS_NOT_FOUND
-                        '-4082' => '\\ccxt\\OperationRejected', // Invalid number of batch place orders
-                        '-4083' => '\\ccxt\\OperationFailed', // Fail to place batch orders.
-                        '-4084' => '\\ccxt\\BadRequest', // UPCOMING_METHOD
-                        '-4085' => '\\ccxt\\BadRequest', // Invalid notional limit coefficient
-                        '-4086' => '\\ccxt\\BadRequest', // Invalid price spread threshold
-                        '-4087' => '\\ccxt\\PermissionDenied', // User can only place reduce only order
-                        '-4088' => '\\ccxt\\PermissionDenied', // User can not place order currently
-                        '-4104' => '\\ccxt\\BadRequest', // INVALID_CONTRACT_TYPE
-                        '-4114' => '\\ccxt\\BadRequest', // INVALID_CLIENT_TRAN_ID_LEN
-                        '-4115' => '\\ccxt\\BadRequest', // DUPLICATED_CLIENT_TRAN_ID
-                        '-4118' => '\\ccxt\\OperationRejected', // REDUCE_ONLY_MARGIN_CHECK_FAILED
-                        '-4131' => '\\ccxt\\OperationRejected', // The counterparty's best price does not meet the PERCENT_PRICE filter limit
-                        '-4135' => '\\ccxt\\BadRequest', // Invalid activation price
-                        '-4137' => '\\ccxt\\BadRequest', // Quantity must be zero with closePosition equals true
-                        '-4138' => '\\ccxt\\BadRequest', // Reduce only must be true with closePosition equals true
-                        '-4139' => '\\ccxt\\BadRequest', // Order type can not be market if it's unable to cancel
-                        '-4140' => '\\ccxt\\BadRequest', // Invalid symbol status for opening position
-                        '-4141' => '\\ccxt\\OperationRejected', // Symbol is closed
-                        '-4142' => '\\ccxt\\OrderImmediatelyFillable', // REJECT => take profit or stop order will be triggered immediately
-                        '-4144' => '\\ccxt\\BadSymbol', // Invalid pair
-                        '-4164' => '\\ccxt\\OperationRejected', // Leverage reduction is not supported in Isolated Margin Mode with open positions
-                        '-4165' => '\\ccxt\\BadRequest', // Invalid time interval
-                        '-4167' => '\\ccxt\\BadRequest', // Unable to adjust to Multi-Assets mode with symbols of USDⓈ-M Futures under isolated-margin mode.
-                        '-4168' => '\\ccxt\\BadRequest', // Unable to adjust to isolated-margin mode under the Multi-Assets mode.
-                        '-4169' => '\\ccxt\\OperationRejected', // Unable to adjust Multi-Assets Mode with insufficient margin balance in USDⓈ-M Futures
-                        '-4170' => '\\ccxt\\OperationRejected', // Unable to adjust Multi-Assets Mode with open orders in USDⓈ-M Futures
-                        '-4171' => '\\ccxt\\OperationRejected', // Adjusted asset mode is currently set and does not need to be adjusted repeatedly
-                        '-4172 ' => '\\ccxt\\OperationRejected', // Unable to adjust Multi-Assets Mode with a negative wallet balance of margin available asset in USDⓈ-M Futures account.
-                        '-4183' => '\\ccxt\\BadRequest', // Price is higher than stop price multiplier cap.
-                        '-4184' => '\\ccxt\\BadRequest', // Price is lower than stop price multiplier floor.
-                        '-4192' => '\\ccxt\\PermissionDenied', // Trade forbidden due to Cooling-off Period.
-                        '-4202' => '\\ccxt\\PermissionDenied', // Intermediate Personal Verification is required for adjusting leverage over 20x
-                        '-4203' => '\\ccxt\\PermissionDenied', // More than 20x leverage is available one month after account registration.
-                        '-4205' => '\\ccxt\\PermissionDenied', // More than 20x leverage is available %s days after Futures account registration.
-                        '-4206' => '\\ccxt\\PermissionDenied', // property_exists($this, Users) country has limited adjust leverage.
-                        '-4208' => '\\ccxt\\OperationRejected', // Current symbol leverage cannot exceed 20 when using position limit adjustment service.
-                        '-4209' => '\\ccxt\\OperationRejected', // Leverage adjustment failed. Current symbol max leverage limit is %sx
-                        '-4210' => '\\ccxt\\BadRequest', // Stop price is higher than price multiplier cap
-                        '-4211' => '\\ccxt\\BadRequest', // Stop price is lower than price multiplier floor
-                        '-4400' => '\\ccxt\\PermissionDenied', // Futures Trading Quantitative Rules violated, only reduceOnly order is allowed, please try again later.
-                        '-4401' => '\\ccxt\\PermissionDenied', // Compliance restricted account permission => can only place reduceOnly order.
-                        '-4402' => '\\ccxt\\PermissionDenied', // Dear user, our Terms of Use and compliance with local regulations, this feature is currently not available in your region.
-                        '-4403' => '\\ccxt\\PermissionDenied', // Dear user, our Terms of Use and compliance with local regulations, the leverage can only up to %sx in your region
-                        '-5021' => '\\ccxt\\OrderNotFillable', // Due to the order could not be filled immediately, the FOK order has been rejected.
-                        '-5022' => '\\ccxt\\OrderNotFillable', // Due to the order could not be executed, the Post Only order will be rejected.
-                        '-5024' => '\\ccxt\\OperationRejected', // Symbol is not in trading status. Order amendment is not permitted.
-                        '-5025' => '\\ccxt\\OperationRejected', // Only limit order is supported.
-                        '-5026' => '\\ccxt\\OperationRejected', // Exceed maximum modify order limit.
-                        '-5027' => '\\ccxt\\OperationRejected', // No need to modify the order.
-                        '-5028' => '\\ccxt\\BadRequest', // Timestamp for this request is outside of the ME recvWindow.
-                        '-5037' => '\\ccxt\\BadRequest', // Invalid price match
-                        '-5038' => '\\ccxt\\BadRequest', // Price match only supports order type => LIMIT, STOP AND TAKE_PROFIT
-                        '-5039' => '\\ccxt\\BadRequest', // Invalid self trade prevention mode
-                        '-5040' => '\\ccxt\\BadRequest', // The goodTillDate timestamp must be greater than the current time plus 600 seconds and smaller than 253402300799000
-                        '-5041' => '\\ccxt\\OperationFailed', // No depth matches this BBO order
-                        //
-                        // spot & futures algo (TBD for OPTIONS & PORTFOLIO MARGIN)
-                        //
-                        '-20121' => '\\ccxt\\BadSymbol', // Invalid symbol.
-                        '-20124' => '\\ccxt\\BadRequest', // Invalid algo id or it has been completed.
-                        '-20130' => '\\ccxt\\BadRequest', // Invalid data sent for a parameter
-                        '-20132' => '\\ccxt\\BadRequest', // The client algo id is duplicated
-                        '-20194' => '\\ccxt\\BadRequest', // Duration is too short to execute all required quantity.
-                        '-20195' => '\\ccxt\\BadRequest', // The total size is too small.
-                        '-20196' => '\\ccxt\\BadRequest', // The total size is too large.
-                        '-20198' => '\\ccxt\\OperationRejected', // Reach the max open orders allowed.
-                        '-20204' => '\\ccxt\\BadRequest', // The notional of USD is less or more than the limit.
-                    ),
-                ),
-                'inverse' => array(
-                    // https://binance-docs.github.io/apidocs/delivery/en/#error-codes
-                    'exact' => array(
-                        '-1000' => '\\ccxt\\OperationFailed', // array("code":-1000,"msg":"An unknown error occured while processing the request.")
-                        '-1001' => '\\ccxt\\OperationFailed', // array("code":-1001,"msg":"'Internal error; unable to process your request. Please try again.'")
-                        '-1002' => '\\ccxt\\AuthenticationError', // array("code":-1002,"msg":"'You are not authorized to execute this request.'")
-                        '-1003' => '\\ccxt\\RateLimitExceeded', // array("code":-1003,"msg":"Too much request weight used, current limit is 1200 request weight per 1 MINUTE. Please use the websocket for live updates to avoid polling the API.")
-                        '-1004' => '\\ccxt\\OperationRejected', // DUPLICATE_IP : This IP is already on the white list
-                        '-1005' => '\\ccxt\\PermissionDenied', // array("code":-1005,"msg":"No such IP has been white listed")
-                        '-1006' => '\\ccxt\\OperationFailed', // array("code":-1006,"msg":"An unexpected response was received from the message bus. Execution status unknown.")
-                        '-1007' => '\\ccxt\\RequestTimeout', // array("code":-1007,"msg":"Timeout waiting for response from backend server. Send status unknown; execution status unknown.")
-                        '-1010' => '\\ccxt\\OperationFailed', // array("code":-1010,"msg":"ERROR_MSG_RECEIVED.")
-                        '-1011' => '\\ccxt\\PermissionDenied', // array("code":-1011,"msg":"This IP cannot access this route.")
-                        '-1013' => '\\ccxt\\BadRequest', // array("code":-1013,"msg":"createOrder -> 'invalid quantity'/'invalid price'/MIN_NOTIONAL") | -1013 INVALID_MESSAGE
-                        '-1014' => '\\ccxt\\InvalidOrder', // array("code":-1014,"msg":"Unsupported order combination.")
-                        '-1015' => '\\ccxt\\RateLimitExceeded', // array("code":-1015,"msg":"'Too many new orders; current limit is %s orders per %s.'")
-                        '-1016' => '\\ccxt\\BadRequest', // array("code":-1016,"msg":"'This service is no longer available.',")
-                        '-1020' => '\\ccxt\\BadRequest', // array("code":-1020,"msg":"'This operation is not supported.'")
-                        '-1021' => '\\ccxt\\InvalidNonce', // array("code":-1021,"msg":"'your time is ahead of server'")
-                        '-1022' => '\\ccxt\\AuthenticationError', // array("code":-1022,"msg":"Signature for this request is not valid.")
-                        '-1023' => '\\ccxt\\BadRequest', // array("code":-1023,"msg":"Start time is greater than end time.")
-                        '-1100' => '\\ccxt\\BadRequest', // array("code":-1100,"msg":"createOrder(symbol, 1, asdf) -> 'Illegal characters found in parameter 'price'")
-                        '-1101' => '\\ccxt\\BadRequest', // array("code":-1101,"msg":"Too many parameters; expected %s and received %s.")
-                        '-1102' => '\\ccxt\\BadRequest', // array("code":-1102,"msg":"Param %s or %s must be sent, but both were empty")
-                        '-1103' => '\\ccxt\\BadRequest', // array("code":-1103,"msg":"An unknown parameter was sent.")
-                        '-1104' => '\\ccxt\\BadRequest', // array("code":-1104,"msg":"Not all sent parameters were read, read 8 parameters but was sent 9")
-                        '-1105' => '\\ccxt\\BadRequest', // array("code":-1105,"msg":"Parameter %s was empty.")
-                        '-1106' => '\\ccxt\\BadRequest', // array("code":-1106,"msg":"Parameter %s sent when not required.")
-                        '-1108' => '\\ccxt\\BadSymbol', // array("code":-1108,"msg":"Invalid asset.")
-                        '-1109' => '\\ccxt\\AuthenticationError', // array("code":-1109,"msg":"Invalid account.")
-                        '-1110' => '\\ccxt\\BadSymbol', // array("code":-1110,"msg":"Invalid symbolType.")
-                        '-1111' => '\\ccxt\\BadRequest', // array("code":-1111,"msg":"Precision is over the maximum defined for this asset.")
-                        '-1112' => '\\ccxt\\OperationFailed', // array("code":-1112,"msg":"No orders on book for symbol.")
-                        '-1113' => '\\ccxt\\BadRequest', // array("code":-1113,"msg":"Withdrawal amount must be negative.")
-                        '-1114' => '\\ccxt\\BadRequest', // array("code":-1114,"msg":"TimeInForce parameter sent when not required.")
-                        '-1115' => '\\ccxt\\BadRequest', // array("code":-1115,"msg":"Invalid timeInForce.")
-                        '-1116' => '\\ccxt\\BadRequest', // array("code":-1116,"msg":"Invalid orderType.")
-                        '-1117' => '\\ccxt\\BadRequest', // array("code":-1117,"msg":"Invalid side.")
-                        '-1118' => '\\ccxt\\BadRequest', // array("code":-1118,"msg":"New client order ID was empty.")
-                        '-1119' => '\\ccxt\\BadRequest', // array("code":-1119,"msg":"Original client order ID was empty.")
-                        '-1120' => '\\ccxt\\BadRequest', // array("code":-1120,"msg":"Invalid interval.")
-                        '-1121' => '\\ccxt\\BadSymbol', // array("code":-1121,"msg":"Invalid symbol.")
-                        '-1125' => '\\ccxt\\AuthenticationError', // array("code":-1125,"msg":"This listenKey does not exist.")
-                        '-1127' => '\\ccxt\\BadRequest', // array("code":-1127,"msg":"More than %s hours between startTime and endTime.")
-                        '-1128' => '\\ccxt\\BadRequest', // array("code":-1128,"msg":"Combination of optional parameters invalid.")
-                        '-1130' => '\\ccxt\\BadRequest', // array("code":-1130,"msg":"Data sent for paramter %s is not valid.")
-                        '-1136' => '\\ccxt\\BadRequest', // array("code":-1136,"msg":"Invalid newOrderRespType")
-                        '-2010' => '\\ccxt\\InvalidOrder', // NEW_ORDER_REJECTED
-                        '-2011' => '\\ccxt\\OrderNotFound', // array("code":-2011,"msg":"cancelOrder(1, 'BTC/USDT') -> 'UNKNOWN_ORDER'")
-                        '-2013' => '\\ccxt\\OrderNotFound', // array("code":-2013,"msg":"fetchOrder (1, 'BTC/USDT') -> 'Order does not exist'")
-                        '-2014' => '\\ccxt\\AuthenticationError', // array("code":-2014,"msg":"API-key format invalid.")
-                        '-2015' => '\\ccxt\\AuthenticationError', // array("code":-2015,"msg":"Invalid API-key, IP, or permissions for action.")
-                        '-2016' => '\\ccxt\\OperationRejected', // array("code":-2016,"msg":"No trading window could be found for the symbol. Try ticker/24hrs instead.")
-                        '-2018' => '\\ccxt\\InsufficientFunds', // array("code":-2018,"msg":"Balance is insufficient")
-                        '-2019' => '\\ccxt\\InsufficientFunds', // array("code":-2019,"msg":"Margin is insufficient.")
-                        '-2020' => '\\ccxt\\OperationFailed', // array("code":-2020,"msg":"Unable to fill.")
-                        '-2021' => '\\ccxt\\OrderImmediatelyFillable', // array("code":-2021,"msg":"Order would immediately trigger.")
-                        '-2022' => '\\ccxt\\InvalidOrder', // array("code":-2022,"msg":"ReduceOnly Order is rejected.")
-                        '-2023' => '\\ccxt\\OperationFailed', // array(is_array(liquidation mode now.") && array_key_exists("code":-2023,"msg":"User, liquidation mode now."))
-                        '-2024' => '\\ccxt\\BadRequest', // array("code":-2024,"msg":"Position is not sufficient.")
-                        '-2025' => '\\ccxt\\OperationRejected', // array("code":-2025,"msg":"Reach max open order limit.")
-                        '-2026' => '\\ccxt\\InvalidOrder', // array("code":-2026,"msg":"This OrderType is not supported when reduceOnly.")
-                        '-2027' => '\\ccxt\\OperationRejected', // array("code":-2027,"msg":"Exceeded the maximum allowable position at current leverage.")
-                        '-2028' => '\\ccxt\\OperationRejected', // array("code":-2028,"msg":"Leverage is smaller than permitted => insufficient margin balance")
-                        '-4000' => '\\ccxt\\InvalidOrder', // INVALID_ORDER_STATUS
-                        '-4001' => '\\ccxt\\BadRequest', // PRICE_LESS_THAN_ZERO
-                        '-4002' => '\\ccxt\\BadRequest', // PRICE_GREATER_THAN_MAX_PRICE
-                        '-4003' => '\\ccxt\\BadRequest', // QTY_LESS_THAN_ZERO
-                        '-4004' => '\\ccxt\\BadRequest', // QTY_LESS_THAN_MIN_QTY
-                        '-4005' => '\\ccxt\\BadRequest', // QTY_GREATER_THAN_MAX_QTY
-                        '-4006' => '\\ccxt\\BadRequest', // STOP_PRICE_LESS_THAN_ZERO
-                        '-4007' => '\\ccxt\\BadRequest', // STOP_PRICE_GREATER_THAN_MAX_PRICE
-                        '-4008' => '\\ccxt\\BadRequest', // TICK SIZE LESS THAN ZERO
-                        '-4009' => '\\ccxt\\BadRequest', // MAX_PRICE_LESS_THAN_MIN_PRICE
-                        '-4010' => '\\ccxt\\BadRequest', // MAX_QTY_LESS_THAN_MIN_QTY
-                        '-4011' => '\\ccxt\\BadRequest', // STEP_SIZE_LESS_THAN_ZERO
-                        '-4012' => '\\ccxt\\BadRequest', // MAX_NUM_ORDERS_LESS_THAN_ZERO
-                        '-4013' => '\\ccxt\\BadRequest', // PRICE_LESS_THAN_MIN_PRICE
-                        '-4014' => '\\ccxt\\BadRequest', // PRICE NOT INCREASED BY TICK SIZE
-                        '-4015' => '\\ccxt\\BadRequest', // Client order id is not valid
-                        '-4016' => '\\ccxt\\BadRequest', // Price is higher than mark price multiplier cap.
-                        '-4017' => '\\ccxt\\BadRequest', // MULTIPLIER_UP_LESS_THAN_ZERO
-                        '-4018' => '\\ccxt\\BadRequest', // MULTIPLIER_DOWN_LESS_THAN_ZERO
-                        '-4019' => '\\ccxt\\OperationRejected', // COMPOSITE_SCALE_OVERFLOW
-                        '-4020' => '\\ccxt\\BadRequest', // TARGET_STRATEGY_INVALID
-                        '-4021' => '\\ccxt\\BadRequest', // INVALID_DEPTH_LIMIT
-                        '-4022' => '\\ccxt\\BadRequest', // WRONG_MARKET_STATUS
-                        '-4023' => '\\ccxt\\BadRequest', // QTY_NOT_INCREASED_BY_STEP_SIZE
-                        '-4024' => '\\ccxt\\BadRequest', // PRICE_LOWER_THAN_MULTIPLIER_DOWN
-                        '-4025' => '\\ccxt\\BadRequest', // MULTIPLIER_DECIMAL_LESS_THAN_ZERO
-                        '-4026' => '\\ccxt\\BadRequest', // COMMISSION_INVALID
-                        '-4027' => '\\ccxt\\BadRequest', // INVALID_ACCOUNT_TYPE
-                        '-4028' => '\\ccxt\\BadRequest', // INVALID_LEVERAGE
-                        '-4029' => '\\ccxt\\BadRequest', // INVALID TICK SIZE PRECISION
-                        '-4030' => '\\ccxt\\BadRequest', // INVALID_STEP_SIZE_PRECISION
-                        '-4031' => '\\ccxt\\BadRequest', // INVALID_WORKING_TYPE
-                        '-4032' => '\\ccxt\\OperationRejected', // Exceed maximum cancel order size. | Invalid parameter working type => %s
-                        '-4033' => '\\ccxt\\BadRequest', // INSURANCE_ACCOUNT_NOT_FOUND
-                        '-4044' => '\\ccxt\\BadRequest', // INVALID_BALANCE_TYPE
-                        '-4045' => '\\ccxt\\OperationRejected', // Reach max stop order limit.
-                        '-4046' => '\\ccxt\\BadRequest', // NO_NEED_TO_CHANGE_MARGIN_TYPE
-                        '-4047' => '\\ccxt\\OperationRejected', // Margin type cannot be changed if there exists open orders.
-                        '-4048' => '\\ccxt\\OperationRejected', // Margin type cannot be changed if there exists position.
-                        '-4049' => '\\ccxt\\OperationRejected', // ADD_ISOLATED_MARGIN_REJECT
-                        '-4050' => '\\ccxt\\InsufficientFunds', // CROSS_BALANCE_INSUFFICIENT
-                        '-4051' => '\\ccxt\\InsufficientFunds', // ISOLATED_BALANCE_INSUFFICIENT
-                        '-4052' => '\\ccxt\\OperationRejected', // NO_NEED_TO_CHANGE_AUTO_ADD_MARGIN
-                        '-4053' => '\\ccxt\\OperationRejected', // AUTO_ADD_CROSSED_MARGIN_REJECT
-                        '-4054' => '\\ccxt\\OperationRejected', // Cannot add position margin => position is 0.
-                        '-4055' => '\\ccxt\\BadRequest', // AMOUNT_MUST_BE_POSITIVE
-                        '-4056' => '\\ccxt\\AuthenticationError', // INVALID_API_KEY_TYPE
-                        '-4057' => '\\ccxt\\AuthenticationError', // INVALID_RSA_PUBLIC_KEY
-                        '-4058' => '\\ccxt\\BadRequest', // MAX_PRICE_TOO_LARGE
-                        '-4059' => '\\ccxt\\OperationRejected', // NO_NEED_TO_CHANGE_POSITION_SIDE
-                        '-4060' => '\\ccxt\\BadRequest', // INVALID_POSITION_SIDE
-                        '-4061' => '\\ccxt\\OperationRejected', // Order's position side does not match user's setting.
-                        '-4062' => '\\ccxt\\BadRequest', // Invalid or improper reduceOnly value.
-                        //
-                        '-4067' => '\\ccxt\\OperationRejected', // Position side cannot be changed if there exists open orders.
-                        '-4068' => '\\ccxt\\OperationRejected', // Position side cannot be changed if there exists position.
-                        '-4082' => '\\ccxt\\OperationRejected', // Invalid number of batch place orders.
-                        '-4083' => '\\ccxt\\OperationRejected', // PLACE_BATCH_ORDERS_FAIL
-                        '-4084' => '\\ccxt\\BadRequest', // Method is not allowed currently. Upcoming soon.
-                        '-4086' => '\\ccxt\\BadRequest', // Invalid price spread threshold.
-                        '-4087' => '\\ccxt\\BadSymbol', // Invalid pair
-                        '-4088' => '\\ccxt\\BadRequest', // Invalid time interval
-                        '-4089' => '\\ccxt\\PermissionDenied', // User can only place reduce only order.
-                        '-4090' => '\\ccxt\\PermissionDenied', // User can not place order currently.
-                        '-4104' => '\\ccxt\\BadRequest', // Invalid contract type
-                        '-4110' => '\\ccxt\\BadRequest', // clientTranId is not valid
-                        '-4111' => '\\ccxt\\BadRequest', // clientTranId is duplicated.
-                        '-4112' => '\\ccxt\\OperationRejected', // ReduceOnly Order Failed. Please check your existing position and open orders.
-                        '-4113' => '\\ccxt\\OperationRejected', // The counterparty's best price does not meet the PERCENT_PRICE filter limit.
-                        '-4135' => '\\ccxt\\BadRequest', // Invalid activation price.
-                        '-4137' => '\\ccxt\\BadRequest', // Quantity must be zero with closePosition equals true.
-                        '-4138' => '\\ccxt\\BadRequest', // Reduce only must be true with closePosition equals true.
-                        '-4139' => '\\ccxt\\BadRequest', // Order type can not be market if it's unable to cancel.
-                        '-4142' => '\\ccxt\\OrderImmediatelyFillable', // REJECT => take profit or stop order will be triggered immediately.
-                        '-4150' => '\\ccxt\\OperationRejected', // Leverage reduction is not supported in Isolated Margin Mode with open positions.
-                        '-4151' => '\\ccxt\\BadRequest', // Price is higher than stop price multiplier cap.
-                        '-4152' => '\\ccxt\\BadRequest', // Price is lower than stop price multiplier floor.
-                        '-4154' => '\\ccxt\\BadRequest', // Stop price is higher than price multiplier cap.
-                        '-4155' => '\\ccxt\\BadRequest', // Stop price is lower than price multiplier floor
-                        '-4178' => '\\ccxt\\BadRequest', // Order's notional must be no smaller than one (unless you choose reduce only)
-                        '-4192' => '\\ccxt\\PermissionDenied', // Trade forbidden due to Cooling-off Period.
-                        '-4194' => '\\ccxt\\PermissionDenied', // Intermediate Personal Verification is required for adjusting leverage over 20x.
-                        '-4195' => '\\ccxt\\PermissionDenied', // More than 20x leverage is available one month after account registration.
-                        '-4196' => '\\ccxt\\BadRequest', // Only limit order is supported.
-                        '-4197' => '\\ccxt\\OperationRejected', // No need to modify the order.
-                        '-4198' => '\\ccxt\\OperationRejected', // Exceed maximum modify order limit.
-                        '-4199' => '\\ccxt\\BadRequest', // Symbol is not in trading status. Order amendment is not permitted.
-                        '-4200' => '\\ccxt\\PermissionDenied', // More than 20x leverage is available %s days after Futures account registration.
-                        '-4201' => '\\ccxt\\PermissionDenied', // Users in your location/country can only access a maximum leverage of %s
-                        '-4202' => '\\ccxt\\OperationRejected', // Current symbol leverage cannot exceed 20 when using position limit adjustment service.
-                        '-4188' => '\\ccxt\\BadRequest', // Timestamp for this request is outside of the ME recvWindow.
-                        //
-                        // spot & futures algo
-                        //
-                        '-20121' => '\\ccxt\\BadSymbol', // Invalid symbol.
-                        '-20124' => '\\ccxt\\BadRequest', // Invalid algo id or it has been completed.
-                        '-20130' => '\\ccxt\\BadRequest', // Invalid data sent for a parameter
-                        '-20132' => '\\ccxt\\BadRequest', // The client algo id is duplicated
-                        '-20194' => '\\ccxt\\BadRequest', // Duration is too short to execute all required quantity.
-                        '-20195' => '\\ccxt\\BadRequest', // The total size is too small.
-                        '-20196' => '\\ccxt\\BadRequest', // The total size is too large.
-                        '-20198' => '\\ccxt\\OperationRejected', // Reach the max open orders allowed.
-                        '-20204' => '\\ccxt\\BadRequest', // The notional of USD is less or more than the limit.
-                    ),
-                ),
-                'option' => array(
-                    // https://binance-docs.github.io/apidocs/voptions/en/#error-codes
-                    'exact' => array(
-                        '-1000' => '\\ccxt\\OperationFailed', // array("code":-1000,"msg":"An unknown error occured while processing the request.")
-                        '-1001' => '\\ccxt\\OperationFailed', // array("code":-1001,"msg":"'Internal error; unable to process your request. Please try again.'")
-                        '-1002' => '\\ccxt\\AuthenticationError', // array("code":-1002,"msg":"'You are not authorized to execute this request.'")
-                        '-1008' => '\\ccxt\\RateLimitExceeded', // TOO_MANY_REQUESTS
-                        '-1014' => '\\ccxt\\InvalidOrder', // array("code":-1014,"msg":"Unsupported order combination.")
-                        '-1015' => '\\ccxt\\RateLimitExceeded', // array("code":-1015,"msg":"'Too many new orders; current limit is %s orders per %s.'")
-                        '-1016' => '\\ccxt\\BadRequest', // array("code":-1016,"msg":"'This service is no longer available.',")
-                        '-1020' => '\\ccxt\\BadRequest', // array("code":-1020,"msg":"'This operation is not supported.'")
-                        '-1021' => '\\ccxt\\InvalidNonce', // array("code":-1021,"msg":"'your time is ahead of server'")
-                        '-1022' => '\\ccxt\\AuthenticationError', // array("code":-1022,"msg":"Signature for this request is not valid.")
-                        '-1100' => '\\ccxt\\BadRequest', // array("code":-1100,"msg":"createOrder(symbol, 1, asdf) -> 'Illegal characters found in parameter 'price'")
-                        '-1101' => '\\ccxt\\BadRequest', // array("code":-1101,"msg":"Too many parameters; expected %s and received %s.")
-                        '-1102' => '\\ccxt\\BadRequest', // array("code":-1102,"msg":"Param %s or %s must be sent, but both were empty")
-                        '-1103' => '\\ccxt\\BadRequest', // array("code":-1103,"msg":"An unknown parameter was sent.")
-                        '-1104' => '\\ccxt\\BadRequest', // array("code":-1104,"msg":"Not all sent parameters were read, read 8 parameters but was sent 9")
-                        '-1105' => '\\ccxt\\BadRequest', // array("code":-1105,"msg":"Parameter %s was empty.")
-                        '-1106' => '\\ccxt\\BadRequest', // array("code":-1106,"msg":"Parameter %s sent when not required.")
-                        '-1111' => '\\ccxt\\BadRequest', // array("code":-1111,"msg":"Precision is over the maximum defined for this asset.")
-                        '-1115' => '\\ccxt\\BadRequest', // array("code":-1115,"msg":"Invalid timeInForce.")
-                        '-1116' => '\\ccxt\\BadRequest', // array("code":-1116,"msg":"Invalid orderType.")
-                        '-1117' => '\\ccxt\\BadRequest', // array("code":-1117,"msg":"Invalid side.")
-                        '-1118' => '\\ccxt\\BadRequest', // array("code":-1118,"msg":"New client order ID was empty.")
-                        '-1119' => '\\ccxt\\BadRequest', // array("code":-1119,"msg":"Original client order ID was empty.")
-                        '-1120' => '\\ccxt\\BadRequest', // array("code":-1120,"msg":"Invalid interval.")
-                        '-1121' => '\\ccxt\\BadSymbol', // array("code":-1121,"msg":"Invalid symbol.")
-                        '-1125' => '\\ccxt\\AuthenticationError', // array("code":-1125,"msg":"This listenKey does not exist.")
-                        '-1127' => '\\ccxt\\BadRequest', // array("code":-1127,"msg":"More than %s hours between startTime and endTime.")
-                        '-1128' => '\\ccxt\\BadSymbol', // BAD_CONTRACT
-                        '-1129' => '\\ccxt\\BadSymbol', // BAD_CURRENCY
-                        '-1130' => '\\ccxt\\BadRequest', // array("code":-1130,"msg":"Data sent for paramter %s is not valid.")
-                        '-1131' => '\\ccxt\\BadRequest', // array("code":-1131,"msg":"recvWindow must be less than 60000")
-                        '-2010' => '\\ccxt\\InvalidOrder', // NEW_ORDER_REJECTED
-                        '-2013' => '\\ccxt\\OrderNotFound', // array("code":-2013,"msg":"fetchOrder (1, 'BTC/USDT') -> 'Order does not exist'")
-                        '-2014' => '\\ccxt\\AuthenticationError', // array("code":-2014,"msg":"API-key format invalid.")
-                        '-2015' => '\\ccxt\\AuthenticationError', // array("code":-2015,"msg":"Invalid API-key, IP, or permissions for action.")
-                        '-2018' => '\\ccxt\\InsufficientFunds', // BALANCE_NOT_SUFFICIENT
-                        '-2027' => '\\ccxt\\InsufficientFunds', // OPTION_MARGIN_NOT_SUFFICIENT
-                        '-3029' => '\\ccxt\\OperationFailed', // array("code":-3029,"msg":"Transfer failed.")
-                        '-4001' => '\\ccxt\\BadRequest', // PRICE_LESS_THAN_ZERO
-                        '-4002' => '\\ccxt\\BadRequest', // PRICE_GREATER_THAN_MAX_PRICE
-                        '-4003' => '\\ccxt\\BadRequest', // QTY_LESS_THAN_ZERO
-                        '-4004' => '\\ccxt\\BadRequest', // QTY_LESS_THAN_MIN_QTY
-                        '-4005' => '\\ccxt\\BadRequest', // QTY_GREATER_THAN_MAX_QTY
-                        '-4013' => '\\ccxt\\BadRequest', // PRICE_LESS_THAN_MIN_PRICE
-                        '-4029' => '\\ccxt\\BadRequest', // INVALID TICK SIZE PRECISION
-                        '-4030' => '\\ccxt\\BadRequest', // INVALID_QTY_PRECISION
-                        '-4055' => '\\ccxt\\BadRequest', // AMOUNT_MUST_BE_POSITIVE
-                    ),
-                ),
-                'portfolioMargin' => array(
-                    'exact' => array(
-                        '-1000' => '\\ccxt\\OperationFailed', // array("code":-1000,"msg":"An unknown error occured while processing the request.")
-                        '-1001' => '\\ccxt\\OperationFailed', // array("code":-1001,"msg":"'Internal error; unable to process your request. Please try again.'")
-                        '-1002' => '\\ccxt\\AuthenticationError', // array("code":-1002,"msg":"'You are not authorized to execute this request.'")
-                        '-1003' => '\\ccxt\\RateLimitExceeded', // array("code":-1003,"msg":"Too much request weight used, current limit is 1200 request weight per 1 MINUTE. Please use the websocket for live updates to avoid polling the API.")
-                        '-1004' => '\\ccxt\\OperationRejected', // DUPLICATE_IP : This IP is already on the white list
-                        '-1005' => '\\ccxt\\PermissionDenied', // array("code":-1005,"msg":"No such IP has been white listed")
-                        '-1006' => '\\ccxt\\OperationFailed', // array("code":-1006,"msg":"An unexpected response was received from the message bus. Execution status unknown.")
-                        '-1007' => '\\ccxt\\RequestTimeout', // array("code":-1007,"msg":"Timeout waiting for response from backend server. Send status unknown; execution status unknown.")
-                        '-1010' => '\\ccxt\\OperationFailed', // array("code":-1010,"msg":"ERROR_MSG_RECEIVED.")
-                        '-1011' => '\\ccxt\\PermissionDenied', // array("code":-1011,"msg":"This IP cannot access this route.")
-                        '-1013' => '\\ccxt\\OperationFailed', //
-                        '-1014' => '\\ccxt\\InvalidOrder', // array("code":-1014,"msg":"Unsupported order combination.")
-                        '-1015' => '\\ccxt\\RateLimitExceeded', // array("code":-1015,"msg":"'Too many new orders; current limit is %s orders per %s.'")
-                        '-1016' => '\\ccxt\\BadRequest', // array("code":-1016,"msg":"'This service is no longer available.',")
-                        '-1020' => '\\ccxt\\BadRequest', // array("code":-1020,"msg":"'This operation is not supported.'")
-                        '-1021' => '\\ccxt\\InvalidNonce', // array("code":-1021,"msg":"'your time is ahead of server'")
-                        '-1022' => '\\ccxt\\AuthenticationError', // array("code":-1022,"msg":"Signature for this request is not valid.")
-                        '-1023' => '\\ccxt\\BadRequest', // START_TIME_GREATER_THAN_END_TIME
-                        '-1100' => '\\ccxt\\BadRequest', // array("code":-1100,"msg":"createOrder(symbol, 1, asdf) -> 'Illegal characters found in parameter 'price'")
-                        '-1101' => '\\ccxt\\BadRequest', // array("code":-1101,"msg":"Too many parameters; expected %s and received %s.")
-                        '-1102' => '\\ccxt\\BadRequest', // array("code":-1102,"msg":"Param %s or %s must be sent, but both were empty")
-                        '-1103' => '\\ccxt\\BadRequest', // array("code":-1103,"msg":"An unknown parameter was sent.")
-                        '-1104' => '\\ccxt\\BadRequest', // array("code":-1104,"msg":"Not all sent parameters were read, read 8 parameters but was sent 9")
-                        '-1105' => '\\ccxt\\BadRequest', // array("code":-1105,"msg":"Parameter %s was empty.")
-                        '-1106' => '\\ccxt\\BadRequest', // array("code":-1106,"msg":"Parameter %s sent when not required.")
-                        '-1108' => '\\ccxt\\BadSymbol', // BAD_ASSET
-                        '-1109' => '\\ccxt\\BadRequest', // BAD_ACCOUNT
-                        '-1110' => '\\ccxt\\BadSymbol', // BAD_INSTRUMENT_TYPE
-                        '-1111' => '\\ccxt\\BadRequest', // array("code":-1111,"msg":"Precision is over the maximum defined for this asset.")
-                        '-1112' => '\\ccxt\\OperationFailed', // array("code":-1112,"msg":"No orders on book for symbol.")
-                        '-1113' => '\\ccxt\\BadRequest', // array("code":-1113,"msg":"Withdrawal amount must be negative.")
-                        '-1114' => '\\ccxt\\BadRequest', // array("code":-1114,"msg":"TimeInForce parameter sent when not required.")
-                        '-1115' => '\\ccxt\\BadRequest', // array("code":-1115,"msg":"Invalid timeInForce.")
-                        '-1116' => '\\ccxt\\BadRequest', // array("code":-1116,"msg":"Invalid orderType.")
-                        '-1117' => '\\ccxt\\BadRequest', // array("code":-1117,"msg":"Invalid side.")
-                        '-1118' => '\\ccxt\\BadRequest', // array("code":-1118,"msg":"New client order ID was empty.")
-                        '-1119' => '\\ccxt\\BadRequest', // array("code":-1119,"msg":"Original client order ID was empty.")
-                        '-1120' => '\\ccxt\\BadRequest', // array("code":-1120,"msg":"Invalid interval.")
-                        '-1121' => '\\ccxt\\BadSymbol', // array("code":-1121,"msg":"Invalid symbol.")
-                        '-1125' => '\\ccxt\\AuthenticationError', // array("code":-1125,"msg":"This listenKey does not exist.")
-                        '-1127' => '\\ccxt\\BadRequest', // array("code":-1127,"msg":"More than %s hours between startTime and endTime.")
-                        '-1128' => '\\ccxt\\BadRequest', // array("code":-1128,"msg":"Combination of optional parameters invalid.")
-                        '-1130' => '\\ccxt\\BadRequest', // array("code":-1130,"msg":"Data sent for paramter %s is not valid.")
-                        '-1136' => '\\ccxt\\BadRequest', // INVALID_NEW_ORDER_RESP_TYPE
-                        '-2010' => '\\ccxt\\InvalidOrder', // NEW_ORDER_REJECTED
-                        '-2011' => '\\ccxt\\OrderNotFound', // array("code":-2011,"msg":"cancelOrder(1, 'BTC/USDT') -> 'UNKNOWN_ORDER'")
-                        '-2013' => '\\ccxt\\OrderNotFound', // array("code":-2013,"msg":"fetchOrder (1, 'BTC/USDT') -> 'Order does not exist'")
-                        '-2014' => '\\ccxt\\AuthenticationError', // array("code":-2014,"msg":"API-key format invalid.")
-                        '-2015' => '\\ccxt\\AuthenticationError', // array("code":-2015,"msg":"Invalid API-key, IP, or permissions for action.")
-                        '-2016' => '\\ccxt\\OperationRejected', // array("code":-2016,"msg":"No trading window could be found for the symbol. Try ticker/24hrs instead.")
-                        '-2018' => '\\ccxt\\InsufficientFunds', // array("code":-2018,"msg":"Balance is insufficient")
-                        '-2019' => '\\ccxt\\InsufficientFunds', // Margin is insufficient
-                        '-2020' => '\\ccxt\\OrderNotFillable', // UNABLE_TO_FILL
-                        '-2021' => '\\ccxt\\OrderImmediatelyFillable', // Order would immediately trigger.
-                        '-2022' => '\\ccxt\\InvalidOrder', // ReduceOnly Order is rejected
-                        '-2023' => '\\ccxt\\OperationFailed', // User in liquidation mode now
-                        '-2024' => '\\ccxt\\OperationRejected', // Position is not sufficient
-                        '-2025' => '\\ccxt\\OperationRejected', // Reach max open order limit.
-                        '-2026' => '\\ccxt\\InvalidOrder', // This OrderType is not supported when reduceOnly.
-                        '-2027' => '\\ccxt\\OperationRejected', // Exceeded the maximum allowable position at current leverage.
-                        '-2028' => '\\ccxt\\OperationRejected', // Leverage is smaller than permitted => insufficient margin balance.
-                        '-4000' => '\\ccxt\\InvalidOrder', // INVALID_ORDER_STATUS
-                        '-4001' => '\\ccxt\\BadRequest', // PRICE_LESS_THAN_ZERO
-                        '-4002' => '\\ccxt\\BadRequest', // PRICE_GREATER_THAN_MAX_PRICE
-                        '-4003' => '\\ccxt\\BadRequest', // QTY_LESS_THAN_ZERO
-                        '-4004' => '\\ccxt\\BadRequest', // QTY_LESS_THAN_MIN_QTY
-                        '-4005' => '\\ccxt\\BadRequest', // QTY_GREATER_THAN_MAX_QTY
-                        '-4006' => '\\ccxt\\BadRequest', // STOP_PRICE_LESS_THAN_ZERO
-                        '-4007' => '\\ccxt\\BadRequest', // STOP_PRICE_GREATER_THAN_MAX_PRICE
-                        '-4008' => '\\ccxt\\BadRequest', // TICK SIZE LESS THAN ZERO
-                        '-4009' => '\\ccxt\\BadRequest', // MAX_PRICE_LESS_THAN_MIN_PRICE
-                        '-4010' => '\\ccxt\\BadRequest', // MAX_QTY_LESS_THAN_MIN_QTY
-                        '-4011' => '\\ccxt\\BadRequest', // STEP_SIZE_LESS_THAN_ZERO
-                        '-4012' => '\\ccxt\\BadRequest', // MAX_NUM_ORDERS_LESS_THAN_ZERO
-                        '-4013' => '\\ccxt\\BadRequest', // PRICE_LESS_THAN_MIN_PRICE
-                        '-4014' => '\\ccxt\\BadRequest', // PRICE NOT INCREASED BY TICK SIZE
-                        '-4015' => '\\ccxt\\BadRequest', // Client order id is not valid
-                        '-4016' => '\\ccxt\\BadRequest', // Price is higher than mark price multiplier cap.
-                        '-4017' => '\\ccxt\\BadRequest', // MULTIPLIER_UP_LESS_THAN_ZERO
-                        '-4018' => '\\ccxt\\BadRequest', // MULTIPLIER_DOWN_LESS_THAN_ZERO
-                        '-4019' => '\\ccxt\\OperationRejected', // COMPOSITE_SCALE_OVERFLOW
-                        '-4020' => '\\ccxt\\BadRequest', // TARGET_STRATEGY_INVALID
-                        '-4021' => '\\ccxt\\BadRequest', // INVALID_DEPTH_LIMIT
-                        '-4022' => '\\ccxt\\BadRequest', // WRONG_MARKET_STATUS
-                        '-4023' => '\\ccxt\\BadRequest', // QTY_NOT_INCREASED_BY_STEP_SIZE
-                        '-4024' => '\\ccxt\\BadRequest', // PRICE_LOWER_THAN_MULTIPLIER_DOWN
-                        '-4025' => '\\ccxt\\BadRequest', // MULTIPLIER_DECIMAL_LESS_THAN_ZERO
-                        '-4026' => '\\ccxt\\BadRequest', // COMMISSION_INVALID
-                        '-4027' => '\\ccxt\\BadRequest', // INVALID_ACCOUNT_TYPE
-                        '-4028' => '\\ccxt\\BadRequest', // INVALID_LEVERAGE
-                        '-4029' => '\\ccxt\\BadRequest', // INVALID TICK SIZE PRECISION
-                        '-4030' => '\\ccxt\\BadRequest', // INVALID_STEP_SIZE_PRECISION
-                        '-4031' => '\\ccxt\\BadRequest', // INVALID_WORKING_TYPE
-                        '-4032' => '\\ccxt\\OperationRejected', // EXCEED_MAX_CANCEL_ORDER_SIZE
-                        '-4033' => '\\ccxt\\BadRequest', // INSURANCE_ACCOUNT_NOT_FOUND
-                        '-4044' => '\\ccxt\\BadRequest', // INVALID_BALANCE_TYPE
-                        '-4045' => '\\ccxt\\OperationRejected', // MAX_STOP_ORDER_EXCEEDED
-                        '-4046' => '\\ccxt\\OperationRejected', // NO_NEED_TO_CHANGE_MARGIN_TYPE
-                        '-4047' => '\\ccxt\\OperationRejected', // Margin type cannot be changed if there exists open orders.
-                        '-4048' => '\\ccxt\\OperationRejected', // Margin type cannot be changed if there exists position.
-                        '-4049' => '\\ccxt\\BadRequest', // Add margin only support for isolated position.
-                        '-4050' => '\\ccxt\\InsufficientFunds', // Cross balance insufficient
-                        '-4051' => '\\ccxt\\InsufficientFunds', // Isolated balance insufficient.
-                        '-4052' => '\\ccxt\\OperationRejected', // No need to change auto add margin.
-                        '-4053' => '\\ccxt\\BadRequest', // Auto add margin only support for isolated position.
-                        '-4054' => '\\ccxt\\OperationRejected', // Cannot add position margin => position is 0.
-                        '-4055' => '\\ccxt\\BadRequest', // Amount must be positive.
-                        '-4056' => '\\ccxt\\AuthenticationError', // Invalid api key type.
-                        '-4057' => '\\ccxt\\AuthenticationError', // Invalid api public key
-                        '-4058' => '\\ccxt\\BadRequest', // MAX_PRICE_TOO_LARGE
-                        '-4059' => '\\ccxt\\OperationRejected', // NO_NEED_TO_CHANGE_POSITION_SIDE
-                        '-4060' => '\\ccxt\\BadRequest', // INVALID_POSITION_SIDE
-                        '-4061' => '\\ccxt\\BadRequest', // POSITION_SIDE_NOT_MATCH
-                        '-4062' => '\\ccxt\\BadRequest', // REDUCE_ONLY_CONFLICT
-                        '-4063' => '\\ccxt\\BadRequest', // INVALID_OPTIONS_REQUEST_TYPE
-                        '-4064' => '\\ccxt\\BadRequest', // INVALID_OPTIONS_TIME_FRAME
-                        '-4065' => '\\ccxt\\BadRequest', // INVALID_OPTIONS_AMOUNT
-                        '-4066' => '\\ccxt\\BadRequest', // INVALID_OPTIONS_EVENT_TYPE
-                        '-4067' => '\\ccxt\\OperationRejected', // Position side cannot be changed if there exists open orders.
-                        '-4068' => '\\ccxt\\OperationRejected', // Position side cannot be changed if there exists position.
-                        '-4069' => '\\ccxt\\BadRequest', // Position INVALID_OPTIONS_PREMIUM_FEE
-                        '-4070' => '\\ccxt\\BadRequest', // Client options id is not valid.
-                        '-4071' => '\\ccxt\\BadRequest', // Invalid options direction
-                        '-4072' => '\\ccxt\\OperationRejected', // premium fee is not updated, reject order
-                        '-4073' => '\\ccxt\\BadRequest', // OPTIONS_PREMIUM_INPUT_LESS_THAN_ZERO
-                        '-4074' => '\\ccxt\\BadRequest', // Order amount is bigger than upper boundary or less than 0, reject order
-                        '-4075' => '\\ccxt\\BadRequest', // output premium fee is less than 0, reject order
-                        '-4076' => '\\ccxt\\OperationRejected', // original fee is too much higher than last fee
-                        '-4077' => '\\ccxt\\OperationRejected', // place order amount has reached to limit, reject order
-                        '-4078' => '\\ccxt\\OperationFailed', // options internal error
-                        '-4079' => '\\ccxt\\BadRequest', // invalid options id
-                        '-4080' => '\\ccxt\\PermissionDenied', // user not found with id => %s
-                        '-4081' => '\\ccxt\\BadRequest', // OPTIONS_NOT_FOUND
-                        '-4082' => '\\ccxt\\BadRequest', // Invalid number of batch place orders
-                        '-4083' => '\\ccxt\\OperationFailed', // Fail to place batch orders.
-                        '-4084' => '\\ccxt\\BadRequest', // UPCOMING_METHOD
-                        '-4085' => '\\ccxt\\BadRequest', // Invalid notional limit coefficient
-                        '-4086' => '\\ccxt\\BadRequest', // Invalid price spread threshold
-                        '-4087' => '\\ccxt\\PermissionDenied', // User can only place reduce only order
-                        '-4088' => '\\ccxt\\PermissionDenied', // User can not place order currently
-                        '-4104' => '\\ccxt\\BadRequest', // INVALID_CONTRACT_TYPE
-                        '-4114' => '\\ccxt\\BadRequest', // INVALID_CLIENT_TRAN_ID_LEN
-                        '-4115' => '\\ccxt\\BadRequest', // DUPLICATED_CLIENT_TRAN_ID
-                        '-4118' => '\\ccxt\\OperationRejected', // REDUCE_ONLY_MARGIN_CHECK_FAILED
-                        '-4131' => '\\ccxt\\OperationRejected', // The counterparty's best price does not meet the PERCENT_PRICE filter limit
-                        '-4135' => '\\ccxt\\BadRequest', // Invalid activation price
-                        '-4137' => '\\ccxt\\BadRequest', // Quantity must be zero with closePosition equals true
-                        '-4138' => '\\ccxt\\BadRequest', // Reduce only must be true with closePosition equals true
-                        '-4139' => '\\ccxt\\BadRequest', // Order type can not be market if it's unable to cancel
-                        '-4140' => '\\ccxt\\BadRequest', // Invalid symbol status for opening position
-                        '-4141' => '\\ccxt\\BadRequest', // Symbol is closed
-                        '-4142' => '\\ccxt\\OrderImmediatelyFillable', // REJECT => take profit or stop order will be triggered immediately
-                        '-4144' => '\\ccxt\\BadSymbol', // Invalid pair
-                        '-4161' => '\\ccxt\\OperationRejected', // Leverage reduction is not supported in Isolated Margin Mode with open positions
-                        '-4164' => '\\ccxt\\OperationRejected', // Leverage reduction is not supported in Isolated Margin Mode with open positions
-                        '-4165' => '\\ccxt\\BadRequest', // Invalid time interval
-                        '-4183' => '\\ccxt\\BadRequest', // Price is higher than stop price multiplier cap.
-                        '-4184' => '\\ccxt\\BadRequest', // Price is lower than stop price multiplier floor.
-                        '-5021' => '\\ccxt\\OrderNotFillable', // Due to the order could not be filled immediately, the FOK order has been rejected.
-                        '-5022' => '\\ccxt\\OrderNotFillable', // Due to the order could not be executed, the Post Only order will be rejected.
-                    ),
-                ),
-                'exact' => array(
-                    "You don't have permission." => '\\ccxt\\PermissionDenied', // array("msg":"You don't have permission.","success":false)
-                    'Account has insufficient balance for requested action.' => '\\ccxt\\InsufficientFunds',
-                    'API key does not exist' => '\\ccxt\\AuthenticationError',
-                    'Limit orders require GTC for this phase.' => '\\ccxt\\BadRequest',
-                    'Market is closed.' => '\\ccxt\\OperationRejected', // array("code":-1013,"msg":"Market is closed.")
-                    'Order would immediately match and take.' => '\\ccxt\\OrderImmediatelyFillable', // array("code":-2010,"msg":"Order would immediately match and take.")
-                    'Order would trigger immediately.' => '\\ccxt\\OrderImmediatelyFillable',
-                    'Rest API trading is not enabled.' => '\\ccxt\\PermissionDenied',
-                    'Stop price would trigger immediately.' => '\\ccxt\\OrderImmediatelyFillable', // array("code":-2010,"msg":"Stop price would trigger immediately.")
-                    'System abnormality' => '\\ccxt\\OperationFailed', // array("code":-1000,"msg":"System abnormality")
-                    'System is under maintenance.' => '\\ccxt\\OnMaintenance', // array("code":1,"msg":"System is under maintenance.")
-                    'This account may not place or cancel orders.' => '\\ccxt\\PermissionDenied',
-                    'This action is disabled on this account.' => '\\ccxt\\AccountSuspended', // array("code":-2011,"msg":"This action is disabled on this account.")
-                    'This order type is not property_exists($this, possible) trading phase.' => '\\ccxt\\BadRequest',
-                    'This symbol is not permitted for this account.' => '\\ccxt\\PermissionDenied', // array("code":-2010,"msg":"This symbol is not permitted for this account.")
-                    'This symbol is restricted for this account.' => '\\ccxt\\PermissionDenied',
-                    'This type of sub-account exceeds the maximum number limit' => '\\ccxt\\OperationRejected', // array("code":-9000,"msg":"This type of sub-account exceeds the maximum number limit")
-                    'Too many requests. Please try again later.' => '\\ccxt\\RateLimitExceeded', // array("msg":"Too many requests. Please try again later.","success":false)
-                    'You are not authorized to execute this request.' => '\\ccxt\\PermissionDenied', // array("msg":"You are not authorized to execute this request.")
-                ),
-                'broad' => array(
-                    'has no operation privilege' => '\\ccxt\\PermissionDenied',
-                    'MAX_POSITION' => '\\ccxt\\BadRequest', // array("code":-2010,"msg":"Filter failure => MAX_POSITION")
-                ),
-            ), // Japan, Malta
+            ),
             'fees' => array(
-                'trading' => array(
-                    'feeSide' => 'get',
-                    'maker' => $this->parse_number('0.001'),
-                    'percentage' => true,
-                    'taker' => $this->parse_number('0.001'),
-                    'tierBased' => false,
-                ),
-                'linear' => array(
-                    'trading' => array(
-                        'feeSide' => 'quote',
-                        'tierBased' => true,
-                        'percentage' => true,
-                        'taker' => $this->parse_number('0.000400'),
-                        'maker' => $this->parse_number('0.000200'),
-                        'tiers' => array(
-                            'taker' => array(
-                                array( $this->parse_number('0'), $this->parse_number('0.000400') ),
-                                array( $this->parse_number('250'), $this->parse_number('0.000400') ),
-                                array( $this->parse_number('2500'), $this->parse_number('0.000350') ),
-                                array( $this->parse_number('7500'), $this->parse_number('0.000320') ),
-                                array( $this->parse_number('22500'), $this->parse_number('0.000300') ),
-                                array( $this->parse_number('50000'), $this->parse_number('0.000270') ),
-                                array( $this->parse_number('100000'), $this->parse_number('0.000250') ),
-                                array( $this->parse_number('200000'), $this->parse_number('0.000220') ),
-                                array( $this->parse_number('400000'), $this->parse_number('0.000200') ),
-                                array( $this->parse_number('750000'), $this->parse_number('0.000170') ),
-                            ),
-                            'maker' => array(
-                                array( $this->parse_number('0'), $this->parse_number('0.000200') ),
-                                array( $this->parse_number('250'), $this->parse_number('0.000160') ),
-                                array( $this->parse_number('2500'), $this->parse_number('0.000140') ),
-                                array( $this->parse_number('7500'), $this->parse_number('0.000120') ),
-                                array( $this->parse_number('22500'), $this->parse_number('0.000100') ),
-                                array( $this->parse_number('50000'), $this->parse_number('0.000080') ),
-                                array( $this->parse_number('100000'), $this->parse_number('0.000060') ),
-                                array( $this->parse_number('200000'), $this->parse_number('0.000040') ),
-                                array( $this->parse_number('400000'), $this->parse_number('0.000020') ),
-                                array( $this->parse_number('750000'), $this->parse_number('0') ),
-                            ),
-                        ),
-                    ),
-                ),
                 'inverse' => array(
                     'trading' => array(
                         'feeSide' => 'base',
@@ -1831,18 +1789,6 @@ class binance extends Exchange {
                         'taker' => $this->parse_number('0.000500'),
                         'tierBased' => true,
                         'tiers' => array(
-                            'taker' => array(
-                                array( $this->parse_number('0'), $this->parse_number('0.000500') ),
-                                array( $this->parse_number('250'), $this->parse_number('0.000450') ),
-                                array( $this->parse_number('2500'), $this->parse_number('0.000400') ),
-                                array( $this->parse_number('7500'), $this->parse_number('0.000300') ),
-                                array( $this->parse_number('22500'), $this->parse_number('0.000250') ),
-                                array( $this->parse_number('50000'), $this->parse_number('0.000240') ),
-                                array( $this->parse_number('100000'), $this->parse_number('0.000240') ),
-                                array( $this->parse_number('200000'), $this->parse_number('0.000240') ),
-                                array( $this->parse_number('400000'), $this->parse_number('0.000240') ),
-                                array( $this->parse_number('750000'), $this->parse_number('0.000240') ),
-                            ),
                             'maker' => array(
                                 array( $this->parse_number('0'), $this->parse_number('0.000100') ),
                                 array( $this->parse_number('250'), $this->parse_number('0.000080') ),
@@ -1855,11 +1801,66 @@ class binance extends Exchange {
                                 array( $this->parse_number('400000'), $this->parse_number('-0.000080') ),
                                 array( $this->parse_number('750000'), $this->parse_number('-0.000090') ),
                             ),
+                            'taker' => array(
+                                array( $this->parse_number('0'), $this->parse_number('0.000500') ),
+                                array( $this->parse_number('250'), $this->parse_number('0.000450') ),
+                                array( $this->parse_number('2500'), $this->parse_number('0.000400') ),
+                                array( $this->parse_number('7500'), $this->parse_number('0.000300') ),
+                                array( $this->parse_number('22500'), $this->parse_number('0.000250') ),
+                                array( $this->parse_number('50000'), $this->parse_number('0.000240') ),
+                                array( $this->parse_number('100000'), $this->parse_number('0.000240') ),
+                                array( $this->parse_number('200000'), $this->parse_number('0.000240') ),
+                                array( $this->parse_number('400000'), $this->parse_number('0.000240') ),
+                                array( $this->parse_number('750000'), $this->parse_number('0.000240') ),
+                            ),
+                        ),
+                    ),
+                ),
+                'linear' => array(
+                    'trading' => array(
+                        'feeSide' => 'quote',
+                        'maker' => $this->parse_number('0.000200'),
+                        'percentage' => true,
+                        'taker' => $this->parse_number('0.000400'),
+                        'tierBased' => true,
+                        'tiers' => array(
+                            'maker' => array(
+                                array( $this->parse_number('0'), $this->parse_number('0.000200') ),
+                                array( $this->parse_number('250'), $this->parse_number('0.000160') ),
+                                array( $this->parse_number('2500'), $this->parse_number('0.000140') ),
+                                array( $this->parse_number('7500'), $this->parse_number('0.000120') ),
+                                array( $this->parse_number('22500'), $this->parse_number('0.000100') ),
+                                array( $this->parse_number('50000'), $this->parse_number('0.000080') ),
+                                array( $this->parse_number('100000'), $this->parse_number('0.000060') ),
+                                array( $this->parse_number('200000'), $this->parse_number('0.000040') ),
+                                array( $this->parse_number('400000'), $this->parse_number('0.000020') ),
+                                array( $this->parse_number('750000'), $this->parse_number('0') ),
+                            ),
+                            'taker' => array(
+                                array( $this->parse_number('0'), $this->parse_number('0.000400') ),
+                                array( $this->parse_number('250'), $this->parse_number('0.000400') ),
+                                array( $this->parse_number('2500'), $this->parse_number('0.000350') ),
+                                array( $this->parse_number('7500'), $this->parse_number('0.000320') ),
+                                array( $this->parse_number('22500'), $this->parse_number('0.000300') ),
+                                array( $this->parse_number('50000'), $this->parse_number('0.000270') ),
+                                array( $this->parse_number('100000'), $this->parse_number('0.000250') ),
+                                array( $this->parse_number('200000'), $this->parse_number('0.000220') ),
+                                array( $this->parse_number('400000'), $this->parse_number('0.000200') ),
+                                array( $this->parse_number('750000'), $this->parse_number('0.000170') ),
+                            ),
                         ),
                     ),
                 ),
                 'option' => array(),
+                'trading' => array(
+                    'feeSide' => 'get',
+                    'maker' => $this->parse_number('0.001'),
+                    'percentage' => true,
+                    'taker' => $this->parse_number('0.001'),
+                    'tierBased' => false,
+                ),
             ),
+            // new metainfo2 interface
             'has' => array(
                 'CORS' => null,
                 'spot' => true,
@@ -1991,42 +1992,13 @@ class binance extends Exchange {
             'name' => 'Binance',
             // exchange-specific options
             'options' => array(
-                'sandboxMode' => false,
-                'fetchMarkets' => array(
-                    'inverse', // allows CORS in browsers
-                    'linear', // allows CORS in browsers
-                    'spot', // allows CORS in browsers
-                    // 'option', // does not allow CORS, enable outside of the browser only
-                ),
-                'defaultSubType' => null, // 'linear', 'inverse'
-                'defaultTimeInForce' => 'GTC', // 'GTC' = Good To Cancel (default), 'IOC' = Immediate Or Cancel
-                'defaultType' => 'spot', // 'spot', 'future', 'margin', 'delivery', 'option'
-                'fetchCurrencies' => true, // this is a private call and it requires API keys
-                'hasAlreadyAuthenticatedSuccessfully' => false,
-                'warnOnFetchOpenOrdersWithoutSymbol' => true,
-                // 'fetchTradesMethod' => 'publicGetAggTrades', // publicGetTrades, publicGetHistoricalTrades, eapiPublicGetTrades
-                // not an error
-                // https://github.com/ccxt/ccxt/issues/11268
-                // https://github.com/ccxt/ccxt/pull/11624
-                // POST https://fapi.binance.com/fapi/v1/marginType 400 Bad Request
-                // binanceusdm
-                'throwMarginModeAlreadySet' => false,
-                'fetchPositions' => 'positionRisk', // or 'account' or 'option'
-                'recvWindow' => 10 * 1000, // 10 sec
-                'timeDifference' => 0, // the difference between system clock and Binance clock
-                'adjustForTimeDifference' => false, // controls the adjustment logic upon instantiation
-                'newOrderRespType' => array(
-                    'market' => 'FULL', // 'ACK' for order id, 'RESULT' for full order or 'FULL' for order with fills
-                    'limit' => 'FULL', // we change it from 'ACK' by default to 'FULL' (returns immediately if limit is not hit)
-                ),
-                'quoteOrderQty' => true, // whether market orders support amounts in quote currency
-                'broker' => array(
-                    'delivery' => 'x-xcKtGhcu',
-                    'future' => 'x-xcKtGhcu',
-                    'margin' => 'x-R4BD3S82',
-                    'option' => 'x-xcKtGhcu',
-                    'spot' => 'x-R4BD3S82',
-                    'swap' => 'x-xcKtGhcu',
+                'accountsById' => array(
+                    'CMFUTURE' => 'inverse',
+                    'FUNDING' => 'funding',
+                    'MAIN' => 'spot',
+                    'MARGIN' => 'margin',
+                    'OPTION' => 'option',
+                    'UMFUTURE' => 'linear',
                 ),
                 'accountsByType' => array(
                     'cross' => 'MARGIN',
@@ -2040,13 +2012,73 @@ class binance extends Exchange {
                     'option' => 'OPTION',
                     'spot' => 'MAIN',
                 ),
-                'accountsById' => array(
-                    'CMFUTURE' => 'inverse',
-                    'FUNDING' => 'funding',
-                    'MAIN' => 'spot',
-                    'MARGIN' => 'margin',
-                    'OPTION' => 'option',
-                    'UMFUTURE' => 'linear',
+                'adjustForTimeDifference' => false, // controls the adjustment logic upon instantiation
+                'broker' => array(
+                    'delivery' => 'x-xcKtGhcu',
+                    'future' => 'x-xcKtGhcu',
+                    'margin' => 'x-R4BD3S82',
+                    'option' => 'x-xcKtGhcu',
+                    'spot' => 'x-R4BD3S82',
+                    'swap' => 'x-xcKtGhcu',
+                ),
+                'fetchMarkets' => array(
+                    'inverse', // allows CORS in browsers
+                    'linear', // allows CORS in browsers
+                    'spot', // allows CORS in browsers
+                    // 'option', // does not allow CORS, enable outside of the browser only
+                ),
+                'defaultSubType' => null, // 'linear', 'inverse'
+                'defaultTimeInForce' => 'GTC', // 'GTC' = Good To Cancel (default), 'IOC' = Immediate Or Cancel
+                'defaultType' => 'spot', // 'spot', 'future', 'margin', 'delivery', 'option'
+                'fetchCurrencies' => true, // this is a private call and it requires API keys
+                'fetchPositions' => 'positionRisk', // or 'account' or 'option'
+                // 'fetchTradesMethod' => 'publicGetAggTrades', // publicGetTrades, publicGetHistoricalTrades, eapiPublicGetTrades
+                // not an error
+                // https://github.com/ccxt/ccxt/issues/11268
+                // https://github.com/ccxt/ccxt/pull/11624
+                // POST https://fapi.binance.com/fapi/v1/marginType 400 Bad Request
+                // binanceusdm
+                'hasAlreadyAuthenticatedSuccessfully' => false,
+                'impliedNetworks' => array(
+                    'ETH' => array( 'ERC20' => 'ETH' ),
+                    'TRX' => array( 'TRC20' => 'TRX' ),
+                ),
+                'legalMoney' => array(
+                    'AED' => true,
+                    'ARS' => true,
+                    'AUD' => true,
+                    'BRL' => true,
+                    'CAD' => true,
+                    'CHF' => true,
+                    'CZK' => true,
+                    'DKK' => true,
+                    'EUR' => true,
+                    'GBP' => true,
+                    'GHS' => true,
+                    'HKD' => true,
+                    'HUF' => true,
+                    'INR' => true,
+                    'JPY' => true,
+                    'KES' => true,
+                    'KZT' => true,
+                    'MXN' => true,
+                    'NGN' => true,
+                    'NOK' => true,
+                    'NZD' => true,
+                    'PEN' => true,
+                    'PHP' => true,
+                    'PLN' => true,
+                    'RUB' => true,
+                    'SEK' => true,
+                    'TRY' => true,
+                    'UAH' => true,
+                    'UGX' => true,
+                    'USD' => true,
+                    'VND' => true,
+                    'ZAR' => true,
+                ),
+                'legalMoneyCurrenciesById' => array(
+                    'BUSD' => 'USD',
                 ),
                 'networks' => array(
                     'BEP2' => 'BNB',
@@ -2056,101 +2088,6 @@ class binance extends Exchange {
                     'OMNI' => 'OMNI',
                     'SPL' => 'SOL',
                     'TRC20' => 'TRX',
-                ),
-                // keeping this object for backward-compatibility
-                'reverseNetworks' => array(
-                    'algoexplorer.io' => 'ALGO',
-                    'atomscan.com' => 'ATOM',
-                    'bithomp.com' => 'XRP',
-                    'block.gxb.io' => 'GXS',
-                    'blockchair.com/bitcoin' => 'BTC',
-                    'blockchair.com/bitcoin-cash' => 'BCH',
-                    'blockchair.com/ecash' => 'XEC',
-                    'blockscout.com' => 'ETC',
-                    'bloks.io' => 'EOS',
-                    'bscscan.com' => 'BSC',
-                    'btgexplorer.com' => 'BTG',
-                    'bts.ai' => 'BTS',
-                    'cardanoscan.io' => 'ADA',
-                    'cerebro.cortexlabs.ai' => 'CTXC',
-                    'chain.nem.ninja' => 'XEM',
-                    'chainz.cryptoid.info' => 'VIA',
-                    'dashboard.internetcomputer.org' => 'ICP',
-                    'digiexplorer.info' => 'DGB',
-                    'dock.subscan.io' => 'DOCK',
-                    'dogechain.info' => 'DOGE',
-                    'etherscan.io' => 'ERC20',
-                    'explore-fetchhub.fetch.ai' => 'FET',
-                    'explore.vechain.org' => 'VET',
-                    'explorer.ambrosus.com' => 'AMB',
-                    'explorer.ark.io' => 'ARK',
-                    'explorer.avax.network' => 'AVAX',
-                    'explorer.binance.org' => 'BEP2',
-                    'explorer.bitcoindiamond.org' => 'BCD',
-                    'explorer.celo.org' => 'CELO',
-                    'explorer.chiliz.com' => 'CHZ',
-                    'explorer.dcrdata.org' => 'DCR',
-                    'explorer.elrond.com' => 'EGLD',
-                    'explorer.firo.org' => 'FIRO',
-                    'explorer.gochain.io' => 'GO',
-                    'explorer.harmony.one' => 'ONE',
-                    'explorer.helium.com' => 'HNT',
-                    'explorer.iota.org' => 'IOTA',
-                    'explorer.litecoin.net' => 'LTC',
-                    'explorer.lto.network' => 'LTO',
-                    'explorer.nbs.plus' => 'NBS',
-                    'explorer.nebl.io' => 'NEBL',
-                    'explorer.nebulas.io' => 'NAS',
-                    'explorer.nervos.org' => 'CKB',
-                    'explorer.ont.io' => 'ONT',
-                    'explorer.poa.network' => 'POA',
-                    'explorer.rsk.co' => 'RSK',
-                    'explorer.skycoin.com' => 'SKY',
-                    'explorer.stacks.co' => 'STX',
-                    'explorer.vite.net' => 'VITE',
-                    'explorer.yoyow.org' => 'YOYOW',
-                    'explorer.zcha.in' => 'ZEC',
-                    'explorer.zensystem.io' => 'ZEN',
-                    'filfox.info' => 'FIL',
-                    'fio.bloks.io' => 'FIO',
-                    'ftmscan.com' => 'FTM',
-                    'hash-hash.info' => 'HBAR',
-                    'iotexscan.io' => 'IOTX',
-                    'irishub.iobscan.io' => 'IRIS',
-                    'kava.mintscan.io' => 'KAVA',
-                    'kmdexplorer.io' => 'KMD',
-                    'kusama.subscan.io' => 'KSM',
-                    'mainnet.theoan.com' => 'AION',
-                    'minaexplorer.com' => 'MINA',
-                    'nanolooker.com' => 'NANO',
-                    'neoscan.io' => 'NEO',
-                    'nulscan.io' => 'NULS',
-                    'nxscan.com' => 'NXS',
-                    'polkadot.subscan.io' => 'DOT',
-                    'polygonscan.com' => 'POLYGON',
-                    'qtum.info' => 'QTUM',
-                    'ravencoin.network' => 'RVN',
-                    'sc.tokenview.com' => 'SC',
-                    'scan.tomochain.com' => 'TOMO',
-                    'scope.klaytn.com' => 'KLAY',
-                    'secretnodes.com' => 'SCRT',
-                    'solscan.io' => 'SOL',
-                    'steemscan.com' => 'STEEM',
-                    'stellar.expert' => 'XLM',
-                    'tracker.icon.foundation' => 'ICX',
-                    'tronscan.org' => 'TRC20',
-                    'verge-blockchain.info' => 'XVG',
-                    'viewblock.io/arweave' => 'AR',
-                    'viewblock.io/zilliqa' => 'ZIL',
-                    'waltonchain.pro' => 'WTC',
-                    'wavesexplorer.com' => 'WAVES',
-                    'wax.eosx.io' => 'WAXP',
-                    'www.hiveblockexplorer.com' => 'HIVE',
-                    'www.iostabc.com' => 'IOST',
-                    'www.mintscan.io' => 'CTK',
-                    'www.oasisscan.com' => 'ROSE',
-                    'www.thetascan.io' => 'THETA',
-                    'www.wanscan.org' => 'WAN',
                 ),
                 'networksById' => array(
                     'algoexplorer.io' => 'ALGO',
@@ -2246,52 +2183,115 @@ class binance extends Exchange {
                     'www.thetascan.io' => 'THETA',
                     'www.wanscan.org' => 'WAN',
                 ),
-                'impliedNetworks' => array(
-                    'ETH' => array( 'ERC20' => 'ETH' ),
-                    'TRX' => array( 'TRC20' => 'TRX' ),
+                'newOrderRespType' => array(
+                    'market' => 'FULL', // 'ACK' for order id, 'RESULT' for full order or 'FULL' for order with fills
+                    'limit' => 'FULL', // we change it from 'ACK' by default to 'FULL' (returns immediately if limit is not hit)
                 ),
-                'legalMoney' => array(
-                    'AED' => true,
-                    'ARS' => true,
-                    'AUD' => true,
-                    'BRL' => true,
-                    'CAD' => true,
-                    'CHF' => true,
-                    'CZK' => true,
-                    'DKK' => true,
-                    'EUR' => true,
-                    'GBP' => true,
-                    'GHS' => true,
-                    'HKD' => true,
-                    'HUF' => true,
-                    'INR' => true,
-                    'JPY' => true,
-                    'KES' => true,
-                    'KZT' => true,
-                    'MXN' => true,
-                    'NGN' => true,
-                    'NOK' => true,
-                    'NZD' => true,
-                    'PEN' => true,
-                    'PHP' => true,
-                    'PLN' => true,
-                    'RUB' => true,
-                    'SEK' => true,
-                    'TRY' => true,
-                    'UAH' => true,
-                    'UGX' => true,
-                    'USD' => true,
-                    'VND' => true,
-                    'ZAR' => true,
+                'quoteOrderQty' => true, // whether market orders support amounts in quote currency
+                'recvWindow' => 10 * 1000, // 10 sec
+                // keeping this object for backward-compatibility
+                'reverseNetworks' => array(
+                    'algoexplorer.io' => 'ALGO',
+                    'atomscan.com' => 'ATOM',
+                    'bithomp.com' => 'XRP',
+                    'block.gxb.io' => 'GXS',
+                    'blockchair.com/bitcoin' => 'BTC',
+                    'blockchair.com/bitcoin-cash' => 'BCH',
+                    'blockchair.com/ecash' => 'XEC',
+                    'blockscout.com' => 'ETC',
+                    'bloks.io' => 'EOS',
+                    'bscscan.com' => 'BSC',
+                    'btgexplorer.com' => 'BTG',
+                    'bts.ai' => 'BTS',
+                    'cardanoscan.io' => 'ADA',
+                    'cerebro.cortexlabs.ai' => 'CTXC',
+                    'chain.nem.ninja' => 'XEM',
+                    'chainz.cryptoid.info' => 'VIA',
+                    'dashboard.internetcomputer.org' => 'ICP',
+                    'digiexplorer.info' => 'DGB',
+                    'dock.subscan.io' => 'DOCK',
+                    'dogechain.info' => 'DOGE',
+                    'etherscan.io' => 'ERC20',
+                    'explore-fetchhub.fetch.ai' => 'FET',
+                    'explore.vechain.org' => 'VET',
+                    'explorer.ambrosus.com' => 'AMB',
+                    'explorer.ark.io' => 'ARK',
+                    'explorer.avax.network' => 'AVAX',
+                    'explorer.binance.org' => 'BEP2',
+                    'explorer.bitcoindiamond.org' => 'BCD',
+                    'explorer.celo.org' => 'CELO',
+                    'explorer.chiliz.com' => 'CHZ',
+                    'explorer.dcrdata.org' => 'DCR',
+                    'explorer.elrond.com' => 'EGLD',
+                    'explorer.firo.org' => 'FIRO',
+                    'explorer.gochain.io' => 'GO',
+                    'explorer.harmony.one' => 'ONE',
+                    'explorer.helium.com' => 'HNT',
+                    'explorer.iota.org' => 'IOTA',
+                    'explorer.litecoin.net' => 'LTC',
+                    'explorer.lto.network' => 'LTO',
+                    'explorer.nbs.plus' => 'NBS',
+                    'explorer.nebl.io' => 'NEBL',
+                    'explorer.nebulas.io' => 'NAS',
+                    'explorer.nervos.org' => 'CKB',
+                    'explorer.ont.io' => 'ONT',
+                    'explorer.poa.network' => 'POA',
+                    'explorer.rsk.co' => 'RSK',
+                    'explorer.skycoin.com' => 'SKY',
+                    'explorer.stacks.co' => 'STX',
+                    'explorer.vite.net' => 'VITE',
+                    'explorer.yoyow.org' => 'YOYOW',
+                    'explorer.zcha.in' => 'ZEC',
+                    'explorer.zensystem.io' => 'ZEN',
+                    'filfox.info' => 'FIL',
+                    'fio.bloks.io' => 'FIO',
+                    'ftmscan.com' => 'FTM',
+                    'hash-hash.info' => 'HBAR',
+                    'iotexscan.io' => 'IOTX',
+                    'irishub.iobscan.io' => 'IRIS',
+                    'kava.mintscan.io' => 'KAVA',
+                    'kmdexplorer.io' => 'KMD',
+                    'kusama.subscan.io' => 'KSM',
+                    'mainnet.theoan.com' => 'AION',
+                    'minaexplorer.com' => 'MINA',
+                    'nanolooker.com' => 'NANO',
+                    'neoscan.io' => 'NEO',
+                    'nulscan.io' => 'NULS',
+                    'nxscan.com' => 'NXS',
+                    'polkadot.subscan.io' => 'DOT',
+                    'polygonscan.com' => 'POLYGON',
+                    'qtum.info' => 'QTUM',
+                    'ravencoin.network' => 'RVN',
+                    'sc.tokenview.com' => 'SC',
+                    'scan.tomochain.com' => 'TOMO',
+                    'scope.klaytn.com' => 'KLAY',
+                    'secretnodes.com' => 'SCRT',
+                    'solscan.io' => 'SOL',
+                    'steemscan.com' => 'STEEM',
+                    'stellar.expert' => 'XLM',
+                    'tracker.icon.foundation' => 'ICX',
+                    'tronscan.org' => 'TRC20',
+                    'verge-blockchain.info' => 'XVG',
+                    'viewblock.io/arweave' => 'AR',
+                    'viewblock.io/zilliqa' => 'ZIL',
+                    'waltonchain.pro' => 'WTC',
+                    'wavesexplorer.com' => 'WAVES',
+                    'wax.eosx.io' => 'WAXP',
+                    'www.hiveblockexplorer.com' => 'HIVE',
+                    'www.iostabc.com' => 'IOST',
+                    'www.mintscan.io' => 'CTK',
+                    'www.oasisscan.com' => 'ROSE',
+                    'www.thetascan.io' => 'THETA',
+                    'www.wanscan.org' => 'WAN',
                 ),
-                'legalMoneyCurrenciesById' => array(
-                    'BUSD' => 'USD',
-                ),
+                'sandboxMode' => false,
+                'throwMarginModeAlreadySet' => false,
+                'timeDifference' => 0, // the difference between system clock and Binance clock
+                'warnOnFetchOpenOrdersWithoutSymbol' => true,
             ),
             'precisionMode' => DECIMAL_PLACES,
             'pro' => true,
             'rateLimit' => 50,
-            // new metainfo2 interface
             'timeframes' => array(
                 '1s' => '1s', // spot only for now
                 '1m' => '1m',
