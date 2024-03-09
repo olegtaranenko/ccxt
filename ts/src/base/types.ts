@@ -182,7 +182,6 @@ export interface Transaction {
 export interface Tickers extends Dictionary<Ticker> {
 }
 
-
 export interface CurrencyInterface {
     code?: string;
     id: string;
