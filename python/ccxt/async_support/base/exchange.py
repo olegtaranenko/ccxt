@@ -2,7 +2,7 @@
 
 # -----------------------------------------------------------------------------
 
-__version__ = '4.2.65'
+__version__ = '4.2.67'
 
 # -----------------------------------------------------------------------------
 
@@ -1528,7 +1528,9 @@ class Exchange(BaseExchange):
                     responseLength = len(response)
                     if self.verbose or self.verboseTruncate:
                         if not callable(self.verboseLogVeto) or self.verboseLogVeto('pagination', method, None, response):
-                            backwardMessage = 'Dynamic pagination call ' + calls + ' method ' + method + ' response length ' + responseLength + ' timestamp ' + paginationTimestamp
+                            backwardMessage = 'Dynamic pagination call ' + self.number_to_string(calls) + ' method ' + method + ' response length ' + self.number_to_string(responseLength)
+                            if paginationTimestamp is not None:
+                                backwardMessage += ' timestamp ' + self.number_to_string(paginationTimestamp)
                             self.log(backwardMessage)
                     if responseLength == 0:
                         break
@@ -1544,7 +1546,9 @@ class Exchange(BaseExchange):
                     responseLength = len(response)
                     if self.verbose or self.verboseTruncate:
                         if not callable(self.verboseLogVeto) or self.verboseLogVeto('pagination', method, None, response):
-                            forwardMessage = 'Dynamic pagination call ' + calls + ' method ' + method + ' response length ' + responseLength + ' timestamp ' + paginationTimestamp
+                            forwardMessage = 'Dynamic pagination call ' + self.number_to_string(calls) + ' method ' + method + ' response length ' + self.number_to_string(responseLength)
+                            if paginationTimestamp is not None:
+                                forwardMessage += ' timestamp ' + self.number_to_string(paginationTimestamp)
                             self.log(forwardMessage)
                     if responseLength == 0:
                         break
