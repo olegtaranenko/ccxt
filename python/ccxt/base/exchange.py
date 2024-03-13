@@ -4,7 +4,7 @@
 
 # -----------------------------------------------------------------------------
 
-__version__ = '4.2.67'
+__version__ = '4.2.70'
 
 # -----------------------------------------------------------------------------
 
@@ -3514,8 +3514,14 @@ class Exchange(object):
         market = self.market(symbol)
         return self.safe_string(market, 'symbol', symbol)
 
-    def handle_param_string(self, params: object, paramName: str, defaultValue=None):
+    def handle_param_string(self, params: object, paramName: str, defaultValue: Str = None):
         value = self.safe_string(params, paramName, defaultValue)
+        if value is not None:
+            params = self.omit(params, paramName)
+        return [value, params]
+
+    def handle_param_integer(self, params: object, paramName: str, defaultValue: Int = None):
+        value = self.safe_integer(params, paramName, defaultValue)
         if value is not None:
             params = self.omit(params, paramName)
         return [value, params]
@@ -5258,7 +5264,7 @@ class Exchange(object):
     def safe_open_interest(self, interest, market: Market = None):
         return self.extend(interest, {
             'symbol': self.safe_string(market, 'symbol'),
-            'baseVolume': self.safe_number(interest, 'baseVolume'),  # deprecated
+            'baseVolume': self.safe_number(interest, 'baseVolume'),  # deprecated2
             'quoteVolume': self.safe_number(interest, 'quoteVolume'),  # deprecated
             'openInterestAmount': self.safe_number(interest, 'openInterestAmount'),
             'openInterestValue': self.safe_number(interest, 'openInterestValue'),
