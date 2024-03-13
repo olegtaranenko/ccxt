@@ -193,13 +193,13 @@ export default class Exchange {
         outputLen: number;
         blockLen: number;
         create(): import("../static_dependencies/noble-hashes/utils.js").Hash<import("../static_dependencies/noble-hashes/utils.js").Hash<any>>;
-    }, digest?: "binary" | "hex" | "base64") => any;
+    }, digest?: "hex" | "base64" | "binary") => any;
     hmac: (request: import("../static_dependencies/noble-hashes/utils.js").Input, secret: import("../static_dependencies/noble-hashes/utils.js").Input, hash: {
         (message: import("../static_dependencies/noble-hashes/utils.js").Input): Uint8Array;
         outputLen: number;
         blockLen: number;
         create(): import("../static_dependencies/noble-hashes/utils.js").Hash<import("../static_dependencies/noble-hashes/utils.js").Hash<any>>;
-    }, digest?: "binary" | "hex" | "base64") => any;
+    }, digest?: "hex" | "base64" | "binary") => any;
     implodeParams: (string: any, params: any) => any;
     inArray: (needle: any, haystack: any) => any;
     indexBy: (x: any, k: any, out?: {}) => {};
@@ -574,8 +574,8 @@ export default class Exchange {
     socksProxyAgentModule: any;
     socksProxyAgentModuleChecked: boolean;
     proxyDictionaries: any;
-    proxyModulesLoaded: boolean;
-    loadProxyModules(): Promise<void>;
+    proxiesModulesLoading: Promise<any>;
+    loadProxyModules(): Promise<any>;
     setProxyAgents(httpProxy: any, httpsProxy: any, socksProxy: any): any;
     loadHttpProxyAgent(): Promise<any>;
     getHttpAgentIfNeeded(url: any): any;
@@ -797,7 +797,8 @@ export default class Exchange {
     setHeaders(headers: any): any;
     marketId(symbol: string): string;
     symbol(symbol: string): string;
-    handleParamString(params: object, paramName: string, defaultValue?: any): [string, object];
+    handleParamString(params: object, paramName: string, defaultValue?: Str): [string, object];
+    handleParamInteger(params: object, paramName: string, defaultValue?: Int): [Int, object];
     resolvePath(path: any, params: any): any[];
     getListFromObjectValues(objects: any, key: IndexType): any[];
     getSymbolsForMarketType(marketType?: string, subType?: string, symbolWithActiveStatus?: boolean, symbolWithUnknownStatus?: boolean): any[];

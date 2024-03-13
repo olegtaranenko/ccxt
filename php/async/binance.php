@@ -10313,7 +10313,7 @@ class binance extends Exchange {
         }) ();
     }
 
-    public function parse_leverage($leverage, $market = null): Leverage {
+    public function parse_leverage($leverage, $market = null): array {
         $marketId = $this->safe_string($leverage, 'symbol');
         $marginModeRaw = $this->safe_bool($leverage, 'isolated');
         $marginMode = null;
@@ -12202,7 +12202,7 @@ class binance extends Exchange {
         }) ();
     }
 
-    public function parse_margin_mode($marginMode, $market = null): MarginMode {
+    public function parse_margin_mode($marginMode, $market = null): array {
         $marketId = $this->safe_string($marginMode, 'symbol');
         $market = $this->safe_market($marketId, $market);
         $isIsolated = $this->safe_bool($marginMode, 'isolated');
