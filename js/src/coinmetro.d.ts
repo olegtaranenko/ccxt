@@ -1,5 +1,5 @@
 import Exchange from './abstract/coinmetro.js';
-import { Balances, Currency, IndexType, Int, Market, OHLCV, Order, OrderBook, OrderSide, OrderType, Str, Strings, Ticker, Tickers, Trade } from './base/types.js';
+import { Balances, Currency, IndexType, Int, Market, Num, OHLCV, Order, OrderBook, OrderSide, OrderType, Str, Strings, Ticker, Tickers, Trade } from './base/types.js';
 /**
  * @class coinmetro
  * @augments Exchange
@@ -31,25 +31,25 @@ export default class coinmetro extends Exchange {
     parseBalance(response: any): Balances;
     fetchLedger(code?: Str, since?: Int, limit?: Int, params?: {}): Promise<any>;
     parseLedgerEntry(item: any, currency?: Currency): {
-        id: string;
-        timestamp: number;
-        datetime: string;
-        direction: string;
         account: string;
-        referenceId: string;
-        referenceAccount: string;
-        type: string;
-        currency: string;
+        after: number;
         amount: number;
         before: number;
-        after: number;
-        status: string;
+        currency: string;
+        datetime: string;
+        direction: string;
         fee: any;
+        id: string;
         info: import("./base/types.js").Dictionary<any>;
+        referenceAccount: string;
+        referenceId: string;
+        status: string;
+        timestamp: number;
+        type: string;
     };
     parseLedgerEntryDescription(description: any): any[];
     parseLedgerEntryType(type: any): string;
-    createOrder(symbol: string, type: OrderType, side: OrderSide, amount: number, price?: number, params?: {}): Promise<Order>;
+    createOrder(symbol: string, type: OrderType, side: OrderSide, amount: number, price?: Num, params?: {}): Promise<Order>;
     handleCreateOrderSide(sellingCurrency: any, buyingCurrency: any, sellingQty: any, buyingQty: any, request?: {}): {};
     encodeOrderTimeInForce(timeInForce: any): any;
     cancelOrder(id: string, symbol?: Str, params?: {}): Promise<Order>;

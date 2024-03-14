@@ -1,5 +1,5 @@
 import Exchange from './abstract/bitso.js';
-import type { Balances, Currency, Int, Market, OHLCV, Order, OrderBook, OrderSide, OrderType, Str, Strings, Ticker, Trade, Transaction } from './base/types.js';
+import type { Balances, Currency, Int, Market, Num, OHLCV, Order, OrderBook, OrderSide, OrderType, Str, Strings, Ticker, Trade, Transaction } from './base/types.js';
 /**
  * @class bitso
  * @augments Exchange
@@ -9,21 +9,21 @@ export default class bitso extends Exchange {
     fetchLedger(code?: Str, since?: Int, limit?: Int, params?: {}): Promise<any>;
     parseLedgerEntryType(type: any): string;
     parseLedgerEntry(item: any, currency?: Currency): {
-        id: string;
-        timestamp: number;
-        datetime: string;
-        direction: string;
         account: string;
-        referenceId: string;
-        referenceAccount: string;
-        type: string;
-        currency: string;
+        after: number;
         amount: number;
         before: number;
-        after: number;
-        status: string;
+        currency: string;
+        datetime: string;
+        direction: string;
         fee: any;
+        id: string;
         info: import("./base/types.js").Dictionary<any>;
+        referenceAccount: string;
+        referenceId: string;
+        status: string;
+        timestamp: number;
+        type: string;
     };
     fetchMarkets(params?: {}): Promise<any[]>;
     parseBalance(response: any): Balances;
@@ -37,7 +37,7 @@ export default class bitso extends Exchange {
     fetchTrades(symbol: string, since?: Int, limit?: Int, params?: {}): Promise<Trade[]>;
     fetchTradingFees(params?: {}): Promise<{}>;
     fetchMyTrades(symbol?: Str, since?: Int, limit?: Int, params?: {}): Promise<Trade[]>;
-    createOrder(symbol: string, type: OrderType, side: OrderSide, amount: number, price?: number, params?: {}): Promise<Order>;
+    createOrder(symbol: string, type: OrderType, side: OrderSide, amount: number, price?: Num, params?: {}): Promise<Order>;
     cancelOrder(id: string, symbol?: Str, params?: {}): Promise<any>;
     cancelOrders(ids: any, symbol?: Str, params?: {}): Promise<any[]>;
     cancelAllOrders(symbol?: Str, params?: {}): Promise<any[]>;

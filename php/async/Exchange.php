@@ -1017,9 +1017,9 @@ class Exchange extends \ccxt\Exchange {
     public function get_default_options() {
         return array(
             'defaultNetworkCodeReplacements' => array(
+                'CRO' => array( 'CRC20' => 'CRONOS' ),
                 'ETH' => array( 'ERC20' => 'ETH' ),
                 'TRX' => array( 'TRC20' => 'TRX' ),
-                'CRO' => array( 'CRC20' => 'CRONOS' ),
             ),
         );
     }
@@ -1054,21 +1054,21 @@ class Exchange extends \ccxt\Exchange {
         $timestamp = $this->safe_integer($entry, 'timestamp');
         $info = $this->safe_dict($entry, 'info', array());
         return array(
-            'id' => $this->safe_string($entry, 'id'),
-            'timestamp' => $timestamp,
-            'datetime' => $this->iso8601 ($timestamp),
-            'direction' => $direction,
             'account' => $this->safe_string($entry, 'account'),
-            'referenceId' => $this->safe_string($entry, 'referenceId'),
-            'referenceAccount' => $this->safe_string($entry, 'referenceAccount'),
-            'type' => $this->safe_string($entry, 'type'),
-            'currency' => $currency['code'],
+            'after' => $this->parse_number($after),
             'amount' => $this->parse_number($amount),
             'before' => $this->parse_number($before),
-            'after' => $this->parse_number($after),
-            'status' => $this->safe_string($entry, 'status'),
+            'currency' => $currency['code'],
+            'datetime' => $this->iso8601 ($timestamp),
+            'direction' => $direction,
             'fee' => $fee,
+            'id' => $this->safe_string($entry, 'id'),
             'info' => $info,
+            'referenceAccount' => $this->safe_string($entry, 'referenceAccount'),
+            'referenceId' => $this->safe_string($entry, 'referenceId'),
+            'status' => $this->safe_string($entry, 'status'),
+            'timestamp' => $timestamp,
+            'type' => $this->safe_string($entry, 'type'),
         );
     }
 
@@ -1083,12 +1083,12 @@ class Exchange extends \ccxt\Exchange {
             'info' => null,
             'limits' => array(
                 'deposit' => array(
-                    'min' => null,
                     'max' => null,
+                    'min' => null,
                 ),
                 'withdraw' => array(
-                    'min' => null,
                     'max' => null,
+                    'min' => null,
                 ),
             ),
             'name' => null,
@@ -1107,26 +1107,28 @@ class Exchange extends \ccxt\Exchange {
             'baseId' => null,
             'contract' => null,
             'contractSize' => null,
+            'created' => null,
             'expiry' => null,
             'expiryDatetime' => null,
             'future' => null,
             'id' => null,
             'index' => null,
+            'info' => null,
             'inverse' => null,
             'limits' => array(
-                'leverage' => array(
-                    'max' => null,
-                    'min' => null,
-                ),
                 'amount' => array(
                     'max' => null,
                     'min' => null,
                 ),
-                'price' => array(
+                'cost' => array(
                     'max' => null,
                     'min' => null,
                 ),
-                'cost' => array(
+                'leverage' => array(
+                    'max' => null,
+                    'min' => null,
+                ),
+                'price' => array(
                     'max' => null,
                     'min' => null,
                 ),
@@ -1155,8 +1157,6 @@ class Exchange extends \ccxt\Exchange {
             'symbol' => null,
             'taker' => null,
             'type' => null,
-            'created' => null,
-            'info' => null,
         );
         if ($market !== null) {
             $result = array_merge($cleanStructure, $market);
@@ -3170,7 +3170,7 @@ class Exchange extends \ccxt\Exchange {
         throw new NotSupported($this->id . ' createOrder() is not supported yet');
     }
 
-    public function create_trailing_amount_order(string $symbol, string $type, string $side, $amount, $price = null, $trailingAmount = null, $trailingTriggerPrice = null, $params = array ()) {
+    public function create_trailing_amount_order(string $symbol, string $type, string $side, float $amount, ?float $price = null, $trailingAmount = null, $trailingTriggerPrice = null, $params = array ()) {
         return Async\async(function () use ($symbol, $type, $side, $amount, $price, $trailingAmount, $trailingTriggerPrice, $params) {
             /**
              * create a trailing order by providing the $symbol, $type, $side, $amount, $price and $trailingAmount
@@ -3198,7 +3198,7 @@ class Exchange extends \ccxt\Exchange {
         }) ();
     }
 
-    public function create_trailing_percent_order(string $symbol, string $type, string $side, $amount, $price = null, $trailingPercent = null, $trailingTriggerPrice = null, $params = array ()) {
+    public function create_trailing_percent_order(string $symbol, string $type, string $side, float $amount, ?float $price = null, $trailingPercent = null, $trailingTriggerPrice = null, $params = array ()) {
         return Async\async(function () use ($symbol, $type, $side, $amount, $price, $trailingPercent, $trailingTriggerPrice, $params) {
             /**
              * create a trailing order by providing the $symbol, $type, $side, $amount, $price and $trailingPercent
@@ -3275,7 +3275,7 @@ class Exchange extends \ccxt\Exchange {
         }) ();
     }
 
-    public function create_trigger_order(string $symbol, string $type, string $side, $amount, $price = null, $triggerPrice = null, $params = array ()) {
+    public function create_trigger_order(string $symbol, string $type, string $side, float $amount, ?float $price = null, ?float $triggerPrice = null, $params = array ()) {
         return Async\async(function () use ($symbol, $type, $side, $amount, $price, $triggerPrice, $params) {
             /**
              * create a trigger stop order ($type 1)

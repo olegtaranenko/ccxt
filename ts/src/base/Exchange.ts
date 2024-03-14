@@ -447,7 +447,6 @@ export default class Exchange {
     decimalToPrecision = decimalToPrecision;
     decode = decode;
     deepExtend = deepExtend;
-    enableRateLimit = true;
     encode = encode;
     extend = extend;
     extractParams = extractParams;
