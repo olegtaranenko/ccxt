@@ -4,7 +4,7 @@
 import Exchange from './abstract/binance.js';
 import { AccountSuspended, ArgumentsRequired, AuthenticationError, BadRequest, BadResponse, BadSymbol, DDoSProtection, ExchangeError, InsufficientFunds, InvalidNonce, InvalidOrder, MarginModeAlreadySet, NotSupported, OnMaintenance, OperationFailed, OperationRejected, OrderImmediatelyFillable, OrderNotFillable, OrderNotFound, PermissionDenied, RateLimitExceeded, RequestTimeout } from './base/errors.js';
 import { Precise } from './base/Precise.js';
-import type { Balances, Currency, FundingRateHistory, Greeks, Int, Leverage, Leverages, Liquidation, MarginMode, MarginModes, Market, MarketInterface, OHLCV, OpenInterest, Order, OrderBook, OrderRequest, OrderSide, OrderType, Str, Strings, Ticker, Tickers, Trade, Transaction, TransferEntry } from './base/types.js';
+import type { Balances, Currency, FundingRateHistory, Greeks, Int, Leverage, Leverages, Liquidation, MarginMode, MarginModes, Market, MarketInterface, Num, OHLCV, OpenInterest, Order, OrderBook, OrderRequest, OrderSide, OrderType, Str, Strings, Ticker, Tickers, Trade, Transaction, TransferEntry } from './base/types.js';
 import { DECIMAL_PLACES, TRUNCATE } from './base/functions/number.js';
 import { sha256 } from './static_dependencies/noble-hashes/sha256.js';
 import { rsa } from './base/functions/rsa.js';
@@ -4669,7 +4669,7 @@ export default class binance extends Exchange {
         return this.parseTrades (response, market, since, limit);
     }
 
-    async editSpotOrder (id: string, symbol, type, side, amount: number, price: number = undefined, params = {}) {
+    async editSpotOrder (id: string, symbol: string, type: OrderType, side: OrderSide, amount: number, price: Num = undefined, params = {}) {
         /**
          * @method
          * @name binance#editSpotOrder
@@ -4736,7 +4736,7 @@ export default class binance extends Exchange {
         return this.parseOrder (data, market);
     }
 
-    editSpotOrderRequest (id: string, symbol, type, side, amount: number, price: number = undefined, params = {}) {
+    editSpotOrderRequest (id: string, symbol: string, type: OrderType, side: OrderSide, amount: number, price: Num = undefined, params = {}) {
         /**
          * @method
          * @ignore
@@ -4863,7 +4863,7 @@ export default class binance extends Exchange {
         return this.extend (request, params);
     }
 
-    async editContractOrder (id: string, symbol, type, side, amount: number, price: number = undefined, params = {}) {
+    async editContractOrder (id: string, symbol: string, type: OrderType, side: OrderSide, amount: number, price: Num = undefined, params = {}) {
         /**
          * @method
          * @name binance#editContractOrder
@@ -4934,7 +4934,7 @@ export default class binance extends Exchange {
         return this.parseOrder (response, market);
     }
 
-    async editOrder (id: string, symbol: string, type:OrderType, side: OrderSide, amount: number = undefined, price: number = undefined, params = {}) {
+    async editOrder (id: string, symbol: string, type:OrderType, side: OrderSide, amount: Num = undefined, price: Num = undefined, params = {}) {
         /**
          * @method
          * @name binance#editOrder
@@ -5622,7 +5622,7 @@ export default class binance extends Exchange {
         return this.parseOrders (response);
     }
 
-    async createOrder (symbol: string, type: OrderType, side: OrderSide, amount: number, price: number = undefined, params = {}) {
+    async createOrder (symbol: string, type: OrderType, side: OrderSide, amount: number, price: Num = undefined, params = {}) {
         /**
          * @method
          * @name binance#createOrder
@@ -5724,7 +5724,7 @@ export default class binance extends Exchange {
         return this.parseOrder (response, market);
     }
 
-    createOrderRequest (symbol: string, type: OrderType, side: OrderSide, amount: number, price: number = undefined, params = {}) {
+    createOrderRequest (symbol: string, type: OrderType, side: OrderSide, amount: number, price: Num = undefined, params = {}) {
         /**
          * @method
          * @ignore

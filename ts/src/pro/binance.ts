@@ -5,7 +5,7 @@ import binanceRest from '../binance.js';
 import { Precise } from '../base/Precise.js';
 import { ArgumentsRequired, BadRequest, ExchangeError } from '../base/errors.js';
 import { ArrayCache, ArrayCacheBySymbolById, ArrayCacheBySymbolBySide, ArrayCacheByTimestamp } from '../base/ws/Cache.js';
-import type { Balances, Int, OHLCV, Order, OrderBook, OrderSide, OrderType, Position, Str, Strings, Ticker, Tickers, Trade } from '../base/types.js';
+import type { Balances, Int, Num, OHLCV, Order, OrderBook, OrderSide, OrderType, Position, Str, Strings, Ticker, Tickers, Trade } from '../base/types.js';
 import { sha256 } from '../static_dependencies/noble-hashes/sha256.js';
 import { rsa } from '../base/functions/rsa.js';
 import { eddsa } from '../base/functions/crypto.js';
@@ -1678,7 +1678,7 @@ export default class binance extends binanceRest {
         }
     }
 
-    async createOrderWs (symbol: string, type: OrderType, side: OrderSide, amount: number, price: number = undefined, params = {}): Promise<Order> {
+    async createOrderWs (symbol: string, type: OrderType, side: OrderSide, amount: number, price: Num = undefined, params = {}): Promise<Order> {
         /**
          * @method
          * @name binance#createOrderWs
@@ -1822,7 +1822,7 @@ export default class binance extends binanceRest {
         client.resolve (orders, messageHash);
     }
 
-    async editOrderWs (id: string, symbol: string, type: OrderType, side: OrderSide, amount: number, price: number = undefined, params = {}): Promise<Order> {
+    async editOrderWs (id: string, symbol: string, type: OrderType, side: OrderSide, amount: number, price: Num = undefined, params = {}): Promise<Order> {
         /**
          * @method
          * @name binance#editOrderWs
