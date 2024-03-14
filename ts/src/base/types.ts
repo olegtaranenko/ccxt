@@ -432,6 +432,15 @@ export interface Greeks {
     vega: number;
 }
 
+export interface LastPrice {
+    symbol: string,
+    timestamp?: number,
+    datetime?: string,
+    price: number,
+    side?: OrderSide,
+    info: any,
+}
+
 export interface Leverage {
     info: any;
     longLeverage: number;
@@ -441,6 +450,9 @@ export interface Leverage {
 }
 
 export interface Leverages extends Dictionary<Leverage> {
+}
+
+export interface LastPrices extends Dictionary<LastPrice> {
 }
 
 export interface MarginModes extends Dictionary<MarginMode> {
