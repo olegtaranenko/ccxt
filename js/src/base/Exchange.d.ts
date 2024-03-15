@@ -112,7 +112,7 @@ export default class Exchange {
     last_request_path: any;
     last_request_url: any;
     last_response_headers: any;
-    id: Str;
+    id: string;
     has: Dictionary<boolean | 'emulated'>;
     markets: Dictionary<any>;
     status: any;
@@ -193,13 +193,13 @@ export default class Exchange {
         outputLen: number;
         blockLen: number;
         create(): import("../static_dependencies/noble-hashes/utils.js").Hash<import("../static_dependencies/noble-hashes/utils.js").Hash<any>>;
-    }, digest?: "binary" | "hex" | "base64") => any;
+    }, digest?: "hex" | "base64" | "binary") => any;
     hmac: (request: import("../static_dependencies/noble-hashes/utils.js").Input, secret: import("../static_dependencies/noble-hashes/utils.js").Input, hash: {
         (message: import("../static_dependencies/noble-hashes/utils.js").Input): Uint8Array;
         outputLen: number;
         blockLen: number;
         create(): import("../static_dependencies/noble-hashes/utils.js").Hash<import("../static_dependencies/noble-hashes/utils.js").Hash<any>>;
-    }, digest?: "binary" | "hex" | "base64") => any;
+    }, digest?: "hex" | "base64" | "binary") => any;
     implodeParams: (string: any, params: any) => any;
     inArray: (needle: any, haystack: any) => any;
     indexBy: (x: any, k: any, out?: {}) => {};
@@ -531,7 +531,7 @@ export default class Exchange {
         markets: any;
         name: any;
         paddingMode: number;
-        precisionMode: Num;
+        precisionMode: number;
         pro: boolean;
         rateLimit: number;
         requiredCredentials: {
@@ -685,6 +685,9 @@ export default class Exchange {
     parseWsOrderTrade(trade: any, market?: Market): Trade;
     parseWsOHLCV(ohlcv: any, market?: Market): OHLCV;
     fetchFundingRates(symbols?: string[], params?: {}): Promise<{}>;
+    watchFundingRate(symbol: string, params?: {}): Promise<{}>;
+    watchFundingRates(symbols: string[], params?: {}): Promise<{}>;
+    watchFundingRatesForSymbols(symbols: string[], params?: {}): Promise<{}>;
     transfer(code: string, amount: number, fromAccount: string, toAccount: string, params?: {}): Promise<TransferEntry>;
     withdraw(code: string, amount: number, address: string, tag?: any, params?: {}): Promise<Transaction>;
     createDepositAddress(code: string, params?: {}): Promise<DepositAddressResponse>;
