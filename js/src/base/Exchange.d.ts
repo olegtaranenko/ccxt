@@ -5,7 +5,7 @@ import { CountedOrderBook, IndexedOrderBook, OrderBook as WsOrderBook } from './
 import type { Account, Balance, Balances, BorrowInterest, Currency, CurrencyInterface, DepositAddressResponse, DepositWithdrawFeeNetwork, Dictionary, FundingHistory, FundingRate, FundingRateHistory, Greeks, IndexType, Int, LastPrice, LastPrices, LedgerEntry, Leverage, Leverages, LeverageTier, Liquidation, MarginMode, MarginModes, Market, MarketInterface, MarketType, MinMax, Num, OHLCV, OHLCVC, OpenInterest, Order, OrderBook, OrderRequest, OrderSide, OrderType, Position, Str, Ticker, Tickers, Trade, Transaction, TransferEntry } from './types.js';
 import { ArrayCache, ArrayCacheByTimestamp } from './ws/Cache.js';
 import { OrderBook as Ob } from './ws/OrderBook.js';
-export type { Balance, Balances, Currency, DepositAddressResponse, Dictionary, Fee, FundingHistory, FundingRateHistory, Greeks, IndexType, Int, Leverage, Leverages, Liquidation, Market, MinMax, OHLCV, OHLCVC, Order, OrderBook, OrderSide, OrderType, Position, Ticker, Trade, Transaction } from './types.js';
+export type { Balance, Balances, Currency, DepositAddressResponse, Dictionary, Fee, FundingHistory, FundingRateHistory, Greeks, IndexType, Int, Leverage, Leverages, Liquidation, Market, MinMax, OHLCV, OHLCVC, Order, OrderBook, OrderSide, OrderType, Position, Str, Ticker, Trade, Transaction } from './types.js';
 /**
  * @class Exchange
  */
@@ -531,7 +531,7 @@ export default class Exchange {
         markets: any;
         name: any;
         paddingMode: number;
-        precisionMode: number;
+        precisionMode: Num;
         pro: boolean;
         rateLimit: number;
         requiredCredentials: {
