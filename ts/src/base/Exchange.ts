@@ -228,6 +228,7 @@ export type {
     OrderSide,
     OrderType,
     Position,
+    Str,
     Ticker,
     Trade,
     Transaction
