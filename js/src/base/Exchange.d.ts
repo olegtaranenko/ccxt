@@ -2,7 +2,7 @@ import * as functions from './functions.js';
 import { AuthenticationError, DDoSProtection, ExchangeError, ExchangeNotAvailable, RateLimitExceeded, RequestTimeout } from "./errors.js";
 import WsClient from './ws/WsClient.js';
 import { CountedOrderBook, IndexedOrderBook, OrderBook as WsOrderBook } from './ws/OrderBook.js';
-import type { Account, Balance, Balances, BorrowInterest, Currency, CurrencyInterface, DepositAddressResponse, DepositWithdrawFeeNetwork, Dictionary, FundingHistory, FundingRate, FundingRateHistory, Greeks, IndexType, Int, LastPrice, LastPrices, LedgerEntry, Leverage, Leverages, LeverageTier, Liquidation, MarginMode, MarginModes, Market, MarketInterface, MarketType, MinMax, Num, OHLCV, OHLCVC, OpenInterest, Order, OrderBook, OrderRequest, OrderSide, OrderType, Position, Str, Ticker, Tickers, Trade, Transaction, TransferEntry } from './types.js';
+import type { Account, Balance, BalanceAccount, Balances, BorrowInterest, Currency, CurrencyInterface, DepositAddressResponse, DepositWithdrawFeeNetwork, Dictionary, FundingHistory, FundingRate, FundingRateHistory, Greeks, IndexType, Int, LastPrice, LastPrices, LedgerEntry, Leverage, Leverages, LeverageTier, Liquidation, MarginMode, MarginModes, Market, MarketInterface, MarketType, MinMax, Num, OHLCV, OHLCVC, OpenInterest, Order, OrderBook, OrderRequest, OrderSide, OrderType, Position, Str, Ticker, Tickers, Trade, Transaction, TransferEntry } from './types.js';
 import { ArrayCache, ArrayCacheByTimestamp } from './ws/Cache.js';
 import { OrderBook as Ob } from './ws/OrderBook.js';
 export type { Balance, Balances, Currency, DepositAddressResponse, Dictionary, Fee, FundingHistory, FundingRateHistory, Greeks, IndexType, Int, Leverage, Leverages, Liquidation, Market, MinMax, OHLCV, OHLCVC, Order, OrderBook, OrderSide, OrderType, Position, Str, Ticker, Trade, Transaction } from './types.js';
@@ -193,13 +193,13 @@ export default class Exchange {
         outputLen: number;
         blockLen: number;
         create(): import("../static_dependencies/noble-hashes/utils.js").Hash<import("../static_dependencies/noble-hashes/utils.js").Hash<any>>;
-    }, digest?: "hex" | "base64" | "binary") => any;
+    }, digest?: "binary" | "hex" | "base64") => any;
     hmac: (request: import("../static_dependencies/noble-hashes/utils.js").Input, secret: import("../static_dependencies/noble-hashes/utils.js").Input, hash: {
         (message: import("../static_dependencies/noble-hashes/utils.js").Input): Uint8Array;
         outputLen: number;
         blockLen: number;
         create(): import("../static_dependencies/noble-hashes/utils.js").Hash<import("../static_dependencies/noble-hashes/utils.js").Hash<any>>;
-    }, digest?: "hex" | "base64" | "binary") => any;
+    }, digest?: "binary" | "hex" | "base64") => any;
     implodeParams: (string: any, params: any) => any;
     inArray: (needle: any, haystack: any) => any;
     indexBy: (x: any, k: any, out?: {}) => {};
@@ -646,7 +646,7 @@ export default class Exchange {
     filterByValueSinceLimit(array: object[], field: IndexType, value?: any, since?: Int, limit?: Int, key?: string, tail?: boolean): any;
     setSandboxMode(enabled: boolean): void;
     sign(path: any, api?: any, method?: string, params?: {}, headers?: any, body?: any): {};
-    fetchAccounts(params?: {}): Promise<{}>;
+    fetchAccounts(params?: {}): Promise<Account[]>;
     fetchTrades(symbol: string, since?: Int, limit?: Int, params?: {}): Promise<Trade[]>;
     fetchTradesWs(symbol: string, since?: Int, limit?: Int, params?: {}): Promise<Trade[]>;
     watchTrades(symbol: string, since?: Int, limit?: Int, params?: {}): Promise<Trade[]>;
@@ -670,7 +670,7 @@ export default class Exchange {
     parseTrade(trade: object, market?: Market): Trade;
     parseTransaction(transaction: any, currency?: Currency): Transaction;
     parseTransfer(transfer: any, currency?: Currency): object;
-    parseAccount(account: any): {};
+    parseAccount(account: any): Account;
     parseLedgerEntry(item: any, currency?: Currency): object;
     parseOrder(order: any, market?: Market): Order;
     fetchCrossBorrowRates(params?: {}): Promise<{}>;
@@ -791,7 +791,7 @@ export default class Exchange {
     loadTradingLimits(symbols?: string[], reload?: boolean, params?: {}): Promise<Dictionary<any>>;
     safePosition(position: any): Position;
     parsePositions(positions: any[], symbols?: string[], params?: {}): Position[];
-    parseAccounts(accounts: any[], params?: {}): any[];
+    parseAccounts(accounts: any[], params?: {}): Account[];
     parseTrades(trades: any[], market?: Market, since?: Int, limit?: Int, params?: {}): Trade[];
     parseTransactions(transactions: any[], currency?: Currency, since?: Int, limit?: Int, params?: {}): Transaction[];
     parseTransfers(transfers: any[], currency?: Currency, since?: Int, limit?: Int, params?: {}): any;
@@ -916,7 +916,7 @@ export default class Exchange {
     fetchL3OrderBook(symbol: string, limit?: Int, params?: {}): Promise<OrderBook>;
     parseLastPrice(price: any, market?: Market): LastPrice;
     fetchDepositAddress(code: string, params?: {}): Promise<any>;
-    account(): Account;
+    account(): BalanceAccount;
     commonCurrencyCode(currency: string): string;
     currency(code: string): any;
     market(symbol: string): MarketInterface;

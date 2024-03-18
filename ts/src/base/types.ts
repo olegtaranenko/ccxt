@@ -198,10 +198,17 @@ export interface Balance {
     used: Num,
 }
 
-export interface Account {
+export interface BalanceAccount {
     free: Str,
     total: Str,
     used: Str,
+}
+
+export interface Account {
+    id: Str,
+    type: Str,
+    code: Str,
+    info: any,
 }
 
 export interface PartialBalances extends Dictionary<number> {
