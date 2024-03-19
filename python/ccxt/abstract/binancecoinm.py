@@ -144,6 +144,7 @@ class ImplicitAPI:
     fapiprivate_get_order_asyn_id = fapiPrivateGetOrderAsynId = Entry('order/asyn/id', 'fapiPrivate', 'GET', {'cost': 10})
     fapiprivate_get_orderamendment = fapiPrivateGetOrderAmendment = Entry('orderAmendment', 'fapiPrivate', 'GET', {'cost': 1})
     fapiprivate_get_pmaccountinfo = fapiPrivateGetPmAccountInfo = Entry('pmAccountInfo', 'fapiPrivate', 'GET', {'cost': 5})
+    fapiprivate_get_ratelimit_order = fapiPrivateGetRateLimitOrder = Entry('rateLimit/order', 'fapiPrivate', 'GET', {'cost': 1})
     fapiprivate_get_trade_asyn = fapiPrivateGetTradeAsyn = Entry('trade/asyn', 'fapiPrivate', 'GET', {'cost': 1000})
     fapiprivate_get_trade_asyn_id = fapiPrivateGetTradeAsynId = Entry('trade/asyn/id', 'fapiPrivate', 'GET', {'cost': 10})
     fapiprivate_post_batchorders = fapiPrivatePostBatchOrders = Entry('batchOrders', 'fapiPrivate', 'POST', {'cost': 5})

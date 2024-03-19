@@ -151,6 +151,7 @@ interface binance {
     fapiPrivateGetOrderAsynId (params?: {}): Promise<implicitReturnType>;
     fapiPrivateGetOrderAmendment (params?: {}): Promise<implicitReturnType>;
     fapiPrivateGetPmAccountInfo (params?: {}): Promise<implicitReturnType>;
+    fapiPrivateGetRateLimitOrder (params?: {}): Promise<implicitReturnType>;
     fapiPrivateGetTradeAsyn (params?: {}): Promise<implicitReturnType>;
     fapiPrivateGetTradeAsynId (params?: {}): Promise<implicitReturnType>;
     fapiPrivatePostBatchOrders (params?: {}): Promise<implicitReturnType>;

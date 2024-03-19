@@ -448,27 +448,38 @@ export default class testMainClass extends baseMainTestClass {
                 if (isOperationFailed) {
                     // if last retry was gone with same `tempFailure` error, then let's eventually return false
                     if (i === maxRetries - 1) {
-                        let shouldFail = false;
-                        // we do not mute specifically "ExchangeNotAvailable" exception, because it might be a hint about a change in API engine (but its subtype "OnMaintenance" can be muted)
-                        if ((e instanceof ExchangeNotAvailable) && !(e instanceof OnMaintenance)) {
-                            shouldFail = true;
-                        }
-                        // if it's `loadMarkets` call (which is main request), then don't return the test as passed, because it's mandatory and we should fail the test
-                        else if (isLoadMarkets) {
-                            shouldFail = true;
-                        }
-                        else {
-                            shouldFail = false;
-                        }
-                        // final step
-                        if (shouldFail) {
-                            dump('[TEST_FAILURE]', 'Method could not be tested due to a repeated Network/Availability issues', ' | ', this.exchangeHint(exchange), methodName, argsStringified, exceptionMessage(e));
-                            return false;
+                        const isOnMaintenance = (e instanceof OnMaintenance);
+                        const isExchangeNotAvailable = (e instanceof ExchangeNotAvailable);
+                        let shouldFail = undefined;
+                        let returnSuccess = undefined;
+                        if (isLoadMarkets) {
+                            // if "loadMarkets" does not succeed, we must return "false" to caller method, to stop tests continual
+                            returnSuccess = false;
+                            // we might not break exchange tests, if exchange is on maintenance at this moment
+                            if (isOnMaintenance) {
+                                shouldFail = false;
+                            }
+                            else {
+                                shouldFail = true;
+                            }
                         }
                         else {
-                            dump('[TEST_WARNING]', 'Method could not be tested due to a repeated Network/Availability issues', ' | ', this.exchangeHint(exchange), methodName, argsStringified, exceptionMessage(e));
-                            return true;
+                            // for any other method tests:
+                            if (isExchangeNotAvailable && !isOnMaintenance) {
+                                // break exchange tests if "ExchangeNotAvailable" exception is thrown, but it's not maintenance
+                                shouldFail = true;
+                                returnSuccess = false;
+                            }
+                            else {
+                                // in all other cases of OperationFailed, show Warning, but don't mark test as failed
+                                shouldFail = false;
+                                returnSuccess = true;
+                            }
                         }
+                        // output the message
+                        const failType = shouldFail ? '[TEST_FAILURE]' : '[TEST_WARNING]';
+                        dump(failType, 'Method could not be tested due to a repeated Network/Availability issues', ' | ', this.exchangeHint(exchange), methodName, argsStringified, exceptionMessage(e));
+                        return returnSuccess;
                     }
                     else {
                         // wait and retry again
@@ -1530,11 +1541,10 @@ export default class testMainClass extends baseMainTestClass {
     async testKucoin() {
         const exchange = this.initOfflineExchange('kucoin');
         let reqHeaders = undefined;
-        const optionsString = exchange.options.toString();
         const spotId = exchange.options['partner']['spot']['id'];
         const spotKey = exchange.options['partner']['spot']['key'];
-        assert(spotId === 'ccxt', 'kucoin - id: ' + spotId + ' not in options: ' + optionsString);
-        assert(spotKey === '9e58cc35-5b5e-4133-92ec-166e3f077cb8', 'kucoin - key: ' + spotKey + ' not in options: ' + optionsString);
+        assert(spotId === 'ccxt', 'kucoin - id: ' + spotId + ' not in options');
+        assert(spotKey === '9e58cc35-5b5e-4133-92ec-166e3f077cb8', 'kucoin - key: ' + spotKey + ' not in options.');
         try {
             await exchange.createOrder('BTC/USDT', 'limit', 'buy', 1, 20000);
         }
@@ -1551,11 +1561,10 @@ export default class testMainClass extends baseMainTestClass {
         const exchange = this.initOfflineExchange('kucoinfutures');
         let reqHeaders = undefined;
         const id = 'ccxtfutures';
-        const optionsString = exchange.options['partner']['future'].toString();
         const futureId = exchange.options['partner']['future']['id'];
         const futureKey = exchange.options['partner']['future']['key'];
-        assert(futureId === id, 'kucoinfutures - id: ' + futureId + ' not in options: ' + optionsString);
-        assert(futureKey === '1b327198-f30c-4f14-a0ac-918871282f15', 'kucoinfutures - key: ' + futureKey + ' not in options: ' + optionsString);
+        assert(futureId === id, 'kucoinfutures - id: ' + futureId + ' not in options.');
+        assert(futureKey === '1b327198-f30c-4f14-a0ac-918871282f15', 'kucoinfutures - key: ' + futureKey + ' not in options.');
         try {
             await exchange.createOrder('BTC/USDT:USDT', 'limit', 'buy', 1, 20000);
         }
@@ -1570,8 +1579,7 @@ export default class testMainClass extends baseMainTestClass {
         const exchange = this.initOfflineExchange('bitget');
         let reqHeaders = undefined;
         const id = 'p4sve';
-        const optionsString = exchange.options.toString();
-        assert(exchange.options['broker'] === id, 'bitget - id: ' + id + ' not in options: ' + optionsString);
+        assert(exchange.options['broker'] === id, 'bitget - id: ' + id + ' not in options');
         try {
             await exchange.createOrder('BTC/USDT', 'limit', 'buy', 1, 20000);
         }
@@ -1586,8 +1594,7 @@ export default class testMainClass extends baseMainTestClass {
         const exchange = this.initOfflineExchange('mexc');
         let reqHeaders = undefined;
         const id = 'CCXT';
-        const optionsString = exchange.options.toString();
-        assert(exchange.options['broker'] === id, 'mexc - id: ' + id + ' not in options: ' + optionsString);
+        assert(exchange.options['broker'] === id, 'mexc - id: ' + id + ' not in options');
         await exchange.loadMarkets();
         try {
             await exchange.createOrder('BTC/USDT', 'limit', 'buy', 1, 20000);
@@ -1595,8 +1602,7 @@ export default class testMainClass extends baseMainTestClass {
         catch (e) {
             reqHeaders = exchange.last_request_headers;
         }
-        const reqHeadersString = reqHeaders !== undefined ? reqHeaders.toString() : 'undefined';
-        assert(reqHeaders['source'] === id, 'mexc - id: ' + id + ' not in headers: ' + reqHeadersString);
+        assert(reqHeaders['source'] === id, 'mexc - id: ' + id + ' not in headers.');
         await close(exchange);
         return true;
     }
@@ -1700,8 +1706,7 @@ export default class testMainClass extends baseMainTestClass {
         const exchange = this.initOfflineExchange('bingx');
         let reqHeaders = undefined;
         const id = 'CCXT';
-        const optionsString = exchange.options.toString();
-        assert(exchange.options['broker'] === id, 'bingx - id: ' + id + ' not in options: ' + optionsString);
+        assert(exchange.options['broker'] === id, 'bingx - id: ' + id + ' not in options');
         try {
             await exchange.createOrder('BTC/USDT', 'limit', 'buy', 1, 20000);
         }
@@ -1709,8 +1714,7 @@ export default class testMainClass extends baseMainTestClass {
             // we expect an error here, we're only interested in the headers
             reqHeaders = exchange.last_request_headers;
         }
-        const reqHeadersString = reqHeaders !== undefined ? reqHeaders.toString() : 'undefined';
-        assert(reqHeaders['X-SOURCE-KEY'] === id, 'bingx - id: ' + id + ' not in headers: ' + reqHeadersString);
+        assert(reqHeaders['X-SOURCE-KEY'] === id, 'bingx - id: ' + id + ' not in headers.');
         await close(exchange);
     }
     async testPhemex() {

@@ -721,6 +721,11 @@ public partial class binanceusdm : binance
         return await this.callAsync ("fapiPrivateGetPmAccountInfo",parameters);
     }
 
+    public async Task<object> fapiPrivateGetRateLimitOrder (object parameters = null)
+    {
+        return await this.callAsync ("fapiPrivateGetRateLimitOrder",parameters);
+    }
+
     public async Task<object> fapiPrivateGetTradeAsyn (object parameters = null)
     {
         return await this.callAsync ("fapiPrivateGetTradeAsyn",parameters);

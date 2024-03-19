@@ -4,7 +4,7 @@
 
 # -----------------------------------------------------------------------------
 
-__version__ = '4.2.75'
+__version__ = '4.2.76'
 
 # -----------------------------------------------------------------------------
 
@@ -3779,6 +3779,11 @@ class Exchange(object):
         return result
 
     def check_required_credentials(self, error=True):
+        """
+         * @ignore
+        :param boolean error: raise an error that a credential is required if True
+        :returns boolean: True if all required credentials have been set, otherwise False or an error is thrown is param error=true
+        """
         keys = list(self.requiredCredentials.keys())
         for i in range(0, len(keys)):
             key = keys[i]

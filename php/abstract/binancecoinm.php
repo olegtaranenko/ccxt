@@ -433,6 +433,9 @@ abstract class binancecoinm extends \ccxt\binance {
     public function fapiprivate_get_pmaccountinfo($params = array()) {
         return $this->request('pmAccountInfo', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 5));
     }
+    public function fapiprivate_get_ratelimit_order($params = array()) {
+        return $this->request('rateLimit/order', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
+    }
     public function fapiprivate_get_trade_asyn($params = array()) {
         return $this->request('trade/asyn', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1000));
     }
@@ -2532,6 +2535,9 @@ abstract class binancecoinm extends \ccxt\binance {
     }
     public function fapiPrivateGetPmAccountInfo($params = array()) {
         return $this->request('pmAccountInfo', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 5));
+    }
+    public function fapiPrivateGetRateLimitOrder($params = array()) {
+        return $this->request('rateLimit/order', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
     }
     public function fapiPrivateGetTradeAsyn($params = array()) {
         return $this->request('trade/asyn', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1000));

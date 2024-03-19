@@ -42,11 +42,11 @@ use React\EventLoop\Loop;
 
 use Exception;
 
-$version = '4.2.75';
+$version = '4.2.76';
 
 class Exchange extends \ccxt\Exchange {
 
-    const VERSION = '4.2.75';
+    const VERSION = '4.2.76';
 
     public $browser;
     public $marketsLoading = null;
@@ -2836,6 +2836,11 @@ class Exchange extends \ccxt\Exchange {
     }
 
     public function check_required_credentials($error = true) {
+        /**
+         * @ignore
+         * @param {boolean} $error throw an $error that a credential is required if true
+         * @return {boolean} true if all required credentials have been set, otherwise false or an $error is thrown is param $error=true
+         */
         $keys = is_array($this->requiredCredentials) ? array_keys($this->requiredCredentials) : array();
         for ($i = 0; $i < count($keys); $i++) {
             $key = $keys[$i];

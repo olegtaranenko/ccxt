@@ -1,7 +1,7 @@
 export declare type Bool = boolean | undefined;
 export declare type IndexType = number | string;
 export declare type Int = number | undefined;
-export declare type MarketType = 'future' | 'margin' | 'option' | 'spot' | 'swap';
+export declare type MarketType = 'future' | 'margin' | 'option' | 'spot' | 'swap' | 'delivery' | 'index';
 export declare type Num = number | undefined;
 export declare type OrderSide = 'buy' | 'sell' | string;
 export declare type OrderType = 'limit' | 'market' | string;

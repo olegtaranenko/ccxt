@@ -219,6 +219,7 @@ class binance extends binance$1 {
                         'order/asyn/id': 10,
                         'orderAmendment': 1,
                         'pmAccountInfo': 5,
+                        'rateLimit/order': 1,
                         'trade/asyn': 1000,
                         'trade/asyn/id': 10,
                     },
@@ -11688,6 +11689,7 @@ class binance extends binance$1 {
          * @param {int} [limit] default 30, max 500
          * @param {object} [params] exchange specific parameters
          * @param {int} [params.until] the time(ms) of the latest record to retrieve as a unix timestamp
+         * @param {boolean} [params.paginate] default false, when true will automatically paginate by calling this endpoint multiple times. See in the docs all the [availble parameters](https://github.com/ccxt/ccxt/wiki/Manual#pagination-params)
          * @returns {object} an array of [open interest structure]{@link https://docs.ccxt.com/#/?id=open-interest-structure}
          */
         if (timeframe === '1m') {

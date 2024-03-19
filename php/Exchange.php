@@ -38,7 +38,7 @@ use Elliptic\EdDSA;
 use BN\BN;
 use Exception;
 
-$version = '4.2.75';
+$version = '4.2.76';
 
 // rounding mode
 const TRUNCATE = 0;
@@ -57,7 +57,7 @@ const PAD_WITH_ZERO = 6;
 
 class Exchange {
 
-    const VERSION = '4.2.75';
+    const VERSION = '4.2.76';
 
     private static $base58_alphabet = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
     private static $base58_encoder = null;
@@ -4669,6 +4669,11 @@ class Exchange {
     }
 
     public function check_required_credentials($error = true) {
+        /**
+         * @ignore
+         * @param {boolean} $error throw an $error that a credential is required if true
+         * @return {boolean} true if all required credentials have been set, otherwise false or an $error is thrown is param $error=true
+         */
         $keys = is_array($this->requiredCredentials) ? array_keys($this->requiredCredentials) : array();
         for ($i = 0; $i < count($keys); $i++) {
             $key = $keys[$i];
