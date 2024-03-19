@@ -2,7 +2,7 @@ export type Bool = boolean | undefined;
 // must be an integer in other langs
 export type IndexType = number | string;
 export type Int = number | undefined;
-export type MarketType = 'future' | 'margin' | 'option' | 'spot' | 'swap';
+export type MarketType = 'future' | 'margin' | 'option' | 'spot' | 'swap' | 'delivery' | 'index';
 export type Num = number | undefined;
 export type OrderSide = 'buy' | 'sell' | string;
 export type OrderType = 'limit' | 'market' | string;
