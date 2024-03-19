@@ -146,10 +146,10 @@ import { OrderBook as WsOrderBook, IndexedOrderBook, CountedOrderBook } from './
 //
 import { axolotl } from './functions/crypto.js';
 // import types
-import type { Market, Trade, Fee, Ticker, OHLCV, OHLCVC, Order, OrderBook, Balance, Balances, Dictionary, Transaction, DepositAddressResponse, Currency, MinMax, IndexType, Int, OrderType, OrderSide, Position, FundingRate, DepositWithdrawFeeNetwork, LedgerEntry, BorrowInterest, OpenInterest, LeverageTier, TransferEntry, BorrowRate, FundingRateHistory, Liquidation, FundingHistory, OrderRequest, MarginMode, Tickers, Greeks,  Str, Num, MarketInterface, CurrencyInterface, Account, MarginModes, MarketType, Leverage, Leverages, LastPrice, LastPrices } from './types.js';
+import type { Market, Trade, Fee, Ticker, OHLCV, OHLCVC, Order, OrderBook, Balance, Balances, Dictionary, Transaction, DepositAddressResponse, Currency, MinMax, IndexType, Int, OrderType, OrderSide, Position, FundingRate, DepositWithdrawFeeNetwork, LedgerEntry, BorrowInterest, OpenInterest, LeverageTier, TransferEntry, BorrowRate, FundingRateHistory, Liquidation, FundingHistory, OrderRequest, MarginMode, Tickers, Greeks,  Str, Num, MarketInterface, CurrencyInterface, BalanceAccount, MarginModes, MarketType, Leverage, Leverages, LastPrice, LastPrices, Account } from './types.js';
 // export {Market, Trade, Fee, Ticker, OHLCV, OHLCVC, Order, OrderBook, Balance, Balances, Dictionary, Transaction, DepositAddressResponse, Currency, MinMax, IndexType, Int, OrderType, OrderSide, Position, FundingRateHistory, Liquidation, FundingHistory} from './types.js'
 // import { Market, Trade, Fee, Ticker, OHLCV, OHLCVC, Order, OrderBook, Balance, Balances, Dictionary, Transaction, DepositAddressResponse, Currency, MinMax, IndexType, Int, OrderType, OrderSide, Position, FundingRateHistory, OpenInterest, Liquidation, OrderRequest, FundingHistory, MarginMode, Tickers, Greeks, Str, Num, MarketInterface, CurrencyInterface, Account } from './types.js';
-export type { Market, Trade, Fee, Ticker, OHLCV, OHLCVC, Order, OrderBook, Balance, Balances, Dictionary, Transaction, DepositAddressResponse, Currency, MinMax, IndexType, Int, OrderType, OrderSide, Position, FundingRateHistory, Liquidation, FundingHistory, Greeks, Leverage, Leverages } from './types.js'
+export type { Market, Trade, Fee, Ticker, OHLCV, OHLCVC, Order, OrderBook, Balance, Balances, Dictionary, Transaction, DepositAddressResponse, Currency, MinMax, IndexType, Int, OrderType, OrderSide, Position, FundingRateHistory, Liquidation, FundingHistory, Greeks, Leverage, Leverages, Str } from './types.js'
 
 // ----------------------------------------------------------------------------
 // move this elsewhere.
@@ -282,7 +282,7 @@ export default class Exchange {
     last_request_url      = undefined
     last_request_path     = undefined
 
-    id: Str = undefined
+    id: string = 'Exchange';
 
     markets: Dictionary<any> = undefined
     has: Dictionary<boolean | 'emulated'>
@@ -2160,7 +2160,7 @@ export default class Exchange {
         return {};
     }
 
-    async fetchAccounts (params = {}): Promise<{}> {
+    async fetchAccounts (params = {}): Promise<Account[]> {
         throw new NotSupported (this.id + ' fetchAccounts() is not supported yet');
     }
 
@@ -2276,7 +2276,7 @@ export default class Exchange {
         throw new NotSupported (this.id + ' parseTransfer() is not supported yet');
     }
 
-    parseAccount (account): {} {
+    parseAccount (account): Account {
         throw new NotSupported (this.id + ' parseAccount() is not supported yet');
     }
 
@@ -2334,6 +2334,18 @@ export default class Exchange {
 
     async fetchFundingRates (symbols: string[] = undefined, params = {}): Promise<{}> {
         throw new NotSupported (this.id + ' fetchFundingRates() is not supported yet');
+    }
+
+    async watchFundingRate (symbol: string, params = {}): Promise<{}> {
+        throw new NotSupported (this.id + ' watchFundingRate() is not supported yet');
+    }
+
+    async watchFundingRates (symbols: string[], params = {}): Promise<{}> {
+        throw new NotSupported (this.id + ' watchFundingRates() is not supported yet');
+    }
+
+    async watchFundingRatesForSymbols (symbols: string[], params = {}): Promise<{}> {
+        return await this.watchFundingRates (symbols, params);
     }
 
     async transfer (code: string, amount: number, fromAccount: string, toAccount: string, params = {}): Promise<TransferEntry> {
@@ -3614,10 +3626,18 @@ export default class Exchange {
         // for example, if 'ETH' is passed for networkCode, but 'ETH' key not defined in `options->networks` object
         if (networkId === undefined) {
             if (currencyCode === undefined) {
-                // if currencyCode was not provided, then we just set passed value to networkId
-                networkId = networkCode;
+                const currencies = Object.values (this.currencies);
+                for (let i = 0; i < currencies.length; i++) {
+                    const currency = [ i ];
+                    const networks = this.safeDict (currency, 'networks');
+                    const network = this.safeDict (networks, networkCode);
+                    networkId = this.safeString (network, 'id');
+                    if (networkId !== undefined) {
+                        break;
+                    }
+                }
             } else {
-                // if currencyCode was provided, then we try to find if that currencyCode has a replacement (i.e. ERC20 for ETH)
+                // if currencyCode was provided, then we try to find if that currencyCode has a replacement (i.e. ERC20 for ETH) or is in the currency
                 const defaultNetworkCodeReplacements = this.safeValue (this.options, 'defaultNetworkCodeReplacements', {});
                 if (currencyCode in defaultNetworkCodeReplacements) {
                     // if there is a replacement for the passed networkCode, then we use it to find network-id in `options->networks` object
@@ -3632,11 +3652,17 @@ export default class Exchange {
                             break;
                         }
                     }
+                } else {
+                    // serach for network inside currency
+                    const currency = this.safeDict (this.currencies, currencyCode);
+                    const networks = this.safeDict (currency, 'networks');
+                    const network = this.safeDict (networks, networkCode);
+                    networkId = this.safeString (network, 'id');
                 }
-                // if it wasn't found, we just set the provided value to network-id
-                if (networkId === undefined) {
-                    networkId = networkCode;
-                }
+            }
+            // if it wasn't found, we just set the provided value to network-id
+            if (networkId === undefined) {
+                networkId = networkCode;
             }
         }
         return networkId;
@@ -3827,7 +3853,7 @@ export default class Exchange {
         return this.filterByArrayPositions (result, 'symbol', symbols, false);
     }
 
-    parseAccounts (accounts: any[], params = {}) {
+    parseAccounts (accounts: any[], params = {}): Account[] {
         accounts = this.toArray (accounts);
         const result = [];
         for (let i = 0; i < accounts.length; i++) {
@@ -4219,6 +4245,12 @@ export default class Exchange {
     }
 
     checkRequiredCredentials (error = true) {
+        /**
+         * @ignore
+         * @method
+         * @param {boolean} error throw an error that a credential is required if true
+         * @returns {boolean} true if all required credentials have been set, otherwise false or an error is thrown is param error=true
+         */
         const keys = Object.keys (this.requiredCredentials);
         for (let i = 0; i < keys.length; i++) {
             const key = keys[i];
@@ -4998,7 +5030,7 @@ export default class Exchange {
         }
     }
 
-    account (): Account {
+    account (): BalanceAccount {
         return {
             'free': undefined,
             'used': undefined,
