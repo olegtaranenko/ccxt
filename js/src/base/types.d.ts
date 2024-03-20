@@ -358,9 +358,9 @@ export interface OrderRequest {
     amount?: number;
     params?: any;
     price?: number | undefined;
-    side: Str;
+    side: OrderSide;
     symbol: string;
-    type: Str;
+    type: OrderType;
 }
 export interface FundingHistory {
     amount: number;
