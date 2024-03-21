@@ -62,6 +62,7 @@ class baseMainTestClass {
     public $lang = 'PHP';
     public $is_synchronous = is_synchronous;
     public $test_files = [];
+    public $skipped_settings_for_exchange = [];
     public $skipped_methods = [];
     public $checked_public_tests = [];
     public $public_tests = [];
@@ -452,7 +453,8 @@ class testMainClass extends baseMainTestClass {
         // skipped tests
         $skipped_file = $this->root_dir_for_skips . 'skip-tests.json';
         $skipped_settings = io_file_read($skipped_file);
-        $skipped_settings_for_exchange = $exchange->safe_value($skipped_settings, $exchange_id, array());
+        $this->skipped_settings_for_exchange = $exchange->safe_value($skipped_settings, $exchange_id, array());
+        $skipped_settings_for_exchange = $this->skipped_settings_for_exchange;
         // others
         $timeout = $exchange->safe_value($skipped_settings_for_exchange, 'timeout');
         if ($timeout !== null) {
@@ -735,31 +737,20 @@ class testMainClass extends baseMainTestClass {
         if (!$result) {
             return false;
         }
-        $symbols = ['BTC/USDT', 'BTC/USDC', 'BTC/CNY', 'BTC/USD', 'BTC/EUR', 'BTC/ETH', 'ETH/BTC', 'BTC/JPY', 'ETH/EUR', 'ETH/JPY', 'ETH/CNY', 'ETH/USD', 'LTC/CNY', 'DASH/BTC', 'DOGE/BTC', 'BTC/AUD', 'BTC/PLN', 'USD/SLL', 'BTC/RUB', 'BTC/UAH', 'LTC/BTC', 'EUR/USD'];
-        $result_symbols = [];
-        $exchange_specific_symbols = $exchange->symbols;
-        for ($i = 0; $i < count($exchange_specific_symbols); $i++) {
-            $symbol = $exchange_specific_symbols[$i];
-            if ($exchange->in_array($symbol, $symbols)) {
-                $result_symbols[] = $symbol;
-            }
-        }
-        $result_msg = '';
-        $result_length = count($result_symbols);
         $exchange_symbols_length = count($exchange->symbols);
-        if ($result_length > 0) {
-            if ($exchange_symbols_length > $result_length) {
-                $result_msg = implode(', ', $result_symbols) . ' + more...';
-            } else {
-                $result_msg = implode(', ', $result_symbols);
-            }
-        }
-        dump('[INFO:MAIN] Exchange loaded', $exchange_symbols_length, 'symbols', $result_msg);
+        dump('[INFO:MAIN] Exchange loaded', $exchange_symbols_length, 'symbols');
         return true;
     }
 
     public function get_test_symbol($exchange, $is_spot, $symbols) {
         $symbol = null;
+        $preferred_spot_symbol = $exchange->safe_string($this->skipped_settings_for_exchange, 'preferredSpotSymbol');
+        $preferred_swap_symbol = $exchange->safe_string($this->skipped_settings_for_exchange, 'preferredSwapSymbol');
+        if ($is_spot && $preferred_spot_symbol) {
+            return $preferred_spot_symbol;
+        } elseif (!$is_spot && $preferred_swap_symbol) {
+            return $preferred_swap_symbol;
+        }
         for ($i = 0; $i < count($symbols); $i++) {
             $s = $symbols[$i];
             $market = $exchange->safe_value($exchange->markets, $s);
@@ -805,9 +796,9 @@ class testMainClass extends baseMainTestClass {
 
     public function get_valid_symbol($exchange, $spot = true) {
         $current_type_markets = $this->get_markets_from_exchange($exchange, $spot);
-        $codes = ['BTC', 'ETH', 'XRP', 'LTC', 'BCH', 'EOS', 'BNB', 'BSV', 'USDT', 'ATOM', 'BAT', 'BTG', 'DASH', 'DOGE', 'ETC', 'IOTA', 'LSK', 'MKR', 'NEO', 'PAX', 'QTUM', 'TRX', 'TUSD', 'USD', 'USDC', 'WAVES', 'XEM', 'XMR', 'ZEC', 'ZRX'];
-        $spot_symbols = ['BTC/USDT', 'BTC/USDC', 'BTC/USD', 'BTC/CNY', 'BTC/EUR', 'BTC/ETH', 'ETH/BTC', 'ETH/USD', 'ETH/USDT', 'BTC/JPY', 'LTC/BTC', 'ZRX/WETH', 'EUR/USD'];
-        $swap_symbols = ['BTC/USDT:USDT', 'BTC/USDC:USDC', 'BTC/USD:USD', 'ETH/USDT:USDT', 'ETH/USD:USD', 'LTC/USDT:USDT', 'DOGE/USDT:USDT', 'ADA/USDT:USDT', 'BTC/USD:BTC', 'ETH/USD:ETH'];
+        $codes = ['BTC', 'ETH', 'XRP', 'LTC', 'BNB', 'DASH', 'DOGE', 'ETC', 'TRX', 'USDT', 'USDC', 'USD', 'EUR', 'TUSD', 'CNY', 'JPY', 'BRL'];
+        $spot_symbols = ['BTC/USDT', 'BTC/USDC', 'BTC/USD', 'BTC/CNY', 'BTC/EUR', 'BTC/AUD', 'BTC/BRL', 'BTC/JPY', 'ETH/USDT', 'ETH/USDC', 'ETH/USD', 'ETH/CNY', 'ETH/EUR', 'ETH/AUD', 'ETH/BRL', 'ETH/JPY', 'EUR/USDT', 'EUR/USD', 'EUR/USDC', 'USDT/EUR', 'USD/EUR', 'USDC/EUR', 'BTC/ETH', 'ETH/BTC'];
+        $swap_symbols = ['BTC/USDT:USDT', 'BTC/USDC:USDC', 'BTC/USD:USD', 'ETH/USDT:USDT', 'ETH/USDC:USDC', 'ETH/USD:USD', 'BTC/USD:BTC', 'ETH/USD:ETH'];
         $target_symbols = $spot ? $spot_symbols : $swap_symbols;
         $symbol = $this->get_test_symbol($exchange, $spot, $target_symbols);
         // if symbols wasn't found from above hardcoded list, then try to locate any symbol which has our target hardcoded 'base' code

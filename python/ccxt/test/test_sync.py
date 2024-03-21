@@ -128,6 +128,7 @@ class baseMainTestClass():
     response_tests = False
     ws_tests = False
     load_keys = False
+    skipped_settings_for_exchange = {}
     skipped_methods = {}
     check_public_tests = {}
     test_files = {}
@@ -377,7 +378,8 @@ class testMainClass(baseMainTestClass):
         # skipped tests
         skipped_file = self.root_dir_for_skips + 'skip-tests.json'
         skipped_settings = io_file_read(skipped_file)
-        skipped_settings_for_exchange = exchange.safe_value(skipped_settings, exchange_id, {})
+        self.skipped_settings_for_exchange = exchange.safe_value(skipped_settings, exchange_id, {})
+        skipped_settings_for_exchange = self.skipped_settings_for_exchange
         # others
         timeout = exchange.safe_value(skipped_settings_for_exchange, 'timeout')
         if timeout is not None:
@@ -614,26 +616,18 @@ class testMainClass(baseMainTestClass):
         result = self.test_safe('loadMarkets', exchange, [], True)
         if not result:
             return False
-        symbols = ['BTC/USDT', 'BTC/USDC', 'BTC/CNY', 'BTC/USD', 'BTC/EUR', 'BTC/ETH', 'ETH/BTC', 'BTC/JPY', 'ETH/EUR', 'ETH/JPY', 'ETH/CNY', 'ETH/USD', 'LTC/CNY', 'DASH/BTC', 'DOGE/BTC', 'BTC/AUD', 'BTC/PLN', 'USD/SLL', 'BTC/RUB', 'BTC/UAH', 'LTC/BTC', 'EUR/USD']
-        result_symbols = []
-        exchange_specific_symbols = exchange.symbols
-        for i in range(0, len(exchange_specific_symbols)):
-            symbol = exchange_specific_symbols[i]
-            if exchange.in_array(symbol, symbols):
-                result_symbols.append(symbol)
-        result_msg = ''
-        result_length = len(result_symbols)
         exchange_symbols_length = len(exchange.symbols)
-        if result_length > 0:
-            if exchange_symbols_length > result_length:
-                result_msg = ', '.join(result_symbols) + ' + more...'
-            else:
-                result_msg = ', '.join(result_symbols)
-        dump('[INFO:MAIN] Exchange loaded', exchange_symbols_length, 'symbols', result_msg)
+        dump('[INFO:MAIN] Exchange loaded', exchange_symbols_length, 'symbols')
         return True
 
     def get_test_symbol(self, exchange, is_spot, symbols):
         symbol = None
+        preferred_spot_symbol = exchange.safe_string(self.skipped_settings_for_exchange, 'preferredSpotSymbol')
+        preferred_swap_symbol = exchange.safe_string(self.skipped_settings_for_exchange, 'preferredSwapSymbol')
+        if is_spot and preferred_spot_symbol:
+            return preferred_spot_symbol
+        elif not is_spot and preferred_swap_symbol:
+            return preferred_swap_symbol
         for i in range(0, len(symbols)):
             s = symbols[i]
             market = exchange.safe_value(exchange.markets, s)
@@ -668,9 +662,9 @@ class testMainClass(baseMainTestClass):
 
     def get_valid_symbol(self, exchange, spot=True):
         current_type_markets = self.get_markets_from_exchange(exchange, spot)
-        codes = ['BTC', 'ETH', 'XRP', 'LTC', 'BCH', 'EOS', 'BNB', 'BSV', 'USDT', 'ATOM', 'BAT', 'BTG', 'DASH', 'DOGE', 'ETC', 'IOTA', 'LSK', 'MKR', 'NEO', 'PAX', 'QTUM', 'TRX', 'TUSD', 'USD', 'USDC', 'WAVES', 'XEM', 'XMR', 'ZEC', 'ZRX']
-        spot_symbols = ['BTC/USDT', 'BTC/USDC', 'BTC/USD', 'BTC/CNY', 'BTC/EUR', 'BTC/ETH', 'ETH/BTC', 'ETH/USD', 'ETH/USDT', 'BTC/JPY', 'LTC/BTC', 'ZRX/WETH', 'EUR/USD']
-        swap_symbols = ['BTC/USDT:USDT', 'BTC/USDC:USDC', 'BTC/USD:USD', 'ETH/USDT:USDT', 'ETH/USD:USD', 'LTC/USDT:USDT', 'DOGE/USDT:USDT', 'ADA/USDT:USDT', 'BTC/USD:BTC', 'ETH/USD:ETH']
+        codes = ['BTC', 'ETH', 'XRP', 'LTC', 'BNB', 'DASH', 'DOGE', 'ETC', 'TRX', 'USDT', 'USDC', 'USD', 'EUR', 'TUSD', 'CNY', 'JPY', 'BRL']
+        spot_symbols = ['BTC/USDT', 'BTC/USDC', 'BTC/USD', 'BTC/CNY', 'BTC/EUR', 'BTC/AUD', 'BTC/BRL', 'BTC/JPY', 'ETH/USDT', 'ETH/USDC', 'ETH/USD', 'ETH/CNY', 'ETH/EUR', 'ETH/AUD', 'ETH/BRL', 'ETH/JPY', 'EUR/USDT', 'EUR/USD', 'EUR/USDC', 'USDT/EUR', 'USD/EUR', 'USDC/EUR', 'BTC/ETH', 'ETH/BTC']
+        swap_symbols = ['BTC/USDT:USDT', 'BTC/USDC:USDC', 'BTC/USD:USD', 'ETH/USDT:USDT', 'ETH/USDC:USDC', 'ETH/USD:USD', 'BTC/USD:BTC', 'ETH/USD:ETH']
         target_symbols = spot_symbols if spot else swap_symbols
         symbol = self.get_test_symbol(exchange, spot, target_symbols)
         # if symbols wasn't found from above hardcoded list, then try to locate any symbol which has our target hardcoded 'base' code

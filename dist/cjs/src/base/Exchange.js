@@ -3175,7 +3175,7 @@ class Exchange {
             throw new errors.BadResponse(errorMessage);
         }
     }
-    marketIds(symbols) {
+    marketIds(symbols = undefined) {
         if (symbols === undefined) {
             return symbols;
         }
@@ -3185,7 +3185,7 @@ class Exchange {
         }
         return result;
     }
-    marketSymbols(symbols, type = undefined, allowEmpty = true, sameTypeOnly = false, sameSubTypeOnly = false) {
+    marketSymbols(symbols = undefined, type = undefined, allowEmpty = true, sameTypeOnly = false, sameSubTypeOnly = false) {
         if (symbols === undefined) {
             if (!allowEmpty) {
                 throw new errors.ArgumentsRequired(this.id + ' empty list of symbols is not supported');
@@ -3226,7 +3226,7 @@ class Exchange {
         }
         return result;
     }
-    marketCodes(codes) {
+    marketCodes(codes = undefined) {
         if (codes === undefined) {
             return codes;
         }
