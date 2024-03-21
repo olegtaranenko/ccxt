@@ -79,6 +79,7 @@ import type {
     OrderType,
     Position,
     Str,
+    Strings,
     Ticker,
     Tickers,
     Trade,
@@ -206,9 +207,14 @@ const {
 } = functions;
 
 export type {
+    Account,
     Balance,
+    BalanceAccount,
     Balances,
+    BorrowInterest,
+    BorrowRate,
     Currency,
+    CurrencyInterface,
     DepositAddressResponse,
     Dictionary,
     Fee,
@@ -217,22 +223,36 @@ export type {
     Greeks,
     IndexType,
     Int,
+    LastPrice,
+    LastPrices,
+    LedgerEntry,
     Leverage,
     Leverages,
+    LeverageTier,
     Liquidation,
+    MarginMode,
+    MarginModes,
     Market,
+    MarketInterface,
+    MarketType,
     MinMax,
+    Num,
     OHLCV,
     OHLCVC,
+    OpenInterest,
     Order,
     OrderBook,
+    OrderRequest,
     OrderSide,
     OrderType,
     Position,
     Str,
+    Strings,
     Ticker,
+    Tickers,
     Trade,
-    Transaction
+    Transaction,
+    TransferEntry,
 } from './types.js';
 // ----------------------------------------------------------------------------
 /**
@@ -3589,7 +3609,7 @@ export default class Exchange {
         }
     }
 
-    marketIds (symbols) {
+    marketIds (symbols: Strings = undefined) {
         if (symbols === undefined) {
             return symbols;
         }
@@ -3600,7 +3620,7 @@ export default class Exchange {
         return result;
     }
 
-    marketSymbols (symbols, type: Str = undefined, allowEmpty = true, sameTypeOnly = false, sameSubTypeOnly = false) {
+    marketSymbols (symbols: Strings = undefined, type: Str = undefined, allowEmpty = true, sameTypeOnly = false, sameSubTypeOnly = false) {
         if (symbols === undefined) {
             if (!allowEmpty) {
                 throw new ArgumentsRequired (this.id + ' empty list of symbols is not supported');
@@ -3642,7 +3662,7 @@ export default class Exchange {
         return result;
     }
 
-    marketCodes (codes) {
+    marketCodes (codes: Strings = undefined) {
         if (codes === undefined) {
             return codes;
         }
