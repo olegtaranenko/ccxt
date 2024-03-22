@@ -543,6 +543,7 @@ export default class testMainClass extends baseMainTestClass {
                 'watchOHLCV': [symbol],
                 'watchTicker': [symbol],
                 'watchTickers': [symbol],
+                'watchBidsAsks': [symbol],
                 'watchOrderBook': [symbol],
                 'watchTrades': [symbol],
             };
@@ -1253,7 +1254,8 @@ export default class testMainClass extends baseMainTestClass {
         // instantiate the exchange and make sure that we sink the requests to avoid an actual request
         const exchange = this.initOfflineExchange(exchangeName);
         const globalOptions = exchange.safeDict(exchangeData, 'options', {});
-        exchange.options = exchange.deepExtend(exchange.options, globalOptions); // custom options to be used in the tests
+        // exchange.options = exchange.deepExtend (exchange.options, globalOptions); // custom options to be used in the tests
+        exchange.extendExchangeOptions(globalOptions);
         const methods = exchange.safeValue(exchangeData, 'methods', {});
         const methodsNames = Object.keys(methods);
         for (let i = 0; i < methodsNames.length; i++) {
@@ -1263,7 +1265,8 @@ export default class testMainClass extends baseMainTestClass {
                 const result = results[j];
                 const oldExchangeOptions = exchange.options; // snapshot options;
                 const testExchangeOptions = exchange.safeValue(result, 'options', {});
-                exchange.options = exchange.deepExtend(oldExchangeOptions, testExchangeOptions); // custom options to be used in the tests
+                // exchange.options = exchange.deepExtend (oldExchangeOptions, testExchangeOptions); // custom options to be used in the tests
+                exchange.extendExchangeOptions(exchange.deepExtend(oldExchangeOptions, testExchangeOptions));
                 const description = exchange.safeValue(result, 'description');
                 if ((testName !== undefined) && (testName !== description)) {
                     continue;
@@ -1276,7 +1279,8 @@ export default class testMainClass extends baseMainTestClass {
                 const skipKeys = exchange.safeValue(exchangeData, 'skipKeys', []);
                 await this.testMethodStatically(exchange, method, result, type, skipKeys);
                 // reset options
-                exchange.options = exchange.deepExtend(oldExchangeOptions, {});
+                // exchange.options = exchange.deepExtend (oldExchangeOptions, {});
+                exchange.extendExchangeOptions(exchange.deepExtend(oldExchangeOptions, {}));
             }
         }
         await close(exchange);
@@ -1286,7 +1290,8 @@ export default class testMainClass extends baseMainTestClass {
         const exchange = this.initOfflineExchange(exchangeName);
         const methods = exchange.safeValue(exchangeData, 'methods', {});
         const options = exchange.safeValue(exchangeData, 'options', {});
-        exchange.options = exchange.deepExtend(exchange.options, options); // custom options to be used in the tests
+        // exchange.options = exchange.deepExtend (exchange.options, options); // custom options to be used in the tests
+        exchange.extendExchangeOptions(options);
         const methodsNames = Object.keys(methods);
         for (let i = 0; i < methodsNames.length; i++) {
             const method = methodsNames[i];
@@ -1296,7 +1301,8 @@ export default class testMainClass extends baseMainTestClass {
                 const description = exchange.safeValue(result, 'description');
                 const oldExchangeOptions = exchange.options; // snapshot options;
                 const testExchangeOptions = exchange.safeValue(result, 'options', {});
-                exchange.options = exchange.deepExtend(oldExchangeOptions, testExchangeOptions); // custom options to be used in the tests
+                // exchange.options = exchange.deepExtend (oldExchangeOptions, testExchangeOptions); // custom options to be used in the tests
+                exchange.extendExchangeOptions(exchange.deepExtend(oldExchangeOptions, testExchangeOptions));
                 const isDisabled = exchange.safeBool(result, 'disabled', false);
                 if (isDisabled) {
                     continue;
@@ -1315,7 +1321,8 @@ export default class testMainClass extends baseMainTestClass {
                 const skipKeys = exchange.safeValue(exchangeData, 'skipKeys', []);
                 await this.testResponseStatically(exchange, method, skipKeys, result);
                 // reset options
-                exchange.options = exchange.deepExtend(oldExchangeOptions, {});
+                // exchange.options = exchange.deepExtend (oldExchangeOptions, {});
+                exchange.extendExchangeOptions(exchange.deepExtend(oldExchangeOptions, {}));
             }
         }
         await close(exchange);

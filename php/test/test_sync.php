@@ -680,6 +680,7 @@ class testMainClass extends baseMainTestClass {
                 'watchOHLCV' => [$symbol],
                 'watchTicker' => [$symbol],
                 'watchTickers' => [$symbol],
+                'watchBidsAsks' => [$symbol],
                 'watchOrderBook' => [$symbol],
                 'watchTrades' => [$symbol],
             );
@@ -1339,7 +1340,8 @@ class testMainClass extends baseMainTestClass {
         // instantiate the exchange and make sure that we sink the requests to avoid an actual request
         $exchange = $this->init_offline_exchange($exchange_name);
         $global_options = $exchange->safe_dict($exchange_data, 'options', array());
-        $exchange->options = $exchange->deep_extend($exchange->options, $global_options); // custom options to be used in the tests
+        // exchange.options = exchange.deepExtend (exchange.options, globalOptions); // custom options to be used in the tests
+        $exchange->extend_exchange_options($global_options);
         $methods = $exchange->safe_value($exchange_data, 'methods', array());
         $methods_names = is_array($methods) ? array_keys($methods) : array();
         for ($i = 0; $i < count($methods_names); $i++) {
@@ -1349,7 +1351,8 @@ class testMainClass extends baseMainTestClass {
                 $result = $results[$j];
                 $old_exchange_options = $exchange->options; // snapshot options;
                 $test_exchange_options = $exchange->safe_value($result, 'options', array());
-                $exchange->options = $exchange->deep_extend($old_exchange_options, $test_exchange_options); // custom options to be used in the tests
+                // exchange.options = exchange.deepExtend (oldExchangeOptions, testExchangeOptions); // custom options to be used in the tests
+                $exchange->extend_exchange_options($exchange->deep_extend($old_exchange_options, $test_exchange_options));
                 $description = $exchange->safe_value($result, 'description');
                 if (($test_name !== null) && ($test_name !== $description)) {
                     continue;
@@ -1362,7 +1365,8 @@ class testMainClass extends baseMainTestClass {
                 $skip_keys = $exchange->safe_value($exchange_data, 'skipKeys', []);
                 $this->test_method_statically($exchange, $method, $result, $type, $skip_keys);
                 // reset options
-                $exchange->options = $exchange->deep_extend($old_exchange_options, array());
+                // exchange.options = exchange.deepExtend (oldExchangeOptions, {});
+                $exchange->extend_exchange_options($exchange->deep_extend($old_exchange_options, array()));
             }
         }
         close($exchange);
@@ -1373,7 +1377,8 @@ class testMainClass extends baseMainTestClass {
         $exchange = $this->init_offline_exchange($exchange_name);
         $methods = $exchange->safe_value($exchange_data, 'methods', array());
         $options = $exchange->safe_value($exchange_data, 'options', array());
-        $exchange->options = $exchange->deep_extend($exchange->options, $options); // custom options to be used in the tests
+        // exchange.options = exchange.deepExtend (exchange.options, options); // custom options to be used in the tests
+        $exchange->extend_exchange_options($options);
         $methods_names = is_array($methods) ? array_keys($methods) : array();
         for ($i = 0; $i < count($methods_names); $i++) {
             $method = $methods_names[$i];
@@ -1383,7 +1388,8 @@ class testMainClass extends baseMainTestClass {
                 $description = $exchange->safe_value($result, 'description');
                 $old_exchange_options = $exchange->options; // snapshot options;
                 $test_exchange_options = $exchange->safe_value($result, 'options', array());
-                $exchange->options = $exchange->deep_extend($old_exchange_options, $test_exchange_options); // custom options to be used in the tests
+                // exchange.options = exchange.deepExtend (oldExchangeOptions, testExchangeOptions); // custom options to be used in the tests
+                $exchange->extend_exchange_options($exchange->deep_extend($old_exchange_options, $test_exchange_options));
                 $is_disabled = $exchange->safe_bool($result, 'disabled', false);
                 if ($is_disabled) {
                     continue;
@@ -1402,7 +1408,8 @@ class testMainClass extends baseMainTestClass {
                 $skip_keys = $exchange->safe_value($exchange_data, 'skipKeys', []);
                 $this->test_response_statically($exchange, $method, $skip_keys, $result);
                 // reset options
-                $exchange->options = $exchange->deep_extend($old_exchange_options, array());
+                // exchange.options = exchange.deepExtend (oldExchangeOptions, {});
+                $exchange->extend_exchange_options($exchange->deep_extend($old_exchange_options, array()));
             }
         }
         close($exchange);

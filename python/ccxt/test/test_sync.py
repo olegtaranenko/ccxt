@@ -570,6 +570,7 @@ class testMainClass(baseMainTestClass):
                 'watchOHLCV': [symbol],
                 'watchTicker': [symbol],
                 'watchTickers': [symbol],
+                'watchBidsAsks': [symbol],
                 'watchOrderBook': [symbol],
                 'watchTrades': [symbol],
             }
@@ -1114,7 +1115,8 @@ class testMainClass(baseMainTestClass):
         # instantiate the exchange and make sure that we sink the requests to avoid an actual request
         exchange = self.init_offline_exchange(exchange_name)
         global_options = exchange.safe_dict(exchange_data, 'options', {})
-        exchange.options = exchange.deep_extend(exchange.options, global_options)  # custom options to be used in the tests
+        # exchange.options = exchange.deepExtend (exchange.options, globalOptions); # custom options to be used in the tests
+        exchange.extend_exchange_options(global_options)
         methods = exchange.safe_value(exchange_data, 'methods', {})
         methods_names = list(methods.keys())
         for i in range(0, len(methods_names)):
@@ -1124,7 +1126,8 @@ class testMainClass(baseMainTestClass):
                 result = results[j]
                 old_exchange_options = exchange.options  # snapshot options;
                 test_exchange_options = exchange.safe_value(result, 'options', {})
-                exchange.options = exchange.deep_extend(old_exchange_options, test_exchange_options)  # custom options to be used in the tests
+                # exchange.options = exchange.deepExtend (oldExchangeOptions, testExchangeOptions); # custom options to be used in the tests
+                exchange.extend_exchange_options(exchange.deep_extend(old_exchange_options, test_exchange_options))
                 description = exchange.safe_value(result, 'description')
                 if (test_name is not None) and (test_name != description):
                     continue
@@ -1135,7 +1138,8 @@ class testMainClass(baseMainTestClass):
                 skip_keys = exchange.safe_value(exchange_data, 'skipKeys', [])
                 self.test_method_statically(exchange, method, result, type, skip_keys)
                 # reset options
-                exchange.options = exchange.deep_extend(old_exchange_options, {})
+                # exchange.options = exchange.deepExtend (oldExchangeOptions, {});
+                exchange.extend_exchange_options(exchange.deep_extend(old_exchange_options, {}))
         close(exchange)
         return True   # in c# methods that will be used with promiseAll need to return something
 
@@ -1143,7 +1147,8 @@ class testMainClass(baseMainTestClass):
         exchange = self.init_offline_exchange(exchange_name)
         methods = exchange.safe_value(exchange_data, 'methods', {})
         options = exchange.safe_value(exchange_data, 'options', {})
-        exchange.options = exchange.deep_extend(exchange.options, options)  # custom options to be used in the tests
+        # exchange.options = exchange.deepExtend (exchange.options, options); # custom options to be used in the tests
+        exchange.extend_exchange_options(options)
         methods_names = list(methods.keys())
         for i in range(0, len(methods_names)):
             method = methods_names[i]
@@ -1153,7 +1158,8 @@ class testMainClass(baseMainTestClass):
                 description = exchange.safe_value(result, 'description')
                 old_exchange_options = exchange.options  # snapshot options;
                 test_exchange_options = exchange.safe_value(result, 'options', {})
-                exchange.options = exchange.deep_extend(old_exchange_options, test_exchange_options)  # custom options to be used in the tests
+                # exchange.options = exchange.deepExtend (oldExchangeOptions, testExchangeOptions); # custom options to be used in the tests
+                exchange.extend_exchange_options(exchange.deep_extend(old_exchange_options, test_exchange_options))
                 is_disabled = exchange.safe_bool(result, 'disabled', False)
                 if is_disabled:
                     continue
@@ -1168,7 +1174,8 @@ class testMainClass(baseMainTestClass):
                 skip_keys = exchange.safe_value(exchange_data, 'skipKeys', [])
                 self.test_response_statically(exchange, method, skip_keys, result)
                 # reset options
-                exchange.options = exchange.deep_extend(old_exchange_options, {})
+                # exchange.options = exchange.deepExtend (oldExchangeOptions, {});
+                exchange.extend_exchange_options(exchange.deep_extend(old_exchange_options, {}))
         close(exchange)
         return True   # in c# methods that will be used with promiseAll need to return something
 
