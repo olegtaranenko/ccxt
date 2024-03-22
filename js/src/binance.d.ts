@@ -6,13 +6,13 @@ import type { TransferEntry, Int, OrderSide, Balances, OrderType, Trade, OHLCV, 
  */
 export default class binance extends Exchange {
     describe(): any;
-    isInverse(type: any, subType?: any): boolean;
-    isLinear(type: any, subType?: any): boolean;
+    isInverse(type: string, subType?: Str): boolean;
+    isLinear(type: string, subType?: Str): boolean;
     setSandboxMode(enable: boolean): void;
     convertExpireDate(date: any): string;
     createExpiredOptionMarket(symbol: string): MarketInterface;
-    market(symbol: any): any;
-    safeMarket(marketId?: any, market?: any, delimiter?: any, marketType?: any): MarketInterface;
+    market(symbol: string): MarketInterface;
+    safeMarket(marketId?: Str, market?: Market, delimiter?: Str, marketType?: Str): MarketInterface;
     costToPrecision(symbol: any, cost: any): any;
     currencyToPrecision(code: any, fee: any, networkCode?: any): any;
     nonce(): number;

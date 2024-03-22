@@ -53,9 +53,9 @@ export default class binance extends binanceRest {
                 'listenKeyRefreshRate': 1200000, // 20 mins
                 'OHLCVLimit': 1000,
                 'ordersLimit': 1000,
-                'requestId': {},
+                'requestId': this.createSafeDictionary (),
                 'returnRateLimits': false,
-                'streamBySubscriptionsHash': {},
+                'streamBySubscriptionsHash': this.createSafeDictionary (),
                 'streamIndex': -1,
                 'streamLimits': {
                     'delivery': 50, // max 200
@@ -130,7 +130,7 @@ export default class binance extends binanceRest {
     }
 
     requestId (url) {
-        const options = this.safeValue (this.options, 'requestId', {});
+        const options = this.safeDict (this.options, 'requestId', this.createSafeDictionary ());
         const previousValue = this.safeInteger (options, url, 0);
         const newValue = this.sum (previousValue, 1);
         this.options['requestId'][url] = newValue;
@@ -138,7 +138,7 @@ export default class binance extends binanceRest {
     }
 
     stream (type, subscriptionHash, numSubscriptions = 1) {
-        const streamBySubscriptionsHash = this.safeValue (this.options, 'streamBySubscriptionsHash', {});
+        const streamBySubscriptionsHash = this.safeDict (this.options, 'streamBySubscriptionsHash', this.createSafeDictionary ());
         let stream = this.safeString (streamBySubscriptionsHash, subscriptionHash);
         if (stream === undefined) {
             let streamIndex = this.safeInteger (this.options, 'streamIndex', -1);
@@ -151,7 +151,7 @@ export default class binance extends binanceRest {
             this.options['streamBySubscriptionsHash'][subscriptionHash] = stream;
             const subscriptionsByStreams = this.safeValue (this.options, 'numSubscriptionsByStream');
             if (subscriptionsByStreams === undefined) {
-                this.options['numSubscriptionsByStream'] = {};
+                this.options['numSubscriptionsByStream'] = this.createSafeDictionary ();
             }
             const subscriptionsByStream = this.safeInteger (this.options['numSubscriptionsByStream'], stream, 0);
             const newNumSubscriptions = subscriptionsByStream + numSubscriptions;
