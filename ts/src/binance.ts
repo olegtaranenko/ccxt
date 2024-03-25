@@ -2833,7 +2833,7 @@ export default class binance extends Exchange {
         return result;
     }
 
-    async fetchMarkets (params = {}) {
+    async fetchMarkets (params = {}): Promise<Market[]> {
         /**
          * @method
          * @name binance#fetchMarkets
