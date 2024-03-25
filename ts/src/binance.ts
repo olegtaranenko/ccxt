@@ -4,7 +4,7 @@
 import Exchange from './abstract/binance.js';
 import { AccountSuspended, ArgumentsRequired, AuthenticationError, BadRequest, BadResponse, BadSymbol, DDoSProtection, ExchangeError, InsufficientFunds, InvalidNonce, InvalidOrder, MarginModeAlreadySet, NotSupported, OnMaintenance, OperationFailed, OperationRejected, OrderImmediatelyFillable, OrderNotFillable, OrderNotFound, PermissionDenied, RateLimitExceeded, RequestTimeout } from './base/errors.js';
 import { Precise } from './base/Precise.js';
-import type { Balances, Currency, FundingRateHistory, Greeks, Int, Leverage, Leverages, Liquidation, MarginMode, MarginModes, Market, MarketInterface, Num, OHLCV, OpenInterest, Order, OrderBook, OrderRequest, OrderSide, OrderType, Str, Strings, Ticker, Tickers, Trade, Transaction, TransferEntry } from './base/types.js';
+import type { Balances, Currency, FundingRateHistory, Greeks, Int, Leverage, Leverages, Liquidation, MarginMode, MarginModes, Market, MarketInterface, Num, OHLCV, OpenInterest, Option, Order, OrderBook, OrderRequest, OrderSide, OrderType, Str, Strings, Ticker, Tickers, Trade, Transaction, TransferEntry } from './base/types.js';
 import { DECIMAL_PLACES, TRUNCATE } from './base/functions/number.js';
 import { sha256 } from './static_dependencies/noble-hashes/sha256.js';
 import { rsa } from './base/functions/rsa.js';
@@ -2015,6 +2015,8 @@ export default class binance extends Exchange {
                 'fetchOpenInterestHistory': true,
                 'fetchOpenOrder': true,
                 'fetchOpenOrders': true,
+                'fetchOption': true,
+                'fetchOptionChain': false,
                 'fetchOrder': true,
                 'fetchOrderBook': true,
                 'fetchOrderBooks': false,
@@ -12134,116 +12136,116 @@ export default class binance extends Exchange {
             response = await this.fapiPrivateV2GetAccount (params);
             //
             //    {
-            //        feeTier: '0',
-            //        canTrade: true,
-            //        canDeposit: true,
-            //        canWithdraw: true,
-            //        tradeGroupId: '-1',
-            //        updateTime: '0',
-            //        multiAssetsMargin: true,
-            //        totalInitialMargin: '438.31134352',
-            //        totalMaintMargin: '5.90847101',
-            //        totalWalletBalance: '4345.15626338',
-            //        totalUnrealizedProfit: '376.45220224',
-            //        totalMarginBalance: '4721.60846562',
-            //        totalPositionInitialMargin: '425.45252687',
-            //        totalOpenOrderInitialMargin: '12.85881664',
-            //        totalCrossWalletBalance: '4345.15626338',
-            //        totalCrossUnPnl: '376.45220224',
-            //        availableBalance: '4281.84764041',
-            //        maxWithdrawAmount: '4281.84764041',
             //        assets: [
             //            {
             //                asset: 'ETH',
-            //                walletBalance: '0.00000000',
-            //                unrealizedProfit: '0.00000000',
-            //                marginBalance: '0.00000000',
-            //                maintMargin: '0.00000000',
-            //                initialMargin: '0.00000000',
-            //                positionInitialMargin: '0.00000000',
-            //                openOrderInitialMargin: '0.00000000',
-            //                maxWithdrawAmount: '0.00000000',
-            //                crossWalletBalance: '0.00000000',
-            //                crossUnPnl: '0.00000000',
             //                availableBalance: '1.26075574',
+            //                crossUnPnl: '0.00000000',
+            //                crossWalletBalance: '0.00000000',
+            //                initialMargin: '0.00000000',
+            //                maintMargin: '0.00000000',
             //                marginAvailable: true,
-            //                updateTime: '0'
+            //                marginBalance: '0.00000000',
+            //                maxWithdrawAmount: '0.00000000',
+            //                openOrderInitialMargin: '0.00000000',
+            //                positionInitialMargin: '0.00000000',
+            //                unrealizedProfit: '0.00000000',
+            //                updateTime: '0',
+            //                walletBalance: '0.00000000',
             //            },
             //        ...
             //        ],
+            //        availableBalance: '4281.84764041',
+            //        canDeposit: true,
+            //        canTrade: true,
+            //        canWithdraw: true,
+            //        feeTier: '0',
+            //        maxWithdrawAmount: '4281.84764041',
+            //        multiAssetsMargin: true,
             //        positions: [
             //            {
-            //              symbol: 'SNTUSDT',
-            //              initialMargin: '0',
-            //              maintMargin: '0',
-            //              unrealizedProfit: '0.00000000',
-            //              positionInitialMargin: '0',
-            //              openOrderInitialMargin: '0',
-            //              leverage: '20',
-            //              isolated: false,
-            //              entryPrice: '0.0',
-            //              breakEvenPrice: '0.0',
-            //              maxNotional: '25000',
-            //              positionSide: 'BOTH',
-            //              positionAmt: '0',
-            //              notional: '0',
-            //              isolatedWallet: '0',
-            //              updateTime: '0',
+            //              askNotional: '0',
             //              bidNotional: '0',
-            //              askNotional: '0'
+            //              breakEvenPrice: '0.0',
+            //              entryPrice: '0.0',
+            //              initialMargin: '0',
+            //              isolated: false,
+            //              isolatedWallet: '0',
+            //              leverage: '20',
+            //              maintMargin: '0',
+            //              maxNotional: '25000',
+            //              notional: '0',
+            //              openOrderInitialMargin: '0',
+            //              positionAmt: '0',
+            //              positionInitialMargin: '0',
+            //              positionSide: 'BOTH',
+            //              symbol: 'SNTUSDT',
+            //              unrealizedProfit: '0.00000000',
+            //              updateTime: '0',
             //            },
             //            ...
-            //        ]
+            //        ],
+            //        totalCrossUnPnl: '376.45220224',
+            //        totalCrossWalletBalance: '4345.15626338',
+            //        totalInitialMargin: '438.31134352',
+            //        totalMaintMargin: '5.90847101',
+            //        totalMarginBalance: '4721.60846562',
+            //        totalOpenOrderInitialMargin: '12.85881664',
+            //        totalPositionInitialMargin: '425.45252687',
+            //        totalUnrealizedProfit: '376.45220224',
+            //        totalWalletBalance: '4345.15626338',
+            //        tradeGroupId: '-1',
+            //        updateTime: '0',
             //    }
             //
         } else if (subType === 'inverse') {
             response = await this.dapiPrivateGetAccount (params);
             //
             //    {
-            //        feeTier: '0',
-            //        canTrade: true,
-            //        canDeposit: true,
-            //        canWithdraw: true,
-            //        updateTime: '0',
             //        assets: [
             //            {
             //                asset: 'APT',
-            //                walletBalance: '0.00000000',
-            //                unrealizedProfit: '0.00000000',
-            //                marginBalance: '0.00000000',
-            //                maintMargin: '0.00000000',
-            //                initialMargin: '0.00000000',
-            //                positionInitialMargin: '0.00000000',
-            //                openOrderInitialMargin: '0.00000000',
-            //                maxWithdrawAmount: '0.00000000',
-            //                crossWalletBalance: '0.00000000',
-            //                crossUnPnl: '0.00000000',
             //                availableBalance: '0.00000000',
+            //                crossUnPnl: '0.00000000',
+            //                crossWalletBalance: '0.00000000',
+            //                initialMargin: '0.00000000',
+            //                maintMargin: '0.00000000',
+            //                marginBalance: '0.00000000',
+            //                maxWithdrawAmount: '0.00000000',
+            //                openOrderInitialMargin: '0.00000000',
+            //                positionInitialMargin: '0.00000000',
+            //                unrealizedProfit: '0.00000000',
             //                updateTime: '0'
+            //                walletBalance: '0.00000000',
             //            },
             //            ...
             //        ],
+            //        canDeposit: true,
+            //        canTrade: true,
+            //        canWithdraw: true,
+            //        feeTier: '0',
             //        positions: [
             //            {
-            //                symbol: 'BCHUSD_240329',
-            //                initialMargin: '0',
-            //                maintMargin: '0',
-            //                unrealizedProfit: '0.00000000',
-            //                positionInitialMargin: '0',
-            //                openOrderInitialMargin: '0',
-            //                leverage: '20',
-            //                isolated: false,
-            //                positionSide: 'BOTH',
+            //                breakEvenPrice: '0.00000000',
             //                entryPrice: '0.00000000',
+            //                initialMargin: '0',
+            //                isolated: false,
+            //                isolatedWallet: '0',
+            //                leverage: '20',
+            //                maintMargin: '0',
             //                maxQty: '1000',
             //                notionalValue: '0',
-            //                isolatedWallet: '0',
-            //                updateTime: '0',
+            //                openOrderInitialMargin: '0',
             //                positionAmt: '0',
-            //                breakEvenPrice: '0.00000000'
+            //                positionInitialMargin: '0',
+            //                positionSide: 'BOTH',
+            //                symbol: 'BCHUSD_240329',
+            //                unrealizedProfit: '0.00000000',
+            //                updateTime: '0',
             //            },
             //            ...
-            //        ]
+            //        ],
+            //        updateTime: '0',
             //    }
             //
         } else {
@@ -12261,6 +12263,96 @@ export default class binance extends Exchange {
             'info': marginMode,
             'symbol': market['symbol'],
             'marginMode': isIsolated ? 'isolated' : 'cross',
+        };
+    }
+
+    async fetchOption (symbol: string, params = {}): Promise<Option> {
+        /**
+         * @method
+         * @name binance#fetchOption
+         * @description fetches option data that is commonly found in an option chain
+         * @see https://binance-docs.github.io/apidocs/voptions/en/#24hr-ticker-price-change-statistics
+         * @param {string} symbol unified market symbol
+         * @param {object} [params] extra parameters specific to the exchange API endpoint
+         * @returns {object} an [option chain structure]{@link https://docs.ccxt.com/#/?id=option-chain-structure}
+         */
+        await this.loadMarkets ();
+        const market = this.market (symbol);
+        const request = {
+            'symbol': market['id'],
+        };
+        const response = await this.eapiPublicGetTicker (this.extend (request, params));
+        //
+        //     [
+        //         {
+        //             "amount": "0",
+        //             "askPrice": "0",
+        //             "bidPrice": "4880",
+        //             "closeTime": 0,
+        //             "exercisePrice": "63944.09893617",
+        //             "firstTradeId": 0,
+        //             "high": "2750",
+        //             "lastPrice": "2750",
+        //             "lastQty": "0",
+        //             "low": "2750",
+        //             "open": "2750",
+        //             "openTime": 0,
+        //             "priceChange": "0",
+        //             "priceChangePercent": "0",
+        //             "strikePrice": "80000",
+        //             "symbol": "BTC-241227-80000-C",
+        //             "tradeCount": 0,
+        //             "volume": "0",
+        //         }
+        //     ]
+        //
+        const chain = this.safeDict (response, 0, {});
+        return this.parseOption (chain, undefined, market);
+    }
+
+    parseOption (chain, currency: Currency = undefined, market: Market = undefined) {
+        //
+        //     {
+        //         "amount": "0",
+        //         "askPrice": "0",
+        //         "bidPrice": "4880",
+        //         "closeTime": 0,
+        //         "exercisePrice": "63944.09893617",
+        //         "firstTradeId": 0,
+        //         "high": "2750",
+        //         "lastPrice": "2750",
+        //         "lastQty": "0",
+        //         "low": "2750",
+        //         "open": "2750",
+        //         "openTime": 0,
+        //         "priceChange": "0",
+        //         "priceChangePercent": "0",
+        //         "strikePrice": "80000",
+        //         "symbol": "BTC-241227-80000-C",
+        //         "tradeCount": 0,
+        //         "volume": "0",
+        //     }
+        //
+        const marketId = this.safeString (chain, 'symbol');
+        market = this.safeMarket (marketId, market);
+        return {
+            'askPrice': this.safeNumber (chain, 'askPrice'),
+            'baseVolume': this.safeNumber (chain, 'volume'),
+            'bidPrice': this.safeNumber (chain, 'bidPrice'),
+            'change': this.safeNumber (chain, 'priceChange'),
+            'currency': undefined,
+            'datetime': undefined,
+            'impliedVolatility': undefined,
+            'info': chain,
+            'lastPrice': this.safeNumber (chain, 'lastPrice'),
+            'markPrice': undefined,
+            'midPrice': undefined,
+            'openInterest': undefined,
+            'percentage': this.safeNumber (chain, 'priceChangePercent'),
+            'quoteVolume': undefined,
+            'symbol': market['symbol'],
+            'timestamp': undefined,
+            'underlyingPrice': this.safeNumber (chain, 'exercisePrice'),
         };
     }
 }
