@@ -35,7 +35,7 @@ public partial class hyperliquid : Exchange
                 { "createMarketSellOrderWithCost", false },
                 { "createOrder", true },
                 { "createOrders", true },
-                { "createReduceOnlyOrder", false },
+                { "createReduceOnlyOrder", true },
                 { "editOrder", true },
                 { "fetchAccounts", false },
                 { "fetchBalance", true },
@@ -956,7 +956,7 @@ public partial class hyperliquid : Exchange
                     { "tif", timeInForce },
                 };
             }
-            orderParams = this.omit(orderParams, new List<object>() {"clientOrderId", "slippage", "triggerPrice", "stopPrice", "stopLossPrice", "takeProfitPrice", "timeInForce", "client_id"});
+            orderParams = this.omit(orderParams, new List<object>() {"clientOrderId", "slippage", "triggerPrice", "stopPrice", "stopLossPrice", "takeProfitPrice", "timeInForce", "client_id", "reduceOnly", "postOnly"});
             object orderObj = new Dictionary<string, object>() {
                 { "a", this.parseToInt(getValue(market, "baseId")) },
                 { "b", isBuy },
@@ -1938,7 +1938,7 @@ public partial class hyperliquid : Exchange
             throw new ArgumentsRequired ((string)add(this.id, " setMarginMode() requires a leverage parameter")) ;
         }
         object asset = this.parseToInt(getValue(market, "baseId"));
-        object isCross = (isEqual(marginMode, "isolated"));
+        object isCross = (isEqual(marginMode, "cross"));
         object nonce = this.milliseconds();
         parameters = this.omit(parameters, new List<object>() {"leverage"});
         object updateAction = new Dictionary<string, object>() {
@@ -1956,9 +1956,10 @@ public partial class hyperliquid : Exchange
                 vaultAddress = ((string)vaultAddress).Replace((string)"0x", (string)"");
             }
         }
-        object signature = this.signL1Action(updateAction, nonce, vaultAddress);
+        object extendedAction = this.extend(updateAction, parameters);
+        object signature = this.signL1Action(extendedAction, nonce, vaultAddress);
         object request = new Dictionary<string, object>() {
-            { "action", updateAction },
+            { "action", extendedAction },
             { "nonce", nonce },
             { "signature", signature },
         };
@@ -1966,7 +1967,7 @@ public partial class hyperliquid : Exchange
         {
             ((IDictionary<string,object>)request)["vaultAddress"] = vaultAddress;
         }
-        object response = await this.privatePostExchange(this.extend(request, parameters));
+        object response = await this.privatePostExchange(request);
         //
         //     {
         //         'response': {
@@ -2223,11 +2224,11 @@ public partial class hyperliquid : Exchange
         var userparametersVariable = this.handleOptionAndParams(parameters, methodName, "address", userAux);
         user = ((IList<object>)userparametersVariable)[0];
         parameters = ((IList<object>)userparametersVariable)[1];
-        if (isTrue(!isEqual(user, null)))
+        if (isTrue(isTrue((!isEqual(user, null))) && isTrue((!isEqual(user, "")))))
         {
             return new List<object>() {user, parameters};
         }
-        if (isTrue(!isEqual(this.walletAddress, null)))
+        if (isTrue(isTrue((!isEqual(this.walletAddress, null))) && isTrue((!isEqual(this.walletAddress, "")))))
         {
             return new List<object>() {this.walletAddress, parameters};
         }

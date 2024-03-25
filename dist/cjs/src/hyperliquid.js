@@ -44,7 +44,7 @@ class hyperliquid extends hyperliquid$1 {
                 'createMarketSellOrderWithCost': false,
                 'createOrder': true,
                 'createOrders': true,
-                'createReduceOnlyOrder': false,
+                'createReduceOnlyOrder': true,
                 'editOrder': true,
                 'fetchAccounts': false,
                 'fetchBalance': true,
@@ -881,7 +881,7 @@ class hyperliquid extends hyperliquid$1 {
                     'tif': timeInForce,
                 };
             }
-            orderParams = this.omit(orderParams, ['clientOrderId', 'slippage', 'triggerPrice', 'stopPrice', 'stopLossPrice', 'takeProfitPrice', 'timeInForce', 'client_id']);
+            orderParams = this.omit(orderParams, ['clientOrderId', 'slippage', 'triggerPrice', 'stopPrice', 'stopLossPrice', 'takeProfitPrice', 'timeInForce', 'client_id', 'reduceOnly', 'postOnly']);
             const orderObj = {
                 'a': this.parseToInt(market['baseId']),
                 'b': isBuy,
@@ -1782,7 +1782,7 @@ class hyperliquid extends hyperliquid$1 {
             throw new errors.ArgumentsRequired(this.id + ' setMarginMode() requires a leverage parameter');
         }
         const asset = this.parseToInt(market['baseId']);
-        const isCross = (marginMode === 'isolated');
+        const isCross = (marginMode === 'cross');
         const nonce = this.milliseconds();
         params = this.omit(params, ['leverage']);
         const updateAction = {
@@ -1798,9 +1798,10 @@ class hyperliquid extends hyperliquid$1 {
                 vaultAddress = vaultAddress.replace('0x', '');
             }
         }
-        const signature = this.signL1Action(updateAction, nonce, vaultAddress);
+        const extendedAction = this.extend(updateAction, params);
+        const signature = this.signL1Action(extendedAction, nonce, vaultAddress);
         const request = {
-            'action': updateAction,
+            'action': extendedAction,
             'nonce': nonce,
             'signature': signature,
             // 'vaultAddress': vaultAddress,
@@ -1808,7 +1809,7 @@ class hyperliquid extends hyperliquid$1 {
         if (vaultAddress !== undefined) {
             request['vaultAddress'] = vaultAddress;
         }
-        const response = await this.privatePostExchange(this.extend(request, params));
+        const response = await this.privatePostExchange(request);
         //
         //     {
         //         'response': {
@@ -2034,10 +2035,10 @@ class hyperliquid extends hyperliquid$1 {
         [userAux, params] = this.handleOptionAndParams(params, methodName, 'user');
         let user = userAux;
         [user, params] = this.handleOptionAndParams(params, methodName, 'address', userAux);
-        if (user !== undefined) {
+        if ((user !== undefined) && (user !== '')) {
             return [user, params];
         }
-        if (this.walletAddress !== undefined) {
+        if ((this.walletAddress !== undefined) && (this.walletAddress !== '')) {
             return [this.walletAddress, params];
         }
         throw new errors.ArgumentsRequired(this.id + ' ' + methodName + '() requires a user parameter inside \'params\' or the wallet address set');

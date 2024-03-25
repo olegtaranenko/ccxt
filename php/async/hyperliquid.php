@@ -45,7 +45,7 @@ class hyperliquid extends Exchange {
                 'createMarketSellOrderWithCost' => false,
                 'createOrder' => true,
                 'createOrders' => true,
-                'createReduceOnlyOrder' => false,
+                'createReduceOnlyOrder' => true,
                 'editOrder' => true,
                 'fetchAccounts' => false,
                 'fetchBalance' => true,
@@ -251,7 +251,7 @@ class hyperliquid extends Exchange {
         }) ();
     }
 
-    public function fetch_markets($params = array ()) {
+    public function fetch_markets($params = array ()): PromiseInterface {
         return Async\async(function () use ($params) {
             /**
              * retrieves $data on all markets for hyperliquid
@@ -903,7 +903,7 @@ class hyperliquid extends Exchange {
                         'tif' => $timeInForce,
                     );
                 }
-                $orderParams = $this->omit($orderParams, array( 'clientOrderId', 'slippage', 'triggerPrice', 'stopPrice', 'stopLossPrice', 'takeProfitPrice', 'timeInForce', 'client_id' ));
+                $orderParams = $this->omit($orderParams, array( 'clientOrderId', 'slippage', 'triggerPrice', 'stopPrice', 'stopLossPrice', 'takeProfitPrice', 'timeInForce', 'client_id', 'reduceOnly', 'postOnly' ));
                 $orderObj = array(
                     'a' => $this->parse_to_int($market['baseId']),
                     'b' => $isBuy,
@@ -1813,7 +1813,7 @@ class hyperliquid extends Exchange {
                 throw new ArgumentsRequired($this->id . ' setMarginMode() requires a $leverage parameter');
             }
             $asset = $this->parse_to_int($market['baseId']);
-            $isCross = ($marginMode === 'isolated');
+            $isCross = ($marginMode === 'cross');
             $nonce = $this->milliseconds();
             $params = $this->omit($params, array( 'leverage' ));
             $updateAction = array(
@@ -1829,9 +1829,10 @@ class hyperliquid extends Exchange {
                     $vaultAddress = str_replace('0x', '', $vaultAddress);
                 }
             }
-            $signature = $this->sign_l1_action($updateAction, $nonce, $vaultAddress);
+            $extendedAction = array_merge($updateAction, $params);
+            $signature = $this->sign_l1_action($extendedAction, $nonce, $vaultAddress);
             $request = array(
-                'action' => $updateAction,
+                'action' => $extendedAction,
                 'nonce' => $nonce,
                 'signature' => $signature,
                 // 'vaultAddress' => $vaultAddress,
@@ -1839,7 +1840,7 @@ class hyperliquid extends Exchange {
             if ($vaultAddress !== null) {
                 $request['vaultAddress'] = $vaultAddress;
             }
-            $response = Async\await($this->privatePostExchange (array_merge($request, $params)));
+            $response = Async\await($this->privatePostExchange ($request));
             //
             //     {
             //         'response' => array(
@@ -2076,10 +2077,10 @@ class hyperliquid extends Exchange {
         list($userAux, $params) = $this->handle_option_and_params($params, $methodName, 'user');
         $user = $userAux;
         list($user, $params) = $this->handle_option_and_params($params, $methodName, 'address', $userAux);
-        if ($user !== null) {
+        if (($user !== null) && ($user !== '')) {
             return array( $user, $params );
         }
-        if ($this->walletAddress !== null) {
+        if (($this->walletAddress !== null) && ($this->walletAddress !== '')) {
             return array( $this->walletAddress, $params );
         }
         throw new ArgumentsRequired($this->id . ' ' . $methodName . '() requires a $user parameter inside \'params\' or the wallet address set');

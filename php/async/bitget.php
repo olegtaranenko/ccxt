@@ -1300,6 +1300,7 @@ class bitget extends Exchange {
             'precisionMode' => TICK_SIZE,
             'commonCurrencies' => array(
                 'JADE' => 'Jade Protocol',
+                'DEGEN' => 'DegenReborn',
             ),
             'options' => array(
                 'timeframes' => array(
@@ -1511,7 +1512,7 @@ class bitget extends Exchange {
         }) ();
     }
 
-    public function fetch_markets($params = array ()) {
+    public function fetch_markets($params = array ()): PromiseInterface {
         return Async\async(function () use ($params) {
             /**
              * retrieves data on all markets for bitget

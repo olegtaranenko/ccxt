@@ -50,7 +50,7 @@ class hyperliquid(Exchange, ImplicitAPI):
                 'createMarketSellOrderWithCost': False,
                 'createOrder': True,
                 'createOrders': True,
-                'createReduceOnlyOrder': False,
+                'createReduceOnlyOrder': True,
                 'editOrder': True,
                 'fetchAccounts': False,
                 'fetchBalance': True,
@@ -250,7 +250,7 @@ class hyperliquid(Exchange, ImplicitAPI):
             }
         return result
 
-    def fetch_markets(self, params={}):
+    def fetch_markets(self, params={}) -> List[Market]:
         """
         retrieves data on all markets for hyperliquid
         :see: https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#retrieve-asset-contexts-includes-mark-price-current-funding-open-interest-etc
@@ -851,7 +851,7 @@ class hyperliquid(Exchange, ImplicitAPI):
                 orderType['limit'] = {
                     'tif': timeInForce,
                 }
-            orderParams = self.omit(orderParams, ['clientOrderId', 'slippage', 'triggerPrice', 'stopPrice', 'stopLossPrice', 'takeProfitPrice', 'timeInForce', 'client_id'])
+            orderParams = self.omit(orderParams, ['clientOrderId', 'slippage', 'triggerPrice', 'stopPrice', 'stopLossPrice', 'takeProfitPrice', 'timeInForce', 'client_id', 'reduceOnly', 'postOnly'])
             orderObj = {
                 'a': self.parse_to_int(market['baseId']),
                 'b': isBuy,
@@ -1691,7 +1691,7 @@ class hyperliquid(Exchange, ImplicitAPI):
         if leverage is None:
             raise ArgumentsRequired(self.id + ' setMarginMode() requires a leverage parameter')
         asset = self.parse_to_int(market['baseId'])
-        isCross = (marginMode == 'isolated')
+        isCross = (marginMode == 'cross')
         nonce = self.milliseconds()
         params = self.omit(params, ['leverage'])
         updateAction = {
@@ -1705,16 +1705,17 @@ class hyperliquid(Exchange, ImplicitAPI):
             params = self.omit(params, 'vaultAddress')
             if vaultAddress.startswith('0x'):
                 vaultAddress = vaultAddress.replace('0x', '')
-        signature = self.sign_l1_action(updateAction, nonce, vaultAddress)
+        extendedAction = self.extend(updateAction, params)
+        signature = self.sign_l1_action(extendedAction, nonce, vaultAddress)
         request = {
-            'action': updateAction,
+            'action': extendedAction,
             'nonce': nonce,
             'signature': signature,
             # 'vaultAddress': vaultAddress,
         }
         if vaultAddress is not None:
             request['vaultAddress'] = vaultAddress
-        response = self.privatePostExchange(self.extend(request, params))
+        response = self.privatePostExchange(request)
         #
         #     {
         #         'response': {
@@ -1920,9 +1921,9 @@ class hyperliquid(Exchange, ImplicitAPI):
         userAux, params = self.handle_option_and_params(params, methodName, 'user')
         user = userAux
         user, params = self.handle_option_and_params(params, methodName, 'address', userAux)
-        if user is not None:
+        if (user is not None) and (user != ''):
             return [user, params]
-        if self.walletAddress is not None:
+        if (self.walletAddress is not None) and (self.walletAddress != ''):
             return [self.walletAddress, params]
         raise ArgumentsRequired(self.id + ' ' + methodName + '() requires a user parameter inside \'params\' or the wallet address set')
 
