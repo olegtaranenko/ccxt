@@ -4648,7 +4648,7 @@ class binance(Exchange, ImplicitAPI):
         #         "newOrderResult": "SUCCESS",
         #     }
         #
-        data = self.safe_value(response, 'newOrderResponse')
+        data = self.safe_dict(response, 'newOrderResponse')
         return self.parse_order(data, market)
 
     def edit_spot_order_request(self, id: str, symbol: str, type: OrderType, side: OrderSide, amount: float, price: Num = None, params={}):
@@ -11413,7 +11413,7 @@ class binance(Exchange, ImplicitAPI):
             #
         else:
             raise BadRequest(self.id + ' fetchMarginModes() supports linear and inverse subTypes only')
-        assets = self.safe_value(response, 'positions', [])
+        assets = self.safe_list(response, 'positions', [])
         return self.parse_margin_modes(assets, symbols, 'symbol', 'swap')
 
     def parse_margin_mode(self, marginMode, market=None) -> MarginMode:

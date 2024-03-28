@@ -2017,7 +2017,7 @@ export default class bybit extends Exchange {
         //
         const result = this.safeValue(response, 'result', []);
         const tickers = this.safeValue(result, 'list', []);
-        const rawTicker = this.safeValue(tickers, 0);
+        const rawTicker = this.safeDict(tickers, 0);
         return this.parseTicker(rawTicker, market);
     }
     async fetchTickers(symbols = undefined, params = {}) {
@@ -2123,7 +2123,7 @@ export default class bybit extends Exchange {
         //     }
         //
         const result = this.safeValue(response, 'result', {});
-        const tickerList = this.safeValue(result, 'list', []);
+        const tickerList = this.safeList(result, 'list', []);
         return this.parseTickers(tickerList, parsedSymbols);
     }
     parseOHLCV(ohlcv, market = undefined) {
@@ -2262,7 +2262,7 @@ export default class bybit extends Exchange {
         //     }
         //
         const result = this.safeValue(response, 'result', {});
-        const ohlcvs = this.safeValue(result, 'list', []);
+        const ohlcvs = this.safeList(result, 'list', []);
         return this.parseOHLCVs(ohlcvs, market, timeframe, since, limit);
     }
     parseFundingRate(ticker, market = undefined) {
@@ -2739,7 +2739,7 @@ export default class bybit extends Exchange {
         //     }
         //
         const result = this.safeValue(response, 'result', {});
-        const trades = this.safeValue(result, 'list', []);
+        const trades = this.safeList(result, 'list', []);
         return this.parseTrades(trades, market, since, limit);
     }
     async fetchOrderBook(symbol, limit = undefined, params = {}) {
@@ -3491,7 +3491,7 @@ export default class bybit extends Exchange {
         //         "time": 1672211918471
         //     }
         //
-        const order = this.safeValue(response, 'result', {});
+        const order = this.safeDict(response, 'result', {});
         return this.parseOrder(order, market);
     }
     createOrderRequest(symbol, type, side, amount, price = undefined, params = {}, isUTA = true) {
@@ -3945,7 +3945,7 @@ export default class bybit extends Exchange {
         //            "tpTriggerBy":"UNKNOWN"
         //     }
         //
-        const order = this.safeValue(response, 'result', {});
+        const order = this.safeDict(response, 'result', {});
         return this.parseOrder(order, market);
     }
     async editUsdcOrder(id, symbol, type, side, amount = undefined, price = undefined, params = {}) {
@@ -4001,7 +4001,7 @@ export default class bybit extends Exchange {
         //        "retExtMap": {}
         //   }
         //
-        const result = this.safeValue(response, 'result', {});
+        const result = this.safeDict(response, 'result', {});
         return this.parseOrder(result, market);
     }
     async editOrder(id, symbol, type, side, amount = undefined, price = undefined, params = {}) {
@@ -4171,7 +4171,7 @@ export default class bybit extends Exchange {
         //         "retExtMap": {}
         //     }
         //
-        const result = this.safeValue(response, 'result', {});
+        const result = this.safeDict(response, 'result', {});
         return this.parseOrder(result, market);
     }
     async cancelOrder(id, symbol = undefined, params = {}) {
@@ -4239,7 +4239,7 @@ export default class bybit extends Exchange {
         //         "time": 1672217377164
         //     }
         //
-        const result = this.safeValue(response, 'result', {});
+        const result = this.safeDict(response, 'result', {});
         return this.parseOrder(result, market);
     }
     async cancelOrders(ids, symbol = undefined, params = {}) {
@@ -4536,7 +4536,7 @@ export default class bybit extends Exchange {
         //     }
         //
         const result = this.safeValue(response, 'result', {});
-        const data = this.safeValue(result, 'dataList', []);
+        const data = this.safeList(result, 'dataList', []);
         return this.parseOrders(data, market, since, limit);
     }
     async fetchOrderClassic(id, symbol = undefined, params = {}) {
@@ -5164,7 +5164,7 @@ export default class bybit extends Exchange {
         //     }
         //
         const result = this.safeValue(response, 'result', {});
-        const dataList = this.safeValue(result, 'dataList', []);
+        const dataList = this.safeList(result, 'dataList', []);
         return this.parseTrades(dataList, market, since, limit);
     }
     async fetchMyTrades(symbol = undefined, since = undefined, limit = undefined, params = {}) {
@@ -5367,7 +5367,7 @@ export default class bybit extends Exchange {
         const chains = this.safeValue(result, 'chains', []);
         const chainsIndexedById = this.indexBy(chains, 'chain');
         const selectedNetworkId = this.selectNetworkIdFromRawNetworks(code, networkCode, chainsIndexedById);
-        const addressObject = this.safeValue(chainsIndexedById, selectedNetworkId, {});
+        const addressObject = this.safeDict(chainsIndexedById, selectedNetworkId, {});
         return this.parseDepositAddress(addressObject, currency);
     }
     async fetchDeposits(code = undefined, since = undefined, limit = undefined, params = {}) {
@@ -5926,7 +5926,7 @@ export default class bybit extends Exchange {
         //         "time": "1666892894902"
         //     }
         //
-        const result = this.safeValue(response, 'result', {});
+        const result = this.safeDict(response, 'result', {});
         return this.parseTransaction(result, currency);
     }
     async fetchPosition(symbol, params = {}) {
@@ -6335,6 +6335,12 @@ export default class bybit extends Exchange {
         if (timestamp === undefined) {
             timestamp = this.safeIntegerN(position, ['updatedTime', 'updatedAt']);
         }
+        const tradeMode = this.safeInteger(position, 'tradeMode', 0);
+        let marginMode = undefined;
+        if ((!this.options['enableUnifiedAccount']) || (this.options['enableUnifiedAccount'] && market['inverse'])) {
+            // tradeMode would work for classic and UTA(inverse)
+            marginMode = (tradeMode === 1) ? 'isolated' : 'cross';
+        }
         let collateralString = this.safeString(position, 'positionBalance');
         const entryPrice = this.omitZero(this.safeString2(position, 'entryPrice', 'avgPrice'));
         const liquidationPrice = this.omitZero(this.safeString(position, 'liqPrice'));
@@ -6398,7 +6404,7 @@ export default class bybit extends Exchange {
             'markPrice': this.safeNumber(position, 'markPrice'),
             'lastPrice': undefined,
             'collateral': this.parseNumber(collateralString),
-            'marginMode': undefined,
+            'marginMode': marginMode,
             'side': side,
             'percentage': undefined,
             'stopLossPrice': this.safeNumber2(position, 'stop_loss', 'stopLoss'),
@@ -7460,7 +7466,7 @@ export default class bybit extends Exchange {
         //     }
         //
         const data = this.safeValue(response, 'result', {});
-        const rows = this.safeValue(data, 'rows', []);
+        const rows = this.safeList(data, 'rows', []);
         return this.parseDepositWithdrawFees(rows, codes, 'coin');
     }
     async fetchSettlementHistory(symbol = undefined, since = undefined, limit = undefined, params = {}) {

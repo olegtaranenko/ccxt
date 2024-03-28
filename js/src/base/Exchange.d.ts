@@ -52,7 +52,7 @@ export default class Exchange {
     httpsAgent: any;
     nodeHttpModuleLoaded: boolean;
     handleContentTypeApplicationZip: boolean;
-    minFundingAddressLength: number;
+    minFundingAddressLength: Int;
     number: (numberString: string) => number;
     quoteJsonNumbers: boolean;
     substituteCommonCurrencyCodes: boolean;
@@ -62,7 +62,7 @@ export default class Exchange {
     fetchImplementation: any;
     validateClientSsl: boolean;
     validateServerSsl: boolean;
-    timeout: number;
+    timeout: Int;
     twofa: any;
     verbose: boolean;
     verboseLogVeto: any;
@@ -81,14 +81,14 @@ export default class Exchange {
     baseCurrencies: any;
     bidsasks: Dictionary<Ticker>;
     codes: any;
-    commonCurrencies: any;
+    commonCurrencies: Dictionary<string>;
     currencies: Dictionary<Currency>;
     currencies_by_id: any;
     enableLastHttpResponse: boolean;
     enableLastJsonResponse: boolean;
     enableLastResponseHeaders: boolean;
     enableRateLimit: boolean;
-    exceptions: {};
+    exceptions: Dictionary<string>;
     fees: object;
     has: Dictionary<boolean | 'emulated'>;
     hostname: Str;
@@ -111,14 +111,14 @@ export default class Exchange {
     };
     markets: Dictionary<any>;
     markets_by_id: Dictionary<any>;
-    marketsByAltname: any;
-    marketsLoading: any;
+    marketsByAltname: Dictionary<any>;
+    marketsLoading: Promise<Dictionary<any>>;
     myTrades: ArrayCache;
     name: Str;
     ohlcvs: Dictionary<Dictionary<ArrayCacheByTimestamp>>;
     orderbooks: Dictionary<Ob>;
     orders: ArrayCache;
-    paddingMode: any;
+    paddingMode: Num;
     positions: any;
     precision: {
         amount: number | undefined;
@@ -127,7 +127,7 @@ export default class Exchange {
     precisionMode: Num;
     quoteCurrencies: any;
     rateLimit: Num;
-    reloadingMarkets: any;
+    reloadingMarkets: boolean;
     requiredCredentials: {
         apiKey: boolean;
         login: boolean;
@@ -176,7 +176,7 @@ export default class Exchange {
     binaryToBase58: (data: Uint8Array) => string;
     binaryToBase64: (data: Uint8Array) => string;
     capitalize: (s: string) => string;
-    clients: {};
+    clients: Dictionary<WsClient>;
     clone: (x: any) => any;
     crc32: typeof functions.crc32;
     decimalToPrecision: (x: any, roundingMode: any, numPrecisionDigits: any, countingMode?: number, paddingMode?: number) => any;
@@ -846,8 +846,6 @@ export default class Exchange {
     fetchUsedBalance(params?: {}): Promise<Balance>;
     fetchTotalBalance(params?: {}): Promise<Balance>;
     fetchStatus(params?: {}): Promise<any>;
-    fetchFundingFee(code: string, params?: {}): Promise<{}>;
-    fetchFundingFees(codes?: string[], params?: {}): Promise<{}>;
     fetchTransactionFee(code: string, params?: {}): Promise<{}>;
     fetchTransactionFees(codes?: string[], params?: {}): Promise<{}>;
     fetchDepositWithdrawFees(codes?: string[], params?: {}): Promise<Dictionary<DepositWithdrawFeeNetwork>>;

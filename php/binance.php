@@ -4745,7 +4745,7 @@ class binance extends Exchange {
         //         "newOrderResult" => "SUCCESS",
         //     }
         //
-        $data = $this->safe_value($response, 'newOrderResponse');
+        $data = $this->safe_dict($response, 'newOrderResponse');
         return $this->parse_order($data, $market);
     }
 
@@ -12065,7 +12065,7 @@ class binance extends Exchange {
         } else {
             throw new BadRequest($this->id . ' fetchMarginModes () supports linear and inverse subTypes only');
         }
-        $assets = $this->safe_value($response, 'positions', array());
+        $assets = $this->safe_list($response, 'positions', array());
         return $this->parse_margin_modes($assets, $symbols, 'symbol', 'swap');
     }
 

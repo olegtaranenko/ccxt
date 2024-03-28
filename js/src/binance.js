@@ -4822,7 +4822,7 @@ export default class binance extends Exchange {
         //         "newOrderResult": "SUCCESS",
         //     }
         //
-        const data = this.safeValue(response, 'newOrderResponse');
+        const data = this.safeDict(response, 'newOrderResponse');
         return this.parseOrder(data, market);
     }
     editSpotOrderRequest(id, symbol, type, side, amount, price = undefined, params = {}) {
@@ -12412,7 +12412,7 @@ export default class binance extends Exchange {
         else {
             throw new BadRequest(this.id + ' fetchMarginModes () supports linear and inverse subTypes only');
         }
-        const assets = this.safeValue(response, 'positions', []);
+        const assets = this.safeList(response, 'positions', []);
         return this.parseMarginModes(assets, symbols, 'symbol', 'swap');
     }
     parseMarginMode(marginMode, market = undefined) {

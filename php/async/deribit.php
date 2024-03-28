@@ -1203,7 +1203,7 @@ class deribit extends Exchange {
             //         "testnet" => false
             //     }
             //
-            $result = $this->safe_value($response, 'result');
+            $result = $this->safe_dict($response, 'result');
             return $this->parse_ticker($result, $market);
         }) ();
     }
@@ -1491,7 +1491,7 @@ class deribit extends Exchange {
             //      }
             //
             $result = $this->safe_value($response, 'result', array());
-            $trades = $this->safe_value($result, 'trades', array());
+            $trades = $this->safe_list($result, 'trades', array());
             return $this->parse_trades($trades, $market, $since, $limit);
         }) ();
     }
@@ -1856,7 +1856,7 @@ class deribit extends Exchange {
             //         }
             //     }
             //
-            $result = $this->safe_value($response, 'result');
+            $result = $this->safe_dict($response, 'result');
             return $this->parse_order($result, $market);
         }) ();
     }
@@ -2095,7 +2095,7 @@ class deribit extends Exchange {
                 'order_id' => $id,
             );
             $response = Async\await($this->privateGetCancel (array_merge($request, $params)));
-            $result = $this->safe_value($response, 'result', array());
+            $result = $this->safe_dict($response, 'result', array());
             return $this->parse_order($result);
         }) ();
     }
@@ -2150,7 +2150,7 @@ class deribit extends Exchange {
                 $request['instrument_name'] = $market['id'];
                 $response = Async\await($this->privateGetGetOpenOrdersByInstrument (array_merge($request, $params)));
             }
-            $result = $this->safe_value($response, 'result', array());
+            $result = $this->safe_list($response, 'result', array());
             return $this->parse_orders($result, $market, $since, $limit);
         }) ();
     }
@@ -2181,7 +2181,7 @@ class deribit extends Exchange {
                 $request['instrument_name'] = $market['id'];
                 $response = Async\await($this->privateGetGetOrderHistoryByInstrument (array_merge($request, $params)));
             }
-            $result = $this->safe_value($response, 'result', array());
+            $result = $this->safe_list($response, 'result', array());
             return $this->parse_orders($result, $market, $since, $limit);
         }) ();
     }
@@ -2236,7 +2236,7 @@ class deribit extends Exchange {
             //         }
             //     }
             //
-            $result = $this->safe_value($response, 'result', array());
+            $result = $this->safe_list($response, 'result', array());
             return $this->parse_trades($result, null, $since, $limit);
         }) ();
     }
@@ -2318,7 +2318,7 @@ class deribit extends Exchange {
             //     }
             //
             $result = $this->safe_value($response, 'result', array());
-            $trades = $this->safe_value($result, 'trades', array());
+            $trades = $this->safe_list($result, 'trades', array());
             return $this->parse_trades($trades, $market, $since, $limit);
         }) ();
     }
@@ -2367,7 +2367,7 @@ class deribit extends Exchange {
             //     }
             //
             $result = $this->safe_value($response, 'result', array());
-            $data = $this->safe_value($result, 'data', array());
+            $data = $this->safe_list($result, 'data', array());
             return $this->parse_transactions($data, $currency, $since, $limit, $params);
         }) ();
     }
@@ -2420,7 +2420,7 @@ class deribit extends Exchange {
             //     }
             //
             $result = $this->safe_value($response, 'result', array());
-            $data = $this->safe_value($result, 'data', array());
+            $data = $this->safe_list($result, 'data', array());
             return $this->parse_transactions($data, $currency, $since, $limit, $params);
         }) ();
     }
@@ -2611,7 +2611,7 @@ class deribit extends Exchange {
             //         }
             //     }
             //
-            $result = $this->safe_value($response, 'result');
+            $result = $this->safe_dict($response, 'result');
             return $this->parse_position($result);
         }) ();
     }
@@ -2683,7 +2683,7 @@ class deribit extends Exchange {
             //         )
             //     }
             //
-            $result = $this->safe_value($response, 'result');
+            $result = $this->safe_list($response, 'result');
             return $this->parse_positions($result, $symbols);
         }) ();
     }
@@ -2808,7 +2808,7 @@ class deribit extends Exchange {
             //     }
             //
             $result = $this->safe_value($response, 'result', array());
-            $transfers = $this->safe_value($result, 'data', array());
+            $transfers = $this->safe_list($result, 'data', array());
             return $this->parse_transfers($transfers, $currency, $since, $limit, $params);
         }) ();
     }
@@ -2862,7 +2862,7 @@ class deribit extends Exchange {
             //         }
             //     }
             //
-            $result = $this->safe_value($response, 'result', array());
+            $result = $this->safe_dict($response, 'result', array());
             return $this->parse_transfer($result, $currency);
         }) ();
     }
@@ -3000,7 +3000,7 @@ class deribit extends Exchange {
             //      "testnet" => true
             //    }
             //
-            $data = $this->safe_value($response, 'result', array());
+            $data = $this->safe_list($response, 'result', array());
             return $this->parse_deposit_withdraw_fees($data, $codes, 'currency');
         }) ();
     }
@@ -3272,7 +3272,7 @@ class deribit extends Exchange {
             //     }
             //
             $result = $this->safe_value($response, 'result', array());
-            $settlements = $this->safe_value($result, 'settlements', array());
+            $settlements = $this->safe_list($result, 'settlements', array());
             return $this->parse_liquidations($settlements, $market, $since, $limit);
         }) ();
     }

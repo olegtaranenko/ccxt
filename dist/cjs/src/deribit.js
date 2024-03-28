@@ -1190,7 +1190,7 @@ class deribit extends deribit$1 {
         //         "testnet": false
         //     }
         //
-        const result = this.safeValue(response, 'result');
+        const result = this.safeDict(response, 'result');
         return this.parseTicker(result, market);
     }
     async fetchTickers(symbols = undefined, params = {}) {
@@ -1477,7 +1477,7 @@ class deribit extends deribit$1 {
         //      }
         //
         const result = this.safeValue(response, 'result', {});
-        const trades = this.safeValue(result, 'trades', []);
+        const trades = this.safeList(result, 'trades', []);
         return this.parseTrades(trades, market, since, limit);
     }
     async fetchTradingFees(params = {}) {
@@ -1839,7 +1839,7 @@ class deribit extends deribit$1 {
         //         }
         //     }
         //
-        const result = this.safeValue(response, 'result');
+        const result = this.safeDict(response, 'result');
         return this.parseOrder(result, market);
     }
     async createOrder(symbol, type, side, amount, price = undefined, params = {}) {
@@ -2081,7 +2081,7 @@ class deribit extends deribit$1 {
             'order_id': id,
         };
         const response = await this.privateGetCancel(this.extend(request, params));
-        const result = this.safeValue(response, 'result', {});
+        const result = this.safeDict(response, 'result', {});
         return this.parseOrder(result);
     }
     async cancelAllOrders(symbol = undefined, params = {}) {
@@ -2136,7 +2136,7 @@ class deribit extends deribit$1 {
             request['instrument_name'] = market['id'];
             response = await this.privateGetGetOpenOrdersByInstrument(this.extend(request, params));
         }
-        const result = this.safeValue(response, 'result', []);
+        const result = this.safeList(response, 'result', []);
         return this.parseOrders(result, market, since, limit);
     }
     async fetchClosedOrders(symbol = undefined, since = undefined, limit = undefined, params = {}) {
@@ -2167,7 +2167,7 @@ class deribit extends deribit$1 {
             request['instrument_name'] = market['id'];
             response = await this.privateGetGetOrderHistoryByInstrument(this.extend(request, params));
         }
-        const result = this.safeValue(response, 'result', []);
+        const result = this.safeList(response, 'result', []);
         return this.parseOrders(result, market, since, limit);
     }
     async fetchOrderTrades(id, symbol = undefined, since = undefined, limit = undefined, params = {}) {
@@ -2221,7 +2221,7 @@ class deribit extends deribit$1 {
         //         }
         //     }
         //
-        const result = this.safeValue(response, 'result', {});
+        const result = this.safeList(response, 'result', []);
         return this.parseTrades(result, undefined, since, limit);
     }
     async fetchMyTrades(symbol = undefined, since = undefined, limit = undefined, params = {}) {
@@ -2305,7 +2305,7 @@ class deribit extends deribit$1 {
         //     }
         //
         const result = this.safeValue(response, 'result', {});
-        const trades = this.safeValue(result, 'trades', []);
+        const trades = this.safeList(result, 'trades', []);
         return this.parseTrades(trades, market, since, limit);
     }
     async fetchDeposits(code = undefined, since = undefined, limit = undefined, params = {}) {
@@ -2353,7 +2353,7 @@ class deribit extends deribit$1 {
         //     }
         //
         const result = this.safeValue(response, 'result', {});
-        const data = this.safeValue(result, 'data', []);
+        const data = this.safeList(result, 'data', []);
         return this.parseTransactions(data, currency, since, limit, params);
     }
     async fetchWithdrawals(code = undefined, since = undefined, limit = undefined, params = {}) {
@@ -2405,7 +2405,7 @@ class deribit extends deribit$1 {
         //     }
         //
         const result = this.safeValue(response, 'result', {});
-        const data = this.safeValue(result, 'data', []);
+        const data = this.safeList(result, 'data', []);
         return this.parseTransactions(data, currency, since, limit, params);
     }
     parseTransactionStatus(status) {
@@ -2592,7 +2592,7 @@ class deribit extends deribit$1 {
         //         }
         //     }
         //
-        const result = this.safeValue(response, 'result');
+        const result = this.safeDict(response, 'result');
         return this.parsePosition(result);
     }
     async fetchPositions(symbols = undefined, params = {}) {
@@ -2665,7 +2665,7 @@ class deribit extends deribit$1 {
         //         ]
         //     }
         //
-        const result = this.safeValue(response, 'result');
+        const result = this.safeList(response, 'result');
         return this.parsePositions(result, symbols);
     }
     async fetchVolatilityHistory(code, params = {}) {
@@ -2787,7 +2787,7 @@ class deribit extends deribit$1 {
         //     }
         //
         const result = this.safeValue(response, 'result', {});
-        const transfers = this.safeValue(result, 'data', []);
+        const transfers = this.safeList(result, 'data', []);
         return this.parseTransfers(transfers, currency, since, limit, params);
     }
     async transfer(code, amount, fromAccount, toAccount, params = {}) {
@@ -2841,7 +2841,7 @@ class deribit extends deribit$1 {
         //         }
         //     }
         //
-        const result = this.safeValue(response, 'result', {});
+        const result = this.safeDict(response, 'result', {});
         return this.parseTransfer(result, currency);
     }
     parseTransfer(transfer, currency = undefined) {
@@ -2974,7 +2974,7 @@ class deribit extends deribit$1 {
         //      "testnet": true
         //    }
         //
-        const data = this.safeValue(response, 'result', {});
+        const data = this.safeList(response, 'result', []);
         return this.parseDepositWithdrawFees(data, codes, 'currency');
     }
     async fetchFundingRate(symbol, params = {}) {
@@ -3240,7 +3240,7 @@ class deribit extends deribit$1 {
         //     }
         //
         const result = this.safeValue(response, 'result', {});
-        const settlements = this.safeValue(result, 'settlements', []);
+        const settlements = this.safeList(result, 'settlements', []);
         return this.parseLiquidations(settlements, market, since, limit);
     }
     parseLiquidation(liquidation, market = undefined) {
