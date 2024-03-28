@@ -1,10 +1,61 @@
-
 //  ---------------------------------------------------------------------------
 
 import Exchange from './abstract/binance.js';
-import { AccountSuspended, ArgumentsRequired, AuthenticationError, BadRequest, BadResponse, BadSymbol, DDoSProtection, ExchangeError, InsufficientFunds, InvalidNonce, InvalidOrder, MarginModeAlreadySet, NotSupported, OnMaintenance, OperationFailed, OperationRejected, OrderImmediatelyFillable, OrderNotFillable, OrderNotFound, PermissionDenied, RateLimitExceeded, RequestTimeout } from './base/errors.js';
+import {
+    AccountSuspended,
+    ArgumentsRequired,
+    AuthenticationError,
+    BadRequest,
+    BadResponse,
+    BadSymbol,
+    DDoSProtection,
+    ExchangeError,
+    InsufficientFunds,
+    InvalidNonce,
+    InvalidOrder,
+    MarginModeAlreadySet,
+    NotSupported,
+    OnMaintenance,
+    OperationFailed,
+    OperationRejected,
+    OrderImmediatelyFillable,
+    OrderNotFillable,
+    OrderNotFound,
+    PermissionDenied,
+    RateLimitExceeded,
+    RequestTimeout,
+} from './base/errors.js';
 import { Precise } from './base/Precise.js';
-import type { Balances, Currency, FundingRateHistory, Greeks, Int, Leverage, Leverages, Liquidation, MarginMode, MarginModes, Market, MarketInterface, Num, OHLCV, OpenInterest, Option, Order, OrderBook, OrderRequest, OrderSide, OrderType, Str, Strings, Ticker, Tickers, Trade, Transaction, TransferEntry } from './base/types.js';
+import type {
+    Balances,
+    Currency,
+    FundingRateHistory,
+    Greeks,
+    Int,
+    Leverage,
+    Leverages,
+    Liquidation,
+    MarginMode,
+    MarginModes,
+    Market,
+    MarketInterface,
+    Num,
+    OHLCV,
+    OpenInterest,
+    Option,
+    Order,
+    OrderBook,
+    OrderRequest,
+    OrderSide,
+    OrderType,
+    Str,
+    Strings,
+    Ticker,
+    Tickers,
+    Trade,
+    Transaction,
+    TransferEntry,
+} from './base/types.js';
 import { DECIMAL_PLACES, TRUNCATE } from './base/functions/number.js';
 import { sha256 } from './static_dependencies/noble-hashes/sha256.js';
 import { rsa } from './base/functions/rsa.js';
@@ -4981,7 +5032,7 @@ export default class binance extends Exchange {
         return this.parseOrder (response, market);
     }
 
-    async editOrder (id: string, symbol: string, type:OrderType, side: OrderSide, amount: Num = undefined, price: Num = undefined, params = {}) {
+    async editOrder (id: string, symbol: string, type: OrderType, side: OrderSide, amount: Num = undefined, price: Num = undefined, params = {}) {
         /**
          * @method
          * @name binance#editOrder
@@ -5388,125 +5439,125 @@ export default class binance extends Exchange {
         // fetchOpenOrder: linear swap
         //
         //     {
-        //         "orderId": 3697213934,
-        //         "symbol": "BTCUSDT",
-        //         "status": "NEW",
-        //         "clientOrderId": "x-xcKtGhcufb20c5a7761a4aa09aa156",
-        //         "price": "33000.00",
         //         "avgPrice": "0.00000",
-        //         "origQty": "0.010",
-        //         "executedQty": "0.000",
+        //         "clientOrderId": "x-xcKtGhcufb20c5a7761a4aa09aa156",
+        //         "closePosition": false,
         //         "cumQuote": "0.00000",
+        //         "executedQty": "0.000",
+        //         "goodTillDate": 0,
+        //         "orderId": 3697213934,
+        //         "origQty": "0.010",
+        //         "origType": "LIMIT",
+        //         "positionSide": "BOTH",
+        //         "price": "33000.00",
+        //         "priceMatch": "NONE",
+        //         "priceProtect": false,
+        //         "reduceOnly": false,
+        //         "selfTradePreventionMode": "NONE",
+        //         "side": "BUY",
+        //         "status": "NEW",
+        //         "stopPrice": "0.00",
+        //         "symbol": "BTCUSDT",
+        //         "time": 1707892893502,
         //         "timeInForce": "GTC",
         //         "type": "LIMIT",
-        //         "reduceOnly": false,
-        //         "closePosition": false,
-        //         "side": "BUY",
-        //         "positionSide": "BOTH",
-        //         "stopPrice": "0.00",
-        //         "workingType": "CONTRACT_PRICE",
-        //         "priceProtect": false,
-        //         "origType": "LIMIT",
-        //         "priceMatch": "NONE",
-        //         "selfTradePreventionMode": "NONE",
-        //         "goodTillDate": 0,
-        //         "time": 1707892893502,
         //         "updateTime": 1707892893515
+        //         "workingType": "CONTRACT_PRICE",
         //     }
         //
         // fetchOpenOrder: inverse swap
         //
         //     {
-        //         "orderId": 597368542,
-        //         "symbol": "BTCUSD_PERP",
-        //         "pair": "BTCUSD",
-        //         "status": "NEW",
-        //         "clientOrderId": "x-xcKtGhcubbde7ba93b1a4ab881eff3",
-        //         "price": "35000",
         //         "avgPrice": "0",
-        //         "origQty": "1",
-        //         "executedQty": "0",
+        //         "clientOrderId": "x-xcKtGhcubbde7ba93b1a4ab881eff3",
+        //         "closePosition": false,
         //         "cumBase": "0",
+        //         "executedQty": "0",
+        //         "orderId": 597368542,
+        //         "origQty": "1",
+        //         "origType": "LIMIT",
+        //         "pair": "BTCUSD",
+        //         "positionSide": "BOTH",
+        //         "price": "35000",
+        //         "priceProtect": false,
+        //         "reduceOnly": false,
+        //         "side": "BUY",
+        //         "status": "NEW",
+        //         "stopPrice": "0",
+        //         "symbol": "BTCUSD_PERP",
+        //         "time": 1707893453199,
         //         "timeInForce": "GTC",
         //         "type": "LIMIT",
-        //         "reduceOnly": false,
-        //         "closePosition": false,
-        //         "side": "BUY",
-        //         "positionSide": "BOTH",
-        //         "stopPrice": "0",
-        //         "workingType": "CONTRACT_PRICE",
-        //         "priceProtect": false,
-        //         "origType": "LIMIT",
-        //         "time": 1707893453199,
         //         "updateTime": 1707893453199
+        //         "workingType": "CONTRACT_PRICE",
         //     }
         //
         // fetchOpenOrder: linear portfolio margin
         //
         //     {
-        //         "orderId": 264895013409,
-        //         "symbol": "BTCUSDT",
-        //         "status": "NEW",
-        //         "clientOrderId": "x-xcKtGhcu6278f1adbdf14f74ab432e",
-        //         "price": "35000",
         //         "avgPrice": "0",
-        //         "origQty": "0.010",
-        //         "executedQty": "0",
+        //         "clientOrderId": "x-xcKtGhcu6278f1adbdf14f74ab432e",
         //         "cumQuote": "0",
+        //         "executedQty": "0",
+        //         "goodTillDate": 0,
+        //         "orderId": 264895013409,
+        //         "origQty": "0.010",
+        //         "origType": "LIMIT",
+        //         "positionSide": "LONG",
+        //         "price": "35000",
+        //         "reduceOnly": false,
+        //         "selfTradePreventionMode": "NONE"
+        //         "side": "BUY",
+        //         "status": "NEW",
+        //         "symbol": "BTCUSDT",
+        //         "time": 1707893839364,
         //         "timeInForce": "GTC",
         //         "type": "LIMIT",
-        //         "reduceOnly": false,
-        //         "side": "BUY",
-        //         "positionSide": "LONG",
-        //         "origType": "LIMIT",
-        //         "time": 1707893839364,
         //         "updateTime": 1707893839364,
-        //         "goodTillDate": 0,
-        //         "selfTradePreventionMode": "NONE"
         //     }
         //
         // fetchOpenOrder: inverse portfolio margin
         //
         //     {
-        //         "orderId": 71790316950,
-        //         "symbol": "ETHUSD_PERP",
-        //         "pair": "ETHUSD",
-        //         "status": "NEW",
-        //         "clientOrderId": "x-xcKtGhcuec11030474204ab08ba2c2",
-        //         "price": "2500",
         //         "avgPrice": "0",
-        //         "origQty": "1",
-        //         "executedQty": "0",
+        //         "clientOrderId": "x-xcKtGhcuec11030474204ab08ba2c2",
         //         "cumBase": "0",
-        //         "timeInForce": "GTC",
-        //         "type": "LIMIT",
+        //         "executedQty": "0",
+        //         "orderId": 71790316950,
+        //         "origQty": "1",
+        //         "origType": "LIMIT",
+        //         "pair": "ETHUSD",
+        //         "positionSide": "LONG",
+        //         "price": "2500",
         //         "reduceOnly": false,
         //         "side": "BUY",
-        //         "positionSide": "LONG",
-        //         "origType": "LIMIT",
+        //         "status": "NEW",
+        //         "symbol": "ETHUSD_PERP",
         //         "time": 1707894181694,
+        //         "timeInForce": "GTC",
+        //         "type": "LIMIT",
         //         "updateTime": 1707894181694
         //     }
         //
         // fetchOpenOrder: inverse portfolio margin conditional
         //
         //     {
+        //         "bookTime": 1707894782679,
         //         "newClientStrategyId": "x-xcKtGhcu2da9c765294b433994ffce",
+        //         "origQty": "1",
+        //         "positionSide": "LONG",
+        //         "price": "2500",
+        //         "priceProtect": false
+        //         "reduceOnly": false,
+        //         "side": "BUY",
+        //         "stopPrice": "4000",
         //         "strategyId": 1423501,
         //         "strategyStatus": "NEW",
         //         "strategyType": "STOP",
-        //         "origQty": "1",
-        //         "price": "2500",
-        //         "reduceOnly": false,
-        //         "side": "BUY",
-        //         "positionSide": "LONG",
-        //         "stopPrice": "4000",
         //         "symbol": "ETHUSD_PERP",
-        //         "bookTime": 1707894782679,
-        //         "updateTime": 1707894782679,
         //         "timeInForce": "GTC",
+        //         "updateTime": 1707894782679,
         //         "workingType": "CONTRACT_PRICE",
-        //         "priceProtect": false
         //     }
         //
         const code = this.safeString (order, 'code');
@@ -7010,7 +7061,7 @@ export default class binance extends Exchange {
         }
     }
 
-    async cancelOrders (ids:string[], symbol: Str = undefined, params = {}) {
+    async cancelOrders (ids: string[], symbol: Str = undefined, params = {}) {
         /**
          * @method
          * @name binance#cancelOrders
@@ -7990,7 +8041,7 @@ export default class binance extends Exchange {
         };
     }
 
-    async transfer (code: string, amount: number, fromAccount: string, toAccount:string, params = {}): Promise<TransferEntry> {
+    async transfer (code: string, amount: number, fromAccount: string, toAccount: string, params = {}): Promise<TransferEntry> {
         /**
          * @method
          * @name binance#transfer
