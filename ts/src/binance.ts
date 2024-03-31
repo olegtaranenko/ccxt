@@ -37,6 +37,7 @@ import type {
     Liquidation,
     MarginMode,
     MarginModes,
+    MarginModification,
     Market,
     MarketInterface,
     Num,
@@ -11108,7 +11109,17 @@ export default class binance extends Exchange {
         });
     }
 
-    parseMarginModification (data, market: Market = undefined) {
+    parseMarginModification (data, market: Market = undefined): MarginModification {
+        //
+        // add/reduce margin
+        //
+        //     {
+        //         "code": 200,
+        //         "msg": "Successfully modify position margin.",
+        //         "amount": 0.001,
+        //         "type": 1
+        //     }
+        //
         const rawType = this.safeInteger (data, 'type');
         const resultType = (rawType === 1) ? 'add' : 'reduce';
         const resultAmount = this.safeNumber (data, 'amount');
@@ -11117,14 +11128,17 @@ export default class binance extends Exchange {
         return {
             'amount': resultAmount,
             'code': undefined,
+            'datetime': undefined,
             'info': data,
             'status': status,
             'symbol': market['symbol'],
+            'timestamp': undefined,
+            'total': undefined,
             'type': resultType,
         };
     }
 
-    async reduceMargin (symbol: string, amount, params = {}) {
+    async reduceMargin (symbol: string, amount, params = {}): Promise<MarginModification> {
         /**
          * @method
          * @name binance#reduceMargin
@@ -11139,7 +11153,7 @@ export default class binance extends Exchange {
         return await this.modifyMarginHelper (symbol, amount, 2, params);
     }
 
-    async addMargin (symbol: string, amount, params = {}) {
+    async addMargin (symbol: string, amount, params = {}): Promise<MarginModification> {
         /**
          * @method
          * @name binance#addMargin

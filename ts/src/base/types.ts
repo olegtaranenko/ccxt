@@ -476,6 +476,18 @@ export interface Leverage {
     symbol: string;
 }
 
+export interface MarginModification {
+    'info': any,
+    'symbol': string,
+    'type': 'add' | 'reduce' | 'set' | undefined,
+    'amount': Num,
+    'total': Num,
+    'code': Str,
+    'status': Str,
+    'timestamp': Int,
+    'datetime': Str,
+}
+
 export interface Leverages extends Dictionary<Leverage> {
 }
 
