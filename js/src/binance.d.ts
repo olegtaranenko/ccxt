@@ -1,5 +1,5 @@
 import Exchange from './abstract/binance.js';
-import type { Balances, Currency, FundingRateHistory, Greeks, Int, Leverage, Leverages, Liquidation, MarginMode, MarginModes, Market, MarketInterface, Num, OHLCV, OpenInterest, Option, Order, OrderBook, OrderRequest, OrderSide, OrderType, Str, Strings, Ticker, Tickers, Trade, Transaction, TransferEntry } from './base/types.js';
+import type { Balances, Currency, FundingRateHistory, Greeks, Int, Leverage, Leverages, Liquidation, MarginMode, MarginModes, MarginModification, Market, MarketInterface, Num, OHLCV, OpenInterest, Option, Order, OrderBook, OrderRequest, OrderSide, OrderType, Str, Strings, Ticker, Tickers, Trade, Transaction, TransferEntry } from './base/types.js';
 /**
  * @class binance
  * @augments Exchange
@@ -306,16 +306,9 @@ export default class binance extends Exchange {
     calculateRateLimiterCost(api: any, method: any, path: any, params: any, config?: {}): any;
     request(path: any, api?: string, method?: string, params?: {}, headers?: any, body?: any, config?: {}): Promise<any>;
     modifyMarginHelper(symbol: string, amount: any, addOrReduce: any, params?: {}): Promise<any>;
-    parseMarginModification(data: any, market?: Market): {
-        amount: number;
-        code: any;
-        info: any;
-        status: string;
-        symbol: string;
-        type: string;
-    };
-    reduceMargin(symbol: string, amount: any, params?: {}): Promise<any>;
-    addMargin(symbol: string, amount: any, params?: {}): Promise<any>;
+    parseMarginModification(data: any, market?: Market): MarginModification;
+    reduceMargin(symbol: string, amount: any, params?: {}): Promise<MarginModification>;
+    addMargin(symbol: string, amount: any, params?: {}): Promise<MarginModification>;
     fetchCrossBorrowRate(code: string, params?: {}): Promise<{
         currency: string;
         datetime: string;

@@ -8,7 +8,7 @@ from ccxt.abstract.binance import ImplicitAPI
 import asyncio
 import hashlib
 import json
-from ccxt.base.types import Balances, Currency, Greeks, Int, Leverage, Leverages, MarginMode, MarginModes, Market, MarketInterface, Num, Option, Order, OrderBook, OrderRequest, OrderSide, OrderType, Str, Strings, Ticker, Tickers, Trade, Transaction, TransferEntry
+from ccxt.base.types import Balances, Currency, Greeks, Int, Leverage, Leverages, MarginMode, MarginModes, MarginModification, Market, MarketInterface, Num, Option, Order, OrderBook, OrderRequest, OrderSide, OrderType, Str, Strings, Ticker, Tickers, Trade, Transaction, TransferEntry
 from typing import List
 from ccxt.base.errors import ExchangeError
 from ccxt.base.errors import PermissionDenied
@@ -5221,125 +5221,125 @@ class binance(Exchange, ImplicitAPI):
         # fetchOpenOrder: linear swap
         #
         #     {
-        #         "orderId": 3697213934,
-        #         "symbol": "BTCUSDT",
-        #         "status": "NEW",
-        #         "clientOrderId": "x-xcKtGhcufb20c5a7761a4aa09aa156",
-        #         "price": "33000.00",
         #         "avgPrice": "0.00000",
-        #         "origQty": "0.010",
-        #         "executedQty": "0.000",
+        #         "clientOrderId": "x-xcKtGhcufb20c5a7761a4aa09aa156",
+        #         "closePosition": False,
         #         "cumQuote": "0.00000",
+        #         "executedQty": "0.000",
+        #         "goodTillDate": 0,
+        #         "orderId": 3697213934,
+        #         "origQty": "0.010",
+        #         "origType": "LIMIT",
+        #         "positionSide": "BOTH",
+        #         "price": "33000.00",
+        #         "priceMatch": "NONE",
+        #         "priceProtect": False,
+        #         "reduceOnly": False,
+        #         "selfTradePreventionMode": "NONE",
+        #         "side": "BUY",
+        #         "status": "NEW",
+        #         "stopPrice": "0.00",
+        #         "symbol": "BTCUSDT",
+        #         "time": 1707892893502,
         #         "timeInForce": "GTC",
         #         "type": "LIMIT",
-        #         "reduceOnly": False,
-        #         "closePosition": False,
-        #         "side": "BUY",
-        #         "positionSide": "BOTH",
-        #         "stopPrice": "0.00",
-        #         "workingType": "CONTRACT_PRICE",
-        #         "priceProtect": False,
-        #         "origType": "LIMIT",
-        #         "priceMatch": "NONE",
-        #         "selfTradePreventionMode": "NONE",
-        #         "goodTillDate": 0,
-        #         "time": 1707892893502,
         #         "updateTime": 1707892893515
+        #         "workingType": "CONTRACT_PRICE",
         #     }
         #
         # fetchOpenOrder: inverse swap
         #
         #     {
-        #         "orderId": 597368542,
-        #         "symbol": "BTCUSD_PERP",
-        #         "pair": "BTCUSD",
-        #         "status": "NEW",
-        #         "clientOrderId": "x-xcKtGhcubbde7ba93b1a4ab881eff3",
-        #         "price": "35000",
         #         "avgPrice": "0",
-        #         "origQty": "1",
-        #         "executedQty": "0",
+        #         "clientOrderId": "x-xcKtGhcubbde7ba93b1a4ab881eff3",
+        #         "closePosition": False,
         #         "cumBase": "0",
+        #         "executedQty": "0",
+        #         "orderId": 597368542,
+        #         "origQty": "1",
+        #         "origType": "LIMIT",
+        #         "pair": "BTCUSD",
+        #         "positionSide": "BOTH",
+        #         "price": "35000",
+        #         "priceProtect": False,
+        #         "reduceOnly": False,
+        #         "side": "BUY",
+        #         "status": "NEW",
+        #         "stopPrice": "0",
+        #         "symbol": "BTCUSD_PERP",
+        #         "time": 1707893453199,
         #         "timeInForce": "GTC",
         #         "type": "LIMIT",
-        #         "reduceOnly": False,
-        #         "closePosition": False,
-        #         "side": "BUY",
-        #         "positionSide": "BOTH",
-        #         "stopPrice": "0",
-        #         "workingType": "CONTRACT_PRICE",
-        #         "priceProtect": False,
-        #         "origType": "LIMIT",
-        #         "time": 1707893453199,
         #         "updateTime": 1707893453199
+        #         "workingType": "CONTRACT_PRICE",
         #     }
         #
         # fetchOpenOrder: linear portfolio margin
         #
         #     {
-        #         "orderId": 264895013409,
-        #         "symbol": "BTCUSDT",
-        #         "status": "NEW",
-        #         "clientOrderId": "x-xcKtGhcu6278f1adbdf14f74ab432e",
-        #         "price": "35000",
         #         "avgPrice": "0",
-        #         "origQty": "0.010",
-        #         "executedQty": "0",
+        #         "clientOrderId": "x-xcKtGhcu6278f1adbdf14f74ab432e",
         #         "cumQuote": "0",
+        #         "executedQty": "0",
+        #         "goodTillDate": 0,
+        #         "orderId": 264895013409,
+        #         "origQty": "0.010",
+        #         "origType": "LIMIT",
+        #         "positionSide": "LONG",
+        #         "price": "35000",
+        #         "reduceOnly": False,
+        #         "selfTradePreventionMode": "NONE"
+        #         "side": "BUY",
+        #         "status": "NEW",
+        #         "symbol": "BTCUSDT",
+        #         "time": 1707893839364,
         #         "timeInForce": "GTC",
         #         "type": "LIMIT",
-        #         "reduceOnly": False,
-        #         "side": "BUY",
-        #         "positionSide": "LONG",
-        #         "origType": "LIMIT",
-        #         "time": 1707893839364,
         #         "updateTime": 1707893839364,
-        #         "goodTillDate": 0,
-        #         "selfTradePreventionMode": "NONE"
         #     }
         #
         # fetchOpenOrder: inverse portfolio margin
         #
         #     {
-        #         "orderId": 71790316950,
-        #         "symbol": "ETHUSD_PERP",
-        #         "pair": "ETHUSD",
-        #         "status": "NEW",
-        #         "clientOrderId": "x-xcKtGhcuec11030474204ab08ba2c2",
-        #         "price": "2500",
         #         "avgPrice": "0",
-        #         "origQty": "1",
-        #         "executedQty": "0",
+        #         "clientOrderId": "x-xcKtGhcuec11030474204ab08ba2c2",
         #         "cumBase": "0",
-        #         "timeInForce": "GTC",
-        #         "type": "LIMIT",
+        #         "executedQty": "0",
+        #         "orderId": 71790316950,
+        #         "origQty": "1",
+        #         "origType": "LIMIT",
+        #         "pair": "ETHUSD",
+        #         "positionSide": "LONG",
+        #         "price": "2500",
         #         "reduceOnly": False,
         #         "side": "BUY",
-        #         "positionSide": "LONG",
-        #         "origType": "LIMIT",
+        #         "status": "NEW",
+        #         "symbol": "ETHUSD_PERP",
         #         "time": 1707894181694,
+        #         "timeInForce": "GTC",
+        #         "type": "LIMIT",
         #         "updateTime": 1707894181694
         #     }
         #
         # fetchOpenOrder: inverse portfolio margin conditional
         #
         #     {
+        #         "bookTime": 1707894782679,
         #         "newClientStrategyId": "x-xcKtGhcu2da9c765294b433994ffce",
+        #         "origQty": "1",
+        #         "positionSide": "LONG",
+        #         "price": "2500",
+        #         "priceProtect": False
+        #         "reduceOnly": False,
+        #         "side": "BUY",
+        #         "stopPrice": "4000",
         #         "strategyId": 1423501,
         #         "strategyStatus": "NEW",
         #         "strategyType": "STOP",
-        #         "origQty": "1",
-        #         "price": "2500",
-        #         "reduceOnly": False,
-        #         "side": "BUY",
-        #         "positionSide": "LONG",
-        #         "stopPrice": "4000",
         #         "symbol": "ETHUSD_PERP",
-        #         "bookTime": 1707894782679,
-        #         "updateTime": 1707894782679,
         #         "timeInForce": "GTC",
+        #         "updateTime": 1707894782679,
         #         "workingType": "CONTRACT_PRICE",
-        #         "priceProtect": False
         #     }
         #
         code = self.safe_string(order, 'code')
@@ -10337,7 +10337,17 @@ class binance(Exchange, ImplicitAPI):
             'code': code,
         })
 
-    def parse_margin_modification(self, data, market: Market = None):
+    def parse_margin_modification(self, data, market: Market = None) -> MarginModification:
+        #
+        # add/reduce margin
+        #
+        #     {
+        #         "code": 200,
+        #         "msg": "Successfully modify position margin.",
+        #         "amount": 0.001,
+        #         "type": 1
+        #     }
+        #
         rawType = self.safe_integer(data, 'type')
         resultType = 'add' if (rawType == 1) else 'reduce'
         resultAmount = self.safe_number(data, 'amount')
@@ -10346,13 +10356,16 @@ class binance(Exchange, ImplicitAPI):
         return {
             'amount': resultAmount,
             'code': None,
+            'datetime': None,
             'info': data,
             'status': status,
             'symbol': market['symbol'],
+            'timestamp': None,
+            'total': None,
             'type': resultType,
         }
 
-    async def reduce_margin(self, symbol: str, amount, params={}):
+    async def reduce_margin(self, symbol: str, amount, params={}) -> MarginModification:
         """
         :see: https://binance-docs.github.io/apidocs/delivery/en/#modify-isolated-position-margin-trade
         :see: https://binance-docs.github.io/apidocs/futures/en/#modify-isolated-position-margin-trade
@@ -10364,7 +10377,7 @@ class binance(Exchange, ImplicitAPI):
         """
         return await self.modify_margin_helper(symbol, amount, 2, params)
 
-    async def add_margin(self, symbol: str, amount, params={}):
+    async def add_margin(self, symbol: str, amount, params={}) -> MarginModification:
         """
         :see: https://binance-docs.github.io/apidocs/delivery/en/#modify-isolated-position-margin-trade
         :see: https://binance-docs.github.io/apidocs/futures/en/#modify-isolated-position-margin-trade
