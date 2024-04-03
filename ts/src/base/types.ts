@@ -304,8 +304,8 @@ export interface Position {
     lastUpdateTimestamp?: number;
     leverage?: number;
     liquidationPrice?: number;
+    maintenanceMargin?: number;
     maintenanceMarginPercentage?: number;
-    maintenenceMargin?: number;
     marginMode?: Str;
     marginRatio?: number;
     markPrice?: number;
