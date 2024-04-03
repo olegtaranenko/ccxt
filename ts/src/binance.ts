@@ -28,6 +28,7 @@ import {
 import { Precise } from './base/Precise.js';
 import type {
     Balances,
+    Currencies,
     Currency,
     FundingRateHistory,
     Greeks,
@@ -54,6 +55,8 @@ import type {
     Ticker,
     Tickers,
     Trade,
+    TradingFeeInterface,
+    TradingFees,
     Transaction,
     TransferEntry,
 } from './base/types.js';
@@ -1241,7 +1244,7 @@ export default class binance extends Exchange {
                         '-4140': BadRequest, // Invalid symbol status for opening position
                         '-4141': OperationRejected, // Symbol is closed
                         '-4144': BadSymbol, // Invalid pair
-                        '-4164': OperationRejected, // Leverage reduction is not supported in Isolated Margin Mode with open positions
+                        '-4164': InvalidOrder, // {"code":-4164,"msg":"Order's notional must be no smaller than 20 (unless you choose reduce only)."}
                         '-4165': BadRequest, // Invalid time interval
                         '-4167': BadRequest, // Unable to adjust to Multi-Assets mode with symbols of USDⓈ-M Futures under isolated-margin mode.
                         '-4168': BadRequest, // Unable to adjust to isolated-margin mode under the Multi-Assets mode.
@@ -2676,7 +2679,7 @@ export default class binance extends Exchange {
         return this.safeInteger (response, 'serverTime');
     }
 
-    async fetchCurrencies (params = {}) {
+    async fetchCurrencies (params = {}): Promise<Currencies> {
         /**
          * @method
          * @name binance#fetchCurrencies
@@ -8579,7 +8582,7 @@ export default class binance extends Exchange {
         return this.parseTransaction (response, currency);
     }
 
-    parseTradingFee (fee, market: Market = undefined) {
+    parseTradingFee (fee, market: Market = undefined): TradingFeeInterface {
         //
         // spot
         //     [
@@ -8604,10 +8607,12 @@ export default class binance extends Exchange {
             'symbol': symbol,
             'maker': this.safeNumber2 (fee, 'makerCommission', 'makerCommissionRate'),
             'taker': this.safeNumber2 (fee, 'takerCommission', 'takerCommissionRate'),
+            'percentage': undefined,
+            'tierBased': undefined,
         };
     }
 
-    async fetchTradingFee (symbol: string, params = {}) {
+    async fetchTradingFee (symbol: string, params = {}): Promise<TradingFeeInterface> {
         /**
          * @method
          * @name binance#fetchTradingFee
@@ -8677,7 +8682,7 @@ export default class binance extends Exchange {
         return this.parseTradingFee (data, market);
     }
 
-    async fetchTradingFees (params = {}) {
+    async fetchTradingFees (params = {}): Promise<TradingFees> {
         /**
          * @method
          * @name binance#fetchTradingFees
