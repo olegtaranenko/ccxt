@@ -159,6 +159,10 @@ class hyperliquid extends hyperliquid$1 {
                     'taker': this.parseNumber('0.00035'),
                     'maker': this.parseNumber('0.0001'),
                 },
+                'spot': {
+                    'taker': this.parseNumber('0.00035'),
+                    'maker': this.parseNumber('0.0001'),
+                },
             },
             'requiredCredentials': {
                 'apiKey': false,

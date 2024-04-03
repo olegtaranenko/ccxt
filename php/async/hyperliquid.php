@@ -161,6 +161,10 @@ class hyperliquid extends Exchange {
                     'taker' => $this->parse_number('0.00035'),
                     'maker' => $this->parse_number('0.0001'),
                 ),
+                'spot' => array(
+                    'taker' => $this->parse_number('0.00035'),
+                    'maker' => $this->parse_number('0.0001'),
+                ),
             ),
             'requiredCredentials' => array(
                 'apiKey' => false,

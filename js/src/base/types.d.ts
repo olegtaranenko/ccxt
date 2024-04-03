@@ -25,6 +25,14 @@ export interface FeeInterface {
     currency: Str;
     rate?: Num;
 }
+export interface TradingFeeInterface {
+    info: any;
+    symbol: Str;
+    maker: Num;
+    taker: Num;
+    percentage: Bool;
+    tierBased: Bool;
+}
 export declare type Fee = FeeInterface | undefined;
 export interface MarketInterface {
     active: Bool;
@@ -168,10 +176,31 @@ export interface Transaction {
 export interface Tickers extends Dictionary<Ticker> {
 }
 export interface CurrencyInterface {
-    code?: string;
+    active?: Bool;
+    code: string;
+    deposit?: Bool;
+    fee?: Num;
     id: string;
-    numericId?: number;
+    info: any;
+    limits: {
+        amount: {
+            max?: Num;
+            min?: Num;
+        };
+        withdraw: {
+            max?: Num;
+            min?: Num;
+        };
+    };
+    margin?: Bool;
+    name?: Str;
+    networks: {
+        string: any;
+    };
+    numericId?: Int;
     precision: number;
+    type?: Str;
+    withdraw?: Bool;
 }
 export interface Balance {
     debt?: Num;
@@ -247,8 +276,8 @@ export interface Position {
     lastUpdateTimestamp?: number;
     leverage?: number;
     liquidationPrice?: number;
+    maintenanceMargin?: number;
     maintenanceMarginPercentage?: number;
-    maintenenceMargin?: number;
     marginMode?: Str;
     marginRatio?: number;
     markPrice?: number;
@@ -398,31 +427,31 @@ export interface Greeks {
     vega: number;
 }
 export interface Option {
-    info: any;
+    askPrice: number;
+    baseVolume: number;
+    bidPrice: number;
+    change: number;
     currency: string;
-    symbol: string;
-    timestamp?: number;
     datetime?: Str;
     impliedVolatility: number;
-    openInterest: number;
-    bidPrice: number;
-    askPrice: number;
-    midPrice: number;
-    markPrice: number;
+    info: any;
     lastPrice: number;
-    underlyingPrice: number;
-    change: number;
+    markPrice: number;
+    midPrice: number;
+    openInterest: number;
     percentage: number;
-    baseVolume: number;
     quoteVolume: number;
-}
-export interface LastPrice {
     symbol: string;
     timestamp?: number;
+    underlyingPrice: number;
+}
+export interface LastPrice {
     datetime?: string;
+    info: any;
     price: number;
     side?: OrderSide;
-    info: any;
+    symbol: string;
+    timestamp?: number;
 }
 export interface Leverage {
     info: any;
@@ -432,19 +461,23 @@ export interface Leverage {
     symbol: string;
 }
 export interface MarginModification {
-    'info': any;
-    'symbol': string;
-    'type': 'add' | 'reduce' | 'set' | undefined;
     'amount': Num;
-    'total': Num;
     'code': Str;
-    'status': Str;
-    'timestamp': Int;
     'datetime': Str;
+    'info': any;
+    'status': Str;
+    'symbol': string;
+    'timestamp': Int;
+    'total': Num;
+    'type': 'add' | 'reduce' | 'set' | undefined;
 }
 export interface Leverages extends Dictionary<Leverage> {
 }
 export interface LastPrices extends Dictionary<LastPrice> {
+}
+export interface Currencies extends Dictionary<CurrencyInterface> {
+}
+export interface TradingFees extends Dictionary<TradingFeeInterface> {
 }
 export interface MarginModes extends Dictionary<MarginMode> {
 }

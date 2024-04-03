@@ -166,6 +166,10 @@ class hyperliquid(Exchange, ImplicitAPI):
                     'taker': self.parse_number('0.00035'),
                     'maker': self.parse_number('0.0001'),
                 },
+                'spot': {
+                    'taker': self.parse_number('0.00035'),
+                    'maker': self.parse_number('0.0001'),
+                },
             },
             'requiredCredentials': {
                 'apiKey': False,
