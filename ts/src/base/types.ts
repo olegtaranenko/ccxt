@@ -511,6 +511,7 @@ export interface MarginModification {
     'code': Str,
     'datetime': Str,
     'info': any,
+    'marginMode': 'cross' | 'isolated' | undefined,
     'status': Str,
     'symbol': string,
     'timestamp': Int,
