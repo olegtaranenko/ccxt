@@ -2052,6 +2052,7 @@ export default class binance extends Exchange {
                 'fetchLeverages': true,
                 'fetchLeverageTiers': true,
                 'fetchLiquidations': false,
+                'fetchMarginAdjustmentHistory': true,
                 'fetchMarginMode': 'emulated',
                 'fetchMarginModes': true,
                 'fetchMarketLeverageTiers': 'emulated',
@@ -11123,27 +11124,43 @@ export default class binance extends Exchange {
         // add/reduce margin
         //
         //     {
+        //         "amount": 0.001,
         //         "code": 200,
         //         "msg": "Successfully modify position margin.",
-        //         "amount": 0.001,
         //         "type": 1
         //     }
         //
+        // fetchMarginAdjustmentHistory
+        //
+        //    {
+        //        amount: "2.57148240",
+        //        asset: "USDT",
+        //        clientTranId: ""
+        //        deltaType: "TRADE",
+        //        positionSide: "BOTH",
+        //        symbol: "XRPUSDT",
+        //        time: "1711046271555",
+        //        type: "1",
+        //    }
+        //
         const rawType = this.safeInteger (data, 'type');
-        const resultType = (rawType === 1) ? 'add' : 'reduce';
-        const resultAmount = this.safeNumber (data, 'amount');
         const errorCode = this.safeString (data, 'code');
-        const status = (errorCode === '200') ? 'ok' : 'failed';
+        const marketId = this.safeString (data, 'symbol');
+        const timestamp = this.safeInteger (data, 'time');
+        market = this.safeMarket (marketId, market, undefined, 'swap');
+        const noErrorCode = errorCode === undefined;
+        const success = errorCode === '200';
         return {
-            'amount': resultAmount,
-            'code': undefined,
-            'datetime': undefined,
+            'amount': this.safeNumber (data, 'amount'),
+            'code': this.safeString (data, 'asset'),
+            'datetime': this.iso8601 (timestamp),
             'info': data,
-            'status': status,
+            'marginMode': 'isolated',
+            'status': (success || noErrorCode) ? 'ok' : 'failed',
             'symbol': market['symbol'],
-            'timestamp': undefined,
+            'timestamp': timestamp,
             'total': undefined,
-            'type': resultType,
+            'type': (rawType === 1) ? 'add' : 'reduce',
         };
     }
 
@@ -12413,5 +12430,68 @@ export default class binance extends Exchange {
             'timestamp': undefined,
             'underlyingPrice': this.safeNumber (chain, 'exercisePrice'),
         };
+    }
+
+    async fetchMarginAdjustmentHistory (symbol: Str = undefined, type: Str = undefined, since: Num = undefined, limit: Num = undefined, params = {}): Promise<MarginModification[]> {
+        /**
+         * @method
+         * @description fetches the history of margin added or reduced from contract isolated positions
+         * @see https://binance-docs.github.io/apidocs/futures/en/#get-position-margin-change-history-trade
+         * @see https://binance-docs.github.io/apidocs/delivery/en/#get-position-margin-change-history-trade
+         * @param {string} symbol unified market symbol
+         * @param {string} [type] "add" or "reduce"
+         * @param {int} [since] timestamp in ms of the earliest change to fetch
+         * @param {int} [limit] the maximum amount of changes to fetch
+         * @param {object} params extra parameters specific to the exchange api endpoint
+         * @param {int} [params.until] timestamp in ms of the latest change to fetch
+         * @returns {object[]} a list of [margin structures]{@link https://docs.ccxt.com/#/?id=margin-loan-structure}
+         */
+        await this.loadMarkets ();
+        if (symbol === undefined) {
+            throw new ArgumentsRequired (this.id + ' fetchMarginAdjustmentHistory () requires a symbol argument');
+        }
+        const market = this.market (symbol);
+        const until = this.safeInteger (params, 'until');
+        params = this.omit (params, 'until');
+        const request = {
+            'symbol': market['id'],
+        };
+        if (type !== undefined) {
+            request['type'] = (type === 'add') ? 1 : 2;
+        }
+        if (since !== undefined) {
+            request['startTime'] = since;
+        }
+        if (limit !== undefined) {
+            request['limit'] = limit;
+        }
+        if (until !== undefined) {
+            request['endTime'] = until;
+        }
+        let response = undefined;
+        if (market['linear']) {
+            response = await this.fapiPrivateGetPositionMarginHistory (this.extend (request, params));
+        } else if (market['inverse']) {
+            response = await this.dapiPrivateGetPositionMarginHistory (this.extend (request, params));
+        } else {
+            throw new BadRequest (this.id + 'fetchMarginAdjustmentHistory () is not supported for markets of type ' + market['type']);
+        }
+        //
+        //    [
+        //        {
+        //            symbol: "XRPUSDT",
+        //            type: "1",
+        //            deltaType: "TRADE",
+        //            amount: "2.57148240",
+        //            asset: "USDT",
+        //            time: "1711046271555",
+        //            positionSide: "BOTH",
+        //            clientTranId: ""
+        //        }
+        //        ...
+        //    ]
+        //
+        const modifications = this.parseMarginModifications (response);
+        return this.filterBySymbolSinceLimit (modifications, symbol, since, limit);
     }
 }
