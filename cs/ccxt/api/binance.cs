@@ -1456,6 +1456,11 @@ public partial class binance : Exchange
         return await this.callAsync ("privatePostOrderTest",parameters);
     }
 
+    public async Task<object> privatePostOrderListOco (object parameters = null)
+    {
+        return await this.callAsync ("privatePostOrderListOco",parameters);
+    }
+
     public async Task<object> privatePostSorOrder (object parameters = null)
     {
         return await this.callAsync ("privatePostSorOrder",parameters);

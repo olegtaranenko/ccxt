@@ -874,6 +874,9 @@ abstract class binanceus extends \ccxt\binance {
     public function private_post_order_test($params = array()) {
         return $this->request('order/test', 'private', 'POST', $params, null, null, array("cost" => 0.2));
     }
+    public function private_post_orderlist_oco($params = array()) {
+        return $this->request('orderList/oco', 'private', 'POST', $params, null, null, array("cost" => 0.2));
+    }
     public function private_post_sor_order($params = array()) {
         return $this->request('sor/order', 'private', 'POST', $params, null, null, array("cost" => 0.2));
     }
@@ -3132,6 +3135,9 @@ abstract class binanceus extends \ccxt\binance {
     }
     public function privatePostOrderTest($params = array()) {
         return $this->request('order/test', 'private', 'POST', $params, null, null, array("cost" => 0.2));
+    }
+    public function privatePostOrderListOco($params = array()) {
+        return $this->request('orderList/oco', 'private', 'POST', $params, null, null, array("cost" => 0.2));
     }
     public function privatePostSorOrder($params = array()) {
         return $this->request('sor/order', 'private', 'POST', $params, null, null, array("cost" => 0.2));

@@ -290,6 +290,7 @@ interface Exchange {
     privatePostOrderCancelReplace(params?: {}): Promise<implicitReturnType>;
     privatePostOrderOco(params?: {}): Promise<implicitReturnType>;
     privatePostOrderTest(params?: {}): Promise<implicitReturnType>;
+    privatePostOrderListOco(params?: {}): Promise<implicitReturnType>;
     privatePostSorOrder(params?: {}): Promise<implicitReturnType>;
     privatePostSorOrderTest(params?: {}): Promise<implicitReturnType>;
     publicGetAggTrades(params?: {}): Promise<implicitReturnType>;

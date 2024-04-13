@@ -127,6 +127,7 @@ export interface OrderBook {
     bids: [Num, Num][];
     datetime: Str;
     nonce: Int;
+    symbol: Str;
     timestamp: Int;
 }
 export interface Ticker {
@@ -425,6 +426,18 @@ export interface Greeks {
     timestamp?: number;
     underlyingPrice: number;
     vega: number;
+}
+export interface Conversion {
+    info: any;
+    timestamp?: number;
+    datetime?: string;
+    id: string;
+    fromCurrency: string;
+    fromAmount: number;
+    toCurrency: string;
+    toAmount: number;
+    price: number;
+    fee: number;
 }
 export interface Option {
     askPrice: number;

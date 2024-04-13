@@ -291,6 +291,7 @@ class ImplicitAPI:
     private_post_order_cancelreplace = privatePostOrderCancelReplace = Entry('order/cancelReplace', 'private', 'POST', {'cost': 0.2})
     private_post_order_oco = privatePostOrderOco = Entry('order/oco', 'private', 'POST', {'cost': 0.2})
     private_post_order_test = privatePostOrderTest = Entry('order/test', 'private', 'POST', {'cost': 0.2})
+    private_post_orderlist_oco = privatePostOrderListOco = Entry('orderList/oco', 'private', 'POST', {'cost': 0.2})
     private_post_sor_order = privatePostSorOrder = Entry('sor/order', 'private', 'POST', {'cost': 0.2})
     private_post_sor_order_test = privatePostSorOrderTest = Entry('sor/order/test', 'private', 'POST', {'cost': 0.2})
     public_get_aggtrades = publicGetAggTrades = Entry('aggTrades', 'public', 'GET', {'cost': 0.4})
