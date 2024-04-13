@@ -46,7 +46,6 @@ import type {
     Conversion,
     Currencies,
     Currency,
-    Conversion,
     CurrencyInterface,
     DepositAddressResponse,
     DepositWithdrawFeeNetwork,
