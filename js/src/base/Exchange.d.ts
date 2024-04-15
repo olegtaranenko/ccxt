@@ -193,13 +193,13 @@ export default class Exchange {
         outputLen: number;
         blockLen: number;
         create(): import("../static_dependencies/noble-hashes/utils.js").Hash<import("../static_dependencies/noble-hashes/utils.js").Hash<any>>;
-    }, digest?: "hex" | "base64" | "binary") => any;
+    }, digest?: "base64" | "binary" | "hex") => any;
     hmac: (request: import("../static_dependencies/noble-hashes/utils.js").Input, secret: import("../static_dependencies/noble-hashes/utils.js").Input, hash: {
         (message: import("../static_dependencies/noble-hashes/utils.js").Input): Uint8Array;
         outputLen: number;
         blockLen: number;
         create(): import("../static_dependencies/noble-hashes/utils.js").Hash<import("../static_dependencies/noble-hashes/utils.js").Hash<any>>;
-    }, digest?: "hex" | "base64" | "binary") => any;
+    }, digest?: "base64" | "binary" | "hex") => any;
     implodeParams: (string: any, params: any) => any;
     inArray: (needle: any, haystack: any) => any;
     indexBy: (x: any, k: any, out?: {}) => {};
@@ -862,7 +862,7 @@ export default class Exchange {
     handleOptionAndParams(params: object, methodName: string, optionName: string, defaultValue?: any): any[];
     handleOptionAndParams2(params: object, methodName: string, methodName2: string, optionName: string, defaultValue?: any): any[];
     handleOption(methodName: string, optionName: string, defaultValue?: any): any;
-    handleMarketTypeAndParams(methodName: string, market?: Market, params?: {}): any;
+    handleMarketTypeAndParams(methodName: string, market?: Market, params?: {}, defaultValue?: any): any;
     handleSubTypeAndParams(methodName: string, market?: any, params?: {}, defaultValue?: any): any[];
     handleMarginModeAndParams(methodName: string, params?: {}, defaultValue?: any): any[];
     throwExactlyMatchedException(exact: any, string: any, message: any): void;

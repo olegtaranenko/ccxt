@@ -3,7 +3,7 @@
 
 import binanceRest from '../binance.js';
 import { Precise } from '../base/Precise.js';
-import { ArgumentsRequired, BadRequest, ExchangeError, NotSupported } from '../base/errors.js';
+import { ArgumentsRequired, BadRequest, InvalidNonce, NotSupported } from '../base/errors.js';
 import { ArrayCache, ArrayCacheBySymbolById, ArrayCacheBySymbolBySide, ArrayCacheByTimestamp } from '../base/ws/Cache.js';
 import type { Balances, Int, Num, OHLCV, Order, OrderBook, OrderSide, OrderType, Position, Str, Strings, Ticker, Tickers, Trade } from '../base/types.js';
 import { sha256 } from '../static_dependencies/noble-hashes/sha256.js';
@@ -432,8 +432,11 @@ export default class binance extends binanceRest {
                                 client.resolve (orderbook, messageHash);
                             }
                         } else {
-                            // todo: client.reject from handleOrderBookMessage properly
-                            throw new ExchangeError (this.id + ' handleOrderBook received an out-of-order nonce');
+                            const checksum = this.safeBool (this.options, 'checksum', true);
+                            if (checksum) {
+                                // todo: client.reject from handleOrderBookMessage properly
+                                throw new InvalidNonce (this.id + ' handleOrderBook received an out-of-order nonce');
+                            }
                         }
                     }
                 } else {
@@ -448,8 +451,11 @@ export default class binance extends binanceRest {
                                 client.resolve (orderbook, messageHash);
                             }
                         } else {
-                            // todo: client.reject from handleOrderBookMessage properly
-                            throw new ExchangeError (this.id + ' handleOrderBook received an out-of-order nonce');
+                            const checksum = this.safeBool (this.options, 'checksum', true);
+                            if (checksum) {
+                                // todo: client.reject from handleOrderBookMessage properly
+                                throw new InvalidNonce (this.id + ' handleOrderBook received an out-of-order nonce');
+                            }
                         }
                     }
                 }
