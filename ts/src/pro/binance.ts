@@ -70,6 +70,15 @@ export default class binance extends binanceRest {
                     'margin': 200,
                     'spot': 200,
                 },
+                'tickerChannelsMap': {
+                    '24hrTicker': 'ticker',
+                    '24hrMiniTicker': 'miniTicker',
+                    // rolling window tickers
+                    '1hTicker': 'ticker_1h',
+                    '4hTicker': 'ticker_4h',
+                    '1dTicker': 'ticker_1d',
+                    'bookTicker': 'bookTicker',
+                },
                 'tradesLimit': 1000,
                 'wallet': 'wb',  // wb = wallet balance, cw = cross balance
                 'watchBalance': {
@@ -101,15 +110,6 @@ export default class binance extends binanceRest {
                 },
                 'ws': {
                     'cost': 5,
-                },
-                'tickerChannelsMap': {
-                    '24hrTicker': 'ticker',
-                    '24hrMiniTicker': 'miniTicker',
-                    // rolling window tickers
-                    '1hTicker': 'ticker_1h',
-                    '4hTicker': 'ticker_4h',
-                    '1dTicker': 'ticker_1d',
-                    'bookTicker': 'bookTicker',
                 },
             },
             'streaming': {
@@ -924,7 +924,15 @@ export default class binance extends binanceRest {
         //
         //    {
         //        "id": "1dbbeb56-8eea-466a-8f6e-86bdcfa2fc0b",
-        //        "status": 200,
+        //        "rateLimits": [
+        //            {
+        //                "count": 2,
+        //                "interval": "MINUTE",
+        //                "intervalNum": 1,
+        //                "limit": 6000,
+        //                "rateLimitType": "REQUEST_WEIGHT"
+        //            }
+        //        ],
         //        "result": [
         //            [
         //                1655971200000,      // Kline open time
@@ -941,15 +949,7 @@ export default class binance extends binanceRest {
         //                "0"                 // Unused field, ignore
         //            ]
         //        ],
-        //        "rateLimits": [
-        //            {
-        //                "rateLimitType": "REQUEST_WEIGHT",
-        //                "interval": "MINUTE",
-        //                "intervalNum": 1,
-        //                "limit": 6000,
-        //                "count": 2
-        //            }
-        //        ]
+        //        "status": 200
         //    }
         //
         const result = this.safeList (message, 'result');
@@ -1171,12 +1171,12 @@ export default class binance extends binanceRest {
         // arrives one symbol dict or array of symbol dicts
         //
         //     {
-        //         "u": 7488717758,
-        //         "s": "BTCUSDT",
-        //         "b": "28621.74000000",
-        //         "B": "1.43278800",
+        //         "A": "2.52500800",
         //         "a": "28621.75000000",
-        //         "A": "2.52500800"
+        //         "B": "1.43278800",
+        //         "b": "28621.74000000",
+        //         "s": "BTCUSDT",
+        //         "u": 7488717758
         //     }
         //
         this.handleTickersAndBidsAsks (client, message, 'bidasks');
@@ -1518,10 +1518,10 @@ export default class binance extends binanceRest {
         //            "canTrade": true,
         //            "canWithdraw": true,
         //            "commissionRates": {
-        //                "maker": "0.00150000",
-        //                "taker": "0.00150000",
         //                "buyer": "0.00000000",
+        //                "maker": "0.00150000",
         //                "seller": "0.00000000"
+        //                "taker": "0.00150000"
         //            },
         //            "makerCommission": 15,
         //            "permissions": [
@@ -1812,6 +1812,13 @@ export default class binance extends binanceRest {
         //
         //    {
         //        "id": 1,
+        //        "rateLimits": [{
+        //            "count": 14,
+        //            "interval": "MINUTE",
+        //            "intervalNum": 1,
+        //            "limit": 1200,
+        //            "rateLimitType": "REQUEST_WEIGHT"
+        //        }],
         //        "result": [{
         //            "clientOrderId": "x-R4BD3S82b54769abdd3e4b57874c52",
         //            "cummulativeQuoteQty": "0.00000000",
@@ -1832,17 +1839,10 @@ export default class binance extends binanceRest {
         //            "timeInForce": "GTC",
         //            "type": "LIMIT",
         //            "updateTime": 1687642884646,
-        //            "workingTime": 1687642884646,
+        //            "workingTime": 1687642884646
         //        },
         //        ...
         //        ],
-        //        "rateLimits": [{
-        //            "count": 14,
-        //            "interval": "MINUTE",
-        //            "intervalNum": 1,
-        //            "limit": 1200,
-        //            "rateLimitType": "REQUEST_WEIGHT",
-        //        }],
         //        "status": 200,
         //    }
         //
@@ -1891,6 +1891,28 @@ export default class binance extends binanceRest {
         //
         //    {
         //        "id": 1,
+        //        "rateLimits": [{
+        //                "count": 1,
+        //                "interval": "SECOND",
+        //                "intervalNum": 10,
+        //                "limit": 50,
+        //                "rateLimitType": "ORDERS",
+        //            },
+        //            {
+        //                "count": 3,
+        //                "interval": "DAY",
+        //                "intervalNum": 1,
+        //                "limit": 160000,
+        //                "rateLimitType": "ORDERS",
+        //            },
+        //            {
+        //                "count": 12,
+        //                "interval": "MINUTE",
+        //                "intervalNum": 1,
+        //                "limit": 1200,
+        //                "rateLimitType": "REQUEST_WEIGHT",
+        //            }
+        //        ],
         //        "result": {
         //            "cancelResponse": {
         //                "clientOrderId": "mbrnbQsQhtCXCLY45d5q7S",
@@ -1929,28 +1951,6 @@ export default class binance extends binanceRest {
         //            },
         //            "newOrderResult": "SUCCESS",
         //        },
-        //        "rateLimits": [{
-        //                "count": 1,
-        //                "interval": "SECOND",
-        //                "intervalNum": 10,
-        //                "limit": 50,
-        //                "rateLimitType": "ORDERS",
-        //            },
-        //            {
-        //                "count": 3,
-        //                "interval": "DAY",
-        //                "intervalNum": 1,
-        //                "limit": 160000,
-        //                "rateLimitType": "ORDERS",
-        //            },
-        //            {
-        //                "count": 12,
-        //                "interval": "MINUTE",
-        //                "intervalNum": 1,
-        //                "limit": 1200,
-        //                "rateLimitType": "REQUEST_WEIGHT",
-        //            }
-        //        ],
         //        "status": 200,
         //    }
         //
@@ -2432,7 +2432,6 @@ export default class binance extends binanceRest {
         //     {
         //         "e":"ORDER_TRADE_UPDATE",           // Event Type
         //         "E":1568879465651,                  // Event Time
-        //         "T":1568879465650,                  // Trasaction Time
         //         "o": {
         //             "a":"9.91",                     // Ask Notional
         //             "ap":"0",                       // Average Price
@@ -2467,7 +2466,8 @@ export default class binance extends binanceRest {
         //             "x":"NEW",                      // Execution Type
         //             "X":"NEW",                      // Order Status
         //             "z":"0",                        // Order Filled Accumulated Quantity
-        //         }
+        //         },
+        //         "T":1568879465650                   // Trasaction Time
         //     }
         //
         const e = this.safeString (message, 'e');
@@ -2679,8 +2679,8 @@ export default class binance extends binanceRest {
         }
         return this.safePosition ({
             'collateral': undefined,
-            'contractSize': undefined,
             'contracts': this.parseNumber (contractsAbs),
+            'contractSize': undefined,
             'datetime': undefined,
             'entryPrice': this.safeNumber (position, 'ep'),
             'hedged': hedged,
@@ -2817,7 +2817,7 @@ export default class binance extends binanceRest {
         //                "qty": "0.00635000",
         //                "quoteQty": "148.69223500",
         //                "symbol": "BTCUSDT",
-        //                "time": 1660801715793,
+        //                "time": 1660801715793
         //            },
         //            ...
         //        ],
@@ -2836,7 +2836,7 @@ export default class binance extends binanceRest {
         //                "price": "0.00005000",
         //                "qty": "40.00000000",
         //                "quoteQty": "0.00200000",
-        //                "time": 1500004800376,
+        //                "time": 1500004800376
         //            }
         //            ...
         //        ],
