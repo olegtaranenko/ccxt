@@ -67,6 +67,15 @@ class binance extends binance$1 {
                     'margin': 200,
                     'spot': 200,
                 },
+                'tickerChannelsMap': {
+                    '24hrTicker': 'ticker',
+                    '24hrMiniTicker': 'miniTicker',
+                    // rolling window tickers
+                    '1hTicker': 'ticker_1h',
+                    '4hTicker': 'ticker_4h',
+                    '1dTicker': 'ticker_1d',
+                    'bookTicker': 'bookTicker',
+                },
                 'tradesLimit': 1000,
                 'wallet': 'wb',
                 'watchBalance': {
@@ -101,15 +110,6 @@ class binance extends binance$1 {
                 },
                 'ws': {
                     'cost': 5,
-                },
-                'tickerChannelsMap': {
-                    '24hrTicker': 'ticker',
-                    '24hrMiniTicker': 'miniTicker',
-                    // rolling window tickers
-                    '1hTicker': 'ticker_1h',
-                    '4hTicker': 'ticker_4h',
-                    '1dTicker': 'ticker_1d',
-                    'bookTicker': 'bookTicker',
                 },
             },
             'streaming': {
@@ -926,7 +926,15 @@ class binance extends binance$1 {
         //
         //    {
         //        "id": "1dbbeb56-8eea-466a-8f6e-86bdcfa2fc0b",
-        //        "status": 200,
+        //        "rateLimits": [
+        //            {
+        //                "count": 2,
+        //                "interval": "MINUTE",
+        //                "intervalNum": 1,
+        //                "limit": 6000,
+        //                "rateLimitType": "REQUEST_WEIGHT"
+        //            }
+        //        ],
         //        "result": [
         //            [
         //                1655971200000,      // Kline open time
@@ -943,15 +951,7 @@ class binance extends binance$1 {
         //                "0"                 // Unused field, ignore
         //            ]
         //        ],
-        //        "rateLimits": [
-        //            {
-        //                "rateLimitType": "REQUEST_WEIGHT",
-        //                "interval": "MINUTE",
-        //                "intervalNum": 1,
-        //                "limit": 6000,
-        //                "count": 2
-        //            }
-        //        ]
+        //        "status": 200
         //    }
         //
         const result = this.safeList(message, 'result');
@@ -1174,12 +1174,12 @@ class binance extends binance$1 {
         // arrives one symbol dict or array of symbol dicts
         //
         //     {
-        //         "u": 7488717758,
-        //         "s": "BTCUSDT",
-        //         "b": "28621.74000000",
-        //         "B": "1.43278800",
+        //         "A": "2.52500800",
         //         "a": "28621.75000000",
-        //         "A": "2.52500800"
+        //         "B": "1.43278800",
+        //         "b": "28621.74000000",
+        //         "s": "BTCUSDT",
+        //         "u": 7488717758
         //     }
         //
         this.handleTickersAndBidsAsks(client, message, 'bidasks');
@@ -1529,10 +1529,10 @@ class binance extends binance$1 {
         //            "canTrade": true,
         //            "canWithdraw": true,
         //            "commissionRates": {
-        //                "maker": "0.00150000",
-        //                "taker": "0.00150000",
         //                "buyer": "0.00000000",
+        //                "maker": "0.00150000",
         //                "seller": "0.00000000"
+        //                "taker": "0.00150000"
         //            },
         //            "makerCommission": 15,
         //            "permissions": [
@@ -1821,6 +1821,13 @@ class binance extends binance$1 {
         //
         //    {
         //        "id": 1,
+        //        "rateLimits": [{
+        //            "count": 14,
+        //            "interval": "MINUTE",
+        //            "intervalNum": 1,
+        //            "limit": 1200,
+        //            "rateLimitType": "REQUEST_WEIGHT"
+        //        }],
         //        "result": [{
         //            "clientOrderId": "x-R4BD3S82b54769abdd3e4b57874c52",
         //            "cummulativeQuoteQty": "0.00000000",
@@ -1841,17 +1848,10 @@ class binance extends binance$1 {
         //            "timeInForce": "GTC",
         //            "type": "LIMIT",
         //            "updateTime": 1687642884646,
-        //            "workingTime": 1687642884646,
+        //            "workingTime": 1687642884646
         //        },
         //        ...
         //        ],
-        //        "rateLimits": [{
-        //            "count": 14,
-        //            "interval": "MINUTE",
-        //            "intervalNum": 1,
-        //            "limit": 1200,
-        //            "rateLimitType": "REQUEST_WEIGHT",
-        //        }],
         //        "status": 200,
         //    }
         //
@@ -1898,6 +1898,28 @@ class binance extends binance$1 {
         //
         //    {
         //        "id": 1,
+        //        "rateLimits": [{
+        //                "count": 1,
+        //                "interval": "SECOND",
+        //                "intervalNum": 10,
+        //                "limit": 50,
+        //                "rateLimitType": "ORDERS",
+        //            },
+        //            {
+        //                "count": 3,
+        //                "interval": "DAY",
+        //                "intervalNum": 1,
+        //                "limit": 160000,
+        //                "rateLimitType": "ORDERS",
+        //            },
+        //            {
+        //                "count": 12,
+        //                "interval": "MINUTE",
+        //                "intervalNum": 1,
+        //                "limit": 1200,
+        //                "rateLimitType": "REQUEST_WEIGHT",
+        //            }
+        //        ],
         //        "result": {
         //            "cancelResponse": {
         //                "clientOrderId": "mbrnbQsQhtCXCLY45d5q7S",
@@ -1936,28 +1958,6 @@ class binance extends binance$1 {
         //            },
         //            "newOrderResult": "SUCCESS",
         //        },
-        //        "rateLimits": [{
-        //                "count": 1,
-        //                "interval": "SECOND",
-        //                "intervalNum": 10,
-        //                "limit": 50,
-        //                "rateLimitType": "ORDERS",
-        //            },
-        //            {
-        //                "count": 3,
-        //                "interval": "DAY",
-        //                "intervalNum": 1,
-        //                "limit": 160000,
-        //                "rateLimitType": "ORDERS",
-        //            },
-        //            {
-        //                "count": 12,
-        //                "interval": "MINUTE",
-        //                "intervalNum": 1,
-        //                "limit": 1200,
-        //                "rateLimitType": "REQUEST_WEIGHT",
-        //            }
-        //        ],
         //        "status": 200,
         //    }
         //
@@ -2434,7 +2434,6 @@ class binance extends binance$1 {
         //     {
         //         "e":"ORDER_TRADE_UPDATE",           // Event Type
         //         "E":1568879465651,                  // Event Time
-        //         "T":1568879465650,                  // Trasaction Time
         //         "o": {
         //             "a":"9.91",                     // Ask Notional
         //             "ap":"0",                       // Average Price
@@ -2469,7 +2468,8 @@ class binance extends binance$1 {
         //             "x":"NEW",                      // Execution Type
         //             "X":"NEW",                      // Order Status
         //             "z":"0",                        // Order Filled Accumulated Quantity
-        //         }
+        //         },
+        //         "T":1568879465650                   // Trasaction Time
         //     }
         //
         const e = this.safeString(message, 'e');
@@ -2679,8 +2679,8 @@ class binance extends binance$1 {
         }
         return this.safePosition({
             'collateral': undefined,
-            'contractSize': undefined,
             'contracts': this.parseNumber(contractsAbs),
+            'contractSize': undefined,
             'datetime': undefined,
             'entryPrice': this.safeNumber(position, 'ep'),
             'hedged': hedged,
@@ -2814,7 +2814,7 @@ class binance extends binance$1 {
         //                "qty": "0.00635000",
         //                "quoteQty": "148.69223500",
         //                "symbol": "BTCUSDT",
-        //                "time": 1660801715793,
+        //                "time": 1660801715793
         //            },
         //            ...
         //        ],
@@ -2833,7 +2833,7 @@ class binance extends binance$1 {
         //                "price": "0.00005000",
         //                "qty": "40.00000000",
         //                "quoteQty": "0.00200000",
-        //                "time": 1500004800376,
+        //                "time": 1500004800376
         //            }
         //            ...
         //        ],

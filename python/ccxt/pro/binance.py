@@ -73,6 +73,15 @@ class binance(ccxt.async_support.binance):
                     'margin': 200,
                     'spot': 200,
                 },
+                'tickerChannelsMap': {
+                    '24hrTicker': 'ticker',
+                    '24hrMiniTicker': 'miniTicker',
+                    # rolling window tickers
+                    '1hTicker': 'ticker_1h',
+                    '4hTicker': 'ticker_4h',
+                    '1dTicker': 'ticker_1d',
+                    'bookTicker': 'bookTicker',
+                },
                 'tradesLimit': 1000,
                 'wallet': 'wb',  # wb = wallet balance, cw = cross balance
                 'watchBalance': {
@@ -107,15 +116,6 @@ class binance(ccxt.async_support.binance):
                 },
                 'ws': {
                     'cost': 5,
-                },
-                'tickerChannelsMap': {
-                    '24hrTicker': 'ticker',
-                    '24hrMiniTicker': 'miniTicker',
-                    # rolling window tickers
-                    '1hTicker': 'ticker_1h',
-                    '4hTicker': 'ticker_4h',
-                    '1dTicker': 'ticker_1d',
-                    'bookTicker': 'bookTicker',
                 },
             },
             'streaming': {
@@ -856,7 +856,15 @@ class binance(ccxt.async_support.binance):
         #
         #    {
         #        "id": "1dbbeb56-8eea-466a-8f6e-86bdcfa2fc0b",
-        #        "status": 200,
+        #        "rateLimits": [
+        #            {
+        #                "count": 2,
+        #                "interval": "MINUTE",
+        #                "intervalNum": 1,
+        #                "limit": 6000,
+        #                "rateLimitType": "REQUEST_WEIGHT"
+        #            }
+        #        ],
         #        "result": [
         #            [
         #                1655971200000,      # Kline open time
@@ -873,15 +881,7 @@ class binance(ccxt.async_support.binance):
         #                "0"                 # Unused field, ignore
         #            ]
         #        ],
-        #        "rateLimits": [
-        #            {
-        #                "rateLimitType": "REQUEST_WEIGHT",
-        #                "interval": "MINUTE",
-        #                "intervalNum": 1,
-        #                "limit": 6000,
-        #                "count": 2
-        #            }
-        #        ]
+        #        "status": 200
         #    }
         #
         result = self.safe_list(message, 'result')
@@ -1078,12 +1078,12 @@ class binance(ccxt.async_support.binance):
         # arrives one symbol dict or array of symbol dicts
         #
         #     {
-        #         "u": 7488717758,
-        #         "s": "BTCUSDT",
-        #         "b": "28621.74000000",
-        #         "B": "1.43278800",
+        #         "A": "2.52500800",
         #         "a": "28621.75000000",
-        #         "A": "2.52500800"
+        #         "B": "1.43278800",
+        #         "b": "28621.74000000",
+        #         "s": "BTCUSDT",
+        #         "u": 7488717758
         #     }
         #
         self.handle_tickers_and_bids_asks(client, message, 'bidasks')
@@ -1384,10 +1384,10 @@ class binance(ccxt.async_support.binance):
         #            "canTrade": True,
         #            "canWithdraw": True,
         #            "commissionRates": {
-        #                "maker": "0.00150000",
-        #                "taker": "0.00150000",
         #                "buyer": "0.00000000",
+        #                "maker": "0.00150000",
         #                "seller": "0.00000000"
+        #                "taker": "0.00150000"
         #            },
         #            "makerCommission": 15,
         #            "permissions": [
@@ -1654,6 +1654,13 @@ class binance(ccxt.async_support.binance):
         #
         #    {
         #        "id": 1,
+        #        "rateLimits": [{
+        #            "count": 14,
+        #            "interval": "MINUTE",
+        #            "intervalNum": 1,
+        #            "limit": 1200,
+        #            "rateLimitType": "REQUEST_WEIGHT"
+        #        }],
         #        "result": [{
         #            "clientOrderId": "x-R4BD3S82b54769abdd3e4b57874c52",
         #            "cummulativeQuoteQty": "0.00000000",
@@ -1674,17 +1681,10 @@ class binance(ccxt.async_support.binance):
         #            "timeInForce": "GTC",
         #            "type": "LIMIT",
         #            "updateTime": 1687642884646,
-        #            "workingTime": 1687642884646,
+        #            "workingTime": 1687642884646
         #        },
         #        ...
         #        ],
-        #        "rateLimits": [{
-        #            "count": 14,
-        #            "interval": "MINUTE",
-        #            "intervalNum": 1,
-        #            "limit": 1200,
-        #            "rateLimitType": "REQUEST_WEIGHT",
-        #        }],
         #        "status": 200,
         #    }
         #
@@ -1729,6 +1729,28 @@ class binance(ccxt.async_support.binance):
         #
         #    {
         #        "id": 1,
+        #        "rateLimits": [{
+        #                "count": 1,
+        #                "interval": "SECOND",
+        #                "intervalNum": 10,
+        #                "limit": 50,
+        #                "rateLimitType": "ORDERS",
+        #            },
+        #            {
+        #                "count": 3,
+        #                "interval": "DAY",
+        #                "intervalNum": 1,
+        #                "limit": 160000,
+        #                "rateLimitType": "ORDERS",
+        #            },
+        #            {
+        #                "count": 12,
+        #                "interval": "MINUTE",
+        #                "intervalNum": 1,
+        #                "limit": 1200,
+        #                "rateLimitType": "REQUEST_WEIGHT",
+        #            }
+        #        ],
         #        "result": {
         #            "cancelResponse": {
         #                "clientOrderId": "mbrnbQsQhtCXCLY45d5q7S",
@@ -1767,28 +1789,6 @@ class binance(ccxt.async_support.binance):
         #            },
         #            "newOrderResult": "SUCCESS",
         #        },
-        #        "rateLimits": [{
-        #                "count": 1,
-        #                "interval": "SECOND",
-        #                "intervalNum": 10,
-        #                "limit": 50,
-        #                "rateLimitType": "ORDERS",
-        #            },
-        #            {
-        #                "count": 3,
-        #                "interval": "DAY",
-        #                "intervalNum": 1,
-        #                "limit": 160000,
-        #                "rateLimitType": "ORDERS",
-        #            },
-        #            {
-        #                "count": 12,
-        #                "interval": "MINUTE",
-        #                "intervalNum": 1,
-        #                "limit": 1200,
-        #                "rateLimitType": "REQUEST_WEIGHT",
-        #            }
-        #        ],
         #        "status": 200,
         #    }
         #
@@ -2229,7 +2229,6 @@ class binance(ccxt.async_support.binance):
         #     {
         #         "e":"ORDER_TRADE_UPDATE",           # Event Type
         #         "E":1568879465651,                  # Event Time
-        #         "T":1568879465650,                  # Trasaction Time
         #         "o": {
         #             "a":"9.91",                     # Ask Notional
         #             "ap":"0",                       # Average Price
@@ -2264,7 +2263,8 @@ class binance(ccxt.async_support.binance):
         #             "x":"NEW",                      # Execution Type
         #             "X":"NEW",                      # Order Status
         #             "z":"0",                        # Order Filled Accumulated Quantity
-        #         }
+        #         },
+        #         "T":1568879465650                   # Trasaction Time
         #     }
         #
         e = self.safe_string(message, 'e')
@@ -2445,8 +2445,8 @@ class binance(ccxt.async_support.binance):
                     positionSide = 'long'
         return self.safe_position({
             'collateral': None,
-            'contractSize': None,
             'contracts': self.parse_number(contractsAbs),
+            'contractSize': None,
             'datetime': None,
             'entryPrice': self.safe_number(position, 'ep'),
             'hedged': hedged,
@@ -2570,7 +2570,7 @@ class binance(ccxt.async_support.binance):
         #                "qty": "0.00635000",
         #                "quoteQty": "148.69223500",
         #                "symbol": "BTCUSDT",
-        #                "time": 1660801715793,
+        #                "time": 1660801715793
         #            },
         #            ...
         #        ],
@@ -2589,7 +2589,7 @@ class binance(ccxt.async_support.binance):
         #                "price": "0.00005000",
         #                "qty": "40.00000000",
         #                "quoteQty": "0.00200000",
-        #                "time": 1500004800376,
+        #                "time": 1500004800376
         #            }
         #            ...
         #        ],

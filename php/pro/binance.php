@@ -71,6 +71,15 @@ class binance extends \ccxt\async\binance {
                     'margin' => 200,
                     'spot' => 200,
                 ),
+                'tickerChannelsMap' => array(
+                    '24hrTicker' => 'ticker',
+                    '24hrMiniTicker' => 'miniTicker',
+                    // rolling window tickers
+                    '1hTicker' => 'ticker_1h',
+                    '4hTicker' => 'ticker_4h',
+                    '1dTicker' => 'ticker_1d',
+                    'bookTicker' => 'bookTicker',
+                ),
                 'tradesLimit' => 1000,
                 'wallet' => 'wb',  // wb = wallet balance, cw = cross balance
                 'watchBalance' => array(
@@ -105,15 +114,6 @@ class binance extends \ccxt\async\binance {
                 ),
                 'ws' => array(
                     'cost' => 5,
-                ),
-                'tickerChannelsMap' => array(
-                    '24hrTicker' => 'ticker',
-                    '24hrMiniTicker' => 'miniTicker',
-                    // rolling window tickers
-                    '1hTicker' => 'ticker_1h',
-                    '4hTicker' => 'ticker_4h',
-                    '1dTicker' => 'ticker_1d',
-                    'bookTicker' => 'bookTicker',
                 ),
             ),
             'streaming' => array(
@@ -943,7 +943,15 @@ class binance extends \ccxt\async\binance {
         //
         //    {
         //        "id" => "1dbbeb56-8eea-466a-8f6e-86bdcfa2fc0b",
-        //        "status" => 200,
+        //        "rateLimits" => array(
+        //            {
+        //                "count" => 2,
+        //                "interval" => "MINUTE",
+        //                "intervalNum" => 1,
+        //                "limit" => 6000,
+        //                "rateLimitType" => "REQUEST_WEIGHT"
+        //            }
+        //        ),
         //        "result" => array(
         //            array(
         //                1655971200000,      // Kline open time
@@ -960,15 +968,7 @@ class binance extends \ccxt\async\binance {
         //                "0"                 // Unused field, ignore
         //            )
         //        ),
-        //        "rateLimits" => array(
-        //            {
-        //                "rateLimitType" => "REQUEST_WEIGHT",
-        //                "interval" => "MINUTE",
-        //                "intervalNum" => 1,
-        //                "limit" => 6000,
-        //                "count" => 2
-        //            }
-        //        )
+        //        "status" => 200
         //    }
         //
         $result = $this->safe_list($message, 'result');
@@ -1192,12 +1192,12 @@ class binance extends \ccxt\async\binance {
         // arrives one symbol dict or array of symbol dicts
         //
         //     {
-        //         "u" => 7488717758,
-        //         "s" => "BTCUSDT",
-        //         "b" => "28621.74000000",
-        //         "B" => "1.43278800",
+        //         "A" => "2.52500800",
         //         "a" => "28621.75000000",
-        //         "A" => "2.52500800"
+        //         "B" => "1.43278800",
+        //         "b" => "28621.74000000",
+        //         "s" => "BTCUSDT",
+        //         "u" => 7488717758
         //     }
         //
         $this->handle_tickers_and_bids_asks($client, $message, 'bidasks');
@@ -1545,10 +1545,10 @@ class binance extends \ccxt\async\binance {
         //            "canTrade" => true,
         //            "canWithdraw" => true,
         //            "commissionRates" => array(
-        //                "maker" => "0.00150000",
-        //                "taker" => "0.00150000",
         //                "buyer" => "0.00000000",
+        //                "maker" => "0.00150000",
         //                "seller" => "0.00000000"
+        //                "taker" => "0.00150000"
         //            ),
         //            "makerCommission" => 15,
         //            "permissions" => array(
@@ -1838,6 +1838,13 @@ class binance extends \ccxt\async\binance {
         //
         //    {
         //        "id" => 1,
+        //        "rateLimits" => [array(
+        //            "count" => 14,
+        //            "interval" => "MINUTE",
+        //            "intervalNum" => 1,
+        //            "limit" => 1200,
+        //            "rateLimitType" => "REQUEST_WEIGHT"
+        //        )],
         //        "result" => [array(
         //            "clientOrderId" => "x-R4BD3S82b54769abdd3e4b57874c52",
         //            "cummulativeQuoteQty" => "0.00000000",
@@ -1858,17 +1865,10 @@ class binance extends \ccxt\async\binance {
         //            "timeInForce" => "GTC",
         //            "type" => "LIMIT",
         //            "updateTime" => 1687642884646,
-        //            "workingTime" => 1687642884646,
+        //            "workingTime" => 1687642884646
         //        ),
         //        ...
         //        ],
-        //        "rateLimits" => [array(
-        //            "count" => 14,
-        //            "interval" => "MINUTE",
-        //            "intervalNum" => 1,
-        //            "limit" => 1200,
-        //            "rateLimitType" => "REQUEST_WEIGHT",
-        //        )],
         //        "status" => 200,
         //    }
         //
@@ -1917,6 +1917,28 @@ class binance extends \ccxt\async\binance {
         //
         //    {
         //        "id" => 1,
+        //        "rateLimits" => [array(
+        //                "count" => 1,
+        //                "interval" => "SECOND",
+        //                "intervalNum" => 10,
+        //                "limit" => 50,
+        //                "rateLimitType" => "ORDERS",
+        //            ),
+        //            array(
+        //                "count" => 3,
+        //                "interval" => "DAY",
+        //                "intervalNum" => 1,
+        //                "limit" => 160000,
+        //                "rateLimitType" => "ORDERS",
+        //            ),
+        //            {
+        //                "count" => 12,
+        //                "interval" => "MINUTE",
+        //                "intervalNum" => 1,
+        //                "limit" => 1200,
+        //                "rateLimitType" => "REQUEST_WEIGHT",
+        //            }
+        //        ],
         //        "result" => array(
         //            "cancelResponse" => array(
         //                "clientOrderId" => "mbrnbQsQhtCXCLY45d5q7S",
@@ -1955,28 +1977,6 @@ class binance extends \ccxt\async\binance {
         //            ),
         //            "newOrderResult" => "SUCCESS",
         //        ),
-        //        "rateLimits" => [array(
-        //                "count" => 1,
-        //                "interval" => "SECOND",
-        //                "intervalNum" => 10,
-        //                "limit" => 50,
-        //                "rateLimitType" => "ORDERS",
-        //            ),
-        //            array(
-        //                "count" => 3,
-        //                "interval" => "DAY",
-        //                "intervalNum" => 1,
-        //                "limit" => 160000,
-        //                "rateLimitType" => "ORDERS",
-        //            ),
-        //            {
-        //                "count" => 12,
-        //                "interval" => "MINUTE",
-        //                "intervalNum" => 1,
-        //                "limit" => 1200,
-        //                "rateLimitType" => "REQUEST_WEIGHT",
-        //            }
-        //        ],
         //        "status" => 200,
         //    }
         //
@@ -2458,8 +2458,7 @@ class binance extends \ccxt\async\binance {
         //     {
         //         "e":"ORDER_TRADE_UPDATE",           // Event Type
         //         "E":1568879465651,                  // Event Time
-        //         "T":1568879465650,                  // Trasaction Time
-        //         "o" => {
+        //         "o" => array(
         //             "a":"9.91",                     // Ask Notional
         //             "ap":"0",                       // Average Price
         //             "AP":"7476.89",                 // Activation Price, only puhed with TRAILING_STOP_MARKET order
@@ -2493,7 +2492,8 @@ class binance extends \ccxt\async\binance {
         //             "x":"NEW",                      // Execution Type
         //             "X":"NEW",                      // Order Status
         //             "z":"0",                        // Order Filled Accumulated Quantity
-        //         }
+        //         ),
+        //         "T":1568879465650                   // Trasaction Time
         //     }
         //
         $e = $this->safe_string($message, 'e');
@@ -2707,8 +2707,8 @@ class binance extends \ccxt\async\binance {
         }
         return $this->safe_position(array(
             'collateral' => null,
-            'contractSize' => null,
             'contracts' => $this->parse_number($contractsAbs),
+            'contractSize' => null,
             'datetime' => null,
             'entryPrice' => $this->safe_number($position, 'ep'),
             'hedged' => $hedged,
@@ -2845,7 +2845,7 @@ class binance extends \ccxt\async\binance {
         //                "qty" => "0.00635000",
         //                "quoteQty" => "148.69223500",
         //                "symbol" => "BTCUSDT",
-        //                "time" => 1660801715793,
+        //                "time" => 1660801715793
         //            ),
         //            ...
         //        ],
@@ -2864,7 +2864,7 @@ class binance extends \ccxt\async\binance {
         //                "price" => "0.00005000",
         //                "qty" => "40.00000000",
         //                "quoteQty" => "0.00200000",
-        //                "time" => 1500004800376,
+        //                "time" => 1500004800376
         //            }
         //            ...
         //        ),
