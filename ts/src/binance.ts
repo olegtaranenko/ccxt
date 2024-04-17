@@ -28,6 +28,7 @@ import {
 import { Precise } from './base/Precise.js';
 import type {
     Balances,
+    Conversion,
     Currencies,
     Currency,
     FundingRateHistory,
@@ -1995,6 +1996,7 @@ export default class binance extends Exchange {
                 'closeAllPositions': false,
                 'closePosition': false,  // exchange specific closePosition parameter for binance createOrder is not synonymous with how CCXT uses closePositions
                 'CORS': undefined,
+                'createConvertTrade': true,
                 'createDepositAddress': false,
                 'createLimitBuyOrder': true,
                 'createLimitSellOrder': true,
@@ -12554,5 +12556,62 @@ export default class binance extends Exchange {
             };
         }
         return result;
+    }
+
+    async createConvertTrade (id: string, fromCode: string, toCode: string, amount: Num = undefined, params = {}): Promise<Conversion> {
+        /**
+         * @method
+         * @name binance#createConvertTrade
+         * @description convert from one currency to another
+         * @see https://binance-docs.github.io/apidocs/spot/en/#busd-convert-trade
+         * @param {string} id the id of the trade that you want to make
+         * @param {string} fromCode the currency that you want to sell and convert from
+         * @param {string} toCode the currency that you want to buy and convert into
+         * @param {float} [amount] how much you want to trade in units of the from currency
+         * @param {object} [params] extra parameters specific to the exchange API endpoint
+         * @returns {object} a [conversion structure]{@link https://docs.ccxt.com/#/?id=conversion-structure}
+         */
+        await this.loadMarkets ();
+        const request = {
+            'clientTranId': id,
+            'asset': fromCode,
+            'targetAsset': toCode,
+            'amount': amount,
+        };
+        const response = await this.sapiPostAssetConvertTransfer (this.extend (request, params));
+        //
+        //     {
+        //         "tranId": 118263407119,
+        //         "status": "S"
+        //     }
+        //
+        const fromCurrency = this.currency (fromCode);
+        const toCurrency = this.currency (toCode);
+        return this.parseConversion (response, fromCurrency, toCurrency);
+    }
+
+    parseConversion (conversion, fromCurrency: Currency = undefined, toCurrency: Currency = undefined): Conversion {
+        //
+        // createConvertTrade
+        //
+        //     {
+        //         "tranId": 118263407119,
+        //         "status": "S"
+        //     }
+        //
+        const fromCode = this.safeCurrencyCode (undefined, fromCurrency);
+        const toCode = this.safeCurrencyCode (undefined, toCurrency);
+        return {
+            'info': conversion,
+            'timestamp': undefined,
+            'datetime': undefined,
+            'id': this.safeString (conversion, 'tranId'),
+            'fromCurrency': fromCode,
+            'fromAmount': undefined,
+            'toCurrency': toCode,
+            'toAmount': undefined,
+            'price': undefined,
+            'fee': undefined,
+        } as Conversion;
     }
 }
