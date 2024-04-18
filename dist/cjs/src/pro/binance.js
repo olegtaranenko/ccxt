@@ -425,8 +425,11 @@ class binance extends binance$1 {
                             }
                         }
                         else {
-                            // todo: client.reject from handleOrderBookMessage properly
-                            throw new errors.ExchangeError(this.id + ' handleOrderBook received an out-of-order nonce');
+                            const checksum = this.safeBool(this.options, 'checksum', true);
+                            if (checksum) {
+                                // todo: client.reject from handleOrderBookMessage properly
+                                throw new errors.InvalidNonce(this.id + ' handleOrderBook received an out-of-order nonce');
+                            }
                         }
                     }
                 }
@@ -443,8 +446,11 @@ class binance extends binance$1 {
                             }
                         }
                         else {
-                            // todo: client.reject from handleOrderBookMessage properly
-                            throw new errors.ExchangeError(this.id + ' handleOrderBook received an out-of-order nonce');
+                            const checksum = this.safeBool(this.options, 'checksum', true);
+                            if (checksum) {
+                                // todo: client.reject from handleOrderBookMessage properly
+                                throw new errors.InvalidNonce(this.id + ' handleOrderBook received an out-of-order nonce');
+                            }
                         }
                     }
                 }
