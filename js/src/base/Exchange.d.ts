@@ -2,7 +2,7 @@ import * as functions from './functions.js';
 import { AuthenticationError, DDoSProtection, ExchangeError, ExchangeNotAvailable, RateLimitExceeded, RequestTimeout } from "./errors.js";
 import WsClient from './ws/WsClient.js';
 import { CountedOrderBook, IndexedOrderBook, OrderBook as WsOrderBook } from './ws/OrderBook.js';
-import type { Account, Balance, BalanceAccount, Balances, BorrowInterest, Conversion, Currencies, Currency, CurrencyInterface, DepositAddressResponse, DepositWithdrawFeeNetwork, Dictionary, FundingHistory, FundingRate, FundingRateHistory, Greeks, IndexType, Int, LastPrice, LastPrices, LedgerEntry, Leverage, Leverages, LeverageTier, Liquidation, MarginMode, MarginModes, MarginModification, Market, MarketInterface, MarketType, MinMax, Num, OHLCV, OHLCVC, OpenInterest, Option, OptionChain, Order, OrderBook, OrderRequest, OrderSide, OrderType, Position, Str, Strings, Ticker, Tickers, Trade, TradingFeeInterface, TradingFees, Transaction, TransferEntry } from './types.js';
+import type { Account, Balance, BalanceAccount, Balances, BorrowInterest, CancellationRequest, Conversion, Currencies, Currency, CurrencyInterface, DepositAddressResponse, DepositWithdrawFeeNetwork, Dictionary, FundingHistory, FundingRate, FundingRateHistory, Greeks, IndexType, Int, LastPrice, LastPrices, LedgerEntry, Leverage, Leverages, LeverageTier, Liquidation, MarginMode, MarginModes, MarginModification, Market, MarketInterface, MarketType, MinMax, Num, OHLCV, OHLCVC, OpenInterest, Option, OptionChain, Order, OrderBook, OrderRequest, OrderSide, OrderType, Position, Str, Strings, Ticker, Tickers, Trade, TradingFeeInterface, TradingFees, Transaction, TransferEntry } from './types.js';
 import { ArrayCache, ArrayCacheByTimestamp } from './ws/Cache.js';
 import { OrderBook as Ob } from './ws/OrderBook.js';
 export type { Account, Balance, BalanceAccount, Balances, BorrowInterest, BorrowRate, Conversion, Currency, CurrencyInterface, DepositAddressResponse, Dictionary, Fee, FundingHistory, FundingRateHistory, Greeks, IndexType, Int, LastPrice, LastPrices, LedgerEntry, Leverage, Leverages, LeverageTier, Liquidation, MarginMode, MarginModes, Market, MarketInterface, MarketType, MinMax, Num, OHLCV, OHLCVC, OpenInterest, Option, OptionChain, Order, OrderBook, OrderRequest, OrderSide, OrderType, Position, Str, Strings, Ticker, Tickers, Trade, Transaction, TransferEntry, } from './types.js';
@@ -193,13 +193,13 @@ export default class Exchange {
         outputLen: number;
         blockLen: number;
         create(): import("../static_dependencies/noble-hashes/utils.js").Hash<import("../static_dependencies/noble-hashes/utils.js").Hash<any>>;
-    }, digest?: "base64" | "binary" | "hex") => any;
+    }, digest?: "binary" | "hex" | "base64") => any;
     hmac: (request: import("../static_dependencies/noble-hashes/utils.js").Input, secret: import("../static_dependencies/noble-hashes/utils.js").Input, hash: {
         (message: import("../static_dependencies/noble-hashes/utils.js").Input): Uint8Array;
         outputLen: number;
         blockLen: number;
         create(): import("../static_dependencies/noble-hashes/utils.js").Hash<import("../static_dependencies/noble-hashes/utils.js").Hash<any>>;
-    }, digest?: "base64" | "binary" | "hex") => any;
+    }, digest?: "binary" | "hex" | "base64") => any;
     implodeParams: (string: any, params: any) => any;
     inArray: (needle: any, haystack: any) => any;
     indexBy: (x: any, k: any, out?: {}) => {};
@@ -896,6 +896,7 @@ export default class Exchange {
     cancelOrderWs(id: string, symbol?: Str, params?: {}): Promise<{}>;
     cancelOrdersWs(ids: string[], symbol?: Str, params?: {}): Promise<{}>;
     cancelAllOrders(symbol?: Str, params?: {}): Promise<{}>;
+    cancelOrdersForSymbols(orders: CancellationRequest[], params?: {}): Promise<{}>;
     cancelAllOrdersWs(symbol?: Str, params?: {}): Promise<{}>;
     cancelUnifiedOrder(order: any, params?: {}): Promise<{}>;
     fetchOrders(symbol?: Str, since?: Int, limit?: Int, params?: {}): Promise<Order[]>;

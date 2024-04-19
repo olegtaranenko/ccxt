@@ -392,6 +392,11 @@ export interface OrderRequest {
     symbol: string;
     type: OrderType;
 }
+export interface CancellationRequest {
+    id: string;
+    clientOrderId?: string;
+    symbol: string;
+}
 export interface FundingHistory {
     amount: number;
     code: string;
