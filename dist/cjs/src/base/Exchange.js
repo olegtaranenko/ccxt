@@ -4749,6 +4749,9 @@ class Exchange {
     async cancelAllOrders(symbol = undefined, params = {}) {
         throw new errors.NotSupported(this.id + ' cancelAllOrders() is not supported yet');
     }
+    async cancelAllOrdersAfter(timeout, params = {}) {
+        throw new errors.NotSupported(this.id + ' cancelAllOrdersAfter() is not supported yet');
+    }
     async cancelOrdersForSymbols(orders, params = {}) {
         throw new errors.NotSupported(this.id + ' cancelOrdersForSymbols() is not supported yet');
     }
