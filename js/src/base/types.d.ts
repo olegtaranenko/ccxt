@@ -103,12 +103,15 @@ export interface Order {
     clientOrderId: Str;
     cost: number;
     datetime: string;
+    fee: Fee;
     filled: number;
     id: string;
     info: any;
-    lastTradeTimestamp: number;
+    lastTradeTimestamp?: number;
     lastUpdateTimestamp?: number;
+    postOnly: Bool;
     price: number;
+    reduceOnly: Bool;
     remaining: number;
     side: 'buy' | 'sell' | Str;
     status: 'open' | 'closed' | 'canceled' | Str;
@@ -279,6 +282,7 @@ export interface Position {
     liquidationPrice?: number;
     maintenanceMargin?: number;
     maintenanceMarginPercentage?: number;
+    maintenenceMargin?: number;
     marginMode?: Str;
     marginRatio?: number;
     markPrice?: number;

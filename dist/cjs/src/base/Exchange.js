@@ -385,9 +385,9 @@ class Exchange {
                 'cancelAllOrders': undefined,
                 'cancelAllOrdersWs': undefined,
                 'cancelOrder': true,
-                'cancelOrderWs': undefined,
                 'cancelOrders': undefined,
                 'cancelOrdersWs': undefined,
+                'cancelOrderWs': undefined,
                 'closeAllPositions': undefined,
                 'closePosition': undefined,
                 'CORS': undefined,
@@ -518,21 +518,21 @@ class Exchange {
                 'fetchPermissions': undefined,
                 'fetchPosition': undefined,
                 'fetchPositionHistory': undefined,
-                'fetchPositionsHistory': undefined,
-                'fetchPositionWs': undefined,
                 'fetchPositionMode': undefined,
                 'fetchPositions': undefined,
-                'fetchPositionsWs': undefined,
                 'fetchPositionsForSymbol': undefined,
                 'fetchPositionsForSymbolWs': undefined,
+                'fetchPositionsHistory': undefined,
                 'fetchPositionsRisk': undefined,
+                'fetchPositionsWs': undefined,
+                'fetchPositionWs': undefined,
                 'fetchPremiumIndexOHLCV': undefined,
                 'fetchSettlementHistory': undefined,
                 'fetchStatus': undefined,
                 'fetchTicker': true,
-                'fetchTickerWs': undefined,
                 'fetchTickers': undefined,
                 'fetchTickersWs': undefined,
+                'fetchTickerWs': undefined,
                 'fetchTime': undefined,
                 'fetchTrades': true,
                 'fetchTradesWs': undefined,
@@ -6170,10 +6170,10 @@ class Exchange {
             const fromId = this.safeString(entry, fromCurrencyKey);
             const toId = this.safeString(entry, toCurrencyKey);
             if (fromId !== undefined) {
-                fromCurrency = this.currency(fromId);
+                fromCurrency = this.safeCurrency(fromId);
             }
             if (toId !== undefined) {
-                toCurrency = this.currency(toId);
+                toCurrency = this.safeCurrency(toId);
             }
             const conversion = this.extend(this.parseConversion(entry, fromCurrency, toCurrency), params);
             result.push(conversion);
@@ -6181,7 +6181,7 @@ class Exchange {
         const sorted = this.sortBy(result, 'timestamp');
         let currency = undefined;
         if (code !== undefined) {
-            currency = this.currency(code);
+            currency = this.safeCurrency(code);
             code = currency['code'];
         }
         if (code === undefined) {

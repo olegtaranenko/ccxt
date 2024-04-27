@@ -129,6 +129,7 @@
     "test-ws-php-base": "npm run test-php-cache && npm run test-php-orderbook",
     "transpile": "npm run transpileRest && npm run transpileWs",
     "transpileCS": "tsx build/csharpTranspiler.ts --multi",
+    "transpileCsSingle": "tsx build/csharpTranspiler.ts",
     "transpileCSWs": "tsx build/csharpTranspiler.ts --ws",
     "transpileRest": "node build/transpile",
     "transpileWs": "node build/transpileWS",
