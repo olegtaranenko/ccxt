@@ -1110,22 +1110,28 @@ class kucoinfutures(kucoin, ImplicitAPI):
         data = self.safe_list(response, 'data')
         return self.parse_positions(data, symbols)
 
-    async def fetch_positions_history(self, symbols: Strings = None, params={}):
+    async def fetch_positions_history(self, symbols: Strings = None, since: Int = None, limit: Int = None, params={}):
         """
         fetches historical positions
         :see: https://www.kucoin.com/docs/rest/futures-trading/positions/get-positions-history
         :param str[] [symbols]: list of unified market symbols
         :param dict [params]: extra parameters specific to the exchange API endpoint
-        :param int [params.from]: closing start time
-        :param int [params.to]: closing end time
-        :param int [params.limit]: maximum number of positions to return, default is 10
+        :param int [params.until]: closing end time
         :param int [params.pageId]: page id
         :returns dict[]: a list of `position structure <https://docs.ccxt.com/#/?id=position-structure>`
         """
         await self.load_markets()
+        if limit is None:
+            limit = 200
         request = {
-            'limit': self.safe_integer(params, 'limit', 200),
+            'limit': limit,
         }
+        if since is not None:
+            request['from'] = since
+        until = self.safe_integer(params, 'until')
+        if until is not None:
+            params = self.omit(params, 'until')
+            request['to'] = until
         response = await self.futuresPrivateGetHistoryPositions(self.extend(request, params))
         #
         # {

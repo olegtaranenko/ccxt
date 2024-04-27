@@ -88,8 +88,8 @@ class kucoinfutures extends kucoinfutures$1 {
                 'fetchTickers': true,
                 'fetchTime': true,
                 'fetchTrades': true,
-                'fetchTransactionFee': false,
                 'fetchTradingFee': true,
+                'fetchTransactionFee': false,
                 'fetchWithdrawals': true,
                 'setLeverage': false,
                 'setMarginMode': false,
@@ -1140,7 +1140,7 @@ class kucoinfutures extends kucoinfutures$1 {
         const data = this.safeList(response, 'data');
         return this.parsePositions(data, symbols);
     }
-    async fetchPositionsHistory(symbols = undefined, params = {}) {
+    async fetchPositionsHistory(symbols = undefined, since = undefined, limit = undefined, params = {}) {
         /**
          * @method
          * @name kucoinfutures#fetchPositionsHistory
@@ -1148,16 +1148,25 @@ class kucoinfutures extends kucoinfutures$1 {
          * @see https://www.kucoin.com/docs/rest/futures-trading/positions/get-positions-history
          * @param {string[]} [symbols] list of unified market symbols
          * @param {object} [params] extra parameters specific to the exchange API endpoint
-         * @param {int} [params.from] closing start time
-         * @param {int} [params.to] closing end time
-         * @param {int} [params.limit] maximum number of positions to return, default is 10
+         * @param {int} [params.until] closing end time
          * @param {int} [params.pageId] page id
          * @returns {object[]} a list of [position structure]{@link https://docs.ccxt.com/#/?id=position-structure}
          */
         await this.loadMarkets();
+        if (limit === undefined) {
+            limit = 200;
+        }
         const request = {
-            'limit': this.safeInteger(params, 'limit', 200),
+            'limit': limit,
         };
+        if (since !== undefined) {
+            request['from'] = since;
+        }
+        const until = this.safeInteger(params, 'until');
+        if (until !== undefined) {
+            params = this.omit(params, 'until');
+            request['to'] = until;
+        }
         const response = await this.futuresPrivateGetHistoryPositions(this.extend(request, params));
         //
         // {

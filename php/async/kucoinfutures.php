@@ -1154,23 +1154,32 @@ class kucoinfutures extends kucoin {
         }) ();
     }
 
-    public function fetch_positions_history(?array $symbols = null, $params = array ()) {
-        return Async\async(function () use ($symbols, $params) {
+    public function fetch_positions_history(?array $symbols = null, ?int $since = null, ?int $limit = null, $params = array ()) {
+        return Async\async(function () use ($symbols, $since, $limit, $params) {
             /**
              * fetches historical positions
              * @see https://www.kucoin.com/docs/rest/futures-trading/positions/get-positions-history
              * @param {string[]} [$symbols] list of unified market $symbols
              * @param {array} [$params] extra parameters specific to the exchange API endpoint
-             * @param {int} [$params->from] closing start time
-             * @param {int} [$params->to] closing end time
-             * @param {int} [$params->limit] maximum number of positions to return, default is 10
+             * @param {int} [$params->until] closing end time
              * @param {int} [$params->pageId] page id
              * @return {array[]} a list of ~@link https://docs.ccxt.com/#/?id=position-structure position structure~
              */
             Async\await($this->load_markets());
+            if ($limit === null) {
+                $limit = 200;
+            }
             $request = array(
-                'limit' => $this->safe_integer($params, 'limit', 200),
+                'limit' => $limit,
             );
+            if ($since !== null) {
+                $request['from'] = $since;
+            }
+            $until = $this->safe_integer($params, 'until');
+            if ($until !== null) {
+                $params = $this->omit($params, 'until');
+                $request['to'] = $until;
+            }
             $response = Async\await($this->futuresPrivateGetHistoryPositions (array_merge($request, $params)));
             //
             // {
