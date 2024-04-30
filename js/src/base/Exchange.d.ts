@@ -2,10 +2,10 @@ import * as functions from './functions.js';
 import { AuthenticationError, DDoSProtection, ExchangeError, ExchangeNotAvailable, RateLimitExceeded, RequestTimeout } from "./errors.js";
 import WsClient from './ws/WsClient.js';
 import { CountedOrderBook, IndexedOrderBook, OrderBook as WsOrderBook } from './ws/OrderBook.js';
-import type { Account, Balance, BalanceAccount, Balances, BorrowInterest, CancellationRequest, Conversion, Currencies, Currency, CurrencyInterface, DepositAddressResponse, DepositWithdrawFeeNetwork, Dictionary, FundingHistory, FundingRate, FundingRateHistory, Greeks, IndexType, Int, LastPrice, LastPrices, LedgerEntry, Leverage, Leverages, LeverageTier, Liquidation, MarginMode, MarginModes, MarginModification, Market, MarketInterface, MarketType, MinMax, Num, OHLCV, OHLCVC, OpenInterest, Option, OptionChain, Order, OrderBook, OrderRequest, OrderSide, OrderType, Position, Str, Strings, Ticker, Tickers, Trade, TradingFeeInterface, TradingFees, Transaction, TransferEntry } from './types.js';
+import type { Account, Balance, BalanceAccount, Balances, BorrowInterest, CancellationRequest, Conversion, CrossBorrowRate, CrossBorrowRates, Currencies, Currency, CurrencyInterface, DepositAddressResponse, DepositWithdrawFeeNetwork, Dictionary, FundingHistory, FundingRate, FundingRateHistory, Greeks, IndexType, Int, IsolatedBorrowRate, IsolatedBorrowRates, LastPrice, LastPrices, LedgerEntry, Leverage, Leverages, LeverageTier, Liquidation, MarginMode, MarginModes, MarginModification, Market, MarketInterface, MarketType, MinMax, Num, OHLCV, OHLCVC, OpenInterest, Option, OptionChain, Order, OrderBook, OrderRequest, OrderSide, OrderType, Position, Str, Strings, Ticker, Tickers, Trade, TradingFeeInterface, TradingFees, Transaction, TransferEntry } from './types.js';
 import { ArrayCache, ArrayCacheByTimestamp } from './ws/Cache.js';
 import { OrderBook as Ob } from './ws/OrderBook.js';
-export type { Account, Balance, BalanceAccount, Balances, BorrowInterest, BorrowRate, Conversion, Currency, CurrencyInterface, DepositAddressResponse, Dictionary, Fee, FundingHistory, FundingRateHistory, Greeks, IndexType, Int, LastPrice, LastPrices, LedgerEntry, Leverage, Leverages, LeverageTier, Liquidation, MarginMode, MarginModes, Market, MarketInterface, MarketType, MinMax, Num, OHLCV, OHLCVC, OpenInterest, Option, OptionChain, Order, OrderBook, OrderRequest, OrderSide, OrderType, Position, Str, Strings, Ticker, Tickers, Trade, Transaction, TransferEntry, } from './types.js';
+export type { Account, Balance, BalanceAccount, Balances, BorrowInterest, Conversion, CrossBorrowRate, Currency, CurrencyInterface, DepositAddressResponse, Dictionary, Fee, FundingHistory, FundingRateHistory, Greeks, IndexType, Int, LastPrice, LastPrices, LedgerEntry, Leverage, Leverages, LeverageTier, Liquidation, MarginMode, MarginModes, Market, MarketInterface, MarketType, MinMax, Num, OHLCV, OHLCVC, OpenInterest, Option, OptionChain, Order, OrderBook, OrderRequest, OrderSide, OrderType, Position, Str, Strings, Ticker, Tickers, Trade, Transaction, TransferEntry, } from './types.js';
 /**
  * @class Exchange
  */
@@ -382,6 +382,8 @@ export default class Exchange {
             fetchClosedOrdersWs: any;
             fetchConvertCurrencies: any;
             fetchConvertQuote: any;
+            fetchConvertTrade: any;
+            fetchConvertTradeHistory: any;
             fetchCrossBorrowRate: any;
             fetchCrossBorrowRates: any;
             fetchCurrencies: string;
@@ -707,13 +709,14 @@ export default class Exchange {
     parseAccount(account: any): Account;
     parseLedgerEntry(item: any, currency?: Currency): object;
     parseOrder(order: any, market?: Market): Order;
-    fetchCrossBorrowRates(params?: {}): Promise<{}>;
-    fetchIsolatedBorrowRates(params?: {}): Promise<{}>;
+    fetchCrossBorrowRates(params?: {}): Promise<CrossBorrowRates>;
+    fetchIsolatedBorrowRates(params?: {}): Promise<IsolatedBorrowRates>;
     parseMarketLeverageTiers(info: any, market?: Market): object;
     fetchLeverageTiers(symbols?: string[], params?: {}): Promise<Dictionary<LeverageTier[]>>;
     parsePosition(position: any, market?: Market): Position;
     parseFundingRateHistory(info: any, market?: Market): FundingRateHistory;
     parseBorrowInterest(info: any, market?: Market): BorrowInterest;
+    parseIsolatedBorrowRate(info: any, market?: Market): IsolatedBorrowRate;
     parseWsTrade(trade: any, market?: Market): Trade;
     parseWsOrder(order: any, market?: Market): Order;
     parseWsOrderTrade(trade: any, market?: Market): Trade;
@@ -886,8 +889,8 @@ export default class Exchange {
     fetchDepositWithdrawFees(codes?: string[], params?: {}): Promise<Dictionary<DepositWithdrawFeeNetwork>>;
     fetchDepositWithdrawFee(code: string, params?: {}): Promise<DepositWithdrawFeeNetwork>;
     getSupportedMapping(key: any, mapping?: {}): any;
-    fetchCrossBorrowRate(code: string, params?: {}): Promise<{}>;
-    fetchIsolatedBorrowRate(symbol: string, params?: {}): Promise<{}>;
+    fetchCrossBorrowRate(code: string, params?: {}): Promise<CrossBorrowRate>;
+    fetchIsolatedBorrowRate(symbol: string, params?: {}): Promise<IsolatedBorrowRate>;
     handleOptionAndParams(params: object, methodName: string, optionName: string, defaultValue?: any): any[];
     handleOptionAndParams2(params: object, methodName: string, methodName2: string, optionName: string, defaultValue?: any): any[];
     handleOption(methodName: string, optionName: string, defaultValue?: any): any;
@@ -1021,6 +1024,7 @@ export default class Exchange {
     parseTickers(tickers: any, symbols?: string[], params?: {}): Dictionary<Ticker>;
     parseDepositAddresses(addresses: any, codes?: string[], indexed?: boolean, params?: {}): Dictionary<any>;
     parseBorrowInterests(response: any, market?: Market): any[];
+    parseIsolatedBorrowRates(info: any): IsolatedBorrowRates;
     parseFundingRateHistories(response: any, market?: any, since?: Int, limit?: Int): FundingRateHistory[];
     safeSymbol(marketId: Str, market?: Market, delimiter?: Str, marketType?: Str): string;
     parseFundingRate(contract: string, market?: Market): object;

@@ -42,9 +42,10 @@ import type {
     BalanceAccount,
     Balances,
     BorrowInterest,
-    BorrowRate,
     CancellationRequest,
     Conversion,
+    CrossBorrowRate,
+    CrossBorrowRates,
     Currencies,
     Currency,
     CurrencyInterface,
@@ -58,6 +59,8 @@ import type {
     Greeks,
     IndexType,
     Int,
+    IsolatedBorrowRate,
+    IsolatedBorrowRates,
     LastPrice,
     LastPrices,
     LedgerEntry,
@@ -220,8 +223,8 @@ export type {
     BalanceAccount,
     Balances,
     BorrowInterest,
-    BorrowRate,
     Conversion,
+    CrossBorrowRate,
     Currency,
     CurrencyInterface,
     DepositAddressResponse,
@@ -648,6 +651,8 @@ export default class Exchange {
                 'fetchClosedOrdersWs': undefined,
                 'fetchConvertCurrencies': undefined,
                 'fetchConvertQuote': undefined,
+                'fetchConvertTrade': undefined,
+                'fetchConvertTradeHistory': undefined,
                 'fetchCrossBorrowRate': undefined,
                 'fetchCrossBorrowRates': undefined,
                 'fetchCurrencies': 'emulated',
@@ -2457,11 +2462,11 @@ export default class Exchange {
         throw new NotSupported (this.id + ' parseOrder() is not supported yet');
     }
 
-    async fetchCrossBorrowRates (params = {}): Promise<{}> {
+    async fetchCrossBorrowRates (params = {}): Promise<CrossBorrowRates> {
         throw new NotSupported (this.id + ' fetchCrossBorrowRates() is not supported yet');
     }
 
-    async fetchIsolatedBorrowRates (params = {}): Promise<{}> {
+    async fetchIsolatedBorrowRates (params = {}): Promise<IsolatedBorrowRates> {
         throw new NotSupported (this.id + ' fetchIsolatedBorrowRates() is not supported yet');
     }
 
@@ -2483,6 +2488,10 @@ export default class Exchange {
 
     parseBorrowInterest (info, market: Market = undefined): BorrowInterest {
         throw new NotSupported (this.id + ' parseBorrowInterest() is not supported yet');
+    }
+
+    parseIsolatedBorrowRate (info, market: Market = undefined): IsolatedBorrowRate {
+        throw new NotSupported (this.id + ' parseIsolatedBorrowRate() is not supported yet');
     }
 
     parseWsTrade (trade, market: Market = undefined): Trade {
@@ -4575,7 +4584,7 @@ export default class Exchange {
         }
     }
 
-    async fetchCrossBorrowRate (code: string, params = {}): Promise<{}> {
+    async fetchCrossBorrowRate (code: string, params = {}): Promise<CrossBorrowRate> {
         await this.loadMarkets ();
         if (!this.has['fetchBorrowRates']) {
             throw new NotSupported (this.id + ' fetchCrossBorrowRate() is not supported yet');
@@ -4588,13 +4597,13 @@ export default class Exchange {
         return rate;
     }
 
-    async fetchIsolatedBorrowRate (symbol: string, params = {}): Promise<{}> {
+    async fetchIsolatedBorrowRate (symbol: string, params = {}): Promise<IsolatedBorrowRate> {
         await this.loadMarkets ();
         if (!this.has['fetchBorrowRates']) {
             throw new NotSupported (this.id + ' fetchIsolatedBorrowRate() is not supported yet');
         }
         const borrowRates = await this.fetchIsolatedBorrowRates (params);
-        const rate = this.safeDict (borrowRates, symbol);
+        const rate = this.safeDict (borrowRates, symbol) as IsolatedBorrowRate;
         if (rate === undefined) {
             throw new ExchangeError (this.id + ' fetchIsolatedBorrowRate() could not find the borrow rate for market symbol ' + symbol);
         }
@@ -5952,6 +5961,17 @@ export default class Exchange {
             interests.push (this.parseBorrowInterest (row, market));
         }
         return interests;
+    }
+
+    parseIsolatedBorrowRates (info: any): IsolatedBorrowRates {
+        const result = {};
+        for (let i = 0; i < info.length; i++) {
+            const item = info[i];
+            const borrowRate = this.parseIsolatedBorrowRate (item);
+            const symbol = this.safeString (borrowRate, 'symbol');
+            result[symbol] = borrowRate;
+        }
+        return result as any;
     }
 
     parseFundingRateHistories (response, market = undefined, since: Int = undefined, limit: Int = undefined): FundingRateHistory[] {

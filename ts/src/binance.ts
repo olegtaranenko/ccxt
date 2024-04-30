@@ -29,6 +29,7 @@ import { Precise } from './base/Precise.js';
 import type {
     Balances,
     Conversion,
+    CrossBorrowRate,
     Currencies,
     Currency,
     FundingRateHistory,
@@ -1947,7 +1948,7 @@ export default class binance extends Exchange {
                         'feeSide': 'quote',
                         'maker': this.parseNumber ('0.000200'),
                         'percentage': true,
-                        'taker': this.parseNumber ('0.000400'),
+                        'taker': this.parseNumber ('0.000500'),
                         'tierBased': true,
                         'tiers': {
                             'maker': [
@@ -8990,9 +8991,9 @@ export default class binance extends Exchange {
         if (since !== undefined) {
             request['startTime'] = since;
         }
-        const until = this.safeInteger2 (params, 'until', 'till'); // unified in milliseconds
+        const until = this.safeInteger (params, 'until'); // unified in milliseconds
         const endTime = this.safeInteger (params, 'endTime', until); // exchange-specific in milliseconds
-        params = this.omit (params, [ 'endTime', 'till', 'until' ]);
+        params = this.omit (params, [ 'endTime', 'until' ]);
         if (endTime !== undefined) {
             request['endTime'] = endTime;
         }
@@ -11213,7 +11214,7 @@ export default class binance extends Exchange {
         return await this.modifyMarginHelper (symbol, amount, 1, params);
     }
 
-    async fetchCrossBorrowRate (code: string, params = {}) {
+    async fetchCrossBorrowRate (code: string, params = {}): Promise<CrossBorrowRate> {
         /**
          * @method
          * @name binance#fetchCrossBorrowRate
@@ -11710,9 +11711,9 @@ export default class binance extends Exchange {
         if (since !== undefined) {
             request['startTime'] = since;
         }
-        const until = this.safeInteger2 (params, 'until', 'till'); // unified in milliseconds
+        const until = this.safeInteger (params, 'until'); // unified in milliseconds
         const endTime = this.safeInteger (params, 'endTime', until); // exchange-specific in milliseconds
-        params = this.omit (params, [ 'endTime', 'until', 'till' ]);
+        params = this.omit (params, [ 'endTime', 'until' ]);
         if (endTime) {
             request['endTime'] = endTime;
         } else if (since) {

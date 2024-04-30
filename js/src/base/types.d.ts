@@ -354,13 +354,24 @@ export interface TransferEntry {
     timestamp?: number;
     toAccount?: Str;
 }
-export interface BorrowRate {
+export interface CrossBorrowRate {
     currency?: Str;
     datetime?: Str;
     info: any;
     period?: number;
-    rate?: number;
+    rate: number;
     timestamp?: number;
+}
+export interface IsolatedBorrowRate {
+    base: string;
+    baseRate: number;
+    datetime?: Str;
+    info: any;
+    period?: Int;
+    quote: string;
+    quoteRate: number;
+    symbol: string;
+    timestamp?: Int;
 }
 export interface FundingRateHistory {
     datetime?: Str;
@@ -505,6 +516,10 @@ export interface TradingFees extends Dictionary<TradingFeeInterface> {
 export interface MarginModes extends Dictionary<MarginMode> {
 }
 export interface OptionChain extends Dictionary<Option> {
+}
+export interface IsolatedBorrowRates extends Dictionary<IsolatedBorrowRates> {
+}
+export interface CrossBorrowRates extends Dictionary<CrossBorrowRates> {
 }
 /** [ timestamp, open, high, low, close, volume ] */
 export declare type OHLCV = [Num, Num, Num, Num, Num, Num];
