@@ -116,15 +116,15 @@ export interface Order {
     clientOrderId: Str;
     cost: number;
     datetime: string;
-    fee: Fee;
+    fee?: Fee;
     filled: number;
     id: string;
     info: any;
     lastTradeTimestamp?: number;
     lastUpdateTimestamp?: number;
-    postOnly: Bool;
+    postOnly?: Bool;
     price: number;
-    reduceOnly: Bool;
+    reduceOnly?: Bool;
     remaining: number;
     side: 'buy' | 'sell' | Str;
     status: 'open' | 'closed' | 'canceled' | Str;
@@ -399,16 +399,15 @@ export interface CrossBorrowRate {
 }
 
 export interface IsolatedBorrowRate {
-    base: string;
-    baseRate: number;
-    datetime?: Str;
-    info: any;
-    period?: Int;
-    quote: string;
-    quoteRate: number;
-    rate?: number;
-    symbol: string;
-    timestamp?: Int;
+    base: string,
+    baseRate: number,
+    datetime?: Str,
+    info: any,
+    period?: Int,
+    quote: string,
+    quoteRate: number,
+    symbol: string,
+    timestamp?: Int,
 }
 
 export interface FundingRateHistory {
