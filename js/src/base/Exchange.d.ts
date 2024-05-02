@@ -221,7 +221,7 @@ export default class Exchange {
     numberToBE: (n: number, padding: number) => Uint8Array;
     numberToLE: (n: number, padding: number) => Uint8Array;
     numberToString: typeof functions.numberToString;
-    omit: (x: Dictionary<any>, ...args: any[]) => any;
+    omit: (x: Dictionary<any>, ...args: any) => any;
     omitZero: typeof functions.omitZero;
     ordered: (x: any[] | Dictionary<any>) => any[] | Dictionary<any>;
     packb: typeof functions.packb;
