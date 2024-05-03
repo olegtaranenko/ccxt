@@ -11,6 +11,7 @@ import { isNode, isJsonEncodedObject, deepExtend, milliseconds, } from '../../ba
 import { utf8 } from '../../static_dependencies/scure-base/index.js';
 export default class Client {
     constructor(url, onMessageCallback, onErrorCallback, onCloseCallback, onConnectedCallback, config = {}) {
+        this.verbose = false;
         const defaults = {
             url,
             onMessageCallback,
@@ -62,7 +63,7 @@ export default class Client {
                 this.log(new Date(), 'resolve received undefined messageHash');
             }
         }
-        if (messageHash in this.futures) {
+        if ((messageHash !== undefined) && (messageHash in this.futures)) {
             const promise = this.futures[messageHash];
             promise.resolve(result);
             delete this.futures[messageHash];

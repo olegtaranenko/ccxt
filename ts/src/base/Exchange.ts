@@ -338,11 +338,11 @@ export default class Exchange {
     validateClientSsl: boolean = false
     validateServerSsl: boolean = true
 
-    timeout: Int = 10000; // milliseconds
-    twofa = undefined; // two-factor authentication (2FA)
-    verbose: boolean = false;
+    timeout: Int      = 10000; // milliseconds
+    twofa             = undefined; // two-factor authentication (2FA)
+    verbose: boolean  = false;
     verboseLogVeto: any;
-    verboseTruncate = false;
+    verboseTruncate: boolean = false;
 
     apiKey: string;
     login: string;
@@ -882,9 +882,11 @@ export default class Exchange {
         this.validateClientSsl = false;
         this.validateServerSsl = true;
         // default property values
-        this.timeout = 10000; // milliseconds
-        this.twofa = undefined; // two-factor authentication (2FA)
-        this.verbose = false;
+        this.timeout       = 10000 // milliseconds
+        this.twofa         = undefined // two-factor authentication (2FA)
+        this.verbose       = false
+        this.verboseLogVeto  = undefined
+        this.verboseTruncate = false
         // default credentials
         this.apiKey = undefined;
         this.login = undefined;
@@ -1365,7 +1367,7 @@ export default class Exchange {
             if (this.verbose || this.verboseTruncate) {
                 if (typeof this.verboseLogVeto !== 'function' || this.verboseLogVeto ('response', method, url, response)) {
                     const truncated = this.getBodyTruncated (bodyText);
-                    this.log ("handleRestResponse:\n", this.id, method, url, response.status, response.statusText, "\nResponseHeaders:\n", responseHeaders, "\nResponseBody:\n", truncated, "\n");
+                    this.log ("handleRestResponse:\n", this.id, method, url, response.status, response.statusText, "\nResponseHeaders:\n", responseHeaders, "\nResponseBody:\n", truncated, "\n")
                 }
             }
             const skipFurtherErrorHandling = this.handleErrors (response.status, response.statusText, url, method, responseHeaders, responseBody, json, requestHeaders, requestBody);
@@ -3540,18 +3542,18 @@ export default class Exchange {
         // timestamp and symbol operations don't belong in safeTicker
         // they should be done in the derived classes
         return this.extend (ticker, {
-            'ask': this.parseNumber (this.omitZero (this.safeNumber (ticker, 'ask'))),
+            'ask': this.parseNumber (this.omitZero (this.safeString (ticker, 'ask'))),
             'askVolume': this.safeNumber (ticker, 'askVolume'),
             'average': this.parseNumber (average),
             'baseVolume': this.parseNumber (baseVolume),
-            'bid': this.parseNumber (this.omitZero (this.safeNumber (ticker, 'bid'))),
+            'bid': this.parseNumber (this.omitZero (this.safeString (ticker, 'bid'))),
             'bidVolume': this.safeNumber (ticker, 'bidVolume'),
             'change': this.parseNumber (change),
-            'close': this.parseNumber (this.omitZero (this.parseNumber (close))),
+            'close': this.parseNumber (this.omitZero (close)),
             'high': this.parseNumber (this.omitZero (this.safeString (ticker, 'high'))),
-            'last': this.parseNumber (this.omitZero (this.parseNumber (last))),
-            'low': this.parseNumber (this.omitZero (this.safeNumber (ticker, 'low'))),
-            'open': this.parseNumber (this.omitZero (this.parseNumber (open))),
+            'last': this.parseNumber (this.omitZero (last)),
+            'low': this.parseNumber (this.omitZero (this.safeString (ticker, 'low'))),
+            'open': this.parseNumber (this.omitZero (open)),
             'percentage': this.parseNumber (percentage),
             'previousClose': this.safeNumber (ticker, 'previousClose'),
             'quoteVolume': this.parseNumber (quoteVolume),
@@ -6777,6 +6779,17 @@ export default class Exchange {
         const sorted = this.sortBy (result, 'timestamp');
         const symbol = this.safeString (market, 'symbol');
         return this.filterBySymbolSinceLimit (sorted, symbol, since, limit);
+    }
+
+    getBodyTruncated (body?: string) {
+        if (this.verboseTruncate && body) {
+            const TRUNCATE_LENGTH = 8192;
+            const length = body.length + 8;
+            if (body.length >= TRUNCATE_LENGTH) {
+                return body.substring (0, TRUNCATE_LENGTH / 2) + '\n ... \n' + body.substring (length - TRUNCATE_LENGTH / 2);
+            }
+        }
+        return body;
     }
 
     parseGreeks (greeks, market: Market = undefined): Greeks {

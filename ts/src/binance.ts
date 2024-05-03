@@ -14,6 +14,7 @@ import {
     InvalidNonce,
     InvalidOrder,
     MarginModeAlreadySet,
+    MarketClosed,
     NotSupported,
     OnMaintenance,
     OperationFailed,
@@ -1111,7 +1112,7 @@ export default class binance extends Exchange {
                     'Account has insufficient balance for requested action.': InsufficientFunds,
                     'API key does not exist': AuthenticationError,
                     'Limit orders require GTC for this phase.': BadRequest,
-                    'Market is closed.': OperationRejected, // {"code":-1013,"msg":"Market is closed."}
+                    'Market is closed.': MarketClosed, // {"code":-1013,"msg":"Market is closed."}
                     'Order would immediately match and take.': OrderImmediatelyFillable, // {"code":-2010,"msg":"Order would immediately match and take."}
                     'Order would trigger immediately.': OrderImmediatelyFillable,
                     'Rest API trading is not enabled.': PermissionDenied,
