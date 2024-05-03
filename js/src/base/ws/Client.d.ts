@@ -1,12 +1,14 @@
 import { Future } from './Future.js';
+import { Dictionary, Str } from '../types.js';
 export default class Client {
     connected: Promise<any>;
     disconnected: ReturnType<typeof Future>;
-    futures: {};
-    rejections: {};
+    futures: Dictionary<any>;
+    rejections: Dictionary<any>;
     keepAlive: number;
     connection: any;
     connectionTimeout: any;
+    verbose: boolean;
     connectionTimer: any;
     lastPong: any;
     maxPingPongMisses: any;
@@ -22,14 +24,12 @@ export default class Client {
     onErrorCallback: any;
     onCloseCallback: any;
     ping: any;
-    subscriptions: {};
+    subscriptions: Dictionary<any>;
     throttle: any;
-    verbose: boolean;
-    verboseLogVeto: any;
-    constructor(url: any, onMessageCallback: any, onErrorCallback: any, onCloseCallback: any, onConnectedCallback: any, config?: {});
-    future(messageHash: any): any;
-    resolve(result: any, messageHash: any): any;
-    reject(result: any, messageHash?: any): any;
+    constructor(url: string, onMessageCallback: Function | undefined, onErrorCallback: Function | undefined, onCloseCallback: Function | undefined, onConnectedCallback: Function | undefined, config?: {});
+    future(messageHash: string): any;
+    resolve(result: any, messageHash: Str): any;
+    reject(result: any, messageHash?: Str): any;
     log(...args: any[]): void;
     connect(backoffDelay?: number): void;
     isOpen(): boolean;

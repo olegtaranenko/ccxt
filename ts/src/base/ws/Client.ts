@@ -9,16 +9,21 @@ import {
     milliseconds,
 } from '../../base/functions.js';
 import { utf8 } from '../../static_dependencies/scure-base/index.js';
+import { Dictionary, Str } from '../types.js';
 
 export default class Client {
     connected: Promise<any>
 
+    // @ts-ignore: 2564
     disconnected: ReturnType<typeof Future>
 
-    futures: {}
+    // @ts-ignore: 2564
+    futures: Dictionary<any>
 
-    rejections: {}
+    // @ts-ignore: 2564
+    rejections: Dictionary<any>
 
+    // @ts-ignore: 2564
     keepAlive: number
 
     connection: any
@@ -41,6 +46,7 @@ export default class Client {
 
     inflate: any
 
+    // @ts-ignore: 2564
     url: string
 
     isConnected: any
@@ -55,7 +61,8 @@ export default class Client {
 
     ping: any
 
-    subscriptions: {}
+    // @ts-ignore: 2564
+    subscriptions: Dictionary<any>
 
     throttle: any
 
@@ -63,7 +70,7 @@ export default class Client {
 
     verboseLogVeto: any
 
-    constructor (url, onMessageCallback, onErrorCallback, onCloseCallback, onConnectedCallback, config = {}) {
+    constructor (url: string, onMessageCallback: Function | undefined, onErrorCallback: Function | undefined, onCloseCallback: Function | undefined, onConnectedCallback: Function | undefined, config = {}) {
         const defaults = {
             url,
             onMessageCallback,
@@ -99,7 +106,7 @@ export default class Client {
         this.connected = Future ()
     }
 
-    future (messageHash) {
+    future (messageHash: string) {
         if (!(messageHash in this.futures)) {
             this.futures[messageHash] = Future ()
         }
@@ -111,13 +118,13 @@ export default class Client {
         return future
     }
 
-    resolve (result, messageHash) {
+    resolve (result: any, messageHash: Str) {
         if (this.verbose && (messageHash === undefined)) {
             if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto ('resolve', messageHash)) {
                 this.log (new Date (), 'resolve received undefined messageHash');
             }
         }
-        if (messageHash in this.futures) {
+        if ((messageHash !== undefined) && (messageHash in this.futures)) {
             const promise = this.futures[messageHash]
             promise.resolve (result)
             delete this.futures[messageHash]
@@ -125,7 +132,7 @@ export default class Client {
         return result
     }
 
-    reject (result, messageHash = undefined) {
+    reject (result: any, messageHash: Str = undefined) {
         if (messageHash) {
             if (messageHash in this.futures) {
                 const promise = this.futures[messageHash]
@@ -148,7 +155,7 @@ export default class Client {
         return result
     }
 
-    log (... args) {
+    log (... args: any[]) {
         console.log (... args)
         // console.dir (args, { depth: null })
     }
@@ -161,7 +168,7 @@ export default class Client {
         throw new NotSupported ('isOpen() not implemented yet');
     }
 
-    reset (error) {
+    reset (error: any) {
         this.clearConnectionTimeout ()
         this.clearPingInterval ()
         this.reject (error)
@@ -266,7 +273,7 @@ export default class Client {
         }
     }
 
-    onError (error) {
+    onError (error: any) {
         if (this.verbose) {
             if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto ('onError', error)) {
                 this.log (new Date (), 'onError', error.message)
@@ -282,7 +289,7 @@ export default class Client {
     }
 
     /* eslint-disable no-shadow */
-    onClose (event) {
+    onClose (event: any) {
         if (this.verbose) {
             if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto ('onClose', event)) {
                 this.log (new Date (), 'onClose', event)
@@ -303,7 +310,7 @@ export default class Client {
 
     // this method is not used at this time
     // but may be used to read protocol-level data like cookies, headers, etc
-    onUpgrade (message) {
+    onUpgrade (message: any) {
         if (this.verbose) {
             if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto ('onUpdate')) {
                 this.log (new Date (), 'onUpgrade')
@@ -311,7 +318,7 @@ export default class Client {
         }
     }
 
-    async send (message) {
+    async send (message: any) {
         if (this.verbose) {
             if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto ('send', message)) {
                 this.log (new Date (), 'sending', message)
@@ -322,7 +329,7 @@ export default class Client {
         if (isNode) {
             /* eslint-disable no-inner-declarations */
             /* eslint-disable jsdoc/require-jsdoc */
-            function onSendComplete (error) {
+            function onSendComplete (error: any) {
                 if (error) {
                     future.reject (error)
                 } else {
