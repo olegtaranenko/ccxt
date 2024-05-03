@@ -8,7 +8,6 @@ export default class Client {
     keepAlive: number;
     connection: any;
     connectionTimeout: any;
-    verbose: boolean;
     connectionTimer: any;
     lastPong: any;
     maxPingPongMisses: any;
@@ -26,6 +25,8 @@ export default class Client {
     ping: any;
     subscriptions: Dictionary<any>;
     throttle: any;
+    verbose: boolean;
+    verboseLogVeto: any;
     constructor(url: string, onMessageCallback: Function | undefined, onErrorCallback: Function | undefined, onCloseCallback: Function | undefined, onConnectedCallback: Function | undefined, config?: {});
     future(messageHash: string): any;
     resolve(result: any, messageHash: Str): any;

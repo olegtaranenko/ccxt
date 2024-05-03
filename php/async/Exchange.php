@@ -654,7 +654,7 @@ class Exchange extends \ccxt\Exchange {
         $parsedArray = $this->to_array($array);
         $result = $parsedArray;
         if ($sinceIsDefined) {
-            $result = [ ];
+            $result = $array();
             for ($i = 0; $i < count($parsedArray); $i++) {
                 $entry = $parsedArray[$i];
                 $value = $this->safe_value($entry, $key);
@@ -679,7 +679,7 @@ class Exchange extends \ccxt\Exchange {
         $result = $parsedArray;
         // single-pass filter for both symbol and $since
         if ($valueIsDefined || $sinceIsDefined) {
-            $result = [ ];
+            $result = $array();
             for ($i = 0; $i < count($parsedArray); $i++) {
                 $entry = $parsedArray[$i];
                 $entryFiledEqualValue = $entry[$field] === $value;
@@ -1048,9 +1048,9 @@ class Exchange extends \ccxt\Exchange {
     public function get_default_options() {
         return array(
             'defaultNetworkCodeReplacements' => array(
+                'CRO' => array( 'CRC20' => 'CRONOS' ),
                 'ETH' => array( 'ERC20' => 'ETH' ),
                 'TRX' => array( 'TRC20' => 'TRX' ),
-                'CRO' => array( 'CRC20' => 'CRONOS' ),
             ),
         );
     }
@@ -1085,109 +1085,109 @@ class Exchange extends \ccxt\Exchange {
         $timestamp = $this->safe_integer($entry, 'timestamp');
         $info = $this->safe_dict($entry, 'info', array());
         return array(
-            'id' => $this->safe_string($entry, 'id'),
-            'timestamp' => $timestamp,
-            'datetime' => $this->iso8601 ($timestamp),
-            'direction' => $direction,
             'account' => $this->safe_string($entry, 'account'),
-            'referenceId' => $this->safe_string($entry, 'referenceId'),
-            'referenceAccount' => $this->safe_string($entry, 'referenceAccount'),
-            'type' => $this->safe_string($entry, 'type'),
-            'currency' => $currency['code'],
+            'after' => $this->parse_number($after),
             'amount' => $this->parse_number($amount),
             'before' => $this->parse_number($before),
-            'after' => $this->parse_number($after),
-            'status' => $this->safe_string($entry, 'status'),
+            'currency' => $currency['code'],
+            'datetime' => $this->iso8601 ($timestamp),
+            'direction' => $direction,
             'fee' => $fee,
+            'id' => $this->safe_string($entry, 'id'),
             'info' => $info,
+            'referenceAccount' => $this->safe_string($entry, 'referenceAccount'),
+            'referenceId' => $this->safe_string($entry, 'referenceId'),
+            'status' => $this->safe_string($entry, 'status'),
+            'timestamp' => $timestamp,
+            'type' => $this->safe_string($entry, 'type'),
         );
     }
 
     public function safe_currency_structure(array $currency) {
         return array_merge(array(
-            'info' => null,
-            'id' => null,
-            'numericId' => null,
-            'code' => null,
-            'precision' => null,
-            'type' => null,
-            'name' => null,
             'active' => null,
+            'code' => null,
             'deposit' => null,
-            'withdraw' => null,
             'fee' => null,
             'fees' => array(),
-            'networks' => array(),
+            'id' => null,
+            'info' => null,
             'limits' => array(
                 'deposit' => array(
-                    'min' => null,
                     'max' => null,
+                    'min' => null,
                 ),
                 'withdraw' => array(
-                    'min' => null,
                     'max' => null,
+                    'min' => null,
                 ),
             ),
+            'name' => null,
+            'networks' => array(),
+            'numericId' => null,
+            'precision' => null,
+            'type' => null,
+            'withdraw' => null,
         ), $currency);
     }
 
     public function safe_market_structure($market = null) {
         $cleanStructure = array(
-            'id' => null,
-            'lowercaseId' => null,
-            'symbol' => null,
-            'base' => null,
-            'quote' => null,
-            'settle' => null,
-            'baseId' => null,
-            'quoteId' => null,
-            'settleId' => null,
-            'type' => null,
-            'spot' => null,
-            'margin' => null,
-            'swap' => null,
-            'future' => null,
-            'option' => null,
-            'index' => null,
             'active' => null,
+            'base' => null,
+            'baseId' => null,
             'contract' => null,
-            'linear' => null,
-            'inverse' => null,
-            'subType' => null,
-            'taker' => null,
-            'maker' => null,
             'contractSize' => null,
+            'created' => null,
             'expiry' => null,
             'expiryDatetime' => null,
-            'strike' => null,
+            'future' => null,
+            'id' => null,
+            'index' => null,
+            'info' => null,
+            'inverse' => null,
+            'limits' => array(
+                'amount' => array(
+                    'max' => null,
+                    'min' => null,
+                ),
+                'cost' => array(
+                    'max' => null,
+                    'min' => null,
+                ),
+                'leverage' => array(
+                    'max' => null,
+                    'min' => null,
+                ),
+                'price' => array(
+                    'max' => null,
+                    'min' => null,
+                ),
+            ),
+            'linear' => null,
+            'lowercaseId' => null,
+            'maker' => null,
+            'margin' => null,
+            'option' => null,
             'optionType' => null,
             'precision' => array(
                 'amount' => null,
-                'price' => null,
-                'cost' => null,
                 'base' => null,
+                'cost' => null,
+                'price' => null,
                 'quote' => null,
             ),
-            'limits' => array(
-                'leverage' => array(
-                    'min' => null,
-                    'max' => null,
-                ),
-                'amount' => array(
-                    'min' => null,
-                    'max' => null,
-                ),
-                'price' => array(
-                    'min' => null,
-                    'max' => null,
-                ),
-                'cost' => array(
-                    'min' => null,
-                    'max' => null,
-                ),
-            ),
-            'created' => null,
-            'info' => null,
+            'quote' => null,
+            'quoteId' => null,
+            'settle' => null,
+            'settleId' => null,
+            'spot' => null,
+            'strike' => null,
+            'subType' => null,
+            'swap' => null,
+            'symbol' => null,
+            'taker' => null,
+            'type' => null,
         );
         if ($market !== null) {
             $result = array_merge($cleanStructure, $market);
@@ -1590,31 +1590,31 @@ class Exchange extends \ccxt\Exchange {
         $takeProfitPrice = $this->parse_number($this->safe_string($order, 'takeProfitPrice'));
         $stopLossPrice = $this->parse_number($this->safe_string($order, 'stopLossPrice'));
         return array_merge($order, array(
-            'id' => $this->safe_string($order, 'id'),
+            'amount' => $this->parse_number($amount),
+            'average' => $this->parse_number($average),
             'clientOrderId' => $this->safe_string($order, 'clientOrderId'),
-            'timestamp' => $timestamp,
+            'cost' => $this->parse_number($cost),
             'datetime' => $datetime,
-            'symbol' => $symbol,
-            'type' => $this->safe_string($order, 'type'),
-            'side' => $side,
+            'fee' => $this->safe_value($order, 'fee'),
+            'filled' => $this->parse_number($filled),
+            'id' => $this->safe_string($order, 'id'),
             'lastTradeTimestamp' => $lastTradeTimeTimestamp,
             'lastUpdateTimestamp' => $lastUpdateTimestamp,
-            'price' => $this->parse_number($price),
-            'amount' => $this->parse_number($amount),
-            'cost' => $this->parse_number($cost),
-            'average' => $this->parse_number($average),
-            'filled' => $this->parse_number($filled),
-            'remaining' => $this->parse_number($remaining),
-            'timeInForce' => $timeInForce,
             'postOnly' => $postOnly,
-            'trades' => $trades,
+            'price' => $this->parse_number($price),
             'reduceOnly' => $this->safe_value($order, 'reduceOnly'),
-            'stopPrice' => $triggerPrice,  // ! deprecated, use $triggerPrice instead
-            'triggerPrice' => $triggerPrice,
-            'takeProfitPrice' => $takeProfitPrice,
-            'stopLossPrice' => $stopLossPrice,
+            'remaining' => $this->parse_number($remaining),
+            'side' => $side,
             'status' => $status,
-            'fee' => $this->safe_value($order, 'fee'),
+            'stopLossPrice' => $stopLossPrice,
+            'stopPrice' => $triggerPrice, // ! deprecated, use $triggerPrice instead
+            'symbol' => $symbol,
+            'takeProfitPrice' => $takeProfitPrice,
+            'timeInForce' => $timeInForce,
+            'timestamp' => $timestamp,
+            'trades' => $trades,
+            'triggerPrice' => $triggerPrice,
+            'type' => $this->safe_string($order, 'type'),
         ));
     }
 
@@ -1707,10 +1707,10 @@ class Exchange extends \ccxt\Exchange {
         $rate = $this->safe_string($market, $takerOrMaker);
         $cost = Precise::string_mul($cost, $rate);
         return array(
-            'type' => $takerOrMaker,
+            'cost' => $this->parse_number($cost),
             'currency' => $market[$key],
             'rate' => $this->parse_number($rate),
-            'cost' => $this->parse_number($cost),
+            'type' => $takerOrMaker,
         );
     }
 
@@ -1790,8 +1790,8 @@ class Exchange extends \ccxt\Exchange {
             }
         }
         $trade['amount'] = $this->parse_number($amount);
-        $trade['price'] = $this->parse_number($price);
         $trade['cost'] = $this->parse_number($cost);
+        $trade['price'] = $this->parse_number($price);
         return $trade;
     }
 
@@ -1873,8 +1873,8 @@ class Exchange extends \ccxt\Exchange {
                     $reduced[$feeCurrencyCode][$rateKey]['cost'] = Precise::string_add($reduced[$feeCurrencyCode][$rateKey]['cost'], $cost);
                 } else {
                     $reduced[$feeCurrencyCode][$rateKey] = array(
-                        'currency' => $feeCurrencyCode,
                         'cost' => $cost,
+                        'currency' => $feeCurrencyCode,
                     );
                     if ($rate !== null) {
                         $reduced[$feeCurrencyCode][$rateKey]['rate'] = $rate;
@@ -1929,22 +1929,22 @@ class Exchange extends \ccxt\Exchange {
         // timestamp and symbol operations don't belong in safeTicker
         // they should be done in the derived classes
         return array_merge($ticker, array(
-            'bid' => $this->parse_number($this->omit_zero($this->safe_string($ticker, 'bid'))),
-            'bidVolume' => $this->safe_number($ticker, 'bidVolume'),
             'ask' => $this->parse_number($this->omit_zero($this->safe_string($ticker, 'ask'))),
             'askVolume' => $this->safe_number($ticker, 'askVolume'),
+            'average' => $this->parse_number($average),
+            'baseVolume' => $this->parse_number($baseVolume),
+            'bid' => $this->parse_number($this->omit_zero($this->safe_string($ticker, 'bid'))),
+            'bidVolume' => $this->safe_number($ticker, 'bidVolume'),
+            'change' => $this->parse_number($change),
+            'close' => $this->parse_number($this->omit_zero($close)),
             'high' => $this->parse_number($this->omit_zero($this->safe_string($ticker, 'high'))),
+            'last' => $this->parse_number($this->omit_zero($last)),
             'low' => $this->parse_number($this->omit_zero($this->safe_string($ticker, 'low'))),
             'open' => $this->parse_number($this->omit_zero($open)),
-            'close' => $this->parse_number($this->omit_zero($close)),
-            'last' => $this->parse_number($this->omit_zero($last)),
-            'change' => $this->parse_number($change),
             'percentage' => $this->parse_number($percentage),
-            'average' => $this->parse_number($average),
-            'vwap' => $this->parse_number($vwap),
-            'baseVolume' => $this->parse_number($baseVolume),
-            'quoteVolume' => $this->parse_number($quoteVolume),
             'previousClose' => $this->safe_number($ticker, 'previousClose'),
+            'quoteVolume' => $this->parse_number($quoteVolume),
+            'vwap' => $this->parse_number($vwap),
         ));
     }
 
@@ -2019,11 +2019,11 @@ class Exchange extends \ccxt\Exchange {
 
     public function convert_ohlcv_to_trading_view(array $ohlcvs, $timestamp = 't', $open = 'o', $high = 'h', $low = 'l', $close = 'c', $volume = 'v', $ms = false) {
         $result = array();
-        $result[$timestamp] = array();
-        $result[$open] = array();
+        $result[$close] = array();
         $result[$high] = array();
         $result[$low] = array();
-        $result[$close] = array();
+        $result[$open] = array();
+        $result[$timestamp] = array();
         $result[$volume] = array();
         for ($i = 0; $i < count($ohlcvs); $i++) {
             $ts = $ms ? $ohlcvs[$i][0] : $this->parseToInt ($ohlcvs[$i][0] / 1000);
@@ -2367,12 +2367,12 @@ class Exchange extends \ccxt\Exchange {
         $bids = $this->parse_bids_asks($this->safe_value($orderbook, $bidsKey, array()), $priceKey, $amountKey, $countOrIdKey);
         $asks = $this->parse_bids_asks($this->safe_value($orderbook, $asksKey, array()), $priceKey, $amountKey, $countOrIdKey);
         return array(
-            'symbol' => $symbol,
-            'bids' => $this->sort_by($bids, 0, true),
             'asks' => $this->sort_by($asks, 0),
-            'timestamp' => $timestamp,
+            'bids' => $this->sort_by($bids, 0, true),
             'datetime' => $this->iso8601 ($timestamp),
             'nonce' => null,
+            'symbol' => $symbol,
+            'timestamp' => $timestamp,
         );
     }
 
@@ -4789,16 +4789,16 @@ class Exchange extends \ccxt\Exchange {
 
     public function deposit_withdraw_fee($info) {
         return array(
-            'info' => $info,
-            'withdraw' => array(
-                'fee' => null,
-                'percentage' => null,
-            ),
             'deposit' => array(
                 'fee' => null,
                 'percentage' => null,
             ),
+            'info' => $info,
             'networks' => array(),
+            'withdraw' => array(
+                'fee' => null,
+                'percentage' => null,
+            ),
         );
     }
 
@@ -4821,8 +4821,8 @@ class Exchange extends \ccxt\Exchange {
         for ($i = 0; $i < $numNetworks; $i++) {
             $network = $networkKeys[$i];
             if ($network === $currencyCode) {
-                $fee['withdraw'] = $fee['networks'][$networkKeys[$i]]['withdraw'];
                 $fee['deposit'] = $fee['networks'][$networkKeys[$i]]['deposit'];
+                $fee['withdraw'] = $fee['networks'][$networkKeys[$i]]['withdraw'];
             }
         }
         return $fee;
@@ -4954,12 +4954,14 @@ class Exchange extends \ccxt\Exchange {
                         }
                         $response = Async\await($this->$method ($symbol, null, $maxEntriesPerRequest, $params));
                         $responseLength = count($response);
-                        if ($this->verbose) {
-                            $backwardMessage = 'Dynamic pagination call ' . $this->number_to_string($calls) . ' $method ' . $method . ' $response length ' . $this->number_to_string($responseLength);
-                            if ($paginationTimestamp !== null) {
-                                $backwardMessage .= ' timestamp ' . $this->number_to_string($paginationTimestamp);
+                        if ($this->verbose || $this->verboseTruncate) {
+                            if (!is_callable($this->verboseLogVeto) || $this->verboseLogVeto ('pagination', $method, null, $response)) {
+                                $backwardMessage = 'Dynamic pagination call ' . $this->number_to_string($calls) . ' $method ' . $method . ' $response length ' . $this->number_to_string($responseLength);
+                                if ($paginationTimestamp !== null) {
+                                    $backwardMessage .= ' timestamp ' . $this->number_to_string($paginationTimestamp);
+                                }
+                                $this->log ($backwardMessage);
                             }
-                            $this->log ($backwardMessage);
                         }
                         if ($responseLength === 0) {
                             break;
@@ -4975,12 +4977,14 @@ class Exchange extends \ccxt\Exchange {
                         // do it forwards, starting from the $since
                         $response = Async\await($this->$method ($symbol, $paginationTimestamp, $maxEntriesPerRequest, $params));
                         $responseLength = count($response);
-                        if ($this->verbose) {
-                            $forwardMessage = 'Dynamic pagination call ' . $this->number_to_string($calls) . ' $method ' . $method . ' $response length ' . $this->number_to_string($responseLength);
-                            if ($paginationTimestamp !== null) {
-                                $forwardMessage .= ' timestamp ' . $this->number_to_string($paginationTimestamp);
+                        if ($this->verbose || $this->verboseTruncate) {
+                            if (!is_callable($this->verboseLogVeto) || $this->verboseLogVeto ('pagination', $method, null, $response)) {
+                                $forwardMessage = 'Dynamic pagination call ' . $this->number_to_string($calls) . ' $method ' . $method . ' $response length ' . $this->number_to_string($responseLength);
+                                if ($paginationTimestamp !== null) {
+                                    $forwardMessage .= ' timestamp ' . $this->number_to_string($paginationTimestamp);
+                                }
+                                $this->log ($forwardMessage);
                             }
-                            $this->log ($forwardMessage);
                         }
                         if ($responseLength === 0) {
                             break;
@@ -5095,10 +5099,12 @@ class Exchange extends \ccxt\Exchange {
                     }
                     $errors = 0;
                     $responseLength = count($response);
-                    if ($this->verbose) {
-                        $iteration = ($i . (string) 1);
-                        $cursorMessage = 'Cursor pagination call ' . $iteration . ' $method ' . $method . ' $response length ' . (string) $responseLength . ' cursor ' . $cursorValue;
-                        $this->log ($cursorMessage);
+                    if ($this->verbose || $this->verboseTruncate) {
+                        if (!is_callable($this->verboseLogVeto) || $this->verboseLogVeto ('pagination', $method, null, $response)) {
+                            $iteration = ($i . (string) 1);
+                            $cursorMessage = 'Cursor pagination call ' . $iteration . ' $method ' . $method . ' $response length ' . (string) $responseLength . ' cursor ' . $cursorValue;
+                            $this->log ($cursorMessage);
+                        }
                     }
                     if ($responseLength === 0) {
                         break;
@@ -5143,10 +5149,12 @@ class Exchange extends \ccxt\Exchange {
                     $response = Async\await($this->$method ($symbol, $since, $maxEntriesPerRequest, $params));
                     $errors = 0;
                     $responseLength = count($response);
-                    if ($this->verbose) {
-                        $iteration = ($i . (string) 1);
-                        $incrementalMessage = 'Incremental pagination call ' . $iteration . ' $method ' . $method . ' $response length ' . (string) $responseLength;
-                        $this->log ($incrementalMessage);
+                    if ($this->verbose || $this->verboseTruncate) {
+                        if (!is_callable($this->verboseLogVeto) || $this->verboseLogVeto ('pagination', $method, null, $response)) {
+                            $iteration = ($i . (string) 1);
+                            $incrementalMessage = 'Incremental pagination call ' . $iteration . ' $method ' . $method . ' $response length ' . (string) $responseLength;
+                            $this->log ($incrementalMessage);
+                        }
                     }
                     if ($responseLength === 0) {
                         break;
@@ -5216,14 +5224,14 @@ class Exchange extends \ccxt\Exchange {
 
     public function safe_open_interest($interest, ?array $market = null) {
         return array_merge($interest, array(
-            'symbol' => $this->safe_string($market, 'symbol'),
             'baseVolume' => $this->safe_number($interest, 'baseVolume'), // deprecated
-            'quoteVolume' => $this->safe_number($interest, 'quoteVolume'), // deprecated
-            'openInterestAmount' => $this->safe_number($interest, 'openInterestAmount'),
-            'openInterestValue' => $this->safe_number($interest, 'openInterestValue'),
-            'timestamp' => $this->safe_integer($interest, 'timestamp'),
             'datetime' => $this->safe_string($interest, 'datetime'),
             'info' => $this->safe_value($interest, 'info'),
+            'openInterestAmount' => $this->safe_number($interest, 'openInterestAmount'),
+            'openInterestValue' => $this->safe_number($interest, 'openInterestValue'),
+            'quoteVolume' => $this->safe_number($interest, 'quoteVolume'), // deprecated
+            'symbol' => $this->safe_string($market, 'symbol'),
+            'timestamp' => $this->safe_integer($interest, 'timestamp'),
         ));
     }
 
@@ -5250,6 +5258,17 @@ class Exchange extends \ccxt\Exchange {
         $sorted = $this->sort_by($result, 'timestamp');
         $symbol = $this->safe_string($market, 'symbol');
         return $this->filter_by_symbol_since_limit($sorted, $symbol, $since, $limit);
+    }
+
+    public function get_body_truncated(?string $body) {
+        if ($this->verboseTruncate && $body) {
+            $TRUNCATE_LENGTH = 8192;
+            $length = strlen($body) + 8;
+            if (strlen($body) >= $TRUNCATE_LENGTH) {
+                return $body->substring (0, $TRUNCATE_LENGTH / 2) . '\n ... \n' . $body->substring ($length - $TRUNCATE_LENGTH / 2);
+            }
+        }
+        return $body;
     }
 
     public function parse_greeks($greeks, ?array $market = null) {

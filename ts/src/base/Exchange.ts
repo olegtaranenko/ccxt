@@ -6796,17 +6796,6 @@ export default class Exchange {
         throw new NotSupported (this.id + ' parseGreeks () is not supported yet');
     }
 
-    getBodyTruncated (body?: string) {
-        if (this.verboseTruncate && body) {
-            const TRUNCATE_LENGTH = 8192;
-            const length = body.length + 8;
-            if (body.length >= TRUNCATE_LENGTH) {
-                return body.substring (0, TRUNCATE_LENGTH / 2) + '\n ... \n' + body.substring (length - TRUNCATE_LENGTH / 2);
-            }
-        }
-        return body;
-    }
-
     parseOption (chain, currency: Currency = undefined, market: Market = undefined): Option {
         throw new NotSupported (this.id + ' parseOption () is not supported yet');
     }

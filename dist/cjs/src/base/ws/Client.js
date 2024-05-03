@@ -12,7 +12,6 @@ var index = require('../../static_dependencies/scure-base/index.js');
 
 class Client {
     constructor(url, onMessageCallback, onErrorCallback, onCloseCallback, onConnectedCallback, config = {}) {
-        this.verbose = false;
         const defaults = {
             url,
             onMessageCallback,

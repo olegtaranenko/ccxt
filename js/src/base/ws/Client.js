@@ -11,7 +11,6 @@ import { isNode, isJsonEncodedObject, deepExtend, milliseconds, } from '../../ba
 import { utf8 } from '../../static_dependencies/scure-base/index.js';
 export default class Client {
     constructor(url, onMessageCallback, onErrorCallback, onCloseCallback, onConnectedCallback, config = {}) {
-        this.verbose = false;
         const defaults = {
             url,
             onMessageCallback,

@@ -1992,6 +1992,12 @@ export default class binance extends Exchange {
             },
             // new metainfo2 interface
             'has': {
+                'CORS': undefined,
+                'spot': true,
+                'margin': true,
+                'swap': true,
+                'future': true,
+                'option': true,
                 'addMargin': true,
                 'borrowCrossMargin': true,
                 'borrowIsolatedMargin': true,
@@ -2000,7 +2006,6 @@ export default class binance extends Exchange {
                 'cancelOrders': true,  // contract only
                 'closeAllPositions': false,
                 'closePosition': false,  // exchange specific closePosition parameter for binance createOrder is not synonymous with how CCXT uses closePositions
-                'CORS': undefined,
                 'createConvertTrade': true,
                 'createDepositAddress': false,
                 'createLimitBuyOrder': true,
@@ -2112,9 +2117,6 @@ export default class binance extends Exchange {
                 'fetchWithdrawal': false,
                 'fetchWithdrawals': true,
                 'fetchWithdrawalWhitelist': false,
-                'future': true,
-                'margin': true,
-                'option': true,
                 'reduceMargin': true,
                 'repayCrossMargin': true,
                 'repayIsolatedMargin': true,
@@ -2123,8 +2125,6 @@ export default class binance extends Exchange {
                 'setMarginMode': true,
                 'setPositionMode': true,
                 'signIn': false,
-                'spot': true,
-                'swap': true,
                 'transfer': true,
                 'withdraw': true,
             },
