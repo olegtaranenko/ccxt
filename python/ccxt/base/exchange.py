@@ -5624,14 +5624,14 @@ class Exchange(object):
 
     def safe_open_interest(self, interest, market: Market = None):
         return self.extend(interest, {
+            'symbol': self.safe_string(market, 'symbol'),
             'baseVolume': self.safe_number(interest, 'baseVolume'),  # deprecated
-            'datetime': self.safe_string(interest, 'datetime'),
-            'info': self.safe_value(interest, 'info'),
+            'quoteVolume': self.safe_number(interest, 'quoteVolume'),  # deprecated
             'openInterestAmount': self.safe_number(interest, 'openInterestAmount'),
             'openInterestValue': self.safe_number(interest, 'openInterestValue'),
-            'quoteVolume': self.safe_number(interest, 'quoteVolume'),  # deprecated
-            'symbol': self.safe_string(market, 'symbol'),
             'timestamp': self.safe_integer(interest, 'timestamp'),
+            'datetime': self.safe_string(interest, 'datetime'),
+            'info': self.safe_value(interest, 'info'),
         })
 
     def parse_liquidation(self, liquidation, market: Market = None):
