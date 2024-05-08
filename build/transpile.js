@@ -351,6 +351,7 @@ class Transpiler {
             [ /\.setTakeProfitAndStopLossParams\s/g, '.set_take_profit_and_stop_loss_params'],
             [ /\.randomBytes\s/g, '.random_bytes'],
             [ /\.createAuthToken\s/g, '.create_auth_token'],
+            [ /\.cancelOrderRequest\s/g, '.cancel_order_request'],
             [ /\ssha(1|256|384|512)([,)])/g, ' \'sha$1\'$2'], // from js imports to this
             [ /\s(md5|secp256k1|ed25519|keccak)([,)])/g, ' \'$1\'$2'], // from js imports to this
 
@@ -991,10 +992,10 @@ class Transpiler {
         }
         const matchObject = {
             'Account': /-> (?:List\[)?Account/,
-            'Any': /: Any =/,
+            'Any': /: (?:List\[)?Any/,
             'BalanceAccount': /-> BalanceAccount:/,
             'Balances': /-> Balances:/,
-            'Bool': /: Bool =/,
+            'Bool': /: (?:List\[)?Bool =/,
             'Conversion': /-> Conversion:/,
             'CrossBorrowRate': /-> CrossBorrowRate:/,
             'CrossBorrowRates': /-> CrossBorrowRates:/,
@@ -1003,7 +1004,7 @@ class Transpiler {
             'FundingHistory': /\[FundingHistory/,
             'Greeks': /-> Greeks:/,
             'IndexType': /: IndexType/,
-            'Int': /: Int =/,
+            'Int': /: (?:List\[)?Int =/,
             'IsolatedBorrowRate': /-> IsolatedBorrowRate:/,
             'IsolatedBorrowRates': /-> IsolatedBorrowRates:/,
             'LastPrice': /-> LastPrice:/,
@@ -1017,7 +1018,7 @@ class Transpiler {
             'Market': /(-> Market:|: Market)/,
             'MarketInterface': /-> MarketInterface:/,
             'MarketType': /: MarketType/,
-            'Num': /: Num =/,
+            'Num': /: (?:List\[)?Num =/,
             'Option': /-> Option:/,
             'OptionChain': /-> OptionChain:/,
             'Order': /-> (?:List\[)?Order\]?:/,
@@ -1027,8 +1028,8 @@ class Transpiler {
             'OrderSide': /: OrderSide/,
             'OrderType': /: OrderType/,
             'Position': /-> (?:List\[)?Position/,
-            'Str': /: Str =/,
-            'Strings': /: Strings =/,
+            'Str': /: (?:List\[)?Str =/,
+            'Strings': /: (?:List\[)?Strings =/,
             'SubType': /: SubType/,
             'Ticker': /-> Ticker:/,
             'Tickers': /-> Tickers:/,
