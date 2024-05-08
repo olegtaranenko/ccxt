@@ -3409,7 +3409,7 @@ export default class Exchange {
         }
         return networkId;
     }
-    networkIdToCode(networkId, currencyCode = undefined) {
+    networkIdToCode(networkId = undefined, currencyCode = undefined) {
         /**
          * @ignore
          * @method
@@ -5272,6 +5272,7 @@ export default class Exchange {
         //
         // the value of tickers is either a dict or a list
         //
+        //
         // dict
         //
         //     {
@@ -5366,12 +5367,16 @@ export default class Exchange {
         }
         return result;
     }
-    isTriggerOrder(params) {
+    handleTriggerAndParams(params) {
         const isTrigger = this.safeBool2(params, 'trigger', 'stop');
         if (isTrigger) {
             params = this.omit(params, ['trigger', 'stop']);
         }
         return [isTrigger, params];
+    }
+    isTriggerOrder(params) {
+        // for backwards compatibility
+        return this.handleTriggerAndParams(params);
     }
     isPostOnly(isMarketOrder, exchangeSpecificParam, params = {}) {
         /**

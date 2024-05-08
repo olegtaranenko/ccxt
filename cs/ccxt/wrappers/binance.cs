@@ -217,10 +217,10 @@ public partial class binance
     /// </list>
     /// </remarks>
     /// <returns> <term>object</term> a dictionary of [ticker structures]{@link https://docs.ccxt.com/#/?id=ticker-structure}.</returns>
-    public async Task<Dictionary<string, Ticker>> FetchBidsAsks(List<String> symbols = null, Dictionary<string, object> parameters = null)
+    public async Task<Tickers> FetchBidsAsks(List<String> symbols = null, Dictionary<string, object> parameters = null)
     {
         var res = await this.fetchBidsAsks(symbols, parameters);
-        return ((Dictionary<string, Ticker>)res);
+        return new Tickers(res);
     }
     /// <summary>
     /// fetches the last price for multiple markets
@@ -636,6 +636,12 @@ public partial class binance
     /// <term>params.portfolioMargin</term>
     /// <description>
     /// boolean : set to true if you would like to create an order in a portfolio margin account
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <term>params.stopLossOrTakeProfit</term>
+    /// <description>
+    /// string : 'stopLoss' or 'takeProfit', required for spot trailing orders
     /// </description>
     /// </item>
     /// </list>
