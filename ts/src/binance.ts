@@ -33,6 +33,7 @@ import type {
     CrossBorrowRate,
     Currencies,
     Currency,
+    Dict,
     FundingRateHistory,
     Greeks,
     Int,
@@ -3796,7 +3797,7 @@ export default class binance extends Exchange {
         return orderbook;
     }
 
-    parseTicker (ticker, market: Market = undefined): Ticker {
+    parseTicker (ticker: Dict, market: Market = undefined): Ticker {
         //
         //     {
         //         "askPrice": "0.03379000",
