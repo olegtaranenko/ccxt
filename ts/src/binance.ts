@@ -64,6 +64,7 @@ import type {
     TradingFeeInterface,
     TradingFees,
     Transaction,
+    TransferEntries,
     TransferEntry,
 } from './base/types.js';
 import { DECIMAL_PLACES, TRUNCATE } from './base/functions/number.js';
@@ -8010,14 +8011,14 @@ export default class binance extends Exchange {
         };
     }
 
-    parseTransferStatus (status) {
+    parseTransferStatus (status: Str): Str {
         const statuses = {
             'CONFIRMED': 'ok',
         };
         return this.safeString (statuses, status, status);
     }
 
-    parseTransfer (transfer, currency: Currency = undefined) {
+    parseTransfer (transfer: Dict, currency: Currency = undefined): TransferEntry {
         //
         // transfer
         //
@@ -8195,7 +8196,7 @@ export default class binance extends Exchange {
         return this.parseTransfer (response, currency);
     }
 
-    async fetchTransfers (code: Str = undefined, since: Int = undefined, limit: Int = undefined, params = {}) {
+    async fetchTransfers (code: Str = undefined, since: Int = undefined, limit: Int = undefined, params = {}): Promise<TransferEntries> {
         /**
          * @method
          * @name binance#fetchTransfers

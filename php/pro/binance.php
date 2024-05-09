@@ -292,7 +292,7 @@ class binance extends \ccxt\async\binance {
                 'symbols' => $symbols,
                 'type' => $type,
             );
-            $message = array_merge($request, $params);
+            $message = $this->extend($request, $params);
             $orderbook = Async\await($this->watch_multiple($url, $messageHashes, $message, $messageHashes, $subscription));
             return $orderbook->limit ();
         }) ();
@@ -330,7 +330,7 @@ class binance extends \ccxt\async\binance {
             $message = array(
                 'id' => $messageHash,
                 'method' => 'depth',
-                'params' => $this->sign_params(array_merge($payload, $params)),
+                'params' => $this->sign_params($this->extend($payload, $params)),
             );
             $subscription = array(
                 'method' => array($this, 'handle_fetch_order_book'),
@@ -569,7 +569,7 @@ class binance extends \ccxt\async\binance {
                 unset($this->orderbooks[$symbol]);
             }
             $this->orderbooks[$symbol] = $this->order_book(array(), $limit);
-            $subscription = array_merge($subscription, array( 'symbol' => $symbol ));
+            $subscription = $this->extend($subscription, array( 'symbol' => $symbol ));
             // fetch the snapshot in a separate async call
             $this->spawn(array($this, 'fetch_order_book_snapshot'), $client, $message, $subscription);
         }
@@ -642,7 +642,7 @@ class binance extends \ccxt\async\binance {
             $subscribe = array(
                 'id' => $requestId,
             );
-            $trades = Async\await($this->watch_multiple($url, $subParams, array_merge($request, $query), $subParams, $subscribe));
+            $trades = Async\await($this->watch_multiple($url, $subParams, $this->extend($request, $query), $subParams, $subscribe));
             if ($this->newUpdates) {
                 $first = $this->safe_value($trades, 0);
                 $tradeSymbol = $this->safe_string($first, 'symbol');
@@ -900,7 +900,7 @@ class binance extends \ccxt\async\binance {
             $subscribe = array(
                 'id' => $requestId,
             );
-            $ohlcv = Async\await($this->watch($url, $messageHash, array_merge($request, $params), $messageHash, $subscribe));
+            $ohlcv = Async\await($this->watch($url, $messageHash, $this->extend($request, $params), $messageHash, $subscribe));
             if ($this->newUpdates) {
                 $limit = $ohlcv->getLimit ($symbol, $limit);
             }
@@ -1009,7 +1009,7 @@ class binance extends \ccxt\async\binance {
             $message = array(
                 'id' => $messageHash,
                 'method' => $method,
-                'params' => $this->sign_params(array_merge($payload, $params)),
+                'params' => $this->sign_params($this->extend($payload, $params)),
             );
             $ticker = Async\await($this->watch($url, $messageHash, $message, $messageHash, $subscription));
             return $ticker;
@@ -1062,7 +1062,7 @@ class binance extends \ccxt\async\binance {
             $message = array(
                 'id' => $messageHash,
                 'method' => 'klines',
-                'params' => array_merge($payload, $params),
+                'params' => $this->extend($payload, $params),
             );
             $subscription = array(
                 'method' => array($this, 'handle_fetch_ohlcv'),
@@ -1121,7 +1121,7 @@ class binance extends \ccxt\async\binance {
              */
             Async\await($this->load_markets());
             $symbol = $this->symbol($symbol);
-            $tickers = Async\await($this->watch_tickers(array( $symbol ), array_merge($params, array( 'callerMethodName' => 'watchTicker' ))));
+            $tickers = Async\await($this->watch_tickers(array( $symbol ), $this->extend($params, array( 'callerMethodName' => 'watchTicker' ))));
             return $tickers[$symbol];
         }) ();
     }
@@ -1471,7 +1471,7 @@ class binance extends \ccxt\async\binance {
 
     public function sign_params($params = array ()) {
         $this->check_required_credentials();
-        $extendedParams = array_merge(array(
+        $extendedParams = $this->extend(array(
             'timestamp' => $this->nonce(),
             'apiKey' => $this->apiKey,
         ), $params);
@@ -1538,12 +1538,12 @@ class binance extends \ccxt\async\binance {
                         throw new ArgumentsRequired($this->id . ' authenticate() requires a $symbol argument for isolated margin mode');
                     }
                     $marketId = $this->market_id($symbol);
-                    $params = array_merge($params, array( 'symbol' => $marketId ));
+                    $params = $this->extend($params, array( 'symbol' => $marketId ));
                     $response = Async\await($this->sapiPostUserDataStreamIsolated ($params));
                 } else {
                     $response = Async\await($this->publicPostUserDataStream ($params));
                 }
-                $this->options[$type] = array_merge($options, array(
+                $this->options[$type] = $this->extend($options, array(
                     'listenKey' => $this->safe_string($response, 'listenKey'),
                     'lastAuthenticatedTime' => $time,
                 ));
@@ -1578,18 +1578,18 @@ class binance extends \ccxt\async\binance {
             $time = $this->milliseconds();
             try {
                 if ($isPortfolioMargin) {
-                    Async\await($this->papiPutListenKey (array_merge($request, $params)));
+                    Async\await($this->papiPutListenKey ($this->extend($request, $params)));
                 } elseif ($type === 'future') {
-                    Async\await($this->fapiPrivatePutListenKey (array_merge($request, $params)));
+                    Async\await($this->fapiPrivatePutListenKey ($this->extend($request, $params)));
                 } elseif ($type === 'delivery') {
-                    Async\await($this->dapiPrivatePutListenKey (array_merge($request, $params)));
+                    Async\await($this->dapiPrivatePutListenKey ($this->extend($request, $params)));
                 } else {
                     $request['listenKey'] = $listenKey;
                     if ($type === 'margin') {
                         $request['symbol'] = $symbol;
-                        Async\await($this->sapiPutUserDataStream (array_merge($request, $params)));
+                        Async\await($this->sapiPutUserDataStream ($this->extend($request, $params)));
                     } else {
-                        Async\await($this->publicPutUserDataStream (array_merge($request, $params)));
+                        Async\await($this->publicPutUserDataStream ($this->extend($request, $params)));
                     }
                 }
             } catch (Exception $error) {
@@ -1604,13 +1604,13 @@ class binance extends \ccxt\async\binance {
                     $messageHash = $messageHashes[$i];
                     $client->reject ($error, $messageHash);
                 }
-                $this->options[$type] = array_merge($options, array(
+                $this->options[$type] = $this->extend($options, array(
                     'listenKey' => null,
                     'lastAuthenticatedTime' => 0,
                 ));
                 return;
             }
-            $this->options[$type] = array_merge($options, array(
+            $this->options[$type] = $this->extend($options, array(
                 'listenKey' => $listenKey,
                 'lastAuthenticatedTime' => $time,
             ));
@@ -1657,7 +1657,7 @@ class binance extends \ccxt\async\binance {
                 $params['portfolioMargin'] = true;
             }
             $response = Async\await($this->fetch_balance($params));
-            $this->balance[$type] = array_merge($response, $this->safe_value($this->balance, $type, array()));
+            $this->balance[$type] = $this->extend($response, $this->safe_value($this->balance, $type, array()));
             // don't remove the $future from the .futures cache
             $future = $client->futures[$messageHash];
             $future->resolve ();
@@ -1697,7 +1697,7 @@ class binance extends \ccxt\async\binance {
             $message = array(
                 'id' => $messageHash,
                 'method' => $method,
-                'params' => $this->sign_params(array_merge($payload, $params)),
+                'params' => $this->sign_params($this->extend($payload, $params)),
             );
             $subscription = array(
                 'method' => ($method === 'account.status') ? array($this, 'handle_account_status_ws'): array($this, 'handle_balance_ws'),
@@ -1810,7 +1810,7 @@ class binance extends \ccxt\async\binance {
             $message = array(
                 'id' => $messageHash,
                 'method' => 'account.position',
-                'params' => $this->sign_params(array_merge($payload, $params)),
+                'params' => $this->sign_params($this->extend($payload, $params)),
             );
             $subscription = array(
                 'method' => array($this, 'handle_positions_ws'),
@@ -2059,7 +2059,7 @@ class binance extends \ccxt\async\binance {
             $message = array(
                 'id' => $messageHash,
                 'method' => 'order.place',
-                'params' => $this->sign_params(array_merge($payload, $params)),
+                'params' => $this->sign_params($this->extend($payload, $params)),
             );
             if ($test) {
                 if ($sor) {
@@ -2209,7 +2209,7 @@ class binance extends \ccxt\async\binance {
             $message = array(
                 'id' => $messageHash,
                 'method' => ($marketType === 'future') ? 'order.modify' : 'order.cancelReplace',
-                'params' => $this->sign_params(array_merge($payload, $params)),
+                'params' => $this->sign_params($this->extend($payload, $params)),
             );
             $subscription = array(
                 'method' => array($this, 'handle_edit_order_ws'),
@@ -2366,7 +2366,7 @@ class binance extends \ccxt\async\binance {
             $message = array(
                 'id' => $messageHash,
                 'method' => 'order.cancel',
-                'params' => $this->sign_params(array_merge($payload, $params)),
+                'params' => $this->sign_params($this->extend($payload, $params)),
             );
             $subscription = array(
                 'method' => array($this, 'handle_order_ws'),
@@ -2402,7 +2402,7 @@ class binance extends \ccxt\async\binance {
             $message = array(
                 'id' => $messageHash,
                 'method' => 'order.cancel',
-                'params' => $this->sign_params(array_merge($payload, $params)),
+                'params' => $this->sign_params($this->extend($payload, $params)),
             );
             $subscription = array(
                 'method' => array($this, 'handle_orders_ws'),
@@ -2448,7 +2448,7 @@ class binance extends \ccxt\async\binance {
             $message = array(
                 'id' => $messageHash,
                 'method' => 'order.status',
-                'params' => $this->sign_params(array_merge($payload, $params)),
+                'params' => $this->sign_params($this->extend($payload, $params)),
             );
             $subscription = array(
                 'method' => array($this, 'handle_order_ws'),
@@ -2493,7 +2493,7 @@ class binance extends \ccxt\async\binance {
             $message = array(
                 'id' => $messageHash,
                 'method' => 'allOrders',
-                'params' => $this->sign_params(array_merge($payload, $params)),
+                'params' => $this->sign_params($this->extend($payload, $params)),
             );
             $subscription = array(
                 'method' => array($this, 'handle_orders_ws'),
@@ -2557,7 +2557,7 @@ class binance extends \ccxt\async\binance {
             $message = array(
                 'id' => $messageHash,
                 'method' => 'openOrders.status',
-                'params' => $this->sign_params(array_merge($payload, $params)),
+                'params' => $this->sign_params($this->extend($payload, $params)),
             );
             $subscription = array(
                 'method' => array($this, 'handle_orders_ws'),
@@ -2599,7 +2599,7 @@ class binance extends \ccxt\async\binance {
             } elseif ($this->isInverse ($type, $subType)) {
                 $type = 'delivery';
             }
-            $params = array_merge($params, array( 'type' => $type, 'symbol' => $symbol )); // needed inside authenticate for isolated margin
+            $params = $this->extend($params, array( 'type' => $type, 'symbol' => $symbol )); // needed inside authenticate for isolated margin
             Async\await($this->authenticate($params));
             $marginMode = null;
             list($marginMode, $params) = $this->handle_margin_mode_and_params('watchOrders', $params);
@@ -2888,7 +2888,7 @@ class binance extends \ccxt\async\binance {
                 $marketTypeObject['type'] = $market['type'];
                 $marketTypeObject['subType'] = $market['subType'];
             }
-            Async\await($this->authenticate(array_merge($marketTypeObject, $params)));
+            Async\await($this->authenticate($this->extend($marketTypeObject, $params)));
             $type = null;
             list($type, $params) = $this->handle_market_type_and_params('watchPositions', $market, $params);
             if ($type === 'spot' || $type === 'margin') {
@@ -3138,7 +3138,7 @@ class binance extends \ccxt\async\binance {
             $message = array(
                 'id' => $messageHash,
                 'method' => 'myTrades',
-                'params' => $this->sign_params(array_merge($payload, $params)),
+                'params' => $this->sign_params($this->extend($payload, $params)),
             );
             $subscription = array(
                 'method' => array($this, 'handle_trades_ws'),
@@ -3186,7 +3186,7 @@ class binance extends \ccxt\async\binance {
             $message = array(
                 'id' => $messageHash,
                 'method' => 'trades.historical',
-                'params' => array_merge($payload, $params),
+                'params' => $this->extend($payload, $params),
             );
             $subscription = array(
                 'method' => array($this, 'handle_trades_ws'),
@@ -3278,7 +3278,7 @@ class binance extends \ccxt\async\binance {
             if ($symbol !== null) {
                 $symbol = $this->symbol($symbol);
                 $messageHash .= ':' . $symbol;
-                $params = array_merge($params, array( 'type' => $market['type'], 'symbol' => $symbol ));
+                $params = $this->extend($params, array( 'type' => $market['type'], 'symbol' => $symbol ));
             }
             Async\await($this->authenticate($params));
             $urlType = $type; // we don't change $type because the listening key is different
@@ -3310,7 +3310,7 @@ class binance extends \ccxt\async\binance {
             $trade = $this->parse_ws_trade($message);
             $orderId = $this->safe_string($trade, 'order');
             $tradeFee = $this->safe_dict($trade, 'fee', array());
-            $tradeFee = array_merge(array(), $tradeFee);
+            $tradeFee = $this->extend(array(), $tradeFee);
             $symbol = $this->safe_string($trade, 'symbol');
             if ($orderId !== null && $tradeFee !== null && $symbol !== null) {
                 $cachedOrders = $this->orders;
