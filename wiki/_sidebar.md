@@ -101,6 +101,7 @@
 	- [wazirx](exchanges/wazirx.md)
 	- [whitebit](exchanges/whitebit.md)
 	- [woo](exchanges/woo.md)
+	- [woofipro](exchanges/woofipro.md)
 	- [yobit](exchanges/yobit.md)
 	- [zaif](exchanges/zaif.md)
 	- [zonda](exchanges/zonda.md)
