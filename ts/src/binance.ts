@@ -10468,7 +10468,7 @@ export default class binance extends Exchange {
         return this.parseLeverages (leverages, symbols, 'symbol');
     }
 
-    parseLeverage (leverage, market = undefined): Leverage {
+    parseLeverage (leverage: Dict, market: Market = undefined): Leverage {
         const marketId = this.safeString (leverage, 'symbol');
         const marginModeRaw = this.safeBool (leverage, 'isolated');
         let marginMode = undefined;
@@ -12249,7 +12249,7 @@ export default class binance extends Exchange {
         return this.parseGreeks (response[0], market);
     }
 
-    parseGreeks (greeks, market: Market = undefined) {
+    parseGreeks (greeks: Dict, market: Market = undefined): Greeks {
         //
         //     {
         //         "askIV": "0.62267244",
@@ -12538,7 +12538,7 @@ export default class binance extends Exchange {
         return this.parseOption (chain, undefined, market);
     }
 
-    parseOption (chain, currency: Currency = undefined, market: Market = undefined) {
+    parseOption (chain: Dict, currency: Currency = undefined, market: Market = undefined): Option {
         //
         //     {
         //         "amount": "0",
@@ -12965,7 +12965,7 @@ export default class binance extends Exchange {
         return this.parseConversions (rows, code, fromCurrencyKey, toCurrencyKey, since, limit);
     }
 
-    parseConversion (conversion, fromCurrency: Currency = undefined, toCurrency: Currency = undefined): Conversion {
+    parseConversion (conversion: Dict, fromCurrency: Currency = undefined, toCurrency: Currency = undefined): Conversion {
         //
         // fetchConvertQuote
         //

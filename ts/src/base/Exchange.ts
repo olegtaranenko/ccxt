@@ -94,6 +94,7 @@ const {
     , safeStringLowerN
     , safeStringUpperN
     , urlencodeNested
+    , urlencodeBase64
     , parseDate
     , ymd
     , base64ToString
@@ -237,6 +238,7 @@ export default class Exchange {
     apiKey: string;
     secret: string;
     uid: string;
+    accountId: string;
     login:string;
     password: string;
     privateKey: string;// a "0x"-prefixed hexstring private key for a wallet
@@ -294,6 +296,7 @@ export default class Exchange {
         apiKey: boolean;
         secret: boolean;
         uid: boolean;
+        accountId: boolean;
         login: boolean;
         password: boolean;
         twofa: boolean;
@@ -457,6 +460,7 @@ export default class Exchange {
     base64ToString = base64ToString
     crc32 = crc32
     packb = packb
+    urlencodeBase64 = urlencodeBase64
 
     describe () {
         return {
@@ -692,6 +696,7 @@ export default class Exchange {
                 'apiKey':     true,
                 'secret':     true,
                 'uid':        false,
+                'accountId':  false,
                 'login':      false,
                 'password':   false,
                 'twofa':      false, // 2-factor authentication (one-time password key)
@@ -6670,11 +6675,11 @@ export default class Exchange {
         return this.filterBySymbolSinceLimit (sorted, symbol, since, limit);
     }
 
-    parseGreeks (greeks, market: Market = undefined): Greeks {
+    parseGreeks (greeks: Dict, market: Market = undefined): Greeks {
         throw new NotSupported (this.id + ' parseGreeks () is not supported yet');
     }
 
-    parseOption (chain, currency: Currency = undefined, market: Market = undefined): Option {
+    parseOption (chain: Dict, currency: Currency = undefined, market: Market = undefined): Option {
         throw new NotSupported (this.id + ' parseOption () is not supported yet');
     }
 
@@ -6721,7 +6726,7 @@ export default class Exchange {
         return leverageStructures;
     }
 
-    parseLeverage (leverage, market: Market = undefined): Leverage {
+    parseLeverage (leverage: Dict, market: Market = undefined): Leverage {
         throw new NotSupported (this.id + ' parseLeverage () is not supported yet');
     }
 
@@ -6758,7 +6763,7 @@ export default class Exchange {
         return this.filterBySinceLimit (both, since, limit);
     }
 
-    parseConversion (conversion, fromCurrency: Currency = undefined, toCurrency: Currency = undefined): Conversion {
+    parseConversion (conversion: Dict, fromCurrency: Currency = undefined, toCurrency: Currency = undefined): Conversion {
         throw new NotSupported (this.id + ' parseConversion () is not supported yet');
     }
 
