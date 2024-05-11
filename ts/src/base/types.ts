@@ -293,6 +293,9 @@ export interface FundingRate {
     timestamp?: number;
 }
 
+export interface FundingRates extends Dictionary<FundingRate> {
+}
+
 export interface Position {
     collateral?: number;
     contracts?: number;
