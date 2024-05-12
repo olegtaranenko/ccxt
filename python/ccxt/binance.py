@@ -302,6 +302,10 @@ class binance(Exchange, ImplicitAPI):
                         'openInterest': 1,
                         'ping': 1,
                         'premiumIndex': 1,
+                        'premiumIndexKlines': {
+                            'byLimit': [[99, 1], [499, 2], [1000, 5], [10000, 10]],
+                            'cost': 1,
+                        },
                         'ticker/24hr': {'cost': 1, 'noSymbol': 40},
                         'ticker/bookTicker': {'cost': 1, 'noSymbol': 2},
                         'ticker/price': {'cost': 1, 'noSymbol': 2},
@@ -2057,7 +2061,7 @@ class binance(Exchange, ImplicitAPI):
                 'fetchPositions': True,
                 'fetchPositionsHistory': False,
                 'fetchPositionsRisk': True,
-                'fetchPremiumIndexOHLCV': False,
+                'fetchPremiumIndexOHLCV': True,
                 'fetchSettlementHistory': True,
                 'fetchStatus': True,
                 'fetchTicker': True,
@@ -4179,6 +4183,11 @@ class binance(Exchange, ImplicitAPI):
                 response = self.dapiPublicGetIndexPriceKlines(self.extend(request, params))
             else:
                 response = self.fapiPublicGetIndexPriceKlines(self.extend(request, params))
+        elif price == 'premiumIndex':
+            if market['inverse']:
+                response = self.dapiPublicGetPremiumIndexKlines(self.extend(request, params))
+            else:
+                response = self.fapiPublicGetPremiumIndexKlines(self.extend(request, params))
         elif market['linear']:
             response = self.fapiPublicGetKlines(self.extend(request, params))
         elif market['inverse']:

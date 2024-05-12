@@ -189,6 +189,7 @@ interface binance {
     fapiPublicGetOpenInterest (params?: {}): Promise<implicitReturnType>;
     fapiPublicGetPing (params?: {}): Promise<implicitReturnType>;
     fapiPublicGetPremiumIndex (params?: {}): Promise<implicitReturnType>;
+    fapiPublicGetPremiumIndexKlines (params?: {}): Promise<implicitReturnType>;
     fapiPublicGetTicker24hr (params?: {}): Promise<implicitReturnType>;
     fapiPublicGetTickerBookTicker (params?: {}): Promise<implicitReturnType>;
     fapiPublicGetTickerPrice (params?: {}): Promise<implicitReturnType>;

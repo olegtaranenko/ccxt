@@ -911,6 +911,11 @@ public partial class binanceus : binance
         return await this.callAsync ("fapiPublicGetPremiumIndex",parameters);
     }
 
+    public async Task<object> fapiPublicGetPremiumIndexKlines (object parameters = null)
+    {
+        return await this.callAsync ("fapiPublicGetPremiumIndexKlines",parameters);
+    }
+
     public async Task<object> fapiPublicGetTicker24hr (object parameters = null)
     {
         return await this.callAsync ("fapiPublicGetTicker24hr",parameters);

@@ -273,6 +273,10 @@ class binance extends Exchange {
                         'openInterest' => 1,
                         'ping' => 1,
                         'premiumIndex' => 1,
+                        'premiumIndexKlines' => array(
+                            'byLimit' => array( array( 99, 1 ), array( 499, 2 ), array( 1000, 5 ), array( 10000, 10 ) ),
+                            'cost' => 1,
+                        ),
                         'ticker/24hr' => array( 'cost' => 1, 'noSymbol' => 40 ),
                         'ticker/bookTicker' => array( 'cost' => 1, 'noSymbol' => 2 ),
                         'ticker/price' => array( 'cost' => 1, 'noSymbol' => 2 ),
@@ -2028,7 +2032,7 @@ class binance extends Exchange {
                 'fetchPositions' => true,
                 'fetchPositionsHistory' => false,
                 'fetchPositionsRisk' => true,
-                'fetchPremiumIndexOHLCV' => false,
+                'fetchPremiumIndexOHLCV' => true,
                 'fetchSettlementHistory' => true,
                 'fetchStatus' => true,
                 'fetchTicker' => true,
@@ -4253,6 +4257,12 @@ class binance extends Exchange {
                 $response = $this->dapiPublicGetIndexPriceKlines ($this->extend($request, $params));
             } else {
                 $response = $this->fapiPublicGetIndexPriceKlines ($this->extend($request, $params));
+            }
+        } elseif ($price === 'premiumIndex') {
+            if ($market['inverse']) {
+                $response = $this->dapiPublicGetPremiumIndexKlines ($this->extend($request, $params));
+            } else {
+                $response = $this->fapiPublicGetPremiumIndexKlines ($this->extend($request, $params));
             }
         } elseif ($market['linear']) {
             $response = $this->fapiPublicGetKlines ($this->extend($request, $params));

@@ -343,6 +343,10 @@ export default class binance extends Exchange {
                         'openInterest': 1,
                         'ping': 1,
                         'premiumIndex': 1,
+                        'premiumIndexKlines': {
+                            'byLimit': [ [ 99, 1 ], [ 499, 2 ], [ 1000, 5 ], [ 10000, 10 ] ],
+                            'cost': 1,
+                        },
                         'ticker/24hr': { 'cost': 1, 'noSymbol': 40 },
                         'ticker/bookTicker': { 'cost': 1, 'noSymbol': 2 },
                         'ticker/price': { 'cost': 1, 'noSymbol': 2 },
@@ -2098,7 +2102,7 @@ export default class binance extends Exchange {
                 'fetchPositions': true,
                 'fetchPositionsHistory': false,
                 'fetchPositionsRisk': true,
-                'fetchPremiumIndexOHLCV': false,
+                'fetchPremiumIndexOHLCV': true,
                 'fetchSettlementHistory': true,
                 'fetchStatus': true,
                 'fetchTicker': true,
@@ -4345,6 +4349,12 @@ export default class binance extends Exchange {
                 response = await this.dapiPublicGetIndexPriceKlines (this.extend (request, params));
             } else {
                 response = await this.fapiPublicGetIndexPriceKlines (this.extend (request, params));
+            }
+        } else if (price === 'premiumIndex') {
+            if (market['inverse']) {
+                response = await this.dapiPublicGetPremiumIndexKlines (this.extend (request, params));
+            } else {
+                response = await this.fapiPublicGetPremiumIndexKlines (this.extend (request, params));
             }
         } else if (market['linear']) {
             response = await this.fapiPublicGetKlines (this.extend (request, params));

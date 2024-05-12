@@ -182,6 +182,7 @@ class ImplicitAPI:
     fapipublic_get_openinterest = fapiPublicGetOpenInterest = Entry('openInterest', 'fapiPublic', 'GET', {'cost': 1})
     fapipublic_get_ping = fapiPublicGetPing = Entry('ping', 'fapiPublic', 'GET', {'cost': 1})
     fapipublic_get_premiumindex = fapiPublicGetPremiumIndex = Entry('premiumIndex', 'fapiPublic', 'GET', {'cost': 1})
+    fapipublic_get_premiumindexklines = fapiPublicGetPremiumIndexKlines = Entry('premiumIndexKlines', 'fapiPublic', 'GET', {'byLimit': [[99, 1], [499, 2], [1000, 5], [10000, 10]], 'cost': 1})
     fapipublic_get_ticker_24hr = fapiPublicGetTicker24hr = Entry('ticker/24hr', 'fapiPublic', 'GET', {'cost': 1, 'noSymbol': 40})
     fapipublic_get_ticker_bookticker = fapiPublicGetTickerBookTicker = Entry('ticker/bookTicker', 'fapiPublic', 'GET', {'cost': 1, 'noSymbol': 2})
     fapipublic_get_ticker_price = fapiPublicGetTickerPrice = Entry('ticker/price', 'fapiPublic', 'GET', {'cost': 1, 'noSymbol': 2})
