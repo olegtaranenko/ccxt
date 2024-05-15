@@ -423,8 +423,9 @@ class Exchange {
         'bybit',
         'cex',
         'coinbase',
+        'coinbaseadvanced',
+        'coinbaseexchange',
         'coinbaseinternational',
-        'coinbasepro',
         'coincheck',
         'coinex',
         'coinlist',
@@ -6889,8 +6890,9 @@ class Exchange {
                 $responseLength = count($response);
                 if ($this->verbose || $this->verboseTruncate) {
                     if (!is_callable($this->verboseLogVeto) || $this->verboseLogVeto ('pagination', $method, null, $response)) {
-                        $iteration = ($i . (string) 1);
-                        $cursorMessage = 'Cursor pagination call ' . $iteration . ' $method ' . $method . ' $response length ' . (string) $responseLength . ' cursor ' . $cursorValue;
+                        $cursorString = ($cursorValue === null) ? '' : $cursorValue;
+                        $iteration = ($i + 1);
+                        $cursorMessage = 'Cursor pagination call ' . (string) $iteration . ' $method ' . $method . ' $response length ' . (string) $responseLength . ' cursor ' . $cursorString;
                         $this->log ($cursorMessage);
                     }
                 }

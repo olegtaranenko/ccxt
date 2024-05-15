@@ -230,7 +230,7 @@ export default class Exchange {
         //         }
         //     }
         //
-        this.options = this.getDefaultOptions(); // exchange-specific options, if any
+        this.options = this.getDefaultOptions(); // exchange-specific options if any
         // fetch implementation options (JS only)
         // http properties
         this.headers = {};
@@ -1192,7 +1192,8 @@ export default class Exchange {
     countedOrderBook(snapshot = {}, depth = Number.MAX_SAFE_INTEGER) {
         return new CountedOrderBook(snapshot, depth);
     }
-    handleMessage(client, message) { } // stub to override
+    handleMessage(client, message) {
+    } // stub to override
     // ping (client) {} // stub to override
     ping(client) {
         return undefined;
@@ -5988,8 +5989,9 @@ export default class Exchange {
                 const responseLength = response.length;
                 if (this.verbose || this.verboseTruncate) {
                     if (typeof this.verboseLogVeto !== 'function' || this.verboseLogVeto('pagination', method, undefined, response)) {
-                        const iteration = (i + 1).toString();
-                        const cursorMessage = 'Cursor pagination call ' + iteration + ' method ' + method + ' response length ' + responseLength.toString() + ' cursor ' + cursorValue;
+                        const cursorString = (cursorValue === undefined) ? '' : cursorValue;
+                        const iteration = (i + 1);
+                        const cursorMessage = 'Cursor pagination call ' + iteration.toString() + ' method ' + method + ' response length ' + responseLength.toString() + ' cursor ' + cursorString;
                         this.log(cursorMessage);
                     }
                 }

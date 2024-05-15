@@ -1851,8 +1851,9 @@ class Exchange(BaseExchange):
                 responseLength = len(response)
                 if self.verbose or self.verboseTruncate:
                     if not callable(self.verboseLogVeto) or self.verboseLogVeto('pagination', method, None, response):
-                        iteration = (i + str(1))
-                        cursorMessage = 'Cursor pagination call ' + iteration + ' method ' + method + ' response length ' + str(responseLength) + ' cursor ' + cursorValue
+                        cursorString = '' if (cursorValue is None) else cursorValue
+                        iteration = (i + 1)
+                        cursorMessage = 'Cursor pagination call ' + str(iteration) + ' method ' + method + ' response length ' + str(responseLength) + ' cursor ' + cursorString
                         self.log(cursorMessage)
                 if responseLength == 0:
                     break
