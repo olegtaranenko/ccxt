@@ -1707,6 +1707,26 @@ export default class phemex extends Exchange {
         //         "execId": "8718cae",
         //         "execStatus": 6
         //     }
+        // spot with fees paid using PT token
+        //     "createdAt": "1714990724076",
+        //     "symbol": "BTCUSDT",
+        //     "currency": "USDT",
+        //     "action": "1",
+        //     "tradeType": "1",
+        //     "execQtyRq": "0.003",
+        //     "execPriceRp": "64935",
+        //     "side": "2",
+        //     "orderQtyRq": "0.003",
+        //     "priceRp": "51600",
+        //     "execValueRv": "194.805",
+        //     "feeRateRr": "0.000495",
+        //     "execFeeRv": "0",
+        //     "ordType": "3",
+        //     "execId": "XXXXXX",
+        //     "execStatus": "7",
+        //     "posSide": "1",
+        //     "ptFeeRv": "0.110012249248",
+        //     "ptPriceRp": "0.876524893"
         //
         let priceString;
         let amountString;
@@ -1763,10 +1783,19 @@ export default class phemex extends Exchange {
                 priceString = this.safeString(trade, 'execPriceRp');
                 amountString = this.safeString(trade, 'execQtyRq');
                 costString = this.safeString(trade, 'execValueRv');
-                feeCostString = this.safeString(trade, 'execFeeRv');
+                feeCostString = this.omitZero(this.safeString(trade, 'execFeeRv'));
                 feeRateString = this.safeString(trade, 'feeRateRr');
-                const currencyId = this.safeString(trade, 'currency');
-                feeCurrencyCode = this.safeCurrencyCode(currencyId);
+                if (feeCostString !== undefined) {
+                    const currencyId = this.safeString(trade, 'currency');
+                    feeCurrencyCode = this.safeCurrencyCode(currencyId);
+                }
+                else {
+                    const ptFeeRv = this.omitZero(this.safeString(trade, 'ptFeeRv'));
+                    if (ptFeeRv !== undefined) {
+                        feeCostString = ptFeeRv;
+                        feeCurrencyCode = 'PT';
+                    }
+                }
             }
             else {
                 side = this.safeStringLower(trade, 'side');
@@ -1779,7 +1808,7 @@ export default class phemex extends Exchange {
                 amountString = this.fromEv(this.safeString(trade, 'execBaseQtyEv'), market);
                 amountString = this.safeString(trade, 'execQty', amountString);
                 costString = this.fromEr(this.safeString2(trade, 'execQuoteQtyEv', 'execValueEv'), market);
-                feeCostString = this.fromEr(this.safeString(trade, 'execFeeEv'), market);
+                feeCostString = this.fromEr(this.omitZero(this.safeString(trade, 'execFeeEv')), market);
                 if (feeCostString !== undefined) {
                     feeRateString = this.fromEr(this.safeString(trade, 'feeRateEr'), market);
                     if (market['spot']) {
@@ -1791,6 +1820,12 @@ export default class phemex extends Exchange {
                             const settlementCurrencyId = this.safeString(info, 'settlementCurrency');
                             feeCurrencyCode = this.safeCurrencyCode(settlementCurrencyId);
                         }
+                    }
+                }
+                else {
+                    feeCostString = this.safeString(trade, 'ptFeeRv');
+                    if (feeCostString !== undefined) {
+                        feeCurrencyCode = 'PT';
                     }
                 }
             }
@@ -3875,7 +3910,8 @@ export default class phemex extends Exchange {
             request['limit'] = limit;
         }
         let response = undefined;
-        if (market['settle'] === 'USDT') {
+        const isUsdt = market['settle'] === 'USDT';
+        if (isUsdt) {
             response = await this.privateGetApiDataGFuturesFundingFees(this.extend(request, params));
         }
         else {
@@ -3890,13 +3926,13 @@ export default class phemex extends Exchange {
         //                 {
         //                     "symbol": "BTCUSD",
         //                     "currency": "BTC",
-        //                     "execQty": 18,
+        //                     "execQty": 18, // "execQty" regular, but "execQtyRq" in hedge
         //                     "side": "Buy",
-        //                     "execPriceEp": 360086455,
-        //                     "execValueEv": 49987,
-        //                     "fundingRateEr": 10000,
-        //                     "feeRateEr": 10000,
-        //                     "execFeeEv": 5,
+        //                     "execPriceEp": 360086455, // "execPriceEp" regular, but "execPriceRp" in hedge
+        //                     "execValueEv": 49987, // "execValueEv" regular, but "execValueRv" in hedge
+        //                     "fundingRateEr": 10000, // "fundingRateEr" regular, but "fundingRateRr" in hedge
+        //                     "feeRateEr": 10000, // "feeRateEr" regular, but "feeRateRr" in hedge
+        //                     "execFeeEv": 5, // "execFeeEv" regular, but "execFeeRv" in hedge
         //                     "createTime": 1651881600000
         //                 }
         //             ]
@@ -3909,17 +3945,33 @@ export default class phemex extends Exchange {
         for (let i = 0; i < rows.length; i++) {
             const entry = rows[i];
             const timestamp = this.safeInteger(entry, 'createTime');
+            const execFee = this.safeString2(entry, 'execFeeEv', 'execFeeRv');
+            const currencyCode = this.safeCurrencyCode(this.safeString(entry, 'currency'));
             result.push({
                 'info': entry,
                 'symbol': this.safeString(entry, 'symbol'),
-                'code': this.safeCurrencyCode(this.safeString(entry, 'currency')),
+                'code': currencyCode,
                 'timestamp': timestamp,
                 'datetime': this.iso8601(timestamp),
                 'id': undefined,
-                'amount': this.fromEv(this.safeString(entry, 'execFeeEv'), market),
+                'amount': this.parseFundingFeeToPrecision(execFee, market, currencyCode),
             });
         }
         return result;
+    }
+    parseFundingFeeToPrecision(value, market = undefined, currencyCode = undefined) {
+        if (value === undefined || currencyCode === undefined) {
+            return value;
+        }
+        // it was confirmed by phemex support, that USDT contracts use direct amounts in funding fees, while USD & INVERSE needs 'valueScale'
+        const isUsdt = market['settle'] === 'USDT';
+        if (!isUsdt) {
+            const currency = this.safeCurrency(currencyCode);
+            const scale = this.safeString(currency['info'], 'valueScale');
+            const tickPrecision = this.parsePrecision(scale);
+            value = Precise.stringMul(value, tickPrecision);
+        }
+        return value;
     }
     async fetchFundingRate(symbol, params = {}) {
         /**

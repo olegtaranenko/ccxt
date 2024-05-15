@@ -879,7 +879,7 @@ export default class Exchange {
         //         }
         //     }
         //
-        this.options = this.getDefaultOptions(); // exchange-specific options, if any
+        this.options = this.getDefaultOptions (); // exchange-specific options if any
         // fetch implementation options (JS only)
         // http properties
         this.headers = {};
@@ -897,11 +897,11 @@ export default class Exchange {
         this.validateClientSsl = false;
         this.validateServerSsl = true;
         // default property values
-        this.timeout       = 10000 // milliseconds
-        this.twofa         = undefined // two-factor authentication (2FA)
-        this.verbose       = false
-        this.verboseLogVeto  = undefined
-        this.verboseTruncate = false
+        this.timeout       = 10000; // milliseconds
+        this.twofa         = undefined; // two-factor authentication (2FA)
+        this.verbose       = false;
+        this.verboseLogVeto  = undefined;
+        this.verboseTruncate = false;
         // default credentials
         this.apiKey = undefined;
         this.login = undefined;
@@ -991,7 +991,7 @@ export default class Exchange {
         }
     }
 
-    encodeURIComponent (...args) {
+    encodeURIComponent (... args) {
         // @ts-expect-error
         return encodeURIComponent (... args);
     }
@@ -1084,8 +1084,8 @@ export default class Exchange {
                     const path = value[k].trim ();
                     this.defineRestApiEndpoint (methodName, uppercaseMethod, lowercaseMethod, camelcaseMethod, path, paths);
                 }
-            // the options HTTP method conflicts with the 'options' API url path
-            // } else if (key.match (/^(?:get|post|put|delete|options|head|patch)$/i)) {
+                // the options HTTP method conflicts with the 'options' API url path
+                // } else if (key.match (/^(?:get|post|put|delete|options|head|patch)$/i)) {
             } else if (key.match (/^(?:get|post|put|delete|head|patch)$/i)) {
                 const endpoints = Object.keys (value);
                 for (let j = 0; j < endpoints.length; j++) {
@@ -1259,8 +1259,8 @@ export default class Exchange {
         // log
         if (this.verbose || this.verboseTruncate) {
             if (typeof this.verboseLogVeto !== 'function' || this.verboseLogVeto ('fetch', method, url, headers, body)) {
-                const truncated = this.getBodyTruncated(body)
-                this.log ("fetch Request:\n", this.id, method, url, "\nRequestHeaders:\n", headers, "\nRequestBody:\n", truncated, "\n")
+                const truncated = this.getBodyTruncated(body);
+                this.log ("fetch Request:\n", this.id, method, url, "\nRequestHeaders:\n", headers, "\nRequestBody:\n", truncated, "\n");
             }
         }
         // end of proxies & headers
@@ -1361,7 +1361,7 @@ export default class Exchange {
             }
             if (this.verbose || this.verboseTruncate) {
                 if (typeof this.verboseLogVeto !== 'function' || this.verboseLogVeto ('handle', method, url, response)) {
-                    this.log ("handleRestResponse:\n", this.id, method, url, response.status, response.statusText, "\nResponseHeaders:\n", responseHeaders, "ZIP redacted", "\n")
+                    this.log ("handleRestResponse:\n", this.id, method, url, response.status, response.statusText, "\nResponseHeaders:\n", responseHeaders, "ZIP redacted", "\n");
                 }
             }
             // no error handler needed, because it would not be a zip response in case of an error
@@ -1382,7 +1382,7 @@ export default class Exchange {
             if (this.verbose || this.verboseTruncate) {
                 if (typeof this.verboseLogVeto !== 'function' || this.verboseLogVeto ('response', method, url, response)) {
                     const truncated = this.getBodyTruncated (bodyText);
-                    this.log ("handleRestResponse:\n", this.id, method, url, response.status, response.statusText, "\nResponseHeaders:\n", responseHeaders, "\nResponseBody:\n", truncated, "\n")
+                    this.log ("handleRestResponse:\n", this.id, method, url, response.status, response.statusText, "\nResponseHeaders:\n", responseHeaders, "\nResponseBody:\n", truncated, "\n");
                 }
             }
             const skipFurtherErrorHandling = this.handleErrors (response.status, response.statusText, url, method, responseHeaders, responseBody, json, requestHeaders, requestBody);
@@ -1413,29 +1413,29 @@ export default class Exchange {
         if (this.has['fetchCurrencies'] === true) {
             const currenciesFromOutside = this.safeValue (params, 'currenciesFromOutside', undefined);
             if (!currenciesFromOutside || reload) {
-            currencies = await this.fetchCurrencies ()
+            currencies = await this.fetchCurrencies ();
                 const fetchCurrenciesCallback = this.safeValue (params, 'fetchCurrenciesCallback', undefined);
                 if (fetchCurrenciesCallback) {
                     currencies = fetchCurrenciesCallback (currencies)
                     this.omit(params, 'fetchCurrenciesCallback')
                 }
             } else {
-                currencies = currenciesFromOutside
-                this.omit(params, 'currenciesFromOutside')
+                currencies = currenciesFromOutside;
+                this.omit(params, 'currenciesFromOutside');
             }
         }
         let markets
         const loadFromOutside = this.safeValue(params, 'loadFromOutside', undefined);
         if (!loadFromOutside || reload) {
-            markets = await this.fetchMarkets (params)
+            markets = await this.fetchMarkets (params);
             const loadedMarketCallback = this.safeValue (params, 'loadedMarketCallback', undefined);
             if (loadedMarketCallback) {
-                loadedMarketCallback (markets)
-                this.omit(params, 'loadedMarketCallback')
+                loadedMarketCallback (markets);
+                this.omit(params, 'loadedMarketCallback');
         }
         } else {
-            markets = this.fetchMarketsFromOutside (loadFromOutside)
-            this.omit(params, 'loadFromOutside')
+            markets = this.fetchMarketsFromOutside (loadFromOutside);
+            this.omit(params, 'loadFromOutside');
         }
         return this.setMarkets (markets, currencies)
     }
@@ -1510,7 +1510,7 @@ export default class Exchange {
     checkOrderArguments (market, type, side, amount, price, params) {
         if (price === undefined) {
             if (type === 'limit') {
-                  throw new ArgumentsRequired (this.id + ' createOrder() requires a price argument for a limit order');
+                throw new ArgumentsRequired (this.id + ' createOrder() requires a price argument for a limit order');
             }
         }
         if (amount <= 0) {
@@ -1565,7 +1565,8 @@ export default class Exchange {
         return new CountedOrderBook (snapshot, depth);
     }
 
-    handleMessage (client, message) {} // stub to override
+    handleMessage (client, message) {
+    } // stub to override
 
     // ping (client) {} // stub to override
 
@@ -1857,11 +1858,11 @@ export default class Exchange {
         return value !== undefined && value !== null;
     }
 
-    arraySlice(array, first, second = undefined) {
+    arraySlice (array, first, second = undefined) {
         if (second === undefined) {
-            return array.slice(first);
+            return array.slice (first);
         }
-        return array.slice(first, second);
+        return array.slice (first, second);
     }
 
     getProperty (obj, property, defaultValue: any = undefined) {
@@ -6662,8 +6663,9 @@ export default class Exchange {
                 const responseLength = response.length;
                 if (this.verbose || this.verboseTruncate) {
                     if (typeof this.verboseLogVeto !== 'function' || this.verboseLogVeto ('pagination', method, undefined, response)) {
-                        const iteration = (i + 1).toString ();
-                        const cursorMessage = 'Cursor pagination call ' + iteration + ' method ' + method + ' response length ' + responseLength.toString () + ' cursor ' + cursorValue;
+                        const cursorString = (cursorValue === undefined) ? '' : cursorValue;
+                        const iteration = (i + 1);
+                        const cursorMessage = 'Cursor pagination call ' + iteration.toString () + ' method ' + method + ' response length ' + responseLength.toString () + ' cursor ' + cursorString;
                         this.log (cursorMessage);
                     }
                 }
