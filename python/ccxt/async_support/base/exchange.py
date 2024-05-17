@@ -2,7 +2,7 @@
 
 # -----------------------------------------------------------------------------
 
-__version__ = '4.3.23'
+__version__ = '4.3.24'
 
 # -----------------------------------------------------------------------------
 
@@ -1852,7 +1852,7 @@ class Exchange(BaseExchange):
                 if self.verbose or self.verboseTruncate:
                     if not callable(self.verboseLogVeto) or self.verboseLogVeto('pagination', method, None, response):
                         iteration = (i + str(1))
-                        cursorMessage = 'Cursor pagination call ' + iteration + ' method ' + method + ' response length ' + str(responseLength) + ' cursor ' + cursorValue
+                        cursorMessage = 'Cursor pagination call ' + str(iteration) + ' method ' + method + ' response length ' + str(responseLength) + ' cursor ' + cursorValue
                         self.log(cursorMessage)
                 if responseLength == 0:
                     break
