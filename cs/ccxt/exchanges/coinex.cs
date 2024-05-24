@@ -51,15 +51,15 @@ public partial class coinex : Exchange
                 { "fetchDepositAddressByNetwork", false },
                 { "fetchDepositAddresses", false },
                 { "fetchDeposits", true },
-                { "fetchDepositWithdrawFee", "emulated" },
-                { "fetchDepositWithdrawFees", true },
+                { "fetchDepositWithdrawFee", true },
+                { "fetchDepositWithdrawFees", false },
                 { "fetchFundingHistory", true },
                 { "fetchFundingRate", true },
                 { "fetchFundingRateHistory", true },
                 { "fetchFundingRates", true },
                 { "fetchIndexOHLCV", false },
                 { "fetchIsolatedBorrowRate", true },
-                { "fetchIsolatedBorrowRates", true },
+                { "fetchIsolatedBorrowRates", false },
                 { "fetchLeverage", "emulated" },
                 { "fetchLeverages", true },
                 { "fetchLeverageTiers", true },
@@ -4324,29 +4324,32 @@ public partial class coinex : Exchange
         //
         //     {
         //         "market": "BTCUSDT",
+        //         "ccy": "USDT",
         //         "leverage": 10,
-        //         "BTC": {
-        //             "min_amount": "0.002",
-        //             "max_amount": "200",
-        //             "day_rate": "0.001"
-        //         },
-        //         "USDT": {
-        //             "min_amount": "60",
-        //             "max_amount": "5000000",
-        //             "day_rate": "0.001"
-        //         }
-        //     },
+        //         "min_amount": "60",
+        //         "max_amount": "500000",
+        //         "daily_interest_rate": "0.001"
+        //     }
         //
         object marketId = this.safeString(info, "market");
         market = this.safeMarket(marketId, market, null, "spot");
-        object baseInfo = this.safeValue(info, getValue(market, "baseId"));
-        object quoteInfo = this.safeValue(info, getValue(market, "quoteId"));
+        object currency = this.safeString(info, "ccy");
+        object rate = this.safeNumber(info, "daily_interest_rate");
+        object baseRate = null;
+        object quoteRate = null;
+        if (isTrue(isEqual(currency, getValue(market, "baseId"))))
+        {
+            baseRate = rate;
+        } else if (isTrue(isEqual(currency, getValue(market, "quoteId"))))
+        {
+            quoteRate = rate;
+        }
         return new Dictionary<string, object>() {
             { "symbol", getValue(market, "symbol") },
             { "base", getValue(market, "base") },
-            { "baseRate", this.safeNumber(baseInfo, "day_rate") },
+            { "baseRate", baseRate },
             { "quote", getValue(market, "quote") },
-            { "quoteRate", this.safeNumber(quoteInfo, "day_rate") },
+            { "quoteRate", quoteRate },
             { "period", 86400000 },
             { "timestamp", null },
             { "datetime", null },
@@ -4360,83 +4363,59 @@ public partial class coinex : Exchange
         * @method
         * @name coinex#fetchIsolatedBorrowRate
         * @description fetch the rate of interest to borrow a currency for margin trading
-        * @see https://viabtc.github.io/coinex_api_en_doc/spot/#docsspot002_account007_margin_account_settings
+        * @see https://docs.coinex.com/api/v2/assets/loan-flat/http/list-margin-interest-limit
         * @param {string} symbol unified symbol of the market to fetch the borrow rate for
         * @param {object} [params] extra parameters specific to the exchange API endpoint
+        * @param {string} params.code unified currency code
         * @returns {object} an [isolated borrow rate structure]{@link https://docs.ccxt.com/#/?id=isolated-borrow-rate-structure}
         */
         parameters ??= new Dictionary<string, object>();
         await this.loadMarkets();
+        object code = this.safeString(parameters, "code");
+        if (isTrue(isEqual(code, null)))
+        {
+            throw new ArgumentsRequired ((string)add(this.id, " fetchIsolatedBorrowRate() requires a code parameter")) ;
+        }
+        parameters = this.omit(parameters, "code");
+        object currency = this.currency(code);
         object market = this.market(symbol);
         object request = new Dictionary<string, object>() {
             { "market", getValue(market, "id") },
+            { "ccy", getValue(currency, "id") },
         };
-        object response = await this.v1PrivateGetMarginConfig(this.extend(request, parameters));
+        object response = await this.v2PrivateGetAssetsMarginInterestLimit(this.extend(request, parameters));
         //
         //     {
         //         "code": 0,
         //         "data": {
         //             "market": "BTCUSDT",
+        //             "ccy": "USDT",
         //             "leverage": 10,
-        //             "BTC": {
-        //                 "min_amount": "0.002",
-        //                 "max_amount": "200",
-        //                 "day_rate": "0.001"
-        //             },
-        //             "USDT": {
-        //                 "min_amount": "60",
-        //                 "max_amount": "5000000",
-        //                 "day_rate": "0.001"
-        //             }
+        //             "min_amount": "60",
+        //             "max_amount": "500000",
+        //             "daily_interest_rate": "0.001"
         //         },
-        //         "message": "Success"
+        //         "message": "OK"
         //     }
         //
-        object data = this.safeValue(response, "data", new Dictionary<string, object>() {});
+        object data = this.safeDict(response, "data", new Dictionary<string, object>() {});
         return this.parseIsolatedBorrowRate(data, market);
-    }
-
-    public async override Task<object> fetchIsolatedBorrowRates(object parameters = null)
-    {
-        /**
-        * @method
-        * @name coinex#fetchIsolatedBorrowRates
-        * @description fetch the borrow interest rates of all currencies
-        * @see https://viabtc.github.io/coinex_api_en_doc/spot/#docsspot002_account007_margin_account_settings
-        * @param {object} [params] extra parameters specific to the exchange API endpoint
-        * @returns {object} a list of [isolated borrow rate structures]{@link https://github.com/ccxt/ccxt/wiki/Manual#isolated-borrow-rate-structure}
-        */
-        parameters ??= new Dictionary<string, object>();
-        await this.loadMarkets();
-        object response = await this.v1PrivateGetMarginConfig(parameters);
-        //
-        //     {
-        //         "code": 0,
-        //         "data": [
-        //             {
-        //                 "market": "BTCUSDT",
-        //                 "leverage": 10,
-        //                 "BTC": {
-        //                     "min_amount": "0.002",
-        //                     "max_amount": "200",
-        //                     "day_rate": "0.001"
-        //                 },
-        //                 "USDT": {
-        //                     "min_amount": "60",
-        //                     "max_amount": "5000000",
-        //                     "day_rate": "0.001"
-        //                 }
-        //             },
-        //         ],
-        //         "message": "Success"
-        //     }
-        //
-        object data = this.safeValue(response, "data", new List<object>() {});
-        return this.parseIsolatedBorrowRates(data);
     }
 
     public async override Task<object> fetchBorrowInterest(object code = null, object symbol = null, object since = null, object limit = null, object parameters = null)
     {
+        /**
+        * @method
+        * @name coinex#fetchBorrowInterest
+        * @description fetch the interest owed by the user for borrowing currency for margin trading
+        * @see https://docs.coinex.com/api/v2/assets/loan-flat/http/list-margin-borrow-history
+        * @param {string} [code] unified currency code
+        * @param {string} [symbol] unified market symbol when fetch interest in isolated markets
+        * @param {int} [since] the earliest time in ms to fetch borrrow interest for
+        * @param {int} [limit] the maximum number of structures to retrieve
+        * @param {object} [params] extra parameters specific to the exchange API endpoint
+        * @returns {object[]} a list of [borrow interest structures]{@link https://docs.ccxt.com/#/?id=borrow-interest-structure}
+        */
         parameters ??= new Dictionary<string, object>();
         await this.loadMarkets();
         object request = new Dictionary<string, object>() {};
@@ -4450,39 +4429,32 @@ public partial class coinex : Exchange
         {
             ((IDictionary<string,object>)request)["limit"] = limit;
         }
-        object response = await this.v1PrivateGetMarginLoanHistory(this.extend(request, parameters));
+        object response = await this.v2PrivateGetAssetsMarginBorrowHistory(this.extend(request, parameters));
         //
         //     {
-        //         "code": 0,
-        //         "data": {
-        //             "page": 1,
-        //             "limit": 10,
-        //             "total": 1,
-        //             "has_next": false,
-        //             "curr_page": 1,
-        //             "count": 1,
-        //             "data": [
-        //                 {
-        //                     "loan_id": 2616357,
-        //                     "create_time": 1654214027,
-        //                     "market_type": "BTCUSDT",
-        //                     "coin_type": "BTC",
-        //                     "day_rate": "0.001",
-        //                     "loan_amount": "0.0144",
-        //                     "interest_amount": "0",
-        //                     "unflat_amount": "0",
-        //                     "expire_time": 1655078027,
-        //                     "is_renew": true,
-        //                     "status": "finish"
-        //                 }
-        //             ],
-        //             "total_page": 1
+        //         "data": [
+        //             {
+        //                 "borrow_id": 2642934,
+        //                 "created_at": 1654761016000,
+        //                 "market": "BTCUSDT",
+        //                 "ccy": "USDT",
+        //                 "daily_interest_rate": "0.001",
+        //                 "expired_at": 1655625016000,
+        //                 "borrow_amount": "100",
+        //                 "to_repaied_amount": "0",
+        //                 "is_auto_renew": false,
+        //                 "status": "finish"
+        //             },
+        //         ],
+        //         "pagination": {
+        //             "total": 4,
+        //             "has_next": true
         //         },
-        //         "message": "Success"
+        //         "code": 0,
+        //         "message": "OK"
         //     }
         //
-        object data = this.safeValue(response, "data", new Dictionary<string, object>() {});
-        object rows = this.safeValue(data, "data", new List<object>() {});
+        object rows = this.safeValue(response, "data", new List<object>() {});
         object interest = this.parseBorrowInterests(rows, market);
         return this.filterByCurrencySinceLimit(interest, code, since, limit);
     }
@@ -4491,39 +4463,30 @@ public partial class coinex : Exchange
     {
         //
         //     {
-        //         "loan_id": 2616357,
-        //         "create_time": 1654214027,
-        //         "market_type": "BTCUSDT",
-        //         "coin_type": "BTC",
-        //         "day_rate": "0.001",
-        //         "loan_amount": "0.0144",
-        //         "interest_amount": "0",
-        //         "unflat_amount": "0",
-        //         "expire_time": 1655078027,
-        //         "is_renew": true,
+        //         "borrow_id": 2642934,
+        //         "created_at": 1654761016000,
+        //         "market": "BTCUSDT",
+        //         "ccy": "USDT",
+        //         "daily_interest_rate": "0.001",
+        //         "expired_at": 1655625016000,
+        //         "borrow_amount": "100",
+        //         "to_repaied_amount": "0",
+        //         "is_auto_renew": false,
         //         "status": "finish"
         //     }
         //
-        object marketId = this.safeString(info, "market_type");
+        object marketId = this.safeString(info, "market");
         market = this.safeMarket(marketId, market, null, "spot");
-        object symbol = this.safeString(market, "symbol");
-        object timestamp = this.safeTimestamp(info, "expire_time");
-        object unflatAmount = this.safeString(info, "unflat_amount");
-        object loanAmount = this.safeString(info, "loan_amount");
-        object interest = Precise.stringSub(unflatAmount, loanAmount);
-        if (isTrue(isEqual(unflatAmount, "0")))
-        {
-            interest = null;
-        }
+        object timestamp = this.safeInteger(info, "expired_at");
         return new Dictionary<string, object>() {
             { "account", null },
-            { "symbol", symbol },
+            { "symbol", getValue(market, "symbol") },
             { "marginMode", "isolated" },
             { "marginType", null },
-            { "currency", this.safeCurrencyCode(this.safeString(info, "coin_type")) },
-            { "interest", this.parseNumber(interest) },
-            { "interestRate", this.safeNumber(info, "day_rate") },
-            { "amountBorrowed", this.parseNumber(loanAmount) },
+            { "currency", this.safeCurrencyCode(this.safeString(info, "ccy")) },
+            { "interest", this.safeNumber(info, "to_repaied_amount") },
+            { "interestRate", this.safeNumber(info, "daily_interest_rate") },
+            { "amountBorrowed", this.safeNumber(info, "borrow_amount") },
             { "timestamp", timestamp },
             { "datetime", this.iso8601(timestamp) },
             { "info", info },
@@ -4536,33 +4499,44 @@ public partial class coinex : Exchange
         * @method
         * @name coinex#borrowIsolatedMargin
         * @description create a loan to borrow margin
-        * @see https://viabtc.github.io/coinex_api_en_doc/spot/#docsspot002_account017_margin_loan
+        * @see https://docs.coinex.com/api/v2/assets/loan-flat/http/margin-borrow
         * @param {string} symbol unified market symbol, required for coinex
         * @param {string} code unified currency code of the currency to borrow
         * @param {float} amount the amount to borrow
         * @param {object} [params] extra parameters specific to the exchange API endpoint
+        * @param {boolean} [params.isAutoRenew] whether to renew the margin loan automatically or not, default is false
         * @returns {object} a [margin loan structure]{@link https://docs.ccxt.com/#/?id=margin-loan-structure}
         */
         parameters ??= new Dictionary<string, object>();
         await this.loadMarkets();
         object market = this.market(symbol);
         object currency = this.currency(code);
+        object isAutoRenew = this.safeBool2(parameters, "isAutoRenew", "is_auto_renew", false);
+        parameters = this.omit(parameters, "isAutoRenew");
         object request = new Dictionary<string, object>() {
             { "market", getValue(market, "id") },
-            { "coin_type", getValue(currency, "id") },
-            { "amount", this.currencyToPrecision(code, amount) },
+            { "ccy", getValue(currency, "id") },
+            { "borrow_amount", this.currencyToPrecision(code, amount) },
+            { "is_auto_renew", isAutoRenew },
         };
-        object response = await this.v1PrivatePostMarginLoan(this.extend(request, parameters));
+        object response = await this.v2PrivatePostAssetsMarginBorrow(this.extend(request, parameters));
         //
         //     {
         //         "code": 0,
         //         "data": {
-        //             "loan_id": 1670
+        //             "borrow_id": 13784021,
+        //             "market": "BTCUSDT",
+        //             "ccy": "USDT",
+        //             "daily_interest_rate": "0.001",
+        //             "expired_at": 1717299948340,
+        //             "borrow_amount": "60",
+        //             "to_repaied_amount": "60.0025",
+        //             "status": "loan"
         //         },
-        //         "message": "Success"
+        //         "message": "OK"
         //     }
         //
-        object data = this.safeValue(response, "data", new Dictionary<string, object>() {});
+        object data = this.safeDict(response, "data", new Dictionary<string, object>() {});
         object transaction = this.parseMarginLoan(data, currency);
         return this.extend(transaction, new Dictionary<string, object>() {
             { "amount", amount },
@@ -4576,12 +4550,12 @@ public partial class coinex : Exchange
         * @method
         * @name coinex#repayIsolatedMargin
         * @description repay borrowed margin and interest
-        * @see https://viabtc.github.io/coinex_api_en_doc/spot/#docsspot002_account018_margin_flat
+        * @see https://docs.coinex.com/api/v2/assets/loan-flat/http/margin-repay
         * @param {string} symbol unified market symbol, required for coinex
         * @param {string} code unified currency code of the currency to repay
         * @param {float} amount the amount to repay
         * @param {object} [params] extra parameters specific to the exchange API endpoint
-        * @param {string} [params.loan_id] extra parameter that is not required
+        * @param {string} [params.borrow_id] extra parameter that is not required
         * @returns {object} a [margin loan structure]{@link https://docs.ccxt.com/#/?id=margin-loan-structure}
         */
         parameters ??= new Dictionary<string, object>();
@@ -4590,18 +4564,19 @@ public partial class coinex : Exchange
         object currency = this.currency(code);
         object request = new Dictionary<string, object>() {
             { "market", getValue(market, "id") },
-            { "coin_type", getValue(currency, "id") },
+            { "ccy", getValue(currency, "id") },
             { "amount", this.currencyToPrecision(code, amount) },
         };
-        object response = await this.v1PrivatePostMarginFlat(this.extend(request, parameters));
+        object response = await this.v2PrivatePostAssetsMarginRepay(this.extend(request, parameters));
         //
         //     {
         //         "code": 0,
-        //         "data": null,
-        //         "message": "Success"
+        //         "data": {},
+        //         "message": "OK"
         //     }
         //
-        object transaction = this.parseMarginLoan(response, currency);
+        object data = this.safeDict(response, "data", new Dictionary<string, object>() {});
+        object transaction = this.parseMarginLoan(data, currency);
         return this.extend(transaction, new Dictionary<string, object>() {
             { "amount", amount },
             { "symbol", symbol },
@@ -4611,137 +4586,157 @@ public partial class coinex : Exchange
     public virtual object parseMarginLoan(object info, object currency = null)
     {
         //
-        // borrowMargin
-        //
         //     {
-        //         "loan_id": 1670
+        //         "borrow_id": 13784021,
+        //         "market": "BTCUSDT",
+        //         "ccy": "USDT",
+        //         "daily_interest_rate": "0.001",
+        //         "expired_at": 1717299948340,
+        //         "borrow_amount": "60",
+        //         "to_repaied_amount": "60.0025",
+        //         "status": "loan"
         //     }
         //
-        // repayMargin
-        //
-        //     {
-        //         "code": 0,
-        //         "data": null,
-        //         "message": "Success"
-        //     }
-        //
+        object currencyId = this.safeString(info, "ccy");
+        object marketId = this.safeString(info, "market");
+        object timestamp = this.safeInteger(info, "expired_at");
         return new Dictionary<string, object>() {
-            { "id", this.safeInteger(info, "loan_id") },
-            { "currency", this.safeCurrencyCode(null, currency) },
-            { "amount", null },
-            { "symbol", null },
-            { "timestamp", null },
-            { "datetime", null },
+            { "id", this.safeInteger(info, "borrow_id") },
+            { "currency", this.safeCurrencyCode(currencyId, currency) },
+            { "amount", this.safeString(info, "borrow_amount") },
+            { "symbol", this.safeSymbol(marketId, null, null, "spot") },
+            { "timestamp", timestamp },
+            { "datetime", this.iso8601(timestamp) },
             { "info", info },
         };
     }
 
-    public async override Task<object> fetchDepositWithdrawFees(object codes = null, object parameters = null)
+    public async override Task<object> fetchDepositWithdrawFee(object code, object parameters = null)
     {
         /**
         * @method
-        * @name coinex#fetchDepositWithdrawFees
-        * @description fetch deposit and withdraw fees
-        * @see https://viabtc.github.io/coinex_api_en_doc/spot/#docsspot001_market010_asset_config
-        * @param {string[]|undefined} codes list of unified currency codes
+        * @name coinex#fetchDepositWithdrawFee
+        * @description fetch the fee for deposits and withdrawals
+        * @see https://docs.coinex.com/api/v2/assets/deposit-withdrawal/http/get-deposit-withdrawal-config
+        * @param {string} code unified currency code
         * @param {object} [params] extra parameters specific to the exchange API endpoint
-        * @returns {object[]} a list of [fees structures]{@link https://docs.ccxt.com/#/?id=fee-structure}
+        * @returns {object} a [fee structure]{@link https://docs.ccxt.com/#/?id=fee-structure}
         */
         parameters ??= new Dictionary<string, object>();
         await this.loadMarkets();
-        object request = new Dictionary<string, object>() {};
-        if (isTrue(!isEqual(codes, null)))
-        {
-            object codesLength = getArrayLength(codes);
-            if (isTrue(isEqual(codesLength, 1)))
-            {
-                ((IDictionary<string,object>)request)["coin_type"] = this.safeValue(codes, 0);
-            }
-        }
-        object response = await this.v1PublicGetCommonAssetConfig(this.extend(request, parameters));
+        object currency = this.currency(code);
+        object request = new Dictionary<string, object>() {
+            { "ccy", getValue(currency, "id") },
+        };
+        object response = await this.v2PrivateGetAssetsDepositWithdrawConfig(this.extend(request, parameters));
         //
-        //    {
-        //        "code": 0,
-        //        "data": {
-        //            "CET-CSC": {
-        //                "asset": "CET",
-        //                "chain": "CSC",
-        //                "can_deposit": true,
-        //                "can_withdraw ": false,
-        //                "deposit_least_amount": "1",
-        //                "withdraw_least_amount": "1",
-        //                "withdraw_tx_fee": "0.1"
-        //            },
-        //            "CET-ERC20": {
-        //                "asset": "CET",
-        //                "chain": "ERC20",
-        //                "can_deposit": true,
-        //                "can_withdraw": false,
-        //                "deposit_least_amount": "14",
-        //                "withdraw_least_amount": "14",
-        //                "withdraw_tx_fee": "14"
-        //            }
-        //        },
-        //        "message": "Success"
-        //    }
+        //     {
+        //         "code": 0,
+        //         "data": {
+        //             "asset": {
+        //                 "ccy": "USDT",
+        //                 "deposit_enabled": true,
+        //                 "withdraw_enabled": true,
+        //                 "inter_transfer_enabled": true,
+        //                 "is_st": false
+        //             },
+        //             "chains": [
+        //                 {
+        //                     "chain": "TRC20",
+        //                     "min_deposit_amount": "2.4",
+        //                     "min_withdraw_amount": "2.4",
+        //                     "deposit_enabled": true,
+        //                     "withdraw_enabled": true,
+        //                     "deposit_delay_minutes": 0,
+        //                     "safe_confirmations": 10,
+        //                     "irreversible_confirmations": 20,
+        //                     "deflation_rate": "0",
+        //                     "withdrawal_fee": "2.4",
+        //                     "withdrawal_precision": 6,
+        //                     "memo": "",
+        //                     "is_memo_required_for_deposit": false,
+        //                     "explorer_asset_url": "https://tronscan.org/#/token20/TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t"
+        //                 },
+        //             ]
+        //         },
+        //         "message": "OK"
+        //     }
         //
-        return this.parseDepositWithdrawFees(response, codes);
+        object data = this.safeDict(response, "data", new Dictionary<string, object>() {});
+        return ((object)this.parseDepositWithdrawFee(data, currency));
     }
 
-    public override object parseDepositWithdrawFees(object response, object codes = null, object currencyIdKey = null)
+    public override object parseDepositWithdrawFee(object fee, object currency = null)
     {
-        object depositWithdrawFees = new Dictionary<string, object>() {};
-        codes = this.marketCodes(codes);
-        object data = this.safeValue(response, "data");
-        object currencyIds = new List<object>(((IDictionary<string,object>)data).Keys);
-        for (object i = 0; isLessThan(i, getArrayLength(currencyIds)); postFixIncrement(ref i))
+        //
+        //     {
+        //         "asset": {
+        //             "ccy": "USDT",
+        //             "deposit_enabled": true,
+        //             "withdraw_enabled": true,
+        //             "inter_transfer_enabled": true,
+        //             "is_st": false
+        //         },
+        //         "chains": [
+        //             {
+        //                 "chain": "TRC20",
+        //                 "min_deposit_amount": "2.4",
+        //                 "min_withdraw_amount": "2.4",
+        //                 "deposit_enabled": true,
+        //                 "withdraw_enabled": true,
+        //                 "deposit_delay_minutes": 0,
+        //                 "safe_confirmations": 10,
+        //                 "irreversible_confirmations": 20,
+        //                 "deflation_rate": "0",
+        //                 "withdrawal_fee": "2.4",
+        //                 "withdrawal_precision": 6,
+        //                 "memo": "",
+        //                 "is_memo_required_for_deposit": false,
+        //                 "explorer_asset_url": "https://tronscan.org/#/token20/TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t"
+        //             },
+        //         ]
+        //     }
+        //
+        object result = new Dictionary<string, object>() {
+            { "info", fee },
+            { "withdraw", new Dictionary<string, object>() {
+                { "fee", null },
+                { "percentage", null },
+            } },
+            { "deposit", new Dictionary<string, object>() {
+                { "fee", null },
+                { "percentage", null },
+            } },
+            { "networks", new Dictionary<string, object>() {} },
+        };
+        object chains = this.safeList(fee, "chains", new List<object>() {});
+        object asset = this.safeDict(fee, "asset", new Dictionary<string, object>() {});
+        for (object i = 0; isLessThan(i, getArrayLength(chains)); postFixIncrement(ref i))
         {
-            object entry = getValue(currencyIds, i);
-            object splitEntry = ((string)entry).Split(new [] {((string)"-")}, StringSplitOptions.None).ToList<object>();
-            object feeInfo = getValue(data, getValue(currencyIds, i));
-            object currencyId = this.safeString(feeInfo, "asset");
-            object currency = this.safeCurrency(currencyId);
-            object code = this.safeString(currency, "code");
-            if (isTrue(isTrue((isEqual(codes, null))) || isTrue((this.inArray(code, codes)))))
+            object entry = getValue(chains, i);
+            object isWithdrawEnabled = this.safeBool(entry, "withdraw_enabled");
+            if (isTrue(isWithdrawEnabled))
             {
-                object depositWithdrawFee = this.safeValue(depositWithdrawFees, code);
-                if (isTrue(isEqual(depositWithdrawFee, null)))
+                ((IDictionary<string,object>)getValue(result, "withdraw"))["fee"] = this.safeNumber(entry, "withdrawal_fee");
+                ((IDictionary<string,object>)getValue(result, "withdraw"))["percentage"] = false;
+                object networkId = this.safeString(entry, "chain");
+                if (isTrue(networkId))
                 {
-                    ((IDictionary<string,object>)depositWithdrawFees)[(string)code] = this.depositWithdrawFee(new Dictionary<string, object>() {});
-                }
-                ((IDictionary<string,object>)getValue(getValue(depositWithdrawFees, code), "info"))[(string)entry] = feeInfo;
-                object networkId = this.safeString(splitEntry, 1);
-                object withdrawFee = this.safeValue(feeInfo, "withdraw_tx_fee");
-                object withdrawResult = new Dictionary<string, object>() {
-                    { "fee", withdrawFee },
-                    { "percentage", ((bool) isTrue((!isEqual(withdrawFee, null)))) ? false : null },
-                };
-                object depositResult = new Dictionary<string, object>() {
-                    { "fee", null },
-                    { "percentage", null },
-                };
-                if (isTrue(!isEqual(networkId, null)))
-                {
-                    object networkCode = this.networkIdToCode(networkId);
-                    ((IDictionary<string,object>)getValue(getValue(depositWithdrawFees, code), "networks"))[(string)networkCode] = new Dictionary<string, object>() {
-                        { "withdraw", withdrawResult },
-                        { "deposit", depositResult },
+                    object networkCode = this.networkIdToCode(networkId, this.safeString(asset, "ccy"));
+                    ((IDictionary<string,object>)getValue(result, "networks"))[(string)networkCode] = new Dictionary<string, object>() {
+                        { "withdraw", new Dictionary<string, object>() {
+                            { "fee", this.safeNumber(entry, "withdrawal_fee") },
+                            { "percentage", false },
+                        } },
+                        { "deposit", new Dictionary<string, object>() {
+                            { "fee", null },
+                            { "percentage", null },
+                        } },
                     };
-                } else
-                {
-                    ((IDictionary<string,object>)getValue(depositWithdrawFees, code))["withdraw"] = withdrawResult;
-                    ((IDictionary<string,object>)getValue(depositWithdrawFees, code))["deposit"] = depositResult;
                 }
             }
         }
-        object depositWithdrawCodes = new List<object>(((IDictionary<string,object>)depositWithdrawFees).Keys);
-        for (object i = 0; isLessThan(i, getArrayLength(depositWithdrawCodes)); postFixIncrement(ref i))
-        {
-            object code = getValue(depositWithdrawCodes, i);
-            object currency = this.currency(code);
-            ((IDictionary<string,object>)depositWithdrawFees)[(string)code] = this.assignDefaultDepositWithdrawFees(getValue(depositWithdrawFees, code), currency);
-        }
-        return depositWithdrawFees;
+        return result;
     }
 
     public async override Task<object> fetchLeverages(object symbols = null, object parameters = null)
