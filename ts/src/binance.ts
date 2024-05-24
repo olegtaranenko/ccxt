@@ -350,7 +350,6 @@ export default class binance extends Exchange {
                         'premiumIndexKlines': {
                             'byLimit': [ [ 99, 1 ], [ 499, 2 ], [ 1000, 5 ], [ 10000, 10 ] ],
                             'cost': 1,
-                            'byLimit': [ [ 99, 1 ], [ 499, 2 ], [ 1000, 5 ], [ 10000, 10 ] ],
                         },
                         'ticker/24hr': { 'cost': 1, 'noSymbol': 40 },
                         'ticker/bookTicker': { 'cost': 1, 'noSymbol': 2 },
