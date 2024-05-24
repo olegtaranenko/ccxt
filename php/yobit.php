@@ -598,7 +598,7 @@ class yobit extends Exchange {
         return $tickers[$symbol];
     }
 
-    public function parse_trade($trade, ?array $market = null): array {
+    public function parse_trade(array $trade, ?array $market = null): array {
         //
         // fetchTrades (public)
         //
@@ -856,7 +856,7 @@ class yobit extends Exchange {
         return $this->parse_order($result);
     }
 
-    public function parse_order_status($status) {
+    public function parse_order_status(?string $status) {
         $statuses = array(
             '0' => 'open',
             '1' => 'closed',
@@ -866,7 +866,7 @@ class yobit extends Exchange {
         return $this->safe_string($statuses, $status, $status);
     }
 
-    public function parse_order($order, ?array $market = null): array {
+    public function parse_order(array $order, ?array $market = null): array {
         //
         // createOrder (private)
         //
