@@ -824,7 +824,7 @@ class coinbase extends Exchange {
         return $this->safe_string($statuses, $status, $status);
     }
 
-    public function parse_transaction($transaction, ?array $currency = null): array {
+    public function parse_transaction(array $transaction, ?array $currency = null): array {
         //
         // fiat deposit
         //
@@ -986,7 +986,7 @@ class coinbase extends Exchange {
         );
     }
 
-    public function parse_trade($trade, ?array $market = null): array {
+    public function parse_trade(array $trade, ?array $market = null): array {
         //
         // fetchMyBuys, fetchMySells
         //
@@ -2334,7 +2334,7 @@ class coinbase extends Exchange {
         return $this->safe_string($types, $type, $type);
     }
 
-    public function parse_ledger_entry($item, ?array $currency = null) {
+    public function parse_ledger_entry(array $item, ?array $currency = null) {
         //
         // crypto deposit transaction
         //
@@ -2954,7 +2954,7 @@ class coinbase extends Exchange {
         }) ();
     }
 
-    public function parse_order($order, ?array $market = null): array {
+    public function parse_order(array $order, ?array $market = null): array {
         //
         // createOrder
         //
@@ -3020,7 +3020,7 @@ class coinbase extends Exchange {
         $marketId = $this->safe_string($order, 'product_id');
         $symbol = $this->safe_symbol($marketId, $market, '-');
         if ($symbol !== null) {
-            $market = $this->market($symbol);
+            $market = $this->safe_market($symbol, $market);
         }
         $orderConfiguration = $this->safe_dict($order, 'order_configuration', array());
         $limitGTC = $this->safe_dict($orderConfiguration, 'limit_limit_gtc');
@@ -3091,7 +3091,7 @@ class coinbase extends Exchange {
         ), $market);
     }
 
-    public function parse_order_status($status) {
+    public function parse_order_status(?string $status) {
         $statuses = array(
             'OPEN' => 'open',
             'FILLED' => 'closed',
@@ -3103,7 +3103,7 @@ class coinbase extends Exchange {
         return $this->safe_string($statuses, $status, $status);
     }
 
-    public function parse_order_type($type) {
+    public function parse_order_type(?string $type) {
         if ($type === 'UNKNOWN_ORDER_TYPE') {
             return null;
         }
@@ -3116,7 +3116,7 @@ class coinbase extends Exchange {
         return $this->safe_string($types, $type, $type);
     }
 
-    public function parse_time_in_force($timeInForce) {
+    public function parse_time_in_force(?string $timeInForce) {
         $timeInForces = array(
             'GOOD_UNTIL_CANCELLED' => 'GTC',
             'GOOD_UNTIL_DATE_TIME' => 'GTD',
@@ -4413,7 +4413,7 @@ class coinbase extends Exchange {
         }) ();
     }
 
-    public function parse_position($position, ?array $market = null) {
+    public function parse_position(array $position, ?array $market = null) {
         //
         // {
         //     "product_id" => "1r4njf84-0-0",

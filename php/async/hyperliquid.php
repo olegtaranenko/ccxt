@@ -1776,7 +1776,7 @@ class hyperliquid extends Exchange {
         }) ();
     }
 
-    public function parse_order($order, ?array $market = null): array {
+    public function parse_order(array $order, ?array $market = null): array {
         //
         //  fetchOpenOrders
         //
@@ -1920,7 +1920,7 @@ class hyperliquid extends Exchange {
         ), $market);
     }
 
-    public function parse_order_status($status) {
+    public function parse_order_status(?string $status) {
         $statuses = array(
             'triggered' => 'open',
             'filled' => 'closed',
@@ -1992,7 +1992,7 @@ class hyperliquid extends Exchange {
         }) ();
     }
 
-    public function parse_trade($trade, ?array $market = null): array {
+    public function parse_trade(array $trade, ?array $market = null): array {
         //
         //     {
         //         "closedPnl" => "0.19343",
@@ -2129,7 +2129,7 @@ class hyperliquid extends Exchange {
         }) ();
     }
 
-    public function parse_position($position, ?array $market = null) {
+    public function parse_position(array $position, ?array $market = null) {
         //
         //     {
         //         "position" => array(

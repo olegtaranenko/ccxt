@@ -2981,7 +2981,7 @@ export default class coinbase extends Exchange {
         const marketId = this.safeString(order, 'product_id');
         const symbol = this.safeSymbol(marketId, market, '-');
         if (symbol !== undefined) {
-            market = this.market(symbol);
+            market = this.safeMarket(symbol, market);
         }
         const orderConfiguration = this.safeDict(order, 'order_configuration', {});
         const limitGTC = this.safeDict(orderConfiguration, 'limit_limit_gtc');
@@ -4572,7 +4572,7 @@ export default class coinbase extends Exchange {
                     //     uri = uri.slice (0, quesPos);
                     // }
                     // const nonce = this.randomBytes (16);
-                    // const request = {
+                    // const request: Dict = {
                     //     'aud': [ 'retail_rest_api_proxy' ],
                     //     'iss': 'coinbase-cloud',
                     //     'nbf': seconds,

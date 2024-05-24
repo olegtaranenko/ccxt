@@ -39,7 +39,7 @@ use BN\BN;
 use Sop\ASN1\Type\UnspecifiedType;
 use Exception;
 
-$version = '4.3.23';
+$version = '4.3.31';
 
 // rounding mode
 const TRUNCATE = 0;
@@ -58,7 +58,7 @@ const PAD_WITH_ZERO = 6;
 
 class Exchange {
 
-    const VERSION = '4.3.23';
+    const VERSION = '4.3.31';
 
     private static $base58_alphabet = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
     private static $base58_encoder = null;
@@ -423,8 +423,9 @@ class Exchange {
         'bybit',
         'cex',
         'coinbase',
+        'coinbaseadvanced',
+        'coinbaseexchange',
         'coinbaseinternational',
-        'coinbasepro',
         'coincheck',
         'coinex',
         'coinlist',
@@ -2128,13 +2129,17 @@ class Exchange {
     }
 
     public function omit_zero($string_number) {
-        if ($string_number === null || $string_number === '') {
-            return null;
+        try {
+            if ($string_number === null || $string_number === '') {
+                return null;
+            }
+            if (floatval($string_number) === 0.0) {
+                return null;
+            }
+            return $string_number;
+        } catch (Exception $e) {
+            return $string_number;
         }
-        if (floatval($string_number) === 0.0) {
-            return null;
-        }
-        return $string_number;
     }
 
     public function sleep($milliseconds) {
@@ -2764,7 +2769,7 @@ class Exchange {
         throw new NotSupported($this->id . ' parseTrade() is not supported yet');
     }
 
-    public function parse_transaction($transaction, ?array $currency = null) {
+    public function parse_transaction(array $transaction, ?array $currency = null) {
         throw new NotSupported($this->id . ' parseTransaction() is not supported yet');
     }
 
@@ -2776,11 +2781,11 @@ class Exchange {
         throw new NotSupported($this->id . ' parseAccount() is not supported yet');
     }
 
-    public function parse_ledger_entry($item, ?array $currency = null) {
+    public function parse_ledger_entry(array $item, ?array $currency = null) {
         throw new NotSupported($this->id . ' parseLedgerEntry() is not supported yet');
     }
 
-    public function parse_order($order, ?array $market = null) {
+    public function parse_order(array $order, ?array $market = null) {
         throw new NotSupported($this->id . ' parseOrder() is not supported yet');
     }
 
@@ -2800,7 +2805,7 @@ class Exchange {
         throw new NotSupported($this->id . ' fetchLeverageTiers() is not supported yet');
     }
 
-    public function parse_position($position, ?array $market = null) {
+    public function parse_position(array $position, ?array $market = null) {
         throw new NotSupported($this->id . ' parsePosition() is not supported yet');
     }
 
@@ -2808,7 +2813,7 @@ class Exchange {
         throw new NotSupported($this->id . ' parseFundingRateHistory() is not supported yet');
     }
 
-    public function parse_borrow_interest($info, ?array $market = null) {
+    public function parse_borrow_interest(array $info, ?array $market = null) {
         throw new NotSupported($this->id . ' parseBorrowInterest() is not supported yet');
     }
 
@@ -3306,6 +3311,7 @@ class Exchange {
         $shouldParseFees = $parseFee || $parseFees;
         $fees = $this->safe_list($order, 'fees', array());
         $trades = array();
+        $isTriggerOrSLTpOrder = (($this->safe_string($order, 'triggerPrice') !== null || ($this->safe_string($order, 'stopLossPrice') !== null)) || ($this->safe_string($order, 'takeProfitPrice') !== null));
         if ($parseFilled || $parseCost || $shouldParseFees) {
             $rawTrades = $this->safe_value($order, 'trades', $trades);
             $oldNumber = $this->number;
@@ -3499,7 +3505,7 @@ class Exchange {
         $postOnly = $this->safe_value($order, 'postOnly');
         // timeInForceHandling
         if ($timeInForce === null) {
-            if ($this->safe_string($order, 'type') === 'market') {
+            if (!$isTriggerOrSLTpOrder && ($this->safe_string($order, 'type') === 'market')) {
                 $timeInForce = 'IOC';
             }
             // allow $postOnly override
@@ -4492,10 +4498,26 @@ class Exchange {
         return array( $value, $params );
     }
 
+    public function handle_param_string_2(array $params, string $paramName1, string $paramName2, ?string $defaultValue = null) {
+        $value = $this->safe_string_2($params, $paramName1, $paramName2, $defaultValue);
+        if ($value !== null) {
+            $params = $this->omit ($params, array( $paramName1, $paramName2 ));
+        }
+        return array( $value, $params );
+    }
+
     public function handle_param_integer(array $params, string $paramName, ?int $defaultValue = null) {
         $value = $this->safe_integer($params, $paramName, $defaultValue);
         if ($value !== null) {
             $params = $this->omit ($params, $paramName);
+        }
+        return array( $value, $params );
+    }
+
+    public function handle_param_integer_2(array $params, string $paramName1, string $paramName2, ?int $defaultValue = null) {
+        $value = $this->safe_integer_2($params, $paramName1, $paramName2, $defaultValue);
+        if ($value !== null) {
+            $params = $this->omit ($params, array( $paramName1, $paramName2 ));
         }
         return array( $value, $params );
     }
@@ -4653,7 +4675,7 @@ class Exchange {
         return $this->create_order($symbol, $type, $side, $amount, $price, $params);
     }
 
-    public function edit_order_ws(string $id, string $symbol, string $type, string $side, float $amount, ?float $price = null, $params = array ()) {
+    public function edit_order_ws(string $id, string $symbol, string $type, string $side, ?float $amount = null, ?float $price = null, $params = array ()) {
         $this->cancelOrderWs ($id, $symbol);
         return $this->createOrderWs ($symbol, $type, $side, $amount, $price, $params);
     }
@@ -4954,28 +4976,13 @@ class Exchange {
         return array( $value, $params );
     }
 
-    public function handle_option_and_params_2(array $params, string $methodName, string $methodName2, string $optionName, $defaultValue = null) {
-        // This method can be used to obtain method specific properties, i.e => $this->handle_option_and_params($params, 'fetchPosition', 'marginMode', 'isolated')
-        $defaultOptionName = 'default' . $this->capitalize ($optionName); // we also need to check the 'defaultXyzWhatever'
-        // check if $params contain the key
-        $value = $this->safe_value_2($params, $optionName, $defaultOptionName);
-        if ($value !== null) {
-            $params = $this->omit ($params, array( $optionName, $defaultOptionName ));
-        } else {
-            // check if exchange has properties for this method
-            $exchangeWideMethodOptions = $this->safe_value_2($this->options, $methodName, $methodName2);
-            if ($exchangeWideMethodOptions !== null) {
-                // check if the option is defined inside this method's props
-                $value = $this->safe_value_2($exchangeWideMethodOptions, $optionName, $defaultOptionName);
-            }
-            if ($value === null) {
-                // if it's still null, check if global exchange-wide option exists
-                $value = $this->safe_value_2($this->options, $optionName, $defaultOptionName);
-            }
-            // if it's still null, use the default $value
-            $value = ($value !== null) ? $value : $defaultValue;
-        }
-        return array( $value, $params );
+    public function handle_option_and_params_2(array $params, string $methodName1, string $optionName1, string $optionName2, $defaultValue = null) {
+        $value = null;
+        list($value, $params) = $this->handle_option_and_params($params, $methodName1, $optionName1, $defaultValue);
+        // if still null, try $optionName2
+        $value2 = null;
+        list($value2, $params) = $this->handle_option_and_params($params, $methodName1, $optionName2, $value);
+        return array( $value2, $params );
     }
 
     public function handle_option(string $methodName, string $optionName, $defaultValue = null) {
@@ -5957,7 +5964,7 @@ class Exchange {
         return $this->precisionMode === SIGNIFICANT_DIGITS;
     }
 
-    public function safe_number(array $obj, int|string $key, ?float $defaultNumber = null) {
+    public function safe_number($obj, int|string $key, ?float $defaultNumber = null) {
         $value = $this->safe_string($obj, $key);
         return $this->parse_number($value, $defaultNumber);
     }
@@ -6884,8 +6891,9 @@ class Exchange {
                 $errors = 0;
                 $responseLength = count($response);
                 if ($this->verbose) {
-                    $iteration = ($i . (string) 1);
-                    $cursorMessage = 'Cursor pagination call ' . $iteration . ' $method ' . $method . ' $response length ' . (string) $responseLength . ' cursor ' . $cursorValue;
+                    $cursorString = ($cursorValue === null) ? '' : $cursorValue;
+                    $iteration = ($i + 1);
+                    $cursorMessage = 'Cursor pagination call ' . (string) $iteration . ' $method ' . $method . ' $response length ' . (string) $responseLength . ' cursor ' . $cursorString;
                     $this->log ($cursorMessage);
                 }
                 if ($responseLength === 0) {
@@ -7016,7 +7024,7 @@ class Exchange {
         throw new NotSupported($this->id . ' parseLiquidation () is not supported yet');
     }
 
-    public function parse_liquidations($liquidations, $market = null, ?int $since = null, ?int $limit = null) {
+    public function parse_liquidations(array $liquidations, ?array $market = null, ?int $since = null, ?int $limit = null) {
         /**
          * @ignore
          * parses liquidation info from the exchange response
@@ -7060,6 +7068,9 @@ class Exchange {
 
     public function parse_margin_modes(mixed $response, ?array $symbols = null, ?string $symbolKey = null, ?string $marketType = null) {
         $marginModeStructures = array();
+        if ($marketType === null) {
+            $marketType = 'swap'; // default to swap
+        }
         for ($i = 0; $i < count($response); $i++) {
             $info = $response[$i];
             $marketId = $this->safe_string($info, $symbolKey);
@@ -7071,12 +7082,15 @@ class Exchange {
         return $marginModeStructures;
     }
 
-    public function parse_margin_mode($marginMode, ?array $market = null) {
+    public function parse_margin_mode(array $marginMode, ?array $market = null) {
         throw new NotSupported($this->id . ' parseMarginMode () is not supported yet');
     }
 
     public function parse_leverages(mixed $response, ?array $symbols = null, ?string $symbolKey = null, ?string $marketType = null) {
         $leverageStructures = array();
+        if ($marketType === null) {
+            $marketType = 'swap'; // default to swap
+        }
         for ($i = 0; $i < count($response); $i++) {
             $info = $response[$i];
             $marketId = $this->safe_string($info, $symbolKey);

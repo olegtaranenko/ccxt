@@ -3094,7 +3094,7 @@ public partial class coinbase : Exchange
         object symbol = this.safeSymbol(marketId, market, "-");
         if (isTrue(!isEqual(symbol, null)))
         {
-            market = this.market(symbol);
+            market = this.safeMarket(symbol, market);
         }
         object orderConfiguration = this.safeDict(order, "order_configuration", new Dictionary<string, object>() {});
         object limitGTC = this.safeDict(orderConfiguration, "limit_limit_gtc");
@@ -4874,7 +4874,7 @@ public partial class coinbase : Exchange
                     //     uri = uri.slice (0, quesPos);
                     // }
                     // const nonce = this.randomBytes (16);
-                    // const request = {
+                    // const request: Dict = {
                     //     'aud': [ 'retail_rest_api_proxy' ],
                     //     'iss': 'coinbase-cloud',
                     //     'nbf': seconds,
