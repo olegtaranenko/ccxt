@@ -3737,6 +3737,20 @@ class Exchange {
         }
         return [value, params];
     }
+    handleParamBool(params, paramName, defaultValue = undefined) {
+        const value = this.safeBool(params, paramName, defaultValue);
+        if (value !== undefined) {
+            params = this.omit(params, paramName);
+        }
+        return [value, params];
+    }
+    handleParamBool2(params, paramName1, paramName2, defaultValue = undefined) {
+        const value = this.safeBool2(params, paramName1, paramName2, defaultValue);
+        if (value !== undefined) {
+            params = this.omit(params, [paramName1, paramName2]);
+        }
+        return [value, params];
+    }
     resolvePath(path, params) {
         return [
             this.implodeParams(path, params),

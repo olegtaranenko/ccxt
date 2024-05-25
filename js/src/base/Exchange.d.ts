@@ -2,10 +2,10 @@ import * as functions from './functions.js';
 import { AuthenticationError, DDoSProtection, ExchangeError, ExchangeNotAvailable, RateLimitExceeded, RequestTimeout } from "./errors.js";
 import WsClient from './ws/WsClient.js';
 import { CountedOrderBook, IndexedOrderBook, OrderBook as WsOrderBook } from './ws/OrderBook.js';
-import type { Account, Balance, BalanceAccount, Balances, BorrowInterest, CancellationRequest, Conversion, CrossBorrowRate, CrossBorrowRates, Currencies, Currency, CurrencyInterface, DepositAddressResponse, DepositWithdrawFeeNetwork, Dict, Dictionary, FundingHistory, FundingRate, FundingRateHistory, FundingRates, Greeks, IndexType, Int, IsolatedBorrowRate, IsolatedBorrowRates, LastPrice, LastPrices, LedgerEntry, Leverage, Leverages, LeverageTier, LeverageTiers, Liquidation, MarginMode, MarginModes, MarginModification, Market, MarketInterface, MarketType, MinMax, Num, OHLCV, OHLCVC, OpenInterest, Option, OptionChain, Order, OrderBook, OrderRequest, OrderSide, OrderType, Position, Str, Strings, Ticker, Tickers, Trade, TradingFeeInterface, TradingFees, Transaction, TransferEntries, TransferEntry } from './types.js';
+import type { Account, Balance, BalanceAccount, Balances, Bool, BorrowInterest, CancellationRequest, Conversion, CrossBorrowRate, CrossBorrowRates, Currencies, Currency, CurrencyInterface, DepositAddressResponse, DepositWithdrawFeeNetwork, Dict, Dictionary, FundingHistory, FundingRate, FundingRateHistory, FundingRates, Greeks, IndexType, Int, IsolatedBorrowRate, IsolatedBorrowRates, LastPrice, LastPrices, LedgerEntry, Leverage, Leverages, LeverageTier, LeverageTiers, Liquidation, MarginMode, MarginModes, MarginModification, Market, MarketInterface, MarketType, MinMax, Num, OHLCV, OHLCVC, OpenInterest, Option, OptionChain, Order, OrderBook, OrderRequest, OrderSide, OrderType, Position, Str, Strings, Ticker, Tickers, Trade, TradingFeeInterface, TradingFees, Transaction, TransferEntries, TransferEntry } from './types.js';
 import { ArrayCache, ArrayCacheByTimestamp } from './ws/Cache.js';
 import { OrderBook as Ob } from './ws/OrderBook.js';
-export type { Account, Balance, BalanceAccount, Balances, BorrowInterest, Conversion, CrossBorrowRate, Currency, CurrencyInterface, DepositAddressResponse, Dictionary, Fee, FundingHistory, FundingRateHistory, Greeks, IndexType, Int, LastPrice, LastPrices, LedgerEntry, Leverage, Leverages, LeverageTier, Liquidation, MarginMode, MarginModes, Market, MarketInterface, MarketType, MinMax, Num, OHLCV, OHLCVC, OpenInterest, Option, OptionChain, Order, OrderBook, OrderRequest, OrderSide, OrderType, Position, Str, Strings, Ticker, Tickers, Trade, Transaction, TransferEntry, } from './types.js';
+export type { Account, Balance, BalanceAccount, Balances, Bool, BorrowInterest, Conversion, CrossBorrowRate, Currency, CurrencyInterface, DepositAddressResponse, Dictionary, Fee, FundingHistory, FundingRateHistory, Greeks, IndexType, Int, LastPrice, LastPrices, LedgerEntry, Leverage, Leverages, LeverageTier, Liquidation, MarginMode, MarginModes, Market, MarketInterface, MarketType, MinMax, Num, OHLCV, OHLCVC, OpenInterest, Option, OptionChain, Order, OrderBook, OrderRequest, OrderSide, OrderType, Position, Str, Strings, Ticker, Tickers, Trade, Transaction, TransferEntry, } from './types.js';
 /**
  * @class Exchange
  */
@@ -850,6 +850,8 @@ export default class Exchange {
     handleParamString2(params: object, paramName1: string, paramName2: string, defaultValue?: Str): [string, object];
     handleParamInteger(params: object, paramName: string, defaultValue?: Int): [Int, object];
     handleParamInteger2(params: object, paramName1: string, paramName2: string, defaultValue?: Int): [Int, object];
+    handleParamBool(params: object, paramName: string, defaultValue?: Bool): [Bool, object];
+    handleParamBool2(params: object, paramName1: string, paramName2: string, defaultValue?: Bool): [Bool, object];
     resolvePath(path: any, params: any): any[];
     getListFromObjectValues(objects: any, key: IndexType): any[];
     getSymbolsForMarketType(marketType?: Str, subType?: Str, symbolWithActiveStatus?: boolean, symbolWithUnknownStatus?: boolean): any[];
