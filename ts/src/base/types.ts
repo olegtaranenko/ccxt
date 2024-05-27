@@ -37,10 +37,10 @@ export interface FeeInterface {
 
 export interface TradingFeeInterface {
     info: any;
-    symbol: Str;
     maker: Num;
-    taker: Num;
     percentage: Bool;
+    symbol: Str;
+    taker: Num;
     tierBased: Bool;
 }
 
@@ -68,7 +68,7 @@ export interface MarketInterface {
     };
     linear: Bool;
     lowercaseId?: string;
-    maker?: Num
+    maker?: Num;
     margin: boolean;
     numericId?: Num;
     option: boolean;
@@ -89,7 +89,7 @@ export interface MarketInterface {
     subType?: SubType;
     swap: boolean;
     symbol: string;
-    taker?: Num
+    taker?: Num;
     tierBased?: boolean | undefined;
     type: MarketType;
     uppercaseId?: string;
@@ -195,9 +195,6 @@ export interface Transaction {
     updated: Int;
 }
 
-export interface Tickers extends Dictionary<Ticker> {
-}
-
 export interface CurrencyInterface {
     active?: Bool;
     code: string;
@@ -240,19 +237,10 @@ export interface BalanceAccount {
 }
 
 export interface Account {
-    id: Str,
-    type: Str,
     code: Str,
+    id: Str,
     info: any,
-}
-
-export interface PartialBalances extends Dictionary<number> {
-}
-
-export interface Balances extends Dictionary<Balance> {
-    datetime?: any;
-    info: any;
-    timestamp?: any; // we need to fix this later
+    type: Str,
 }
 
 export interface DepositAddress {
@@ -292,9 +280,6 @@ export interface FundingRate {
     previousFundingTimestamp?: number;
     symbol: string;
     timestamp?: number;
-}
-
-export interface FundingRates extends Dictionary<FundingRate> {
 }
 
 export interface Position {
@@ -419,7 +404,7 @@ export interface FundingRateHistory {
     fundingRate: number;
     info: any;
     symbol: string;
-    timestamp?: number
+    timestamp?: number;
 }
 
 export interface OpenInterest {
@@ -440,7 +425,7 @@ export interface Liquidation {
     price: number;
     quoteValue?: number;
     symbol: string;
-    timestamp?: number
+    timestamp?: number;
 }
 
 export interface OrderRequest {
@@ -453,8 +438,8 @@ export interface OrderRequest {
 }
 
 export interface CancellationRequest {
-    id: string;
     clientOrderId?: string;
+    id: string;
     symbol: string;
 }
 
@@ -465,7 +450,7 @@ export interface FundingHistory {
     id: string;
     info: any;
     symbol: string;
-    timestamp?: number
+    timestamp?: number;
 }
 
 export interface MarginMode {
@@ -491,22 +476,22 @@ export interface Greeks {
     rho: number;
     symbol: string;
     theta: number;
-    timestamp?: number
+    timestamp?: number;
     underlyingPrice: number;
     vega: number;
 }
 
 export interface Conversion {
-    info: any;
-    timestamp?: number
     datetime?: string;
-    id: string;
-    fromCurrency: string;
-    fromAmount: number;
-    toCurrency: string;
-    toAmount: number;
-    price: number;
     fee: number;
+    fromAmount: number;
+    fromCurrency: string;
+    id: string;
+    info: any;
+    price: number;
+    timestamp?: number;
+    toAmount: number;
+    toCurrency: string;
 }
 
 export interface Option {
@@ -525,7 +510,7 @@ export interface Option {
     percentage: number;
     quoteVolume: number;
     symbol: string;
-    timestamp?: number
+    timestamp?: number;
     underlyingPrice: number;
 }
 
@@ -559,15 +544,31 @@ export interface MarginModification {
     'type': 'add' | 'reduce' | 'set' | undefined,
 }
 
-export interface Leverages extends Dictionary<Leverage> {
+export interface Balances extends Dictionary<Balance> {
+    datetime?: any;
+    info: any;
+    timestamp?: any; // we need to fix this later
+}
+
+export interface CrossBorrowRates extends Dictionary<CrossBorrowRates> {
+}
+
+export interface Currencies extends Dictionary<CurrencyInterface> {
+}
+
+export interface FundingRates extends Dictionary<FundingRate> {
+}
+
+export interface IsolatedBorrowRates extends Dictionary<IsolatedBorrowRates> {
 }
 
 export interface LastPrices extends Dictionary<LastPrice> {
 }
-export interface Currencies extends Dictionary<CurrencyInterface> {
+
+export interface Leverages extends Dictionary<Leverage> {
 }
 
-export interface TradingFees extends Dictionary<TradingFeeInterface> {
+export interface LeverageTiers extends Dictionary<LeverageTier[]> {
 }
 
 export interface MarginModes extends Dictionary<MarginMode> {
@@ -576,23 +577,23 @@ export interface MarginModes extends Dictionary<MarginMode> {
 export interface OptionChain extends Dictionary<Option> {
 }
 
-export interface IsolatedBorrowRates extends Dictionary<IsolatedBorrowRates> {
+export interface PartialBalances extends Dictionary<number> {
 }
 
-export interface CrossBorrowRates extends Dictionary<CrossBorrowRates> {
+export interface Tickers extends Dictionary<Ticker> {
+}
+
+export interface TradingFees extends Dictionary<TradingFeeInterface> {
 }
 
 export interface TransferEntries extends Dictionary<TransferEntry> {
 }
 
-export interface LeverageTiers extends Dictionary<LeverageTier[]> {
-}
-
 /** [ timestamp, open, high, low, close, volume ] */
-export type OHLCV = [Num, Num, Num, Num, Num, Num];
+export type OHLCV = [ Num, Num, Num, Num, Num, Num ];
 
 /** [ timestamp, open, high, low, close, volume, count ] */
-export type OHLCVC = [Num, Num, Num, Num, Num, Num, Num];
+export type OHLCVC = [ Num, Num, Num, Num, Num, Num, Num ];
 
 export type implicitReturnType = any;
 
