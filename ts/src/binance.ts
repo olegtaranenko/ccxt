@@ -36,6 +36,7 @@ import type {
     Dict,
     FundingRateHistory,
     Greeks,
+    int,
     Int,
     IsolatedBorrowRate,
     IsolatedBorrowRates,
@@ -541,6 +542,7 @@ export default class binance extends Exchange {
                     'get': {
                         'system/status': 0.1,
                         // these endpoints require this.apiKey
+                        'account/info': 0.1,
                         'accountSnapshot': 240, // Weight(IP): 2400 => cost = 0.1 * 2400 = 240
                         'margin/allAssets': 0.1,
                         'margin/allPairs': 0.1,
@@ -3161,7 +3163,7 @@ export default class binance extends Exchange {
         return result;
     }
 
-    parseMarket (market): Market {
+    parseMarket (market: Dict): Market {
         let swap = false;
         let future = false;
         let option = false;
@@ -11010,7 +11012,7 @@ export default class binance extends Exchange {
         return { 'url': url, 'method': method, 'body': body, 'headers': headers };
     }
 
-    getExceptionsByUrl (url, exactOrBroad) {
+    getExceptionsByUrl (url: string, exactOrBroad: string) {
         let marketType = undefined;
         const hostname = (this.hostname !== undefined) ? this.hostname : 'binance.com';
         if (url.startsWith ('https://api.' + hostname + '/')) {
@@ -11031,7 +11033,7 @@ export default class binance extends Exchange {
         return {};
     }
 
-    handleErrors (code, reason, url, method, headers, body, response, requestHeaders, requestBody) {
+    handleErrors (code: int, reason: string, url: string, method: string, headers: Dict, body: string, response, requestHeaders, requestBody) {
         if ((code === 418) || (code === 429)) {
             throw new DDoSProtection (this.id + ' ' + code.toString () + ' ' + reason + ' ' + body);
         }
