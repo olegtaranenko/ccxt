@@ -156,13 +156,13 @@ class kraken extends Exchange {
                         // rate-limits explained in comment in the top of this file
                         'Assets' => 1,
                         'AssetPairs' => 1,
-                        'Depth' => 1,
-                        'OHLC' => 1,
+                        'Depth' => 1.2,
+                        'OHLC' => 1.2, // 1.2 because 1 triggers too many requests immediately
                         'Spread' => 1,
                         'SystemStatus' => 1,
                         'Ticker' => 1,
                         'Time' => 1,
-                        'Trades' => 1,
+                        'Trades' => 1.2,
                     ),
                 ),
                 'private' => array(
@@ -754,8 +754,8 @@ class kraken extends Exchange {
         return array(
             'info' => $response,
             'symbol' => $market['symbol'],
-            'maker' => $this->safe_number($symbolMakerFee, 'fee'),
-            'taker' => $this->safe_number($symbolTakerFee, 'fee'),
+            'maker' => $this->parse_number(Precise::string_div($this->safe_string($symbolMakerFee, 'fee'), '100')),
+            'taker' => $this->parse_number(Precise::string_div($this->safe_string($symbolTakerFee, 'fee'), '100')),
             'percentage' => true,
             'tierBased' => true,
         );
@@ -980,7 +980,9 @@ class kraken extends Exchange {
             $request['interval'] = $timeframe;
         }
         if ($since !== null) {
-            $request['since'] = $this->number_to_string($this->parse_to_int($since / 1000)); // expected to be in seconds
+            $scaledSince = $this->parse_to_int($since / 1000);
+            $timeFrameInSeconds = $parsedTimeframe * 60;
+            $request['since'] = $this->number_to_string($scaledSince - $timeFrameInSeconds); // expected to be in seconds
         }
         $response = $this->publicGetOHLC ($this->extend($request, $params));
         //

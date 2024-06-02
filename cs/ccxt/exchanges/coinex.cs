@@ -1612,17 +1612,16 @@ public partial class coinex : Exchange
         var marginModeparametersVariable = this.handleMarginModeAndParams("fetchBalance", parameters);
         marginMode = ((IList<object>)marginModeparametersVariable)[0];
         parameters = ((IList<object>)marginModeparametersVariable)[1];
-        marketType = ((bool) isTrue((!isEqual(marginMode, null)))) ? "margin" : marketType;
-        parameters = this.omit(parameters, "margin");
-        if (isTrue(isEqual(marketType, "margin")))
-        {
-            return await this.fetchMarginBalance(parameters);
-        } else if (isTrue(isEqual(marketType, "swap")))
+        object isMargin = isTrue((!isEqual(marginMode, null))) || isTrue((isEqual(marketType, "margin")));
+        if (isTrue(isEqual(marketType, "swap")))
         {
             return await this.fetchSwapBalance(parameters);
         } else if (isTrue(isEqual(marketType, "financial")))
         {
             return await this.fetchFinancialBalance(parameters);
+        } else if (isTrue(isMargin))
+        {
+            return await this.fetchMarginBalance(parameters);
         } else
         {
             return await this.fetchSpotBalance(parameters);
@@ -2582,7 +2581,9 @@ public partial class coinex : Exchange
             }
             response = await this.v2PrivatePostSpotCancelAllOrder(this.extend(request, parameters));
         }
-        return response;
+        return new List<object> {this.safeOrder(new Dictionary<string, object>() {
+    { "info", response },
+})};
     }
 
     public async override Task<object> fetchOrder(object id, object symbol = null, object parameters = null)
@@ -3768,7 +3769,7 @@ public partial class coinex : Exchange
         * @method
         * @name coinex#withdraw
         * @description make a withdrawal
-        * @see https://viabtc.github.io/coinex_api_en_doc/spot/#docsspot002_account015_submit_withdraw
+        * @see https://docs.coinex.com/api/v2/assets/deposit-withdrawal/http/withdrawal
         * @param {string} code unified currency code
         * @param {float} amount the amount to withdraw
         * @param {string} address the address to withdraw to
@@ -3784,39 +3785,46 @@ public partial class coinex : Exchange
         this.checkAddress(address);
         await this.loadMarkets();
         object currency = this.currency(code);
-        object networkCode = this.safeStringUpper(parameters, "network");
+        object networkCode = this.safeStringUpper2(parameters, "network", "chain");
         parameters = this.omit(parameters, "network");
         if (isTrue(tag))
         {
             address = add(add(address, ":"), tag);
         }
         object request = new Dictionary<string, object>() {
-            { "coin_type", getValue(currency, "id") },
-            { "coin_address", address },
-            { "actual_amount", parseFloat(this.numberToString(amount)) },
-            { "transfer_method", "onchain" },
+            { "ccy", getValue(currency, "id") },
+            { "to_address", address },
+            { "amount", this.numberToString(amount) },
         };
         if (isTrue(!isEqual(networkCode, null)))
         {
-            ((IDictionary<string,object>)request)["smart_contract_name"] = this.networkCodeToId(networkCode);
+            ((IDictionary<string,object>)request)["chain"] = this.networkCodeToId(networkCode); // required for on-chain, not required for inter-user transfer
         }
-        object response = await this.v1PrivatePostBalanceCoinWithdraw(this.extend(request, parameters));
+        object response = await this.v2PrivatePostAssetsWithdraw(this.extend(request, parameters));
         //
         //     {
         //         "code": 0,
         //         "data": {
-        //             "actual_amount": "1.00000000",
-        //             "amount": "1.00000000",
-        //             "coin_address": "1KAv3pazbTk2JnQ5xTo6fpKK7p1it2RzD4",
-        //             "coin_type": "BCH",
-        //             "coin_withdraw_id": 206,
+        //             "withdraw_id": 31193755,
+        //             "created_at": 1716874165038,
+        //             "withdraw_method": "ON_CHAIN",
+        //             "ccy": "USDT",
+        //             "amount": "17.3",
+        //             "actual_amount": "15",
+        //             "chain": "TRC20",
+        //             "tx_fee": "2.3",
+        //             "fee_asset": "USDT",
+        //             "fee_amount": "2.3",
+        //             "to_address": "TY5vq3MT6b5cQVAHWHtpGyPg1ERcQgi3UN",
+        //             "memo": "",
+        //             "tx_id": "",
         //             "confirmations": 0,
-        //             "create_time": 1524228297,
-        //             "status": "audit",
-        //             "tx_fee": "0",
-        //             "tx_id": ""
+        //             "explorer_address_url": "https://tronscan.org/#/address/TY5vq3MT6b5cQVAHWHtpGyPg1ERcQgi3UN",
+        //             "explorer_tx_url": "https://tronscan.org/#/transaction/",
+        //             "remark": "",
+        //             "status": "audit_required"
         //         },
-        //         "message": "Ok"
+        //         "message": "OK"
         //     }
         //
         object transaction = this.safeDict(response, "data", new Dictionary<string, object>() {});
@@ -3943,7 +3951,7 @@ public partial class coinex : Exchange
         //         "remark": ""
         //     }
         //
-        // fetchWithdrawals
+        // fetchWithdrawals and withdraw
         //
         //     {
         //         "withdraw_id": 259364,
