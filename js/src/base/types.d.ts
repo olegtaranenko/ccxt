@@ -28,10 +28,10 @@ export interface FeeInterface {
 }
 export interface TradingFeeInterface {
     info: any;
-    symbol: Str;
     maker: Num;
-    taker: Num;
     percentage: Bool;
+    symbol: Str;
+    taker: Num;
     tierBased: Bool;
 }
 export declare type Fee = FeeInterface | undefined;
@@ -178,8 +178,6 @@ export interface Transaction {
     type: 'deposit' | 'withdrawal' | Str;
     updated: Int;
 }
-export interface Tickers extends Dictionary<Ticker> {
-}
 export interface CurrencyInterface {
     active?: Bool;
     code: string;
@@ -219,17 +217,10 @@ export interface BalanceAccount {
     used: Str;
 }
 export interface Account {
-    id: Str;
-    type: Str;
     code: Str;
+    id: Str;
     info: any;
-}
-export interface PartialBalances extends Dictionary<number> {
-}
-export interface Balances extends Dictionary<Balance> {
-    datetime?: any;
-    info: any;
-    timestamp?: any;
+    type: Str;
 }
 export interface DepositAddress {
     address: string;
@@ -265,8 +256,6 @@ export interface FundingRate {
     previousFundingTimestamp?: number;
     symbol: string;
     timestamp?: number;
-}
-export interface FundingRates extends Dictionary<FundingRate> {
 }
 export interface Position {
     collateral?: number;
@@ -411,8 +400,8 @@ export interface OrderRequest {
     type: OrderType;
 }
 export interface CancellationRequest {
-    id: string;
     clientOrderId?: string;
+    id: string;
     symbol: string;
 }
 export interface FundingHistory {
@@ -451,16 +440,16 @@ export interface Greeks {
     vega: number;
 }
 export interface Conversion {
-    info: any;
-    timestamp?: number;
     datetime?: string;
-    id: string;
-    fromCurrency: string;
-    fromAmount: number;
-    toCurrency: string;
-    toAmount: number;
-    price: number;
     fee: number;
+    fromAmount: number;
+    fromCurrency: string;
+    id: string;
+    info: any;
+    price: number;
+    timestamp?: number;
+    toAmount: number;
+    toCurrency: string;
 }
 export interface Option {
     askPrice: number;
@@ -508,25 +497,36 @@ export interface MarginModification {
     'total': Num;
     'type': 'add' | 'reduce' | 'set' | undefined;
 }
-export interface Leverages extends Dictionary<Leverage> {
+export interface Balances extends Dictionary<Balance> {
+    datetime?: any;
+    info: any;
+    timestamp?: any;
 }
-export interface LastPrices extends Dictionary<LastPrice> {
+export interface CrossBorrowRates extends Dictionary<CrossBorrowRates> {
 }
 export interface Currencies extends Dictionary<CurrencyInterface> {
 }
-export interface TradingFees extends Dictionary<TradingFeeInterface> {
+export interface FundingRates extends Dictionary<FundingRate> {
+}
+export interface IsolatedBorrowRates extends Dictionary<IsolatedBorrowRates> {
+}
+export interface LastPrices extends Dictionary<LastPrice> {
+}
+export interface Leverages extends Dictionary<Leverage> {
+}
+export interface LeverageTiers extends Dictionary<LeverageTier[]> {
 }
 export interface MarginModes extends Dictionary<MarginMode> {
 }
 export interface OptionChain extends Dictionary<Option> {
 }
-export interface IsolatedBorrowRates extends Dictionary<IsolatedBorrowRates> {
+export interface PartialBalances extends Dictionary<number> {
 }
-export interface CrossBorrowRates extends Dictionary<CrossBorrowRates> {
+export interface Tickers extends Dictionary<Ticker> {
+}
+export interface TradingFees extends Dictionary<TradingFeeInterface> {
 }
 export interface TransferEntries extends Dictionary<TransferEntry> {
-}
-export interface LeverageTiers extends Dictionary<LeverageTier[]> {
 }
 /** [ timestamp, open, high, low, close, volume ] */
 export declare type OHLCV = [Num, Num, Num, Num, Num, Num];
