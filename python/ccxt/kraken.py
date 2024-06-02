@@ -179,13 +179,13 @@ class kraken(Exchange, ImplicitAPI):
                         # rate-limits explained in comment in the top of self file
                         'Assets': 1,
                         'AssetPairs': 1,
-                        'Depth': 1,
-                        'OHLC': 1,
+                        'Depth': 1.2,
+                        'OHLC': 1.2,  # 1.2 because 1 triggers too many requests immediately
                         'Spread': 1,
                         'SystemStatus': 1,
                         'Ticker': 1,
                         'Time': 1,
-                        'Trades': 1,
+                        'Trades': 1.2,
                     },
                 },
                 'private': {
@@ -761,8 +761,8 @@ class kraken(Exchange, ImplicitAPI):
         return {
             'info': response,
             'symbol': market['symbol'],
-            'maker': self.safe_number(symbolMakerFee, 'fee'),
-            'taker': self.safe_number(symbolTakerFee, 'fee'),
+            'maker': self.parse_number(Precise.string_div(self.safe_string(symbolMakerFee, 'fee'), '100')),
+            'taker': self.parse_number(Precise.string_div(self.safe_string(symbolTakerFee, 'fee'), '100')),
             'percentage': True,
             'tierBased': True,
         }
@@ -970,7 +970,9 @@ class kraken(Exchange, ImplicitAPI):
         else:
             request['interval'] = timeframe
         if since is not None:
-            request['since'] = self.number_to_string(self.parse_to_int(since / 1000))  # expected to be in seconds
+            scaledSince = self.parse_to_int(since / 1000)
+            timeFrameInSeconds = parsedTimeframe * 60
+            request['since'] = self.number_to_string(scaledSince - timeFrameInSeconds)  # expected to be in seconds
         response = self.publicGetOHLC(self.extend(request, params))
         #
         #     {

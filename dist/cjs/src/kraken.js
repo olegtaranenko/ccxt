@@ -161,13 +161,13 @@ class kraken extends kraken$1 {
                         // rate-limits explained in comment in the top of this file
                         'Assets': 1,
                         'AssetPairs': 1,
-                        'Depth': 1,
-                        'OHLC': 1,
+                        'Depth': 1.2,
+                        'OHLC': 1.2,
                         'Spread': 1,
                         'SystemStatus': 1,
                         'Ticker': 1,
                         'Time': 1,
-                        'Trades': 1,
+                        'Trades': 1.2,
                     },
                 },
                 'private': {
@@ -758,8 +758,8 @@ class kraken extends kraken$1 {
         return {
             'info': response,
             'symbol': market['symbol'],
-            'maker': this.safeNumber(symbolMakerFee, 'fee'),
-            'taker': this.safeNumber(symbolTakerFee, 'fee'),
+            'maker': this.parseNumber(Precise["default"].stringDiv(this.safeString(symbolMakerFee, 'fee'), '100')),
+            'taker': this.parseNumber(Precise["default"].stringDiv(this.safeString(symbolTakerFee, 'fee'), '100')),
             'percentage': true,
             'tierBased': true,
         };
@@ -986,7 +986,9 @@ class kraken extends kraken$1 {
             request['interval'] = timeframe;
         }
         if (since !== undefined) {
-            request['since'] = this.numberToString(this.parseToInt(since / 1000)); // expected to be in seconds
+            const scaledSince = this.parseToInt(since / 1000);
+            const timeFrameInSeconds = parsedTimeframe * 60;
+            request['since'] = this.numberToString(scaledSince - timeFrameInSeconds); // expected to be in seconds
         }
         const response = await this.publicGetOHLC(this.extend(request, params));
         //

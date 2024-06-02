@@ -123,13 +123,13 @@ public partial class kraken : Exchange
                     { "get", new Dictionary<string, object>() {
                         { "Assets", 1 },
                         { "AssetPairs", 1 },
-                        { "Depth", 1 },
-                        { "OHLC", 1 },
+                        { "Depth", 1.2 },
+                        { "OHLC", 1.2 },
                         { "Spread", 1 },
                         { "SystemStatus", 1 },
                         { "Ticker", 1 },
                         { "Time", 1 },
-                        { "Trades", 1 },
+                        { "Trades", 1.2 },
                     } },
                 } },
                 { "private", new Dictionary<string, object>() {
@@ -754,8 +754,8 @@ public partial class kraken : Exchange
         return new Dictionary<string, object>() {
             { "info", response },
             { "symbol", getValue(market, "symbol") },
-            { "maker", this.safeNumber(symbolMakerFee, "fee") },
-            { "taker", this.safeNumber(symbolTakerFee, "fee") },
+            { "maker", this.parseNumber(Precise.stringDiv(this.safeString(symbolMakerFee, "fee"), "100")) },
+            { "taker", this.parseNumber(Precise.stringDiv(this.safeString(symbolTakerFee, "fee"), "100")) },
             { "percentage", true },
             { "tierBased", true },
         };
@@ -1010,7 +1010,9 @@ public partial class kraken : Exchange
         }
         if (isTrue(!isEqual(since, null)))
         {
-            ((IDictionary<string,object>)request)["since"] = this.numberToString(this.parseToInt(divide(since, 1000))); // expected to be in seconds
+            object scaledSince = this.parseToInt(divide(since, 1000));
+            object timeFrameInSeconds = multiply(parsedTimeframe, 60);
+            ((IDictionary<string,object>)request)["since"] = this.numberToString(subtract(scaledSince, timeFrameInSeconds)); // expected to be in seconds
         }
         object response = await this.publicGetOHLC(this.extend(request, parameters));
         //

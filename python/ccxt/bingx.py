@@ -1016,7 +1016,7 @@ class bingx(Exchange, ImplicitAPI):
         if time == 0:
             time = None
         cost = self.safe_string(trade, 'quoteQty')
-        type = 'spot' if (cost is None) else 'swap'
+        # type = 'spot' if (cost is None) else 'swap'; self is not reliable
         currencyId = self.safe_string_n(trade, ['currency', 'N', 'commissionAsset'])
         currencyCode = self.safe_currency_code(currencyId)
         m = self.safe_bool(trade, 'm')
@@ -1047,7 +1047,7 @@ class bingx(Exchange, ImplicitAPI):
             'info': trade,
             'timestamp': time,
             'datetime': self.iso8601(time),
-            'symbol': self.safe_symbol(marketId, market, '-', type),
+            'symbol': self.safe_symbol(marketId, market, '-'),
             'order': self.safe_string_2(trade, 'orderId', 'i'),
             'type': self.safe_string_lower(trade, 'o'),
             'side': self.parse_order_side(side),
@@ -2569,7 +2569,9 @@ class bingx(Exchange, ImplicitAPI):
             #
         else:
             raise BadRequest(self.id + ' cancelAllOrders is only supported for spot and swap markets.')
-        return response
+        data = self.safe_dict(response, 'data', {})
+        orders = self.safe_list_2(data, 'success', 'orders', [])
+        return self.parse_orders(orders)
 
     def cancel_orders(self, ids: List[str], symbol: Str = None, params={}):
         """
@@ -2605,42 +2607,70 @@ class bingx(Exchange, ImplicitAPI):
             spotReqKey = 'clientOrderIDs' if areClientOrderIds else 'orderIds'
             request[spotReqKey] = ','.join(parsedIds)
             response = self.spotV1PrivatePostTradeCancelOrders(self.extend(request, params))
+            #
+            #    {
+            #       "code": 0,
+            #       "msg": "",
+            #       "debugMsg": "",
+            #       "data": {
+            #           "orders": [
+            #                {
+            #                    "symbol": "SOL-USDT",
+            #                    "orderId": 1795970045910614016,
+            #                    "transactTime": 1717027601111,
+            #                    "price": "180.25",
+            #                    "stopPrice": "0",
+            #                    "origQty": "0.03",
+            #                    "executedQty": "0",
+            #                    "cummulativeQuoteQty": "0",
+            #                    "status": "CANCELED",
+            #                    "type": "LIMIT",
+            #                    "side": "SELL",
+            #                    "clientOrderID": ""
+            #                },
+            #                ...
+            #            ]
+            #        }
+            #    }
+            #
         else:
             if areClientOrderIds:
                 request['clientOrderIDList'] = self.json(parsedIds)
             else:
                 request['orderIdList'] = parsedIds
             response = self.swapV2PrivateDeleteTradeBatchOrders(self.extend(request, params))
-        #
-        #    {
-        #        "code": 0,
-        #        "msg": "",
-        #        "data": {
-        #          "success": [
-        #            {
-        #              "symbol": "LINK-USDT",
-        #              "orderId": 1597783850786750464,
-        #              "side": "BUY",
-        #              "positionSide": "LONG",
-        #              "type": "TRIGGER_MARKET",
-        #              "origQty": "5.0",
-        #              "price": "5.5710",
-        #              "executedQty": "0.0",
-        #              "avgPrice": "0.0000",
-        #              "cumQuote": "0",
-        #              "stopPrice": "5.0000",
-        #              "profit": "0.0000",
-        #              "commission": "0.000000",
-        #              "status": "CANCELLED",
-        #              "time": 1669776330000,
-        #              "updateTime": 1672370837000
-        #            }
-        #          ],
-        #          "failed": null
-        #        }
-        #    }
-        #
-        return response
+            #
+            #    {
+            #        "code": 0,
+            #        "msg": "",
+            #        "data": {
+            #          "success": [
+            #            {
+            #              "symbol": "LINK-USDT",
+            #              "orderId": 1597783850786750464,
+            #              "side": "BUY",
+            #              "positionSide": "LONG",
+            #              "type": "TRIGGER_MARKET",
+            #              "origQty": "5.0",
+            #              "price": "5.5710",
+            #              "executedQty": "0.0",
+            #              "avgPrice": "0.0000",
+            #              "cumQuote": "0",
+            #              "stopPrice": "5.0000",
+            #              "profit": "0.0000",
+            #              "commission": "0.000000",
+            #              "status": "CANCELLED",
+            #              "time": 1669776330000,
+            #              "updateTime": 1672370837000
+            #            }
+            #          ],
+            #          "failed": null
+            #        }
+            #    }
+            #
+        data = self.safe_dict(response, 'data', {})
+        success = self.safe_list_2(data, 'success', 'orders', [])
+        return self.parse_orders(success)
 
     def cancel_all_orders_after(self, timeout: Int, params={}):
         """
