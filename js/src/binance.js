@@ -2100,6 +2100,7 @@ export default class binance extends Exchange {
                     'margin': 'MARGIN',
                     'option': 'OPTION',
                     'spot': 'MAIN',
+                    'swap': 'UMFUTURE',
                 },
                 'adjustForTimeDifference': false,
                 'broker': {

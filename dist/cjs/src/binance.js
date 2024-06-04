@@ -2097,6 +2097,7 @@ class binance extends binance$1 {
                     'margin': 'MARGIN',
                     'option': 'OPTION',
                     'spot': 'MAIN',
+                    'swap': 'UMFUTURE',
                 },
                 'adjustForTimeDifference': false,
                 'broker': {
