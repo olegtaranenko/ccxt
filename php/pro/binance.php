@@ -3328,29 +3328,31 @@ class binance extends \ccxt\async\binance {
     public function handle_positions($client, $message) {
         //
         //     {
-        //         a => array(
-        //             B => [array(
-        //                 a => 'USDT',
+        //         e => 'ACCOUNT_UPDATE',               // Event Type
+        //         T => 1667881353112,                  // Transaction
+        //         E => 1667881353115,                  // Event Time
+        //         $i => 'SfsR,                          // Account Alias
+        //         a => {                               // Update Data
+        //             B => [array(                          // Balances
+        //                 a => 'USDT',                 // Asset
+        //                 wb => '1127.95750089',       // Wallet Balance
+        //                 cw => '1040.82091149',       // Cross Wallet Balance
         //                 bc => '0'
-        //                 cw => '1040.82091149',
-        //                 wb => '1127.95750089',
         //             )],
-        //             m => 'ORDER',
-        //             P => [array(
-        //                 cr => '-1260.24809979',
-        //                 ep => '19700.03933',
-        //                 iw => '87.13658940',
+        //             P => [array(                           // Position $data
+        //                 bep => '0.00723638',          // Break-Even Price since  see https://binance-docs.github.io/apidocs/futures/en/#change-log from 2023-08-29
+        //                 s => 'BTCUSDT',               // Symbol
+        //                 pa => '-0.089',               // Position Amount
+        //                 ep => '19700.03933',          // Entry Price
+        //                 cr => '-1260.24809979',       // (Pre-fee) Accumulated Realized
+        //                 up => '1.53058860',           // Unrealized PnL
+        //                 mt => 'isolated',             // Margin Type
+        //                 iw => '87.13658940',          // Isolated Wallet (if isolated $position)
+        //                 ps => 'BOTH',                 // Position Side
         //                 ma => 'USDT'
-        //                 mt => 'isolated',
-        //                 pa => '-0.089',
-        //                 ps => 'BOTH',
-        //                 s => 'BTCUSDT',
-        //                 up => '1.53058860',
         //             )],
-        //         ),
-        //         e => 'ACCOUNT_UPDATE',
-        //         E => 1667881353115,
-        //         T => 1667881353112,
+        //             m => 'ORDER'                     // Event reason type
+        //         }
         //     }
         //
         // each account is connected to a different endpoint
@@ -3828,7 +3830,7 @@ class binance extends \ccxt\async\binance {
             '24hrTicker@arr' => array($this, 'handle_tickers'),
             '4hTicker' => array($this, 'handle_tickers'),
             '4hTicker@arr' => array($this, 'handle_tickers'),
-            'ACCOUNT_UPDATE' => array($this, 'handle_acount_update'),
+            'ACCOUNT_UPDATE' => array($this, 'handle_positions'),
             'aggTrade' => array($this, 'handle_trade'),
             'balanceUpdate' => array($this, 'handle_balance'),
             'bookTicker' => array($this, 'handle_bids_asks'), // there is no "bookTicker@arr" endpoint
