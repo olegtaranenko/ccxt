@@ -9495,20 +9495,39 @@ class binance extends Exchange {
             $isPortfolioMargin = null;
             list($isPortfolioMargin, $params) = $this->handle_option_and_params_2($params, 'loadLeverageBrackets', 'papi', 'portfolioMargin', false);
             $response = null;
-            if ($this->is_linear($type, $subType)) {
-                if ($isPortfolioMargin) {
-                    $response = $this->papiGetUmLeverageBracket ($query);
+            $leveragesFromOutside = $this->safe_value($params, 'leveragesFromOutside', null);
+            if (!$leveragesFromOutside) {
+                $leveragesFromOutside = $this->safe_value($this->options, 'leveragesFromOutside', null);
+            }
+            if (!$leveragesFromOutside || $reload) {
+                if ($this->is_linear($type, $subType)) {
+                    if ($isPortfolioMargin) {
+                        $response = $this->papiGetUmLeverageBracket ($query);
+                    } else {
+                        $response = $this->fapiPrivateGetLeverageBracket ($query);
+                    }
+                } elseif ($this->is_inverse($type, $subType)) {
+                    if ($isPortfolioMargin) {
+                        $response = $this->papiGetCmLeverageBracket ($query);
+                    } else {
+                        $response = $this->dapiPrivateV2GetLeverageBracket ($query);
+                    }
                 } else {
-                    $response = $this->fapiPrivateGetLeverageBracket ($query);
+                    throw new NotSupported($this->id . ' loadLeverageBrackets() supports linear and inverse contracts only');
                 }
-            } elseif ($this->is_inverse($type, $subType)) {
-                if ($isPortfolioMargin) {
-                    $response = $this->papiGetCmLeverageBracket ($query);
-                } else {
-                    $response = $this->dapiPrivateV2GetLeverageBracket ($query);
+                $fetchLeveragesCallback = $this->safe_value($params, 'fetchLeveragesCallback', null);
+                if (!$fetchLeveragesCallback) {
+                    $fetchLeveragesCallback = $this->safe_value($this->options, 'fetchLeveragesCallback', null);
+                }
+                if ($fetchLeveragesCallback) {
+                    $fetchLeveragesCallback ($response);
+                    $this->omit($params, 'fetchLeveragesCallback');
+                    $this->omit($this->options, 'fetchLeveragesCallback');
                 }
             } else {
-                throw new NotSupported($this->id . ' loadLeverageBrackets() supports linear and inverse contracts only');
+                $response = $leveragesFromOutside;
+                $this->omit($params, 'leveragesFromOutside');
+                $this->omit($this->options, 'leveragesFromOutside');
             }
             $this->options['leverageBrackets'] = array();
             for ($i = 0; $i < count($response); $i++) {

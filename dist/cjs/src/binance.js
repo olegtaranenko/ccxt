@@ -9744,24 +9744,44 @@ class binance extends binance$1 {
             let isPortfolioMargin = undefined;
             [isPortfolioMargin, params] = this.handleOptionAndParams2(params, 'loadLeverageBrackets', 'papi', 'portfolioMargin', false);
             let response = undefined;
-            if (this.isLinear(type, subType)) {
-                if (isPortfolioMargin) {
-                    response = await this.papiGetUmLeverageBracket(query);
-                }
-                else {
-                    response = await this.fapiPrivateGetLeverageBracket(query);
-                }
+            let leveragesFromOutside = this.safeValue(params, 'leveragesFromOutside', undefined);
+            if (!leveragesFromOutside) {
+                leveragesFromOutside = this.safeValue(this.options, 'leveragesFromOutside', undefined);
             }
-            else if (this.isInverse(type, subType)) {
-                if (isPortfolioMargin) {
-                    response = await this.papiGetCmLeverageBracket(query);
+            if (!leveragesFromOutside || reload) {
+                if (this.isLinear(type, subType)) {
+                    if (isPortfolioMargin) {
+                        response = await this.papiGetUmLeverageBracket(query);
+                    }
+                    else {
+                        response = await this.fapiPrivateGetLeverageBracket(query);
+                    }
+                }
+                else if (this.isInverse(type, subType)) {
+                    if (isPortfolioMargin) {
+                        response = await this.papiGetCmLeverageBracket(query);
+                    }
+                    else {
+                        response = await this.dapiPrivateV2GetLeverageBracket(query);
+                    }
                 }
                 else {
-                    response = await this.dapiPrivateV2GetLeverageBracket(query);
+                    throw new errors.NotSupported(this.id + ' loadLeverageBrackets() supports linear and inverse contracts only');
+                }
+                let fetchLeveragesCallback = this.safeValue(params, 'fetchLeveragesCallback', undefined);
+                if (!fetchLeveragesCallback) {
+                    fetchLeveragesCallback = this.safeValue(this.options, 'fetchLeveragesCallback', undefined);
+                }
+                if (fetchLeveragesCallback) {
+                    fetchLeveragesCallback(response);
+                    this.omit(params, 'fetchLeveragesCallback');
+                    this.omit(this.options, 'fetchLeveragesCallback');
                 }
             }
             else {
-                throw new errors.NotSupported(this.id + ' loadLeverageBrackets() supports linear and inverse contracts only');
+                response = leveragesFromOutside;
+                this.omit(params, 'leveragesFromOutside');
+                this.omit(this.options, 'leveragesFromOutside');
             }
             this.options['leverageBrackets'] = {};
             for (let i = 0; i < response.length; i++) {

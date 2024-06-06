@@ -9055,18 +9055,33 @@ class binance(Exchange, ImplicitAPI):
             isPortfolioMargin = None
             isPortfolioMargin, params = self.handle_option_and_params_2(params, 'loadLeverageBrackets', 'papi', 'portfolioMargin', False)
             response = None
-            if self.is_linear(type, subType):
-                if isPortfolioMargin:
-                    response = await self.papiGetUmLeverageBracket(query)
+            leveragesFromOutside = self.safe_value(params, 'leveragesFromOutside', None)
+            if not leveragesFromOutside:
+                leveragesFromOutside = self.safe_value(self.options, 'leveragesFromOutside', None)
+            if not leveragesFromOutside or reload:
+                if self.is_linear(type, subType):
+                    if isPortfolioMargin:
+                        response = await self.papiGetUmLeverageBracket(query)
+                    else:
+                        response = await self.fapiPrivateGetLeverageBracket(query)
+                elif self.is_inverse(type, subType):
+                    if isPortfolioMargin:
+                        response = await self.papiGetCmLeverageBracket(query)
+                    else:
+                        response = await self.dapiPrivateV2GetLeverageBracket(query)
                 else:
-                    response = await self.fapiPrivateGetLeverageBracket(query)
-            elif self.is_inverse(type, subType):
-                if isPortfolioMargin:
-                    response = await self.papiGetCmLeverageBracket(query)
-                else:
-                    response = await self.dapiPrivateV2GetLeverageBracket(query)
+                    raise NotSupported(self.id + ' loadLeverageBrackets() supports linear and inverse contracts only')
+                fetchLeveragesCallback = self.safe_value(params, 'fetchLeveragesCallback', None)
+                if not fetchLeveragesCallback:
+                    fetchLeveragesCallback = self.safe_value(self.options, 'fetchLeveragesCallback', None)
+                if fetchLeveragesCallback:
+                    fetchLeveragesCallback(response)
+                    self.omit(params, 'fetchLeveragesCallback')
+                    self.omit(self.options, 'fetchLeveragesCallback')
             else:
-                raise NotSupported(self.id + ' loadLeverageBrackets() supports linear and inverse contracts only')
+                response = leveragesFromOutside
+                self.omit(params, 'leveragesFromOutside')
+                self.omit(self.options, 'leveragesFromOutside')
             self.options['leverageBrackets'] = {}
             for i in range(0, len(response)):
                 entry = response[i]
