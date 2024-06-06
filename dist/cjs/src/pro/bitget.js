@@ -966,7 +966,9 @@ class bitget extends bitget$1 {
          * @param {int} [limit] the maximum number of order structures to retrieve
          * @param {object} [params] extra parameters specific to the exchange API endpoint
          * @param {boolean} [params.stop] *contract only* set to true for watching trigger orders
-         * @param {string} [params.marginMode] 'isolated' or 'cross' for watching spot margin orders
+         * @param {string} [params.marginMode] 'isolated' or 'cross' for watching spot margin orders]
+         * @param {string} [params.type] 'spot', 'swap'
+         * @param {string} [params.subType] 'linear', 'inverse'
          * @returns {object[]} a list of [order structures]{@link https://docs.ccxt.com/#/?id=order-structure
          */
         await this.loadMarkets();
@@ -982,10 +984,25 @@ class bitget extends bitget$1 {
             marketId = market['id'];
             messageHash = messageHash + ':' + symbol;
         }
+        const productType = this.safeString(params, 'productType');
         let type = undefined;
         [type, params] = this.handleMarketTypeAndParams('watchOrders', market, params);
-        if ((type === 'spot') && (symbol === undefined)) {
+        let subType = undefined;
+        [subType, params] = this.handleSubTypeAndParams('watchOrders', market, params, 'linear');
+        if ((type === 'spot' || type === 'margin') && (symbol === undefined)) {
             throw new errors.ArgumentsRequired(this.id + ' watchOrders requires a symbol argument for ' + type + ' markets.');
+        }
+        if ((productType === undefined) && (type !== 'spot') && (symbol === undefined)) {
+            messageHash = messageHash + ':' + subType;
+        }
+        else if (productType === 'USDT-FUTURES') {
+            messageHash = messageHash + ':linear';
+        }
+        else if (productType === 'COIN-FUTURES') {
+            messageHash = messageHash + ':inverse';
+        }
+        else if (productType === 'USDC-FUTURES') {
+            messageHash = messageHash + ':usdcfutures'; // non unified channel
         }
         let instType = undefined;
         [instType, params] = this.getInstType(market, params);
@@ -995,7 +1012,7 @@ class bitget extends bitget$1 {
         if (isTrigger) {
             subscriptionHash = subscriptionHash + ':stop'; // we don't want to re-use the same subscription hash for stop orders
         }
-        const instId = (type === 'spot') ? marketId : 'default'; // different from other streams here the 'rest' id is required for spot markets, contract markets require default here
+        const instId = (type === 'spot' || type === 'margin') ? marketId : 'default'; // different from other streams here the 'rest' id is required for spot markets, contract markets require default here
         let channel = isTrigger ? 'orders-algo' : 'orders';
         let marginMode = undefined;
         [marginMode, params] = this.handleMarginModeAndParams('watchOrders', params);
@@ -1008,6 +1025,7 @@ class bitget extends bitget$1 {
                 channel = 'orders-crossed';
             }
         }
+        subscriptionHash = subscriptionHash + ':' + instType;
         const args = {
             'instType': instType,
             'channel': channel,
@@ -1054,9 +1072,10 @@ class bitget extends bitget$1 {
         //         "ts": 1701923982497
         //     }
         //
-        const arg = this.safeValue(message, 'arg', {});
+        const arg = this.safeDict(message, 'arg', {});
         const channel = this.safeString(arg, 'channel');
         const instType = this.safeString(arg, 'instType');
+        const argInstId = this.safeString(arg, 'instId');
         let marketType = undefined;
         if (instType === 'SPOT') {
             marketType = 'spot';
@@ -1067,6 +1086,9 @@ class bitget extends bitget$1 {
         else {
             marketType = 'contract';
         }
+        const isLinearSwap = (instType === 'USDT-FUTURES');
+        const isInverseSwap = (instType === 'COIN-FUTURES');
+        const isUSDCFutures = (instType === 'USDC-FUTURES');
         const data = this.safeValue(message, 'data', []);
         if (this.orders === undefined) {
             const limit = this.safeInteger(this.options, 'ordersLimit', 1000);
@@ -1079,7 +1101,7 @@ class bitget extends bitget$1 {
         const marketSymbols = {};
         for (let i = 0; i < data.length; i++) {
             const order = data[i];
-            const marketId = this.safeString(order, 'instId');
+            const marketId = this.safeString(order, 'instId', argInstId);
             const market = this.safeMarket(marketId, undefined, undefined, marketType);
             const parsed = this.parseWsOrder(order, market);
             stored.append(parsed);
@@ -1093,6 +1115,15 @@ class bitget extends bitget$1 {
             client.resolve(stored, innerMessageHash);
         }
         client.resolve(stored, messageHash);
+        if (isLinearSwap) {
+            client.resolve(stored, 'order:linear');
+        }
+        if (isInverseSwap) {
+            client.resolve(stored, 'order:inverse');
+        }
+        if (isUSDCFutures) {
+            client.resolve(stored, 'order:usdcfutures');
+        }
     }
     parseWsOrder(order, market = undefined) {
         //
@@ -1123,7 +1154,7 @@ class bitget extends bitget$1 {
         //         "executePrice": "35123", // this is limit price
         //         "triggerType": "fill_price",
         //         "planType": "amount",
-        //                   #### in case order had fill: ####
+        //                   #### in case order had a partial fill: ####
         //         fillPrice: '35123',
         //         tradeId: '1171775539946528779',
         //         baseVolume: '7', // field present in market order
@@ -1243,6 +1274,8 @@ class bitget extends bitget$1 {
         let totalAmount = undefined;
         let filledAmount = undefined;
         let cost = undefined;
+        let remaining = undefined;
+        const totalFilled = this.safeString(order, 'accBaseVolume');
         if (isSpot) {
             if (isMargin) {
                 filledAmount = this.omitZero(this.safeString(order, 'fillTotalAmount'));
@@ -1250,7 +1283,13 @@ class bitget extends bitget$1 {
                 cost = this.safeString(order, 'quoteSize');
             }
             else {
-                filledAmount = this.omitZero(this.safeString2(order, 'accBaseVolume', 'baseVolume'));
+                const partialFillAmount = this.safeString(order, 'baseVolume');
+                if (partialFillAmount !== undefined) {
+                    filledAmount = partialFillAmount;
+                }
+                else {
+                    filledAmount = totalFilled;
+                }
                 if (isMarketOrder) {
                     if (isBuy) {
                         totalAmount = accBaseVolume;
@@ -1273,6 +1312,7 @@ class bitget extends bitget$1 {
             totalAmount = this.safeString(order, 'size');
             cost = this.safeString(order, 'fillNotionalUsd');
         }
+        remaining = this.omitZero(Precise["default"].stringSub(totalAmount, totalFilled));
         return this.safeOrder({
             'info': order,
             'symbol': symbol,
@@ -1291,7 +1331,7 @@ class bitget extends bitget$1 {
             'cost': cost,
             'average': avgPrice,
             'filled': filledAmount,
-            'remaining': undefined,
+            'remaining': remaining,
             'status': this.parseWsOrderStatus(rawStatus),
             'fee': feeObject,
             'trades': undefined,
