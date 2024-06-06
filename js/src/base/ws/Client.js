@@ -9,6 +9,7 @@ import { inflateSync, gunzipSync } from '../../static_dependencies/fflake/browse
 import { Future } from './Future.js';
 import { isNode, isJsonEncodedObject, deepExtend, milliseconds, } from '../../base/functions.js';
 import { utf8 } from '../../static_dependencies/scure-base/index.js';
+import { getBodyTruncated } from "../Exchange.js";
 export default class Client {
     constructor(url, onMessageCallback, onErrorCallback, onCloseCallback, onConnectedCallback, config = {}) {
         const defaults = {
@@ -18,6 +19,7 @@ export default class Client {
             onCloseCallback,
             onConnectedCallback,
             verbose: false,
+            verboseTruncate: false,
             protocols: undefined,
             options: undefined,
             futures: {},
@@ -170,7 +172,7 @@ export default class Client {
         }
     }
     onOpen() {
-        if (this.verbose) {
+        if (this.verbose || this.verboseTruncate) {
             if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto('onOpen')) {
                 this.log(new Date(), 'onOpen');
             }
@@ -187,7 +189,7 @@ export default class Client {
     // respond to pings coming from the server with pongs automatically
     // however, some devs may want to track connection states in their app
     onPing() {
-        if (this.verbose) {
+        if (this.verbose || this.verboseTruncate) {
             if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto('onPing')) {
                 this.log(new Date(), 'onPing');
             }
@@ -195,14 +197,14 @@ export default class Client {
     }
     onPong() {
         this.lastPong = milliseconds();
-        if (this.verbose) {
+        if (this.verbose || this.verboseTruncate) {
             if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto('onPong')) {
                 this.log(new Date(), 'onPong');
             }
         }
     }
     onError(error) {
-        if (this.verbose) {
+        if (this.verbose || this.verboseTruncate) {
             if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto('onError', error)) {
                 this.log(new Date(), 'onError', error.message);
             }
@@ -217,7 +219,7 @@ export default class Client {
     }
     /* eslint-disable no-shadow */
     onClose(event) {
-        if (this.verbose) {
+        if (this.verbose || this.verboseTruncate) {
             if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto('onClose', event)) {
                 this.log(new Date(), 'onClose', event);
             }
@@ -237,14 +239,14 @@ export default class Client {
     // this method is not used at this time
     // but may be used to read protocol-level data like cookies, headers, etc
     onUpgrade(message) {
-        if (this.verbose) {
+        if (this.verbose || this.verboseTruncate) {
             if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto('onUpdate')) {
                 this.log(new Date(), 'onUpgrade');
             }
         }
     }
     async send(message) {
-        if (this.verbose) {
+        if (this.verbose || this.verboseTruncate) {
             if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto('send', message)) {
                 this.log(new Date(), 'sending', message);
             }
@@ -297,9 +299,12 @@ export default class Client {
             if (isJsonEncodedObject(message)) {
                 message = JSON.parse(message.replace(/:(\d{15,}),/g, ':"$1",'));
             }
-            if (this.verbose) {
+            if (this.verbose || this.verboseTruncate) {
                 if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto('onMessage', message)) {
-                    this.log(new Date(), 'onMessage', message);
+                    // this.log (new Date (), 'onMessage', message)
+                    const messageText = JSON.stringify(message);
+                    const truncated = getBodyTruncated(messageText, this.verboseTruncate);
+                    this.log(new Date(), 'onMessage', truncated);
                 }
                 // unlimited depth
                 // this.log (new Date (), 'onMessage', util.inspect (message, false, null, true))

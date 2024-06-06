@@ -5336,17 +5336,6 @@ class Exchange extends \ccxt\Exchange {
         return $this->filter_by_symbol_since_limit($sorted, $symbol, $since, $limit);
     }
 
-    public function get_body_truncated(?string $body) {
-        if ($this->verboseTruncate && $body) {
-            $TRUNCATE_LENGTH = 8192;
-            $length = strlen($body) + 8;
-            if (strlen($body) >= $TRUNCATE_LENGTH) {
-                return $body->substring (0, $TRUNCATE_LENGTH / 2) . '\n ... \n' . $body->substring ($length - $TRUNCATE_LENGTH / 2);
-            }
-        }
-        return $body;
-    }
-
     public function parse_greeks(array $greeks, ?array $market = null) {
         throw new NotSupported($this->id . ' parseGreeks () is not supported yet');
     }

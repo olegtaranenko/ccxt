@@ -21,8 +21,10 @@ class WsClient extends Client {
         this.startedConnecting = false;
     }
     createConnection() {
-        if (this.verbose) {
-            this.log(new Date(), 'connecting to', this.url);
+        if (this.verbose || this.verboseTruncate) {
+            if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto('createConnection', this.url)) {
+                this.log(new Date(), 'connecting to', this.url);
+            }
         }
         this.connectionStarted = time.milliseconds();
         this.setConnectionTimeout();

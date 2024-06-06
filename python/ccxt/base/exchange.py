@@ -5737,14 +5737,6 @@ class Exchange(object):
         symbol = self.safe_string(market, 'symbol')
         return self.filter_by_symbol_since_limit(sorted, symbol, since, limit)
 
-    def get_body_truncated(self, body: str):
-        if self.verboseTruncate and body:
-            TRUNCATE_LENGTH = 8192
-            length = len(body) + 8
-            if len(body) >= TRUNCATE_LENGTH:
-                return body.substring(0, TRUNCATE_LENGTH / 2) + '\n ... \n' + body.substring(length - TRUNCATE_LENGTH / 2)
-        return body
-
     def parse_greeks(self, greeks: dict, market: Market = None):
         raise NotSupported(self.id + ' parseGreeks() is not supported yet')
 

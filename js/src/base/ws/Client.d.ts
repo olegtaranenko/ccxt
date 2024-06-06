@@ -26,6 +26,7 @@ export default class Client {
     subscriptions: Dictionary<any>;
     throttle: any;
     verbose: boolean;
+    verboseTruncate: boolean;
     verboseLogVeto: any;
     constructor(url: string, onMessageCallback: Function | undefined, onErrorCallback: Function | undefined, onCloseCallback: Function | undefined, onConnectedCallback: Function | undefined, config?: {});
     future(messageHash: string): any;

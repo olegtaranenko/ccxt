@@ -45,6 +45,16 @@ function _interopNamespace(e) {
 
 // ----------------------------------------------------------------------------
 const { aggregate, arrayConcat, base16ToBinary, base58ToBinary, base64ToBinary, base64ToString, binaryConcat, binaryConcatArray, binaryToBase16, binaryToBase58, binaryToBase64, capitalize, clone, crc32, DECIMAL_PLACES, decimalToPrecision, decode, deepExtend, ecdsa, encode, extend, extractParams, filterBy, flatten, groupBy, hash, hmac, implodeParams, inArray, indexBy, isEmpty, isJsonEncodedObject, isNode, iso8601, json, keysort, merge, microseconds, milliseconds, NO_PADDING, now, numberToBE, numberToLE, numberToString, omit, omitZero, ordered, packb, parse8601, parseDate, parseTimeframe, precisionFromString, rawencode, ROUND, safeFloat, safeFloat2, safeFloatN, safeInteger, safeInteger2, safeIntegerN, safeIntegerProduct, safeIntegerProduct2, safeIntegerProductN, safeString, safeString2, safeStringLower, safeStringLower2, safeStringLowerN, safeStringN, safeStringUpper, safeStringUpper2, safeStringUpperN, safeTimestamp, safeTimestamp2, safeTimestampN, safeValue, safeValue2, safeValueN, seconds, SIGNIFICANT_DIGITS, sortBy, sortBy2, stringToBase64, strip, sum, Throttler, TICK_SIZE, toArray, TRUNCATE, unCamelCase, unique, urlencode, urlencodeBase64, urlencodeNested, urlencodeWithArrayRepeat, uuid, uuid16, uuid22, uuidv1, ymd, ymdhms, yymmdd, yyyymmdd } = functions;
+const TRUNCATE_LENGTH = 8192;
+function getBodyTruncated(body, verboseTruncate) {
+    if (verboseTruncate && body) {
+        const length = body.length + 8;
+        if (body.length >= TRUNCATE_LENGTH) {
+            return body.substring(0, TRUNCATE_LENGTH / 2) + '\n ... \n' + body.substring(length - TRUNCATE_LENGTH / 2);
+        }
+    }
+    return body;
+}
 // ----------------------------------------------------------------------------
 /**
  * @class Exchange
@@ -924,7 +934,7 @@ class Exchange {
         // log
         if (this.verbose || this.verboseTruncate) {
             if (typeof this.verboseLogVeto !== 'function' || this.verboseLogVeto('fetch', method, url, headers, body)) {
-                const truncated = this.getBodyTruncated(body);
+                const truncated = getBodyTruncated(body, this.verboseTruncate);
                 this.log("fetch Request:\n", this.id, method, url, "\nRequestHeaders:\n", headers, "\nRequestBody:\n", truncated, "\n");
             }
         }
@@ -1048,7 +1058,7 @@ class Exchange {
             }
             if (this.verbose || this.verboseTruncate) {
                 if (typeof this.verboseLogVeto !== 'function' || this.verboseLogVeto('response', method, url, response)) {
-                    const truncated = this.getBodyTruncated(bodyText);
+                    const truncated = getBodyTruncated(bodyText, this.verboseTruncate);
                     this.log("handleRestResponse:\n", this.id, method, url, response.status, response.statusText, "\nResponseHeaders:\n", responseHeaders, "\nResponseBody:\n", truncated, "\n");
                 }
             }
@@ -1241,7 +1251,8 @@ class Exchange {
             const options = this.deepExtend(this.streaming, {
                 'log': this.log ? this.log.bind(this) : this.log,
                 'ping': this.ping ? this.ping.bind(this) : this.ping,
-                'verbose': this.verbose || this.verboseTruncate,
+                'verbose': this.verbose,
+                'verboseTruncate': this.verboseTruncate,
                 'verboseLogVeto': this.verboseLogVeto,
                 'throttler': new Throttler(this.tokenBucket),
                 // add support for proxies
@@ -6206,16 +6217,6 @@ class Exchange {
         const symbol = this.safeString(market, 'symbol');
         return this.filterBySymbolSinceLimit(sorted, symbol, since, limit);
     }
-    getBodyTruncated(body) {
-        if (this.verboseTruncate && body) {
-            const TRUNCATE_LENGTH = 8192;
-            const length = body.length + 8;
-            if (body.length >= TRUNCATE_LENGTH) {
-                return body.substring(0, TRUNCATE_LENGTH / 2) + '\n ... \n' + body.substring(length - TRUNCATE_LENGTH / 2);
-            }
-        }
-        return body;
-    }
     parseGreeks(greeks, market = undefined) {
         throw new errors.NotSupported(this.id + ' parseGreeks () is not supported yet');
     }
@@ -6461,3 +6462,4 @@ class Exchange {
 
 exports.Exchange = Exchange;
 exports["default"] = Exchange;
+exports.getBodyTruncated = getBodyTruncated;
