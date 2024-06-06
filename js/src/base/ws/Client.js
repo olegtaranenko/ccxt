@@ -171,10 +171,15 @@ export default class Client {
         }
     }
     onOpen() {
+<<<<<<< HEAD
         if (this.verbose) {
             if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto('onOpen')) {
                 this.log(new Date(), 'onOpen');
             }
+=======
+        if (this.verbose || this.verboseTruncate) {
+            this.log(new Date(), 'onOpen');
+>>>>>>> @{-1}
         }
         this.connectionEstablished = milliseconds();
         this.isConnected = true;
@@ -188,14 +193,20 @@ export default class Client {
     // respond to pings coming from the server with pongs automatically
     // however, some devs may want to track connection states in their app
     onPing() {
+<<<<<<< HEAD
         if (this.verbose) {
             if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto('onPing')) {
                 this.log(new Date(), 'onPing');
             }
+=======
+        if (this.verbose || this.verboseTruncate) {
+            this.log(new Date(), 'onPing');
+>>>>>>> @{-1}
         }
     }
     onPong() {
         this.lastPong = milliseconds();
+<<<<<<< HEAD
         if (this.verbose) {
             if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto('onPong')) {
                 this.log(new Date(), 'onPong');
@@ -207,6 +218,15 @@ export default class Client {
             if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto('onError', error)) {
                 this.log(new Date(), 'onError', error.message);
             }
+=======
+        if (this.verbose || this.verboseTruncate) {
+            this.log(new Date(), 'onPong');
+        }
+    }
+    onError(error) {
+        if (this.verbose || this.verboseTruncate) {
+            this.log(new Date(), 'onError', error.message);
+>>>>>>> @{-1}
         }
         if (!(error instanceof BaseError)) {
             // in case of ErrorEvent from node_modules/ws/lib/event-target.js
@@ -218,10 +238,15 @@ export default class Client {
     }
     /* eslint-disable no-shadow */
     onClose(event) {
+<<<<<<< HEAD
         if (this.verbose) {
             if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto('onClose', event)) {
                 this.log(new Date(), 'onClose', event);
             }
+=======
+        if (this.verbose || this.verboseTruncate) {
+            this.log(new Date(), 'onClose', event);
+>>>>>>> @{-1}
         }
         if (!this.error) {
             // todo: exception types for server-side disconnects
@@ -238,6 +263,7 @@ export default class Client {
     // this method is not used at this time
     // but may be used to read protocol-level data like cookies, headers, etc
     onUpgrade(message) {
+<<<<<<< HEAD
         if (this.verbose) {
             if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto('onUpdate')) {
                 this.log(new Date(), 'onUpgrade');
@@ -249,6 +275,15 @@ export default class Client {
             if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto('send', message)) {
                 this.log(new Date(), 'sending', message);
             }
+=======
+        if (this.verbose || this.verboseTruncate) {
+            this.log(new Date(), 'onUpgrade');
+        }
+    }
+    async send(message) {
+        if (this.verbose || this.verboseTruncate) {
+            this.log(new Date(), 'sending', message);
+>>>>>>> @{-1}
         }
         message = (typeof message === 'string') ? message : JSON.stringify(message);
         const future = Future();
@@ -298,10 +333,15 @@ export default class Client {
             if (isJsonEncodedObject(message)) {
                 message = JSON.parse(message.replace(/:(\d{15,}),/g, ':"$1",'));
             }
+<<<<<<< HEAD
             if (this.verbose) {
                 if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto('onMessage', message)) {
                     this.log(new Date(), 'onMessage', message);
                 }
+=======
+            if (this.verbose || this.verboseTruncate) {
+                this.log(new Date(), 'onMessage', message);
+>>>>>>> @{-1}
                 // unlimited depth
                 // this.log (new Date (), 'onMessage', util.inspect (message, false, null, true))
                 // this.log (new Date (), 'onMessage', JSON.stringify (message, null, 4))
