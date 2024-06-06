@@ -10,6 +10,7 @@ import {
 } from '../../base/functions.js';
 import { utf8 } from '../../static_dependencies/scure-base/index.js';
 import { Dictionary, Str } from '../types.js';
+import { getBodyTruncated } from "../Exchange";
 
 export default class Client {
     connected: Promise<any>
@@ -68,6 +69,8 @@ export default class Client {
 
     verbose: boolean
 
+    verboseTruncate: boolean
+
     verboseLogVeto: any
 
     constructor (url: string, onMessageCallback: Function | undefined, onErrorCallback: Function | undefined, onCloseCallback: Function | undefined, onConnectedCallback: Function | undefined, config = {}) {
@@ -78,6 +81,7 @@ export default class Client {
             onCloseCallback,
             onConnectedCallback,
             verbose: false, // verbose output
+            verboseTruncate: false, // do truncate verbose output
             protocols: undefined, // ws-specific protocols
             options: undefined, // ws-specific options
             futures: {},
@@ -239,7 +243,7 @@ export default class Client {
     }
 
     onOpen () {
-        if (this.verbose) {
+        if (this.verbose || this.verboseTruncate) {
             if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto ('onOpen')) {
                 this.log (new Date (), 'onOpen')
             }
@@ -257,7 +261,7 @@ export default class Client {
     // respond to pings coming from the server with pongs automatically
     // however, some devs may want to track connection states in their app
     onPing () {
-        if (this.verbose) {
+        if (this.verbose || this.verboseTruncate) {
             if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto ('onPing')) {
                 this.log (new Date (), 'onPing')
             }
@@ -266,7 +270,7 @@ export default class Client {
 
     onPong () {
         this.lastPong = milliseconds ()
-        if (this.verbose) {
+        if (this.verbose || this.verboseTruncate) {
             if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto ('onPong')) {
                 this.log (new Date (), 'onPong')
             }
@@ -274,7 +278,7 @@ export default class Client {
     }
 
     onError (error: any) {
-        if (this.verbose) {
+        if (this.verbose || this.verboseTruncate) {
             if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto ('onError', error)) {
                 this.log (new Date (), 'onError', error.message)
             }
@@ -290,7 +294,7 @@ export default class Client {
 
     /* eslint-disable no-shadow */
     onClose (event: any) {
-        if (this.verbose) {
+        if (this.verbose || this.verboseTruncate) {
             if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto ('onClose', event)) {
                 this.log (new Date (), 'onClose', event)
             }
@@ -311,7 +315,7 @@ export default class Client {
     // this method is not used at this time
     // but may be used to read protocol-level data like cookies, headers, etc
     onUpgrade (message: any) {
-        if (this.verbose) {
+        if (this.verbose || this.verboseTruncate) {
             if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto ('onUpdate')) {
                 this.log (new Date (), 'onUpgrade')
             }
@@ -319,7 +323,7 @@ export default class Client {
     }
 
     async send (message: any) {
-        if (this.verbose) {
+        if (this.verbose || this.verboseTruncate) {
             if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto ('send', message)) {
                 this.log (new Date (), 'sending', message)
             }
@@ -371,9 +375,12 @@ export default class Client {
             if (isJsonEncodedObject (message)) {
                 message = JSON.parse (message.replace (/:(\d{15,}),/g, ':"$1",'))
             }
-            if (this.verbose) {
+            if (this.verbose || this.verboseTruncate) {
                 if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto ('onMessage', message)) {
-                    this.log (new Date (), 'onMessage', message)
+                    // this.log (new Date (), 'onMessage', message)
+                    const messageText = JSON.stringify (message);
+                    const truncated = getBodyTruncated (messageText, this.verboseTruncate)
+                    this.log (new Date (), 'onMessage', truncated)
                 }
                 // unlimited depth
                 // this.log (new Date (), 'onMessage', util.inspect (message, false, null, true))

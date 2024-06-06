@@ -161,6 +161,19 @@ import totp from './functions/totp.js';
 import ethers from '../static_dependencies/ethers/index.js';
 import { TypedDataEncoder } from '../static_dependencies/ethers/hash/index.js';
 import {SecureRandom} from "../static_dependencies/jsencrypt/lib/jsbn/rng.js";
+
+const TRUNCATE_LENGTH = 8192;
+
+export function getBodyTruncated (body?: string, verboseTruncate?: boolean) {
+    if (verboseTruncate && body) {
+        const length = body.length + 8;
+        if (body.length >= TRUNCATE_LENGTH) {
+            return body.substring (0, TRUNCATE_LENGTH / 2) + '\n ... \n' + body.substring (length - TRUNCATE_LENGTH / 2);
+        }
+    }
+    return body;
+}
+
 // ----------------------------------------------------------------------------
 /**
  * @class Exchange
@@ -1174,7 +1187,7 @@ export default class Exchange {
         // log
         if (this.verbose || this.verboseTruncate) {
             if (typeof this.verboseLogVeto !== 'function' || this.verboseLogVeto ('fetch', method, url, headers, body)) {
-                const truncated = this.getBodyTruncated(body)
+                const truncated = getBodyTruncated(body, this.verboseTruncate)
                 this.log ("fetch Request:\n", this.id, method, url, "\nRequestHeaders:\n", headers, "\nRequestBody:\n", truncated, "\n")
             }
         }
@@ -1296,7 +1309,7 @@ export default class Exchange {
             }
             if (this.verbose || this.verboseTruncate) {
                 if (typeof this.verboseLogVeto !== 'function' || this.verboseLogVeto ('response', method, url, response)) {
-                    const truncated = this.getBodyTruncated (bodyText);
+                    const truncated = getBodyTruncated (bodyText, this.verboseTruncate);
                     this.log ("handleRestResponse:\n", this.id, method, url, response.status, response.statusText, "\nResponseHeaders:\n", responseHeaders, "\nResponseBody:\n", truncated, "\n")
                 }
             }
@@ -1480,7 +1493,8 @@ export default class Exchange {
             const options = this.deepExtend (this.streaming, {
                 'log': this.log ? this.log.bind (this) : this.log,
                 'ping': (this as any).ping ? (this as any).ping.bind (this) : (this as any).ping,
-                'verbose': this.verbose || this.verboseTruncate,
+                'verbose': this.verbose,
+                'verboseTruncate': this.verboseTruncate,
                 'verboseLogVeto': this.verboseLogVeto,
                 'throttler': new Throttler (this.tokenBucket),
                 // add support for proxies
@@ -6758,17 +6772,6 @@ export default class Exchange {
         const sorted = this.sortBy (result, 'timestamp');
         const symbol = this.safeString (market, 'symbol');
         return this.filterBySymbolSinceLimit (sorted, symbol, since, limit);
-    }
-
-    getBodyTruncated (body?: string) {
-        if (this.verboseTruncate && body) {
-            const TRUNCATE_LENGTH = 8192;
-            const length = body.length + 8;
-            if (body.length >= TRUNCATE_LENGTH) {
-                return body.substring (0, TRUNCATE_LENGTH / 2) + '\n ... \n' + body.substring (length - TRUNCATE_LENGTH / 2);
-            }
-        }
-        return body;
     }
 
     parseGreeks (greeks: Dict, market: Market = undefined): Greeks {
