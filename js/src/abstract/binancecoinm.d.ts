@@ -325,6 +325,8 @@ interface binance {
     sapiDeleteSubAccountSubAccountApiIpRestrictionIpList(params?: {}): Promise<implicitReturnType>;
     sapiDeleteUserDataStream(params?: {}): Promise<implicitReturnType>;
     sapiDeleteUserDataStreamIsolated(params?: {}): Promise<implicitReturnType>;
+    sapiGetCopyTradingFuturesUserStatus(params?: {}): Promise<implicitReturnType>;
+    sapiGetCopyTradingFuturesLeadSymbol(params?: {}): Promise<implicitReturnType>;
     sapiGetSystemStatus(params?: {}): Promise<implicitReturnType>;
     sapiGetAccountInfo(params?: {}): Promise<implicitReturnType>;
     sapiGetAccountSnapshot(params?: {}): Promise<implicitReturnType>;

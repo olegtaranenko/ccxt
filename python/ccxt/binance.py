@@ -496,6 +496,9 @@ class binance(Exchange, ImplicitAPI):
                     # UID(sapi) request rate limit of 180 000 per minute
                     # 1 UID(sapi) => cost = 0.006667 =>(1000 / (50 * 0.006667)) * 60 = 180000
                     'get': {
+                        # copy trading
+                        'copyTrading/futures/userStatus': 2,
+                        'copyTrading/futures/leadSymbol': 2,
                         'system/status': 0.1,
                         # these endpoints require self.apiKey
                         'account/info': 0.1,

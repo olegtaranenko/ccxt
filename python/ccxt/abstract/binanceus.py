@@ -329,6 +329,8 @@ class ImplicitAPI:
     sapi_delete_custodian_cancelocoorder = sapiDeleteCustodianCancelOcoOrder = Entry('custodian/cancelOcoOrder', 'sapi', 'DELETE', {'cost': 1})
     sapi_delete_custodian_cancelorder = sapiDeleteCustodianCancelOrder = Entry('custodian/cancelOrder', 'sapi', 'DELETE', {'cost': 1})
     sapi_delete_custodian_cancelordersbysymbol = sapiDeleteCustodianCancelOrdersBySymbol = Entry('custodian/cancelOrdersBySymbol', 'sapi', 'DELETE', {'cost': 1})
+    sapi_get_copytrading_futures_userstatus = sapiGetCopyTradingFuturesUserStatus = Entry('copyTrading/futures/userStatus', 'sapi', 'GET', {'cost': 2})
+    sapi_get_copytrading_futures_leadsymbol = sapiGetCopyTradingFuturesLeadSymbol = Entry('copyTrading/futures/leadSymbol', 'sapi', 'GET', {'cost': 2})
     sapi_get_system_status = sapiGetSystemStatus = Entry('system/status', 'sapi', 'GET', {'cost': 0.1})
     sapi_get_account_info = sapiGetAccountInfo = Entry('account/info', 'sapi', 'GET', {'cost': 0.1})
     sapi_get_accountsnapshot = sapiGetAccountSnapshot = Entry('accountSnapshot', 'sapi', 'GET', {'cost': 240})

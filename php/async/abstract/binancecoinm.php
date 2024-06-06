@@ -979,6 +979,12 @@ abstract class binancecoinm extends \ccxt\async\binance {
     public function sapi_delete_userdatastream_isolated($params = array()) {
         return $this->request('userDataStream/isolated', 'sapi', 'DELETE', $params, null, null, array("cost" => 0.1));
     }
+    public function sapi_get_copytrading_futures_userstatus($params = array()) {
+        return $this->request('copyTrading/futures/userStatus', 'sapi', 'GET', $params, null, null, array("cost" => 2));
+    }
+    public function sapi_get_copytrading_futures_leadsymbol($params = array()) {
+        return $this->request('copyTrading/futures/leadSymbol', 'sapi', 'GET', $params, null, null, array("cost" => 2));
+    }
     public function sapi_get_system_status($params = array()) {
         return $this->request('system/status', 'sapi', 'GET', $params, null, null, array("cost" => 0.1));
     }
@@ -3099,6 +3105,12 @@ abstract class binancecoinm extends \ccxt\async\binance {
     }
     public function sapiDeleteUserDataStreamIsolated($params = array()) {
         return $this->request('userDataStream/isolated', 'sapi', 'DELETE', $params, null, null, array("cost" => 0.1));
+    }
+    public function sapiGetCopyTradingFuturesUserStatus($params = array()) {
+        return $this->request('copyTrading/futures/userStatus', 'sapi', 'GET', $params, null, null, array("cost" => 2));
+    }
+    public function sapiGetCopyTradingFuturesLeadSymbol($params = array()) {
+        return $this->request('copyTrading/futures/leadSymbol', 'sapi', 'GET', $params, null, null, array("cost" => 2));
     }
     public function sapiGetSystemStatus($params = array()) {
         return $this->request('system/status', 'sapi', 'GET', $params, null, null, array("cost" => 0.1));

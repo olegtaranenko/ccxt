@@ -328,6 +328,8 @@ interface binance {
     sapiDeleteCustodianCancelOcoOrder(params?: {}): Promise<implicitReturnType>;
     sapiDeleteCustodianCancelOrder(params?: {}): Promise<implicitReturnType>;
     sapiDeleteCustodianCancelOrdersBySymbol(params?: {}): Promise<implicitReturnType>;
+    sapiGetCopyTradingFuturesUserStatus(params?: {}): Promise<implicitReturnType>;
+    sapiGetCopyTradingFuturesLeadSymbol(params?: {}): Promise<implicitReturnType>;
     sapiGetSystemStatus(params?: {}): Promise<implicitReturnType>;
     sapiGetAccountInfo(params?: {}): Promise<implicitReturnType>;
     sapiGetAccountSnapshot(params?: {}): Promise<implicitReturnType>;

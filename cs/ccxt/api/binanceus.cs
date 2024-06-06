@@ -1646,6 +1646,16 @@ public partial class binanceus : binance
         return await this.callAsync ("sapiDeleteCustodianCancelOrdersBySymbol",parameters);
     }
 
+    public async Task<object> sapiGetCopyTradingFuturesUserStatus (object parameters = null)
+    {
+        return await this.callAsync ("sapiGetCopyTradingFuturesUserStatus",parameters);
+    }
+
+    public async Task<object> sapiGetCopyTradingFuturesLeadSymbol (object parameters = null)
+    {
+        return await this.callAsync ("sapiGetCopyTradingFuturesLeadSymbol",parameters);
+    }
+
     public async Task<object> sapiGetSystemStatus (object parameters = null)
     {
         return await this.callAsync ("sapiGetSystemStatus",parameters);
