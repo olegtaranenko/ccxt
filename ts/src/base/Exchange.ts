@@ -1283,9 +1283,9 @@ export default class Exchange {
         headers = this.setHeaders (headers);
         // log
         if (this.verbose || this.verboseTruncate) {
-            if (typeof this.verboseLogVeto !== 'function' || this.verboseLogVeto ('fetch', method, url, headers, body)) {
+            if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto ('fetch', method, url, headers, body)) {
                 const truncated = getBodyTruncated(body, this.verboseTruncate);
-                this.log ("fetch Request:\n", this.id, method, url, "\nRequestHeaders:\n", headers, "\nRequestBody:\n", truncated, "\n")
+                this.log ("fetch Request:\n", this.id, method, url, "\nRequestHeaders:\n", headers, "\nRequestBody:\n", truncated, "\n");
             }
         }
         // end of proxies & headers
@@ -1385,7 +1385,7 @@ export default class Exchange {
                 this.last_http_response = responseBuffer;
             }
             if (this.verbose || this.verboseTruncate) {
-                if (typeof this.verboseLogVeto !== 'function' || this.verboseLogVeto ('handle', method, url, response)) {
+                if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto ('handle', method, url, response)) {
                     this.log ("handleRestResponse:\n", this.id, method, url, response.status, response.statusText, "\nResponseHeaders:\n", responseHeaders, "ZIP redacted", "\n");
                 }
             }
@@ -1405,9 +1405,9 @@ export default class Exchange {
                 this.last_json_response = json;
             }
             if (this.verbose || this.verboseTruncate) {
-                if (typeof this.verboseLogVeto !== 'function' || this.verboseLogVeto ('response', method, url, response)) {
+                if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto ('response', method, url, response)) {
                     const truncated = getBodyTruncated (bodyText, this.verboseTruncate);
-                    this.log ("handleRestResponse:\n", this.id, method, url, response.status, response.statusText, "\nResponseHeaders:\n", responseHeaders, "\nResponseBody:\n", truncated, "\n")
+                    this.log ("handleRestResponse:\n", this.id, method, url, response.status, response.statusText, "\nResponseHeaders:\n", responseHeaders, "\nResponseBody:\n", truncated, "\n");
                 }
             }
             const skipFurtherErrorHandling = this.handleErrors (response.status, response.statusText, url, method, responseHeaders, responseBody, json, requestHeaders, requestBody);
@@ -6592,7 +6592,7 @@ export default class Exchange {
                     const response = await this[method] (symbol, undefined, maxEntriesPerRequest, params);
                     const responseLength = response.length;
                     if (this.verbose || this.verboseTruncate) {
-                        if (typeof this.verboseLogVeto !== 'function' || this.verboseLogVeto ('pagination', method, undefined, response)) {
+                        if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto ('pagination', method, undefined, response)) {
                             let backwardMessage = 'Dynamic pagination call ' + this.numberToString (calls) + ' method ' + method + ' response length ' + this.numberToString (responseLength);
                             if (paginationTimestamp !== undefined) {
                                 backwardMessage += ' timestamp ' + this.numberToString (paginationTimestamp);
@@ -6615,7 +6615,7 @@ export default class Exchange {
                     const response = await this[method] (symbol, paginationTimestamp, maxEntriesPerRequest, params);
                     const responseLength = response.length;
                     if (this.verbose || this.verboseTruncate) {
-                        if (typeof this.verboseLogVeto !== 'function' || this.verboseLogVeto ('pagination', method, undefined, response)) {
+                        if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto ('pagination', method, undefined, response)) {
                             let forwardMessage = 'Dynamic pagination call ' + this.numberToString (calls) + ' method ' + method + ' response length ' + this.numberToString (responseLength);
                             if (paginationTimestamp !== undefined) {
                                 forwardMessage += ' timestamp ' + this.numberToString (paginationTimestamp);
@@ -6740,7 +6740,7 @@ export default class Exchange {
                 errors = 0;
                 const responseLength = response.length;
                 if (this.verbose || this.verboseTruncate) {
-                    if (typeof this.verboseLogVeto !== 'function' || this.verboseLogVeto ('pagination', method, undefined, response)) {
+                    if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto ('pagination', method, undefined, response)) {
                         const cursorString = (cursorValue === undefined) ? '' : cursorValue;
                         const iteration = (i + 1);
                         const cursorMessage = 'Cursor pagination call ' + iteration.toString () + ' method ' + method + ' response length ' + responseLength.toString () + ' cursor ' + cursorString;
@@ -6789,7 +6789,7 @@ export default class Exchange {
                 errors = 0;
                 const responseLength = response.length;
                 if (this.verbose || this.verboseTruncate) {
-                    if (typeof this.verboseLogVeto !== 'function' || this.verboseLogVeto ('pagination', method, undefined, response)) {
+                    if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto ('pagination', method, undefined, response)) {
                         const iteration = (i + 1).toString ();
                         const incrementalMessage = 'Incremental pagination call ' + iteration + ' method ' + method + ' response length ' + responseLength.toString ();
                         this.log (incrementalMessage);

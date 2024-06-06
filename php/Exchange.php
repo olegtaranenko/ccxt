@@ -6799,7 +6799,7 @@ class Exchange {
                     $response = $this->$method ($symbol, null, $maxEntriesPerRequest, $params);
                     $responseLength = count($response);
                     if ($this->verbose || $this->verboseTruncate) {
-                        if (!is_callable($this->verboseLogVeto) || $this->verboseLogVeto ('pagination', $method, null, $response)) {
+                        if (!is_callable($this->verboseLogVeto) || !$this->verboseLogVeto ('pagination', $method, null, $response)) {
                             $backwardMessage = 'Dynamic pagination call ' . $this->number_to_string($calls) . ' $method ' . $method . ' $response length ' . $this->number_to_string($responseLength);
                             if ($paginationTimestamp !== null) {
                                 $backwardMessage .= ' timestamp ' . $this->number_to_string($paginationTimestamp);
@@ -6822,7 +6822,7 @@ class Exchange {
                     $response = $this->$method ($symbol, $paginationTimestamp, $maxEntriesPerRequest, $params);
                     $responseLength = count($response);
                     if ($this->verbose || $this->verboseTruncate) {
-                        if (!is_callable($this->verboseLogVeto) || $this->verboseLogVeto ('pagination', $method, null, $response)) {
+                        if (!is_callable($this->verboseLogVeto) || !$this->verboseLogVeto ('pagination', $method, null, $response)) {
                             $forwardMessage = 'Dynamic pagination call ' . $this->number_to_string($calls) . ' $method ' . $method . ' $response length ' . $this->number_to_string($responseLength);
                             if ($paginationTimestamp !== null) {
                                 $forwardMessage .= ' timestamp ' . $this->number_to_string($paginationTimestamp);
@@ -6947,7 +6947,7 @@ class Exchange {
                 $errors = 0;
                 $responseLength = count($response);
                 if ($this->verbose || $this->verboseTruncate) {
-                    if (!is_callable($this->verboseLogVeto) || $this->verboseLogVeto ('pagination', $method, null, $response)) {
+                    if (!is_callable($this->verboseLogVeto) || !$this->verboseLogVeto ('pagination', $method, null, $response)) {
                         $cursorString = ($cursorValue === null) ? '' : $cursorValue;
                         $iteration = ($i + 1);
                         $cursorMessage = 'Cursor pagination call ' . (string) $iteration . ' $method ' . $method . ' $response length ' . (string) $responseLength . ' cursor ' . $cursorString;
@@ -6996,7 +6996,7 @@ class Exchange {
                 $errors = 0;
                 $responseLength = count($response);
                 if ($this->verbose || $this->verboseTruncate) {
-                    if (!is_callable($this->verboseLogVeto) || $this->verboseLogVeto ('pagination', $method, null, $response)) {
+                    if (!is_callable($this->verboseLogVeto) || !$this->verboseLogVeto ('pagination', $method, null, $response)) {
                         $iteration = ($i . (string) 1);
                         $incrementalMessage = 'Incremental pagination call ' . $iteration . ' $method ' . $method . ' $response length ' . (string) $responseLength;
                         $this->log($incrementalMessage);
