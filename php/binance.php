@@ -9366,7 +9366,7 @@ class binance extends Exchange {
         $notional = $this->parse_number($notionalStringAbs);
         $contractsAbs = Precise::string_abs($this->safe_string($position, 'positionAmt'));
         $contracts = $this->parse_number($contractsAbs);
-        $unrealizedPnlString = $this->safe_string($position, 'unRealizedProfit');
+        $unrealizedPnlString = $this->safe_string_2($position, 'unRealizedProfit', 'unrealizedProfit');
         $unrealizedPnl = $this->parse_number($unrealizedPnlString);
         $leverageString = $this->safe_string($position, 'leverage');
         $leverage = intval($leverageString);
@@ -9386,6 +9386,10 @@ class binance extends Exchange {
         $contractSizeString = $this->number_to_string($contractSize);
         // to notionalValue
         $linear = (is_array($position) && array_key_exists('notional', $position));
+        $isolatedBool = $this->safe_bool($position, 'isolated');
+        if ($marginMode === null && $isolatedBool !== null) {
+            $marginMode = $isolatedBool ? 'isolated' : 'cross';
+        }
         if ($marginMode === 'cross') {
             // calculate $collateral
             $precision = $this->safe_dict($market, 'precision', array());

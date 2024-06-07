@@ -9614,14 +9614,14 @@ export default class binance extends Exchange {
         const notional = this.parseNumber(notionalStringAbs);
         const contractsAbs = Precise.stringAbs(this.safeString(position, 'positionAmt'));
         const contracts = this.parseNumber(contractsAbs);
-        const unrealizedPnlString = this.safeString(position, 'unRealizedProfit');
+        const unrealizedPnlString = this.safeString2(position, 'unRealizedProfit', 'unrealizedProfit');
         const unrealizedPnl = this.parseNumber(unrealizedPnlString);
         const leverageString = this.safeString(position, 'leverage');
         const leverage = parseInt(leverageString);
         const liquidationPriceString = this.omitZero(this.safeString(position, 'liquidationPrice'));
         const liquidationPrice = this.parseNumber(liquidationPriceString);
         let collateralString = undefined;
-        const marginMode = this.safeString(position, 'marginType');
+        let marginMode = this.safeString(position, 'marginType');
         let side = undefined;
         if (Precise.stringGt(notionalString, '0')) {
             side = 'long';
@@ -9635,6 +9635,10 @@ export default class binance extends Exchange {
         const contractSizeString = this.numberToString(contractSize);
         // as oppose to notionalValue
         const linear = ('notional' in position);
+        const isolatedBool = this.safeBool(position, 'isolated');
+        if (marginMode === undefined && isolatedBool !== undefined) {
+            marginMode = isolatedBool ? 'isolated' : 'cross';
+        }
         if (marginMode === 'cross') {
             // calculate collateral
             const precision = this.safeDict(market, 'precision', {});

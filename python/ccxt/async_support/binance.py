@@ -8937,7 +8937,7 @@ class binance(Exchange, ImplicitAPI):
         notional = self.parse_number(notionalStringAbs)
         contractsAbs = Precise.string_abs(self.safe_string(position, 'positionAmt'))
         contracts = self.parse_number(contractsAbs)
-        unrealizedPnlString = self.safe_string(position, 'unRealizedProfit')
+        unrealizedPnlString = self.safe_string_2(position, 'unRealizedProfit', 'unrealizedProfit')
         unrealizedPnl = self.parse_number(unrealizedPnlString)
         leverageString = self.safe_string(position, 'leverage')
         leverage = int(leverageString)
@@ -8956,6 +8956,9 @@ class binance(Exchange, ImplicitAPI):
         contractSizeString = self.number_to_string(contractSize)
         # to notionalValue
         linear = ('notional' in position)
+        isolatedBool = self.safe_bool(position, 'isolated')
+        if marginMode is None and isolatedBool is not None:
+            marginMode = 'isolated' if isolatedBool else 'cross'
         if marginMode == 'cross':
             # calculate collateral
             precision = self.safe_dict(market, 'precision', {})
