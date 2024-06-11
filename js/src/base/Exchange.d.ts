@@ -506,6 +506,10 @@ export default class Exchange {
             swap: any;
             transfer: any;
             watchBalance: any;
+            watchLiquidations: any;
+            watchLiquidationsForSymbols: any;
+            watchMyLiquidations: any;
+            watchMyLiquidationsForSymbols: any;
             watchMyTrades: any;
             watchOHLCV: any;
             watchOHLCVForSymbols: any;
@@ -520,10 +524,6 @@ export default class Exchange {
             watchTickers: any;
             watchTrades: any;
             watchTradesForSymbols: any;
-            watchLiquidations: any;
-            watchLiquidationsForSymbols: any;
-            watchMyLiquidations: any;
-            watchMyLiquidationsForSymbols: any;
             withdraw: any;
             ws: any;
         };
