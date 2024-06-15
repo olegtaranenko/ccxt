@@ -294,6 +294,8 @@ interface binance {
     privatePostOrderOco(params?: {}): Promise<implicitReturnType>;
     privatePostOrderTest(params?: {}): Promise<implicitReturnType>;
     privatePostOrderListOco(params?: {}): Promise<implicitReturnType>;
+    privatePostOrderListOto(params?: {}): Promise<implicitReturnType>;
+    privatePostOrderListOtoco(params?: {}): Promise<implicitReturnType>;
     privatePostSorOrder(params?: {}): Promise<implicitReturnType>;
     privatePostSorOrderTest(params?: {}): Promise<implicitReturnType>;
     publicDeleteUserDataStream(params?: {}): Promise<implicitReturnType>;

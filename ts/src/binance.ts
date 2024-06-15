@@ -484,6 +484,8 @@ export default class binance extends Exchange {
                         'order/oco': 0.2,
                         'order/test': 0.2,
                         'orderList/oco': 0.2,
+                        'orderList/oto': 0.2,
+                        'orderList/otoco': 0.2,
                         'sor/order': 0.2,
                         'sor/order/test': 0.2,
                     },
