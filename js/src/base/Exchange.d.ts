@@ -295,6 +295,7 @@ export default class Exchange {
         };
         countries: any;
         currencies: {};
+        dex: boolean;
         enableRateLimit: boolean;
         exceptions: any;
         fees: {

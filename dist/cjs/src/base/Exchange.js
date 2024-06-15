@@ -383,6 +383,7 @@ class Exchange {
             },
             'countries': undefined,
             'currencies': {},
+            'dex': false,
             'enableRateLimit': true,
             'exceptions': undefined,
             'fees': {
