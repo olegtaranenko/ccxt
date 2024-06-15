@@ -589,6 +589,7 @@ export default class Exchange {
             },
             'countries': undefined,
             'currencies': {}, // to be filled manually or by fetchMarkets
+            'dex': false,
             'enableRateLimit': true,
             'exceptions': undefined,
             'fees': {
