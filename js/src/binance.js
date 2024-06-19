@@ -8,7 +8,7 @@
 import Exchange from './abstract/binance.js';
 import { AccountSuspended, ArgumentsRequired, AuthenticationError, BadRequest, BadResponse, BadSymbol, DDoSProtection, ExchangeError, InsufficientFunds, InvalidNonce, InvalidOrder, MarginModeAlreadySet, MarketClosed, NotSupported, OnMaintenance, OperationFailed, OperationRejected, OrderImmediatelyFillable, OrderNotFillable, OrderNotFound, PermissionDenied, RateLimitExceeded, RequestTimeout, } from './base/errors.js';
 import { Precise } from './base/Precise.js';
-import { DECIMAL_PLACES, TRUNCATE } from './base/functions/number.js';
+import { TICK_SIZE, TRUNCATE } from './base/functions/number.js';
 import { sha256 } from './static_dependencies/noble-hashes/sha256.js';
 import { rsa } from './base/functions/rsa.js';
 import { eddsa } from './base/functions/crypto.js';
@@ -2384,7 +2384,7 @@ export default class binance extends Exchange {
                 'timeDifference': 0,
                 'warnOnFetchOpenOrdersWithoutSymbol': true,
             },
-            'precisionMode': DECIMAL_PLACES,
+            'precisionMode': TICK_SIZE,
             'pro': true,
             'rateLimit': 50,
             'timeframes': {
@@ -2813,7 +2813,7 @@ export default class binance extends Exchange {
                     'deposit': depositEnable,
                     'withdraw': withdrawEnable,
                     'fee': this.parseNumber(fee),
-                    'precision': minPrecision,
+                    'precision': this.parseNumber(precisionTick),
                     'limits': {
                         'withdraw': {
                             'min': this.safeNumber(networkItem, 'withdrawMin'),
@@ -2828,10 +2828,6 @@ export default class binance extends Exchange {
             }
             const trading = this.safeBool(entry, 'trading');
             const active = (isWithdrawEnabled && isDepositEnabled && trading);
-            let maxDecimalPlaces = undefined;
-            if (minPrecision !== undefined) {
-                maxDecimalPlaces = parseInt(this.numberToString(this.precisionFromString(minPrecision)));
-            }
             result[code] = {
                 'active': active,
                 'code': code,
@@ -2843,7 +2839,7 @@ export default class binance extends Exchange {
                 'limits': this.limits,
                 'name': name,
                 'networks': networks,
-                'precision': maxDecimalPlaces,
+                'precision': this.parseNumber(minPrecision),
                 'withdraw': isWithdrawEnabled,
             };
         }
@@ -3231,10 +3227,10 @@ export default class binance extends Exchange {
             'option': option,
             'optionType': this.safeStringLower(market, 'side'),
             'precision': {
-                'amount': this.safeInteger2(market, 'quantityPrecision', 'quantityScale'),
-                'base': this.safeInteger(market, 'baseAssetPrecision'),
-                'price': this.safeInteger2(market, 'pricePrecision', 'priceScale'),
-                'quote': this.safeInteger(market, 'quotePrecision'),
+                'amount': this.parseNumber(this.parsePrecision(this.safeString2(market, 'quantityPrecision', 'quantityScale'))),
+                'base': this.parseNumber(this.parsePrecision(this.safeString(market, 'baseAssetPrecision'))),
+                'price': this.parseNumber(this.parsePrecision(this.safeString2(market, 'pricePrecision', 'priceScale'))),
+                'quote': this.parseNumber(this.parsePrecision(this.safeString(market, 'quotePrecision'))),
             },
             'quote': quote,
             'quoteId': quoteId,
@@ -3257,12 +3253,11 @@ export default class binance extends Exchange {
                 'min': this.safeNumber(filter, 'minPrice'),
                 'max': this.safeNumber(filter, 'maxPrice'),
             };
-            entry['precision']['price'] = this.precisionFromString(filter['tickSize']);
+            entry['precision']['price'] = this.safeNumber(filter, 'tickSize');
         }
         if ('LOT_SIZE' in filtersByType) {
             const filter = this.safeDict(filtersByType, 'LOT_SIZE', {});
-            const stepSize = this.safeString(filter, 'stepSize');
-            entry['precision']['amount'] = this.precisionFromString(stepSize);
+            entry['precision']['amount'] = this.safeNumber(filter, 'stepSize');
             entry['limits']['amount'] = {
                 'min': this.safeNumber(filter, 'minQty'),
                 'max': this.safeNumber(filter, 'maxQty'),
@@ -9608,7 +9603,7 @@ export default class binance extends Exchange {
                 const rightSide = Precise.stringSub(Precise.stringMul(Precise.stringDiv('1', entryPriceSignString), size), walletBalance);
                 liquidationPriceStringRaw = Precise.stringDiv(leftSide, rightSide);
             }
-            const pricePrecision = market['precision']['price'];
+            const pricePrecision = this.precisionFromString(this.safeString(market['precision'], 'price'));
             const pricePrecisionPlusOne = pricePrecision + 1;
             const pricePrecisionPlusOneString = pricePrecisionPlusOne.toString();
             // round half up
@@ -9785,8 +9780,7 @@ export default class binance extends Exchange {
                 }
                 const inner = Precise.stringMul(liquidationPriceString, onePlusMaintenanceMarginPercentageString);
                 const leftSide = Precise.stringAdd(inner, entryPriceSignString);
-                const pricePrecision = this.safeInteger(precision, 'price');
-                const quotePrecision = this.safeInteger(precision, 'quote', pricePrecision);
+                const quotePrecision = this.precisionFromString(this.safeString2(precision, 'quote', 'price'));
                 if (quotePrecision !== undefined) {
                     collateralString = Precise.stringDiv(Precise.stringMul(leftSide, contractsAbs), '1', quotePrecision);
                 }
@@ -9804,7 +9798,7 @@ export default class binance extends Exchange {
                 }
                 const leftSide = Precise.stringMul(contractsAbs, contractSizeString);
                 const rightSide = Precise.stringSub(Precise.stringDiv('1', entryPriceSignString), Precise.stringDiv(onePlusMaintenanceMarginPercentageString, liquidationPriceString));
-                const basePrecision = this.safeInteger(precision, 'base');
+                const basePrecision = this.precisionFromString(this.safeString(precision, 'base'));
                 if (basePrecision !== undefined) {
                     collateralString = Precise.stringDiv(Precise.stringMul(leftSide, rightSide), '1', basePrecision);
                 }
@@ -12988,7 +12982,7 @@ export default class binance extends Exchange {
                 },
                 'name': undefined,
                 'networks': undefined,
-                'precision': this.safeInteger(entry, 'fraction'),
+                'precision': this.parseNumber(this.parsePrecision(this.safeString(entry, 'fraction'))),
                 'type': undefined,
                 'withdraw': undefined,
             };
