@@ -9,6 +9,7 @@ class binanceusdm extends binance {
     describe() {
         return this.deepExtend(super.describe(), {
             // https://binance-docs.github.io/apidocs/futures/en/#error-codes
+            // https://developers.binance.com/docs/derivatives/usds-margined-futures/error-code
             'exceptions': {
                 'exact': {
                     '-5021': errors.InvalidOrder,
@@ -40,6 +41,7 @@ class binanceusdm extends binance {
                 'doc': [
                     'https://binance-docs.github.io/apidocs/futures/en/',
                     'https://binance-docs.github.io/apidocs/spot/en',
+                    'https://developers.binance.com/en',
                 ],
                 'logo': 'https://user-images.githubusercontent.com/1294454/117738721-668c8d80-b205-11eb-8c49-3fad84c4a07f.jpg',
             },
