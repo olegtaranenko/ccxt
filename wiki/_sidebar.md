@@ -98,6 +98,7 @@
 	- [tokocrypto](exchanges/tokocrypto.md)
 	- [tradeogre](exchanges/tradeogre.md)
 	- [upbit](exchanges/upbit.md)
+	- [vertex](exchanges/vertex.md)
 	- [wavesexchange](exchanges/wavesexchange.md)
 	- [wazirx](exchanges/wazirx.md)
 	- [whitebit](exchanges/whitebit.md)

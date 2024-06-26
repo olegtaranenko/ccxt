@@ -293,17 +293,7 @@ export default class binance extends Exchange {
         rate: number;
         timestamp: number;
     };
-    parseIsolatedBorrowRate(info: any, market?: Market): {
-        info: any;
-        symbol: string;
-        base: string;
-        baseRate: number;
-        quote: string;
-        quoteRate: number;
-        period: number;
-        timestamp: any;
-        datetime: any;
-    };
+    parseIsolatedBorrowRate(info: Dict, market?: Market): IsolatedBorrowRate;
     createGiftCode(code: string, amount: any, params?: {}): Promise<{
         amount: any;
         code: string;
