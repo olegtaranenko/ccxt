@@ -2158,7 +2158,7 @@ class binance(ccxt.async_support.binance):
         :param str type: 'market' or 'limit'
         :param str side: 'buy' or 'sell'
         :param float amount: how much of currency you want to trade in units of base currency
-        :param float|None [price]: the price at which the order is to be fullfilled, in units of the quote currency, ignored in market orders
+        :param float|None [price]: the price at which the order is to be fulfilled, in units of the quote currency, ignored in market orders
         :param dict [params]: extra parameters specific to the exchange API endpoint
         :param boolean params['test']: test order, default False
         :param boolean params['returnRateLimits']: set to True to return rate limit information, default False
@@ -2301,7 +2301,7 @@ class binance(ccxt.async_support.binance):
         :param str type: 'market' or 'limit'
         :param str side: 'buy' or 'sell'
         :param float amount: how much of the currency you want to trade in units of the base currency
-        :param float|None [price]: the price at which the order is to be fullfilled, in units of the quote currency, ignored in market orders
+        :param float|None [price]: the price at which the order is to be fulfilled, in units of the quote currency, ignored in market orders
         :param dict [params]: extra parameters specific to the exchange API endpoint
         :returns dict: an `order structure <https://docs.ccxt.com/#/?id=order-structure>`
         """
@@ -3424,7 +3424,7 @@ class binance(ccxt.async_support.binance):
             rejected = True
             # private endpoint uses id
             client.reject(e, id)
-            # public endpoint stores messageHash in subscriptios
+            # public endpoint stores messageHash in subscriptions
             subscriptionKeys = list(client.subscriptions.keys())
             for i in range(0, len(subscriptionKeys)):
                 subscriptionHash = subscriptionKeys[i]
