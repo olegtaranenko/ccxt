@@ -1926,7 +1926,7 @@ public partial class kucoin : Exchange
         * @param {string} type 'limit' or 'market'
         * @param {string} side 'buy' or 'sell'
         * @param {float} amount the amount of currency to trade
-        * @param {float} [price] *ignored in "market" orders* the price at which the order is to be fullfilled at in units of the quote currency
+        * @param {float} [price] the price at which the order is to be fulfilled, in units of the quote currency, ignored in market orders
         * @param {object} [params]  extra parameters specific to the exchange API endpoint
         * @param {float} [params.triggerPrice] The price at which a trigger order is triggered at
         * @param {string} [params.marginMode] 'cross', // cross (cross mode) and isolated (isolated mode), set to cross by default, the isolated mode will be released soon, stay tuned
@@ -2264,7 +2264,7 @@ public partial class kucoin : Exchange
         * @param {string} type not used
         * @param {string} side not used
         * @param {float} amount how much of the currency you want to trade in units of the base currency
-        * @param {float} [price] the price at which the order is to be fullfilled, in units of the base currency, ignored in market orders
+        * @param {float} [price] the price at which the order is to be fulfilled, in units of the quote currency, ignored in market orders
         * @param {object} [params] extra parameters specific to the exchange API endpoint
         * @param {string} [params.clientOrderId] client order id, defaults to id if not passed
         * @returns {object} an [order structure]{@link https://docs.ccxt.com/#/?id=order-structure}
@@ -2477,9 +2477,9 @@ public partial class kucoin : Exchange
         await this.loadMarkets();
         object lowercaseStatus = ((string)status).ToLower();
         object until = this.safeInteger(parameters, "until");
-        object stop = this.safeBool(parameters, "stop", false);
+        object stop = this.safeBool2(parameters, "stop", "trigger", false);
         object hf = this.safeBool(parameters, "hf", false);
-        parameters = this.omit(parameters, new List<object>() {"stop", "hf", "until"});
+        parameters = this.omit(parameters, new List<object>() {"stop", "hf", "until", "trigger"});
         var marginModequeryVariable = this.handleMarginModeAndParams("fetchOrdersByStatus", parameters);
         var marginMode = ((IList<object>) marginModequeryVariable)[0];
         var query = ((IList<object>) marginModequeryVariable)[1];
@@ -2681,7 +2681,7 @@ public partial class kucoin : Exchange
         await this.loadMarkets();
         object request = new Dictionary<string, object>() {};
         object clientOrderId = this.safeString2(parameters, "clientOid", "clientOrderId");
-        object stop = this.safeBool(parameters, "stop", false);
+        object stop = this.safeBool2(parameters, "stop", "trigger", false);
         object hf = this.safeBool(parameters, "hf", false);
         object market = null;
         if (isTrue(!isEqual(symbol, null)))
@@ -2696,7 +2696,7 @@ public partial class kucoin : Exchange
             }
             ((IDictionary<string,object>)request)["symbol"] = getValue(market, "id");
         }
-        parameters = this.omit(parameters, new List<object>() {"stop", "hf", "clientOid", "clientOrderId"});
+        parameters = this.omit(parameters, new List<object>() {"stop", "hf", "clientOid", "clientOrderId", "trigger"});
         object response = null;
         if (isTrue(!isEqual(clientOrderId, null)))
         {

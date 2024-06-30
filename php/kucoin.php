@@ -1974,7 +1974,7 @@ class kucoin extends Exchange {
          * @param {string} $type 'limit' or 'market'
          * @param {string} $side 'buy' or 'sell'
          * @param {float} $amount the $amount of currency to trade
-         * @param {float} [$price] *ignored in "market" orders* the $price at which the order is to be fullfilled at in units of the quote currency
+         * @param {float} [$price] the $price at which the order is to be fulfilled, in units of the quote currency, ignored in $market orders
          * @param {array} [$params]  extra parameters specific to the exchange API endpoint
          * @param {float} [$params->triggerPrice] The $price at which a trigger order is triggered at
          * @param {string} [$params->marginMode] 'cross', // cross (cross mode) and isolated (isolated mode), set to cross by default, the isolated mode will be released soon, stay tuned
@@ -2250,7 +2250,7 @@ class kucoin extends Exchange {
          * @param {string} $type not used
          * @param {string} $side not used
          * @param {float} $amount how much of the currency you want to trade in units of the base currency
-         * @param {float} [$price] the $price at which the order is to be fullfilled, in units of the base currency, ignored in $market orders
+         * @param {float} [$price] the $price at which the order is to be fulfilled, in units of the quote currency, ignored in $market orders
          * @param {array} [$params] extra parameters specific to the exchange API endpoint
          * @param {string} [$params->clientOrderId] client order $id, defaults to $id if not passed
          * @return {array} an ~@link https://docs.ccxt.com/#/?$id=order-structure order structure~
@@ -2465,9 +2465,9 @@ class kucoin extends Exchange {
         $this->load_markets();
         $lowercaseStatus = strtolower($status);
         $until = $this->safe_integer($params, 'until');
-        $stop = $this->safe_bool($params, 'stop', false);
+        $stop = $this->safe_bool_2($params, 'stop', 'trigger', false);
         $hf = $this->safe_bool($params, 'hf', false);
-        $params = $this->omit($params, array( 'stop', 'hf', 'until' ));
+        $params = $this->omit($params, array( 'stop', 'hf', 'until', 'trigger' ));
         list($marginMode, $query) = $this->handle_margin_mode_and_params('fetchOrdersByStatus', $params);
         if ($lowercaseStatus === 'open') {
             $lowercaseStatus = 'active';
@@ -2637,7 +2637,7 @@ class kucoin extends Exchange {
         $this->load_markets();
         $request = array();
         $clientOrderId = $this->safe_string_2($params, 'clientOid', 'clientOrderId');
-        $stop = $this->safe_bool($params, 'stop', false);
+        $stop = $this->safe_bool_2($params, 'stop', 'trigger', false);
         $hf = $this->safe_bool($params, 'hf', false);
         $market = null;
         if ($symbol !== null) {
@@ -2649,7 +2649,7 @@ class kucoin extends Exchange {
             }
             $request['symbol'] = $market['id'];
         }
-        $params = $this->omit($params, array( 'stop', 'hf', 'clientOid', 'clientOrderId' ));
+        $params = $this->omit($params, array( 'stop', 'hf', 'clientOid', 'clientOrderId', 'trigger' ));
         $response = null;
         if ($clientOrderId !== null) {
             $request['clientOid'] = $clientOrderId;
