@@ -59,6 +59,10 @@ export interface MarketInterface {
     lowercaseId?: string;
     maker?: Num;
     margin: boolean;
+    marginMode?: {
+        cross: boolean;
+        isolated: boolean;
+    };
     numericId?: Num;
     option: boolean;
     optionType: Str;
