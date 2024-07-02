@@ -14,8 +14,9 @@ export default class Exchange {
     options: {
         [key: string]: any;
     };
-    throttleProp: any;
     api: any;
+    sleep: (ms: any) => Promise<unknown>;
+    throttleProp: any;
     http_proxy: string;
     http_proxy_callback: any;
     httpProxy: string;

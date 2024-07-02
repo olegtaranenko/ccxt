@@ -22,7 +22,7 @@ import totp from './functions/totp.js';
 import ethers from '../static_dependencies/ethers/index.js';
 import { TypedDataEncoder } from '../static_dependencies/ethers/hash/index.js';
 import { SecureRandom } from "../static_dependencies/jsencrypt/lib/jsbn/rng.js";
-const { aggregate, arrayConcat, base16ToBinary, base58ToBinary, base64ToBinary, base64ToString, binaryConcat, binaryConcatArray, binaryToBase16, binaryToBase58, binaryToBase64, capitalize, clone, crc32, DECIMAL_PLACES, decimalToPrecision, decode, deepExtend, ecdsa, encode, extend, extractParams, filterBy, flatten, groupBy, hash, hmac, implodeParams, inArray, indexBy, isEmpty, isJsonEncodedObject, isNode, iso8601, json, keysort, merge, microseconds, milliseconds, NO_PADDING, now, numberToBE, numberToLE, numberToString, omit, omitZero, ordered, packb, parse8601, parseDate, parseTimeframe, precisionFromString, rawencode, ROUND, safeFloat, safeFloat2, safeFloatN, safeInteger, safeInteger2, safeIntegerN, safeIntegerProduct, safeIntegerProduct2, safeIntegerProductN, safeString, safeString2, safeStringLower, safeStringLower2, safeStringLowerN, safeStringN, safeStringUpper, safeStringUpper2, safeStringUpperN, safeTimestamp, safeTimestamp2, safeTimestampN, safeValue, safeValue2, safeValueN, seconds, SIGNIFICANT_DIGITS, sortBy, sortBy2, stringToBase64, strip, sum, Throttler, TICK_SIZE, toArray, TRUNCATE, unCamelCase, unique, urlencode, urlencodeBase64, urlencodeNested, urlencodeWithArrayRepeat, uuid, uuid16, uuid22, uuidv1, ymd, ymdhms, yymmdd, yyyymmdd } = functions;
+const { aggregate, arrayConcat, base16ToBinary, base58ToBinary, base64ToBinary, base64ToString, binaryConcat, binaryConcatArray, binaryToBase16, binaryToBase58, binaryToBase64, capitalize, clone, crc32, DECIMAL_PLACES, decimalToPrecision, decode, deepExtend, ecdsa, encode, extend, extractParams, filterBy, flatten, groupBy, hash, hmac, implodeParams, inArray, indexBy, isEmpty, isJsonEncodedObject, isNode, iso8601, json, keysort, merge, microseconds, milliseconds, NO_PADDING, now, numberToBE, numberToLE, numberToString, omit, omitZero, ordered, packb, parse8601, parseDate, parseTimeframe, precisionFromString, rawencode, ROUND, safeFloat, safeFloat2, safeFloatN, safeInteger, safeInteger2, safeIntegerN, safeIntegerProduct, safeIntegerProduct2, safeIntegerProductN, safeString, safeString2, safeStringLower, safeStringLower2, safeStringLowerN, safeStringN, safeStringUpper, safeStringUpper2, safeStringUpperN, safeTimestamp, safeTimestamp2, safeTimestampN, safeValue, safeValue2, safeValueN, seconds, SIGNIFICANT_DIGITS, sleep, sortBy, sortBy2, stringToBase64, strip, sum, Throttler, TICK_SIZE, toArray, TRUNCATE, unCamelCase, unique, urlencode, urlencodeBase64, urlencodeNested, urlencodeWithArrayRepeat, uuid, uuid16, uuid22, uuidv1, ymd, ymdhms, yymmdd, yyyymmdd } = functions;
 const TRUNCATE_LENGTH = 8192;
 export function getBodyTruncated(body, verboseTruncate) {
     if (verboseTruncate && body) {
@@ -39,8 +39,9 @@ export function getBodyTruncated(body, verboseTruncate) {
  */
 export default class Exchange {
     constructor(userConfig = {}) {
-        this.throttleProp = undefined;
         this.api = undefined;
+        this.sleep = sleep;
+        this.throttleProp = undefined;
         this.user_agent = undefined;
         this.userAgent = undefined;
         //
@@ -3851,7 +3852,30 @@ export default class Exchange {
         this.last_request_headers = request['headers'];
         this.last_request_body = request['body'];
         this.last_request_url = request['url'];
-        return await this.fetch(request['url'], request['method'], request['headers'], request['body']);
+        let retries = undefined;
+        [retries, params] = this.handleOptionAndParams(params, path, 'maxRetriesOnFailure', 0);
+        let retryDelay = undefined;
+        [retryDelay, params] = this.handleOptionAndParams(params, path, 'maxRetriesOnFailureDelay', 0);
+        for (let i = 0; i < retries + 1; i++) {
+            try {
+                return await this.fetch(request['url'], request['method'], request['headers'], request['body']);
+            }
+            catch (e) {
+                if (e instanceof NetworkError) {
+                    if (i < retries) {
+                        if (this.verbose) {
+                            this.log('Request failed with the error: ' + e.toString() + ', retrying ' + (i + 1).toString() + ' of ' + retries.toString() + '...');
+                        }
+                        if ((retryDelay !== undefined) && (retryDelay !== 0)) {
+                            await this.sleep(retryDelay);
+                        }
+                        continue;
+                    }
+                }
+                throw e;
+            }
+        }
+        return undefined; // this line is never reached, but exists for c# value return requirement
     }
     async request(path, api = 'public', method = 'GET', params = {}, headers = undefined, body = undefined, config = {}) {
         return await this.fetch2(path, api, method, params, headers, body, config);
