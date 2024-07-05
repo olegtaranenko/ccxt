@@ -94,6 +94,7 @@ public partial class bingx : Exchange
                     { "subAccount", "https://open-api.{hostname}/openApi" },
                     { "account", "https://open-api.{hostname}/openApi" },
                     { "copyTrading", "https://open-api.{hostname}/openApi" },
+                    { "cswap", "https://open-api.{hostname}/openApi" },
                 } },
                 { "test", new Dictionary<string, object>() {
                     { "swap", "https://open-api-vst.{hostname}/openApi" },
@@ -256,6 +257,36 @@ public partial class bingx : Exchange
                         } },
                     } },
                 } },
+                { "cswap", new Dictionary<string, object>() {
+                    { "v1", new Dictionary<string, object>() {
+                        { "public", new Dictionary<string, object>() {
+                            { "get", new Dictionary<string, object>() {
+                                { "market/contracts", 1 },
+                                { "market/premiumIndex", 1 },
+                                { "market/openInterest", 1 },
+                                { "market/klines", 1 },
+                                { "market/depth", 1 },
+                                { "market/ticker", 1 },
+                            } },
+                        } },
+                        { "private", new Dictionary<string, object>() {
+                            { "get", new Dictionary<string, object>() {
+                                { "trade/leverage", 2 },
+                                { "trade/forceOrders", 2 },
+                                { "trade/allFillOrders", 2 },
+                                { "user/commissionRate", 2 },
+                                { "user/positions", 2 },
+                                { "user/balance", 2 },
+                            } },
+                            { "post", new Dictionary<string, object>() {
+                                { "trade/order", 2 },
+                                { "trade/leverage", 2 },
+                                { "trade/allOpenOrders", 2 },
+                                { "trade/closeAllPositions", 2 },
+                            } },
+                        } },
+                    } },
+                } },
                 { "contract", new Dictionary<string, object>() {
                     { "v1", new Dictionary<string, object>() {
                         { "private", new Dictionary<string, object>() {
@@ -378,7 +409,7 @@ public partial class bingx : Exchange
                 { "1w", "1w" },
                 { "1M", "1M" },
             } },
-            { "precisionMode", DECIMAL_PLACES },
+            { "precisionMode", TICK_SIZE },
             { "exceptions", new Dictionary<string, object>() {
                 { "exact", new Dictionary<string, object>() {
                     { "400", typeof(BadRequest) },
@@ -621,22 +652,55 @@ public partial class bingx : Exchange
         //        "msg": "",
         //        "data": [
         //            {
-        //              "contractId": "100",
-        //              "symbol": "BTC-USDT",
-        //              "size": "0.0001",
-        //              "quantityPrecision": 4,
-        //              "pricePrecision": 1,
-        //              "feeRate": 0.0005,
-        //              "tradeMinLimit": 1,
-        //              "maxLongLeverage": 150,
-        //              "maxShortLeverage": 150,
-        //              "currency": "USDT",
-        //              "asset": "BTC",
-        //              "status": 1
+        //                "contractId": "100",
+        //                "symbol": "BTC-USDT",
+        //                "size": "0.0001",
+        //                "quantityPrecision": "4",
+        //                "pricePrecision": "1",
+        //                "feeRate": "0.0005",
+        //                "makerFeeRate": "0.0002",
+        //                "takerFeeRate": "0.0005",
+        //                "tradeMinLimit": "0",
+        //                "tradeMinQuantity": "0.0001",
+        //                "tradeMinUSDT": "2",
+        //                "maxLongLeverage": "125",
+        //                "maxShortLeverage": "125",
+        //                "currency": "USDT",
+        //                "asset": "BTC",
+        //                "status": "1",
+        //                "apiStateOpen": "true",
+        //                "apiStateClose": "true",
+        //                "ensureTrigger": true,
+        //                "triggerFeeRate": "0.00020000"
         //            },
         //            ...
         //        ]
         //    }
+        //
+        object markets = this.safeList(response, "data", new List<object>() {});
+        return this.parseMarkets(markets);
+    }
+
+    public async virtual Task<object> fetchInverseSwapMarkets(object parameters)
+    {
+        object response = await this.cswapV1PublicGetMarketContracts(parameters);
+        //
+        //     {
+        //         "code": 0,
+        //         "msg": "",
+        //         "timestamp": 1720074487610,
+        //         "data": [
+        //             {
+        //                 "symbol": "BNB-USD",
+        //                 "pricePrecision": 2,
+        //                 "minTickSize": "10",
+        //                 "minTradeValue": "10",
+        //                 "minQty": "1.00000000",
+        //                 "status": 1,
+        //                 "timeOnline": 1713175200000
+        //             },
+        //         ]
+        //     }
         //
         object markets = this.safeList(response, "data", new List<object>() {});
         return this.parseMarkets(markets);
@@ -651,16 +715,26 @@ public partial class bingx : Exchange
         object bs = this.safeCurrencyCode(baseId);
         object quote = this.safeCurrencyCode(quoteId);
         object currency = this.safeString(market, "currency");
+        object checkIsInverse = false;
+        object checkIsLinear = true;
+        object minTickSize = this.safeNumber(market, "minTickSize");
+        if (isTrue(!isEqual(minTickSize, null)))
+        {
+            // inverse swap market
+            currency = baseId;
+            checkIsInverse = true;
+            checkIsLinear = false;
+        }
         object settle = this.safeCurrencyCode(currency);
-        object pricePrecision = this.safeInteger(market, "pricePrecision");
+        object pricePrecision = this.safeNumber(market, "tickSize");
         if (isTrue(isEqual(pricePrecision, null)))
         {
-            pricePrecision = this.precisionFromString(this.safeString(market, "tickSize"));
+            pricePrecision = this.parseNumber(this.parsePrecision(this.safeString(market, "pricePrecision")));
         }
-        object quantityPrecision = this.safeInteger(market, "quantityPrecision");
+        object quantityPrecision = this.safeNumber(market, "stepSize");
         if (isTrue(isEqual(quantityPrecision, null)))
         {
-            quantityPrecision = this.precisionFromString(this.safeString(market, "stepSize"));
+            quantityPrecision = this.parseNumber(this.parsePrecision(this.safeString(market, "quantityPrecision")));
         }
         object type = ((bool) isTrue((!isEqual(settle, null)))) ? "swap" : "spot";
         object spot = isEqual(type, "spot");
@@ -673,8 +747,13 @@ public partial class bingx : Exchange
         object fees = this.safeDict(this.fees, type, new Dictionary<string, object>() {});
         object contractSize = ((bool) isTrue((swap))) ? this.parseNumber("1") : null;
         object isActive = isEqual(this.safeString(market, "status"), "1");
-        object isInverse = ((bool) isTrue((spot))) ? null : false;
-        object isLinear = ((bool) isTrue((spot))) ? null : swap;
+        object isInverse = ((bool) isTrue((spot))) ? null : checkIsInverse;
+        object isLinear = ((bool) isTrue((spot))) ? null : checkIsLinear;
+        object timeOnline = this.safeInteger(market, "timeOnline");
+        if (isTrue(isEqual(timeOnline, 0)))
+        {
+            timeOnline = null;
+        }
         return this.safeMarketStructure(new Dictionary<string, object>() {
             { "id", id },
             { "symbol", symbol },
@@ -709,22 +788,22 @@ public partial class bingx : Exchange
             { "limits", new Dictionary<string, object>() {
                 { "leverage", new Dictionary<string, object>() {
                     { "min", null },
-                    { "max", this.safeInteger(market, "maxLongLeverage") },
+                    { "max", null },
                 } },
                 { "amount", new Dictionary<string, object>() {
                     { "min", this.safeNumber2(market, "minQty", "tradeMinQuantity") },
                     { "max", this.safeNumber(market, "maxQty") },
                 } },
                 { "price", new Dictionary<string, object>() {
-                    { "min", null },
+                    { "min", minTickSize },
                     { "max", null },
                 } },
                 { "cost", new Dictionary<string, object>() {
-                    { "min", this.safeNumber2(market, "minNotional", "tradeMinUSDT") },
+                    { "min", this.safeNumberN(market, new List<object>() {"minNotional", "tradeMinUSDT", "minTradeValue"}) },
                     { "max", this.safeNumber(market, "maxNotional") },
                 } },
             } },
-            { "created", null },
+            { "created", timeOnline },
             { "info", market },
         });
     }
@@ -737,6 +816,7 @@ public partial class bingx : Exchange
         * @description retrieves data on all markets for bingx
         * @see https://bingx-api.github.io/docs/#/spot/market-api.html#Query%20Symbols
         * @see https://bingx-api.github.io/docs/#/swapV2/market-api.html#Contract%20Information
+        * @see https://bingx-api.github.io/docs/#/en-us/cswap/market-api.html#Contract%20Information
         * @param {object} [params] extra parameters specific to the exchange API endpoint
         * @returns {object[]} an array of objects representing market data
         */
@@ -745,11 +825,14 @@ public partial class bingx : Exchange
         object isSandbox = this.safeBool(this.options, "sandboxMode", false);
         if (!isTrue(isSandbox))
         {
+            ((IList<object>)requests).Add(this.fetchInverseSwapMarkets(parameters));
             ((IList<object>)requests).Add(this.fetchSpotMarkets(parameters)); // sandbox is swap only
         }
         object promises = await promiseAll(requests);
-        object spotMarkets = this.safeList(promises, 0, new List<object>() {});
-        object swapMarkets = this.safeList(promises, 1, new List<object>() {});
+        object linearSwapMarkets = this.safeList(promises, 0, new List<object>() {});
+        object inverseSwapMarkets = this.safeList(promises, 1, new List<object>() {});
+        object spotMarkets = this.safeList(promises, 2, new List<object>() {});
+        object swapMarkets = this.arrayConcat(linearSwapMarkets, inverseSwapMarkets);
         return this.arrayConcat(spotMarkets, swapMarkets);
     }
 
@@ -763,13 +846,14 @@ public partial class bingx : Exchange
         * @see https://bingx-api.github.io/docs/#/spot/market-api.html#Candlestick%20chart%20data
         * @see https://bingx-api.github.io/docs/#/swapV2/market-api.html#%20K-Line%20Data
         * @see https://bingx-api.github.io/docs/#/en-us/swapV2/market-api.html#K-Line%20Data%20-%20Mark%20Price
+        * @see https://bingx-api.github.io/docs/#/en-us/cswap/market-api.html#Get%20K-line%20Data
         * @param {string} symbol unified symbol of the market to fetch OHLCV data for
         * @param {string} timeframe the length of time each candle represents
         * @param {int} [since] timestamp in ms of the earliest candle to fetch
         * @param {int} [limit] the maximum amount of candles to fetch
         * @param {object} [params] extra parameters specific to the exchange API endpoint
         * @param {int} [params.until] timestamp in ms of the latest candle to fetch
-        * @param {boolean} [params.paginate] default false, when true will automatically paginate by calling this endpoint multiple times. See in the docs all the [availble parameters](https://github.com/ccxt/ccxt/wiki/Manual#pagination-params)
+        * @param {boolean} [params.paginate] default false, when true will automatically paginate by calling this endpoint multiple times. See in the docs all the [available parameters](https://github.com/ccxt/ccxt/wiki/Manual#pagination-params)
         * @returns {int[][]} A list of candles ordered as timestamp, open, high, low, close, volume
         */
         timeframe ??= "1m";
@@ -808,14 +892,20 @@ public partial class bingx : Exchange
             response = await this.spotV1PublicGetMarketKline(this.extend(request, parameters));
         } else
         {
-            object price = this.safeString(parameters, "price");
-            parameters = this.omit(parameters, "price");
-            if (isTrue(isEqual(price, "mark")))
+            if (isTrue(getValue(market, "inverse")))
             {
-                response = await this.swapV1PrivateGetMarketMarkPriceKlines(this.extend(request, parameters));
+                response = await this.cswapV1PublicGetMarketKlines(this.extend(request, parameters));
             } else
             {
-                response = await this.swapV3PublicGetQuoteKlines(this.extend(request, parameters));
+                object price = this.safeString(parameters, "price");
+                parameters = this.omit(parameters, "price");
+                if (isTrue(isEqual(price, "mark")))
+                {
+                    response = await this.swapV1PrivateGetMarketMarkPriceKlines(this.extend(request, parameters));
+                } else
+                {
+                    response = await this.swapV3PublicGetQuoteKlines(this.extend(request, parameters));
+                }
             }
         }
         //
@@ -1136,6 +1226,7 @@ public partial class bingx : Exchange
         * @description fetches information on open orders with bid (buy) and ask (sell) prices, volumes and other data
         * @see https://bingx-api.github.io/docs/#/spot/market-api.html#Query%20depth%20information
         * @see https://bingx-api.github.io/docs/#/swapV2/market-api.html#Get%20Market%20Depth
+        * @see https://bingx-api.github.io/docs/#/en-us/cswap/market-api.html#Query%20Depth%20Data
         * @param {string} symbol unified symbol of the market to fetch the order book for
         * @param {int} [limit] the maximum amount of order book entries to return
         * @param {object} [params] extra parameters specific to the exchange API endpoint
@@ -1161,7 +1252,13 @@ public partial class bingx : Exchange
             response = await this.spotV1PublicGetMarketDepth(this.extend(request, parameters));
         } else
         {
-            response = await this.swapV2PublicGetQuoteDepth(this.extend(request, parameters));
+            if (isTrue(getValue(market, "inverse")))
+            {
+                response = await this.cswapV1PublicGetMarketDepth(this.extend(request, parameters));
+            } else
+            {
+                response = await this.swapV2PublicGetQuoteDepth(this.extend(request, parameters));
+            }
         }
         //
         // spot
@@ -1604,6 +1701,10 @@ public partial class bingx : Exchange
         }
         object change = this.safeString(ticker, "priceChange");
         object ts = this.safeInteger(ticker, "closeTime");
+        if (isTrue(isEqual(ts, 0)))
+        {
+            ts = null;
+        }
         object datetime = this.iso8601(ts);
         object bid = this.safeString(ticker, "bidPrice");
         object bidVolume = this.safeString(ticker, "bidQty");
@@ -1957,7 +2058,7 @@ public partial class bingx : Exchange
         * @param {string} type 'market' or 'limit'
         * @param {string} side 'buy' or 'sell'
         * @param {float} amount how much you want to trade in units of the base currency
-        * @param {float} [price] the price at which the order is to be fullfilled, in units of the quote currency, ignored in market orders
+        * @param {float} [price] the price at which the order is to be fulfilled, in units of the quote currency, ignored in market orders
         * @param {object} [params] extra parameters specific to the exchange API endpoint
         * @returns {object} request to be sent to the exchange
         */
@@ -2188,7 +2289,7 @@ public partial class bingx : Exchange
         * @param {string} type 'market' or 'limit'
         * @param {string} side 'buy' or 'sell'
         * @param {float} amount how much you want to trade in units of the base currency
-        * @param {float} [price] the price at which the order is to be fullfilled, in units of the quote currency, ignored in market orders
+        * @param {float} [price] the price at which the order is to be fulfilled, in units of the quote currency, ignored in market orders
         * @param {object} [params] extra parameters specific to the exchange API endpoint
         * @param {string} [params.clientOrderId] a unique id for the order
         * @param {bool} [params.postOnly] true to place a post only order
@@ -4607,7 +4708,7 @@ public partial class bingx : Exchange
         * @param {string} type 'market' or 'limit'
         * @param {string} side 'buy' or 'sell'
         * @param {float} amount how much of the currency you want to trade in units of the base currency
-        * @param {float} [price] the price at which the order is to be fullfilled, in units of the quote currency, ignored in market orders
+        * @param {float} [price] the price at which the order is to be fulfilled, in units of the quote currency, ignored in market orders
         * @param {object} [params] extra parameters specific to the exchange API endpoint
         * @param {string} [params.stopPrice] Trigger price used for TAKE_STOP_LIMIT, TAKE_STOP_MARKET, TRIGGER_LIMIT, TRIGGER_MARKET order types.
         * @param {object} [params.takeProfit] *takeProfit object in params* containing the triggerPrice at which the attached take profit order will be triggered
