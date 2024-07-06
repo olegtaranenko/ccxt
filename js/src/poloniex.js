@@ -48,6 +48,7 @@ export default class poloniex extends Exchange {
                 'fetchDepositsWithdrawals': true,
                 'fetchDepositWithdrawFee': 'emulated',
                 'fetchDepositWithdrawFees': true,
+                'fetchFundingRate': false,
                 'fetchMarginMode': false,
                 'fetchMarkets': true,
                 'fetchMyTrades': true,
@@ -71,6 +72,7 @@ export default class poloniex extends Exchange {
                 'fetchTransfer': false,
                 'fetchTransfers': false,
                 'fetchWithdrawals': true,
+                'sandbox': true,
                 'transfer': true,
                 'withdraw': true,
             },
@@ -713,7 +715,10 @@ export default class poloniex extends Exchange {
             const code = this.safeCurrencyCode(id);
             const name = this.safeString(currency, 'name');
             const networkId = this.safeString(currency, 'blockchain');
-            const networkCode = this.networkIdToCode(networkId, code);
+            let networkCode = undefined;
+            if (networkId !== undefined) {
+                networkCode = this.networkIdToCode(networkId, code);
+            }
             const delisted = this.safeValue(currency, 'delisted');
             const walletEnabled = this.safeString(currency, 'walletState') === 'ENABLED';
             const depositEnabled = this.safeString(currency, 'walletDepositState') === 'ENABLED';
@@ -1252,7 +1257,7 @@ export default class poloniex extends Exchange {
          * @param {string} type 'market' or 'limit'
          * @param {string} side 'buy' or 'sell'
          * @param {float} amount how much of currency you want to trade in units of base currency
-         * @param {float} [price] the price at which the order is to be fullfilled, in units of the quote currency, ignored in market orders
+         * @param {float} [price] the price at which the order is to be fulfilled, in units of the quote currency, ignored in market orders
          * @param {object} [params] extra parameters specific to the exchange API endpoint
          * @param {float} [params.triggerPrice] *spot only* The price at which a trigger order is triggered at
          * @param {float} [params.cost] *spot market buy only* the quote quantity that can be used as an alternative for the amount
@@ -1286,7 +1291,8 @@ export default class poloniex extends Exchange {
         //     }
         //
         response = this.extend(response, {
-            'type': side,
+            'type': type,
+            'side': side,
         });
         return this.parseOrder(response, market);
     }
@@ -1358,7 +1364,7 @@ export default class poloniex extends Exchange {
          * @param {string} type 'market' or 'limit'
          * @param {string} side 'buy' or 'sell'
          * @param {float} [amount] how much of the currency you want to trade in units of the base currency
-         * @param {float} [price] the price at which the order is to be fullfilled, in units of the quote currency, ignored in market orders
+         * @param {float} [price] the price at which the order is to be fulfilled, in units of the quote currency, ignored in market orders
          * @param {object} [params] extra parameters specific to the exchange API endpoint
          * @param {float} [params.triggerPrice] The price at which a trigger order is triggered at
          * @returns {object} an [order structure]{@link https://docs.ccxt.com/#/?id=order-structure}
@@ -1388,7 +1394,8 @@ export default class poloniex extends Exchange {
         //     }
         //
         response = this.extend(response, {
-            'type': side,
+            'side': side,
+            'type': type,
         });
         return this.parseOrder(response, market);
     }
@@ -1844,12 +1851,11 @@ export default class poloniex extends Exchange {
          */
         await this.loadMarkets();
         const currency = this.currency(code);
-        amount = this.currencyToPrecision(code, amount);
         const accountsByType = this.safeValue(this.options, 'accountsByType', {});
         const fromId = this.safeString(accountsByType, fromAccount, fromAccount);
         const toId = this.safeString(accountsByType, toAccount, fromAccount);
         const request = {
-            'amount': amount,
+            'amount': this.currencyToPrecision(code, amount),
             'currency': currency['id'],
             'fromAccount': fromId,
             'toAccount': toId,

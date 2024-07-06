@@ -90,7 +90,7 @@ class currencycom extends currencycom$1 {
         //                     "accountId": 5470310874305732,
         //                     "collateralCurrency": true,
         //                     "asset": "USD",
-        //                     "free": 47.82576735,
+        //                     "free": 47.82576736,
         //                     "locked": 1.187925,
         //                     "default": true
         //                 },
@@ -191,7 +191,7 @@ class currencycom extends currencycom$1 {
             'fee': undefined,
         };
     }
-    handleTrades(client, message, subscription) {
+    handleTrades(client, message) {
         //
         //     {
         //         "status": "OK",
@@ -455,16 +455,18 @@ class currencycom extends currencycom$1 {
         const destination = 'depthMarketData.subscribe';
         const messageHash = destination + ':' + symbol;
         const timestamp = this.safeInteger(data, 'ts');
-        let orderbook = this.safeValue(this.orderbooks, symbol);
-        if (orderbook === undefined) {
-            orderbook = this.orderBook();
+        // let orderbook = this.safeValue (this.orderbooks, symbol);
+        if (!(symbol in this.orderbooks)) {
+            this.orderbooks[symbol] = this.orderBook();
         }
+        const orderbook = this.orderbooks[symbol];
         orderbook.reset({
+            'symbol': symbol,
             'timestamp': timestamp,
             'datetime': this.iso8601(timestamp),
         });
-        const bids = this.safeValue(data, 'bid', {});
-        const asks = this.safeValue(data, 'ofr', {});
+        const bids = this.safeDict(data, 'bid', {});
+        const asks = this.safeDict(data, 'ofr', {});
         this.handleDeltas(orderbook['bids'], bids);
         this.handleDeltas(orderbook['asks'], asks);
         this.orderbooks[symbol] = orderbook;
@@ -532,10 +534,11 @@ class currencycom extends currencycom$1 {
                         };
                         const method = this.safeValue(methods, subscriptionDestination);
                         if (method === undefined) {
-                            return message;
+                            return;
                         }
                         else {
-                            return method.call(this, client, message, subscription);
+                            method.call(this, client, message, subscription);
+                            return;
                         }
                     }
                 }
@@ -550,11 +553,8 @@ class currencycom extends currencycom$1 {
                 'ping': this.handlePong,
             };
             const method = this.safeValue(methods, destination);
-            if (method === undefined) {
-                return message;
-            }
-            else {
-                return method.call(this, client, message);
+            if (method !== undefined) {
+                method.call(this, client, message);
             }
         }
     }

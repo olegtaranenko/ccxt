@@ -1,11 +1,9 @@
-'use strict';
-
 //  ---------------------------------------------------------------------------
 
 import probitRest from '../probit.js';
 import { NotSupported, ExchangeError } from '../base/errors.js';
 import { ArrayCache, ArrayCacheBySymbolById } from '../base/ws/Cache.js';
-import type { Int, Str, OrderBook, Order, Trade, Ticker, Balances } from '../base/types.js';
+import type { Int, Str, OrderBook, Order, Trade, Ticker, Balances, Dict } from '../base/types.js';
 import Client from '../base/ws/Client.js';
 
 //  ---------------------------------------------------------------------------
@@ -49,8 +47,6 @@ export default class probit extends probitRest {
             },
             'streaming': {
             },
-            'exceptions': {
-            },
         });
     }
 
@@ -66,7 +62,7 @@ export default class probit extends probitRest {
         await this.authenticate (params);
         const messageHash = 'balance';
         const url = this.urls['api']['ws'];
-        const subscribe = {
+        const subscribe: Dict = {
             'type': 'subscribe',
             'channel': 'balance',
         };
@@ -105,7 +101,7 @@ export default class probit extends probitRest {
         //         }
         //     }
         //
-        const reset = this.safeValue (message, 'reset', false);
+        const reset = this.safeBool (message, 'reset', false);
         const data = this.safeValue (message, 'data', {});
         const currencyIds = Object.keys (data);
         if (reset) {
@@ -215,7 +211,7 @@ export default class probit extends probitRest {
         const symbol = this.safeSymbol (marketId);
         const market = this.safeMarket (marketId);
         const trades = this.safeValue (message, 'recent_trades', []);
-        const reset = this.safeValue (message, 'reset', false);
+        const reset = this.safeBool (message, 'reset', false);
         const messageHash = 'trades:' + symbol;
         let stored = this.safeValue (this.trades, symbol);
         if (stored === undefined || reset) {
@@ -253,7 +249,7 @@ export default class probit extends probitRest {
         }
         const url = this.urls['api']['ws'];
         const channel = 'trade_history';
-        const message = {
+        const message: Dict = {
             'type': 'subscribe',
             'channel': channel,
         };
@@ -290,7 +286,7 @@ export default class probit extends probitRest {
         if (length === 0) {
             return;
         }
-        const reset = this.safeValue (message, 'reset', false);
+        const reset = this.safeBool (message, 'reset', false);
         const messageHash = 'myTrades';
         let stored = this.myTrades;
         if ((stored === undefined) || reset) {
@@ -299,7 +295,7 @@ export default class probit extends probitRest {
             this.myTrades = stored;
         }
         const trades = this.parseTrades (rawTrades);
-        const tradeSymbols = {};
+        const tradeSymbols: Dict = {};
         for (let j = 0; j < trades.length; j++) {
             const trade = trades[j];
             tradeSymbols[trade['symbol']] = true;
@@ -337,7 +333,7 @@ export default class probit extends probitRest {
         }
         let channel = undefined;
         [ channel, params ] = this.handleOptionAndParams (params, 'watchOrders', 'channel', 'open_order');
-        const subscribe = {
+        const subscribe: Dict = {
             'type': 'subscribe',
             'channel': channel,
         };
@@ -380,14 +376,14 @@ export default class probit extends probitRest {
             return;
         }
         const messageHash = 'orders';
-        const reset = this.safeValue (message, 'reset', false);
+        const reset = this.safeBool (message, 'reset', false);
         let stored = this.orders;
         if (stored === undefined || reset) {
             const limit = this.safeInteger (this.options, 'ordersLimit', 1000);
             stored = new ArrayCacheBySymbolById (limit);
             this.orders = stored;
         }
-        const orderSymbols = {};
+        const orderSymbols: Dict = {};
         for (let i = 0; i < rawOrders.length; i++) {
             const rawOrder = rawOrders[i];
             const order = this.parseOrder (rawOrder);
@@ -441,7 +437,7 @@ export default class probit extends probitRest {
         }
         filters[filter] = true;
         const keys = Object.keys (filters);
-        const message = {
+        const message: Dict = {
             'channel': 'marketdata',
             'interval': interval,
             'market_id': market['id'],
@@ -470,19 +466,19 @@ export default class probit extends probitRest {
         const symbol = this.safeSymbol (marketId);
         const dataBySide = this.groupBy (orderBook, 'side');
         const messageHash = 'orderbook:' + symbol;
-        let storedOrderBook = this.safeValue (this.orderbooks, symbol);
-        if (storedOrderBook === undefined) {
-            storedOrderBook = this.orderBook ({});
-            this.orderbooks[symbol] = storedOrderBook;
+        // let orderbook = this.safeValue (this.orderbooks, symbol);
+        if (!(symbol in this.orderbooks)) {
+            this.orderbooks[symbol] = this.orderBook ({});
         }
-        const reset = this.safeValue (message, 'reset', false);
+        const orderbook = this.orderbooks[symbol];
+        const reset = this.safeBool (message, 'reset', false);
         if (reset) {
             const snapshot = this.parseOrderBook (dataBySide, symbol, undefined, 'buy', 'sell', 'price', 'quantity');
-            storedOrderBook.reset (snapshot);
+            orderbook.reset (snapshot);
         } else {
-            this.handleDelta (storedOrderBook, dataBySide);
+            this.handleDelta (orderbook, dataBySide);
         }
-        client.resolve (storedOrderBook, messageHash);
+        client.resolve (orderbook, messageHash);
     }
 
     handleBidAsks (bookSide, bidAsks) {
@@ -515,8 +511,14 @@ export default class probit extends probitRest {
         const code = this.safeString (message, 'errorCode');
         const errMessage = this.safeString (message, 'message', '');
         const details = this.safeValue (message, 'details');
-        // todo - throw properly here
-        throw new ExchangeError (this.id + ' ' + code + ' ' + errMessage + ' ' + this.json (details));
+        const feedback = this.id + ' ' + code + ' ' + errMessage + ' ' + this.json (details);
+        if ('exact' in this.exceptions) {
+            this.throwExactlyMatchedException (this.exceptions['exact'], code, feedback);
+        }
+        if ('broad' in this.exceptions) {
+            this.throwBroadlyMatchedException (this.exceptions['broad'], errMessage, feedback);
+        }
+        throw new ExchangeError (feedback);
     }
 
     handleAuthenticate (client: Client, message) {
@@ -560,13 +562,15 @@ export default class probit extends probitRest {
         //
         const errorCode = this.safeString (message, 'errorCode');
         if (errorCode !== undefined) {
-            return this.handleErrorMessage (client, message);
+            this.handleErrorMessage (client, message);
+            return;
         }
         const type = this.safeString (message, 'type');
         if (type === 'authorization') {
-            return this.handleAuthenticate (client, message);
+            this.handleAuthenticate (client, message);
+            return;
         }
-        const handlers = {
+        const handlers: Dict = {
             'marketdata': this.handleMarketData,
             'balance': this.handleBalance,
             'trade_history': this.handleMyTrades,
@@ -576,7 +580,8 @@ export default class probit extends probitRest {
         const channel = this.safeString (message, 'channel');
         const handler = this.safeValue (handlers, channel);
         if (handler !== undefined) {
-            return handler.call (this, client, message);
+            handler.call (this, client, message);
+            return;
         }
         const error = new NotSupported (this.id + ' handleMessage: unknown message: ' + this.json (message));
         client.reject (error);
@@ -598,13 +603,13 @@ export default class probit extends probitRest {
             //     }
             //
             const accessToken = this.safeString (response, 'access_token');
-            const request = {
+            const request: Dict = {
                 'type': 'authorization',
                 'token': accessToken,
             };
-            future = this.watch (url, messageHash, this.extend (request, params));
+            future = await this.watch (url, messageHash, this.extend (request, params), messageHash);
             client.subscriptions[messageHash] = future;
         }
-        return await future;
+        return future;
     }
 }

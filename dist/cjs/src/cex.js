@@ -62,7 +62,13 @@ class cex extends cex$1 {
                 'fetchOrder': true,
                 'fetchOrderBook': true,
                 'fetchOrders': true,
+                'fetchPosition': false,
+                'fetchPositionHistory': false,
                 'fetchPositionMode': false,
+                'fetchPositions': false,
+                'fetchPositionsForSymbol': false,
+                'fetchPositionsHistory': false,
+                'fetchPositionsRisk': false,
                 'fetchPremiumIndexOHLCV': false,
                 'fetchTicker': true,
                 'fetchTickers': true,
@@ -751,7 +757,7 @@ class cex extends cex$1 {
          * @param {string} type 'market' or 'limit'
          * @param {string} side 'buy' or 'sell'
          * @param {float} amount how much of currency you want to trade in units of base currency
-         * @param {float} [price] the price at which the order is to be fullfilled, in units of the quote currency, ignored in market orders
+         * @param {float} [price] the price at which the order is to be fulfilled, in units of the quote currency, ignored in market orders
          * @param {object} [params] extra parameters specific to the exchange API endpoint
          * @param {float} [params.cost] the quote quantity that can be used as an alternative for the amount for market buy orders
          * @returns {object} an [order structure]{@link https://docs.ccxt.com/#/?id=order-structure}
@@ -1168,14 +1174,16 @@ class cex extends cex$1 {
          */
         await this.loadMarkets();
         const request = {};
-        let method = 'privatePostOpenOrders';
         let market = undefined;
+        let orders = undefined;
         if (symbol !== undefined) {
             market = this.market(symbol);
             request['pair'] = market['id'];
-            method += 'Pair';
+            orders = await this.privatePostOpenOrdersPair(this.extend(request, params));
         }
-        const orders = await this[method](this.extend(request, params));
+        else {
+            orders = await this.privatePostOpenOrders(this.extend(request, params));
+        }
         for (let i = 0; i < orders.length; i++) {
             orders[i] = this.extend(orders[i], { 'status': 'open' });
         }
@@ -1197,10 +1205,9 @@ class cex extends cex$1 {
             throw new errors.ArgumentsRequired(this.id + ' fetchClosedOrders() requires a symbol argument');
         }
         await this.loadMarkets();
-        const method = 'privatePostArchivedOrdersPair';
         const market = this.market(symbol);
         const request = { 'pair': market['id'] };
-        const response = await this[method](this.extend(request, params));
+        const response = await this.privatePostArchivedOrdersPair(this.extend(request, params));
         return this.parseOrders(response, market, since, limit);
     }
     async fetchOrder(id, symbol = undefined, params = {}) {
@@ -1558,7 +1565,7 @@ class cex extends cex$1 {
          * @param {string} type 'market' or 'limit'
          * @param {string} side 'buy' or 'sell'
          * @param {float} amount how much of the currency you want to trade in units of the base currency
-         * @param {float|undefined} [price] the price at which the order is to be fullfilled, in units of the quote currency, ignored in market orders
+         * @param {float|undefined} [price] the price at which the order is to be fulfilled, in units of the quote currency, ignored in market orders
          * @param {object} [params] extra parameters specific to the cex api endpoint
          * @returns {object} an [order structure]{@link https://docs.ccxt.com/en/latest/manual.html#order-structure}
          */

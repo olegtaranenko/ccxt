@@ -1,6 +1,7 @@
 import { implicitReturnType } from '../base/types.js';
 import { Exchange as _Exchange } from '../base/Exchange.js';
 interface Exchange {
+    publicGetMarketBooksFull(params?: {}): Promise<implicitReturnType>;
     publicGetMarketTickers(params?: {}): Promise<implicitReturnType>;
     publicGetMarketTicker(params?: {}): Promise<implicitReturnType>;
     publicGetMarketIndexTickers(params?: {}): Promise<implicitReturnType>;
@@ -57,6 +58,9 @@ interface Exchange {
     publicGetSprdBooks(params?: {}): Promise<implicitReturnType>;
     publicGetSprdTicker(params?: {}): Promise<implicitReturnType>;
     publicGetSprdPublicTrades(params?: {}): Promise<implicitReturnType>;
+    publicGetMarketSprdTicker(params?: {}): Promise<implicitReturnType>;
+    publicGetMarketSprdCandles(params?: {}): Promise<implicitReturnType>;
+    publicGetMarketSprdHistoryCandles(params?: {}): Promise<implicitReturnType>;
     publicGetTradingBotGridAiParam(params?: {}): Promise<implicitReturnType>;
     publicGetTradingBotGridMinInvestment(params?: {}): Promise<implicitReturnType>;
     publicGetTradingBotPublicRsiBackTesting(params?: {}): Promise<implicitReturnType>;
@@ -64,6 +68,9 @@ interface Exchange {
     publicGetFinanceStakingDefiEthApyHistory(params?: {}): Promise<implicitReturnType>;
     publicGetFinanceSavingsLendingRateSummary(params?: {}): Promise<implicitReturnType>;
     publicGetFinanceSavingsLendingRateHistory(params?: {}): Promise<implicitReturnType>;
+    publicGetFinanceFixedLoanLendingOffers(params?: {}): Promise<implicitReturnType>;
+    publicGetFinanceFixedLoanLendingApyHistory(params?: {}): Promise<implicitReturnType>;
+    publicGetFinanceFixedLoanPendingLendingVolume(params?: {}): Promise<implicitReturnType>;
     publicGetFinanceSfpDcdProducts(params?: {}): Promise<implicitReturnType>;
     publicGetCopytradingPublicLeadTraders(params?: {}): Promise<implicitReturnType>;
     publicGetCopytradingPublicWeeklyPnl(params?: {}): Promise<implicitReturnType>;
@@ -81,6 +88,7 @@ interface Exchange {
     privateGetSprdOrder(params?: {}): Promise<implicitReturnType>;
     privateGetSprdOrdersPending(params?: {}): Promise<implicitReturnType>;
     privateGetSprdOrdersHistory(params?: {}): Promise<implicitReturnType>;
+    privateGetSprdOrdersHistoryArchive(params?: {}): Promise<implicitReturnType>;
     privateGetSprdTrades(params?: {}): Promise<implicitReturnType>;
     privateGetTradeOrder(params?: {}): Promise<implicitReturnType>;
     privateGetTradeOrdersPending(params?: {}): Promise<implicitReturnType>;
@@ -96,6 +104,7 @@ interface Exchange {
     privateGetTradeEasyConvertHistory(params?: {}): Promise<implicitReturnType>;
     privateGetTradeOneClickRepayCurrencyList(params?: {}): Promise<implicitReturnType>;
     privateGetTradeOneClickRepayHistory(params?: {}): Promise<implicitReturnType>;
+    privateGetTradeAccountRateLimit(params?: {}): Promise<implicitReturnType>;
     privateGetAssetCurrencies(params?: {}): Promise<implicitReturnType>;
     privateGetAssetBalances(params?: {}): Promise<implicitReturnType>;
     privateGetAssetNonTradableAssets(params?: {}): Promise<implicitReturnType>;
@@ -138,6 +147,9 @@ interface Exchange {
     privateGetAccountGreeks(params?: {}): Promise<implicitReturnType>;
     privateGetAccountPositionTiers(params?: {}): Promise<implicitReturnType>;
     privateGetAccountMmpConfig(params?: {}): Promise<implicitReturnType>;
+    privateGetAccountFixedLoanBorrowingLimit(params?: {}): Promise<implicitReturnType>;
+    privateGetAccountFixedLoanBorrowingQuote(params?: {}): Promise<implicitReturnType>;
+    privateGetAccountFixedLoanBorrowingOrdersList(params?: {}): Promise<implicitReturnType>;
     privateGetUsersSubaccountList(params?: {}): Promise<implicitReturnType>;
     privateGetAccountSubaccountBalances(params?: {}): Promise<implicitReturnType>;
     privateGetAssetSubaccountBalances(params?: {}): Promise<implicitReturnType>;
@@ -152,9 +164,11 @@ interface Exchange {
     privateGetTradingBotGridSubOrders(params?: {}): Promise<implicitReturnType>;
     privateGetTradingBotGridPositions(params?: {}): Promise<implicitReturnType>;
     privateGetTradingBotGridAiParam(params?: {}): Promise<implicitReturnType>;
-    privateGetTradingBotPublicRsiBackTesting(params?: {}): Promise<implicitReturnType>;
+    privateGetTradingBotSignalSignals(params?: {}): Promise<implicitReturnType>;
     privateGetTradingBotSignalOrdersAlgoDetails(params?: {}): Promise<implicitReturnType>;
+    privateGetTradingBotSignalOrdersAlgoHistory(params?: {}): Promise<implicitReturnType>;
     privateGetTradingBotSignalPositions(params?: {}): Promise<implicitReturnType>;
+    privateGetTradingBotSignalPositionsHistory(params?: {}): Promise<implicitReturnType>;
     privateGetTradingBotSignalSubOrders(params?: {}): Promise<implicitReturnType>;
     privateGetTradingBotSignalEventHistory(params?: {}): Promise<implicitReturnType>;
     privateGetTradingBotRecurringOrdersAlgoPending(params?: {}): Promise<implicitReturnType>;
@@ -208,6 +222,7 @@ interface Exchange {
     privatePostSprdCancelOrder(params?: {}): Promise<implicitReturnType>;
     privatePostSprdMassCancel(params?: {}): Promise<implicitReturnType>;
     privatePostSprdAmendOrder(params?: {}): Promise<implicitReturnType>;
+    privatePostSprdCancelAllAfter(params?: {}): Promise<implicitReturnType>;
     privatePostTradeOrder(params?: {}): Promise<implicitReturnType>;
     privatePostTradeBatchOrders(params?: {}): Promise<implicitReturnType>;
     privatePostTradeCancelOrder(params?: {}): Promise<implicitReturnType>;
@@ -240,12 +255,17 @@ interface Exchange {
     privatePostAccountQuickMarginBorrowRepay(params?: {}): Promise<implicitReturnType>;
     privatePostAccountBorrowRepay(params?: {}): Promise<implicitReturnType>;
     privatePostAccountSimulatedMargin(params?: {}): Promise<implicitReturnType>;
+    privatePostAccountPositionBuilder(params?: {}): Promise<implicitReturnType>;
     privatePostAccountSetRiskOffsetType(params?: {}): Promise<implicitReturnType>;
     privatePostAccountActivateOption(params?: {}): Promise<implicitReturnType>;
     privatePostAccountSetAutoLoan(params?: {}): Promise<implicitReturnType>;
     privatePostAccountSetAccountLevel(params?: {}): Promise<implicitReturnType>;
     privatePostAccountMmpReset(params?: {}): Promise<implicitReturnType>;
     privatePostAccountMmpConfig(params?: {}): Promise<implicitReturnType>;
+    privatePostAccountFixedLoanBorrowingOrder(params?: {}): Promise<implicitReturnType>;
+    privatePostAccountFixedLoanAmendBorrowingOrder(params?: {}): Promise<implicitReturnType>;
+    privatePostAccountFixedLoanManualReborrow(params?: {}): Promise<implicitReturnType>;
+    privatePostAccountFixedLoanRepayBorrowingOrder(params?: {}): Promise<implicitReturnType>;
     privatePostUsersSubaccountModifyApikey(params?: {}): Promise<implicitReturnType>;
     privatePostAssetSubaccountTransfer(params?: {}): Promise<implicitReturnType>;
     privatePostUsersSubaccountSetTransferOut(params?: {}): Promise<implicitReturnType>;
@@ -260,6 +280,16 @@ interface Exchange {
     privatePostTradingBotGridComputeMarginBalance(params?: {}): Promise<implicitReturnType>;
     privatePostTradingBotGridMarginBalance(params?: {}): Promise<implicitReturnType>;
     privatePostTradingBotGridMinInvestment(params?: {}): Promise<implicitReturnType>;
+    privatePostTradingBotGridAdjustInvestment(params?: {}): Promise<implicitReturnType>;
+    privatePostTradingBotSignalCreateSignal(params?: {}): Promise<implicitReturnType>;
+    privatePostTradingBotSignalOrderAlgo(params?: {}): Promise<implicitReturnType>;
+    privatePostTradingBotSignalStopOrderAlgo(params?: {}): Promise<implicitReturnType>;
+    privatePostTradingBotSignalMarginBalance(params?: {}): Promise<implicitReturnType>;
+    privatePostTradingBotSignalAmendTPSL(params?: {}): Promise<implicitReturnType>;
+    privatePostTradingBotSignalSetInstruments(params?: {}): Promise<implicitReturnType>;
+    privatePostTradingBotSignalClosePosition(params?: {}): Promise<implicitReturnType>;
+    privatePostTradingBotSignalSubOrder(params?: {}): Promise<implicitReturnType>;
+    privatePostTradingBotSignalCancelSubOrder(params?: {}): Promise<implicitReturnType>;
     privatePostTradingBotRecurringOrderAlgo(params?: {}): Promise<implicitReturnType>;
     privatePostTradingBotRecurringAmendOrderAlgo(params?: {}): Promise<implicitReturnType>;
     privatePostTradingBotRecurringStopOrderAlgo(params?: {}): Promise<implicitReturnType>;

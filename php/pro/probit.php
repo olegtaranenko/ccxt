@@ -51,8 +51,6 @@ class probit extends \ccxt\async\probit {
             ),
             'streaming' => array(
             ),
-            'exceptions' => array(
-            ),
         ));
     }
 
@@ -71,7 +69,7 @@ class probit extends \ccxt\async\probit {
                 'type' => 'subscribe',
                 'channel' => 'balance',
             );
-            $request = array_merge($subscribe, $params);
+            $request = $this->extend($subscribe, $params);
             return Async\await($this->watch($url, $messageHash, $request, $messageHash));
         }) ();
     }
@@ -107,7 +105,7 @@ class probit extends \ccxt\async\probit {
         //         }
         //     }
         //
-        $reset = $this->safe_value($message, 'reset', false);
+        $reset = $this->safe_bool($message, 'reset', false);
         $data = $this->safe_value($message, 'data', array());
         $currencyIds = is_array($data) ? array_keys($data) : array();
         if ($reset) {
@@ -217,7 +215,7 @@ class probit extends \ccxt\async\probit {
         $symbol = $this->safe_symbol($marketId);
         $market = $this->safe_market($marketId);
         $trades = $this->safe_value($message, 'recent_trades', array());
-        $reset = $this->safe_value($message, 'reset', false);
+        $reset = $this->safe_bool($message, 'reset', false);
         $messageHash = 'trades:' . $symbol;
         $stored = $this->safe_value($this->trades, $symbol);
         if ($stored === null || $reset) {
@@ -258,7 +256,7 @@ class probit extends \ccxt\async\probit {
                 'type' => 'subscribe',
                 'channel' => $channel,
             );
-            $request = array_merge($message, $params);
+            $request = $this->extend($message, $params);
             $trades = Async\await($this->watch($url, $messageHash, $request, $channel));
             if ($this->newUpdates) {
                 $limit = $trades->getLimit ($symbol, $limit);
@@ -292,7 +290,7 @@ class probit extends \ccxt\async\probit {
         if ($length === 0) {
             return;
         }
-        $reset = $this->safe_value($message, 'reset', false);
+        $reset = $this->safe_bool($message, 'reset', false);
         $messageHash = 'myTrades';
         $stored = $this->myTrades;
         if (($stored === null) || $reset) {
@@ -342,7 +340,7 @@ class probit extends \ccxt\async\probit {
                 'type' => 'subscribe',
                 'channel' => $channel,
             );
-            $request = array_merge($subscribe, $params);
+            $request = $this->extend($subscribe, $params);
             $orders = Async\await($this->watch($url, $messageHash, $request, $channel));
             if ($this->newUpdates) {
                 $limit = $orders->getLimit ($symbol, $limit);
@@ -382,7 +380,7 @@ class probit extends \ccxt\async\probit {
             return;
         }
         $messageHash = 'orders';
-        $reset = $this->safe_value($message, 'reset', false);
+        $reset = $this->safe_bool($message, 'reset', false);
         $stored = $this->orders;
         if ($stored === null || $reset) {
             $limit = $this->safe_integer($this->options, 'ordersLimit', 1000);
@@ -451,7 +449,7 @@ class probit extends \ccxt\async\probit {
                 'type' => 'subscribe',
                 'filter' => $keys,
             );
-            $request = array_merge($message, $params);
+            $request = $this->extend($message, $params);
             return Async\await($this->watch($url, $messageHash, $request, $messageHash, $filters));
         }) ();
     }
@@ -474,19 +472,19 @@ class probit extends \ccxt\async\probit {
         $symbol = $this->safe_symbol($marketId);
         $dataBySide = $this->group_by($orderBook, 'side');
         $messageHash = 'orderbook:' . $symbol;
-        $storedOrderBook = $this->safe_value($this->orderbooks, $symbol);
-        if ($storedOrderBook === null) {
-            $storedOrderBook = $this->order_book(array());
-            $this->orderbooks[$symbol] = $storedOrderBook;
+        // $orderbook = $this->safe_value($this->orderbooks, $symbol);
+        if (!(is_array($this->orderbooks) && array_key_exists($symbol, $this->orderbooks))) {
+            $this->orderbooks[$symbol] = $this->order_book(array());
         }
-        $reset = $this->safe_value($message, 'reset', false);
+        $orderbook = $this->orderbooks[$symbol];
+        $reset = $this->safe_bool($message, 'reset', false);
         if ($reset) {
             $snapshot = $this->parse_order_book($dataBySide, $symbol, null, 'buy', 'sell', 'price', 'quantity');
-            $storedOrderBook->reset ($snapshot);
+            $orderbook->reset ($snapshot);
         } else {
-            $this->handle_delta($storedOrderBook, $dataBySide);
+            $this->handle_delta($orderbook, $dataBySide);
         }
-        $client->resolve ($storedOrderBook, $messageHash);
+        $client->resolve ($orderbook, $messageHash);
     }
 
     public function handle_bid_asks($bookSide, $bidAsks) {
@@ -519,8 +517,14 @@ class probit extends \ccxt\async\probit {
         $code = $this->safe_string($message, 'errorCode');
         $errMessage = $this->safe_string($message, 'message', '');
         $details = $this->safe_value($message, 'details');
-        // todo - throw properly here
-        throw new ExchangeError($this->id . ' ' . $code . ' ' . $errMessage . ' ' . $this->json($details));
+        $feedback = $this->id . ' ' . $code . ' ' . $errMessage . ' ' . $this->json($details);
+        if (is_array($this->exceptions) && array_key_exists('exact', $this->exceptions)) {
+            $this->throw_exactly_matched_exception($this->exceptions['exact'], $code, $feedback);
+        }
+        if (is_array($this->exceptions) && array_key_exists('broad', $this->exceptions)) {
+            $this->throw_broadly_matched_exception($this->exceptions['broad'], $errMessage, $feedback);
+        }
+        throw new ExchangeError($feedback);
     }
 
     public function handle_authenticate(Client $client, $message) {
@@ -564,11 +568,13 @@ class probit extends \ccxt\async\probit {
         //
         $errorCode = $this->safe_string($message, 'errorCode');
         if ($errorCode !== null) {
-            return $this->handle_error_message($client, $message);
+            $this->handle_error_message($client, $message);
+            return;
         }
         $type = $this->safe_string($message, 'type');
         if ($type === 'authorization') {
-            return $this->handle_authenticate($client, $message);
+            $this->handle_authenticate($client, $message);
+            return;
         }
         $handlers = array(
             'marketdata' => array($this, 'handle_market_data'),
@@ -580,7 +586,8 @@ class probit extends \ccxt\async\probit {
         $channel = $this->safe_string($message, 'channel');
         $handler = $this->safe_value($handlers, $channel);
         if ($handler !== null) {
-            return $handler($client, $message);
+            $handler($client, $message);
+            return;
         }
         $error = new NotSupported ($this->id . ' handleMessage => unknown $message => ' . $this->json($message));
         $client->reject ($error);
@@ -594,7 +601,7 @@ class probit extends \ccxt\async\probit {
             $expires = $this->safe_integer($this->options, 'expires', 0);
             $future = $this->safe_value($client->subscriptions, $messageHash);
             if (($future === null) || ($this->milliseconds() > $expires)) {
-                $response = Async\await($this->signIn ());
+                $response = Async\await($this->sign_in());
                 //
                 //     {
                 //         "access_token" => "0ttDv/2hTTn3bLi8GP1gKaneiEQ6+0hOBenPrxNQt2s=",
@@ -607,10 +614,10 @@ class probit extends \ccxt\async\probit {
                     'type' => 'authorization',
                     'token' => $accessToken,
                 );
-                $future = $this->watch($url, $messageHash, array_merge($request, $params));
+                $future = Async\await($this->watch($url, $messageHash, $this->extend($request, $params), $messageHash));
                 $client->subscriptions[$messageHash] = $future;
             }
-            return Async\await($future);
+            return $future;
         }) ();
     }
 }

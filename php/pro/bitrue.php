@@ -361,8 +361,12 @@ class bitrue extends \ccxt\async\bitrue {
         $symbol = $market['symbol'];
         $timestamp = $this->safe_integer($message, 'ts');
         $tick = $this->safe_value($message, 'tick', array());
-        $orderbook = $this->parse_order_book($tick, $symbol, $timestamp, 'buys', 'asks');
-        $this->orderbooks[$symbol] = $orderbook;
+        if (!(is_array($this->orderbooks) && array_key_exists($symbol, $this->orderbooks))) {
+            $this->orderbooks[$symbol] = $this->order_book();
+        }
+        $orderbook = $this->orderbooks[$symbol];
+        $snapshot = $this->parse_order_book($tick, $symbol, $timestamp, 'buys', 'asks');
+        $orderbook->reset ($snapshot);
         $messageHash = 'orderbook:' . $symbol;
         $client->resolve ($orderbook, $messageHash);
     }
@@ -435,7 +439,7 @@ class bitrue extends \ccxt\async\bitrue {
                 } catch (Exception $error) {
                     $this->options['listenKey'] = null;
                     $this->options['listenKeyUrl'] = null;
-                    return;
+                    return null;
                 }
                 //
                 //     {
@@ -464,7 +468,7 @@ class bitrue extends \ccxt\async\bitrue {
                 'listenKey' => $listenKey,
             );
             try {
-                Async\await($this->openPrivatePutPoseidonApiV1ListenKeyListenKey (array_merge($request, $params)));
+                Async\await($this->openPrivatePutPoseidonApiV1ListenKeyListenKey ($this->extend($request, $params)));
                 //
                 // ಠ_ಠ
                 //     {

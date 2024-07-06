@@ -349,8 +349,12 @@ export default class bitrue extends bitrueRest {
         const symbol = market['symbol'];
         const timestamp = this.safeInteger(message, 'ts');
         const tick = this.safeValue(message, 'tick', {});
-        const orderbook = this.parseOrderBook(tick, symbol, timestamp, 'buys', 'asks');
-        this.orderbooks[symbol] = orderbook;
+        if (!(symbol in this.orderbooks)) {
+            this.orderbooks[symbol] = this.orderBook();
+        }
+        const orderbook = this.orderbooks[symbol];
+        const snapshot = this.parseOrderBook(tick, symbol, timestamp, 'buys', 'asks');
+        orderbook.reset(snapshot);
         const messageHash = 'orderbook:' + symbol;
         client.resolve(orderbook, messageHash);
     }
@@ -417,7 +421,7 @@ export default class bitrue extends bitrueRest {
             catch (error) {
                 this.options['listenKey'] = undefined;
                 this.options['listenKeyUrl'] = undefined;
-                return;
+                return undefined;
             }
             //
             //     {

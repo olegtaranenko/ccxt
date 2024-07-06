@@ -315,7 +315,7 @@ class wazirx extends \ccxt\async\wazirx {
                 'event' => 'subscribe',
                 'streams' => array( $messageHash ),
             );
-            $request = array_merge($message, $params);
+            $request = $this->extend($message, $params);
             $trades = Async\await($this->watch($url, $messageHash, $request, $messageHash));
             if ($this->newUpdates) {
                 $limit = $trades->getLimit ($symbol, $limit);
@@ -546,20 +546,20 @@ class wazirx extends \ccxt\async\wazirx {
         $market = $this->safe_market($marketId);
         $symbol = $market['symbol'];
         $messageHash = 'orderbook:' . $symbol;
-        $currentOrderBook = $this->safe_value($this->orderbooks, $symbol);
-        if ($currentOrderBook === null) {
+        // $currentOrderBook = $this->safe_value($this->orderbooks, $symbol);
+        if (!(is_array($this->orderbooks) && array_key_exists($symbol, $this->orderbooks))) {
             $snapshot = $this->parse_order_book($data, $symbol, $timestamp, 'b', 'a');
-            $orderBook = $this->order_book($snapshot);
-            $this->orderbooks[$symbol] = $orderBook;
+            $this->orderbooks[$symbol] = $this->order_book($snapshot);
         } else {
-            $asks = $this->safe_value($data, 'a', array());
-            $bids = $this->safe_value($data, 'b', array());
-            $this->handle_deltas($currentOrderBook['asks'], $asks);
-            $this->handle_deltas($currentOrderBook['bids'], $bids);
-            $currentOrderBook['nonce'] = $timestamp;
-            $currentOrderBook['timestamp'] = $timestamp;
-            $currentOrderBook['datetime'] = $this->iso8601($timestamp);
-            $this->orderbooks[$symbol] = $currentOrderBook;
+            $orderbook = $this->orderbooks[$symbol];
+            $asks = $this->safe_list($data, 'a', array());
+            $bids = $this->safe_list($data, 'b', array());
+            $this->handle_deltas($orderbook['asks'], $asks);
+            $this->handle_deltas($orderbook['bids'], $bids);
+            $orderbook['nonce'] = $timestamp;
+            $orderbook['timestamp'] = $timestamp;
+            $orderbook['datetime'] = $this->iso8601($timestamp);
+            $this->orderbooks[$symbol] = $orderbook;
         }
         $client->resolve ($this->orderbooks[$symbol], $messageHash);
     }
@@ -754,7 +754,8 @@ class wazirx extends \ccxt\async\wazirx {
     public function handle_message(Client $client, $message) {
         $status = $this->safe_string($message, 'status');
         if ($status === 'error') {
-            return $this->handle_error($client, $message);
+            $this->handle_error($client, $message);
+            return;
         }
         $event = $this->safe_string($message, 'event');
         $eventHandlers = array(
@@ -764,7 +765,8 @@ class wazirx extends \ccxt\async\wazirx {
         );
         $eventHandler = $this->safe_value($eventHandlers, $event);
         if ($eventHandler !== null) {
-            return $eventHandler($client, $message);
+            $eventHandler($client, $message);
+            return;
         }
         $stream = $this->safe_string($message, 'stream', '');
         $streamHandlers = array(
@@ -778,9 +780,11 @@ class wazirx extends \ccxt\async\wazirx {
         );
         $streams = is_array($streamHandlers) ? array_keys($streamHandlers) : array();
         for ($i = 0; $i < count($streams); $i++) {
-            if ($this->in_array($streams[$i], $stream)) {
+            $streamContains = mb_strpos($stream, $streams[$i]) > -1;
+            if ($streamContains) {
                 $handler = $streamHandlers[$streams[$i]];
-                return $handler($client, $message);
+                $handler($client, $message);
+                return;
             }
         }
         throw new NotSupported($this->id . ' this $message type is not supported yet. Message => ' . $this->json($message));
