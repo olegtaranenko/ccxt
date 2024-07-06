@@ -1,7 +1,6 @@
 'use strict';
 
-const ccxt = require ('ccxt');
-const dayjs = require('dayjs');
+const ccxt = require ('ccxt')
 const asTable  = require ('as-table').configure ({ delimiter: ' | ' })
 
 console.log ('CCXT Version:', ccxt.version)
@@ -23,8 +22,8 @@ async function loop (exchange, symbol, timeframe, completeCandlesOnly = false) {
                 if (ohlcvc.length > 0) {
                     const table = ohlcvc.map((candle) => {
                         const [ts] = candle
-                        candle[0] = dayjs(ts).format (timeFmt)
-                        return [dayjs().format(timeFmt), symbol, ...candle]
+                        candle[0] = exchange.iso8601 (ts)
+                        return [,...candle]
                     })
                     // console.log(`${dayjs().format(timeFmt)} Symbol: ${symbol}, timeframe: ${timeframe}` );
                     // console.log ('-----------------------------------------------------------')

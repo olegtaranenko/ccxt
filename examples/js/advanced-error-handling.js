@@ -1,9 +1,9 @@
 "use strict";
 
-const ccxt      = require ('../../ccxt.js');
+const ccxt      = require ('../../dist/ccxt.cjs');
 
 // instantiate the exchange
-let exchange = new ccxt.coinbasepro  ({
+let exchange = new ccxt.pro.coinbase  ({
     'apiKey': 'XXXXXXXXXXXXXX',
     'secret': 'YYYYYYYYYYYYYY',
 });
@@ -36,4 +36,4 @@ async function checkOrders(){
 }
 
 //  for demonstrational purposes, we use 1000 ms interval
-setInterval(checkOrders, 1000); 
+setInterval(checkOrders, 1000);
