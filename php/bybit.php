@@ -3293,13 +3293,13 @@ class bybit extends Exchange {
         if ($code !== null) {
             if ($code !== '0') {
                 $category = $this->safe_string($order, 'category');
-                $inferedMarketType = ($category === 'spot') ? 'spot' : 'contract';
+                $inferredMarketType = ($category === 'spot') ? 'spot' : 'contract';
                 return $this->safe_order(array(
                     'info' => $order,
                     'status' => 'rejected',
                     'id' => $this->safe_string($order, 'orderId'),
                     'clientOrderId' => $this->safe_string($order, 'orderLinkId'),
-                    'symbol' => $this->safe_symbol($this->safe_string($order, 'symbol'), null, null, $inferedMarketType),
+                    'symbol' => $this->safe_symbol($this->safe_string($order, 'symbol'), null, null, $inferredMarketType),
                 ));
             }
         }
@@ -3347,7 +3347,7 @@ class bybit extends Exchange {
                 $feeCurrencyCode = $market['inverse'] ? $market['base'] : $market['settle'];
             }
             $fee = array(
-                'cost' => $feeCostString,
+                'cost' => $this->parse_number($feeCostString),
                 'currency' => $feeCurrencyCode,
             );
         }
