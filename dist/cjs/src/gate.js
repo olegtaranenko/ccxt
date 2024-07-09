@@ -594,21 +594,21 @@ class gate extends gate$1 {
             // copied from gatev2
             'commonCurrencies': {
                 '88MPH': 'MPH',
-                'AXIS': 'Axis DeFi',
-                'BIFI': 'Bitcoin File',
-                'BOX': 'DefiBox',
-                'BYN': 'BeyondFi',
-                'EGG': 'Goose Finance',
-                'GTC': 'Game.com',
-                'GTC_HT': 'Game.com HT',
-                'GTC_BSC': 'Game.com BSC',
-                'HIT': 'HitChain',
-                'MM': 'Million',
-                'MPH': 'Morpher',
-                'POINT': 'GatePoint',
-                'RAI': 'Rai Reflex Index',
-                'SBTC': 'Super Bitcoin',
-                'TNC': 'Trinity Network Credit',
+                'AXIS': 'AXISDEFI',
+                'BIFI': 'BITCOINFILE',
+                'BOX': 'DEFIBOX',
+                'BYN': 'BEYONDFI',
+                'EGG': 'GOOSEFINANCE',
+                'GTC': 'GAMECOM',
+                'GTC_HT': 'GAMECOM_HT',
+                'GTC_BSC': 'GAMECOM_BSC',
+                'HIT': 'HITCHAIN',
+                'MM': 'MILLION',
+                'MPH': 'MORPHER',
+                'POINT': 'GATEPOINT',
+                'RAI': 'RAIREFLEXINDEX',
+                'SBTC': 'SUPERBITCOIN',
+                'TNC': 'TRINITYNETWORKCREDIT',
                 'VAI': 'VAIOT',
                 'TRAC': 'TRACO', // conflict with OriginTrail (TRAC)
             },
@@ -4019,7 +4019,7 @@ class gate extends gate$1 {
                     request['price'] = price; // set to 0 for market orders
                 }
                 else {
-                    request['price'] = this.priceToPrecision(symbol, price);
+                    request['price'] = (price === 0) ? '0' : this.priceToPrecision(symbol, price);
                 }
                 if (reduceOnly !== undefined) {
                     request['reduce_only'] = reduceOnly;
@@ -4110,8 +4110,8 @@ class gate extends gate$1 {
                 request = {
                     'initial': {
                         'contract': market['id'],
-                        'size': amount,
-                        'price': this.priceToPrecision(symbol, price), // set to 0 to use market price
+                        'size': amount, // positive = buy, negative = sell, set to 0 to close the position
+                        // 'price': (price === 0) ? '0' : this.priceToPrecision (symbol, price), // set to 0 to use market price
                         // 'close': false, // set to true if trying to close the position
                         // 'tif': 'gtc', // gtc, ioc, if using market price, only ioc is supported
                         // 'text': clientOrderId, // web, api, app
@@ -4119,6 +4119,12 @@ class gate extends gate$1 {
                     },
                     'settle': market['settleId'],
                 };
+                if (type === 'market') {
+                    request['initial']['price'] = '0';
+                }
+                else {
+                    request['initial']['price'] = (price === 0) ? '0' : this.priceToPrecision(symbol, price);
+                }
                 if (trigger === undefined) {
                     let rule = undefined;
                     let triggerOrderPrice = undefined;

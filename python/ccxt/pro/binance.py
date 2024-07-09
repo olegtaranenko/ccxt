@@ -587,9 +587,9 @@ class binance(ccxt.async_support.binance):
         for i in range(0, len(symbols)):
             symbol = symbols[i]
             market = self.market(symbol)
-            messageHash = market['lowercaseId'] + '@' + name
-            messageHashes.append(messageHash)
-            symbolHash = messageHash + '@' + watchOrderBookRate + 'ms'
+            messageHashes.append('orderbook::' + symbol)
+            subscriptionHash = market['lowercaseId'] + '@' + name
+            symbolHash = subscriptionHash + '@' + watchOrderBookRate + 'ms'
             subParams.append(symbolHash)
         messageHashesLength = len(messageHashes)
         url = self.urls['api']['ws'][type] + '/' + self.stream(type, streamHash, messageHashesLength)
@@ -608,8 +608,7 @@ class binance(ccxt.async_support.binance):
             'symbols': symbols,
             'type': type,
         }
-        message = self.extend(request, params)
-        orderbook = await self.watch_multiple(url, messageHashes, message, messageHashes, subscription)
+        orderbook = await self.watch_multiple(url, messageHashes, self.extend(request, params), messageHashes, subscription)
         return orderbook.limit()
 
     async def fetch_order_book_ws(self, symbol: str, limit: Int = None, params={}) -> OrderBook:
@@ -773,8 +772,7 @@ class binance(ccxt.async_support.binance):
         marketId = self.safe_string(message, 's')
         market = self.safe_market(marketId, None, None, marketType)
         symbol = market['symbol']
-        name = 'depth'
-        messageHash = market['lowercaseId'] + '@' + name
+        messageHash = 'orderbook::' + symbol
         if not (symbol in self.orderbooks):
             #
             # https://github.com/ccxt/ccxt/issues/6672
@@ -893,12 +891,14 @@ class binance(ccxt.async_support.binance):
         type = firstMarket['type']
         if firstMarket['contract']:
             type = 'future' if firstMarket['linear'] else 'delivery'
+        messageHashes = []
         subParams = []
         for i in range(0, len(symbols)):
             symbol = symbols[i]
             market = self.market(symbol)
-            currentMessageHash = market['lowercaseId'] + '@' + name
-            subParams.append(currentMessageHash)
+            messageHashes.append('trade::' + symbol)
+            rawHash = market['lowercaseId'] + '@' + name
+            subParams.append(rawHash)
         query = self.omit(params, 'type', 'name')
         subParamsLength = len(subParams)
         url = self.urls['api']['ws'][type] + '/' + self.stream(type, streamHash, subParamsLength)
@@ -911,7 +911,7 @@ class binance(ccxt.async_support.binance):
         subscribe: dict = {
             'id': requestId,
         }
-        trades = await self.watch_multiple(url, subParams, self.extend(request, query), subParams, subscribe)
+        trades = await self.watch_multiple(url, messageHashes, self.extend(request, query), messageHashes, subscribe)
         if self.newUpdates:
             first = self.safe_value(trades, 0)
             tradeSymbol = self.safe_string(first, 'symbol')
@@ -1099,9 +1099,7 @@ class binance(ccxt.async_support.binance):
         marketId = self.safe_string(message, 's')
         market = self.safe_market(marketId, None, None, marketType)
         symbol = market['symbol']
-        lowerCaseId = self.safe_string_lower(message, 's')
-        event = self.safe_string(message, 'e')
-        messageHash = lowerCaseId + '@' + event
+        messageHash = 'trade::' + symbol
         trade = self.parse_ws_trade(message, market)
         tradesArray = self.safe_value(self.trades, symbol)
         if tradesArray is None:
