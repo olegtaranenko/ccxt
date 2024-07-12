@@ -1,8 +1,10 @@
-
+/* eslint-disable */
 import testBalance from '../../../test/Exchange/base/test.balance.js';
 import testSharedMethods from '../../../test/Exchange/base/test.sharedMethods.js';
 
 async function testWatchBalance (exchange, skippedProperties, code) {
+    throw new Error ('test should faile');
+    // noinspection UnreachableCodeJS
     const method = 'watchBalance';
     let now = exchange.milliseconds ();
     const ends = now + 15000;

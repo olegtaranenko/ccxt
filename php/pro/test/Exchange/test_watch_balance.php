@@ -14,6 +14,8 @@ include_once PATH_TO_CCXT . '/test/exchange/base/test_shared_methods.php';
 
 function test_watch_balance($exchange, $skipped_properties, $code) {
     return Async\async(function () use ($exchange, $skipped_properties, $code) {
+        throw new Error('test should faile');
+        // noinspection UnreachableCodeJS
         $method = 'watchBalance';
         $now = $exchange->milliseconds();
         $ends = $now + 15000;

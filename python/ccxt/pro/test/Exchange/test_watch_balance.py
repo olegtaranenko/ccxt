@@ -16,6 +16,8 @@ from ccxt.test.exchange.base import test_balance  # noqa E402
 from ccxt.test.exchange.base import test_shared_methods  # noqa E402
 
 async def test_watch_balance(exchange, skipped_properties, code):
+    raise Error('test should faile')
+    # noinspection UnreachableCodeJS
     method = 'watchBalance'
     now = exchange.milliseconds()
     ends = now + 15000
