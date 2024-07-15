@@ -19,13 +19,13 @@ from ccxt.base.errors import InsufficientFunds
 from ccxt.base.errors import InvalidAddress
 from ccxt.base.errors import InvalidOrder
 from ccxt.base.errors import OrderNotFound
-from ccxt.base.errors import CancelPending
 from ccxt.base.errors import NotSupported
 from ccxt.base.errors import DDoSProtection
 from ccxt.base.errors import RateLimitExceeded
 from ccxt.base.errors import ExchangeNotAvailable
 from ccxt.base.errors import OnMaintenance
 from ccxt.base.errors import InvalidNonce
+from ccxt.base.errors import CancelPending
 from ccxt.base.decimal_to_precision import TRUNCATE
 from ccxt.base.decimal_to_precision import TICK_SIZE
 from ccxt.base.precise import Precise
@@ -1030,7 +1030,7 @@ class kraken(Exchange, ImplicitAPI):
             amount = Precise.string_abs(amount)
         else:
             direction = 'in'
-        timestamp = self.safe_timestamp(item, 'time')
+        timestamp = self.safe_integer_product(item, 'time', 1000)
         return {
             'info': item,
             'id': id,

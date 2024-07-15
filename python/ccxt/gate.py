@@ -16,7 +16,6 @@ from ccxt.base.errors import AccountSuspended
 from ccxt.base.errors import ArgumentsRequired
 from ccxt.base.errors import BadRequest
 from ccxt.base.errors import BadSymbol
-from ccxt.base.errors import BadResponse
 from ccxt.base.errors import InsufficientFunds
 from ccxt.base.errors import InvalidOrder
 from ccxt.base.errors import OrderNotFound
@@ -24,6 +23,7 @@ from ccxt.base.errors import OrderImmediatelyFillable
 from ccxt.base.errors import NotSupported
 from ccxt.base.errors import RateLimitExceeded
 from ccxt.base.errors import ExchangeNotAvailable
+from ccxt.base.errors import BadResponse
 from ccxt.base.decimal_to_precision import TICK_SIZE
 from ccxt.base.precise import Precise
 
@@ -612,21 +612,21 @@ class gate(Exchange, ImplicitAPI):
             # copied from gatev2
             'commonCurrencies': {
                 '88MPH': 'MPH',
-                'AXIS': 'Axis DeFi',
-                'BIFI': 'Bitcoin File',
-                'BOX': 'DefiBox',
-                'BYN': 'BeyondFi',
-                'EGG': 'Goose Finance',
-                'GTC': 'Game.com',  # conflict with Gitcoin and Gastrocoin
-                'GTC_HT': 'Game.com HT',
-                'GTC_BSC': 'Game.com BSC',
-                'HIT': 'HitChain',
-                'MM': 'Million',  # conflict with MilliMeter
-                'MPH': 'Morpher',  # conflict with 88MPH
-                'POINT': 'GatePoint',
-                'RAI': 'Rai Reflex Index',  # conflict with RAI Finance
-                'SBTC': 'Super Bitcoin',
-                'TNC': 'Trinity Network Credit',
+                'AXIS': 'AXISDEFI',
+                'BIFI': 'BITCOINFILE',
+                'BOX': 'DEFIBOX',
+                'BYN': 'BEYONDFI',
+                'EGG': 'GOOSEFINANCE',
+                'GTC': 'GAMECOM',  # conflict with Gitcoin and Gastrocoin
+                'GTC_HT': 'GAMECOM_HT',
+                'GTC_BSC': 'GAMECOM_BSC',
+                'HIT': 'HITCHAIN',
+                'MM': 'MILLION',  # conflict with MilliMeter
+                'MPH': 'MORPHER',  # conflict with 88MPH
+                'POINT': 'GATEPOINT',
+                'RAI': 'RAIREFLEXINDEX',  # conflict with RAI Finance
+                'SBTC': 'SUPERBITCOIN',
+                'TNC': 'TRINITYNETWORKCREDIT',
                 'VAI': 'VAIOT',
                 'TRAC': 'TRACO',  # conflict with OriginTrail(TRAC)
             },
@@ -3786,7 +3786,7 @@ class gate(Exchange, ImplicitAPI):
                 if isMarketOrder:
                     request['price'] = price  # set to 0 for market orders
                 else:
-                    request['price'] = self.price_to_precision(symbol, price)
+                    request['price'] = '0' if (price == 0) else self.price_to_precision(symbol, price)
                 if reduceOnly is not None:
                     request['reduce_only'] = reduceOnly
                 if timeInForce is not None:
@@ -3857,7 +3857,7 @@ class gate(Exchange, ImplicitAPI):
                     'initial': {
                         'contract': market['id'],
                         'size': amount,  # positive = buy, negative = sell, set to 0 to close the position
-                        'price': self.price_to_precision(symbol, price),  # set to 0 to use market price
+                        # 'price': '0' if (price == 0) else self.price_to_precision(symbol, price),  # set to 0 to use market price
                         # 'close': False,  # set to True if trying to close the position
                         # 'tif': 'gtc',  # gtc, ioc, if using market price, only ioc is supported
                         # 'text': clientOrderId,  # web, api, app
@@ -3865,6 +3865,10 @@ class gate(Exchange, ImplicitAPI):
                     },
                     'settle': market['settleId'],
                 }
+                if type == 'market':
+                    request['initial']['price'] = '0'
+                else:
+                    request['initial']['price'] = '0' if (price == 0) else self.price_to_precision(symbol, price)
                 if trigger is None:
                     rule = None
                     triggerOrderPrice = None
@@ -4775,8 +4779,7 @@ class gate(Exchange, ImplicitAPI):
         """
         cancel multiple orders for multiple symbols
         :see: https://www.gate.io/docs/developers/apiv4/en/#cancel-a-batch-of-orders-with-an-id-list
-        :param str[] ids: order ids
-        :param str symbol: unified symbol of the market the order was made in
+        :param CancellationRequest[] orders: list of order ids with symbol, example [{"id": "a", "symbol": "BTC/USDT"}, {"id": "b", "symbol": "ETH/USDT"}]
         :param dict [params]: extra parameters specific to the exchange API endpoint
         :param str[] [params.clientOrderIds]: client order ids
         :returns dict: an list of `order structures <https://docs.ccxt.com/#/?id=order-structure>`

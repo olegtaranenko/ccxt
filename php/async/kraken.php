@@ -14,11 +14,11 @@ use ccxt\InsufficientFunds;
 use ccxt\InvalidAddress;
 use ccxt\InvalidOrder;
 use ccxt\OrderNotFound;
-use ccxt\CancelPending;
 use ccxt\NotSupported;
 use ccxt\RateLimitExceeded;
 use ccxt\ExchangeNotAvailable;
 use ccxt\InvalidNonce;
+use ccxt\CancelPending;
 use ccxt\Precise;
 use React\Async;
 use React\Promise\PromiseInterface;
@@ -1073,7 +1073,7 @@ class kraken extends Exchange {
         } else {
             $direction = 'in';
         }
-        $timestamp = $this->safe_timestamp($item, 'time');
+        $timestamp = $this->safe_integer_product($item, 'time', 1000);
         return array(
             'info' => $item,
             'id' => $id,

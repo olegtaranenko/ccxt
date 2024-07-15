@@ -1147,7 +1147,7 @@ class okx(ccxt.async_support.okx):
         :param bool [params.stop]: True if fetching trigger or conditional trades
         :param str [params.type]: 'spot', 'swap', 'future', 'option', 'ANY', 'SPOT', 'MARGIN', 'SWAP', 'FUTURES' or 'OPTION'
         :param str [params.marginMode]: 'cross' or 'isolated', for automatically setting the type to spot margin
-        :returns dict[]: a list of [trade structures]{@link https://docs.ccxt.com/#/?id=trade-structure
+        :returns dict[]: a list of `trade structures <https://docs.ccxt.com/#/?id=trade-structure>`
         """
         # By default, receive order updates from any instrument type
         type = None
@@ -1571,7 +1571,7 @@ class okx(ccxt.async_support.okx):
         if self.is_empty(args):
             method = self.safe_string(message, 'op')
             stringMsg = self.json(message)
-            self.handle_errors(None, None, client.url, method, None, stringMsg, stringMsg, None, None)
+            self.handle_errors(None, None, client.url, method, None, stringMsg, message, None, None)
         orders = self.parse_orders(args, None, None, None)
         first = self.safe_dict(orders, 0, {})
         client.resolve(first, messageHash)
@@ -1729,8 +1729,8 @@ class okx(ccxt.async_support.okx):
         future.resolve(True)
 
     def ping(self, client):
-        # okex does not support built-in ws protocol-level ping-pong
-        # instead it requires custom text-based ping-pong
+        # OKX does not support the built-in WebSocket protocol-level ping-pong.
+        # Instead, it requires a custom text-based ping-pong mechanism.
         return 'ping'
 
     def handle_pong(self, client: Client, message):

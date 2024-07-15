@@ -594,21 +594,21 @@ export default class gate extends Exchange {
             // copied from gatev2
             'commonCurrencies': {
                 '88MPH': 'MPH',
-                'AXIS': 'Axis DeFi',
-                'BIFI': 'Bitcoin File',
-                'BOX': 'DefiBox',
-                'BYN': 'BeyondFi',
-                'EGG': 'Goose Finance',
-                'GTC': 'Game.com', // conflict with Gitcoin and Gastrocoin
-                'GTC_HT': 'Game.com HT',
-                'GTC_BSC': 'Game.com BSC',
-                'HIT': 'HitChain',
-                'MM': 'Million', // conflict with MilliMeter
-                'MPH': 'Morpher', // conflict with 88MPH
-                'POINT': 'GatePoint',
-                'RAI': 'Rai Reflex Index', // conflict with RAI Finance
-                'SBTC': 'Super Bitcoin',
-                'TNC': 'Trinity Network Credit',
+                'AXIS': 'AXISDEFI',
+                'BIFI': 'BITCOINFILE',
+                'BOX': 'DEFIBOX',
+                'BYN': 'BEYONDFI',
+                'EGG': 'GOOSEFINANCE',
+                'GTC': 'GAMECOM', // conflict with Gitcoin and Gastrocoin
+                'GTC_HT': 'GAMECOM_HT',
+                'GTC_BSC': 'GAMECOM_BSC',
+                'HIT': 'HITCHAIN',
+                'MM': 'MILLION', // conflict with MilliMeter
+                'MPH': 'MORPHER', // conflict with 88MPH
+                'POINT': 'GATEPOINT',
+                'RAI': 'RAIREFLEXINDEX', // conflict with RAI Finance
+                'SBTC': 'SUPERBITCOIN',
+                'TNC': 'TRINITYNETWORKCREDIT',
                 'VAI': 'VAIOT',
                 'TRAC': 'TRACO', // conflict with OriginTrail (TRAC)
             },
@@ -4013,7 +4013,7 @@ export default class gate extends Exchange {
                 if (isMarketOrder) {
                     request['price'] = price; // set to 0 for market orders
                 } else {
-                    request['price'] = this.priceToPrecision (symbol, price);
+                    request['price'] = (price === 0) ? '0' : this.priceToPrecision (symbol, price);
                 }
                 if (reduceOnly !== undefined) {
                     request['reduce_only'] = reduceOnly;
@@ -4098,7 +4098,7 @@ export default class gate extends Exchange {
                     'initial': {
                         'contract': market['id'],
                         'size': amount, // positive = buy, negative = sell, set to 0 to close the position
-                        'price': this.priceToPrecision (symbol, price), // set to 0 to use market price
+                        // 'price': (price === 0) ? '0' : this.priceToPrecision (symbol, price), // set to 0 to use market price
                         // 'close': false, // set to true if trying to close the position
                         // 'tif': 'gtc', // gtc, ioc, if using market price, only ioc is supported
                         // 'text': clientOrderId, // web, api, app
@@ -4106,6 +4106,11 @@ export default class gate extends Exchange {
                     },
                     'settle': market['settleId'],
                 };
+                if (type === 'market') {
+                    request['initial']['price'] = '0';
+                } else {
+                    request['initial']['price'] = (price === 0) ? '0' : this.priceToPrecision (symbol, price);
+                }
                 if (trigger === undefined) {
                     let rule = undefined;
                     let triggerOrderPrice = undefined;
@@ -5104,8 +5109,7 @@ export default class gate extends Exchange {
          * @name gate#cancelOrdersForSymbols
          * @description cancel multiple orders for multiple symbols
          * @see https://www.gate.io/docs/developers/apiv4/en/#cancel-a-batch-of-orders-with-an-id-list
-         * @param {string[]} ids order ids
-         * @param {string} symbol unified symbol of the market the order was made in
+         * @param {CancellationRequest[]} orders list of order ids with symbol, example [{"id": "a", "symbol": "BTC/USDT"}, {"id": "b", "symbol": "ETH/USDT"}]
          * @param {object} [params] extra parameters specific to the exchange API endpoint
          * @param {string[]} [params.clientOrderIds] client order ids
          * @returns {object} an list of [order structures]{@link https://docs.ccxt.com/#/?id=order-structure}

@@ -3187,13 +3187,13 @@ class bybit(Exchange, ImplicitAPI):
         if code is not None:
             if code != '0':
                 category = self.safe_string(order, 'category')
-                inferedMarketType = 'spot' if (category == 'spot') else 'contract'
+                inferredMarketType = 'spot' if (category == 'spot') else 'contract'
                 return self.safe_order({
                     'info': order,
                     'status': 'rejected',
                     'id': self.safe_string(order, 'orderId'),
                     'clientOrderId': self.safe_string(order, 'orderLinkId'),
-                    'symbol': self.safe_symbol(self.safe_string(order, 'symbol'), None, None, inferedMarketType),
+                    'symbol': self.safe_symbol(self.safe_string(order, 'symbol'), None, None, inferredMarketType),
                 })
         marketId = self.safe_string(order, 'symbol')
         isContract = ('tpslMode' in order)
@@ -4051,6 +4051,10 @@ class bybit(Exchange, ImplicitAPI):
             raise ArgumentsRequired(self.id + ' cancelOrders() requires a symbol argument')
         self.load_markets()
         market = self.market(symbol)
+        types = self.is_unified_enabled()
+        enableUnifiedAccount = types[1]
+        if not enableUnifiedAccount:
+            raise NotSupported(self.id + ' cancelOrders() supports UTA accounts only')
         category = None
         category, params = self.get_bybit_type('cancelOrders', market, params)
         if category == 'inverse':
@@ -4147,13 +4151,15 @@ class bybit(Exchange, ImplicitAPI):
         """
         cancel multiple orders for multiple symbols
         :see: https://bybit-exchange.github.io/docs/v5/order/batch-cancel
-        :param str[] ids: order ids
-        :param str symbol: unified symbol of the market the order was made in
+        :param CancellationRequest[] orders: list of order ids with symbol, example [{"id": "a", "symbol": "BTC/USDT"}, {"id": "b", "symbol": "ETH/USDT"}]
         :param dict [params]: extra parameters specific to the exchange API endpoint
-        :param str[] [params.clientOrderIds]: client order ids
         :returns dict: an list of `order structures <https://docs.ccxt.com/#/?id=order-structure>`
         """
         self.load_markets()
+        types = self.is_unified_enabled()
+        enableUnifiedAccount = types[1]
+        if not enableUnifiedAccount:
+            raise NotSupported(self.id + ' cancelOrdersForSymbols() supports UTA accounts only')
         ordersRequests = []
         category = None
         for i in range(0, len(orders)):
