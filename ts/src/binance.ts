@@ -277,7 +277,7 @@ export default class binance extends Exchange {
                         'leverageBracket': 1,
                         'multiAssetsMargin': 30,
                         'openOrder': 1,
-                        'openOrders': 1,
+                        'openOrders': { 'cost': 1, 'noSymbol': 40 },
                         'order': 1,
                         'order/asyn': 1000,
                         'order/asyn/id': 10,
@@ -388,13 +388,13 @@ export default class binance extends Exchange {
                         'cm/commissionRate': 20, // 20
                         'cm/conditional/allOrders': 40,
                         'cm/conditional/openOrder': 1,
-                        'cm/conditional/openOrders': 40,
+                        'cm/conditional/openOrders': { 'cost': 1, 'noSymbol': 40 },
                         'cm/conditional/orderHistory': 1,
                         'cm/forceOrders': 20, // 20
                         'cm/income': 30,
                         'cm/leverageBracket': 1, // 1
                         'cm/openOrder': 1, // 1
-                        'cm/openOrders': 1, // 1
+                        'cm/openOrders': { 'cost': 1, 'noSymbol': 40 },
                         'cm/order': 1, // 1
                         'cm/positionRisk': 1, // 1
                         'cm/positionSide/dual': 30, // 30
@@ -422,13 +422,13 @@ export default class binance extends Exchange {
                         'um/commissionRate': 20, // 20
                         'um/conditional/allOrders': 40,
                         'um/conditional/openOrder': 1,
-                        'um/conditional/openOrders': 40,
+                        'um/conditional/openOrders': { 'cost': 1, 'noSymbol': 40 },
                         'um/conditional/orderHistory': 1,
                         'um/forceOrders': 20, // 20
                         'um/income': 30,
                         'um/leverageBracket': 1, // 1
                         'um/openOrder': 1, // 1
-                        'um/openOrders': 1, // 1
+                        'um/openOrders': { 'cost': 1, 'noSymbol': 40 },
                         'um/order': 1, // 1
                         'um/positionRisk': 5, // 5
                         'um/positionSide/dual': 30, // 30
@@ -6598,10 +6598,7 @@ export default class binance extends Exchange {
             const marketType = ('type' in market) ? market['type'] : defaultType;
             type = this.safeString (params, 'type', marketType);
         } else if (this.options['warnOnFetchOpenOrdersWithoutSymbol']) {
-            const symbols = this.symbols;
-            const numSymbols = symbols.length;
-            const fetchOpenOrdersRateLimit = this.parseToInt (numSymbols / 2);
-            throw new ExchangeError (this.id + ' fetchOpenOrders() WARNING: fetching open orders without specifying a symbol is rate-limited to one call per ' + fetchOpenOrdersRateLimit.toString () + ' seconds. Do not call this method frequently to avoid ban. Set ' + this.id + '.options["warnOnFetchOpenOrdersWithoutSymbol"] = false to suppress this warning message.');
+            throw new ExchangeError (this.id + ' fetchOpenOrders() WARNING: fetching open orders without specifying a symbol has stricter rate limits (10 times more for spot, 40 times more for other markets) compared to requesting with symbol argument. To acknowledge this warning, set ' + this.id + '.options["warnOnFetchOpenOrdersWithoutSymbol"] = false to suppress this warning message.');
         } else {
             const defaultType = this.safeString2 (this.options, 'fetchOpenOrders', 'defaultType', 'spot');
             type = this.safeString (params, 'type', defaultType);
@@ -12150,6 +12147,9 @@ export default class binance extends Exchange {
         const request: Dict = {};
         if (market['option']) {
             request['underlyingAsset'] = market['baseId'];
+            if (market['expiry'] === undefined) {
+                throw new NotSupported (this.id + ' fetchOpenInterest does not support ' + symbol);
+            }
             request['expiration'] = this.yymmdd (market['expiry']);
         } else {
             request['symbol'] = market['id'];
@@ -12193,6 +12193,7 @@ export default class binance extends Exchange {
         //     ]
         //
         if (market['option']) {
+            symbol = market['symbol'];
             const result = this.parseOpenInterests (response, market);
             for (let i = 0; i < result.length; i++) {
                 const item = result[i];
