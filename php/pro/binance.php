@@ -9,7 +9,7 @@ use Exception; // a common import
 use ccxt\ArgumentsRequired;
 use ccxt\BadRequest;
 use ccxt\NotSupported;
-use ccxt\InvalidNonce;
+use ccxt\ChecksumError;
 use ccxt\Precise;
 use React\Async;
 use React\Promise\PromiseInterface;
@@ -104,6 +104,7 @@ class binance extends \ccxt\async\binance {
                     'name' => 'kline', // or indexPriceKline or markPriceKline (coin-m futures)
                 ),
                 'watchOrderBook' => array(
+                    'checksum' => true,
                     'maxRetries' => 3,
                 ),
                 'watchOrderBookLimit' => 1000, // default limit
@@ -869,10 +870,10 @@ class binance extends \ccxt\async\binance {
                                 $client->resolve ($orderbook, $messageHash);
                             }
                         } else {
-                            $checksum = $this->safe_bool($this->options, 'checksum', true);
+                            $checksum = $this->handle_option('watchOrderBook', 'checksum', true);
                             if ($checksum) {
                                 // todo => $client->reject from handleOrderBookMessage properly
-                                throw new InvalidNonce($this->id . ' handleOrderBook received an out-of-order nonce');
+                                throw new ChecksumError($this->id . ' ' . $this->orderbook_checksum_message($symbol));
                             }
                         }
                     }
@@ -888,10 +889,10 @@ class binance extends \ccxt\async\binance {
                                 $client->resolve ($orderbook, $messageHash);
                             }
                         } else {
-                            $checksum = $this->safe_bool($this->options, 'checksum', true);
+                            $checksum = $this->handle_option('watchOrderBook', 'checksum', true);
                             if ($checksum) {
                                 // todo => $client->reject from handleOrderBookMessage properly
-                                throw new InvalidNonce($this->id . ' handleOrderBook received an out-of-order nonce');
+                                throw new ChecksumError($this->id . ' ' . $this->orderbook_checksum_message($symbol));
                             }
                         }
                     }

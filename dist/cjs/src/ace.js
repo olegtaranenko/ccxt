@@ -198,10 +198,23 @@ class ace extends ace$1 {
         return this.parseMarkets(response);
     }
     parseMarket(market) {
-        const baseId = this.safeString(market, 'base');
-        const base = this.safeCurrencyCode(baseId);
-        const quoteId = this.safeString(market, 'quote');
-        const quote = this.safeCurrencyCode(quoteId);
+        //
+        //     {
+        //         "symbol": "ADA/TWD",
+        //         "base": "ADA",
+        //         "baseCurrencyId": "122",
+        //         "quote": "TWD",
+        //         "quoteCurrencyId": "1",
+        //         "basePrecision": "2",
+        //         "quotePrecision": "3",
+        //         "minLimitBaseAmount": "1.0",
+        //         "maxLimitBaseAmount": "150000.0"
+        //     }
+        //
+        const baseId = this.safeString(market, 'baseCurrencyId');
+        const base = this.safeCurrencyCode(this.safeString(market, 'base'));
+        const quoteId = this.safeString(market, 'quoteCurrencyId');
+        const quote = this.safeCurrencyCode(this.safeString(market, 'quote'));
         const symbol = base + '/' + quote;
         return {
             'id': this.safeString(market, 'symbol'),
@@ -301,7 +314,7 @@ class ace extends ace$1 {
         const market = this.market(symbol);
         const response = await this.publicGetOapiV2ListTradePrice(params);
         const marketId = market['id'];
-        const ticker = this.safeValue(response, marketId, {});
+        const ticker = this.safeDict(response, marketId, {});
         //
         //     {
         //         "BTC/USDT":{
@@ -339,7 +352,7 @@ class ace extends ace$1 {
         for (let i = 0; i < pairs.length; i++) {
             const marketId = pairs[i];
             const market = this.safeMarket(marketId);
-            const rawTicker = this.safeValue(response, marketId);
+            const rawTicker = this.safeDict(response, marketId);
             const ticker = this.parseTicker(rawTicker, market);
             tickers.push(ticker);
         }
@@ -462,7 +475,7 @@ class ace extends ace$1 {
             request['startTime'] = since;
         }
         const response = await this.privatePostV2KlineGetKline(this.extend(request, params));
-        const data = this.safeValue(response, 'attachment', []);
+        const data = this.safeList(response, 'attachment', []);
         //
         //     {
         //         "attachment":[
@@ -720,7 +733,7 @@ class ace extends ace$1 {
             request['size'] = limit;
         }
         const response = await this.privatePostV2OrderGetOrderList(this.extend(request, params));
-        const orders = this.safeValue(response, 'attachment');
+        const orders = this.safeList(response, 'attachment');
         //
         //     {
         //         "attachment": [
@@ -883,7 +896,7 @@ class ace extends ace$1 {
         //         "status": 200
         //     }
         //
-        const data = this.safeValue(response, 'attachment');
+        const data = this.safeDict(response, 'attachment');
         const trades = this.safeList(data, 'trades', []);
         return this.parseTrades(trades, market, since, limit);
     }
@@ -986,7 +999,7 @@ class ace extends ace$1 {
          */
         await this.loadMarkets();
         const response = await this.privatePostV2CoinCustomerAccount(params);
-        const balances = this.safeValue(response, 'attachment', []);
+        const balances = this.safeList(response, 'attachment', []);
         //
         //     {
         //         "attachment":[

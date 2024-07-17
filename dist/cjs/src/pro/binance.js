@@ -100,6 +100,7 @@ class binance extends binance$1 {
                     'name': 'kline', // or indexPriceKline or markPriceKline (coin-m futures)
                 },
                 'watchOrderBook': {
+                    'checksum': true,
                     'maxRetries': 3,
                 },
                 'watchOrderBookLimit': 1000,
@@ -857,10 +858,10 @@ class binance extends binance$1 {
                             }
                         }
                         else {
-                            const checksum = this.safeBool(this.options, 'checksum', true);
+                            const checksum = this.handleOption('watchOrderBook', 'checksum', true);
                             if (checksum) {
                                 // todo: client.reject from handleOrderBookMessage properly
-                                throw new errors.InvalidNonce(this.id + ' handleOrderBook received an out-of-order nonce');
+                                throw new errors.ChecksumError(this.id + ' ' + this.orderbookChecksumMessage(symbol));
                             }
                         }
                     }
@@ -878,10 +879,10 @@ class binance extends binance$1 {
                             }
                         }
                         else {
-                            const checksum = this.safeBool(this.options, 'checksum', true);
+                            const checksum = this.handleOption('watchOrderBook', 'checksum', true);
                             if (checksum) {
                                 // todo: client.reject from handleOrderBookMessage properly
-                                throw new errors.InvalidNonce(this.id + ' handleOrderBook received an out-of-order nonce');
+                                throw new errors.ChecksumError(this.id + ' ' + this.orderbookChecksumMessage(symbol));
                             }
                         }
                     }
