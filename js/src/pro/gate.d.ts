@@ -49,7 +49,7 @@ export default class gate extends gateRest {
     handleSubscriptionStatus(client: Client, message: any): void;
     handleMessage(client: Client, message: any): void;
     getUrlByMarket(market: any): any;
-    getTypeByMarket(market: Market): "spot" | "futures" | "options";
+    getTypeByMarket(market: Market): "spot" | "options" | "futures";
     getUrlByMarketType(type: MarketType, isInverse?: boolean): any;
     getMarketTypeByUrl(url: string): any;
     requestId(): any;
