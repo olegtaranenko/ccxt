@@ -7,7 +7,7 @@ from ccxt.base.exchange import Exchange
 from ccxt.abstract.bingx import ImplicitAPI
 import hashlib
 import numbers
-from ccxt.base.types import Balances, Currencies, Currency, Int, Leverage, MarginMode, MarginModification, Market, Num, Order, OrderBook, OrderRequest, OrderSide, OrderType, Position, Str, Strings, Ticker, Tickers, Trade, Transaction, TransferEntry, TransferEntries
+from ccxt.base.types import Balances, Currencies, Currency, Int, Leverage, MarginMode, MarginModification, Market, Num, Order, OrderBook, OrderRequest, OrderSide, OrderType, Position, Str, Strings, Ticker, Tickers, Trade, TradingFeeInterface, Transaction, TransferEntry, TransferEntries
 from typing import List
 from ccxt.base.errors import ExchangeError
 from ccxt.base.errors import AuthenticationError
@@ -94,6 +94,7 @@ class bingx(Exchange, ImplicitAPI):
                 'fetchTickers': True,
                 'fetchTime': True,
                 'fetchTrades': True,
+                'fetchTradingFee': True,
                 'fetchTransfers': True,
                 'fetchWithdrawals': True,
                 'reduceMargin': True,
@@ -4533,6 +4534,7 @@ class bingx(Exchange, ImplicitAPI):
         """
         retrieves the users liquidated positions
         :see: https://bingx-api.github.io/docs/#/swapV2/trade-api.html#User's%20Force%20Orders
+        :see: https://bingx-api.github.io/docs/#/en-us/cswap/trade-api.html#Query%20force%20orders
         :param str [symbol]: unified CCXT market symbol
         :param int [since]: the earliest time in ms to fetch liquidations for
         :param int [limit]: the maximum number of liquidation structures to retrieve
@@ -4553,38 +4555,73 @@ class bingx(Exchange, ImplicitAPI):
             request['startTime'] = since
         if limit is not None:
             request['limit'] = limit
-        response = self.swapV2PrivateGetTradeForceOrders(self.extend(request, params))
-        #
-        #     {
-        #         "code": 0,
-        #         "msg": "",
-        #         "data": {
-        #             "orders": [
-        #                 {
-        #                     "time": "int64",
-        #                     "symbol": "string",
-        #                     "side": "string",
-        #                      "type": "string",
-        #                     "positionSide": "string",
-        #                     "cumQuote": "string",
-        #                     "status": "string",
-        #                     "stopPrice": "string",
-        #                     "price": "string",
-        #                     "origQty": "string",
-        #                     "avgPrice": "string",
-        #                     "executedQty": "string",
-        #                     "orderId": "int64",
-        #                     "profit": "string",
-        #                     "commission": "string",
-        #                     "workingType": "string",
-        #                     "updateTime": "int64"
-        #                 },
-        #             ]
-        #         }
-        #     }
-        #
-        data = self.safe_dict(response, 'data', {})
-        liquidations = self.safe_list(data, 'orders', [])
+        subType = None
+        subType, params = self.handle_sub_type_and_params('fetchMyLiquidations', market, params)
+        response = None
+        liquidations = None
+        if subType == 'inverse':
+            response = self.cswapV1PrivateGetTradeForceOrders(self.extend(request, params))
+            #
+            #     {
+            #         "code": 0,
+            #         "msg": "",
+            #         "timestamp": 1721280071678,
+            #         "data": [
+            #             {
+            #                 "orderId": "string",
+            #                 "symbol": "string",
+            #                 "type": "string",
+            #                 "side": "string",
+            #                 "positionSide": "string",
+            #                 "price": "string",
+            #                 "quantity": "float64",
+            #                 "stopPrice": "string",
+            #                 "workingType": "string",
+            #                 "status": "string",
+            #                 "time": "int64",
+            #                 "avgPrice": "string",
+            #                 "executedQty": "string",
+            #                 "profit": "string",
+            #                 "commission": "string",
+            #                 "updateTime": "string"
+            #             }
+            #         ]
+            #     }
+            #
+            liquidations = self.safe_list(response, 'data', [])
+        else:
+            response = self.swapV2PrivateGetTradeForceOrders(self.extend(request, params))
+            #
+            #     {
+            #         "code": 0,
+            #         "msg": "",
+            #         "data": {
+            #             "orders": [
+            #                 {
+            #                     "time": "int64",
+            #                     "symbol": "string",
+            #                     "side": "string",
+            #                     "type": "string",
+            #                     "positionSide": "string",
+            #                     "cumQuote": "string",
+            #                     "status": "string",
+            #                     "stopPrice": "string",
+            #                     "price": "string",
+            #                     "origQty": "string",
+            #                     "avgPrice": "string",
+            #                     "executedQty": "string",
+            #                     "orderId": "int64",
+            #                     "profit": "string",
+            #                     "commission": "string",
+            #                     "workingType": "string",
+            #                     "updateTime": "int64"
+            #                 },
+            #             ]
+            #         }
+            #     }
+            #
+            data = self.safe_dict(response, 'data', {})
+            liquidations = self.safe_list(data, 'orders', [])
         return self.parse_liquidations(liquidations, market, since, limit)
 
     def parse_liquidation(self, liquidation, market: Market = None):
@@ -4972,6 +5009,87 @@ class bingx(Exchange, ImplicitAPI):
             'info': marginMode,
             'symbol': market['symbol'],
             'marginMode': marginType,
+        }
+
+    def fetch_trading_fee(self, symbol: str, params={}) -> TradingFeeInterface:
+        """
+        fetch the trading fees for a market
+        :see: https://bingx-api.github.io/docs/#/en-us/spot/trade-api.html#Query%20Trading%20Commission%20Rate
+        :see: https://bingx-api.github.io/docs/#/en-us/swapV2/account-api.html#Query%20Trading%20Commission%20Rate
+        :see: https://bingx-api.github.io/docs/#/en-us/cswap/trade-api.html#Query%20Trade%20Commission%20Rate
+        :param str symbol: unified market symbol
+        :param dict [params]: extra parameters specific to the exchange API endpoint
+        :returns dict: a `fee structure <https://docs.ccxt.com/#/?id=fee-structure>`
+        """
+        self.load_markets()
+        market = self.market(symbol)
+        request: dict = {
+            'symbol': market['id'],
+        }
+        response = None
+        commission: dict = {}
+        data = self.safe_dict(response, 'data', {})
+        if market['spot']:
+            response = self.spotV1PrivateGetUserCommissionRate(self.extend(request, params))
+            #
+            #     {
+            #         "code": 0,
+            #         "msg": "",
+            #         "debugMsg": "",
+            #         "data": {
+            #             "takerCommissionRate": 0.001,
+            #             "makerCommissionRate": 0.001
+            #         }
+            #     }
+            #
+            commission = data
+        else:
+            if market['inverse']:
+                response = self.cswapV1PrivateGetUserCommissionRate(params)
+                #
+                #     {
+                #         "code": 0,
+                #         "msg": "",
+                #         "timestamp": 1721365261438,
+                #         "data": {
+                #             "takerCommissionRate": "0.0005",
+                #             "makerCommissionRate": "0.0002"
+                #         }
+                #     }
+                #
+                commission = data
+            else:
+                response = self.swapV2PrivateGetUserCommissionRate(params)
+                #
+                #     {
+                #         "code": 0,
+                #         "msg": "",
+                #         "data": {
+                #             "commission": {
+                #                 "takerCommissionRate": 0.0005,
+                #                 "makerCommissionRate": 0.0002
+                #             }
+                #         }
+                #     }
+                #
+                commission = self.safe_dict(data, 'commission', {})
+        return self.parse_trading_fee(commission, market)
+
+    def parse_trading_fee(self, fee: dict, market: Market = None) -> TradingFeeInterface:
+        #
+        #     {
+        #         "takerCommissionRate": 0.001,
+        #         "makerCommissionRate": 0.001
+        #     }
+        #
+        symbol = market['symbol'] if (market is not None) else None
+        return {
+            'info': fee,
+            'symbol': symbol,
+            'maker': self.safe_number(fee, 'makerCommissionRate'),
+            'taker': self.safe_number(fee, 'takerCommissionRate'),
+            'percentage': False,
+            'tierBased': False,
         }
 
     def sign(self, path, section='public', method='GET', params={}, headers=None, body=None):

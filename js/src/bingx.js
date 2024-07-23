@@ -83,6 +83,7 @@ export default class bingx extends Exchange {
                 'fetchTickers': true,
                 'fetchTime': true,
                 'fetchTrades': true,
+                'fetchTradingFee': true,
                 'fetchTransfers': true,
                 'fetchWithdrawals': true,
                 'reduceMargin': true,
@@ -4845,6 +4846,7 @@ export default class bingx extends Exchange {
          * @name bingx#fetchMyLiquidations
          * @description retrieves the users liquidated positions
          * @see https://bingx-api.github.io/docs/#/swapV2/trade-api.html#User's%20Force%20Orders
+         * @see https://bingx-api.github.io/docs/#/en-us/cswap/trade-api.html#Query%20force%20orders
          * @param {string} [symbol] unified CCXT market symbol
          * @param {int} [since] the earliest time in ms to fetch liquidations for
          * @param {int} [limit] the maximum number of liquidation structures to retrieve
@@ -4868,38 +4870,75 @@ export default class bingx extends Exchange {
         if (limit !== undefined) {
             request['limit'] = limit;
         }
-        const response = await this.swapV2PrivateGetTradeForceOrders(this.extend(request, params));
-        //
-        //     {
-        //         "code": 0,
-        //         "msg": "",
-        //         "data": {
-        //             "orders": [
-        //                 {
-        //                     "time": "int64",
-        //                     "symbol": "string",
-        //                     "side": "string",
-        //                      "type": "string",
-        //                     "positionSide": "string",
-        //                     "cumQuote": "string",
-        //                     "status": "string",
-        //                     "stopPrice": "string",
-        //                     "price": "string",
-        //                     "origQty": "string",
-        //                     "avgPrice": "string",
-        //                     "executedQty": "string",
-        //                     "orderId": "int64",
-        //                     "profit": "string",
-        //                     "commission": "string",
-        //                     "workingType": "string",
-        //                     "updateTime": "int64"
-        //                 },
-        //             ]
-        //         }
-        //     }
-        //
-        const data = this.safeDict(response, 'data', {});
-        const liquidations = this.safeList(data, 'orders', []);
+        let subType = undefined;
+        [subType, params] = this.handleSubTypeAndParams('fetchMyLiquidations', market, params);
+        let response = undefined;
+        let liquidations = undefined;
+        if (subType === 'inverse') {
+            response = await this.cswapV1PrivateGetTradeForceOrders(this.extend(request, params));
+            //
+            //     {
+            //         "code": 0,
+            //         "msg": "",
+            //         "timestamp": 1721280071678,
+            //         "data": [
+            //             {
+            //                 "orderId": "string",
+            //                 "symbol": "string",
+            //                 "type": "string",
+            //                 "side": "string",
+            //                 "positionSide": "string",
+            //                 "price": "string",
+            //                 "quantity": "float64",
+            //                 "stopPrice": "string",
+            //                 "workingType": "string",
+            //                 "status": "string",
+            //                 "time": "int64",
+            //                 "avgPrice": "string",
+            //                 "executedQty": "string",
+            //                 "profit": "string",
+            //                 "commission": "string",
+            //                 "updateTime": "string"
+            //             }
+            //         ]
+            //     }
+            //
+            liquidations = this.safeList(response, 'data', []);
+        }
+        else {
+            response = await this.swapV2PrivateGetTradeForceOrders(this.extend(request, params));
+            //
+            //     {
+            //         "code": 0,
+            //         "msg": "",
+            //         "data": {
+            //             "orders": [
+            //                 {
+            //                     "time": "int64",
+            //                     "symbol": "string",
+            //                     "side": "string",
+            //                     "type": "string",
+            //                     "positionSide": "string",
+            //                     "cumQuote": "string",
+            //                     "status": "string",
+            //                     "stopPrice": "string",
+            //                     "price": "string",
+            //                     "origQty": "string",
+            //                     "avgPrice": "string",
+            //                     "executedQty": "string",
+            //                     "orderId": "int64",
+            //                     "profit": "string",
+            //                     "commission": "string",
+            //                     "workingType": "string",
+            //                     "updateTime": "int64"
+            //                 },
+            //             ]
+            //         }
+            //     }
+            //
+            const data = this.safeDict(response, 'data', {});
+            liquidations = this.safeList(data, 'orders', []);
+        }
         return this.parseLiquidations(liquidations, market, since, limit);
     }
     parseLiquidation(liquidation, market = undefined) {
@@ -5311,6 +5350,93 @@ export default class bingx extends Exchange {
             'info': marginMode,
             'symbol': market['symbol'],
             'marginMode': marginType,
+        };
+    }
+    async fetchTradingFee(symbol, params = {}) {
+        /**
+         * @method
+         * @name bingx#fetchTradingFee
+         * @description fetch the trading fees for a market
+         * @see https://bingx-api.github.io/docs/#/en-us/spot/trade-api.html#Query%20Trading%20Commission%20Rate
+         * @see https://bingx-api.github.io/docs/#/en-us/swapV2/account-api.html#Query%20Trading%20Commission%20Rate
+         * @see https://bingx-api.github.io/docs/#/en-us/cswap/trade-api.html#Query%20Trade%20Commission%20Rate
+         * @param {string} symbol unified market symbol
+         * @param {object} [params] extra parameters specific to the exchange API endpoint
+         * @returns {object} a [fee structure]{@link https://docs.ccxt.com/#/?id=fee-structure}
+         */
+        await this.loadMarkets();
+        const market = this.market(symbol);
+        const request = {
+            'symbol': market['id'],
+        };
+        let response = undefined;
+        let commission = {};
+        const data = this.safeDict(response, 'data', {});
+        if (market['spot']) {
+            response = await this.spotV1PrivateGetUserCommissionRate(this.extend(request, params));
+            //
+            //     {
+            //         "code": 0,
+            //         "msg": "",
+            //         "debugMsg": "",
+            //         "data": {
+            //             "takerCommissionRate": 0.001,
+            //             "makerCommissionRate": 0.001
+            //         }
+            //     }
+            //
+            commission = data;
+        }
+        else {
+            if (market['inverse']) {
+                response = await this.cswapV1PrivateGetUserCommissionRate(params);
+                //
+                //     {
+                //         "code": 0,
+                //         "msg": "",
+                //         "timestamp": 1721365261438,
+                //         "data": {
+                //             "takerCommissionRate": "0.0005",
+                //             "makerCommissionRate": "0.0002"
+                //         }
+                //     }
+                //
+                commission = data;
+            }
+            else {
+                response = await this.swapV2PrivateGetUserCommissionRate(params);
+                //
+                //     {
+                //         "code": 0,
+                //         "msg": "",
+                //         "data": {
+                //             "commission": {
+                //                 "takerCommissionRate": 0.0005,
+                //                 "makerCommissionRate": 0.0002
+                //             }
+                //         }
+                //     }
+                //
+                commission = this.safeDict(data, 'commission', {});
+            }
+        }
+        return this.parseTradingFee(commission, market);
+    }
+    parseTradingFee(fee, market = undefined) {
+        //
+        //     {
+        //         "takerCommissionRate": 0.001,
+        //         "makerCommissionRate": 0.001
+        //     }
+        //
+        const symbol = (market !== undefined) ? market['symbol'] : undefined;
+        return {
+            'info': fee,
+            'symbol': symbol,
+            'maker': this.safeNumber(fee, 'makerCommissionRate'),
+            'taker': this.safeNumber(fee, 'takerCommissionRate'),
+            'percentage': false,
+            'tierBased': false,
         };
     }
     sign(path, section = 'public', method = 'GET', params = {}, headers = undefined, body = undefined) {
