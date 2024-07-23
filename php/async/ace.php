@@ -568,9 +568,9 @@ class ace extends Exchange {
                     $timestamp = $timestamp - 28800000; // 8 hours
                 }
             }
-            $orderSide = $this->safe_number($order, 'buyOrSell');
+            $orderSide = $this->safe_string($order, 'buyOrSell');
             if ($orderSide !== null) {
-                $side = ($orderSide === 1) ? 'buy' : 'sell';
+                $side = ($orderSide === '1') ? 'buy' : 'sell';
             }
             $amount = $this->safe_string($order, 'num');
             $price = $this->safe_string($order, 'price');
@@ -579,9 +579,9 @@ class ace extends Exchange {
             if ($quoteId !== null && $baseId !== null) {
                 $symbol = $baseId . '/' . $quoteId;
             }
-            $orderType = $this->safe_number($order, 'type');
+            $orderType = $this->safe_string($order, 'type');
             if ($orderType !== null) {
-                $type = ($orderType === 1) ? 'limit' : 'market';
+                $type = ($orderType === '1') ? 'limit' : 'market';
             }
             $filled = $this->safe_string($order, 'tradeNum');
             $remaining = $this->safe_string($order, 'remainNum');

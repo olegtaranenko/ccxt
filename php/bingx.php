@@ -77,6 +77,7 @@ class bingx extends Exchange {
                 'fetchTickers' => true,
                 'fetchTime' => true,
                 'fetchTrades' => true,
+                'fetchTradingFee' => true,
                 'fetchTransfers' => true,
                 'fetchWithdrawals' => true,
                 'reduceMargin' => true,
@@ -4757,6 +4758,7 @@ class bingx extends Exchange {
         /**
          * retrieves the users liquidated positions
          * @see https://bingx-api.github.io/docs/#/swapV2/trade-api.html#User's%20Force%20Orders
+         * @see https://bingx-api.github.io/docs/#/en-us/cswap/trade-api.html#Query%20force%20orders
          * @param {string} [$symbol] unified CCXT $market $symbol
          * @param {int} [$since] the earliest time in ms to fetch $liquidations for
          * @param {int} [$limit] the maximum number of liquidation structures to retrieve
@@ -4780,38 +4782,74 @@ class bingx extends Exchange {
         if ($limit !== null) {
             $request['limit'] = $limit;
         }
-        $response = $this->swapV2PrivateGetTradeForceOrders ($this->extend($request, $params));
-        //
-        //     {
-        //         "code" => 0,
-        //         "msg" => "",
-        //         "data" => {
-        //             "orders" => array(
-        //                 array(
-        //                     "time" => "int64",
-        //                     "symbol" => "string",
-        //                     "side" => "string",
-        //                      "type" => "string",
-        //                     "positionSide" => "string",
-        //                     "cumQuote" => "string",
-        //                     "status" => "string",
-        //                     "stopPrice" => "string",
-        //                     "price" => "string",
-        //                     "origQty" => "string",
-        //                     "avgPrice" => "string",
-        //                     "executedQty" => "string",
-        //                     "orderId" => "int64",
-        //                     "profit" => "string",
-        //                     "commission" => "string",
-        //                     "workingType" => "string",
-        //                     "updateTime" => "int64"
-        //                 ),
-        //             )
-        //         }
-        //     }
-        //
-        $data = $this->safe_dict($response, 'data', array());
-        $liquidations = $this->safe_list($data, 'orders', array());
+        $subType = null;
+        list($subType, $params) = $this->handle_sub_type_and_params('fetchMyLiquidations', $market, $params);
+        $response = null;
+        $liquidations = null;
+        if ($subType === 'inverse') {
+            $response = $this->cswapV1PrivateGetTradeForceOrders ($this->extend($request, $params));
+            //
+            //     {
+            //         "code" => 0,
+            //         "msg" => "",
+            //         "timestamp" => 1721280071678,
+            //         "data" => array(
+            //             {
+            //                 "orderId" => "string",
+            //                 "symbol" => "string",
+            //                 "type" => "string",
+            //                 "side" => "string",
+            //                 "positionSide" => "string",
+            //                 "price" => "string",
+            //                 "quantity" => "float64",
+            //                 "stopPrice" => "string",
+            //                 "workingType" => "string",
+            //                 "status" => "string",
+            //                 "time" => "int64",
+            //                 "avgPrice" => "string",
+            //                 "executedQty" => "string",
+            //                 "profit" => "string",
+            //                 "commission" => "string",
+            //                 "updateTime" => "string"
+            //             }
+            //         )
+            //     }
+            //
+            $liquidations = $this->safe_list($response, 'data', array());
+        } else {
+            $response = $this->swapV2PrivateGetTradeForceOrders ($this->extend($request, $params));
+            //
+            //     {
+            //         "code" => 0,
+            //         "msg" => "",
+            //         "data" => {
+            //             "orders" => array(
+            //                 array(
+            //                     "time" => "int64",
+            //                     "symbol" => "string",
+            //                     "side" => "string",
+            //                     "type" => "string",
+            //                     "positionSide" => "string",
+            //                     "cumQuote" => "string",
+            //                     "status" => "string",
+            //                     "stopPrice" => "string",
+            //                     "price" => "string",
+            //                     "origQty" => "string",
+            //                     "avgPrice" => "string",
+            //                     "executedQty" => "string",
+            //                     "orderId" => "int64",
+            //                     "profit" => "string",
+            //                     "commission" => "string",
+            //                     "workingType" => "string",
+            //                     "updateTime" => "int64"
+            //                 ),
+            //             )
+            //         }
+            //     }
+            //
+            $data = $this->safe_dict($response, 'data', array());
+            $liquidations = $this->safe_list($data, 'orders', array());
+        }
         return $this->parse_liquidations($liquidations, $market, $since, $limit);
     }
 
@@ -5214,6 +5252,91 @@ class bingx extends Exchange {
             'info' => $marginMode,
             'symbol' => $market['symbol'],
             'marginMode' => $marginType,
+        );
+    }
+
+    public function fetch_trading_fee(string $symbol, $params = array ()): array {
+        /**
+         * fetch the trading fees for a $market
+         * @see https://bingx-api.github.io/docs/#/en-us/spot/trade-api.html#Query%20Trading%20Commission%20Rate
+         * @see https://bingx-api.github.io/docs/#/en-us/swapV2/account-api.html#Query%20Trading%20Commission%20Rate
+         * @see https://bingx-api.github.io/docs/#/en-us/cswap/trade-api.html#Query%20Trade%20Commission%20Rate
+         * @param {string} $symbol unified $market $symbol
+         * @param {array} [$params] extra parameters specific to the exchange API endpoint
+         * @return {array} a ~@link https://docs.ccxt.com/#/?id=fee-structure fee structure~
+         */
+        $this->load_markets();
+        $market = $this->market($symbol);
+        $request = array(
+            'symbol' => $market['id'],
+        );
+        $response = null;
+        $commission = array();
+        $data = $this->safe_dict($response, 'data', array());
+        if ($market['spot']) {
+            $response = $this->spotV1PrivateGetUserCommissionRate ($this->extend($request, $params));
+            //
+            //     {
+            //         "code" => 0,
+            //         "msg" => "",
+            //         "debugMsg" => "",
+            //         "data" => {
+            //             "takerCommissionRate" => 0.001,
+            //             "makerCommissionRate" => 0.001
+            //         }
+            //     }
+            //
+            $commission = $data;
+        } else {
+            if ($market['inverse']) {
+                $response = $this->cswapV1PrivateGetUserCommissionRate ($params);
+                //
+                //     {
+                //         "code" => 0,
+                //         "msg" => "",
+                //         "timestamp" => 1721365261438,
+                //         "data" => {
+                //             "takerCommissionRate" => "0.0005",
+                //             "makerCommissionRate" => "0.0002"
+                //         }
+                //     }
+                //
+                $commission = $data;
+            } else {
+                $response = $this->swapV2PrivateGetUserCommissionRate ($params);
+                //
+                //     {
+                //         "code" => 0,
+                //         "msg" => "",
+                //         "data" => {
+                //             "commission" => {
+                //                 "takerCommissionRate" => 0.0005,
+                //                 "makerCommissionRate" => 0.0002
+                //             }
+                //         }
+                //     }
+                //
+                $commission = $this->safe_dict($data, 'commission', array());
+            }
+        }
+        return $this->parse_trading_fee($commission, $market);
+    }
+
+    public function parse_trading_fee(array $fee, ?array $market = null): array {
+        //
+        //     {
+        //         "takerCommissionRate" => 0.001,
+        //         "makerCommissionRate" => 0.001
+        //     }
+        //
+        $symbol = ($market !== null) ? $market['symbol'] : null;
+        return array(
+            'info' => $fee,
+            'symbol' => $symbol,
+            'maker' => $this->safe_number($fee, 'makerCommissionRate'),
+            'taker' => $this->safe_number($fee, 'takerCommissionRate'),
+            'percentage' => false,
+            'tierBased' => false,
         );
     }
 

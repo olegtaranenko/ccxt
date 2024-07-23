@@ -2699,7 +2699,22 @@ class woo extends Exchange {
 
     public function fetch_funding_history(?string $symbol = null, ?int $since = null, ?int $limit = null, $params = array ()) {
         return Async\async(function () use ($symbol, $since, $limit, $params) {
+            /**
+             * fetch the history of funding payments paid and received on this account
+             * @see https://docs.woo.org/#get-funding-fee-history
+             * @param {string} [$symbol] unified $market $symbol
+             * @param {int} [$since] the earliest time in ms to fetch funding history for
+             * @param {int} [$limit] the maximum number of funding history structures to retrieve
+             * @param {array} [$params] extra parameters specific to the exchange API endpoint
+             * @param {boolean} [$params->paginate] default false, when true will automatically $paginate by calling this endpoint multiple times. See in the docs all the [availble parameters](https://github.com/ccxt/ccxt/wiki/Manual#pagination-$params)
+             * @return {array} a ~@link https://docs.ccxt.com/#/?id=funding-history-structure funding history structure~
+             */
             Async\await($this->load_markets());
+            $paginate = false;
+            list($paginate, $params) = $this->handle_option_and_params($params, 'fetchFundingHistory', 'paginate');
+            if ($paginate) {
+                return Async\await($this->fetch_paginated_call_cursor('fetchFundingHistory', $symbol, $since, $limit, $params, 'page', 'page', 1, 500));
+            }
             $request = array();
             $market = null;
             if ($symbol !== null) {
@@ -2708,6 +2723,11 @@ class woo extends Exchange {
             }
             if ($since !== null) {
                 $request['start_t'] = $since;
+            }
+            if ($limit !== null) {
+                $request['size'] = $limit;
+            } else {
+                $request['size'] = 5000;
             }
             $response = Async\await($this->v1PrivateGetFundingFeeHistory ($this->extend($request, $params)));
             //
@@ -2733,7 +2753,15 @@ class woo extends Exchange {
             //         "success":true
             //     }
             //
+            $meta = $this->safe_dict($response, 'meta', array());
+            $cursor = $this->safe_integer($meta, 'current_page');
             $result = $this->safe_list($response, 'rows', array());
+            $resultLength = count($result);
+            if ($resultLength > 0) {
+                $lastItem = $result[$resultLength - 1];
+                $lastItem['page'] = $cursor;
+                $result[$resultLength - 1] = $lastItem;
+            }
             return $this->parse_incomes($result, $market, $since, $limit);
         }) ();
     }
