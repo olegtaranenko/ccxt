@@ -2,7 +2,7 @@ import * as functions from './functions.js';
 import { AuthenticationError, DDoSProtection, ExchangeError, ExchangeNotAvailable, RateLimitExceeded, RequestTimeout } from "./errors.js";
 import WsClient from './ws/WsClient.js';
 import { CountedOrderBook, IndexedOrderBook, OrderBook as WsOrderBook } from './ws/OrderBook.js';
-import type { Account, Balance, BalanceAccount, Balances, Bool, BorrowInterest, CancellationRequest, Conversion, CrossBorrowRate, CrossBorrowRates, Currencies, Currency, CurrencyInterface, DepositAddressResponse, DepositWithdrawFeeNetwork, Dict, Dictionary, FundingHistory, FundingRate, FundingRateHistory, FundingRates, Greeks, IndexType, int, Int, IsolatedBorrowRate, IsolatedBorrowRates, LastPrice, LastPrices, LedgerEntry, Leverage, Leverages, LeverageTier, LeverageTiers, Liquidation, MarginMode, MarginModes, MarginModification, Market, MarketInterface, MarketType, MinMax, Num, OHLCV, OHLCVC, OpenInterest, Option, OptionChain, Order, OrderBook, OrderRequest, OrderSide, OrderType, Position, Str, Strings, Ticker, Tickers, Trade, TradingFeeInterface, TradingFees, Transaction, TransferEntries, TransferEntry } from './types.js';
+import type { Account, Balance, BalanceAccount, Balances, Bool, BorrowInterest, CancellationRequest, Conversion, CrossBorrowRate, CrossBorrowRates, Currencies, Currency, CurrencyInterface, DepositAddressResponse, DepositWithdrawFeeNetwork, Dict, Dictionary, FundingHistory, FundingRate, FundingRateHistory, FundingRates, Greeks, IndexType, int, Int, IsolatedBorrowRate, IsolatedBorrowRates, LastPrice, LastPrices, LedgerEntry, Leverage, Leverages, LeverageTier, LeverageTiers, Liquidation, MarginMode, MarginModes, MarginModification, Market, MarketInterface, MarketType, MinMax, Num, OHLCV, OHLCVC, OpenInterest, Option, OptionChain, Order, OrderBook, OrderRequest, OrderSide, OrderType, Position, Str, Strings, Ticker, Tickers, Trade, TradingFeeInterface, TradingFees, Transaction, TransferEntry } from './types.js';
 import { ArrayCache, ArrayCacheByTimestamp } from './ws/Cache.js';
 import { OrderBook as Ob } from './ws/OrderBook.js';
 import Client from './ws/Client.js';
@@ -881,7 +881,7 @@ export default class Exchange {
     parseAccounts(accounts: any[], params?: {}): Account[];
     parseTrades(trades: any[], market?: Market, since?: Int, limit?: Int, params?: {}): Trade[];
     parseTransactions(transactions: any[], currency?: Currency, since?: Int, limit?: Int, params?: {}): Transaction[];
-    parseTransfers(transfers: any[], currency?: Currency, since?: Int, limit?: Int, params?: {}): TransferEntries;
+    parseTransfers(transfers: any[], currency?: Currency, since?: Int, limit?: Int, params?: {}): TransferEntry[];
     parseLedger(data: any, currency?: Currency, since?: Int, limit?: Int, params?: {}): any;
     nonce(): number;
     setHeaders(headers: any): any;
@@ -1141,6 +1141,6 @@ export default class Exchange {
     parseMarginModification(data: Dict, market?: Market): MarginModification;
     parseMarginModifications(response: object[], symbols?: string[], symbolKey?: Str, marketType?: MarketType): MarginModification[];
     fetchTransfer(id: string, code?: Str, params?: {}): Promise<TransferEntry>;
-    fetchTransfers(code?: Str, since?: Int, limit?: Int, params?: {}): Promise<TransferEntries>;
+    fetchTransfers(code?: Str, since?: Int, limit?: Int, params?: {}): Promise<TransferEntry[]>;
 }
 export { Exchange, };

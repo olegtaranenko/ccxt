@@ -590,9 +590,6 @@ export interface Tickers extends Dictionary<Ticker> {
 export interface TradingFees extends Dictionary<TradingFeeInterface> {
 }
 
-export interface TransferEntries extends Dictionary<TransferEntry> {
-}
-
 /** [ timestamp, open, high, low, close, volume ] */
 export type OHLCV = [ Num, Num, Num, Num, Num, Num ];
 
