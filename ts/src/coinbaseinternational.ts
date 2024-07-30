@@ -67,7 +67,7 @@ export default class coinbaseinternational extends Exchange {
                 'fetchCrossBorrowRates': false,
                 'fetchCurrencies': true,
                 'fetchDeposits': true,
-                'fetchFundingHistory': false,
+                'fetchFundingHistory': true,
                 'fetchFundingRate': false,
                 'fetchFundingRateHistory': true,
                 'fetchFundingRates': false,
@@ -448,6 +448,85 @@ export default class coinbaseinternational extends Exchange {
         };
     }
 
+    async fetchFundingHistory (symbol: Str = undefined, since: Int = undefined, limit: Int = undefined, params = {}) {
+        /**
+         * @method
+         * @name coinbaseinternational#fetchFundingHistory
+         * @description fetch the history of funding payments paid and received on this account
+         * @see https://docs.cdp.coinbase.com/intx/reference/gettransfers
+         * @param {string} [symbol] unified market symbol
+         * @param {int} [since] the earliest time in ms to fetch funding history for
+         * @param {int} [limit] the maximum number of funding history structures to retrieve
+         * @param {object} [params] extra parameters specific to the exchange API endpoint
+         * @returns {object} a [funding history structure]{@link https://docs.ccxt.com/#/?id=funding-history-structure}
+         */
+        await this.loadMarkets ();
+        const request: Dict = {
+            'type': 'FUNDING',
+        };
+        let market: Market = undefined;
+        if (symbol !== undefined) {
+            market = this.market (symbol);
+        }
+        let portfolios = undefined;
+        [ portfolios, params ] = this.handleOptionAndParams (params, 'fetchFundingHistory', 'portfolios');
+        if (portfolios !== undefined) {
+            request['portfolios'] = portfolios;
+        }
+        if (since !== undefined) {
+            request['time_from'] = this.iso8601 (since);
+        }
+        if (limit !== undefined) {
+            request['result_limit'] = limit;
+        } else {
+            request['result_limit'] = 100;
+        }
+        const response = await this.v1PrivateGetTransfers (this.extend (request, params));
+        const fundings = this.safeList (response, 'results', []);
+        return this.parseIncomes (fundings, market, since, limit);
+    }
+
+    parseIncome (income, market: Market = undefined) {
+        //
+        // {
+        //     "amount":"0.0008",
+        //     "asset":"USDC",
+        //     "created_at":"2024-02-22T16:00:00Z",
+        //     "from_portfolio":{
+        //        "id":"13yuk1fs-1-0",
+        //        "name":"Eng Test Portfolio - 2",
+        //        "uuid":"018712f2-5ff9-7de3-9010-xxxxxxxxx"
+        //     },
+        //     "instrument_id":"149264164756389888",
+        //     "instrument_symbol":"ETH-PERP",
+        //     "position_id":"1xy4v51m-1-2",
+        //     "status":"PROCESSED",
+        //     "to_portfolio":{
+        //        "name":"CB_FUND"
+        //     },
+        //     "transfer_type":"FUNDING",
+        //     "transfer_uuid":"a6b708df-2c44-32c5-bb98-xxxxxxxxxx",
+        //     "updated_at":"2024-02-22T16:00:00Z"
+        // }
+        //
+        const marketId = this.safeString (income, 'symbol');
+        market = this.safeMarket (marketId, market, undefined, 'contract');
+        const datetime = this.safeInteger (income, 'created_at');
+        const timestamp = this.parse8601 (datetime);
+        const currencyId = this.safeString (income, 'asset');
+        const code = this.safeCurrencyCode (currencyId);
+        return {
+            'info': income,
+            'symbol': market['symbol'],
+            'code': code,
+            'timestamp': timestamp,
+            'datetime': this.iso8601 (timestamp),
+            'id': this.safeString (income, 'transfer_uuid'),
+            'amount': this.safeNumber (income, 'amount'),
+            'rate': undefined,
+        };
+    }
+
     async createDepositAddress (code: string, params = {}) {
         /**
          * @method
@@ -617,7 +696,7 @@ export default class coinbaseinternational extends Exchange {
         return await this.v1PrivatePostPortfoliosMargin (this.extend (request, params));
     }
 
-    async fetchDepositsWithdrawals (code: string = undefined, since: Int = undefined, limit: Int = undefined, params = {}): Promise<Transaction[]> {
+    async fetchDepositsWithdrawals (code: Str = undefined, since: Int = undefined, limit: Int = undefined, params = {}): Promise<Transaction[]> {
         /**
          * @method
          * @name exchange#fetchDepositsWithdrawals

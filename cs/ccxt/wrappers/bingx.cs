@@ -320,6 +320,7 @@ public partial class bingx
     /// See <see href="https://bingx-api.github.io/docs/#/spot/trade-api.html#Query%20Assets"/>  <br/>
     /// See <see href="https://bingx-api.github.io/docs/#/swapV2/account-api.html#Get%20Perpetual%20Swap%20Account%20Asset%20Information"/>  <br/>
     /// See <see href="https://bingx-api.github.io/docs/#/standard/contract-interface.html#Query%20standard%20contract%20balance"/>  <br/>
+    /// See <see href="https://bingx-api.github.io/docs/#/en-us/cswap/trade-api.html#Query%20Account%20Assets"/>  <br/>
     /// <list type="table">
     /// <item>
     /// <term>params</term>
@@ -345,8 +346,9 @@ public partial class bingx
     /// fetch all open positions
     /// </summary>
     /// <remarks>
-    /// See <see href="https://bingx-api.github.io/docs/#/swapV2/account-api.html#Perpetual%20Swap%20Positions"/>  <br/>
-    /// See <see href="https://bingx-api.github.io/docs/#/standard/contract-interface.html#Query%20standard%20contract%20balance"/>  <br/>
+    /// See <see href="https://bingx-api.github.io/docs/#/en-us/swapV2/account-api.html#Query%20position%20data"/>  <br/>
+    /// See <see href="https://bingx-api.github.io/docs/#/en-us/standard/contract-interface.html#position"/>  <br/>
+    /// See <see href="https://bingx-api.github.io/docs/#/en-us/cswap/trade-api.html#Query%20warehouse"/>  <br/>
     /// <list type="table">
     /// <item>
     /// <term>params</term>
@@ -362,11 +364,32 @@ public partial class bingx
     /// </item>
     /// </list>
     /// </remarks>
-    /// <returns> <term>object[]</term> a list of [position structure]{@link https://docs.ccxt.com/#/?id=position-structure}.</returns>
+    /// <returns> <term>object[]</term> a list of [position structures]{@link https://docs.ccxt.com/#/?id=position-structure}.</returns>
     public async Task<List<Position>> FetchPositions(List<String> symbols = null, Dictionary<string, object> parameters = null)
     {
         var res = await this.fetchPositions(symbols, parameters);
         return ((IList<object>)res).Select(item => new Position(item)).ToList<Position>();
+    }
+    /// <summary>
+    /// fetch data on a single open contract trade position
+    /// </summary>
+    /// <remarks>
+    /// See <see href="https://bingx-api.github.io/docs/#/en-us/swapV2/account-api.html#Query%20position%20data"/>  <br/>
+    /// See <see href="https://bingx-api.github.io/docs/#/en-us/cswap/trade-api.html#Query%20warehouse"/>  <br/>
+    /// <list type="table">
+    /// <item>
+    /// <term>params</term>
+    /// <description>
+    /// object : extra parameters specific to the exchange API endpoint
+    /// </description>
+    /// </item>
+    /// </list>
+    /// </remarks>
+    /// <returns> <term>object</term> a [position structure]{@link https://docs.ccxt.com/#/?id=position-structure}.</returns>
+    public async Task<Position> FetchPosition(string symbol, Dictionary<string, object> parameters = null)
+    {
+        var res = await this.fetchPosition(symbol, parameters);
+        return new Position(res);
     }
     /// <summary>
     /// create a market order by providing the symbol, side and cost
@@ -583,8 +606,9 @@ public partial class bingx
     /// cancels an open order
     /// </summary>
     /// <remarks>
-    /// See <see href="https://bingx-api.github.io/docs/#/spot/trade-api.html#Cancel%20an%20Order"/>  <br/>
-    /// See <see href="https://bingx-api.github.io/docs/#/swapV2/trade-api.html#Cancel%20an%20Order"/>  <br/>
+    /// See <see href="https://bingx-api.github.io/docs/#/en-us/spot/trade-api.html#Cancel%20Order"/>  <br/>
+    /// See <see href="https://bingx-api.github.io/docs/#/en-us/swapV2/trade-api.html#Cancel%20Order"/>  <br/>
+    /// See <see href="https://bingx-api.github.io/docs/#/en-us/cswap/trade-api.html#Cancel%20an%20Order"/>  <br/>
     /// <list type="table">
     /// <item>
     /// <term>params</term>
@@ -600,7 +624,7 @@ public partial class bingx
     /// </item>
     /// </list>
     /// </remarks>
-    /// <returns> <term>object</term> An [order structure]{@link https://docs.ccxt.com/#/?id=order-structure}.</returns>
+    /// <returns> <term>object</term> an [order structure]{@link https://docs.ccxt.com/#/?id=order-structure}.</returns>
     public async Task<Order> CancelOrder(string id, string symbol = null, Dictionary<string, object> parameters = null)
     {
         var res = await this.cancelOrder(id, symbol, parameters);
@@ -686,8 +710,9 @@ public partial class bingx
     /// fetches information on an order made by the user
     /// </summary>
     /// <remarks>
-    /// See <see href="https://bingx-api.github.io/docs/#/spot/trade-api.html#Query%20Orders"/>  <br/>
-    /// See <see href="https://bingx-api.github.io/docs/#/swapV2/trade-api.html#Query%20Order"/>  <br/>
+    /// See <see href="https://bingx-api.github.io/docs/#/en-us/spot/trade-api.html#Query%20Order%20details"/>  <br/>
+    /// See <see href="https://bingx-api.github.io/docs/#/en-us/swapV2/trade-api.html#Query%20Order%20details"/>  <br/>
+    /// See <see href="https://bingx-api.github.io/docs/#/en-us/cswap/trade-api.html#Query%20Order"/>  <br/>
     /// <list type="table">
     /// <item>
     /// <term>params</term>
@@ -697,7 +722,7 @@ public partial class bingx
     /// </item>
     /// </list>
     /// </remarks>
-    /// <returns> <term>object</term> An [order structure]{@link https://docs.ccxt.com/#/?id=order-structure}.</returns>
+    /// <returns> <term>object</term> an [order structure]{@link https://docs.ccxt.com/#/?id=order-structure}.</returns>
     public async Task<Order> FetchOrder(string id, string symbol = null, Dictionary<string, object> parameters = null)
     {
         var res = await this.fetchOrder(id, symbol, parameters);
@@ -753,8 +778,9 @@ public partial class bingx
     /// fetch all unfilled currently open orders
     /// </summary>
     /// <remarks>
-    /// See <see href="https://bingx-api.github.io/docs/#/spot/trade-api.html#Query%20Open%20Orders"/>  <br/>
-    /// See <see href="https://bingx-api.github.io/docs/#/swapV2/trade-api.html#Query%20all%20current%20pending%20orders"/>  <br/>
+    /// See <see href="https://bingx-api.github.io/docs/#/en-us/spot/trade-api.html#Current%20Open%20Orders"/>  <br/>
+    /// See <see href="https://bingx-api.github.io/docs/#/en-us/swapV2/trade-api.html#Current%20All%20Open%20Orders"/>  <br/>
+    /// See <see href="https://bingx-api.github.io/docs/#/en-us/cswap/trade-api.html#Query%20all%20current%20pending%20orders"/>  <br/>
     /// <list type="table">
     /// <item>
     /// <term>since</term>
@@ -788,8 +814,107 @@ public partial class bingx
     /// fetches information on multiple closed orders made by the user
     /// </summary>
     /// <remarks>
-    /// See <see href="https://bingx-api.github.io/docs/#/spot/trade-api.html#Query%20Order%20History"/>  <br/>
-    /// See <see href="https://bingx-api.github.io/docs/#/swapV2/trade-api.html#User's%20Force%20Orders"/>  <br/>
+    /// See <see href="https://bingx-api.github.io/docs/#/en-us/spot/trade-api.html#Query%20Order%20history"/>  <br/>
+    /// See <see href="https://bingx-api.github.io/docs/#/en-us/swapV2/trade-api.html#Query%20Order%20history"/>  <br/>
+    /// See <see href="https://bingx-api.github.io/docs/#/en-us/cswap/trade-api.html#User's%20History%20Orders"/>  <br/>
+    /// See <see href="https://bingx-api.github.io/docs/#/standard/contract-interface.html#Historical%20order"/>  <br/>
+    /// <list type="table">
+    /// <item>
+    /// <term>since</term>
+    /// <description>
+    /// int : timestamp in ms of the earliest order
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <term>limit</term>
+    /// <description>
+    /// int : the max number of closed orders to return
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <term>params</term>
+    /// <description>
+    /// object : extra parameters specific to the exchange API endpoint
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <term>params.until</term>
+    /// <description>
+    /// int : the latest time in ms to fetch orders for
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <term>params.standard</term>
+    /// <description>
+    /// boolean : whether to fetch standard contract orders
+    /// </description>
+    /// </item>
+    /// </list>
+    /// </remarks>
+    /// <returns> <term>Order[]</term> a list of [order structures]{@link https://docs.ccxt.com/#/?id=order-structure}.</returns>
+    public async Task<List<Order>> FetchClosedOrders(string symbol = null, Int64? since2 = 0, Int64? limit2 = 0, Dictionary<string, object> parameters = null)
+    {
+        var since = since2 == 0 ? null : (object)since2;
+        var limit = limit2 == 0 ? null : (object)limit2;
+        var res = await this.fetchClosedOrders(symbol, since, limit, parameters);
+        return ((IList<object>)res).Select(item => new Order(item)).ToList<Order>();
+    }
+    /// <summary>
+    /// fetches information on multiple canceled orders made by the user
+    /// </summary>
+    /// <remarks>
+    /// See <see href="https://bingx-api.github.io/docs/#/en-us/spot/trade-api.html#Query%20Order%20history"/>  <br/>
+    /// See <see href="https://bingx-api.github.io/docs/#/en-us/swapV2/trade-api.html#Query%20Order%20history"/>  <br/>
+    /// See <see href="https://bingx-api.github.io/docs/#/en-us/cswap/trade-api.html#User's%20History%20Orders"/>  <br/>
+    /// See <see href="https://bingx-api.github.io/docs/#/standard/contract-interface.html#Historical%20order"/>  <br/>
+    /// <list type="table">
+    /// <item>
+    /// <term>since</term>
+    /// <description>
+    /// int : timestamp in ms of the earliest order
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <term>limit</term>
+    /// <description>
+    /// int : the max number of canceled orders to return
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <term>params</term>
+    /// <description>
+    /// object : extra parameters specific to the exchange API endpoint
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <term>params.until</term>
+    /// <description>
+    /// int : the latest time in ms to fetch orders for
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <term>params.standard</term>
+    /// <description>
+    /// boolean : whether to fetch standard contract orders
+    /// </description>
+    /// </item>
+    /// </list>
+    /// </remarks>
+    /// <returns> <term>object</term> a list of [order structures]{@link https://docs.ccxt.com/#/?id=order-structure}.</returns>
+    public async Task<List<Order>> FetchCanceledOrders(string symbol = null, Int64? since2 = 0, Int64? limit2 = 0, Dictionary<string, object> parameters = null)
+    {
+        var since = since2 == 0 ? null : (object)since2;
+        var limit = limit2 == 0 ? null : (object)limit2;
+        var res = await this.fetchCanceledOrders(symbol, since, limit, parameters);
+        return ((IList<object>)res).Select(item => new Order(item)).ToList<Order>();
+    }
+    /// <summary>
+    /// fetches information on multiple closed orders made by the user
+    /// </summary>
+    /// <remarks>
+    /// See <see href="https://bingx-api.github.io/docs/#/en-us/spot/trade-api.html#Query%20Order%20history"/>  <br/>
+    /// See <see href="https://bingx-api.github.io/docs/#/en-us/swapV2/trade-api.html#Query%20Order%20history"/>  <br/>
+    /// See <see href="https://bingx-api.github.io/docs/#/en-us/cswap/trade-api.html#User's%20History%20Orders"/>  <br/>
     /// See <see href="https://bingx-api.github.io/docs/#/standard/contract-interface.html#Historical%20order"/>  <br/>
     /// <list type="table">
     /// <item>
@@ -831,11 +956,11 @@ public partial class bingx
     /// </list>
     /// </remarks>
     /// <returns> <term>object[]</term> a list of [order structures]{@link https://docs.ccxt.com/#/?id=order-structure}.</returns>
-    public async Task<List<Order>> FetchClosedOrders(string symbol = null, Int64? since2 = 0, Int64? limit2 = 0, Dictionary<string, object> parameters = null)
+    public async Task<List<Order>> FetchCanceledAndClosedOrders(string symbol = null, Int64? since2 = 0, Int64? limit2 = 0, Dictionary<string, object> parameters = null)
     {
         var since = since2 == 0 ? null : (object)since2;
         var limit = limit2 == 0 ? null : (object)limit2;
-        var res = await this.fetchClosedOrders(symbol, since, limit, parameters);
+        var res = await this.fetchCanceledAndClosedOrders(symbol, since, limit, parameters);
         return ((IList<object>)res).Select(item => new Order(item)).ToList<Order>();
     }
     /// <summary>
@@ -891,12 +1016,12 @@ public partial class bingx
     /// </list>
     /// </remarks>
     /// <returns> <term>object[]</term> a list of [transfer structures]{@link https://docs.ccxt.com/#/?id=transfer-structure}.</returns>
-    public async Task<TransferEntries> FetchTransfers(string code = null, Int64? since2 = 0, Int64? limit2 = 0, Dictionary<string, object> parameters = null)
+    public async Task<List<TransferEntry>> FetchTransfers(string code = null, Int64? since2 = 0, Int64? limit2 = 0, Dictionary<string, object> parameters = null)
     {
         var since = since2 == 0 ? null : (object)since2;
         var limit = limit2 == 0 ? null : (object)limit2;
         var res = await this.fetchTransfers(code, since, limit, parameters);
-        return new TransferEntries(res);
+        return ((IList<object>)res).Select(item => new TransferEntry(item)).ToList<TransferEntry>();
     }
     /// <summary>
     /// fetch the deposit addresses for a currency associated with this account
@@ -1028,7 +1153,8 @@ public partial class bingx
     /// set margin mode to 'cross' or 'isolated'
     /// </summary>
     /// <remarks>
-    /// See <see href="https://bingx-api.github.io/docs/#/swapV2/trade-api.html#Switch%20Margin%20Mode"/>  <br/>
+    /// See <see href="https://bingx-api.github.io/docs/#/en-us/swapV2/trade-api.html#Change%20Margin%20Type"/>  <br/>
+    /// See <see href="https://bingx-api.github.io/docs/#/en-us/cswap/trade-api.html#Set%20Margin%20Type"/>  <br/>
     /// <list type="table">
     /// <item>
     /// <term>params</term>
@@ -1116,8 +1242,9 @@ public partial class bingx
     /// fetch all trades made by the user
     /// </summary>
     /// <remarks>
-    /// See <see href="https://bingx-api.github.io/docs/#/en-us/spot/trade-api.html#Query%20Order%20History"/>  <br/>
-    /// See <see href="https://bingx-api.github.io/docs/#/swapV2/trade-api.html#Query%20historical%20transaction%20orders"/>  <br/>
+    /// See <see href="https://bingx-api.github.io/docs/#/en-us/spot/trade-api.html#Query%20transaction%20details"/>  <br/>
+    /// See <see href="https://bingx-api.github.io/docs/#/en-us/swapV2/trade-api.html#Query%20historical%20transaction%20orders"/>  <br/>
+    /// See <see href="https://bingx-api.github.io/docs/#/en-us/cswap/trade-api.html#Query%20Order%20Trade%20Detail"/>  <br/>
     /// <list type="table">
     /// <item>
     /// <term>symbol</term>
@@ -1210,6 +1337,7 @@ public partial class bingx
     /// </summary>
     /// <remarks>
     /// See <see href="https://bingx-api.github.io/docs/#/swapV2/trade-api.html#User's%20Force%20Orders"/>  <br/>
+    /// See <see href="https://bingx-api.github.io/docs/#/en-us/cswap/trade-api.html#Query%20force%20orders"/>  <br/>
     /// <list type="table">
     /// <item>
     /// <term>symbol</term>
@@ -1396,7 +1524,8 @@ public partial class bingx
     /// fetches the margin mode of the trading pair
     /// </summary>
     /// <remarks>
-    /// See <see href="https://bingx-api.github.io/docs/#/en-us/swapV2/trade-api.html#Query%20Margin%20Mode"/>  <br/>
+    /// See <see href="https://bingx-api.github.io/docs/#/en-us/swapV2/trade-api.html#Query%20Margin%20Type"/>  <br/>
+    /// See <see href="https://bingx-api.github.io/docs/#/en-us/cswap/trade-api.html#Query%20Margin%20Type"/>  <br/>
     /// <list type="table">
     /// <item>
     /// <term>params</term>
@@ -1411,5 +1540,27 @@ public partial class bingx
     {
         var res = await this.fetchMarginMode(symbol, parameters);
         return new MarginMode(res);
+    }
+    /// <summary>
+    /// fetch the trading fees for a market
+    /// </summary>
+    /// <remarks>
+    /// See <see href="https://bingx-api.github.io/docs/#/en-us/spot/trade-api.html#Query%20Trading%20Commission%20Rate"/>  <br/>
+    /// See <see href="https://bingx-api.github.io/docs/#/en-us/swapV2/account-api.html#Query%20Trading%20Commission%20Rate"/>  <br/>
+    /// See <see href="https://bingx-api.github.io/docs/#/en-us/cswap/trade-api.html#Query%20Trade%20Commission%20Rate"/>  <br/>
+    /// <list type="table">
+    /// <item>
+    /// <term>params</term>
+    /// <description>
+    /// object : extra parameters specific to the exchange API endpoint
+    /// </description>
+    /// </item>
+    /// </list>
+    /// </remarks>
+    /// <returns> <term>object</term> a [fee structure]{@link https://docs.ccxt.com/#/?id=fee-structure}.</returns>
+    public async Task<TradingFeeInterface> FetchTradingFee(string symbol, Dictionary<string, object> parameters = null)
+    {
+        var res = await this.fetchTradingFee(symbol, parameters);
+        return new TradingFeeInterface(res);
     }
 }
