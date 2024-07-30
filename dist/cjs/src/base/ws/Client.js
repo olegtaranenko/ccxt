@@ -1,5 +1,7 @@
 'use strict';
 
+Object.defineProperty(exports, '__esModule', { value: true });
+
 var errors = require('../errors.js');
 var browser = require('../../static_dependencies/fflake/browser.js');
 var Future = require('./Future.js');
@@ -9,8 +11,26 @@ var encode = require('../functions/encode.js');
 require('../functions/crypto.js');
 var time = require('../functions/time.js');
 var index = require('../../static_dependencies/scure-base/index.js');
-var Exchange = require('../Exchange.js');
 
+const TRUNCATE_LENGTH = 8192;
+/**
+ * Truncates a string body for verbose logging purposes.
+ * @param body - The string body to be truncated.
+ * @param verboseTruncate - A flag indicating whether to truncate the body.
+ * @returns The truncated body if `verboseTruncate` is true and `body` is not empty.
+ *          If `verboseTruncate` is false or `body` is empty, the original `body` is returned.
+ *          If `body` is longer than `TRUNCATE_LENGTH`, it is truncated to half of `TRUNCATE_LENGTH`
+ *          on both sides, with an ellipsis in the middle.
+ */
+function getBodyTruncated(body, verboseTruncate) {
+    if (verboseTruncate && body) {
+        const len = body.length + 8;
+        if (body.length >= TRUNCATE_LENGTH) {
+            return body.substring(0, TRUNCATE_LENGTH / 2) + '\n ... \n' + body.substring(len - TRUNCATE_LENGTH / 2);
+        }
+    }
+    return body;
+}
 class Client {
     constructor(url, onMessageCallback, onErrorCallback, onCloseCallback, onConnectedCallback, config = {}) {
         this.useMessageQueue = true;
@@ -334,7 +354,7 @@ class Client {
                 if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto('onMessage', message)) {
                     // this.log (new Date (), 'onMessage', message)
                     const messageText = JSON.stringify(message);
-                    const truncated = Exchange.getBodyTruncated(messageText, this.verboseTruncate);
+                    const truncated = getBodyTruncated(messageText, this.verboseTruncate);
                     this.log(new Date(), 'onMessage', truncated);
                 }
                 // unlimited depth
@@ -355,4 +375,5 @@ class Client {
     }
 }
 
-module.exports = Client;
+exports["default"] = Client;
+exports.getBodyTruncated = getBodyTruncated;

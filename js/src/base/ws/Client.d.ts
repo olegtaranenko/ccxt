@@ -1,5 +1,15 @@
 import { Future } from './Future.js';
 import { Dictionary, Str } from '../types.js';
+/**
+ * Truncates a string body for verbose logging purposes.
+ * @param body - The string body to be truncated.
+ * @param verboseTruncate - A flag indicating whether to truncate the body.
+ * @returns The truncated body if `verboseTruncate` is true and `body` is not empty.
+ *          If `verboseTruncate` is false or `body` is empty, the original `body` is returned.
+ *          If `body` is longer than `TRUNCATE_LENGTH`, it is truncated to half of `TRUNCATE_LENGTH`
+ *          on both sides, with an ellipsis in the middle.
+ */
+export declare function getBodyTruncated(body?: string, verboseTruncate?: boolean): string;
 export default class Client {
     connected: Promise<any>;
     disconnected: ReturnType<typeof Future>;

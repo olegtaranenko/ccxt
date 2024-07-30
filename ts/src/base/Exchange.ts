@@ -122,7 +122,7 @@ import totp from './functions/totp.js';
 import ethers from '../static_dependencies/ethers/index.js';
 import { TypedDataEncoder } from '../static_dependencies/ethers/hash/index.js';
 import {SecureRandom} from "../static_dependencies/jsencrypt/lib/jsbn/rng.js";
-import Client from './ws/Client.js'
+import Client, { getBodyTruncated } from './ws/Client.js'
 
 const {
     aggregate,
@@ -283,18 +283,6 @@ export type {
     Transaction,
     TransferEntry,
 } from './types.js';
-
-const TRUNCATE_LENGTH = 8192;
-
-export function getBodyTruncated (body?: string, verboseTruncate?: boolean) {
-    if (verboseTruncate && body) {
-        const length = body.length + 8;
-        if (body.length >= TRUNCATE_LENGTH) {
-            return body.substring (0, TRUNCATE_LENGTH / 2) + '\n ... \n' + body.substring (length - TRUNCATE_LENGTH / 2);
-        }
-    }
-    return body;
-}
 
 // ----------------------------------------------------------------------------
 /**

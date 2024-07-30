@@ -4,12 +4,30 @@
 // https://github.com/ccxt/ccxt/blob/master/CONTRIBUTING.md#how-to-contribute-code
 // EDIT THE CORRESPONDENT .ts FILE INSTEAD
 
-import { RequestTimeout, NetworkError, NotSupported, BaseError, ExchangeClosedByUser } from '../../base/errors.js';
-import { inflateSync, gunzipSync } from '../../static_dependencies/fflake/browser.js';
+import { BaseError, ExchangeClosedByUser, NetworkError, NotSupported, RequestTimeout } from '../../base/errors.js';
+import { gunzipSync, inflateSync } from '../../static_dependencies/fflake/browser.js';
 import { Future } from './Future.js';
-import { isNode, isJsonEncodedObject, deepExtend, milliseconds, } from '../../base/functions.js';
+import { deepExtend, isJsonEncodedObject, isNode, milliseconds, } from '../../base/functions.js';
 import { utf8 } from '../../static_dependencies/scure-base/index.js';
-import { getBodyTruncated } from "../Exchange.js";
+const TRUNCATE_LENGTH = 8192;
+/**
+ * Truncates a string body for verbose logging purposes.
+ * @param body - The string body to be truncated.
+ * @param verboseTruncate - A flag indicating whether to truncate the body.
+ * @returns The truncated body if `verboseTruncate` is true and `body` is not empty.
+ *          If `verboseTruncate` is false or `body` is empty, the original `body` is returned.
+ *          If `body` is longer than `TRUNCATE_LENGTH`, it is truncated to half of `TRUNCATE_LENGTH`
+ *          on both sides, with an ellipsis in the middle.
+ */
+export function getBodyTruncated(body, verboseTruncate) {
+    if (verboseTruncate && body) {
+        const len = body.length + 8;
+        if (body.length >= TRUNCATE_LENGTH) {
+            return body.substring(0, TRUNCATE_LENGTH / 2) + '\n ... \n' + body.substring(len - TRUNCATE_LENGTH / 2);
+        }
+    }
+    return body;
+}
 export default class Client {
     constructor(url, onMessageCallback, onErrorCallback, onCloseCallback, onConnectedCallback, config = {}) {
         this.useMessageQueue = true;
