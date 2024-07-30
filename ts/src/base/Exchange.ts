@@ -122,7 +122,7 @@ import totp from './functions/totp.js';
 import ethers from '../static_dependencies/ethers/index.js';
 import { TypedDataEncoder } from '../static_dependencies/ethers/hash/index.js';
 import {SecureRandom} from "../static_dependencies/jsencrypt/lib/jsbn/rng.js";
-import Client from './ws/Client.js'
+import Client, { getBodyTruncated } from './ws/Client.js'
 
 const {
     aggregate,
