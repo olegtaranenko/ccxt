@@ -165,8 +165,6 @@ import { TypedDataEncoder } from '../static_dependencies/ethers/hash/index.js';
 import {SecureRandom} from "../static_dependencies/jsencrypt/lib/jsbn/rng.js";
 import Client, { getBodyTruncated } from './ws/Client.js'
 
-const TRUNCATE_LENGTH = 8192;
-
 // ----------------------------------------------------------------------------
 /**
  * @class Exchange
