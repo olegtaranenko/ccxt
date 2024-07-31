@@ -122,7 +122,7 @@ import totp from './functions/totp.js';
 import ethers from '../static_dependencies/ethers/index.js';
 import { TypedDataEncoder } from '../static_dependencies/ethers/hash/index.js';
 import {SecureRandom} from "../static_dependencies/jsencrypt/lib/jsbn/rng.js";
-import Client, { getBodyTruncated } from './ws/Client.js'
+import Client, { getBodyTruncated } from './ws/Client.js';
 
 const {
     aggregate,
@@ -1999,8 +1999,8 @@ export default class Exchange {
                 'updated': undefined,
                 'url': undefined,
             },
-            'timeout': this.timeout, // milliseconds = seconds * 1000
             'timeframes': undefined, // redefine if the exchange has.fetchOHLCV
+            'timeout': this.timeout, // milliseconds = seconds * 1000
             'urls': {
                 'api': undefined,
                 'doc': undefined,
@@ -2129,6 +2129,13 @@ export default class Exchange {
 
     handleDelta (bookside, delta) {
         throw new NotSupported (this.id + ' handleDelta not supported yet');
+    }
+
+    handleDeltasWithKeys (bookSide: any, deltas, priceKey: IndexType = 0, amountKey: IndexType = 1, countOrIdKey: IndexType = 2) {
+        for (let i = 0; i < deltas.length; i++) {
+            const bidAsk = this.parseBidAsk (deltas[i], priceKey, amountKey, countOrIdKey);
+            bookSide.storeArray (bidAsk);
+        }
     }
 
     getCacheIndex (orderbook, deltas) {
