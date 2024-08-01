@@ -6,7 +6,7 @@ import { AuthenticationError, RateLimitExceeded, BadRequest, OperationFailed, Ex
 import { Precise } from './base/Precise.js';
 import { TICK_SIZE } from './base/functions/number.js';
 import { sha256 } from './static_dependencies/noble-hashes/sha256.js';
-import type { TransferEntry, Balances, Conversion, Currency, FundingRateHistory, Int, Market, MarginModification, MarketType, Num, OHLCV, Order, OrderBook, OrderSide, OrderType, Str, Dict, Bool, Strings, Trade, Transaction, Leverage, Account, Currencies, TradingFees, TransferEntries, int } from './base/types.js';
+import type { TransferEntry, Balances, Conversion, Currency, FundingRateHistory, Int, Market, MarginModification, MarketType, Num, OHLCV, Order, OrderBook, OrderSide, OrderType, Str, Dict, Bool, Strings, Trade, Transaction, Leverage, Account, Currencies, TradingFees, int, FundingHistory } from './base/types.js';
 
 // ---------------------------------------------------------------------------
 
@@ -2363,7 +2363,7 @@ export default class woo extends Exchange {
         return transfer;
     }
 
-    async fetchTransfers (code: Str = undefined, since: Int = undefined, limit: Int = undefined, params = {}): Promise<TransferEntries> {
+    async fetchTransfers (code: Str = undefined, since: Int = undefined, limit: Int = undefined, params = {}): Promise<TransferEntry[]> {
         /**
          * @method
          * @name woo#fetchTransfers
@@ -2678,11 +2678,13 @@ export default class woo extends Exchange {
         //
         const marketId = this.safeString (income, 'symbol');
         const symbol = this.safeSymbol (marketId, market);
-        const amount = this.safeNumber (income, 'funding_fee');
+        let amount = this.safeString (income, 'funding_fee');
         const code = this.safeCurrencyCode ('USD');
         const id = this.safeString (income, 'id');
         const timestamp = this.safeTimestamp (income, 'updated_time');
         const rate = this.safeNumber (income, 'funding_rate');
+        const paymentType = this.safeString (income, 'payment_type');
+        amount = (paymentType === 'Pay') ? Precise.stringNeg (amount) : amount;
         return {
             'info': income,
             'symbol': symbol,
@@ -2690,13 +2692,30 @@ export default class woo extends Exchange {
             'timestamp': timestamp,
             'datetime': this.iso8601 (timestamp),
             'id': id,
-            'amount': amount,
+            'amount': this.parseNumber (amount),
             'rate': rate,
         };
     }
 
     async fetchFundingHistory (symbol: Str = undefined, since: Int = undefined, limit: Int = undefined, params = {}) {
+        /**
+         * @method
+         * @name woo#fetchFundingHistory
+         * @description fetch the history of funding payments paid and received on this account
+         * @see https://docs.woo.org/#get-funding-fee-history
+         * @param {string} [symbol] unified market symbol
+         * @param {int} [since] the earliest time in ms to fetch funding history for
+         * @param {int} [limit] the maximum number of funding history structures to retrieve
+         * @param {object} [params] extra parameters specific to the exchange API endpoint
+         * @param {boolean} [params.paginate] default false, when true will automatically paginate by calling this endpoint multiple times. See in the docs all the [availble parameters](https://github.com/ccxt/ccxt/wiki/Manual#pagination-params)
+         * @returns {object} a [funding history structure]{@link https://docs.ccxt.com/#/?id=funding-history-structure}
+         */
         await this.loadMarkets ();
+        let paginate = false;
+        [ paginate, params ] = this.handleOptionAndParams (params, 'fetchFundingHistory', 'paginate');
+        if (paginate) {
+            return await this.fetchPaginatedCallCursor ('fetchFundingHistory', symbol, since, limit, params, 'page', 'page', 1, 500) as FundingHistory[];
+        }
         const request: Dict = {};
         let market: Market = undefined;
         if (symbol !== undefined) {
@@ -2705,6 +2724,11 @@ export default class woo extends Exchange {
         }
         if (since !== undefined) {
             request['start_t'] = since;
+        }
+        if (limit !== undefined) {
+            request['size'] = limit;
+        } else {
+            request['size'] = 5000;
         }
         const response = await this.v1PrivateGetFundingFeeHistory (this.extend (request, params));
         //
@@ -2730,7 +2754,15 @@ export default class woo extends Exchange {
         //         "success":true
         //     }
         //
+        const meta = this.safeDict (response, 'meta', {});
+        const cursor = this.safeInteger (meta, 'current_page');
         const result = this.safeList (response, 'rows', []);
+        const resultLength = result.length;
+        if (resultLength > 0) {
+            const lastItem = result[resultLength - 1];
+            lastItem['page'] = cursor;
+            result[resultLength - 1] = lastItem;
+        }
         return this.parseIncomes (result, market, since, limit);
     }
 

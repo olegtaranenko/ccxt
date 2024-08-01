@@ -44,6 +44,9 @@ class cryptocom extends cryptocom$1 {
                     'fetchPositionsSnapshot': true,
                     'awaitPositionsSnapshot': true, // whether to wait for the positions snapshot before providing updates
                 },
+                'watchOrderBook': {
+                    'checksum': true,
+                },
             },
             'streaming': {},
         });
@@ -217,7 +220,10 @@ class cryptocom extends cryptocom$1 {
             const previousNonce = this.safeInteger(data, 'pu');
             const currentNonce = orderbook['nonce'];
             if (currentNonce !== previousNonce) {
-                throw new errors.InvalidNonce(this.id + ' watchOrderBook() ' + symbol + ' ' + previousNonce + ' != ' + nonce);
+                const checksum = this.handleOption('watchOrderBook', 'checksum', true);
+                if (checksum) {
+                    throw new errors.ChecksumError(this.id + ' ' + this.orderbookChecksumMessage(symbol));
+                }
             }
         }
         this.handleDeltas(orderbook['asks'], this.safeValue(books, 'asks', []));
@@ -880,6 +886,7 @@ class cryptocom extends cryptocom$1 {
         //        "message": "invalid channel {"channels":["trade.BTCUSD-PERP"]}"
         //    }
         //
+        const id = this.safeString(message, 'id');
         const errorCode = this.safeString(message, 'code');
         try {
             if (errorCode && errorCode !== '0') {
@@ -889,6 +896,7 @@ class cryptocom extends cryptocom$1 {
                 if (messageString !== undefined) {
                     this.throwBroadlyMatchedException(this.exceptions['broad'], messageString, feedback);
                 }
+                throw new errors.ExchangeError(feedback);
             }
             return false;
         }
@@ -901,7 +909,7 @@ class cryptocom extends cryptocom$1 {
                 }
             }
             else {
-                client.reject(e);
+                client.reject(e, id);
             }
             return true;
         }

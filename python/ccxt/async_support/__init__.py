@@ -4,7 +4,7 @@
 
 # -----------------------------------------------------------------------------
 
-__version__ = '4.3.62'
+__version__ = '4.3.71'
 
 # -----------------------------------------------------------------------------
 
@@ -53,6 +53,7 @@ from ccxt.base.errors import RateLimitExceeded                        # noqa: F4
 from ccxt.base.errors import ExchangeNotAvailable                     # noqa: F401
 from ccxt.base.errors import OnMaintenance                            # noqa: F401
 from ccxt.base.errors import InvalidNonce                             # noqa: F401
+from ccxt.base.errors import ChecksumError                            # noqa: F401
 from ccxt.base.errors import RequestTimeout                           # noqa: F401
 from ccxt.base.errors import BadResponse                              # noqa: F401
 from ccxt.base.errors import NullResponse                             # noqa: F401
@@ -149,6 +150,7 @@ from ccxt.async_support.okx import okx                                          
 from ccxt.async_support.onetrading import onetrading                            # noqa: F401
 from ccxt.async_support.oxfun import oxfun                                      # noqa: F401
 from ccxt.async_support.p2b import p2b                                          # noqa: F401
+from ccxt.async_support.paradex import paradex                                  # noqa: F401
 from ccxt.async_support.paymium import paymium                                  # noqa: F401
 from ccxt.async_support.phemex import phemex                                    # noqa: F401
 from ccxt.async_support.poloniex import poloniex                                # noqa: F401
@@ -259,6 +261,7 @@ exchanges = [
     'onetrading',
     'oxfun',
     'p2b',
+    'paradex',
     'paymium',
     'phemex',
     'poloniex',

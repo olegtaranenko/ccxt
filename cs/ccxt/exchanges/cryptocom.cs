@@ -355,7 +355,15 @@ public partial class cryptocom : Exchange
                     { "40006", typeof(BadRequest) },
                     { "40007", typeof(BadRequest) },
                     { "40101", typeof(AuthenticationError) },
-                    { "50001", typeof(BadRequest) },
+                    { "40102", typeof(InvalidNonce) },
+                    { "40103", typeof(AuthenticationError) },
+                    { "40104", typeof(AuthenticationError) },
+                    { "40107", typeof(BadRequest) },
+                    { "40401", typeof(OrderNotFound) },
+                    { "40801", typeof(RequestTimeout) },
+                    { "42901", typeof(RateLimitExceeded) },
+                    { "43005", typeof(InvalidOrder) },
+                    { "50001", typeof(ExchangeError) },
                     { "9010001", typeof(OnMaintenance) },
                 } },
                 { "broad", new Dictionary<string, object>() {} },
@@ -838,6 +846,10 @@ public partial class cryptocom : Exchange
         };
         if (isTrue(!isEqual(limit, null)))
         {
+            if (isTrue(isGreaterThan(limit, 300)))
+            {
+                limit = 300;
+            }
             ((IDictionary<string,object>)request)["count"] = limit;
         }
         object now = this.microseconds();
@@ -846,10 +858,10 @@ public partial class cryptocom : Exchange
         parameters = this.omit(parameters, new List<object>() {"until"});
         if (isTrue(!isEqual(since, null)))
         {
-            ((IDictionary<string,object>)request)["start_ts"] = since;
+            ((IDictionary<string,object>)request)["start_ts"] = subtract(since, multiply(duration, 1000));
             if (isTrue(!isEqual(limit, null)))
             {
-                ((IDictionary<string,object>)request)["end_ts"] = subtract(this.sum(since, multiply(multiply(duration, (add(limit, 1))), 1000)), 1);
+                ((IDictionary<string,object>)request)["end_ts"] = this.sum(since, multiply(multiply(duration, limit), 1000));
             } else
             {
                 ((IDictionary<string,object>)request)["end_ts"] = until;

@@ -44,6 +44,9 @@ public partial class cryptocom : ccxt.cryptocom
                     { "fetchPositionsSnapshot", true },
                     { "awaitPositionsSnapshot", true },
                 } },
+                { "watchOrderBook", new Dictionary<string, object>() {
+                    { "checksum", true },
+                } },
             } },
             { "streaming", new Dictionary<string, object>() {} },
         });
@@ -246,7 +249,11 @@ public partial class cryptocom : ccxt.cryptocom
             object currentNonce = getValue(orderbook, "nonce");
             if (isTrue(!isEqual(currentNonce, previousNonce)))
             {
-                throw new InvalidNonce ((string)add(add(add(add(add(add(this.id, " watchOrderBook() "), symbol), " "), previousNonce), " != "), nonce)) ;
+                object checksum = this.handleOption("watchOrderBook", "checksum", true);
+                if (isTrue(checksum))
+                {
+                    throw new ChecksumError ((string)add(add(this.id, " "), this.orderbookChecksumMessage(symbol))) ;
+                }
             }
         }
         this.handleDeltas(getValue(orderbook, "asks"), this.safeValue(books, "asks", new List<object>() {}));
@@ -1006,6 +1013,7 @@ public partial class cryptocom : ccxt.cryptocom
         //        "message": "invalid channel {"channels":["trade.BTCUSD-PERP"]}"
         //    }
         //
+        object id = this.safeString(message, "id");
         object errorCode = this.safeString(message, "code");
         try
         {
@@ -1018,6 +1026,7 @@ public partial class cryptocom : ccxt.cryptocom
                 {
                     this.throwBroadlyMatchedException(getValue(this.exceptions, "broad"), messageString, feedback);
                 }
+                throw new ExchangeError ((string)feedback) ;
             }
             return false;
         } catch(Exception e)
@@ -1032,7 +1041,7 @@ public partial class cryptocom : ccxt.cryptocom
                 }
             } else
             {
-                ((WebSocketClient)client).reject(e);
+                ((WebSocketClient)client).reject(e, id);
             }
             return true;
         }

@@ -32,7 +32,7 @@ class woo extends \ccxt\async\woo {
                 'api' => array(
                     'ws' => array(
                         'public' => 'wss://wss.woo.org/ws/stream',
-                        'private' => 'wss://wss.woo.network/v2/ws/private/stream',
+                        'private' => 'wss://wss.woo.org/v2/ws/private/stream',
                     ),
                 ),
                 'test' => array(
@@ -80,7 +80,8 @@ class woo extends \ccxt\async\woo {
 
     public function watch_public($messageHash, $message) {
         return Async\async(function () use ($messageHash, $message) {
-            $url = $this->urls['api']['ws']['public'] . '/' . $this->uid;
+            $urlUid = ($this->uid) ? '/' . $this->uid : '';
+            $url = $this->urls['api']['ws']['public'] . $urlUid;
             $requestId = $this->request_id($url);
             $subscribe = array(
                 'id' => $requestId,
@@ -487,7 +488,7 @@ class woo extends \ccxt\async\woo {
         $marketId = $this->safe_string($trade, 'symbol');
         $market = $this->safe_market($marketId, $market);
         $symbol = $market['symbol'];
-        $price = $this->safe_string($trade, 'executedPrice', 'price');
+        $price = $this->safe_string_2($trade, 'executedPrice', 'price');
         $amount = $this->safe_string_2($trade, 'executedQuantity', 'size');
         $cost = Precise::string_mul($price, $amount);
         $side = $this->safe_string_lower($trade, 'side');
@@ -526,7 +527,7 @@ class woo extends \ccxt\async\woo {
     public function check_required_uid($error = true) {
         if (!$this->uid) {
             if ($error) {
-                throw new AuthenticationError($this->id . ' requires `uid` credential');
+                throw new AuthenticationError($this->id . ' requires `uid` credential (woox calls it `application_id`)');
             } else {
                 return false;
             }
@@ -695,9 +696,10 @@ class woo extends \ccxt\async\woo {
             'cost' => $this->safe_string($order, 'totalFee'),
             'currency' => $this->safe_string($order, 'feeAsset'),
         );
+        $priceString = $this->safe_string($order, 'price');
         $price = $this->safe_number($order, 'price');
         $avgPrice = $this->safe_number($order, 'avgPrice');
-        if (($price === 0) && ($avgPrice !== null)) {
+        if (Precise::string_eq($priceString, '0') && ($avgPrice !== null)) {
             $price = $avgPrice;
         }
         $amount = $this->safe_float($order, 'quantity');

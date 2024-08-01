@@ -386,7 +386,15 @@ class cryptocom extends cryptocom$1 {
                     '40006': errors.BadRequest,
                     '40007': errors.BadRequest,
                     '40101': errors.AuthenticationError,
-                    '50001': errors.BadRequest,
+                    '40102': errors.InvalidNonce,
+                    '40103': errors.AuthenticationError,
+                    '40104': errors.AuthenticationError,
+                    '40107': errors.BadRequest,
+                    '40401': errors.OrderNotFound,
+                    '40801': errors.RequestTimeout,
+                    '42901': errors.RateLimitExceeded,
+                    '43005': errors.InvalidOrder,
+                    '50001': errors.ExchangeError,
                     '9010001': errors.OnMaintenance, // {"code":9010001,"message":"SYSTEM_MAINTENANCE","details":"Crypto.com Exchange is currently under maintenance. Please refer to https://status.crypto.com for more details."}
                 },
                 'broad': {},
@@ -828,6 +836,9 @@ class cryptocom extends cryptocom$1 {
             'timeframe': this.safeString(this.timeframes, timeframe, timeframe),
         };
         if (limit !== undefined) {
+            if (limit > 300) {
+                limit = 300;
+            }
             request['count'] = limit;
         }
         const now = this.microseconds();
@@ -835,9 +846,9 @@ class cryptocom extends cryptocom$1 {
         const until = this.safeInteger(params, 'until', now);
         params = this.omit(params, ['until']);
         if (since !== undefined) {
-            request['start_ts'] = since;
+            request['start_ts'] = since - duration * 1000;
             if (limit !== undefined) {
-                request['end_ts'] = this.sum(since, duration * (limit + 1) * 1000) - 1;
+                request['end_ts'] = this.sum(since, duration * limit * 1000);
             }
             else {
                 request['end_ts'] = until;

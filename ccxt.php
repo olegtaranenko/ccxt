@@ -49,6 +49,7 @@ spl_autoload_register(function ($class) {
     }
     $class_name = str_replace('kornrunner\\Keccak', 'kornrunner/keccak/src/Keccak', $class);
     $class_name = str_replace('Web3\\', 'web3.php/src/', $class_name);
+    $class_name = str_replace('StarkNet\\', 'starknet.php/src/', $class_name);
     $class_name = str_replace('phpseclib\\Math\\BigInteger', 'phpseclib/Math/BigInteger', $class_name);
     $class_name = str_replace('Sop\\', 'Sop/', $class_name);
     $class_name = str_replace('Elliptic\\', 'elliptic-php/lib/', $class_name);
@@ -94,6 +95,7 @@ require_once PATH_TO_CCXT . 'RateLimitExceeded.php';
 require_once PATH_TO_CCXT . 'ExchangeNotAvailable.php';
 require_once PATH_TO_CCXT . 'OnMaintenance.php';
 require_once PATH_TO_CCXT . 'InvalidNonce.php';
+require_once PATH_TO_CCXT . 'ChecksumError.php';
 require_once PATH_TO_CCXT . 'RequestTimeout.php';
 require_once PATH_TO_CCXT . 'BadResponse.php';
 require_once PATH_TO_CCXT . 'NullResponse.php';

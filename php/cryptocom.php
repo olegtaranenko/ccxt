@@ -384,7 +384,15 @@ class cryptocom extends Exchange {
                     '40006' => '\\ccxt\\BadRequest',
                     '40007' => '\\ccxt\\BadRequest',
                     '40101' => '\\ccxt\\AuthenticationError',
-                    '50001' => '\\ccxt\\BadRequest',
+                    '40102' => '\\ccxt\\InvalidNonce', // Nonce value differs by more than 60 seconds from server
+                    '40103' => '\\ccxt\\AuthenticationError', // IP address not whitelisted
+                    '40104' => '\\ccxt\\AuthenticationError', // Disallowed based on user tier
+                    '40107' => '\\ccxt\\BadRequest', // Session subscription limit has been exceeded
+                    '40401' => '\\ccxt\\OrderNotFound',
+                    '40801' => '\\ccxt\\RequestTimeout',
+                    '42901' => '\\ccxt\\RateLimitExceeded',
+                    '43005' => '\\ccxt\\InvalidOrder', // Rejected POST_ONLY create-order request (normally happened when exec_inst contains POST_ONLY but time_in_force is NOT GOOD_TILL_CANCEL)
+                    '50001' => '\\ccxt\\ExchangeError',
                     '9010001' => '\\ccxt\\OnMaintenance', // array("code":9010001,"message":"SYSTEM_MAINTENANCE","details":"Crypto.com Exchange is currently under maintenance. Please refer to https://status.crypto.com for more details.")
                 ),
                 'broad' => array(),
@@ -816,6 +824,9 @@ class cryptocom extends Exchange {
             'timeframe' => $this->safe_string($this->timeframes, $timeframe, $timeframe),
         );
         if ($limit !== null) {
+            if ($limit > 300) {
+                $limit = 300;
+            }
             $request['count'] = $limit;
         }
         $now = $this->microseconds();
@@ -823,9 +834,9 @@ class cryptocom extends Exchange {
         $until = $this->safe_integer($params, 'until', $now);
         $params = $this->omit($params, array( 'until' ));
         if ($since !== null) {
-            $request['start_ts'] = $since;
+            $request['start_ts'] = $since - $duration * 1000;
             if ($limit !== null) {
-                $request['end_ts'] = $this->sum($since, $duration * ($limit + 1) * 1000) - 1;
+                $request['end_ts'] = $this->sum($since, $duration * $limit * 1000);
             } else {
                 $request['end_ts'] = $until;
             }

@@ -67,7 +67,6 @@ import type {
     TradingFeeInterface,
     TradingFees,
     Transaction,
-    TransferEntries,
     TransferEntry,
 } from './base/types.js';
 import { TICK_SIZE, TRUNCATE } from './base/functions/number.js';
@@ -3215,7 +3214,7 @@ export default class binance extends Exchange {
             linear = settle === quote;
             inverse = settle === base;
             const feesType = linear ? 'linear' : 'inverse';
-            fees = this.safeDict (this.fees, feesType, {});
+            fees = this.safeDict (this.fees, feesType, {}) as any;
         }
         let active = (status === 'TRADING');
         if (spot) {
@@ -8357,7 +8356,7 @@ export default class binance extends Exchange {
         return this.parseTransfer (response, currency);
     }
 
-    async fetchTransfers (code: Str = undefined, since: Int = undefined, limit: Int = undefined, params = {}): Promise<TransferEntries> {
+    async fetchTransfers (code: Str = undefined, since: Int = undefined, limit: Int = undefined, params = {}): Promise<TransferEntry[]> {
         /**
          * @method
          * @name binance#fetchTransfers
@@ -12584,7 +12583,7 @@ export default class binance extends Exchange {
     async fetchMarginModes (symbols: Strings = undefined, params = {}): Promise<MarginModes> {
         /**
          * @method
-         * @name binance#fetchMarginMode
+         * @name binance#fetchMarginModes
          * @description fetches margin modes ("isolated" or "cross") that the market for the symbol in in, with symbol=undefined all markets for a subType (linear/inverse) are returned
          * @see https://developers.binance.com/docs/derivatives/coin-margined-futures/account/Account-Information
          * @see https://developers.binance.com/docs/derivatives/usds-margined-futures/account/rest-api/Account-Information-V2

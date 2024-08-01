@@ -7,7 +7,7 @@
 //  ---------------------------------------------------------------------------
 import Exchange from './abstract/cryptocom.js';
 import { Precise } from './base/Precise.js';
-import { AuthenticationError, ArgumentsRequired, ExchangeError, InsufficientFunds, DDoSProtection, InvalidNonce, PermissionDenied, BadRequest, BadSymbol, NotSupported, AccountNotEnabled, OnMaintenance, InvalidOrder } from './base/errors.js';
+import { AuthenticationError, ArgumentsRequired, ExchangeError, InsufficientFunds, DDoSProtection, InvalidNonce, PermissionDenied, BadRequest, BadSymbol, NotSupported, AccountNotEnabled, OnMaintenance, InvalidOrder, RequestTimeout, OrderNotFound, RateLimitExceeded } from './base/errors.js';
 import { TICK_SIZE } from './base/functions/number.js';
 import { sha256 } from './static_dependencies/noble-hashes/sha256.js';
 /**
@@ -389,7 +389,15 @@ export default class cryptocom extends Exchange {
                     '40006': BadRequest,
                     '40007': BadRequest,
                     '40101': AuthenticationError,
-                    '50001': BadRequest,
+                    '40102': InvalidNonce,
+                    '40103': AuthenticationError,
+                    '40104': AuthenticationError,
+                    '40107': BadRequest,
+                    '40401': OrderNotFound,
+                    '40801': RequestTimeout,
+                    '42901': RateLimitExceeded,
+                    '43005': InvalidOrder,
+                    '50001': ExchangeError,
                     '9010001': OnMaintenance, // {"code":9010001,"message":"SYSTEM_MAINTENANCE","details":"Crypto.com Exchange is currently under maintenance. Please refer to https://status.crypto.com for more details."}
                 },
                 'broad': {},
@@ -831,6 +839,9 @@ export default class cryptocom extends Exchange {
             'timeframe': this.safeString(this.timeframes, timeframe, timeframe),
         };
         if (limit !== undefined) {
+            if (limit > 300) {
+                limit = 300;
+            }
             request['count'] = limit;
         }
         const now = this.microseconds();
@@ -838,9 +849,9 @@ export default class cryptocom extends Exchange {
         const until = this.safeInteger(params, 'until', now);
         params = this.omit(params, ['until']);
         if (since !== undefined) {
-            request['start_ts'] = since;
+            request['start_ts'] = since - duration * 1000;
             if (limit !== undefined) {
-                request['end_ts'] = this.sum(since, duration * (limit + 1) * 1000) - 1;
+                request['end_ts'] = this.sum(since, duration * limit * 1000);
             }
             else {
                 request['end_ts'] = until;
