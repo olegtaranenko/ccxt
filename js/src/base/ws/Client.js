@@ -30,7 +30,7 @@ export function getBodyTruncated(body, verboseTruncate) {
 }
 export default class Client {
     constructor(url, onMessageCallback, onErrorCallback, onCloseCallback, onConnectedCallback, config = {}) {
-        this.useMessageQueue = true;
+        this.useMessageQueue = false;
         const defaults = {
             url,
             onMessageCallback,
@@ -45,7 +45,7 @@ export default class Client {
             subscriptions: {},
             rejections: {},
             messageQueue: {},
-            useMessageQueue: true,
+            useMessageQueue: false,
             connected: undefined,
             error: undefined,
             connectionStarted: undefined,
