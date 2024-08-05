@@ -343,6 +343,9 @@ abstract class binancecoinm extends \ccxt\binance {
     public function fapiprivate_get_account($params = array()) {
         return $this->request('account', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 5));
     }
+    public function fapiprivate_get_accountconfig($params = array()) {
+        return $this->request('accountConfig', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 5));
+    }
     public function fapiprivate_get_adlquantile($params = array()) {
         return $this->request('adlQuantile', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 5));
     }
@@ -436,6 +439,9 @@ abstract class binancecoinm extends \ccxt\binance {
     public function fapiprivate_get_ratelimit_order($params = array()) {
         return $this->request('rateLimit/order', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
     }
+    public function fapiprivate_get_symbolconfig($params = array()) {
+        return $this->request('symbolConfig', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 5));
+    }
     public function fapiprivate_get_trade_asyn($params = array()) {
         return $this->request('trade/asyn', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1000));
     }
@@ -498,6 +504,15 @@ abstract class binancecoinm extends \ccxt\binance {
     }
     public function fapiprivatev2_get_positionrisk($params = array()) {
         return $this->request('positionRisk', 'fapiPrivateV2', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function fapiprivatev3_get_account($params = array()) {
+        return $this->request('account', 'fapiPrivateV3', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function fapiprivatev3_get_balance($params = array()) {
+        return $this->request('balance', 'fapiPrivateV3', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function fapiprivatev3_get_positionrisk($params = array()) {
+        return $this->request('positionRisk', 'fapiPrivateV3', 'GET', $params, null, null, array("cost" => 1));
     }
     public function fapipublic_get_aggtrades($params = array()) {
         return $this->request('aggTrades', 'fapiPublic', 'GET', $params, null, null, array("cost" => 20));
@@ -2476,6 +2491,9 @@ abstract class binancecoinm extends \ccxt\binance {
     public function fapiPrivateGetAccount($params = array()) {
         return $this->request('account', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 5));
     }
+    public function fapiPrivateGetAccountConfig($params = array()) {
+        return $this->request('accountConfig', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 5));
+    }
     public function fapiPrivateGetAdlQuantile($params = array()) {
         return $this->request('adlQuantile', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 5));
     }
@@ -2569,6 +2587,9 @@ abstract class binancecoinm extends \ccxt\binance {
     public function fapiPrivateGetRateLimitOrder($params = array()) {
         return $this->request('rateLimit/order', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
     }
+    public function fapiPrivateGetSymbolConfig($params = array()) {
+        return $this->request('symbolConfig', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 5));
+    }
     public function fapiPrivateGetTradeAsyn($params = array()) {
         return $this->request('trade/asyn', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1000));
     }
@@ -2631,6 +2652,15 @@ abstract class binancecoinm extends \ccxt\binance {
     }
     public function fapiPrivateV2GetPositionRisk($params = array()) {
         return $this->request('positionRisk', 'fapiPrivateV2', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function fapiPrivateV3GetAccount($params = array()) {
+        return $this->request('account', 'fapiPrivateV3', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function fapiPrivateV3GetBalance($params = array()) {
+        return $this->request('balance', 'fapiPrivateV3', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function fapiPrivateV3GetPositionRisk($params = array()) {
+        return $this->request('positionRisk', 'fapiPrivateV3', 'GET', $params, null, null, array("cost" => 1));
     }
     public function fapiPublicGetAggTrades($params = array()) {
         return $this->request('aggTrades', 'fapiPublic', 'GET', $params, null, null, array("cost" => 20));

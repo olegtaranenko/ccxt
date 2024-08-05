@@ -121,6 +121,7 @@ interface binance {
     fapiPrivateDeleteListenKey (params?: {}): Promise<implicitReturnType>;
     fapiPrivateDeleteOrder (params?: {}): Promise<implicitReturnType>;
     fapiPrivateGetAccount (params?: {}): Promise<implicitReturnType>;
+    fapiPrivateGetAccountConfig (params?: {}): Promise<implicitReturnType>;
     fapiPrivateGetAdlQuantile (params?: {}): Promise<implicitReturnType>;
     fapiPrivateGetAllOrders (params?: {}): Promise<implicitReturnType>;
     fapiPrivateGetApiReferralCustomization (params?: {}): Promise<implicitReturnType>;
@@ -152,6 +153,7 @@ interface binance {
     fapiPrivateGetPositionRisk (params?: {}): Promise<implicitReturnType>;
     fapiPrivateGetPositionSideDual (params?: {}): Promise<implicitReturnType>;
     fapiPrivateGetRateLimitOrder (params?: {}): Promise<implicitReturnType>;
+    fapiPrivateGetSymbolConfig (params?: {}): Promise<implicitReturnType>;
     fapiPrivateGetTradeAsyn (params?: {}): Promise<implicitReturnType>;
     fapiPrivateGetTradeAsynId (params?: {}): Promise<implicitReturnType>;
     fapiPrivateGetUserTrades (params?: {}): Promise<implicitReturnType>;
@@ -173,6 +175,9 @@ interface binance {
     fapiPrivateV2GetAccount (params?: {}): Promise<implicitReturnType>;
     fapiPrivateV2GetBalance (params?: {}): Promise<implicitReturnType>;
     fapiPrivateV2GetPositionRisk (params?: {}): Promise<implicitReturnType>;
+    fapiPrivateV3GetAccount (params?: {}): Promise<implicitReturnType>;
+    fapiPrivateV3GetBalance (params?: {}): Promise<implicitReturnType>;
+    fapiPrivateV3GetPositionRisk (params?: {}): Promise<implicitReturnType>;
     fapiPublicGetAggTrades (params?: {}): Promise<implicitReturnType>;
     fapiPublicGetApiTradingStatus (params?: {}): Promise<implicitReturnType>;
     fapiPublicGetAssetIndex (params?: {}): Promise<implicitReturnType>;
