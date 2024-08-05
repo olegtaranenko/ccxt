@@ -116,9 +116,6 @@ class binance extends binance$1 {
                 'watchTrades': {
                     'name': 'trade', // 'trade' or 'aggTrade'
                 },
-                'watchTradesForSymbols': {
-                    'name': 'trade', // 'trade' or 'aggTrade'
-                },
                 'watchTicker': {
                     'name': 'ticker', // ticker or miniTicker or ticker_<window_size>
                 },
@@ -934,11 +931,15 @@ class binance extends binance$1 {
          * @method
          * @name binance#watchTradesForSymbols
          * @description get the list of most recent trades for a list of symbols
+         * @see https://binance-docs.github.io/apidocs/spot/en/#aggregate-trade-streams
+         * @see https://binance-docs.github.io/apidocs/spot/en/#trade-streams
+         * @see https://binance-docs.github.io/apidocs/futures/en/#aggregate-trade-streams
+         * @see https://binance-docs.github.io/apidocs/delivery/en/#aggregate-trade-streams
          * @param {string[]} symbols unified symbol of the market to fetch trades for
          * @param {int} [since] timestamp in ms of the earliest trade to fetch
          * @param {int} [limit] the maximum amount of trades to fetch
          * @param {object} [params] extra parameters specific to the exchange API endpoint
-         * @param {string} [params.name] stream to use can be trade or aggTrade
+         * @param {string} [params.name] the name of the method to call, 'trade' or 'aggTrade', default is 'trade'
          * @returns {object[]} a list of [trade structures]{@link https://docs.ccxt.com/#/?id=public-trades}
          */
         await this.loadMarkets();
@@ -951,11 +952,9 @@ class binance extends binance$1 {
             }
             streamHash += '::' + symbols.join(',');
         }
-        let name = this.safeString(params, 'name', undefined);
-        if (name === undefined) {
-            const options = this.safeValue(this.options, 'watchTradesForSymbols', {});
-            name = this.safeString(options, 'name', 'trade');
-        }
+        let name = undefined;
+        [name, params] = this.handleOptionAndParams(params, 'watchTradesForSymbols', 'name', 'trade');
+        params = this.omit(params, 'callerMethodName');
         const firstMarket = this.market(symbols[0]);
         let type = firstMarket['type'];
         if (firstMarket['contract']) {
@@ -970,7 +969,7 @@ class binance extends binance$1 {
             const rawHash = market['lowercaseId'] + '@' + name;
             subParams.push(rawHash);
         }
-        const query = this.omit(params, 'type', 'name');
+        const query = this.omit(params, 'type');
         const subParamsLength = subParams.length;
         const url = this.urls['api']['ws'][type] + '/' + this.stream(type, streamHash, subParamsLength);
         const requestId = this.requestId(url);
@@ -995,21 +994,18 @@ class binance extends binance$1 {
          * @method
          * @name binance#watchTrades
          * @description get the list of most recent trades for a particular symbol
+         * @see https://binance-docs.github.io/apidocs/spot/en/#aggregate-trade-streams
+         * @see https://binance-docs.github.io/apidocs/spot/en/#trade-streams
+         * @see https://binance-docs.github.io/apidocs/futures/en/#aggregate-trade-streams
+         * @see https://binance-docs.github.io/apidocs/delivery/en/#aggregate-trade-streams
          * @param {string} symbol unified symbol of the market to fetch trades for
          * @param {int} [since] timestamp in ms of the earliest trade to fetch
          * @param {int} [limit] the maximum amount of trades to fetch
          * @param {object} [params] extra parameters specific to the exchange API endpoint
-         * @param {string} [params.name] stream to use can be trade or aggTrade
+         * @param {string} [params.name] the name of the method to call, 'trade' or 'aggTrade', default is 'trade'
          * @returns {object[]} a list of [trade structures]{@link https://docs.ccxt.com/#/?id=public-trades}
          */
-        let name = this.safeString(params, 'name', undefined);
-        if (name === undefined) {
-            const options = this.safeValue(this.options, 'watchTrades', {});
-            name = this.safeString(options, 'name', undefined);
-            if (name !== undefined) {
-                params['name'] = name;
-            }
-        }
+        params['callerMethodName'] = 'watchTrades';
         return await this.watchTradesForSymbols([symbol], since, limit, params);
     }
     parseWsTrade(trade, market = undefined) {
@@ -1271,6 +1267,7 @@ class binance extends binance$1 {
         const subscribe = {
             'id': requestId,
         };
+        params = this.omit(params, 'callerMethodName');
         const [symbol, timeframe, candles] = await this.watchMultiple(url, messageHashes, this.extend(request, params), messageHashes, subscribe);
         if (this.newUpdates) {
             limit = candles.getLimit(symbol, limit);
