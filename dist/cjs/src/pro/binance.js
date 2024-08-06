@@ -1012,6 +1012,7 @@ class binance extends binance$1 {
          * @param {string} [params.name] the name of the method to call, 'trade' or 'aggTrade', default is 'trade'
          * @returns {object[]} a list of [trade structures]{@link https://docs.ccxt.com/#/?id=public-trades}
          */
+        params['callerMethodName'] = 'watchTrades';
         let name = this.safeString(params, 'name', undefined);
         if (name === undefined) {
             const options = this.safeValue(this.options, 'watchTrades', {});
