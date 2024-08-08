@@ -9583,7 +9583,7 @@ class binance extends binance$1 {
         market = this.safeMarket(marketId, market, undefined, 'contract');
         const symbol = this.safeString(market, 'symbol');
         const leverageString = this.safeString(position, 'leverage');
-        const leverage = parseInt(leverageString);
+        const leverage = (leverageString !== undefined) ? parseInt(leverageString) : undefined;
         const initialMarginString = this.safeString(position, 'initialMargin');
         const initialMargin = this.parseNumber(initialMarginString);
         let initialMarginPercentageString = undefined;
@@ -9857,7 +9857,7 @@ class binance extends binance$1 {
         const liquidationPrice = this.parseNumber(liquidationPriceString);
         let collateralString = undefined;
         let marginMode = this.safeString(position, 'marginType');
-        if (marginMode === undefined && isolatedMarginString) {
+        if (marginMode === undefined && isolatedMarginString !== undefined) {
             marginMode = Precise["default"].stringEq(isolatedMarginString, '0') ? 'cross' : 'isolated';
         }
         let side = undefined;

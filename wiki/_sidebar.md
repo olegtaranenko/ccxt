@@ -105,7 +105,7 @@
 	- [whitebit](exchanges/whitebit.md)
 	- [woo](exchanges/woo.md)
 	- [woofipro](exchanges/woofipro.md)
-	- [xt#fetchTime](exchanges/xt#fetchTime.md)
+	- [xt](exchanges/xt.md)
 	- [yobit](exchanges/yobit.md)
 	- [zaif](exchanges/zaif.md)
 	- [zonda](exchanges/zonda.md)
