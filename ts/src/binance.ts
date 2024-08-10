@@ -3623,7 +3623,7 @@ export default class binance extends Exchange {
         //
         // futures (fapi)
         //
-        //     fapiPrivateV2GetAccount
+        //     fapiPrivateV3GetAccount
         //
         //     {
         //         "assets":[
@@ -8981,6 +8981,7 @@ export default class binance extends Exchange {
          * @see https://developers.binance.com/docs/wallet/asset/trade-fee
          * @see https://developers.binance.com/docs/derivatives/usds-margined-futures/account/rest-api/Account-Information-V2
          * @see https://developers.binance.com/docs/derivatives/coin-margined-futures/account/Account-Information
+         * @see https://developers.binance.com/docs/derivatives/usds-margined-futures/account/rest-api/Account-Config
          * @param {object} [params] extra parameters specific to the exchange API endpoint
          * @param {string} [params.subType] "linear" or "inverse"
          * @returns {object} a dictionary of [fee structures]{@link https://docs.ccxt.com/#/?id=fee-structure} indexed by market symbols
@@ -8997,7 +8998,7 @@ export default class binance extends Exchange {
         if (isSpotOrMargin) {
             response = await this.sapiGetAssetTradeFee (params);
         } else if (isLinear) {
-            response = await this.fapiPrivateV2GetAccount (params);
+            response = await this.fapiPrivateGetAccountConfig (params);
         } else if (isInverse) {
             response = await this.dapiPrivateGetAccount (params);
         }
@@ -10290,6 +10291,7 @@ export default class binance extends Exchange {
          * @see https://developers.binance.com/docs/derivatives/coin-margined-futures/account/Account-Information
          * @see https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Position-Information-V2
          * @see https://developers.binance.com/docs/derivatives/coin-margined-futures/trade/Position-Information
+         * @see https://developers.binance.com/docs/derivatives/usds-margined-futures/account/rest-api/Account-Information-V3
          * @param {string[]} [symbols] list of unified market symbols
          * @param {object} [params] extra parameters specific to the exchange API endpoint
          * @param {boolean} [params.portfolioMargin] set to true if you would like to fetch positions in a portfolio margin account
@@ -10417,6 +10419,7 @@ export default class binance extends Exchange {
          * @see https://developers.binance.com/docs/derivatives/coin-margined-futures/trade/Position-Information
          * @see https://developers.binance.com/docs/derivatives/portfolio-margin/account/Query-UM-Position-Information
          * @see https://developers.binance.com/docs/derivatives/portfolio-margin/account/Query-CM-Position-Information
+         * @see https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Position-Information-V3
          * @param {string[]|undefined} symbols list of unified market symbols
          * @param {object} [params] extra parameters specific to the exchange API endpoint
          * @param {boolean} [params.portfolioMargin] set to true if you would like to fetch positions for a portfolio margin account
@@ -10817,6 +10820,7 @@ export default class binance extends Exchange {
          * @see https://developers.binance.com/docs/derivatives/coin-margined-futures/account/Account-Information
          * @see https://developers.binance.com/docs/derivatives/portfolio-margin/account/Get-UM-Account-Detail
          * @see https://developers.binance.com/docs/derivatives/portfolio-margin/account/Get-CM-Account-Detail
+         * @see https://developers.binance.com/docs/derivatives/usds-margined-futures/account/rest-api/Symbol-Config
          * @param {string[]} [symbols] a list of unified market symbols
          * @param {object} [params] extra parameters specific to the exchange API endpoint
          * @param {string} [params.subType] "linear" or "inverse"
@@ -10835,7 +10839,7 @@ export default class binance extends Exchange {
             if (isPortfolioMargin) {
                 response = await this.papiGetUmAccount (params);
             } else {
-                response = await this.fapiPrivateV2GetAccount (params);
+                response = await this.fapiPrivateGetSymbolConfig (params);
             }
         } else if (this.isInverse (type, subType)) {
             if (isPortfolioMargin) {
@@ -10846,7 +10850,10 @@ export default class binance extends Exchange {
         } else {
             throw new NotSupported (this.id + ' fetchLeverages() supports linear and inverse contracts only');
         }
-        const leverages = this.safeList (response, 'positions', []);
+        let leverages = this.safeList (response, 'positions', []);
+        if (Array.isArray (response)) {
+            leverages = response;
+        }
         return this.parseLeverages (leverages, symbols, 'symbol');
     }
 
@@ -10856,6 +10863,10 @@ export default class binance extends Exchange {
         let marginMode = undefined;
         if (marginModeRaw !== undefined) {
             marginMode = marginModeRaw ? 'isolated' : 'cross';
+        }
+        const marginTypeRaw = this.safeStringLower (leverage, 'marginType');
+        if (marginTypeRaw !== undefined) {
+            marginMode = (marginTypeRaw === 'crossed') ? 'cross' : 'isolated';
         }
         const side = this.safeStringLower (leverage, 'positionSide');
         let longLeverage = undefined;
@@ -12734,6 +12745,7 @@ export default class binance extends Exchange {
          * @description fetches margin modes ("isolated" or "cross") that the market for the symbol in in, with symbol=undefined all markets for a subType (linear/inverse) are returned
          * @see https://developers.binance.com/docs/derivatives/coin-margined-futures/account/Account-Information
          * @see https://developers.binance.com/docs/derivatives/usds-margined-futures/account/rest-api/Account-Information-V2
+         * @see https://developers.binance.com/docs/derivatives/usds-margined-futures/account/rest-api/Symbol-Config
          * @param {string} symbol unified symbol of the market the order was made in
          * @param {object} [params] extra parameters specific to the exchange API endpoint
          * @param {string} [params.subType] "linear" or "inverse"
@@ -12749,70 +12761,17 @@ export default class binance extends Exchange {
         [ subType, params ] = this.handleSubTypeAndParams ('fetchMarginMode', market, params);
         let response = undefined;
         if (subType === 'linear') {
-            response = await this.fapiPrivateV2GetAccount (params);
+            response = await this.fapiPrivateGetSymbolConfig (params);
             //
-            //    {
-            //        assets: [
-            //            {
-            //                asset: 'ETH',
-            //                availableBalance: '1.26075574',
-            //                crossUnPnl: '0.00000000',
-            //                crossWalletBalance: '0.00000000',
-            //                initialMargin: '0.00000000',
-            //                maintMargin: '0.00000000',
-            //                marginAvailable: true,
-            //                marginBalance: '0.00000000',
-            //                maxWithdrawAmount: '0.00000000',
-            //                openOrderInitialMargin: '0.00000000',
-            //                positionInitialMargin: '0.00000000',
-            //                unrealizedProfit: '0.00000000',
-            //                updateTime: '0',
-            //                walletBalance: '0.00000000',
-            //            },
-            //        ...
-            //        ],
-            //        availableBalance: '4281.84764041',
-            //        canDeposit: true,
-            //        canTrade: true,
-            //        canWithdraw: true,
-            //        feeTier: '0',
-            //        maxWithdrawAmount: '4281.84764041',
-            //        multiAssetsMargin: true,
-            //        positions: [
-            //            {
-            //              askNotional: '0',
-            //              bidNotional: '0',
-            //              breakEvenPrice: '0.0',
-            //              entryPrice: '0.0',
-            //              initialMargin: '0',
-            //              isolated: false,
-            //              isolatedWallet: '0',
-            //              leverage: '20',
-            //              maintMargin: '0',
-            //              maxNotional: '25000',
-            //              notional: '0',
-            //              openOrderInitialMargin: '0',
-            //              positionAmt: '0',
-            //              positionInitialMargin: '0',
-            //              positionSide: 'BOTH',
-            //              symbol: 'SNTUSDT',
-            //              unrealizedProfit: '0.00000000',
-            //              updateTime: '0',
-            //            },
-            //            ...
-            //        ],
-            //        totalCrossUnPnl: '376.45220224',
-            //        totalCrossWalletBalance: '4345.15626338',
-            //        totalInitialMargin: '438.31134352',
-            //        totalMaintMargin: '5.90847101',
-            //        totalMarginBalance: '4721.60846562',
-            //        totalOpenOrderInitialMargin: '12.85881664',
-            //        totalPositionInitialMargin: '425.45252687',
-            //        totalUnrealizedProfit: '376.45220224',
-            //        totalWalletBalance: '4345.15626338',
-            //        tradeGroupId: '-1',
-            //        updateTime: '0',
-            //    }
+            // [
+            //     {
+            //         "isAutoAddMargin": "false",
+            //         "leverage": 21,
+            //         "marginType": "CROSSED",
+            //         "maxNotionalValue": "1000000",
+            //         "symbol": "BTCUSDT",
+            //     }
+            // ]
             //
         } else if (subType === 'inverse') {
             response = await this.dapiPrivateGetAccount (params);
@@ -12867,18 +12826,29 @@ export default class binance extends Exchange {
         } else {
             throw new BadRequest (this.id + ' fetchMarginModes () supports linear and inverse subTypes only');
         }
-        const assets = this.safeList (response, 'positions', []);
+        let assets = this.safeList (response, 'positions', []);
+        if (Array.isArray (response)) {
+            assets = response;
+        }
         return this.parseMarginModes (assets, symbols, 'symbol', 'swap');
     }
 
     parseMarginMode (marginMode: Dict, market = undefined): MarginMode {
         const marketId = this.safeString (marginMode, 'symbol');
         market = this.safeMarket (marketId, market);
-        const isIsolated = this.safeBool (marginMode, 'isolated');
+        const marginModeRaw = this.safeBool (marginMode, 'isolated');
+        let reMarginMode = undefined;
+        if (marginModeRaw !== undefined) {
+            reMarginMode = marginModeRaw ? 'isolated' : 'cross';
+        }
+        const marginTypeRaw = this.safeStringLower (marginMode, 'marginType');
+        if (marginTypeRaw !== undefined) {
+            reMarginMode = (marginTypeRaw === 'crossed') ? 'cross' : 'isolated';
+        }
         return {
             'info': marginMode,
             'symbol': market['symbol'],
-            'marginMode': isIsolated ? 'isolated' : 'cross',
+            'marginMode': reMarginMode,
         };
     }
 
