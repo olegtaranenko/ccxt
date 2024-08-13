@@ -402,16 +402,6 @@ class Exchange {
         }
         return result;
     }
-    checkAddress(address) {
-        if (address === undefined) {
-            throw new errors.InvalidAddress(this.id + ' address is undefined');
-        }
-        // check the address is not the same letter like 'aaaaa' nor too short nor has a space
-        if ((this.unique(address).length === 1) || address.length < this.minFundingAddressLength || address.includes(' ')) {
-            throw new errors.InvalidAddress(this.id + ' address is invalid or has less than ' + this.minFundingAddressLength.toString() + ' characters: "' + this.json(address) + '"');
-        }
-        return address;
-    }
     initRestRateLimiter() {
         if (this.rateLimit === undefined) {
             throw new Error(this.id + '.rateLimit property is not configured');
@@ -1916,6 +1906,18 @@ class Exchange {
         if (proxyAgentSet && proxyUrlSet) {
             throw new errors.InvalidProxySettings(this.id + ' you have multiple conflicting proxy settings, please use only one from : proxyUrl, httpProxy, httpsProxy, socksProxy');
         }
+    }
+    checkAddress(address = undefined) {
+        if (address === undefined) {
+            throw new errors.InvalidAddress(this.id + ' address is undefined');
+        }
+        // check the address is not the same letter like 'aaaaa' nor too short nor has a space
+        const uniqChars = (this.unique(this.stringToCharsArray(address)));
+        const length = uniqChars.length; // py transpiler trick
+        if (length === 1 || address.length < this.minFundingAddressLength || address.indexOf(' ') > -1) {
+            throw new errors.InvalidAddress(this.id + ' address is invalid or has less than ' + this.minFundingAddressLength.toString() + ' characters: "' + address.toString() + '"');
+        }
+        return address;
     }
     findMessageHashes(client, element) {
         const result = [];
@@ -3883,7 +3885,10 @@ class Exchange {
         ];
     }
     getListFromObjectValues(objects, key) {
-        const newArray = this.toArray(objects);
+        let newArray = objects;
+        if (!Array.isArray(objects)) {
+            newArray = this.toArray(objects);
+        }
         const results = [];
         for (let i = 0; i < newArray.length; i++) {
             results.push(newArray[i][key]);
