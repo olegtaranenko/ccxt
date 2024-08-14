@@ -3405,6 +3405,7 @@ class binance extends Exchange {
          * @param {string[]|null} [$params->symbols] unified market $symbols, only used in isolated margin mode
          * @param {boolean} [$params->portfolioMargin] set to true if you would like to fetch the balance for a portfolio margin account
          * @param {string} [$params->subType] 'linear' or 'inverse'
+         * @param {boolean} [$params->useV2] set to true if you want to use obsolete endpoint, where some more additional fields were provided
          * @return {array} a ~@link https://docs.ccxt.com/#/?$id=balance-structure balance structure~
          */
         $this->load_markets();
@@ -3431,7 +3432,8 @@ class binance extends Exchange {
         } elseif ($this->is_linear($type, $subType)) {
             $type = 'linear';
             $useV2 = null;
-            list($useV2, $params) = $this->handle_option_and_params($params, 'fetchBalance', 'useV2', false);
+            $defaultUseV2 = $this->safe_bool($this->options, 'useFapiPrivateV2', false);
+            list($useV2, $params) = $this->handle_option_and_params($params, 'fetchBalance', 'useV2', $defaultUseV2);
             $params = $this->extend($request, $query);
             if (!$useV2) {
                 $response = $this->fapiPrivateV3GetAccount ($params);
@@ -10165,7 +10167,8 @@ class binance extends Exchange {
                 $response = $this->papiGetUmAccount ($params);
             } else {
                 $useV2 = null;
-                list($useV2, $params) = $this->handle_option_and_params($params, 'fetchAccountPositions', 'useV2', false);
+                $defaultUseV2 = $this->safe_bool($this->options, 'useFapiPrivateV2', false);
+                list($useV2, $params) = $this->handle_option_and_params($params, 'fetchAccountPositions', 'useV2', $defaultUseV2);
                 if (!$useV2) {
                     $response = $this->fapiPrivateV3GetAccount ($params);
                 } else {
@@ -10267,6 +10270,7 @@ class binance extends Exchange {
          * @param {array} [$params] extra parameters specific to the exchange API endpoint
          * @param {boolean} [$params->portfolioMargin] set to true if you would like to fetch positions for a portfolio margin account
          * @param {string} [$params->subType] "linear" or "inverse"
+         * @param {boolean} [$params->useV2] set to true if you want to use obsolete endpoint, where some more additional fields were provided
          * @return {array} data on the positions risk
          */
         if ($symbols !== null) {
@@ -10291,7 +10295,8 @@ class binance extends Exchange {
                 $response = $this->papiGetUmPositionRisk ($this->extend($request, $params));
             } else {
                 $useV2 = null;
-                list($useV2, $params) = $this->handle_option_and_params($params, 'fetchPositionsRisk', 'useV2', false);
+                $defaultUseV2 = $this->safe_bool($this->options, 'useFapiPrivateV2', false);
+                list($useV2, $params) = $this->handle_option_and_params($params, 'fetchPositionsRisk', 'useV2', $defaultUseV2);
                 $params = $this->extend($request, $params);
                 if (!$useV2) {
                     $response = $this->fapiPrivateV3GetPositionRisk ($params);

@@ -3368,6 +3368,7 @@ class binance(Exchange, ImplicitAPI):
         :param str[]|None [params.symbols]: unified market symbols, only used in isolated margin mode
         :param boolean [params.portfolioMargin]: set to True if you would like to fetch the balance for a portfolio margin account
         :param str [params.subType]: 'linear' or 'inverse'
+        :param boolean [params.useV2]: set to True if you want to use obsolete endpoint, where some more additional fields were provided
         :returns dict: a `balance structure <https://docs.ccxt.com/#/?id=balance-structure>`
         """
         await self.load_markets()
@@ -3393,7 +3394,8 @@ class binance(Exchange, ImplicitAPI):
         elif self.is_linear(type, subType):
             type = 'linear'
             useV2 = None
-            useV2, params = self.handle_option_and_params(params, 'fetchBalance', 'useV2', False)
+            defaultUseV2 = self.safe_bool(self.options, 'useFapiPrivateV2', False)
+            useV2, params = self.handle_option_and_params(params, 'fetchBalance', 'useV2', defaultUseV2)
             params = self.extend(request, query)
             if not useV2:
                 response = await self.fapiPrivateV3GetAccount(params)
@@ -9682,7 +9684,8 @@ class binance(Exchange, ImplicitAPI):
                 response = await self.papiGetUmAccount(params)
             else:
                 useV2 = None
-                useV2, params = self.handle_option_and_params(params, 'fetchAccountPositions', 'useV2', False)
+                defaultUseV2 = self.safe_bool(self.options, 'useFapiPrivateV2', False)
+                useV2, params = self.handle_option_and_params(params, 'fetchAccountPositions', 'useV2', defaultUseV2)
                 if not useV2:
                     response = await self.fapiPrivateV3GetAccount(params)
                 else:
@@ -9779,6 +9782,7 @@ class binance(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the exchange API endpoint
         :param boolean [params.portfolioMargin]: set to True if you would like to fetch positions for a portfolio margin account
         :param str [params.subType]: "linear" or "inverse"
+        :param boolean [params.useV2]: set to True if you want to use obsolete endpoint, where some more additional fields were provided
         :returns dict: data on the positions risk
         """
         if symbols is not None:
@@ -9801,7 +9805,8 @@ class binance(Exchange, ImplicitAPI):
                 response = await self.papiGetUmPositionRisk(self.extend(request, params))
             else:
                 useV2 = None
-                useV2, params = self.handle_option_and_params(params, 'fetchPositionsRisk', 'useV2', False)
+                defaultUseV2 = self.safe_bool(self.options, 'useFapiPrivateV2', False)
+                useV2, params = self.handle_option_and_params(params, 'fetchPositionsRisk', 'useV2', defaultUseV2)
                 params = self.extend(request, params)
                 if not useV2:
                     response = await self.fapiPrivateV3GetPositionRisk(params)
