@@ -3393,6 +3393,7 @@ export default class binance extends Exchange {
          * @param {string[]|undefined} [params.symbols] unified market symbols, only used in isolated margin mode
          * @param {boolean} [params.portfolioMargin] set to true if you would like to fetch the balance for a portfolio margin account
          * @param {string} [params.subType] 'linear' or 'inverse'
+         * @param {boolean} [params.useV2] set to true if you want to use obsolete endpoint, where some more additional fields were provided
          * @returns {object} a [balance structure]{@link https://docs.ccxt.com/#/?id=balance-structure}
          */
         await this.loadMarkets ();
@@ -3418,7 +3419,15 @@ export default class binance extends Exchange {
             response = await this.papiGetBalance (this.extend (request, query));
         } else if (this.isLinear (type, subType)) {
             type = 'linear';
-            response = await this.fapiPrivateV3GetAccount (this.extend (request, query));
+            let useV2 = undefined;
+            const defaultUseV2 = this.safeBool (this.options, 'useFapiPrivateV2', false);
+            [ useV2, params ] = this.handleOptionAndParams (params, 'fetchBalance', 'useV2', defaultUseV2);
+            params = this.extend (request, query);
+            if (!useV2) {
+                response = await this.fapiPrivateV3GetAccount (params);
+            } else {
+                response = await this.fapiPrivateV2GetAccount (params);
+            }
         } else if (this.isInverse (type, subType)) {
             type = 'inverse';
             response = await this.dapiPrivateGetAccount (this.extend (request, query));
@@ -10217,7 +10226,8 @@ export default class binance extends Exchange {
                 response = await this.papiGetUmAccount (params);
             } else {
                 let useV2 = undefined;
-                [ useV2, params ] = this.handleOptionAndParams (params, 'fetchAccountPositions', 'useV2', false);
+                const defaultUseV2 = this.safeBool (this.options, 'useFapiPrivateV2', false);
+                [ useV2, params ] = this.handleOptionAndParams (params, 'fetchAccountPositions', 'useV2', defaultUseV2);
                 if (!useV2) {
                     response = await this.fapiPrivateV3GetAccount (params);
                 } else {
@@ -10321,6 +10331,7 @@ export default class binance extends Exchange {
          * @param {object} [params] extra parameters specific to the exchange API endpoint
          * @param {boolean} [params.portfolioMargin] set to true if you would like to fetch positions for a portfolio margin account
          * @param {string} [params.subType] "linear" or "inverse"
+         * @param {boolean} [params.useV2] set to true if you want to use obsolete endpoint, where some more additional fields were provided
          * @returns {object} data on the positions risk
          */
         if (symbols !== undefined) {
@@ -10344,7 +10355,15 @@ export default class binance extends Exchange {
             if (isPortfolioMargin) {
                 response = await this.papiGetUmPositionRisk (this.extend (request, params));
             } else {
-                response = await this.fapiPrivateV3GetPositionRisk (this.extend (request, params));
+                let useV2 = undefined;
+                const defaultUseV2 = this.safeBool (this.options, 'useFapiPrivateV2', false);
+                [ useV2, params ] = this.handleOptionAndParams (params, 'fetchPositionsRisk', 'useV2', defaultUseV2);
+                params = this.extend (request, params);
+                if (!useV2) {
+                    response = await this.fapiPrivateV3GetPositionRisk (params);
+                } else {
+                    response = await this.fapiPrivateV2GetPositionRisk (params);
+                }
                 //
                 // [
                 //  {
