@@ -771,6 +771,7 @@ class Exchange {
         if (fetchLeveragesCallback) {
             this.options['fetchLeveragesCallback'] = fetchLeveragesCallback;
         }
+        let cleanupOutside = false;
         let currencies = undefined;
         // only call if exchange API provides endpoint (true), thus avoid emulated versions ('emulated')
         if (this.has['fetchCurrencies'] === true) {
@@ -779,28 +780,36 @@ class Exchange {
                 currencies = await this.fetchCurrencies();
                 const fetchCurrenciesCallback = this.safeValue(params, 'fetchCurrenciesCallback', undefined);
                 if (fetchCurrenciesCallback) {
-                    currencies = fetchCurrenciesCallback(currencies);
-                    this.omit(params, 'fetchCurrenciesCallback');
+                    cleanupOutside = true;
                 }
             }
             else {
                 currencies = currenciesFromOutside;
+                cleanupOutside = true;
+            }
+            if (cleanupOutside) {
                 this.omit(params, 'currenciesFromOutside');
+                this.omit(params, 'fetchCurrenciesCallback');
             }
         }
         let markets;
         const loadFromOutside = this.safeValue(params, 'loadFromOutside', undefined);
         if (!loadFromOutside || reload) {
+            cleanupOutside = false;
             markets = await this.fetchMarkets(params);
             const loadedMarketCallback = this.safeValue(params, 'loadedMarketCallback', undefined);
             if (loadedMarketCallback) {
                 loadedMarketCallback(markets);
-                this.omit(params, 'loadedMarketCallback');
+                cleanupOutside = true;
             }
         }
         else {
             markets = this.fetchMarketsFromOutside(loadFromOutside);
+            cleanupOutside = true;
+        }
+        if (cleanupOutside) {
             this.omit(params, 'loadFromOutside');
+            this.omit(params, 'loadedMarketCallback');
         }
         return this.setMarkets(markets, currencies);
     }
