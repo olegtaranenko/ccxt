@@ -6204,6 +6204,8 @@ export default class bybit extends Exchange {
          * @returns {object} a [transaction structure]{@link https://docs.ccxt.com/#/?id=transaction-structure}
          */
         [tag, params] = this.handleWithdrawTagAndParams(tag, params);
+        let accountType = undefined;
+        [accountType, params] = this.handleOptionAndParams(params, 'withdraw', 'accountType', 'SPOT');
         await this.loadMarkets();
         this.checkAddress(address);
         const currency = this.currency(code);
@@ -6212,6 +6214,7 @@ export default class bybit extends Exchange {
             'amount': this.numberToString(amount),
             'address': address,
             'timestamp': this.milliseconds(),
+            'accountType': accountType,
         };
         if (tag !== undefined) {
             request['tag'] = tag;

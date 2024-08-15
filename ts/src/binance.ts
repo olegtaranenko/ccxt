@@ -10286,6 +10286,7 @@ export default class binance extends Exchange {
          * @param {string[]} [symbols] list of unified market symbols
          * @param {object} [params] extra parameters specific to the exchange API endpoint
          * @param {string} [method] method name to call, "positionRisk", "account" or "option", default is "positionRisk"
+         * @param {bool} [params.useV2] set to true if you want to use the obsolete endpoint, where some more additional fields were provided
          * @returns {object[]} a list of [position structure]{@link https://docs.ccxt.com/#/?id=position-structure}
          */
         let defaultMethod = undefined;
@@ -10453,7 +10454,7 @@ export default class binance extends Exchange {
          * @param {object} [params] extra parameters specific to the exchange API endpoint
          * @param {boolean} [params.portfolioMargin] set to true if you would like to fetch positions for a portfolio margin account
          * @param {string} [params.subType] "linear" or "inverse"
-         * @param {boolean} [params.useV2] set to true if you want to use obsolete endpoint, where some more additional fields were provided
+         * @param {boolean} [params.useV2] set to true if you want to use the obsolete endpoint, where some more additional fields were provided
          * @returns {object} data on the positions risk
          */
         if (symbols !== undefined) {
@@ -10910,7 +10911,7 @@ export default class binance extends Exchange {
         let longLeverage = undefined;
         let shortLeverage = undefined;
         const leverageValue = this.safeInteger (leverage, 'leverage');
-        if (side === 'both') {
+        if ((side === undefined) || (side === 'both')) {
             longLeverage = leverageValue;
             shortLeverage = leverageValue;
         } else if (side === 'long') {
@@ -13284,7 +13285,7 @@ export default class binance extends Exchange {
         } else {
             request['startTime'] = now - msInThirtyDays;
         }
-        const endTime = this.safeString2 (params, 'endTime', 'until');
+        const endTime = this.safeInteger2 (params, 'endTime', 'until');
         if (endTime !== undefined) {
             request['endTime'] = endTime;
         } else {
@@ -13324,6 +13325,9 @@ export default class binance extends Exchange {
             //     }
             //
         } else {
+            if ((request['endTime'] - request['startTime']) > msInThirtyDays) {
+                throw new BadRequest (this.id + ' fetchConvertTradeHistory () the max interval between startTime and endTime is 30 days.');
+            }
             if (limit !== undefined) {
                 request['limit'] = limit;
             }

@@ -5761,6 +5761,8 @@ class bybit(Exchange, ImplicitAPI):
         :returns dict: a `transaction structure <https://docs.ccxt.com/#/?id=transaction-structure>`
         """
         tag, params = self.handle_withdraw_tag_and_params(tag, params)
+        accountType = None
+        accountType, params = self.handle_option_and_params(params, 'withdraw', 'accountType', 'SPOT')
         await self.load_markets()
         self.check_address(address)
         currency = self.currency(code)
@@ -5769,6 +5771,7 @@ class bybit(Exchange, ImplicitAPI):
             'amount': self.number_to_string(amount),
             'address': address,
             'timestamp': self.milliseconds(),
+            'accountType': accountType,
         }
         if tag is not None:
             request['tag'] = tag
