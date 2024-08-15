@@ -43,11 +43,11 @@ use React\EventLoop\Loop;
 
 use Exception;
 
-$version = '4.3.79';
+$version = '4.3.83';
 
 class Exchange extends \ccxt\Exchange {
 
-    const VERSION = '4.3.79';
+    const VERSION = '4.3.83';
 
     public $browser;
     public $marketsLoading = null;
@@ -925,6 +925,19 @@ class Exchange extends \ccxt\Exchange {
         if ($proxyAgentSet && $proxyUrlSet) {
             throw new InvalidProxySettings($this->id . ' you have multiple conflicting proxy settings, please use only one from : proxyUrl, httpProxy, httpsProxy, socksProxy');
         }
+    }
+
+    public function check_address(?string $address = null) {
+        if ($address === null) {
+            throw new InvalidAddress($this->id . ' $address is null');
+        }
+        // check the $address is not the same letter like 'aaaaa' nor too short nor has a space
+        $uniqChars = ($this->unique($this->string_to_chars_array($address)));
+        $length = count($uniqChars); // py transpiler trick
+        if ($length === 1 || strlen($address) < $this->minFundingAddressLength || mb_strpos($address, ' ') > -1) {
+            throw new InvalidAddress($this->id . ' $address is invalid or has less than ' . (string) $this->minFundingAddressLength . ' characters => "' . (string) $address . '"');
+        }
+        return $address;
     }
 
     public function find_message_hashes($client, string $element) {
@@ -3003,7 +3016,10 @@ class Exchange extends \ccxt\Exchange {
     }
 
     public function get_list_from_object_values($objects, int|string $key) {
-        $newArray = $this->to_array($objects);
+        $newArray = $objects;
+        if (gettype($objects) !== 'array' || array_keys($objects) !== array_keys(array_keys($objects))) {
+            $newArray = $this->to_array($objects);
+        }
         $results = array();
         for ($i = 0; $i < count($newArray); $i++) {
             $results[] = $newArray[$i][$key];
