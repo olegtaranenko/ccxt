@@ -203,7 +203,7 @@ class binance extends binance$1 {
          * @param {object} [params] exchange specific parameters for the bitmex api endpoint
          * @returns {object} an array of [liquidation structures]{@link https://github.com/ccxt/ccxt/wiki/Manual#liquidation-structure}
          */
-        return this.watchLiquidationsForSymbols([symbol], since, limit, params);
+        return await this.watchLiquidationsForSymbols([symbol], since, limit, params);
     }
     async watchLiquidationsForSymbols(symbols = undefined, since = undefined, limit = undefined, params = {}) {
         /**
@@ -230,7 +230,7 @@ class binance extends binance$1 {
         else {
             for (let i = 0; i < symbols.length; i++) {
                 const market = this.market(symbols[i]);
-                subscriptionHashes.push(market['id'] + '@forceOrder');
+                subscriptionHashes.push(market['lowercaseId'] + '@forceOrder');
                 messageHashes.push('liquidations::' + symbols[i]);
             }
             streamHash += '::' + symbols.join(',');
@@ -535,6 +535,12 @@ class binance extends binance$1 {
         /**
          * @method
          * @name binance#watchOrderBook
+         * @see https://binance-docs.github.io/apidocs/spot/en/#partial-book-depth-streams
+         * @see https://binance-docs.github.io/apidocs/spot/en/#diff-depth-stream
+         * @see https://binance-docs.github.io/apidocs/futures/en/#partial-book-depth-streams
+         * @see https://binance-docs.github.io/apidocs/futures/en/#diff-book-depth-streams
+         * @see https://binance-docs.github.io/apidocs/delivery/en/#partial-book-depth-streams
+         * @see https://binance-docs.github.io/apidocs/delivery/en/#diff-book-depth-streams
          * @description watches information on open orders with bid (buy) and ask (sell) prices, volumes and other data
          * @param {string} symbol unified symbol of the market to fetch the order book for
          * @param {int} [limit] the maximum amount of order book entries to return
@@ -584,6 +590,12 @@ class binance extends binance$1 {
         /**
          * @method
          * @name binance#watchOrderBookForSymbols
+         * @see https://binance-docs.github.io/apidocs/spot/en/#partial-book-depth-streams
+         * @see https://binance-docs.github.io/apidocs/spot/en/#diff-depth-stream
+         * @see https://binance-docs.github.io/apidocs/futures/en/#partial-book-depth-streams
+         * @see https://binance-docs.github.io/apidocs/futures/en/#diff-book-depth-streams
+         * @see https://binance-docs.github.io/apidocs/delivery/en/#partial-book-depth-streams
+         * @see https://binance-docs.github.io/apidocs/delivery/en/#diff-book-depth-streams
          * @description watches information on open orders with bid (buy) and ask (sell) prices, volumes and other data
          * @param {string[]} symbols unified array of symbols
          * @param {int} [limit] the maximum amount of order book entries to return
@@ -931,10 +943,15 @@ class binance extends binance$1 {
          * @method
          * @name binance#watchTradesForSymbols
          * @description get the list of most recent trades for a list of symbols
+         * @see https://binance-docs.github.io/apidocs/spot/en/#aggregate-trade-streams
+         * @see https://binance-docs.github.io/apidocs/spot/en/#trade-streams
+         * @see https://binance-docs.github.io/apidocs/futures/en/#aggregate-trade-streams
+         * @see https://binance-docs.github.io/apidocs/delivery/en/#aggregate-trade-streams
          * @param {string[]} symbols unified symbol of the market to fetch trades for
          * @param {int} [since] timestamp in ms of the earliest trade to fetch
          * @param {int} [limit] the maximum amount of trades to fetch
          * @param {object} [params] extra parameters specific to the exchange API endpoint
+         * @param {string} [params.name] the name of the method to call, 'trade' or 'aggTrade', default is 'trade'
          * @returns {object[]} a list of [trade structures]{@link https://docs.ccxt.com/#/?id=public-trades}
          */
         await this.loadMarkets();
@@ -947,8 +964,9 @@ class binance extends binance$1 {
             }
             streamHash += '::' + symbols.join(',');
         }
-        const options = this.safeValue(this.options, 'watchTradesForSymbols', {});
-        const name = this.safeString(options, 'name', 'trade');
+        let name = undefined;
+        [name, params] = this.handleOptionAndParams(params, 'watchTradesForSymbols', 'name', 'trade');
+        params = this.omit(params, 'callerMethodName');
         const firstMarket = this.market(symbols[0]);
         let type = firstMarket['type'];
         if (firstMarket['contract']) {
@@ -988,12 +1006,18 @@ class binance extends binance$1 {
          * @method
          * @name binance#watchTrades
          * @description get the list of most recent trades for a particular symbol
+         * @see https://binance-docs.github.io/apidocs/spot/en/#aggregate-trade-streams
+         * @see https://binance-docs.github.io/apidocs/spot/en/#trade-streams
+         * @see https://binance-docs.github.io/apidocs/futures/en/#aggregate-trade-streams
+         * @see https://binance-docs.github.io/apidocs/delivery/en/#aggregate-trade-streams
          * @param {string} symbol unified symbol of the market to fetch trades for
          * @param {int} [since] timestamp in ms of the earliest trade to fetch
          * @param {int} [limit] the maximum amount of trades to fetch
          * @param {object} [params] extra parameters specific to the exchange API endpoint
+         * @param {string} [params.name] the name of the method to call, 'trade' or 'aggTrade', default is 'trade'
          * @returns {object[]} a list of [trade structures]{@link https://docs.ccxt.com/#/?id=public-trades}
          */
+        params['callerMethodName'] = 'watchTrades';
         return await this.watchTradesForSymbols([symbol], since, limit, params);
     }
     parseWsTrade(trade, market = undefined) {
@@ -1193,6 +1217,9 @@ class binance extends binance$1 {
          * @param {object} [params.timezone] if provided, kline intervals are interpreted in that timezone instead of UTC, example '+08:00'
          * @returns {int[][]} A list of candles ordered as timestamp, open, high, low, close, volume
          */
+        await this.loadMarkets();
+        const market = this.market(symbol);
+        symbol = market['symbol'];
         params['callerMethodName'] = 'watchOHLCV';
         const result = await this.watchOHLCVForSymbols([[symbol, timeframe]], since, limit, params);
         return result[symbol][timeframe];
@@ -1243,7 +1270,7 @@ class binance extends binance$1 {
             const suffix = '@+08:00';
             const utcSuffix = shouldUseUTC8 ? suffix : '';
             rawHashes.push(marketId + '@' + klineType + '_' + interval + utcSuffix);
-            messageHashes.push('ohlcv::' + symbolString + '::' + timeframeString);
+            messageHashes.push('ohlcv::' + market['symbol'] + '::' + timeframeString);
         }
         const url = this.urls['api']['ws'][type] + '/' + this.stream(type, 'multipleOHLCV');
         const requestId = this.requestId(url);
@@ -1255,6 +1282,7 @@ class binance extends binance$1 {
         const subscribe = {
             'id': requestId,
         };
+        params = this.omit(params, 'callerMethodName');
         const [symbol, timeframe, candles] = await this.watchMultiple(url, messageHashes, this.extend(request, params), messageHashes, subscribe);
         if (this.newUpdates) {
             limit = candles.getLimit(symbol, limit);
@@ -1463,6 +1491,12 @@ class binance extends binance$1 {
         /**
          * @method
          * @name binance#watchTicker
+         * @see https://binance-docs.github.io/apidocs/spot/en/#individual-symbol-mini-ticker-stream
+         * @see https://binance-docs.github.io/apidocs/spot/en/#individual-symbol-ticker-streams
+         * @see https://binance-docs.github.io/apidocs/futures/en/#all-market-mini-tickers-stream
+         * @see https://binance-docs.github.io/apidocs/futures/en/#individual-symbol-ticker-streams
+         * @see https://binance-docs.github.io/apidocs/delivery/en/#all-market-mini-tickers-stream
+         * @see https://binance-docs.github.io/apidocs/delivery/en/#individual-symbol-ticker-streams
          * @description watches a price ticker, a statistical calculation with the information calculated over the past 24 hours for a specific market
          * @param {string} symbol unified symbol of the market to fetch the ticker for
          * @param {object} [params] extra parameters specific to the exchange API endpoint
@@ -1478,6 +1512,12 @@ class binance extends binance$1 {
         /**
          * @method
          * @name binance#watchTickers
+         * @see https://binance-docs.github.io/apidocs/spot/en/#individual-symbol-mini-ticker-stream
+         * @see https://binance-docs.github.io/apidocs/spot/en/#individual-symbol-ticker-streams
+         * @see https://binance-docs.github.io/apidocs/futures/en/#all-market-mini-tickers-stream
+         * @see https://binance-docs.github.io/apidocs/futures/en/#individual-symbol-ticker-streams
+         * @see https://binance-docs.github.io/apidocs/delivery/en/#all-market-mini-tickers-stream
+         * @see https://binance-docs.github.io/apidocs/delivery/en/#individual-symbol-ticker-streams
          * @description watches a price ticker, a statistical calculation with the information calculated over the past 24 hours for all markets of a specific list
          * @param {string[]} symbols unified symbol of the market to fetch the ticker for
          * @param {object} [params] extra parameters specific to the exchange API endpoint
@@ -1506,6 +1546,8 @@ class binance extends binance$1 {
          * @param {object} [params] extra parameters specific to the exchange API endpoint
          * @returns {object} a [ticker structure]{@link https://docs.ccxt.com/#/?id=ticker-structure}
          */
+        await this.loadMarkets();
+        symbols = this.marketSymbols(symbols, undefined, true, false, true);
         const result = await this.watchMultiTickerHelper('watchBidsAsks', 'bookTicker', symbols, params);
         if (this.newUpdates) {
             return result;
@@ -2027,7 +2069,7 @@ class binance extends binance$1 {
          * @param {string|undefined} [params.type] 'future', 'delivery', 'savings', 'funding', or 'spot'
          * @param {string|undefined} [params.marginMode] 'cross' or 'isolated', for margin trading, uses this.options.defaultMarginMode if not passed, defaults to undefined/None/null
          * @param {string[]|undefined} [params.symbols] unified market symbols, only used in isolated margin mode
-         * @param {string|undefined} [params.method] method to use. Can be account.balance or account.status
+         * @param {string|undefined} [params.method] method to use. Can be account.balance, account.status, v2/account.balance or v2/account.status
          * @returns {object} a [balance structure]{@link https://docs.ccxt.com/#/?id=balance-structure}
          */
         await this.loadMarkets();
@@ -2059,8 +2101,16 @@ class binance extends binance$1 {
         //
         //
         const messageHash = this.safeString(message, 'id');
-        const result = this.safeDict(message, 'result', {});
-        const rawBalance = this.safeList(result, 0, []);
+        let rawBalance = undefined;
+        if (Array.isArray(message['result'])) {
+            // account.balance
+            rawBalance = this.safeList(message, 'result', []);
+        }
+        else {
+            // account.status
+            const result = this.safeDict(message, 'result', {});
+            rawBalance = this.safeList(result, 'assets', []);
+        }
         const parsedBalances = this.parseBalanceCustom(rawBalance);
         client.resolve(parsedBalances, messageHash);
     }
@@ -2137,6 +2187,7 @@ class binance extends binance$1 {
          * @param {string[]} [symbols] list of unified market symbols
          * @param {object} [params] extra parameters specific to the exchange API endpoint
          * @param {boolean} [params.returnRateLimits] set to true to return rate limit informations, defaults to false.
+         * @param {string|undefined} [params.method] method to use. Can be account.position or v2/account.position
          * @returns {object[]} a list of [position structure]{@link https://docs.ccxt.com/#/?id=position-structure}
          */
         await this.loadMarkets();
@@ -2154,9 +2205,11 @@ class binance extends binance$1 {
         let returnRateLimits = false;
         [returnRateLimits, params] = this.handleOptionAndParams(params, 'fetchPositionsWs', 'returnRateLimits', false);
         payload['returnRateLimits'] = returnRateLimits;
+        let method = undefined;
+        [method, params] = this.handleOptionAndParams(params, 'fetchPositionsWs', 'method', 'account.position');
         const message = {
             'id': messageHash,
-            'method': 'account.position',
+            'method': method,
             'params': this.signParams(this.extend(payload, params)),
         };
         const subscription = {
@@ -3254,7 +3307,7 @@ class binance extends binance$1 {
         this.setBalanceCache(client, type, isPortfolioMargin);
         this.setPositionsCache(client, type, symbols, isPortfolioMargin);
         const fetchPositionsSnapshot = this.handleOption('watchPositions', 'fetchPositionsSnapshot', true);
-        const awaitPositionsSnapshot = this.safeBool('watchPositions', 'awaitPositionsSnapshot', true);
+        const awaitPositionsSnapshot = this.handleOption('watchPositions', 'awaitPositionsSnapshot', true);
         const cache = this.safeValue(this.positions, type);
         if (fetchPositionsSnapshot && awaitPositionsSnapshot && cache === undefined) {
             const snapshot = await client.future(type + ':fetchPositionsSnapshot');
