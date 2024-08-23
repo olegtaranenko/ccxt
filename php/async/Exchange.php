@@ -43,11 +43,11 @@ use React\EventLoop\Loop;
 
 use Exception;
 
-$version = '4.3.86';
+$version = '4.3.87';
 
 class Exchange extends \ccxt\Exchange {
 
-    const VERSION = '4.3.86';
+    const VERSION = '4.3.87';
 
     public $browser;
     public $marketsLoading = null;
@@ -5440,7 +5440,7 @@ class Exchange extends \ccxt\Exchange {
                         $errors = 0;
                         $result = $this->array_concat($result, $response);
                         $last = $this->safe_value($response, $responseLength - 1);
-                        $paginationTimestamp = $this->safe_integer($last, 'timestamp') - 1;
+                        $paginationTimestamp = $this->safe_integer($last, 'timestamp') + 1;
                         if (($until !== null) && ($paginationTimestamp >= $until)) {
                             break;
                         }
