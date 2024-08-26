@@ -310,12 +310,13 @@ fetches information on an order made by the user
 
 | Param | Type | Required | Description |
 | --- | --- | --- | --- |
+| id | <code>string</code> | Yes | the order id |
 | symbol | <code>string</code> | Yes | not used by coinbaseexchange fetchOrder |
 | params | <code>object</code> | No | extra parameters specific to the exchange API endpoint |
 
 
 ```javascript
-coinbaseexchange.fetchOrder (symbol[, params])
+coinbaseexchange.fetchOrder (id, symbol[, params])
 ```
 
 

@@ -7212,7 +7212,7 @@ export default class Exchange {
         return reconstructedDate;
     }
 
-    async fetchPositionHistory (symbol: string, since: Int = undefined, limit: Int = undefined, params = {}): Promise<Position> {
+    async fetchPositionHistory (symbol: string, since: Int = undefined, limit: Int = undefined, params = {}): Promise<Position[]> {
         /**
          * @method
          * @name exchange#fetchPositionHistory
@@ -7225,7 +7225,7 @@ export default class Exchange {
          */
         if (this.has['fetchPositionsHistory']) {
             const positions = await this.fetchPositionsHistory ([ symbol ], since, limit, params);
-            return this.safeDict (positions, 0) as Position;
+            return positions as Position[];
         } else {
             throw new NotSupported (this.id + ' fetchPositionHistory () is not supported yet');
         }
