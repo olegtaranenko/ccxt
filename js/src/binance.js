@@ -524,7 +524,7 @@ export default class binance extends Exchange {
                         'capital/deposit/subAddress': 0.1,
                         'capital/deposit/subHisrec': 0.1,
                         'capital/withdraw/address/list': 10,
-                        'capital/withdraw/history': 1800,
+                        'capital/withdraw/history': 2,
                         'convert/assetInfo': 10,
                         'convert/exchangeInfo': 50,
                         'convert/limit/queryOpenOrders': 20.001,

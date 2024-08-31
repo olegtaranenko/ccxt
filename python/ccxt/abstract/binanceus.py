@@ -367,7 +367,7 @@ class ImplicitAPI:
     sapi_get_capital_deposit_subaddress = sapiGetCapitalDepositSubAddress = Entry('capital/deposit/subAddress', 'sapi', 'GET', {'cost': 0.1})
     sapi_get_capital_deposit_subhisrec = sapiGetCapitalDepositSubHisrec = Entry('capital/deposit/subHisrec', 'sapi', 'GET', {'cost': 0.1})
     sapi_get_capital_withdraw_address_list = sapiGetCapitalWithdrawAddressList = Entry('capital/withdraw/address/list', 'sapi', 'GET', {'cost': 10})
-    sapi_get_capital_withdraw_history = sapiGetCapitalWithdrawHistory = Entry('capital/withdraw/history', 'sapi', 'GET', {'cost': 1800})
+    sapi_get_capital_withdraw_history = sapiGetCapitalWithdrawHistory = Entry('capital/withdraw/history', 'sapi', 'GET', {'cost': 2})
     sapi_get_convert_assetinfo = sapiGetConvertAssetInfo = Entry('convert/assetInfo', 'sapi', 'GET', {'cost': 10})
     sapi_get_convert_exchangeinfo = sapiGetConvertExchangeInfo = Entry('convert/exchangeInfo', 'sapi', 'GET', {'cost': 50})
     sapi_get_convert_limit_queryopenorders = sapiGetConvertLimitQueryOpenOrders = Entry('convert/limit/queryOpenOrders', 'sapi', 'GET', {'cost': 20.001})

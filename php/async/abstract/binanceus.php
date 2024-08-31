@@ -1103,7 +1103,7 @@ abstract class binanceus extends \ccxt\async\binance {
         return $this->request('capital/withdraw/address/list', 'sapi', 'GET', $params, null, null, array("cost" => 10));
     }
     public function sapi_get_capital_withdraw_history($params = array()) {
-        return $this->request('capital/withdraw/history', 'sapi', 'GET', $params, null, null, array("cost" => 1800));
+        return $this->request('capital/withdraw/history', 'sapi', 'GET', $params, null, null, array("cost" => 2));
     }
     public function sapi_get_convert_assetinfo($params = array()) {
         return $this->request('convert/assetInfo', 'sapi', 'GET', $params, null, null, array("cost" => 10));
@@ -3407,7 +3407,7 @@ abstract class binanceus extends \ccxt\async\binance {
         return $this->request('capital/withdraw/address/list', 'sapi', 'GET', $params, null, null, array("cost" => 10));
     }
     public function sapiGetCapitalWithdrawHistory($params = array()) {
-        return $this->request('capital/withdraw/history', 'sapi', 'GET', $params, null, null, array("cost" => 1800));
+        return $this->request('capital/withdraw/history', 'sapi', 'GET', $params, null, null, array("cost" => 2));
     }
     public function sapiGetConvertAssetInfo($params = array()) {
         return $this->request('convert/assetInfo', 'sapi', 'GET', $params, null, null, array("cost" => 10));
