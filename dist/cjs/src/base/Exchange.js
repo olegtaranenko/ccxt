@@ -780,6 +780,7 @@ class Exchange {
                 currencies = await this.fetchCurrencies();
                 const fetchCurrenciesCallback = this.safeValue(params, 'fetchCurrenciesCallback', undefined);
                 if (fetchCurrenciesCallback) {
+                    currencies = fetchCurrenciesCallback(currencies);
                     cleanupOutside = true;
                 }
             }
