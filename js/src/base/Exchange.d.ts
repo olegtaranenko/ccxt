@@ -549,7 +549,6 @@ export default class Exchange {
             fetchOrdersWs: any;
             fetchOrderTrades: any;
             fetchOrderWs: any;
-            fetchPermissions: any;
             fetchPosition: any;
             fetchPositionHistory: any;
             fetchPositionMode: any;
@@ -916,7 +915,6 @@ export default class Exchange {
     editLimitOrder(id: string, symbol: string, side: OrderSide, amount: number, price?: Num, params?: {}): Promise<Order>;
     editOrder(id: string, symbol: string, type: OrderType, side: OrderSide, amount?: Num, price?: Num, params?: {}): Promise<Order>;
     editOrderWs(id: string, symbol: string, type: OrderType, side: OrderSide, amount?: Num, price?: Num, params?: {}): Promise<Order>;
-    fetchPermissions(params?: {}): Promise<{}>;
     fetchPosition(symbol: string, params?: {}): Promise<Position>;
     fetchPositionWs(symbol: string, params?: {}): Promise<Position[]>;
     watchPosition(symbol?: Str, params?: {}): Promise<Position>;

@@ -1919,7 +1919,6 @@ export default class Exchange {
                 'fetchOrdersWs': undefined,
                 'fetchOrderTrades': undefined,
                 'fetchOrderWs': undefined,
-                'fetchPermissions': undefined,
                 'fetchPosition': undefined,
                 'fetchPositionHistory': undefined,
                 'fetchPositionMode': undefined,
@@ -4600,10 +4599,6 @@ export default class Exchange {
     async editOrderWs (id: string, symbol: string, type: OrderType, side: OrderSide, amount: Num = undefined, price: Num = undefined, params = {}): Promise<Order> {
         await this.cancelOrderWs (id, symbol);
         return await this.createOrderWs (symbol, type, side, amount, price, params);
-    }
-
-    async fetchPermissions (params = {}): Promise<{}> {
-        throw new NotSupported (this.id + ' fetchPermissions() is not supported yet');
     }
 
     async fetchPosition (symbol: string, params = {}): Promise<Position> {

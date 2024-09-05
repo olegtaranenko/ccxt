@@ -63,7 +63,6 @@
 	- [gemini](exchanges/gemini.md)
 	- [hashkey](exchanges/hashkey.md)
 	- [hitbtc](exchanges/hitbtc.md)
-	- [hitbtc3](exchanges/hitbtc3.md)
 	- [hollaex](exchanges/hollaex.md)
 	- [huobi](exchanges/huobi.md)
 	- [huobijp](exchanges/huobijp.md)
