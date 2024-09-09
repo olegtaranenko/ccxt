@@ -10,7 +10,6 @@ use ccxt\ExchangeError;
 use ccxt\AuthenticationError;
 use ccxt\ArgumentsRequired;
 use ccxt\BadRequest;
-use ccxt\UnsubscribeError;
 use React\Async;
 use React\Promise;
 use React\Promise\PromiseInterface;
@@ -652,6 +651,60 @@ class bybit extends \ccxt\async\bybit {
         }) ();
     }
 
+    public function un_watch_ohlcv_for_symbols(array $symbolsAndTimeframes, $params = array ()) {
+        return Async\async(function () use ($symbolsAndTimeframes, $params) {
+            /**
+             * unWatches historical candlestick $data containing the open, high, low, and close price, and the volume of a $market
+             * @see https://bybit-exchange.github.io/docs/v5/websocket/public/kline
+             * @see https://bybit-exchange.github.io/docs/v5/websocket/public/etp-kline
+             * @param {string[][]} $symbolsAndTimeframes array of arrays containing unified $symbols and timeframes to fetch OHLCV $data for, example [['BTC/USDT', '1m'], ['LTC/USDT', '5m']]
+             * @param {array} [$params] extra parameters specific to the exchange API endpoint
+             * @return {array} A list of candles ordered, open, high, low, close, volume
+             */
+            Async\await($this->load_markets());
+            $symbols = $this->get_list_from_object_values($symbolsAndTimeframes, 0);
+            $marketSymbols = $this->market_symbols($symbols, null, false, true, true);
+            $firstSymbol = $marketSymbols[0];
+            $url = Async\await($this->get_url_by_market_type($firstSymbol, false, 'watchOHLCVForSymbols', $params));
+            $rawHashes = array();
+            $subMessageHashes = array();
+            $messageHashes = array();
+            for ($i = 0; $i < count($symbolsAndTimeframes); $i++) {
+                $data = $symbolsAndTimeframes[$i];
+                $symbolString = $this->safe_string($data, 0);
+                $market = $this->market($symbolString);
+                $symbolString = $market['symbol'];
+                $unfiedTimeframe = $this->safe_string($data, 1);
+                $timeframeId = $this->safe_string($this->timeframes, $unfiedTimeframe, $unfiedTimeframe);
+                $rawHashes[] = 'kline.' . $timeframeId . '.' . $market['id'];
+                $subMessageHashes[] = 'ohlcv::' . $symbolString . '::' . $unfiedTimeframe;
+                $messageHashes[] = 'unsubscribe::ohlcv::' . $symbolString . '::' . $unfiedTimeframe;
+            }
+            $subExtension = array(
+                'symbolsAndTimeframes' => $symbolsAndTimeframes,
+            );
+            return Async\await($this->un_watch_topics($url, 'ohlcv', $symbols, $messageHashes, $subMessageHashes, $rawHashes, $params, $subExtension));
+        }) ();
+    }
+
+    public function un_watch_ohlcv(string $symbol, $timeframe = '1m', $params = array ()): PromiseInterface {
+        return Async\async(function () use ($symbol, $timeframe, $params) {
+            /**
+             * unWatches historical candlestick data containing the open, high, low, and close price, and the volume of a market
+             * @see https://bybit-exchange.github.io/docs/v5/websocket/public/kline
+             * @see https://bybit-exchange.github.io/docs/v5/websocket/public/etp-kline
+             * @param {string} $symbol unified $symbol of the market to fetch OHLCV data for
+             * @param {string} $timeframe the length of time each candle represents
+             * @param {int} [since] timestamp in ms of the earliest candle to fetch
+             * @param {int} [limit] the maximum amount of candles to fetch
+             * @param {array} [$params] extra parameters specific to the exchange API endpoint
+             * @return {int[][]} A list of candles ordered, open, high, low, close, volume
+             */
+            $params['callerMethodName'] = 'watchOHLCV';
+            return Async\await($this->un_watch_ohlcv_for_symbols(array( array( $symbol, $timeframe ) ), $params));
+        }) ();
+    }
+
     public function handle_ohlcv(Client $client, $message) {
         //
         //     {
@@ -990,7 +1043,7 @@ class bybit extends \ccxt\async\bybit {
                 $messageHashes[] = $messageHash;
                 $subMessageHashes[] = 'trade:' . $symbol;
             }
-            return Async\await($this->un_watch_topics($url, 'trade', $symbols, $messageHashes, $subMessageHashes, $topics, $params));
+            return Async\await($this->un_watch_topics($url, 'trades', $symbols, $messageHashes, $subMessageHashes, $topics, $params));
         }) ();
     }
 
@@ -2183,8 +2236,8 @@ class bybit extends \ccxt\async\bybit {
         }) ();
     }
 
-    public function un_watch_topics(string $url, string $topic, array $symbols, array $messageHashes, array $subMessageHashes, $topics, $params = array ()) {
-        return Async\async(function () use ($url, $topic, $symbols, $messageHashes, $subMessageHashes, $topics, $params) {
+    public function un_watch_topics(string $url, string $topic, array $symbols, array $messageHashes, array $subMessageHashes, $topics, $params = array (), $subExtension = array ()) {
+        return Async\async(function () use ($url, $topic, $symbols, $messageHashes, $subMessageHashes, $topics, $params, $subExtension) {
             $reqId = $this->request_id();
             $request = array(
                 'op' => 'unsubscribe',
@@ -2199,7 +2252,7 @@ class bybit extends \ccxt\async\bybit {
                 'symbols' => $symbols,
             );
             $message = $this->extend($request, $params);
-            return Async\await($this->watch_multiple($url, $messageHashes, $message, $messageHashes, $subscription));
+            return Async\await($this->watch_multiple($url, $messageHashes, $message, $messageHashes, $this->extend($subscription, $subExtension)));
         }) ();
     }
 
@@ -2480,51 +2533,11 @@ class bybit extends \ccxt\async\bybit {
                 for ($j = 0; $j < count($messageHashes); $j++) {
                     $unsubHash = $messageHashes[$j];
                     $subHash = $subMessageHashes[$j];
-                    if (is_array($client->subscriptions) && array_key_exists($unsubHash, $client->subscriptions)) {
-                        unset($client->subscriptions[$unsubHash]);
-                    }
-                    if (is_array($client->subscriptions) && array_key_exists($subHash, $client->subscriptions)) {
-                        unset($client->subscriptions[$subHash]);
-                    }
-                    $error = new UnsubscribeError ($this->id . ' ' . $messageHash);
-                    $client->reject ($error, $subHash);
-                    $client->resolve (true, $unsubHash);
-                    $this->clean_cache($subscription);
+                    $this->clean_unsubscription($client, $subHash, $unsubHash);
                 }
+                $this->clean_cache($subscription);
             }
         }
         return $message;
-    }
-
-    public function clean_cache(array $subscription) {
-        $topic = $this->safe_string($subscription, 'topic');
-        $symbols = $this->safe_list($subscription, 'symbols', array());
-        $symbolsLength = count($symbols);
-        if ($symbolsLength > 0) {
-            for ($i = 0; $i < count($symbols); $i++) {
-                $symbol = $symbols[$i];
-                if ($topic === 'trade') {
-                    unset($this->trades[$symbol]);
-                } elseif ($topic === 'orderbook') {
-                    unset($this->orderbooks[$symbol]);
-                } elseif ($topic === 'ticker') {
-                    unset($this->tickers[$symbol]);
-                }
-            }
-        } else {
-            if ($topic === 'myTrades') {
-                // don't reset $this->myTrades directly here
-                // because in c# we need to use a different object
-                $keys = is_array($this->myTrades) ? array_keys($this->myTrades) : array();
-                for ($i = 0; $i < count($keys); $i++) {
-                    unset($this->myTrades[$keys[$i]]);
-                }
-            } elseif ($topic === 'orders') {
-                $orderSymbols = is_array($this->orders) ? array_keys($this->orders) : array();
-                for ($i = 0; $i < count($orderSymbols); $i++) {
-                    unset($this->orders[$orderSymbols[$i]]);
-                }
-            }
-        }
     }
 }

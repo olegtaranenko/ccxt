@@ -645,6 +645,7 @@ class kucoin(Exchange, ImplicitAPI):
                 'KALT': 'ALT',  # ALTLAYER
             },
             'options': {
+                'hf': False,
                 'version': 'v1',
                 'symbolSeparator': '-',
                 'fetchMyTradesMethod': 'private_get_fills',
@@ -1228,9 +1229,8 @@ class kucoin(Exchange, ImplicitAPI):
             status: Int = self.safe_integer(data, 'status')
             self.options['hfMigrated'] = (status == 2)
 
-    async def handle_hf_and_params(self, params={}):
-        await self.load_migration_status()
-        migrated: Bool = self.safe_bool(self.options, 'hfMigrated')
+    def handle_hf_and_params(self, params={}):
+        migrated: Bool = self.safe_bool_2(self.options, 'hfMigrated', 'hf', False)
         loadedHf: Bool = None
         if migrated is not None:
             if migrated:
@@ -2029,6 +2029,7 @@ class kucoin(Exchange, ImplicitAPI):
         :see: https://docs.kucoin.com/spot-hf/#place-hf-order
         :see: https://www.kucoin.com/docs/rest/spot-trading/orders/place-order-test
         :see: https://www.kucoin.com/docs/rest/margin-trading/orders/place-margin-order-test
+        :see: https://www.kucoin.com/docs/rest/spot-trading/spot-hf-trade-pro-account/sync-place-hf-order
         :param str symbol: Unified CCXT market symbol
         :param str type: 'limit' or 'market'
         :param str side: 'buy' or 'sell'
@@ -2059,6 +2060,7 @@ class kucoin(Exchange, ImplicitAPI):
         :param bool [params.autoBorrow]: False,  # The system will first borrow you funds at the optimal interest rate and then place an order for you
         :param bool [params.hf]: False,  # True for hf order
         :param bool [params.test]: set to True to test an order, no order will be created but the request will be validated
+        :param bool [params.sync]: set to True to use the hf sync call
         :returns dict: an `order structure <https://docs.ccxt.com/#/?id=order-structure>`
         """
         await self.load_markets()
@@ -2066,7 +2068,9 @@ class kucoin(Exchange, ImplicitAPI):
         testOrder = self.safe_bool(params, 'test', False)
         params = self.omit(params, 'test')
         hf = None
-        hf, params = await self.handle_hf_and_params(params)
+        hf, params = self.handle_hf_and_params(params)
+        useSync = False
+        useSync, params = self.handle_option_and_params(params, 'createOrder', 'sync', False)
         triggerPrice, stopLossPrice, takeProfitPrice = self.handle_trigger_prices(params)
         tradeType = self.safe_string(params, 'tradeType')  # keep it for backward compatibility
         isTriggerOrder = (triggerPrice or stopLossPrice or takeProfitPrice)
@@ -2087,6 +2091,8 @@ class kucoin(Exchange, ImplicitAPI):
             response = await self.privatePostStopOrder(orderRequest)
         elif isMarginOrder:
             response = await self.privatePostMarginOrder(orderRequest)
+        elif useSync:
+            response = await self.privatePostHfOrdersSync(orderRequest)
         elif hf:
             response = await self.privatePostHfOrders(orderRequest)
         else:
@@ -2145,9 +2151,11 @@ class kucoin(Exchange, ImplicitAPI):
         create a list of trade orders
         :see: https://www.kucoin.com/docs/rest/spot-trading/orders/place-multiple-orders
         :see: https://www.kucoin.com/docs/rest/spot-trading/spot-hf-trade-pro-account/place-multiple-hf-orders
+        :see: https://www.kucoin.com/docs/rest/spot-trading/spot-hf-trade-pro-account/sync-place-multiple-hf-orders
         :param Array orders: list of orders to create, each object should contain the parameters required by createOrder, namely symbol, type, side, amount, price and params
         :param dict [params]:  extra parameters specific to the exchange API endpoint
         :param bool [params.hf]: False,  # True for hf orders
+        :param bool [params.sync]: False,  # True to use the hf sync call
         :returns dict: an `order structure <https://docs.ccxt.com/#/?id=order-structure>`
         """
         await self.load_markets()
@@ -2176,9 +2184,13 @@ class kucoin(Exchange, ImplicitAPI):
             'orderList': ordersRequests,
         }
         hf = None
-        hf, params = await self.handle_hf_and_params(params)
+        hf, params = self.handle_hf_and_params(params)
+        useSync = False
+        useSync, params = self.handle_option_and_params(params, 'createOrders', 'sync', False)
         response = None
-        if hf:
+        if useSync:
+            response = await self.privatePostHfOrdersMultiSync(self.extend(request, params))
+        elif hf:
             response = await self.privatePostHfOrdersMulti(self.extend(request, params))
         else:
             response = await self.privatePostOrdersMulti(self.extend(request, params))
@@ -2329,11 +2341,14 @@ class kucoin(Exchange, ImplicitAPI):
         :see: https://docs.kucoin.com/spot#cancel-single-order-by-clientoid-2
         :see: https://docs.kucoin.com/spot-hf/#cancel-orders-by-orderid
         :see: https://docs.kucoin.com/spot-hf/#cancel-order-by-clientoid
+        :see: https://www.kucoin.com/docs/rest/spot-trading/spot-hf-trade-pro-account/sync-cancel-hf-order-by-orderid
+        :see: https://www.kucoin.com/docs/rest/spot-trading/spot-hf-trade-pro-account/sync-cancel-hf-order-by-clientoid
         :param str id: order id
         :param str symbol: unified symbol of the market the order was made in
         :param dict [params]: extra parameters specific to the exchange API endpoint
         :param bool [params.stop]: True if cancelling a stop order
         :param bool [params.hf]: False,  # True for hf order
+        :param bool [params.sync]: False,  # True to use the hf sync call
         :returns: Response from the exchange
         """
         await self.load_markets()
@@ -2341,8 +2356,10 @@ class kucoin(Exchange, ImplicitAPI):
         clientOrderId = self.safe_string_2(params, 'clientOid', 'clientOrderId')
         stop = self.safe_bool_2(params, 'stop', 'trigger', False)
         hf = None
-        hf, params = await self.handle_hf_and_params(params)
-        if hf:
+        hf, params = self.handle_hf_and_params(params)
+        useSync = False
+        useSync, params = self.handle_option_and_params(params, 'cancelOrder', 'sync', False)
+        if hf or useSync:
             if symbol is None:
                 raise ArgumentsRequired(self.id + ' cancelOrder() requires a symbol parameter for hf orders')
             market = self.market(symbol)
@@ -2362,6 +2379,8 @@ class kucoin(Exchange, ImplicitAPI):
                 #        }
                 #    }
                 #
+            elif useSync:
+                response = await self.privateDeleteHfOrdersSyncClientOrderClientOid(self.extend(request, params))
             elif hf:
                 response = await self.privateDeleteHfOrdersClientOrderClientOid(self.extend(request, params))
                 #
@@ -2396,6 +2415,8 @@ class kucoin(Exchange, ImplicitAPI):
                 #        data: {cancelledOrderIds: ['vs8lgpiuaco91qk8003vebu9']}
                 #    }
                 #
+            elif useSync:
+                response = await self.privateDeleteHfOrdersSyncOrderId(self.extend(request, params))
             elif hf:
                 response = await self.privateDeleteHfOrdersOrderId(self.extend(request, params))
                 #
@@ -2443,7 +2464,7 @@ class kucoin(Exchange, ImplicitAPI):
         request: dict = {}
         stop = self.safe_bool(params, 'stop', False)
         hf = None
-        hf, params = await self.handle_hf_and_params(params)
+        hf, params = self.handle_hf_and_params(params)
         params = self.omit(params, 'stop')
         marginMode, query = self.handle_margin_mode_and_params('cancelAllOrders', params)
         if symbol is not None:
@@ -2492,7 +2513,7 @@ class kucoin(Exchange, ImplicitAPI):
         until = self.safe_integer(params, 'until')
         stop = self.safe_bool_2(params, 'stop', 'trigger', False)
         hf = None
-        hf, params = await self.handle_hf_and_params(params)
+        hf, params = self.handle_hf_and_params(params)
         if hf and (symbol is None):
             raise ArgumentsRequired(self.id + ' fetchOrdersByStatus() requires a symbol parameter for hf orders')
         params = self.omit(params, ['stop', 'trigger', 'till', 'until'])
@@ -2654,7 +2675,7 @@ class kucoin(Exchange, ImplicitAPI):
         clientOrderId = self.safe_string_2(params, 'clientOid', 'clientOrderId')
         stop = self.safe_bool_2(params, 'stop', 'trigger', False)
         hf = None
-        hf, params = await self.handle_hf_and_params(params)
+        hf, params = self.handle_hf_and_params(params)
         market = None
         if symbol is not None:
             market = self.market(symbol)
@@ -2905,7 +2926,7 @@ class kucoin(Exchange, ImplicitAPI):
             return await self.fetch_paginated_call_dynamic('fetchMyTrades', symbol, since, limit, params)
         request: dict = {}
         hf = None
-        hf, params = await self.handle_hf_and_params(params)
+        hf, params = self.handle_hf_and_params(params)
         if hf and symbol is None:
             raise ArgumentsRequired(self.id + ' fetchMyTrades() requires a symbol parameter for hf orders')
         market = None
@@ -3580,8 +3601,8 @@ class kucoin(Exchange, ImplicitAPI):
         type = self.safe_string(accountsByType, requestedType, requestedType)
         params = self.omit(params, 'type')
         hf = None
-        hf, params = await self.handle_hf_and_params(params)
-        if hf:
+        hf, params = self.handle_hf_and_params(params)
+        if hf and (type != 'main'):
             type = 'trade_hf'
         marginMode, query = self.handle_margin_mode_and_params('fetchBalance', params)
         response = None
@@ -4009,7 +4030,7 @@ class kucoin(Exchange, ImplicitAPI):
         paginate = False
         paginate, params = self.handle_option_and_params(params, 'fetchLedger', 'paginate')
         hf = None
-        hf, params = await self.handle_hf_and_params(params)
+        hf, params = self.handle_hf_and_params(params)
         if paginate:
             return await self.fetch_paginated_call_dynamic('fetchLedger', code, since, limit, params)
         request: dict = {
