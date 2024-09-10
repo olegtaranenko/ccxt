@@ -2944,6 +2944,10 @@ export default class Exchange {
             'lowercaseId': undefined,
             'maker': undefined,
             'margin': undefined,
+            'marginModes': {
+                'cross': undefined,
+                'isolated': undefined,
+            },
             'option': undefined,
             'optionType': undefined,
             'precision': {

@@ -35,6 +35,10 @@ export interface TradingFeeInterface {
     tierBased: Bool;
 }
 export declare type Fee = FeeInterface | undefined;
+export interface MarketMarginModes {
+    isolated: boolean;
+    cross: boolean;
+}
 export interface MarketInterface {
     active: Bool;
     base: Str;
@@ -63,6 +67,7 @@ export interface MarketInterface {
         cross: boolean;
         isolated: boolean;
     };
+    marginModes?: MarketMarginModes;
     numericId?: Num;
     option: boolean;
     optionType: Str;

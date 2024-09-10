@@ -3425,6 +3425,10 @@ class Exchange {
             'lowercaseId' => null,
             'maker' => null,
             'margin' => null,
+            'marginModes' => array(
+                'cross' => null,
+                'isolated' => null,
+            ),
             'option' => null,
             'optionType' => null,
             'precision' => array(

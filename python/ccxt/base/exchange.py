@@ -2781,6 +2781,10 @@ class Exchange(object):
             'lowercaseId': None,
             'maker': None,
             'margin': None,
+            'marginModes': {
+                'cross': None,
+                'isolated': None,
+            },
             'option': None,
             'optionType': None,
             'precision': {
