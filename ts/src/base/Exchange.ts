@@ -207,6 +207,7 @@ const {
     safeValue2,
     safeValueN,
     seconds,
+    selfIsDefined,
     SIGNIFICANT_DIGITS,
     sleep,
     sortBy,
@@ -1010,7 +1011,7 @@ export default class Exchange {
             } else {
                 this.AbortError = DOMException;
                 this.FetchError = TypeError;
-                this.fetchImplementation = self.fetch;
+                this.fetchImplementation = (selfIsDefined()) ? self.fetch : fetch;
             }
         }
         // fetchImplementation cannot be called on this. in browsers:
