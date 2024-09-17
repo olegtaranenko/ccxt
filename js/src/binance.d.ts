@@ -1,5 +1,5 @@
 import Exchange from './abstract/binance.js';
-import type { Balances, Conversion, CrossBorrowRate, Currencies, Currency, Dict, FundingRateHistory, Greeks, int, Int, IsolatedBorrowRate, IsolatedBorrowRates, Leverage, Leverages, LeverageTier, LeverageTiers, Liquidation, MarginMode, MarginModes, MarginModification, Market, MarketInterface, Num, OHLCV, OpenInterest, Option, Order, OrderBook, OrderRequest, OrderSide, OrderType, Str, Strings, Ticker, Tickers, Trade, TradingFeeInterface, TradingFees, Transaction, TransferEntry } from './base/types.js';
+import type { Balances, Conversion, CrossBorrowRate, Currencies, Currency, Dict, FundingRateHistory, Greeks, int, Int, IsolatedBorrowRate, IsolatedBorrowRates, LedgerEntry, Leverage, Leverages, LeverageTier, LeverageTiers, Liquidation, MarginMode, MarginModes, MarginModification, Market, MarketInterface, Num, OHLCV, OpenInterest, Option, Order, OrderBook, OrderRequest, OrderSide, OrderType, Str, Strings, Ticker, Tickers, Trade, TradingFeeInterface, TradingFees, Transaction, TransferEntry } from './base/types.js';
 /**
  * @class binance
  * @augments Exchange
@@ -246,25 +246,9 @@ export default class binance extends Exchange {
         datetime: string;
     };
     parseSettlements(settlements: any, market: any): any[];
-    fetchLedgerEntry(id: string, code?: Str, params?: {}): Promise<any>;
-    fetchLedger(code?: Str, since?: Int, limit?: Int, params?: {}): Promise<any>;
-    parseLedgerEntry(item: Dict, currency?: Currency): {
-        account: any;
-        after: any;
-        amount: number;
-        before: any;
-        currency: string;
-        datetime: string;
-        direction: any;
-        fee: any;
-        id: string;
-        info: Dict;
-        referenceAccount: any;
-        referenceId: string;
-        status: any;
-        timestamp: number;
-        type: string;
-    };
+    fetchLedgerEntry(id: string, code?: Str, params?: {}): Promise<LedgerEntry>;
+    fetchLedger(code?: Str, since?: Int, limit?: Int, params?: {}): Promise<LedgerEntry[]>;
+    parseLedgerEntry(item: Dict, currency?: Currency): LedgerEntry;
     parseLedgerEntryType(type: any): string;
     sign(path: any, api?: string, method?: string, params?: {}, headers?: any, body?: any): {
         url: any;

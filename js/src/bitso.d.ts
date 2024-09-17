@@ -1,30 +1,14 @@
 import Exchange from './abstract/bitso.js';
-import type { Balances, Currency, Dict, Int, Market, Num, OHLCV, Order, OrderBook, OrderSide, OrderType, Str, Strings, Ticker, Trade, TradingFees, Transaction, int } from './base/types.js';
+import type { Balances, Currency, Dict, Int, Market, Num, OHLCV, Order, OrderBook, OrderSide, OrderType, Str, Strings, Ticker, Trade, TradingFees, Transaction, int, LedgerEntry } from './base/types.js';
 /**
  * @class bitso
  * @augments Exchange
  */
 export default class bitso extends Exchange {
     describe(): any;
-    fetchLedger(code?: Str, since?: Int, limit?: Int, params?: {}): Promise<any>;
+    fetchLedger(code?: Str, since?: Int, limit?: Int, params?: {}): Promise<LedgerEntry[]>;
     parseLedgerEntryType(type: any): string;
-    parseLedgerEntry(item: Dict, currency?: Currency): {
-        account: string;
-        after: number;
-        amount: number;
-        before: number;
-        currency: string;
-        datetime: string;
-        direction: string;
-        fee: any;
-        id: string;
-        info: import("./base/types.js").Dictionary<any>;
-        referenceAccount: string;
-        referenceId: string;
-        status: string;
-        timestamp: number;
-        type: string;
-    };
+    parseLedgerEntry(item: Dict, currency?: Currency): LedgerEntry;
     fetchMarkets(params?: {}): Promise<Market[]>;
     parseBalance(response: any): Balances;
     fetchBalance(params?: {}): Promise<Balances>;
