@@ -2196,6 +2196,7 @@ export default class binance extends Exchange {
                 'defaultTimeInForce': 'GTC', // 'GTC' = Good To Cancel (default), 'IOC' = Immediate Or Cancel
                 'defaultType': 'spot', // 'spot', 'future', 'margin', 'delivery', 'option'
                 'fetchCurrencies': true, // this is a private call and it requires API keys
+                'fetchMargins': true,
                 'fetchMarkets': [
                     'inverse', // allows CORS in browsers
                     'linear', // allows CORS in browsers
@@ -2967,13 +2968,12 @@ export default class binance extends Exchange {
             }
             fetchMarkets.push (type);
         }
-        let fetchMargins = false;
+        const fetchMargins = this.safeBool (this.options, 'fetchMargins', false);
         for (let i = 0; i < fetchMarkets.length; i++) {
             const marketType = fetchMarkets[i];
             if (marketType === 'spot') {
                 promisesRaw.push (this.publicGetExchangeInfo (params));
-                if (this.checkRequiredCredentials (false) && !sandboxMode) {
-                    fetchMargins = true;
+                if (fetchMargins && this.checkRequiredCredentials (false) && !sandboxMode) {
                     promisesRaw.push (this.sapiGetMarginAllPairs (params));
                     promisesRaw.push (this.sapiGetMarginIsolatedAllPairs (params));
                 }

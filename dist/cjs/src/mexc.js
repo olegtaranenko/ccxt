@@ -89,7 +89,7 @@ class mexc extends mexc$1 {
                 'fetchOrderBooks': undefined,
                 'fetchOrders': true,
                 'fetchOrderTrades': true,
-                'fetchPosition': true,
+                'fetchPosition': 'emulated',
                 'fetchPositionHistory': 'emulated',
                 'fetchPositionMode': true,
                 'fetchPositions': true,
@@ -2914,6 +2914,9 @@ class mexc extends mexc$1 {
          * @method
          * @name mexc#cancelOrder
          * @description cancels an open order
+         * @see https://mexcdevelop.github.io/apidocs/spot_v3_en/#cancel-order
+         * @see https://mexcdevelop.github.io/apidocs/contract_v1_en/#cancel-the-order-under-maintenance
+         * @see https://mexcdevelop.github.io/apidocs/contract_v1_en/#cancel-the-stop-limit-trigger-order-under-maintenance
          * @param {string} id order id
          * @param {string} symbol unified symbol of the market the order was made in
          * @param {object} [params] extra parameters specific to the exchange API endpoint
@@ -3030,6 +3033,7 @@ class mexc extends mexc$1 {
          * @method
          * @name mexc#cancelOrders
          * @description cancel multiple orders
+         * @see https://mexcdevelop.github.io/apidocs/contract_v1_en/#cancel-the-order-under-maintenance
          * @param {string[]} ids order ids
          * @param {string} symbol unified market symbol, default is undefined
          * @param {object} [params] extra parameters specific to the exchange API endpoint
@@ -3065,6 +3069,9 @@ class mexc extends mexc$1 {
          * @method
          * @name mexc#cancelAllOrders
          * @description cancel all open orders
+         * @see https://mexcdevelop.github.io/apidocs/spot_v3_en/#cancel-all-open-orders-on-a-symbol
+         * @see https://mexcdevelop.github.io/apidocs/contract_v1_en/#cancel-all-orders-under-a-contract-under-maintenance
+         * @see https://mexcdevelop.github.io/apidocs/contract_v1_en/#cancel-all-trigger-orders-under-maintenance
          * @param {string} symbol unified market symbol, only orders in the market of this symbol are cancelled when symbol is not undefined
          * @param {object} [params] extra parameters specific to the exchange API endpoint
          * @param {string} [params.marginMode] only 'isolated' is supported for spot-margin trading
@@ -3468,6 +3475,8 @@ class mexc extends mexc$1 {
          * @method
          * @name mexc#fetchAccounts
          * @description fetch all the accounts associated with a profile
+         * @see https://mexcdevelop.github.io/apidocs/spot_v3_en/#account-information
+         * @see https://mexcdevelop.github.io/apidocs/contract_v1_en/#get-all-informations-of-user-39-s-asset
          * @param {object} [params] extra parameters specific to the exchange API endpoint
          * @returns {object} a dictionary of [account structures]{@link https://docs.ccxt.com/#/?id=account-structure} indexed by the account type
          */
@@ -3495,6 +3504,8 @@ class mexc extends mexc$1 {
          * @method
          * @name mexc#fetchTradingFees
          * @description fetch the trading fees for multiple markets
+         * @see https://mexcdevelop.github.io/apidocs/spot_v3_en/#account-information
+         * @see https://mexcdevelop.github.io/apidocs/contract_v1_en/#get-all-informations-of-user-39-s-asset
          * @param {object} [params] extra parameters specific to the exchange API endpoint
          * @returns {object} a dictionary of [fee structures]{@link https://docs.ccxt.com/#/?id=fee-structure} indexed by market symbols
          */
@@ -3780,6 +3791,8 @@ class mexc extends mexc$1 {
          * @method
          * @name mexc#fetchMyTrades
          * @description fetch all trades made by the user
+         * @see https://mexcdevelop.github.io/apidocs/spot_v3_en/#account-trade-list
+         * @see https://mexcdevelop.github.io/apidocs/contract_v1_en/#get-all-transaction-details-of-the-user-s-order
          * @param {string} symbol unified market symbol
          * @param {int} [since] the earliest time in ms to fetch trades for
          * @param {int} [limit] the maximum number of trades structures to retrieve
@@ -3870,6 +3883,8 @@ class mexc extends mexc$1 {
          * @method
          * @name mexc#fetchOrderTrades
          * @description fetch all the trades made from a single order
+         * @see https://mexcdevelop.github.io/apidocs/spot_v3_en/#account-trade-list
+         * @see https://mexcdevelop.github.io/apidocs/contract_v1_en/#query-the-order-based-on-the-order-number
          * @param {string} id order id
          * @param {string} symbol unified market symbol
          * @param {int} [since] the earliest time in ms to fetch trades for
@@ -4752,6 +4767,7 @@ class mexc extends mexc$1 {
          * @method
          * @name mexc#fetchPosition
          * @description fetch data on a single open contract trade position
+         * @see https://mexcdevelop.github.io/apidocs/contract_v1_en/#get-the-user-s-history-position-information
          * @param {string} symbol unified market symbol of the market the position is held in, default is undefined
          * @param {object} [params] extra parameters specific to the exchange API endpoint
          * @returns {object} a [position structure]{@link https://docs.ccxt.com/#/?id=position-structure}
@@ -4769,6 +4785,7 @@ class mexc extends mexc$1 {
          * @method
          * @name mexc#fetchPositions
          * @description fetch all open positions
+         * @see https://mexcdevelop.github.io/apidocs/contract_v1_en/#get-the-user-s-history-position-information
          * @param {string[]|undefined} symbols list of unified market symbols
          * @param {object} [params] extra parameters specific to the exchange API endpoint
          * @returns {object[]} a list of [position structure]{@link https://docs.ccxt.com/#/?id=position-structure}
@@ -4918,7 +4935,7 @@ class mexc extends mexc$1 {
          * @description fetches a transfer
          * @see https://mexcdevelop.github.io/apidocs/spot_v2_en/#internal-assets-transfer-order-inquiry
          * @param {string} id transfer id
-         * @param {[string]} code not used by mexc fetchTransfer
+         * @param {string} [code] not used by mexc fetchTransfer
          * @param {object} params extra parameters specific to the exchange api endpoint
          * @returns {object} a [transfer structure]{@link https://docs.ccxt.com/#/?id=transfer-structure}
          */
