@@ -3,6 +3,149 @@ import type { Balances, Dict, Int, Liquidation, Num, OHLCV, Order, OrderBook, Or
 import Client from '../base/ws/Client.js';
 export default class binance extends binanceRest {
     describe(): any;
+    describeData(): {
+        has: {
+            cancelAllOrdersWs: boolean;
+            cancelOrdersWs: boolean;
+            cancelOrderWs: boolean;
+            createOrderWs: boolean;
+            editOrderWs: boolean;
+            fetchBalanceWs: boolean;
+            fetchDepositsWs: boolean;
+            fetchMarketsWs: boolean;
+            fetchMyTradesWs: boolean;
+            fetchOHLCVWs: boolean;
+            fetchOpenOrdersWs: boolean;
+            fetchOrderBookWs: boolean;
+            fetchOrdersWs: boolean;
+            fetchOrderWs: boolean;
+            fetchPositionForSymbolWs: boolean;
+            fetchPositionsWs: boolean;
+            fetchPositionWs: boolean;
+            fetchTickerWs: boolean;
+            fetchTradesWs: boolean;
+            fetchTradingFeesWs: boolean;
+            fetchWithdrawalsWs: boolean;
+            watchBalance: boolean;
+            watchBidsAsks: boolean;
+            watchLiquidations: boolean;
+            watchLiquidationsForSymbols: boolean;
+            watchMyLiquidations: boolean;
+            watchMyLiquidationsForSymbols: boolean;
+            watchMyTrades: boolean;
+            watchOHLCV: boolean;
+            watchOHLCVForSymbols: boolean;
+            watchOrderBook: boolean;
+            watchOrderBookForSymbols: boolean;
+            watchOrders: boolean;
+            watchOrdersForSymbols: boolean;
+            watchPositions: boolean;
+            watchTicker: boolean;
+            watchTickers: boolean;
+            watchTrades: boolean;
+            watchTradesForSymbols: boolean;
+            ws: boolean;
+        };
+        options: {
+            liquidationsLimit: number;
+            listenKeyRefreshRate: number;
+            myLiquidationsLimit: number;
+            OHLCVLimit: number;
+            ordersLimit: number;
+            requestId: {};
+            returnRateLimits: boolean;
+            streamBySubscriptionsHash: {};
+            streamIndex: number;
+            streamLimits: {
+                delivery: number;
+                future: number;
+                margin: number;
+                spot: number;
+            };
+            subscriptionLimitByStream: {
+                delivery: number;
+                future: number;
+                margin: number;
+                spot: number;
+            };
+            tickerChannelsMap: {
+                '24hrMiniTicker': string;
+                '24hrTicker': string;
+                '1dTicker': string;
+                '1hTicker': string;
+                '4hTicker': string;
+                bookTicker: string;
+            };
+            tradesLimit: number;
+            wallet: string;
+            watchBalance: {
+                awaitBalanceSnapshot: boolean;
+                fetchBalanceSnapshot: boolean;
+            };
+            watchLiquidationsForSymbols: {
+                defaultType: string;
+            };
+            watchOHLCV: {
+                name: string;
+            };
+            watchOrderBook: {
+                checksum: boolean;
+                maxRetries: number;
+            };
+            watchOrderBookLimit: number;
+            watchOrderBookRate: number;
+            watchPositions: {
+                awaitPositionsSnapshot: boolean;
+                fetchPositionsSnapshot: boolean;
+            };
+            watchTicker: {
+                name: string;
+            };
+            watchTickers: {
+                name: string;
+            };
+            watchTrades: {
+                name: string;
+            };
+            watchTradesForSymbols: {
+                name: string;
+            };
+            ws: {
+                cost: number;
+            };
+        };
+        streaming: {
+            keepAlive: number;
+        };
+        urls: {
+            api: {
+                ws: {
+                    delivery: string;
+                    future: string;
+                    margin: string;
+                    papi: string;
+                    spot: string;
+                    'ws-api': {
+                        future: string;
+                        spot: string;
+                    };
+                };
+            };
+            doc: string;
+            test: {
+                ws: {
+                    delivery: string;
+                    future: string;
+                    margin: string;
+                    spot: string;
+                    'ws-api': {
+                        future: string;
+                        spot: string;
+                    };
+                };
+            };
+        };
+    };
     requestId(url: any): any;
     stream(type: Str, subscriptionHash: Str, numSubscriptions?: number): string;
     watchLiquidations(symbol: string, since?: Int, limit?: Int, params?: {}): Promise<Liquidation[]>;

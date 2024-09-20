@@ -2132,6 +2132,7 @@ export default class binance extends Exchange {
                 'defaultTimeInForce': 'GTC',
                 'defaultType': 'spot',
                 'fetchCurrencies': true,
+                'fetchMargins': true,
                 'fetchMarkets': [
                     'inverse',
                     'linear',
@@ -2903,13 +2904,12 @@ export default class binance extends Exchange {
             }
             fetchMarkets.push(type);
         }
-        let fetchMargins = false;
+        const fetchMargins = this.safeBool(this.options, 'fetchMargins', false);
         for (let i = 0; i < fetchMarkets.length; i++) {
             const marketType = fetchMarkets[i];
             if (marketType === 'spot') {
                 promisesRaw.push(this.publicGetExchangeInfo(params));
-                if (this.checkRequiredCredentials(false) && !sandboxMode) {
-                    fetchMargins = true;
+                if (fetchMargins && this.checkRequiredCredentials(false) && !sandboxMode) {
                     promisesRaw.push(this.sapiGetMarginAllPairs(params));
                     promisesRaw.push(this.sapiGetMarginIsolatedAllPairs(params));
                 }
