@@ -2123,11 +2123,16 @@ class binance extends Exchange {
                 'defaultTimeInForce' => 'GTC', // 'GTC' = Good To Cancel (default), 'IOC' = Immediate Or Cancel
                 'defaultType' => 'spot', // 'spot', 'future', 'margin', 'delivery', 'option'
                 'fetchCurrencies' => true, // this is a private call and it requires API keys
+                'fetchMargins' => true,
                 'fetchMarkets' => array(
                     'inverse', // allows CORS in browsers
                     'linear', // allows CORS in browsers
                     'spot', // allows CORS in browsers
                     // 'option', // does not allow CORS, enable outside of the browser only
+                ),
+                'fetchOHLCV' => array(
+                    'defaultLimit' => 500,
+                    'maxLimit' => 1500,
                 ),
                 'fetchPositions' => 'positionRisk', // or 'account' or 'option'
                 // 'fetchTradesMethod' => 'publicGetAggTrades', // publicGetTrades, publicGetHistoricalTrades, eapiPublicGetTrades
@@ -2888,13 +2893,12 @@ class binance extends Exchange {
             }
             $fetchMarkets[] = $type;
         }
-        $fetchMargins = false;
+        $fetchMargins = $this->safe_bool($this->options, 'fetchMargins', false);
         for ($i = 0; $i < count($fetchMarkets); $i++) {
             $marketType = $fetchMarkets[$i];
             if ($marketType === 'spot') {
                 $promisesRaw[] = $this->publicGetExchangeInfo ($params);
-                if ($this->check_required_credentials(false) && !$sandboxMode) {
-                    $fetchMargins = true;
+                if ($fetchMargins && $this->check_required_credentials(false) && !$sandboxMode) {
                     $promisesRaw[] = $this->sapiGetMarginAllPairs ($params);
                     $promisesRaw[] = $this->sapiGetMarginIsolatedAllPairs ($params);
                 }
@@ -4305,8 +4309,8 @@ class binance extends Exchange {
         $market = $this->market($symbol);
         // binance docs say that the default $limit 500, max 1500 for futures, max 1000 for spot markets
         // the reality is that the time range wider than 500 candles won't work right
-        $defaultLimit = 500;
-        $maxLimit = 1500;
+        list($defaultLimit, $params) = $this->handle_option_and_params($params, 'fetchOHLCV', 'defaultLimit', 500);
+        list($maxLimit, $params) = $this->handle_option_and_params($params, 'fetchOHLCV', 'maxLimit', 1500);
         $price = $this->safe_string($params, 'price');
         $until = $this->safe_integer($params, 'until');
         $params = $this->omit($params, array( 'price', 'until' ));

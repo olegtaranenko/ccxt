@@ -2152,12 +2152,17 @@ class binance(Exchange, ImplicitAPI):
                 'defaultTimeInForce': 'GTC',  # 'GTC' = Good To Cancel(default), 'IOC' = Immediate Or Cancel
                 'defaultType': 'spot',  # 'spot', 'future', 'margin', 'delivery', 'option'
                 'fetchCurrencies': True,  # self is a private call and it requires API keys
+                'fetchMargins': True,
                 'fetchMarkets': [
                     'inverse',  # allows CORS in browsers
                     'linear',  # allows CORS in browsers
                     'spot',  # allows CORS in browsers
                     # 'option',  # does not allow CORS, enable outside of the browser only
                 ],
+                'fetchOHLCV': {
+                    'defaultLimit': 500,
+                    'maxLimit': 1500,
+                },
                 'fetchPositions': 'positionRisk',  # or 'account' or 'option'
                 # 'fetchTradesMethod': 'publicGetAggTrades',  # publicGetTrades, publicGetHistoricalTrades, eapiPublicGetTrades
                 # not an error
@@ -2881,13 +2886,12 @@ class binance(Exchange, ImplicitAPI):
             if type == 'option' and sandboxMode:
                 continue
             fetchMarkets.append(type)
-        fetchMargins = False
+        fetchMargins = self.safe_bool(self.options, 'fetchMargins', False)
         for i in range(0, len(fetchMarkets)):
             marketType = fetchMarkets[i]
             if marketType == 'spot':
                 promisesRaw.append(self.publicGetExchangeInfo(params))
-                if self.check_required_credentials(False) and not sandboxMode:
-                    fetchMargins = True
+                if fetchMargins and self.check_required_credentials(False) and not sandboxMode:
                     promisesRaw.append(self.sapiGetMarginAllPairs(params))
                     promisesRaw.append(self.sapiGetMarginIsolatedAllPairs(params))
             elif marketType == 'linear':
@@ -4233,8 +4237,10 @@ class binance(Exchange, ImplicitAPI):
         market = self.market(symbol)
         # binance docs say that the default limit 500, max 1500 for futures, max 1000 for spot markets
         # the reality is that the time range wider than 500 candles won't work right
-        defaultLimit = 500
-        maxLimit = 1500
+        defaultLimit: Num
+        defaultLimit, params = self.handle_option_and_params(params, 'fetchOHLCV', 'defaultLimit', 500)
+        maxLimit: Num
+        maxLimit, params = self.handle_option_and_params(params, 'fetchOHLCV', 'maxLimit', 1500)
         price = self.safe_string(params, 'price')
         until = self.safe_integer(params, 'until')
         params = self.omit(params, ['price', 'until'])

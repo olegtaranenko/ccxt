@@ -2203,6 +2203,10 @@ export default class binance extends Exchange {
                     'spot', // allows CORS in browsers
                     // 'option', // does not allow CORS, enable outside of the browser only
                 ],
+                'fetchOHLCV': {
+                    'defaultLimit': 500,
+                    'maxLimit': 1500,
+                },
                 'fetchPositions': 'positionRisk', // or 'account' or 'option'
                 // 'fetchTradesMethod': 'publicGetAggTrades', // publicGetTrades, publicGetHistoricalTrades, eapiPublicGetTrades
                 // not an error
@@ -4400,8 +4404,10 @@ export default class binance extends Exchange {
         const market = this.market (symbol);
         // binance docs say that the default limit 500, max 1500 for futures, max 1000 for spot markets
         // the reality is that the time range wider than 500 candles won't work right
-        const defaultLimit = 500;
-        const maxLimit = 1500;
+        let defaultLimit: Num;
+        [ defaultLimit, params ] = this.handleOptionAndParams (params, 'fetchOHLCV', 'defaultLimit', 500);
+        let maxLimit: Num;
+        [ maxLimit, params ] = this.handleOptionAndParams (params, 'fetchOHLCV', 'maxLimit', 1500);
         const price = this.safeString (params, 'price');
         const until = this.safeInteger (params, 'until');
         params = this.omit (params, [ 'price', 'until' ]);
