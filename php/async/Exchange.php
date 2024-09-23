@@ -43,11 +43,11 @@ use React\EventLoop\Loop;
 
 use Exception;
 
-$version = '4.4.5';
+$version = '4.4.6';
 
 class Exchange extends \ccxt\Exchange {
 
-    const VERSION = '4.4.5';
+    const VERSION = '4.4.6';
 
     public $browser;
     public $marketsLoading = null;
@@ -1411,6 +1411,7 @@ class Exchange extends \ccxt\Exchange {
     public function get_default_options() {
         return array(
             'defaultNetworkCodeReplacements' => array(
+                'BRC20' => array( 'BRC20' => 'BTC' ),
                 'CRO' => array( 'CRC20' => 'CRONOS' ),
                 'ETH' => array( 'ERC20' => 'ETH' ),
                 'TRX' => array( 'TRC20' => 'TRX' ),

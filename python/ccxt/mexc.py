@@ -484,6 +484,7 @@ class mexc(Exchange, ImplicitAPI):
                     'AVAXC': 'AVAX_CCHAIN',
                     'ERC20': 'ETH',
                     'ACA': 'ACALA',
+                    'BEP20': 'BSC',
                     # 'ADA': 'Cardano(ADA)',
                     # 'AE': 'AE',
                     # 'ALGO': 'Algorand(ALGO)',
@@ -2425,6 +2426,9 @@ class mexc(Exchange, ImplicitAPI):
     def fetch_orders(self, symbol: Str = None, since: Int = None, limit: Int = None, params={}) -> List[Order]:
         """
         fetches information on multiple orders made by the user
+        :see: https://mexcdevelop.github.io/apidocs/spot_v3_en/#all-orders
+        :see: https://mexcdevelop.github.io/apidocs/contract_v1_en/#get-all-of-the-user-39-s-historical-orders
+        :see: https://mexcdevelop.github.io/apidocs/contract_v1_en/#gets-the-trigger-order-list
         :param str symbol: unified market symbol of the market orders were made in
         :param int [since]: the earliest time in ms to fetch orders for
         :param int [limit]: the maximum number of order structures to retrieve
@@ -2638,6 +2642,9 @@ class mexc(Exchange, ImplicitAPI):
     def fetch_open_orders(self, symbol: Str = None, since: Int = None, limit: Int = None, params={}) -> List[Order]:
         """
         fetch all unfilled currently open orders
+        :see: https://mexcdevelop.github.io/apidocs/spot_v3_en/#current-open-orders
+        :see: https://mexcdevelop.github.io/apidocs/contract_v1_en/#get-all-of-the-user-39-s-historical-orders
+        :see: https://mexcdevelop.github.io/apidocs/contract_v1_en/#gets-the-trigger-order-list
         :param str symbol: unified market symbol
         :param int [since]: the earliest time in ms to fetch open orders for
         :param int [limit]: the maximum number of  open orders structures to retrieve
@@ -2720,6 +2727,9 @@ class mexc(Exchange, ImplicitAPI):
     def fetch_closed_orders(self, symbol: Str = None, since: Int = None, limit: Int = None, params={}) -> List[Order]:
         """
         fetches information on multiple closed orders made by the user
+        :see: https://mexcdevelop.github.io/apidocs/spot_v3_en/#all-orders
+        :see: https://mexcdevelop.github.io/apidocs/contract_v1_en/#get-all-of-the-user-39-s-historical-orders
+        :see: https://mexcdevelop.github.io/apidocs/contract_v1_en/#gets-the-trigger-order-list
         :param str symbol: unified market symbol of the market orders were made in
         :param int [since]: the earliest time in ms to fetch orders for
         :param int [limit]: the maximum number of order structures to retrieve
@@ -2731,6 +2741,9 @@ class mexc(Exchange, ImplicitAPI):
     def fetch_canceled_orders(self, symbol: Str = None, since: Int = None, limit: Int = None, params={}):
         """
         fetches information on multiple canceled orders made by the user
+        :see: https://mexcdevelop.github.io/apidocs/spot_v3_en/#all-orders
+        :see: https://mexcdevelop.github.io/apidocs/contract_v1_en/#get-all-of-the-user-39-s-historical-orders
+        :see: https://mexcdevelop.github.io/apidocs/contract_v1_en/#gets-the-trigger-order-list
         :param str symbol: unified market symbol of the market orders were made in
         :param int [since]: timestamp in ms of the earliest order, default is None
         :param int [limit]: max number of orders to return, default is None

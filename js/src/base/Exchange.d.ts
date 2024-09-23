@@ -802,6 +802,9 @@ export default class Exchange {
     createNetworksByIdObject(): void;
     getDefaultOptions(): {
         defaultNetworkCodeReplacements: {
+            BRC20: {
+                BRC20: string;
+            };
             CRO: {
                 CRC20: string;
             };

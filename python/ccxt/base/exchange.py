@@ -4,7 +4,7 @@
 
 # -----------------------------------------------------------------------------
 
-__version__ = '4.4.5'
+__version__ = '4.4.6'
 
 # -----------------------------------------------------------------------------
 
@@ -2673,6 +2673,7 @@ class Exchange(object):
     def get_default_options(self):
         return {
             'defaultNetworkCodeReplacements': {
+                'BRC20': {'BRC20': 'BTC'},
                 'CRO': {'CRC20': 'CRONOS'},
                 'ETH': {'ERC20': 'ETH'},
                 'TRX': {'TRC20': 'TRX'},

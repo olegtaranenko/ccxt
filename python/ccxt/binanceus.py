@@ -187,6 +187,7 @@ class binanceus(binance, ImplicitAPI):
             'id': 'binanceus',
             'name': 'Binance US',
             'options': {
+                'fetchMargins': False,
                 'fetchMarkets': ['spot'],
                 'defaultType': 'spot',
                 'quoteOrderQty': False,
