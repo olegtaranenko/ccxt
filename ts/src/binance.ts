@@ -12338,7 +12338,6 @@ export default class binance extends Exchange {
         const timestamp = this.safeInteger (info, 'updateTime');
         return {
             'amount': this.safeNumber (info, 'amount'),
-            'amount': undefined,
             'currency': this.safeCurrencyCode (currencyId, currency),
             'datetime': this.iso8601 (timestamp),
             'id': this.safeInteger (info, 'tranId'),
