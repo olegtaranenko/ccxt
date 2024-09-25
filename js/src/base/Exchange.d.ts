@@ -381,6 +381,7 @@ export default class Exchange {
     extendExchangeOptions(newOptions: Dict): void;
     createSafeDictionary(): {};
     randomBytes(length: number): string;
+    randNumber(size: number): number;
     describe(): {
         alias: boolean;
         api: any;

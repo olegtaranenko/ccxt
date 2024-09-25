@@ -271,6 +271,7 @@ class ImplicitAPI:
     papi_post_listenkey = papiPostListenKey = Entry('listenKey', 'papi', 'POST', {'cost': 1})
     papi_post_margin_order = papiPostMarginOrder = Entry('margin/order', 'papi', 'POST', {'cost': 0.0133})
     papi_post_margin_order_oco = papiPostMarginOrderOco = Entry('margin/order/oco', 'papi', 'POST', {'cost': 0.04})
+    papi_post_margin_repay_debt = papiPostMarginRepayDebt = Entry('margin/repay-debt', 'papi', 'POST', {'cost': 0.4})
     papi_post_marginloan = papiPostMarginLoan = Entry('marginLoan', 'papi', 'POST', {'cost': 0.1333})
     papi_post_repay_futures_negative_balance = papiPostRepayFuturesNegativeBalance = Entry('repay-futures-negative-balance', 'papi', 'POST', {'cost': 150})
     papi_post_repay_futures_switch = papiPostRepayFuturesSwitch = Entry('repay-futures-switch', 'papi', 'POST', {'cost': 150})

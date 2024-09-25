@@ -414,6 +414,7 @@ class binance(Exchange, ImplicitAPI):
                         'listenKey': 1,  # 1
                         'margin/order': 0.0133,  # Weight(UID): 2 => cost = 0.006667 * 2 = 0.013334
                         'margin/order/oco': 0.0400,  # Weight(UID): 6 => cost = 0.006667 * 6 = 0.040002
+                        'margin/repay-debt': 0.4,  # Weight(Order): 0.4 =>(1000 / (50 * 0.4)) * 60 = 3000
                         'marginLoan': 0.1333,  # Weight(UID): 20 => cost = 0.006667 * 20 = 0.13334
                         'repay-futures-negative-balance': 150,  # Weight(IP): 1500 => cost = 0.1 * 1500 = 150
                         'repay-futures-switch': 150,  # Weight(IP): 1500 => cost = 0.1 * 1500 = 150
@@ -2322,6 +2323,7 @@ class binance(Exchange, ImplicitAPI):
                 },
                 'quoteOrderQty': True,  # whether market orders support amounts in quote currency
                 'recvWindow': 10 * 1000,  # 10 sec
+                # 'repayCrossMarginMethod': 'papiPostRepayLoan',  # papiPostMarginRepayDebt
                 # keeping self object for backward-compatibility
                 'reverseNetworks': {
                     'algoexplorer.io': 'ALGO',
@@ -2911,7 +2913,7 @@ class binance(Exchange, ImplicitAPI):
             res = self.safe_value(results, i)
             if fetchMargins and isinstance(res, list):
                 keysList = list(self.index_by(res, 'symbol').keys())
-                length = (self.options['crossMarginPairsData'])
+                length = len(self.options['crossMarginPairsData'])
                 # first one is the cross-margin promise
                 if length == 0:
                     self.options['crossMarginPairsData'] = keysList
@@ -11321,10 +11323,13 @@ class binance(Exchange, ImplicitAPI):
         repay borrowed margin and interest
         :see: https://developers.binance.com/docs/derivatives/portfolio-margin/trade/Margin-Account-Repay
         :see: https://developers.binance.com/docs/margin_trading/borrow-and-repay/Margin-Account-Borrow-Repay
+        :see: https://developers.binance.com/docs/derivatives/portfolio-margin/trade/Margin-Account-Repay-Debt
         :param str code: unified currency code of the currency to repay
         :param float amount: the amount to repay
         :param dict [params]: extra parameters specific to the exchange API endpoint
         :param boolean [params.portfolioMargin]: set to True if you would like to repay margin in a portfolio margin account
+        :param str [params.repayCrossMarginMethod]: *portfolio margin only* 'papiPostRepayLoan'(default), 'papiPostMarginRepayDebt'(alternative)
+        :param str [params.specifyRepayAssets]: *portfolio margin papiPostMarginRepayDebt only* specific asset list to repay debt
         :returns dict: a `margin loan structure <https://docs.ccxt.com/#/?id=margin-loan-structure>`
         """
         await self.load_markets()
@@ -11337,7 +11342,27 @@ class binance(Exchange, ImplicitAPI):
         isPortfolioMargin = None
         isPortfolioMargin, params = self.handle_option_and_params_2(params, 'repayCrossMargin', 'papi', 'portfolioMargin', False)
         if isPortfolioMargin:
-            response = await self.papiPostRepayLoan(self.extend(request, params))
+            method = None
+            method, params = self.handle_option_and_params_2(params, 'repayCrossMargin', 'repayCrossMarginMethod', 'method')
+            if method == 'papiPostMarginRepayDebt':
+                response = await self.papiPostMarginRepayDebt(self.extend(request, params))
+                #
+                #     {
+                #         "asset": "USDC",
+                #         "amount": 10,
+                #         "specifyRepayAssets": null,
+                #         "updateTime": 1727170761267,
+                #         "success": True
+                #     }
+                #
+            else:
+                response = await self.papiPostRepayLoan(self.extend(request, params))
+                #
+                #     {
+                #         "tranId": 108988250265,
+                #         "clientTag":""
+                #     }
+                #
         else:
             request['isIsolated'] = 'FALSE'
             request['type'] = 'REPAY'
@@ -11449,14 +11474,26 @@ class binance(Exchange, ImplicitAPI):
         #         "tranId": 108988250265,
         #     }
         #
+        # repayCrossMargin alternative endpoint
+        #
+        #     {
+        #         "asset": "USDC",
+        #         "amount": 10,
+        #         "specifyRepayAssets": null,
+        #         "updateTime": 1727170761267,
+        #         "success": True
+        #     }
+        #
+        currencyId = self.safe_string(info, 'asset')
+        timestamp = self.safe_integer(info, 'updateTime')
         return {
-            'amount': None,
-            'currency': self.safe_currency_code(None, currency),
-            'datetime': None,
+            'amount': self.safe_number(info, 'amount'),
+            'currency': self.safe_currency_code(currencyId, currency),
+            'datetime': self.iso8601(timestamp),
             'id': self.safe_integer(info, 'tranId'),
             'info': info,
             'symbol': None,
-            'timestamp': None,
+            'timestamp': timestamp,
         }
 
     async def fetch_open_interest_history(self, symbol: str, timeframe='5m', since: Int = None, limit: Int = None, params={}):

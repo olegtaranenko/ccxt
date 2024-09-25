@@ -278,6 +278,7 @@ interface Exchange {
     papiPostListenKey (params?: {}): Promise<implicitReturnType>;
     papiPostMarginOrder (params?: {}): Promise<implicitReturnType>;
     papiPostMarginOrderOco (params?: {}): Promise<implicitReturnType>;
+    papiPostMarginRepayDebt (params?: {}): Promise<implicitReturnType>;
     papiPostMarginLoan (params?: {}): Promise<implicitReturnType>;
     papiPostRepayFuturesNegativeBalance (params?: {}): Promise<implicitReturnType>;
     papiPostRepayFuturesSwitch (params?: {}): Promise<implicitReturnType>;

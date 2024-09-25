@@ -814,6 +814,9 @@ abstract class binanceus extends \ccxt\binance {
     public function papi_post_margin_order_oco($params = array()) {
         return $this->request('margin/order/oco', 'papi', 'POST', $params, null, null, array("cost" => 0.04));
     }
+    public function papi_post_margin_repay_debt($params = array()) {
+        return $this->request('margin/repay-debt', 'papi', 'POST', $params, null, null, array("cost" => 0.4));
+    }
     public function papi_post_marginloan($params = array()) {
         return $this->request('marginLoan', 'papi', 'POST', $params, null, null, array("cost" => 0.1333));
     }
@@ -3117,6 +3120,9 @@ abstract class binanceus extends \ccxt\binance {
     }
     public function papiPostMarginOrderOco($params = array()) {
         return $this->request('margin/order/oco', 'papi', 'POST', $params, null, null, array("cost" => 0.04));
+    }
+    public function papiPostMarginRepayDebt($params = array()) {
+        return $this->request('margin/repay-debt', 'papi', 'POST', $params, null, null, array("cost" => 0.4));
     }
     public function papiPostMarginLoan($params = array()) {
         return $this->request('marginLoan', 'papi', 'POST', $params, null, null, array("cost" => 0.1333));

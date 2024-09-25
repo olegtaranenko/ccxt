@@ -2108,7 +2108,7 @@ class mexc extends mexc$1 {
             throw new errors.NotSupported(this.id + ' createMarketBuyOrderWithCost() supports spot orders only');
         }
         params['cost'] = cost;
-        return await this.createOrder(symbol, 'market', 'buy', undefined, undefined, params);
+        return await this.createOrder(symbol, 'market', 'buy', 0, undefined, params);
     }
     async createMarketSellOrderWithCost(symbol, cost, params = {}) {
         /**
@@ -2127,7 +2127,7 @@ class mexc extends mexc$1 {
             throw new errors.NotSupported(this.id + ' createMarketBuyOrderWithCost() supports spot orders only');
         }
         params['cost'] = cost;
-        return await this.createOrder(symbol, 'market', 'sell', undefined, undefined, params);
+        return await this.createOrder(symbol, 'market', 'sell', 0, undefined, params);
     }
     async createOrder(symbol, type, side, amount, price = undefined, params = {}) {
         /**

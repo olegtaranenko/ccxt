@@ -457,6 +457,7 @@ export default class binance extends Exchange {
                         'listenKey': 1, // 1
                         'margin/order': 0.0133, // Weight(UID): 2 => cost = 0.006667 * 2 = 0.013334
                         'margin/order/oco': 0.0400, // Weight(UID): 6 => cost = 0.006667 * 6 = 0.040002
+                        'margin/repay-debt': 0.4, // Weight(Order): 0.4 => (1000 / (50 * 0.4)) * 60 = 3000
                         'marginLoan': 0.1333, // Weight(UID): 20 => cost = 0.006667 * 20 = 0.13334
                         'repay-futures-negative-balance': 150, // Weight(IP): 1500 => cost = 0.1 * 1500 = 150
                         'repay-futures-switch': 150, // Weight(IP): 1500 => cost = 0.1 * 1500 = 150
@@ -2365,6 +2366,7 @@ export default class binance extends Exchange {
                 },
                 'quoteOrderQty': true, // whether market orders support amounts in quote currency
                 'recvWindow': 10 * 1000, // 10 sec
+                // 'repayCrossMarginMethod': 'papiPostRepayLoan', // papiPostMarginRepayDebt
                 // keeping this object for backward-compatibility
                 'reverseNetworks': {
                     'algoexplorer.io': 'ALGO',
@@ -2999,7 +3001,7 @@ export default class binance extends Exchange {
             const res = this.safeValue (results, i);
             if (fetchMargins && Array.isArray (res)) {
                 const keysList = Object.keys (this.indexBy (res, 'symbol'));
-                const length = (Object.keys (this.options['crossMarginPairsData'])).length;
+                const length = this.options['crossMarginPairsData'].length;
                 // first one is the cross-margin promise
                 if (length === 0) {
                     this.options['crossMarginPairsData'] = keysList;
@@ -12187,10 +12189,13 @@ export default class binance extends Exchange {
          * @description repay borrowed margin and interest
          * @see https://developers.binance.com/docs/derivatives/portfolio-margin/trade/Margin-Account-Repay
          * @see https://developers.binance.com/docs/margin_trading/borrow-and-repay/Margin-Account-Borrow-Repay
+         * @see https://developers.binance.com/docs/derivatives/portfolio-margin/trade/Margin-Account-Repay-Debt
          * @param {string} code unified currency code of the currency to repay
          * @param {float} amount the amount to repay
          * @param {object} [params] extra parameters specific to the exchange API endpoint
          * @param {boolean} [params.portfolioMargin] set to true if you would like to repay margin in a portfolio margin account
+         * @param {string} [params.repayCrossMarginMethod] *portfolio margin only* 'papiPostRepayLoan' (default), 'papiPostMarginRepayDebt' (alternative)
+         * @param {string} [params.specifyRepayAssets] *portfolio margin papiPostMarginRepayDebt only* specific asset list to repay debt
          * @returns {object} a [margin loan structure]{@link https://docs.ccxt.com/#/?id=margin-loan-structure}
          */
         await this.loadMarkets ();
@@ -12203,7 +12208,28 @@ export default class binance extends Exchange {
         let isPortfolioMargin = undefined;
         [ isPortfolioMargin, params ] = this.handleOptionAndParams2 (params, 'repayCrossMargin', 'papi', 'portfolioMargin', false);
         if (isPortfolioMargin) {
-            response = await this.papiPostRepayLoan (this.extend (request, params));
+            let method = undefined;
+            [ method, params ] = this.handleOptionAndParams2 (params, 'repayCrossMargin', 'repayCrossMarginMethod', 'method');
+            if (method === 'papiPostMarginRepayDebt') {
+                response = await this.papiPostMarginRepayDebt (this.extend (request, params));
+                //
+                //     {
+                //         "asset": "USDC",
+                //         "amount": 10,
+                //         "specifyRepayAssets": null,
+                //         "updateTime": 1727170761267,
+                //         "success": true
+                //     }
+                //
+            } else {
+                response = await this.papiPostRepayLoan (this.extend (request, params));
+                //
+                //     {
+                //         "tranId": 108988250265,
+                //         "clientTag":""
+                //     }
+                //
+            }
         } else {
             request['isIsolated'] = 'FALSE';
             request['type'] = 'REPAY';
@@ -12327,14 +12353,26 @@ export default class binance extends Exchange {
         //         "tranId": 108988250265,
         //     }
         //
+        // repayCrossMargin alternative endpoint
+        //
+        //     {
+        //         "asset": "USDC",
+        //         "amount": 10,
+        //         "specifyRepayAssets": null,
+        //         "updateTime": 1727170761267,
+        //         "success": true
+        //     }
+        //
+        const currencyId = this.safeString (info, 'asset');
+        const timestamp = this.safeInteger (info, 'updateTime');
         return {
-            'amount': undefined,
-            'currency': this.safeCurrencyCode (undefined, currency),
-            'datetime': undefined,
+            'amount': this.safeNumber (info, 'amount'),
+            'currency': this.safeCurrencyCode (currencyId, currency),
+            'datetime': this.iso8601 (timestamp),
             'id': this.safeInteger (info, 'tranId'),
             'info': info,
             'symbol': undefined,
-            'timestamp': undefined,
+            'timestamp': timestamp,
         };
     }
 

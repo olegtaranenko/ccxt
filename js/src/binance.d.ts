@@ -301,49 +301,49 @@ export default class binance extends Exchange {
         timestamp: number;
     };
     repayCrossMargin(code: string, amount: any, params?: {}): Promise<{
-        amount: any;
+        amount: number;
         currency: string;
-        datetime: any;
+        datetime: string;
         id: number;
         info: any;
         symbol: any;
-        timestamp: any;
+        timestamp: number;
     }>;
     repayIsolatedMargin(symbol: string, code: string, amount: any, params?: {}): Promise<{
-        amount: any;
+        amount: number;
         currency: string;
-        datetime: any;
+        datetime: string;
         id: number;
         info: any;
         symbol: any;
-        timestamp: any;
+        timestamp: number;
     }>;
     borrowCrossMargin(code: string, amount: number, params?: {}): Promise<{
-        amount: any;
+        amount: number;
         currency: string;
-        datetime: any;
+        datetime: string;
         id: number;
         info: any;
         symbol: any;
-        timestamp: any;
+        timestamp: number;
     }>;
     borrowIsolatedMargin(symbol: string, code: string, amount: number, params?: {}): Promise<{
-        amount: any;
+        amount: number;
         currency: string;
-        datetime: any;
+        datetime: string;
         id: number;
         info: any;
         symbol: any;
-        timestamp: any;
+        timestamp: number;
     }>;
     parseMarginLoan(info: any, currency?: Currency): {
-        amount: any;
+        amount: number;
         currency: string;
-        datetime: any;
+        datetime: string;
         id: number;
         info: any;
         symbol: any;
-        timestamp: any;
+        timestamp: number;
     };
     fetchOpenInterestHistory(symbol: string, timeframe?: string, since?: Int, limit?: Int, params?: {}): Promise<OpenInterest[]>;
     fetchOpenInterest(symbol: string, params?: {}): Promise<OpenInterest>;
