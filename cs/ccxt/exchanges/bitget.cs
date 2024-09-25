@@ -1276,6 +1276,8 @@ public partial class bitget : Exchange
                 { "TONCOIN", "TON" },
             } },
             { "options", new Dictionary<string, object>() {
+                { "timeDifference", 0 },
+                { "adjustForTimeDifference", false },
                 { "timeframes", new Dictionary<string, object>() {
                     { "spot", new Dictionary<string, object>() {
                         { "1m", "1min" },
@@ -1371,12 +1373,13 @@ public partial class bitget : Exchange
                 { "networks", new Dictionary<string, object>() {
                     { "TRX", "TRC20" },
                     { "ETH", "ERC20" },
-                    { "BSC", "BEP20" },
+                    { "BEP20", "BSC" },
+                    { "ZKSYNC", "zkSyncEra" },
+                    { "STARKNET", "Starknet" },
+                    { "OPTIMISM", "Optimism" },
+                    { "ARBITRUM", "Arbitrum" },
                 } },
-                { "networksById", new Dictionary<string, object>() {
-                    { "TRC20", "TRX" },
-                    { "BSC", "BEP20" },
-                } },
+                { "networksById", new Dictionary<string, object>() {} },
                 { "fetchPositions", new Dictionary<string, object>() {
                     { "method", "privateMixGetV2MixPositionAllPosition" },
                 } },
@@ -1519,6 +1522,10 @@ public partial class bitget : Exchange
         * @returns {object[]} an array of objects representing market data
         */
         parameters ??= new Dictionary<string, object>();
+        if (isTrue(getValue(this.options, "adjustForTimeDifference")))
+        {
+            await this.loadTimeDifference();
+        }
         object sandboxMode = this.safeBool(this.options, "sandboxMode", false);
         object types = this.safeValue(this.options, "fetchMarkets", new List<object>() {"spot", "swap"});
         if (isTrue(sandboxMode))
@@ -1859,7 +1866,11 @@ public partial class bitget : Exchange
             {
                 object chain = getValue(chains, j);
                 object networkId = this.safeString(chain, "chain");
-                object network = this.safeCurrencyCode(networkId);
+                object network = this.networkIdToCode(networkId, code);
+                if (isTrue(!isEqual(network, null)))
+                {
+                    network = ((string)network).ToUpper();
+                }
                 object withdrawEnabled = this.safeString(chain, "withdrawable");
                 object canWithdraw = isEqual(withdrawEnabled, "true");
                 withdraw = ((bool) isTrue((canWithdraw))) ? canWithdraw : withdraw;
@@ -9524,6 +9535,11 @@ public partial class bitget : Exchange
         return null;
     }
 
+    public override object nonce()
+    {
+        return subtract(this.milliseconds(), getValue(this.options, "timeDifference"));
+    }
+
     public override object sign(object path, object api = null, object method = null, object parameters = null, object headers = null, object body = null)
     {
         api ??= new List<object>();
@@ -9548,7 +9564,7 @@ public partial class bitget : Exchange
         if (isTrue(signed))
         {
             this.checkRequiredCredentials();
-            object timestamp = ((object)this.milliseconds()).ToString();
+            object timestamp = ((object)this.nonce()).ToString();
             object auth = add(add(timestamp, method), payload);
             if (isTrue(isEqual(method, "POST")))
             {

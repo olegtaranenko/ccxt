@@ -1337,6 +1337,8 @@ class bitget(Exchange, ImplicitAPI):
                 'TONCOIN': 'TON',
             },
             'options': {
+                'timeDifference': 0,  # the difference between system clock and Binance clock
+                'adjustForTimeDifference': False,  # controls the adjustment logic upon instantiation
                 'timeframes': {
                     'spot': {
                         '1m': '1min',
@@ -1435,11 +1437,13 @@ class bitget(Exchange, ImplicitAPI):
                 'networks': {
                     'TRX': 'TRC20',
                     'ETH': 'ERC20',
-                    'BSC': 'BEP20',
+                    'BEP20': 'BSC',
+                    'ZKSYNC': 'zkSyncEra',
+                    'STARKNET': 'Starknet',
+                    'OPTIMISM': 'Optimism',
+                    'ARBITRUM': 'Arbitrum',
                 },
                 'networksById': {
-                    'TRC20': 'TRX',
-                    'BSC': 'BEP20',
                 },
                 'fetchPositions': {
                     'method': 'privateMixGetV2MixPositionAllPosition',  # or privateMixGetV2MixPositionHistoryPosition
@@ -1539,6 +1543,8 @@ class bitget(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the exchange API endpoint
         :returns dict[]: an array of objects representing market data
         """
+        if self.options['adjustForTimeDifference']:
+            await self.load_time_difference()
         sandboxMode = self.safe_bool(self.options, 'sandboxMode', False)
         types = self.safe_value(self.options, 'fetchMarkets', ['spot', 'swap'])
         if sandboxMode:
@@ -1836,7 +1842,9 @@ class bitget(Exchange, ImplicitAPI):
             for j in range(0, len(chains)):
                 chain = chains[j]
                 networkId = self.safe_string(chain, 'chain')
-                network = self.safe_currency_code(networkId)
+                network = self.network_id_to_code(networkId, code)
+                if network is not None:
+                    network = network.upper()
                 withdrawEnabled = self.safe_string(chain, 'withdrawable')
                 canWithdraw = withdrawEnabled == 'true'
                 withdraw = canWithdraw if (canWithdraw) else withdraw
@@ -8203,6 +8211,9 @@ class bitget(Exchange, ImplicitAPI):
             raise ExchangeError(feedback)  # unknown message
         return None
 
+    def nonce(self):
+        return self.milliseconds() - self.options['timeDifference']
+
     def sign(self, path, api=[], method='GET', params={}, headers=None, body=None):
         signed = api[0] == 'private'
         endpoint = api[1]
@@ -8218,7 +8229,7 @@ class bitget(Exchange, ImplicitAPI):
                 url = url + '?' + self.urlencode(query)
         if signed:
             self.check_required_credentials()
-            timestamp = str(self.milliseconds())
+            timestamp = str(self.nonce())
             auth = timestamp + method + payload
             if method == 'POST':
                 body = self.json(params)

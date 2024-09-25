@@ -2085,6 +2085,10 @@ class htx extends Exchange {
         return Async\async(function () use ($symbol, $params) {
             /**
              * fetches a price $ticker, a statistical calculation with the information calculated over the past 24 hours for a specific $market
+             * @see https://huobiapi.github.io/docs/spot/v1/en/#get-latest-aggregated-$ticker
+             * @see https://huobiapi.github.io/docs/dm/v1/en/#get-$market-data-overview
+             * @see https://huobiapi.github.io/docs/coin_margined_swap/v1/en/#get-$market-data-overview
+             * @see https://huobiapi.github.io/docs/usdt_swap/v1/en/#general-get-$market-data-overview
              * @param {string} $symbol unified $symbol of the $market to fetch the $ticker for
              * @param {array} [$params] extra parameters specific to the exchange API endpoint
              * @return {array} a ~@link https://docs.ccxt.com/#/?id=$ticker-structure $ticker structure~
@@ -2396,6 +2400,10 @@ class htx extends Exchange {
         return Async\async(function () use ($symbol, $limit, $params) {
             /**
              * fetches information on open orders with bid (buy) and ask (sell) prices, volumes and other data
+             * @see https://huobiapi.github.io/docs/spot/v1/en/#get-$market-depth
+             * @see https://huobiapi.github.io/docs/dm/v1/en/#get-$market-depth
+             * @see https://huobiapi.github.io/docs/coin_margined_swap/v1/en/#get-$market-depth
+             * @see https://huobiapi.github.io/docs/usdt_swap/v1/en/#general-get-$market-depth
              * @param {string} $symbol unified $symbol of the $market to fetch the order book for
              * @param {int} [$limit] the maximum amount of order book entries to return
              * @param {array} [$params] extra parameters specific to the exchange API endpoint
@@ -2624,6 +2632,7 @@ class htx extends Exchange {
         return Async\async(function () use ($id, $symbol, $since, $limit, $params) {
             /**
              * fetch all the trades made from a single order
+             * @see https://huobiapi.github.io/docs/spot/v1/en/#get-the-match-result-of-an-order
              * @param {string} $id order $id
              * @param {string} $symbol unified $market $symbol
              * @param {int} [$since] the earliest time in ms to fetch trades for
@@ -2646,6 +2655,17 @@ class htx extends Exchange {
 
     public function fetch_spot_order_trades(string $id, ?string $symbol = null, ?int $since = null, ?int $limit = null, $params = array ()) {
         return Async\async(function () use ($id, $symbol, $since, $limit, $params) {
+            /**
+             * @ignore
+             * fetch all the trades made from a single order
+             * @see https://huobiapi.github.io/docs/spot/v1/en/#get-the-match-result-of-an-order
+             * @param {string} $id order $id
+             * @param {string} $symbol unified market $symbol
+             * @param {int} [$since] the earliest time in ms to fetch trades for
+             * @param {int} [$limit] the maximum number of trades to retrieve
+             * @param {array} [$params] extra parameters specific to the exchange API endpoint
+             * @return {array[]} a list of ~@link https://docs.ccxt.com/#/?$id=trade-structure trade structures~
+             */
             Async\await($this->load_markets());
             $request = array(
                 'order-id' => $id,
