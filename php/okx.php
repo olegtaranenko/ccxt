@@ -572,6 +572,7 @@ class okx extends Exchange {
                     // General Class
                     '1' => '\\ccxt\\ExchangeError', // Operation failed
                     '2' => '\\ccxt\\ExchangeError', // Bulk operation partially succeeded
+                    '4088' => '\\ccxt\\ManualInteractionNeeded', // array("code":"4088","data":array(),"msg":"You can’t trade or deposit until you’ve verified your identity again. Head to Identity Verification to complete it.")
                     '50000' => '\\ccxt\\BadRequest', // Body can not be empty
                     '50001' => '\\ccxt\\OnMaintenance', // Matching engine upgrading. Please try again later
                     '50002' => '\\ccxt\\BadRequest', // Json data format error
@@ -2888,7 +2889,7 @@ class okx extends Exchange {
          * @param {string} [$params->positionSide] if position mode is one-way => set to 'net', if position mode is hedge-mode => set to 'long' or 'short'
          * @param {string} [$params->trailingPercent] the percent to trail away from the current $market $price
          * @param {string} [$params->tpOrdKind] 'condition' or 'limit', the default is 'condition'
-         * @param {string} [$params->hedged] true/false, to automatically set exchange-specific $params needed when trading in hedge mode
+         * @param {bool} [$params->hedged] *swap and future only* true for hedged mode, false for one way mode
          * @return {array} an ~@link https://docs.ccxt.com/#/?id=$order-structure $order structure~
          */
         $this->load_markets();
@@ -5909,7 +5910,7 @@ class okx extends Exchange {
         return array( 'url' => $url, 'method' => $method, 'body' => $body, 'headers' => $headers );
     }
 
-    public function parse_funding_rate($contract, ?array $market = null) {
+    public function parse_funding_rate($contract, ?array $market = null): array {
         //
         //    {
         //        "fundingRate" => "0.00027815",
@@ -5943,6 +5944,9 @@ class okx extends Exchange {
         $symbol = $this->safe_symbol($marketId, $market);
         $nextFundingRate = $this->safe_number($contract, 'nextFundingRate');
         $fundingTime = $this->safe_integer($contract, 'fundingTime');
+        $fundingTimeString = $this->safe_string($contract, 'fundingTime');
+        $nextFundingTimeString = $this->safe_string($contract, 'nextFundingRate');
+        $millisecondsInterval = Precise::string_sub($nextFundingTimeString, $fundingTimeString);
         // https://www.okx.com/support/hc/en-us/articles/360053909272-Ⅸ-Introduction-to-perpetual-swap-funding-fee
         // > The current interest is 0.
         return array(
@@ -5963,10 +5967,22 @@ class okx extends Exchange {
             'previousFundingRate' => null,
             'previousFundingTimestamp' => null,
             'previousFundingDatetime' => null,
+            'interval' => $this->parse_funding_interval($millisecondsInterval),
         );
     }
 
-    public function fetch_funding_rate(string $symbol, $params = array ()) {
+    public function parse_funding_interval($interval) {
+        $intervals = array(
+            '3600000' => '1h',
+            '14400000' => '4h',
+            '28800000' => '8h',
+            '57600000' => '16h',
+            '86400000' => '24h',
+        );
+        return $this->safe_string($intervals, $interval, $interval);
+    }
+
+    public function fetch_funding_rate(string $symbol, $params = array ()): array {
         /**
          * fetch the current funding rate
          * @see https://www.okx.com/docs-v5/en/#public-$data-rest-api-get-funding-rate

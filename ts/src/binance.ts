@@ -34,7 +34,9 @@ import type {
     Currencies,
     Currency,
     Dict,
+    FundingRate,
     FundingRateHistory,
+    FundingRates,
     Greeks,
     int,
     Int,
@@ -463,6 +465,7 @@ export default class binance extends Exchange {
                         'repay-futures-switch': 150, // Weight(IP): 1500 => cost = 0.1 * 1500 = 150
                         'repayLoan': 0.1333, // Weight(UID): 20 => cost = 0.006667 * 20 = 0.13334
                         'um/conditional/order': 1,
+                        'um/feeBurn': 1,
                         'um/leverage': 1, // 1
                         'um/order': 1, // 0
                         'um/positionSide/dual': 1, // 1
@@ -5902,6 +5905,8 @@ export default class binance extends Exchange {
          * @param {float} [params.takeProfitPrice] the price that a take profit order is triggered at
          * @param {boolean} [params.portfolioMargin] set to true if you would like to create an order in a portfolio margin account
          * @param {string} [params.stopLossOrTakeProfit] 'stopLoss' or 'takeProfit', required for spot trailing orders
+         * @param {string} [params.positionSide] *swap and portfolio margin only* "BOTH" for one-way mode, "LONG" for buy side of hedged mode, "SHORT" for sell side of hedged mode
+         * @param {bool} [params.hedged] *swap and portfolio margin only* true for hedged mode, false for one way mode, default is false
          * @returns {object} an [order structure]{@link https://docs.ccxt.com/#/?id=order-structure}
          */
         await this.loadMarkets ();
@@ -5999,9 +6004,9 @@ export default class binance extends Exchange {
         [ isPortfolioMargin, params ] = this.handleOptionAndParams2 (params, 'createOrder', 'papi', 'portfolioMargin', false);
         let marginMode = undefined;
         [ marginMode, params ] = this.handleMarginModeAndParams ('createOrder', params);
+        const reduceOnly = this.safeBool (params, 'reduceOnly', false);
         if ((marketType === 'margin') || (marginMode !== undefined) || market['option']) {
             // for swap and future reduceOnly is a string that cant be sent with close position set to true or in hedge mode
-            const reduceOnly = this.safeBool (params, 'reduceOnly', false);
             params = this.omit (params, 'reduceOnly');
             if (market['option']) {
                 request['reduceOnly'] = reduceOnly;
@@ -6245,7 +6250,15 @@ export default class binance extends Exchange {
         if (this.safeString (params, 'timeInForce') === 'PO') {
             params = this.omit (params, 'timeInForce');
         }
-        const requestParams = this.omit (params, [ 'type', 'newClientOrderId', 'clientOrderId', 'postOnly', 'stopLossPrice', 'takeProfitPrice', 'stopPrice', 'triggerPrice', 'trailingTriggerPrice', 'trailingPercent', 'quoteOrderQty', 'cost', 'test' ]);
+        const hedged = this.safeBool (params, 'hedged', false);
+        if (!market['spot'] && !market['option'] && hedged) {
+            if (reduceOnly) {
+                params = this.omit (params, 'reduceOnly');
+                side = (side === 'buy') ? 'sell' : 'buy';
+            }
+            request['positionSide'] = (side === 'buy') ? 'LONG' : 'SHORT';
+        }
+        const requestParams = this.omit (params, [ 'type', 'newClientOrderId', 'clientOrderId', 'postOnly', 'stopLossPrice', 'takeProfitPrice', 'stopPrice', 'triggerPrice', 'trailingTriggerPrice', 'trailingPercent', 'quoteOrderQty', 'cost', 'test', 'hedged' ]);
         return this.extend (request, requestParams);
     }
 
@@ -9265,7 +9278,7 @@ export default class binance extends Exchange {
         return this.parseTransfer (response, currency);
     }
 
-    async fetchFundingRate (symbol: string, params = {}) {
+    async fetchFundingRate (symbol: string, params = {}): Promise<FundingRate> {
         /**
          * @method
          * @name binance#fetchFundingRate
@@ -9319,7 +9332,7 @@ export default class binance extends Exchange {
          * @param {int} [limit] the maximum amount of [funding rate structures]{@link https://docs.ccxt.com/#/?id=funding-rate-history-structure} to fetch
          * @param {object} [params] extra parameters specific to the exchange API endpoint
          * @param {int} [params.until] timestamp in ms of the latest funding rate
-         * @param {boolean} [params.paginate] default false, when true will automatically paginate by calling this endpoint multiple times. See in the docs all the [availble parameters](https://github.com/ccxt/ccxt/wiki/Manual#pagination-params)
+         * @param {boolean} [params.paginate] default false, when true will automatically paginate by calling this endpoint multiple times. See in the docs all the [available parameters](https://github.com/ccxt/ccxt/wiki/Manual#pagination-params)
          * @param {string} [params.subType] "linear" or "inverse"
          * @returns {object[]} a list of [funding rate structures]{@link https://docs.ccxt.com/#/?id=funding-rate-history-structure}
          */
@@ -9384,7 +9397,7 @@ export default class binance extends Exchange {
         return this.filterBySymbolSinceLimit (sorted, symbol, since, limit) as FundingRateHistory[];
     }
 
-    async fetchFundingRates (symbols: Strings = undefined, params = {}) {
+    async fetchFundingRates (symbols: Strings = undefined, params = {}): Promise<FundingRates> {
         /**
          * @method
          * @name binance#fetchFundingRates
@@ -9394,7 +9407,7 @@ export default class binance extends Exchange {
          * @param {string[]|undefined} symbols list of unified market symbols
          * @param {object} [params] extra parameters specific to the exchange API endpoint
          * @param {string} [params.subType] "linear" or "inverse"
-         * @returns {object} a dictionary of [funding rates structures]{@link https://docs.ccxt.com/#/?id=funding-rates-structure}, indexe by market symbols
+         * @returns {object[]} a list of [funding rate structures]{@link https://docs.ccxt.com/#/?id=funding-rates-structure}, indexed by market symbols
          */
         await this.loadMarkets ();
         symbols = this.marketSymbols (symbols);
@@ -9411,16 +9424,11 @@ export default class binance extends Exchange {
         } else {
             throw new NotSupported (this.id + ' fetchFundingRates() supports linear and inverse contracts only');
         }
-        const result = [];
-        for (let i = 0; i < response.length; i++) {
-            const entry = response[i];
-            const parsed = this.parseFundingRate (entry);
-            result.push (parsed);
-        }
+        const result = this.parseFundingRates (response);
         return this.filterByArray (result, 'symbol', symbols);
     }
 
-    parseFundingRate (contract, market: Market = undefined) {
+    parseFundingRate (contract, market: Market = undefined): FundingRate {
         // ensure it matches with https://www.binance.com/en/futures/funding-history/0
         //
         //   {
@@ -9452,6 +9460,7 @@ export default class binance extends Exchange {
             'indexPrice': indexPrice,
             'info': contract,
             'interestRate': interestRate,
+            'interval': undefined,
             'markPrice': markPrice,
             'nextFundingDatetime': undefined,
             'nextFundingRate': undefined,
@@ -9461,7 +9470,7 @@ export default class binance extends Exchange {
             'previousFundingTimestamp': undefined,
             'symbol': symbol,
             'timestamp': timestamp,
-        };
+        } as FundingRate;
     }
 
     parseAccountPositions (account, filterClosed = false) {

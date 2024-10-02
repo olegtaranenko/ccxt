@@ -575,6 +575,7 @@ class okx extends okx$1 {
                     // General Class
                     '1': errors.ExchangeError,
                     '2': errors.ExchangeError,
+                    '4088': errors.ManualInteractionNeeded,
                     '50000': errors.BadRequest,
                     '50001': errors.OnMaintenance,
                     '50002': errors.BadRequest,
@@ -2936,7 +2937,7 @@ class okx extends okx$1 {
          * @param {string} [params.positionSide] if position mode is one-way: set to 'net', if position mode is hedge-mode: set to 'long' or 'short'
          * @param {string} [params.trailingPercent] the percent to trail away from the current market price
          * @param {string} [params.tpOrdKind] 'condition' or 'limit', the default is 'condition'
-         * @param {string} [params.hedged] true/false, to automatically set exchange-specific params needed when trading in hedge mode
+         * @param {bool} [params.hedged] *swap and future only* true for hedged mode, false for one way mode
          * @returns {object} an [order structure]{@link https://docs.ccxt.com/#/?id=order-structure}
          */
         await this.loadMarkets();
@@ -6049,6 +6050,9 @@ class okx extends okx$1 {
         const symbol = this.safeSymbol(marketId, market);
         const nextFundingRate = this.safeNumber(contract, 'nextFundingRate');
         const fundingTime = this.safeInteger(contract, 'fundingTime');
+        const fundingTimeString = this.safeString(contract, 'fundingTime');
+        const nextFundingTimeString = this.safeString(contract, 'nextFundingRate');
+        const millisecondsInterval = Precise["default"].stringSub(nextFundingTimeString, fundingTimeString);
         // https://www.okx.com/support/hc/en-us/articles/360053909272-Ⅸ-Introduction-to-perpetual-swap-funding-fee
         // > The current interest is 0.
         return {
@@ -6069,7 +6073,18 @@ class okx extends okx$1 {
             'previousFundingRate': undefined,
             'previousFundingTimestamp': undefined,
             'previousFundingDatetime': undefined,
+            'interval': this.parseFundingInterval(millisecondsInterval),
         };
+    }
+    parseFundingInterval(interval) {
+        const intervals = {
+            '3600000': '1h',
+            '14400000': '4h',
+            '28800000': '8h',
+            '57600000': '16h',
+            '86400000': '24h',
+        };
+        return this.safeString(intervals, interval, interval);
     }
     async fetchFundingRate(symbol, params = {}) {
         /**

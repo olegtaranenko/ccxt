@@ -2117,6 +2117,7 @@ class mexc extends Exchange {
          * @param {float} [$params->triggerPrice] The $price at which a trigger order is triggered at
          * @param {bool} [$params->postOnly] if true, the order will only be posted if it will be a maker order
          * @param {bool} [$params->reduceOnly] *contract only* indicates if this order is to reduce the size of a position
+         * @param {bool} [$params->hedged] *swap only* true for hedged mode, false for one way mode, default is false
          *
          * EXCHANGE SPECIFIC PARAMETERS
          * @param {int} [$params->leverage] *contract only* leverage is necessary on isolated margin
@@ -2255,6 +2256,7 @@ class mexc extends Exchange {
          * @param {float} [$params->triggerPrice] The $price at which a trigger order is triggered at
          * @param {bool} [$params->postOnly] if true, the order will only be posted if it will be a maker order
          * @param {bool} [$params->reduceOnly] indicates if this order is to reduce the size of a position
+         * @param {bool} [$params->hedged] *swap only* true for $hedged mode, false for one way mode, default is false
          *
          * EXCHANGE SPECIFIC PARAMETERS
          * @param {int} [$params->leverage] $leverage is necessary on isolated margin
@@ -2330,17 +2332,29 @@ class mexc extends Exchange {
             }
         }
         $reduceOnly = $this->safe_bool($params, 'reduceOnly', false);
-        if ($reduceOnly) {
-            $request['side'] = ($side === 'buy') ? 2 : 4;
+        $hedged = $this->safe_bool($params, 'hedged', false);
+        $sideInteger = null;
+        if ($hedged) {
+            if ($reduceOnly) {
+                $params = $this->omit($params, 'reduceOnly'); // $hedged mode does not accept this parameter
+                $side = ($side === 'buy') ? 'sell' : 'buy';
+            }
+            $sideInteger = ($side === 'buy') ? 1 : 3;
+            $request['positionMode'] = 1;
         } else {
-            $request['side'] = ($side === 'buy') ? 1 : 3;
+            if ($reduceOnly) {
+                $sideInteger = ($side === 'buy') ? 2 : 4;
+            } else {
+                $sideInteger = ($side === 'buy') ? 1 : 3;
+            }
         }
+        $request['side'] = $sideInteger;
         $clientOrderId = $this->safe_string_2($params, 'clientOrderId', 'externalOid');
         if ($clientOrderId !== null) {
             $request['externalOid'] = $clientOrderId;
         }
         $stopPrice = $this->safe_number_2($params, 'triggerPrice', 'stopPrice');
-        $params = $this->omit($params, array( 'clientOrderId', 'externalOid', 'postOnly', 'stopPrice', 'triggerPrice' ));
+        $params = $this->omit($params, array( 'clientOrderId', 'externalOid', 'postOnly', 'stopPrice', 'triggerPrice', 'hedged' ));
         $response = null;
         if ($stopPrice) {
             $request['triggerPrice'] = $this->price_to_precision($symbol, $stopPrice);
@@ -3783,6 +3797,7 @@ class mexc extends Exchange {
          * @param {int} [$since] the earliest time in ms to fetch $trades for
          * @param {int} [$limit] the maximum number of $trades structures to retrieve
          * @param {array} [$params] extra parameters specific to the exchange API endpoint
+         * @param {int} [$params->until] the latest time in ms to fetch $trades for
          * @return {Trade[]} a list of ~@link https://docs.ccxt.com/#/?id=trade-structure trade structures~
          */
         if ($symbol === null) {
@@ -3790,19 +3805,25 @@ class mexc extends Exchange {
         }
         $this->load_markets();
         $market = $this->market($symbol);
-        list($marketType, $query) = $this->handle_market_type_and_params('fetchMyTrades', $market, $params);
+        $marketType = null;
+        list($marketType, $params) = $this->handle_market_type_and_params('fetchMyTrades', $market, $params);
         $request = array(
             'symbol' => $market['id'],
         );
         $trades = null;
         if ($marketType === 'spot') {
             if ($since !== null) {
-                $request['start_time'] = $since;
+                $request['startTime'] = $since;
             }
             if ($limit !== null) {
                 $request['limit'] = $limit;
             }
-            $trades = $this->spotPrivateGetMyTrades ($this->extend($request, $query));
+            $until = $this->safe_integer($params, 'until');
+            if ($until !== null) {
+                $params = $this->omit($params, 'until');
+                $request['endTime'] = $until;
+            }
+            $trades = $this->spotPrivateGetMyTrades ($this->extend($request, $params));
             //
             // spot
             //
@@ -3835,7 +3856,7 @@ class mexc extends Exchange {
             if ($limit !== null) {
                 $request['page_size'] = $limit;
             }
-            $response = $this->contractPrivateGetOrderListOrderDeals ($this->extend($request, $query));
+            $response = $this->contractPrivateGetOrderListOrderDeals ($this->extend($request, $params));
             //
             //     {
             //         "success" => true,
@@ -4095,7 +4116,7 @@ class mexc extends Exchange {
         return $result;
     }
 
-    public function parse_funding_rate($contract, ?array $market = null) {
+    public function parse_funding_rate($contract, ?array $market = null): array {
         //
         //     {
         //         "symbol" => "BTC_USDT",
@@ -4131,10 +4152,11 @@ class mexc extends Exchange {
             'previousFundingRate' => null,
             'previousFundingTimestamp' => null,
             'previousFundingDatetime' => null,
+            'interval' => null,
         );
     }
 
-    public function fetch_funding_rate(string $symbol, $params = array ()) {
+    public function fetch_funding_rate(string $symbol, $params = array ()): array {
         /**
          * fetch the current funding rate
          * @see https://mexcdevelop.github.io/apidocs/contract_v1_en/#get-contract-funding-rate

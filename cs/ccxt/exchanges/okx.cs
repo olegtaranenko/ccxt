@@ -536,6 +536,7 @@ public partial class okx : Exchange
                 { "exact", new Dictionary<string, object>() {
                     { "1", typeof(ExchangeError) },
                     { "2", typeof(ExchangeError) },
+                    { "4088", typeof(ManualInteractionNeeded) },
                     { "50000", typeof(BadRequest) },
                     { "50001", typeof(OnMaintenance) },
                     { "50002", typeof(BadRequest) },
@@ -3022,7 +3023,7 @@ public partial class okx : Exchange
         * @param {string} [params.positionSide] if position mode is one-way: set to 'net', if position mode is hedge-mode: set to 'long' or 'short'
         * @param {string} [params.trailingPercent] the percent to trail away from the current market price
         * @param {string} [params.tpOrdKind] 'condition' or 'limit', the default is 'condition'
-        * @param {string} [params.hedged] true/false, to automatically set exchange-specific params needed when trading in hedge mode
+        * @param {bool} [params.hedged] *swap and future only* true for hedged mode, false for one way mode
         * @returns {object} an [order structure]{@link https://docs.ccxt.com/#/?id=order-structure}
         */
         parameters ??= new Dictionary<string, object>();
@@ -6357,6 +6358,9 @@ public partial class okx : Exchange
         object symbol = this.safeSymbol(marketId, market);
         object nextFundingRate = this.safeNumber(contract, "nextFundingRate");
         object fundingTime = this.safeInteger(contract, "fundingTime");
+        object fundingTimeString = this.safeString(contract, "fundingTime");
+        object nextFundingTimeString = this.safeString(contract, "nextFundingRate");
+        object millisecondsInterval = Precise.stringSub(nextFundingTimeString, fundingTimeString);
         // https://www.okx.com/support/hc/en-us/articles/360053909272-Ⅸ-Introduction-to-perpetual-swap-funding-fee
         // > The current interest is 0.
         return new Dictionary<string, object>() {
@@ -6377,7 +6381,20 @@ public partial class okx : Exchange
             { "previousFundingRate", null },
             { "previousFundingTimestamp", null },
             { "previousFundingDatetime", null },
+            { "interval", this.parseFundingInterval(millisecondsInterval) },
         };
+    }
+
+    public virtual object parseFundingInterval(object interval)
+    {
+        object intervals = new Dictionary<string, object>() {
+            { "3600000", "1h" },
+            { "14400000", "4h" },
+            { "28800000", "8h" },
+            { "57600000", "16h" },
+            { "86400000", "24h" },
+        };
+        return this.safeString(intervals, interval, interval);
     }
 
     public async override Task<object> fetchFundingRate(object symbol, object parameters = null)
