@@ -832,6 +832,9 @@ abstract class binanceusdm extends \ccxt\async\binance {
     public function papi_post_um_conditional_order($params = array()) {
         return $this->request('um/conditional/order', 'papi', 'POST', $params, null, null, array("cost" => 1));
     }
+    public function papi_post_um_feeburn($params = array()) {
+        return $this->request('um/feeBurn', 'papi', 'POST', $params, null, null, array("cost" => 1));
+    }
     public function papi_post_um_leverage($params = array()) {
         return $this->request('um/leverage', 'papi', 'POST', $params, null, null, array("cost" => 1));
     }
@@ -2982,6 +2985,9 @@ abstract class binanceusdm extends \ccxt\async\binance {
     }
     public function papiPostUmConditionalOrder($params = array()) {
         return $this->request('um/conditional/order', 'papi', 'POST', $params, null, null, array("cost" => 1));
+    }
+    public function papiPostUmFeeBurn($params = array()) {
+        return $this->request('um/feeBurn', 'papi', 'POST', $params, null, null, array("cost" => 1));
     }
     public function papiPostUmLeverage($params = array()) {
         return $this->request('um/leverage', 'papi', 'POST', $params, null, null, array("cost" => 1));

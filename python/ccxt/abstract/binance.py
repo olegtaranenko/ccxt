@@ -277,6 +277,7 @@ class ImplicitAPI:
     papi_post_repay_futures_switch = papiPostRepayFuturesSwitch = Entry('repay-futures-switch', 'papi', 'POST', {'cost': 150})
     papi_post_repayloan = papiPostRepayLoan = Entry('repayLoan', 'papi', 'POST', {'cost': 0.1333})
     papi_post_um_conditional_order = papiPostUmConditionalOrder = Entry('um/conditional/order', 'papi', 'POST', {'cost': 1})
+    papi_post_um_feeburn = papiPostUmFeeBurn = Entry('um/feeBurn', 'papi', 'POST', {'cost': 1})
     papi_post_um_leverage = papiPostUmLeverage = Entry('um/leverage', 'papi', 'POST', {'cost': 1})
     papi_post_um_order = papiPostUmOrder = Entry('um/order', 'papi', 'POST', {'cost': 1})
     papi_post_um_positionside_dual = papiPostUmPositionSideDual = Entry('um/positionSide/dual', 'papi', 'POST', {'cost': 1})

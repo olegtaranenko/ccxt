@@ -1,5 +1,5 @@
 import Exchange from './abstract/binance.js';
-import type { Balances, Conversion, CrossBorrowRate, Currencies, Currency, Dict, FundingRateHistory, Greeks, int, Int, IsolatedBorrowRate, IsolatedBorrowRates, LedgerEntry, Leverage, Leverages, LeverageTier, LeverageTiers, Liquidation, MarginMode, MarginModes, MarginModification, Market, MarketInterface, Num, OHLCV, OpenInterest, Option, Order, OrderBook, OrderRequest, OrderSide, OrderType, Str, Strings, Ticker, Tickers, Trade, TradingFeeInterface, TradingFees, Transaction, TransferEntry } from './base/types.js';
+import type { Balances, Conversion, CrossBorrowRate, Currencies, Currency, Dict, FundingRate, FundingRateHistory, FundingRates, Greeks, int, Int, IsolatedBorrowRate, IsolatedBorrowRates, LedgerEntry, Leverage, Leverages, LeverageTier, LeverageTiers, Liquidation, MarginMode, MarginModes, MarginModification, Market, MarketInterface, Num, OHLCV, OpenInterest, Option, Order, OrderBook, OrderRequest, OrderSide, OrderType, Str, Strings, Ticker, Tickers, Trade, TradingFeeInterface, TradingFees, Transaction, TransferEntry } from './base/types.js';
 /**
  * @class binance
  * @augments Exchange
@@ -127,46 +127,10 @@ export default class binance extends Exchange {
     fetchTradingFee(symbol: string, params?: {}): Promise<TradingFeeInterface>;
     fetchTradingFees(params?: {}): Promise<TradingFees>;
     futuresTransfer(code: string, amount: any, type: any, params?: {}): Promise<TransferEntry>;
-    fetchFundingRate(symbol: string, params?: {}): Promise<{
-        datetime: string;
-        estimatedSettlePrice: number;
-        fundingDatetime: string;
-        fundingRate: number;
-        fundingTimestamp: number;
-        indexPrice: number;
-        info: any;
-        interestRate: number;
-        markPrice: number;
-        nextFundingDatetime: any;
-        nextFundingRate: any;
-        nextFundingTimestamp: any;
-        previousFundingDatetime: any;
-        previousFundingRate: any;
-        previousFundingTimestamp: any;
-        symbol: string;
-        timestamp: number;
-    }>;
+    fetchFundingRate(symbol: string, params?: {}): Promise<FundingRate>;
     fetchFundingRateHistory(symbol?: Str, since?: Int, limit?: Int, params?: {}): Promise<FundingRateHistory[]>;
-    fetchFundingRates(symbols?: Strings, params?: {}): Promise<any>;
-    parseFundingRate(contract: any, market?: Market): {
-        datetime: string;
-        estimatedSettlePrice: number;
-        fundingDatetime: string;
-        fundingRate: number;
-        fundingTimestamp: number;
-        indexPrice: number;
-        info: any;
-        interestRate: number;
-        markPrice: number;
-        nextFundingDatetime: any;
-        nextFundingRate: any;
-        nextFundingTimestamp: any;
-        previousFundingDatetime: any;
-        previousFundingRate: any;
-        previousFundingTimestamp: any;
-        symbol: string;
-        timestamp: number;
-    };
+    fetchFundingRates(symbols?: Strings, params?: {}): Promise<FundingRates>;
+    parseFundingRate(contract: any, market?: Market): FundingRate;
     parseAccountPositions(account: any, filterClosed?: boolean): any[];
     parseAccountPosition(position: any, market?: Market): {
         collateral: number;

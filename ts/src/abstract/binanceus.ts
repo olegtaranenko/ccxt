@@ -284,6 +284,7 @@ interface binance {
     papiPostRepayFuturesSwitch (params?: {}): Promise<implicitReturnType>;
     papiPostRepayLoan (params?: {}): Promise<implicitReturnType>;
     papiPostUmConditionalOrder (params?: {}): Promise<implicitReturnType>;
+    papiPostUmFeeBurn (params?: {}): Promise<implicitReturnType>;
     papiPostUmLeverage (params?: {}): Promise<implicitReturnType>;
     papiPostUmOrder (params?: {}): Promise<implicitReturnType>;
     papiPostUmPositionSideDual (params?: {}): Promise<implicitReturnType>;

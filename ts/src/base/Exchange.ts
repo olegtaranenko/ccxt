@@ -2681,7 +2681,7 @@ export default class Exchange {
         return this.parseOHLCV (ohlcv, market);
     }
 
-    async fetchFundingRates (symbols: Strings = undefined, params = {}): Promise<{}> {
+    async fetchFundingRates (symbols: Strings = undefined, params = {}): Promise<FundingRates> {
         throw new NotSupported (this.id + ' fetchFundingRates() is not supported yet');
     }
 
@@ -6253,11 +6253,11 @@ export default class Exchange {
         return market['symbol'];
     }
 
-    parseFundingRate (contract: string, market: Market = undefined): object {
+    parseFundingRate (contract: string, market: Market = undefined): FundingRate {
         throw new NotSupported (this.id + ' parseFundingRate() is not supported yet');
     }
 
-    parseFundingRates (response, market: Market = undefined) {
+    parseFundingRates (response, market: Market = undefined): FundingRates {
         const result = {};
         for (let i = 0; i < response.length; i++) {
             const parsed = this.parseFundingRate (response[i], market);

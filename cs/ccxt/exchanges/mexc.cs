@@ -1992,6 +1992,7 @@ public partial class mexc : Exchange
         * @param {float} [params.triggerPrice] The price at which a trigger order is triggered at
         * @param {bool} [params.postOnly] if true, the order will only be posted if it will be a maker order
         * @param {bool} [params.reduceOnly] *contract only* indicates if this order is to reduce the size of a position
+        * @param {bool} [params.hedged] *swap only* true for hedged mode, false for one way mode, default is false
         *
         * EXCHANGE SPECIFIC PARAMETERS
         * @param {int} [params.leverage] *contract only* leverage is necessary on isolated margin
@@ -2159,6 +2160,7 @@ public partial class mexc : Exchange
         * @param {float} [params.triggerPrice] The price at which a trigger order is triggered at
         * @param {bool} [params.postOnly] if true, the order will only be posted if it will be a maker order
         * @param {bool} [params.reduceOnly] indicates if this order is to reduce the size of a position
+        * @param {bool} [params.hedged] *swap only* true for hedged mode, false for one way mode, default is false
         *
         * EXCHANGE SPECIFIC PARAMETERS
         * @param {int} [params.leverage] leverage is necessary on isolated margin
@@ -2230,20 +2232,35 @@ public partial class mexc : Exchange
             }
         }
         object reduceOnly = this.safeBool(parameters, "reduceOnly", false);
-        if (isTrue(reduceOnly))
+        object hedged = this.safeBool(parameters, "hedged", false);
+        object sideInteger = null;
+        if (isTrue(hedged))
         {
-            ((IDictionary<string,object>)request)["side"] = ((bool) isTrue((isEqual(side, "buy")))) ? 2 : 4;
+            if (isTrue(reduceOnly))
+            {
+                parameters = this.omit(parameters, "reduceOnly"); // hedged mode does not accept this parameter
+                side = ((bool) isTrue((isEqual(side, "buy")))) ? "sell" : "buy";
+            }
+            sideInteger = ((bool) isTrue((isEqual(side, "buy")))) ? 1 : 3;
+            ((IDictionary<string,object>)request)["positionMode"] = 1;
         } else
         {
-            ((IDictionary<string,object>)request)["side"] = ((bool) isTrue((isEqual(side, "buy")))) ? 1 : 3;
+            if (isTrue(reduceOnly))
+            {
+                sideInteger = ((bool) isTrue((isEqual(side, "buy")))) ? 2 : 4;
+            } else
+            {
+                sideInteger = ((bool) isTrue((isEqual(side, "buy")))) ? 1 : 3;
+            }
         }
+        ((IDictionary<string,object>)request)["side"] = sideInteger;
         object clientOrderId = this.safeString2(parameters, "clientOrderId", "externalOid");
         if (isTrue(!isEqual(clientOrderId, null)))
         {
             ((IDictionary<string,object>)request)["externalOid"] = clientOrderId;
         }
         object stopPrice = this.safeNumber2(parameters, "triggerPrice", "stopPrice");
-        parameters = this.omit(parameters, new List<object>() {"clientOrderId", "externalOid", "postOnly", "stopPrice", "triggerPrice"});
+        parameters = this.omit(parameters, new List<object>() {"clientOrderId", "externalOid", "postOnly", "stopPrice", "triggerPrice", "hedged"});
         object response = null;
         if (isTrue(stopPrice))
         {
@@ -3761,6 +3778,7 @@ public partial class mexc : Exchange
         * @param {int} [since] the earliest time in ms to fetch trades for
         * @param {int} [limit] the maximum number of trades structures to retrieve
         * @param {object} [params] extra parameters specific to the exchange API endpoint
+        * @param {int} [params.until] the latest time in ms to fetch trades for
         * @returns {Trade[]} a list of [trade structures]{@link https://docs.ccxt.com/#/?id=trade-structure}
         */
         parameters ??= new Dictionary<string, object>();
@@ -3770,9 +3788,10 @@ public partial class mexc : Exchange
         }
         await this.loadMarkets();
         object market = this.market(symbol);
-        var marketTypequeryVariable = this.handleMarketTypeAndParams("fetchMyTrades", market, parameters);
-        var marketType = ((IList<object>) marketTypequeryVariable)[0];
-        var query = ((IList<object>) marketTypequeryVariable)[1];
+        object marketType = null;
+        var marketTypeparametersVariable = this.handleMarketTypeAndParams("fetchMyTrades", market, parameters);
+        marketType = ((IList<object>)marketTypeparametersVariable)[0];
+        parameters = ((IList<object>)marketTypeparametersVariable)[1];
         object request = new Dictionary<string, object>() {
             { "symbol", getValue(market, "id") },
         };
@@ -3781,13 +3800,19 @@ public partial class mexc : Exchange
         {
             if (isTrue(!isEqual(since, null)))
             {
-                ((IDictionary<string,object>)request)["start_time"] = since;
+                ((IDictionary<string,object>)request)["startTime"] = since;
             }
             if (isTrue(!isEqual(limit, null)))
             {
                 ((IDictionary<string,object>)request)["limit"] = limit;
             }
-            trades = await this.spotPrivateGetMyTrades(this.extend(request, query));
+            object until = this.safeInteger(parameters, "until");
+            if (isTrue(!isEqual(until, null)))
+            {
+                parameters = this.omit(parameters, "until");
+                ((IDictionary<string,object>)request)["endTime"] = until;
+            }
+            trades = await this.spotPrivateGetMyTrades(this.extend(request, parameters));
         } else
         {
             if (isTrue(!isEqual(since, null)))
@@ -3803,7 +3828,7 @@ public partial class mexc : Exchange
             {
                 ((IDictionary<string,object>)request)["page_size"] = limit;
             }
-            object response = await this.contractPrivateGetOrderListOrderDeals(this.extend(request, query));
+            object response = await this.contractPrivateGetOrderListOrderDeals(this.extend(request, parameters));
             //
             //     {
             //         "success": true,
@@ -4110,6 +4135,7 @@ public partial class mexc : Exchange
             { "previousFundingRate", null },
             { "previousFundingTimestamp", null },
             { "previousFundingDatetime", null },
+            { "interval", null },
         };
     }
 
