@@ -565,6 +565,7 @@ export default class Exchange {
             fetchStatus: any;
             fetchTicker: boolean;
             fetchTickers: any;
+            fetchMarkPrices: any;
             fetchTickersWs: any;
             fetchTickerWs: any;
             fetchTime: any;
@@ -969,6 +970,7 @@ export default class Exchange {
     fetchTickerWs(symbol: string, params?: {}): Promise<Ticker>;
     watchTicker(symbol: string, params?: {}): Promise<Ticker>;
     fetchTickers(symbols?: Strings, params?: {}): Promise<Tickers>;
+    fetchMarkPrices(symbols?: Strings, params?: {}): Promise<Tickers>;
     fetchTickersWs(symbols?: Strings, params?: {}): Promise<Tickers>;
     fetchOrderBooks(symbols?: Strings, limit?: Int, params?: {}): Promise<Dictionary<OrderBook>>;
     watchBidsAsks(symbols?: Strings, params?: {}): Promise<Tickers>;

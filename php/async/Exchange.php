@@ -43,11 +43,11 @@ use React\EventLoop\Loop;
 
 use Exception;
 
-$version = '4.4.11';
+$version = '4.4.13';
 
 class Exchange extends \ccxt\Exchange {
 
-    const VERSION = '4.4.11';
+    const VERSION = '4.4.13';
 
     public $browser;
     public $marketsLoading = null;
@@ -523,6 +523,7 @@ class Exchange extends \ccxt\Exchange {
                 'fetchStatus' => null,
                 'fetchTicker' => true,
                 'fetchTickers' => null,
+                'fetchMarkPrices' => null,
                 'fetchTickersWs' => null,
                 'fetchTickerWs' => null,
                 'fetchTime' => null,
@@ -2342,8 +2343,10 @@ class Exchange extends \ccxt\Exchange {
             'change' => $this->parse_number($change),
             'close' => $this->parse_number($this->omit_zero($close)),
             'high' => $this->parse_number($this->omit_zero($this->safe_string($ticker, 'high'))),
+            'indexPrice' => $this->safe_number($ticker, 'indexPrice'),
             'last' => $this->parse_number($this->omit_zero($last)),
             'low' => $this->parse_number($this->omit_zero($this->safe_string($ticker, 'low'))),
+            'markPrice' => $this->safe_number($ticker, 'markPrice'),
             'open' => $this->parse_number($this->omit_zero($open)),
             'percentage' => $this->parse_number($percentage),
             'previousClose' => $this->safe_number($ticker, 'previousClose'),
@@ -3685,6 +3688,10 @@ class Exchange extends \ccxt\Exchange {
 
     public function fetch_tickers(?array $symbols = null, $params = array ()) {
         throw new NotSupported($this->id . ' fetchTickers() is not supported yet');
+    }
+
+    public function fetch_mark_prices(?array $symbols = null, $params = array ()) {
+        throw new NotSupported($this->id . ' fetchMarkPrices() is not supported yet');
     }
 
     public function fetch_tickers_ws(?array $symbols = null, $params = array ()) {

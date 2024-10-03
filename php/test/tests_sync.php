@@ -13,7 +13,36 @@ use ccxt\OnMaintenance;
 
 require_once __DIR__ . '/tests_helpers.php';
 
-class testMainClass extends baseMainTestClass {
+#[\AllowDynamicProperties]
+class testMainClass {
+    $is_synchronous = IS_SYNCHRONOUS;
+    $id_tests = false;
+    $request_tests_failed = false;
+    $response_tests_failed = false;
+    $request_tests = false;
+    $ws_tests = false;
+    $response_tests = false;
+    $static_tests = false;
+    $info = false;
+    $verbose = false;
+    $debug = false;
+    $private_test = false;
+    $private_test_only = false;
+    private $load_keys = false;
+    $sandbox = false;
+    $proxy_test_file_name = PROXY_TEST_FILE_NAME;
+    $only_specific_tests = [];
+    $skipped_settings_for_exchange = array();
+    $skipped_methods = array();
+    $checked_public_tests = array();
+    $test_files = array();
+    $public_tests = array();
+    $new_line = NEW_LINE;
+    $root_dir = ROOT_DIR;
+    $env_vars = ENV_VARS;
+    $ext = EXT;
+    $lang = LANG;
+
     public function parse_cli_args() {
         $this->response_tests = get_cli_arg_value('--responseTests');
         $this->id_tests = get_cli_arg_value('--idTests');
@@ -149,7 +178,7 @@ class testMainClass extends baseMainTestClass {
             $this->load_credentials_from_env($exchange);
         }
         // skipped tests
-        $skipped_file = $this->root_dir_for_skips . 'skip-tests.json';
+        $skipped_file = $this->root_dir . 'skip-tests.json';
         $skipped_settings = io_file_read($skipped_file);
         $this->skipped_settings_for_exchange = $exchange->safe_value($skipped_settings, $exchange_id, array());
         $skipped_settings_for_exchange = $this->skipped_settings_for_exchange;

@@ -4,7 +4,7 @@
 
 # -----------------------------------------------------------------------------
 
-__version__ = '4.4.11'
+__version__ = '4.4.13'
 
 # -----------------------------------------------------------------------------
 
@@ -1957,6 +1957,7 @@ class Exchange(object):
                 'fetchStatus': None,
                 'fetchTicker': True,
                 'fetchTickers': None,
+                'fetchMarkPrices': None,
                 'fetchTickersWs': None,
                 'fetchTickerWs': None,
                 'fetchTime': None,
@@ -3468,8 +3469,10 @@ class Exchange(object):
             'change': self.parse_number(change),
             'close': self.parse_number(self.omit_zero(close)),
             'high': self.parse_number(self.omit_zero(self.safe_string(ticker, 'high'))),
+            'indexPrice': self.safe_number(ticker, 'indexPrice'),
             'last': self.parse_number(self.omit_zero(last)),
             'low': self.parse_number(self.omit_zero(self.safe_string(ticker, 'low'))),
+            'markPrice': self.safe_number(ticker, 'markPrice'),
             'open': self.parse_number(self.omit_zero(open)),
             'percentage': self.parse_number(percentage),
             'previousClose': self.safe_number(ticker, 'previousClose'),
@@ -4504,6 +4507,9 @@ class Exchange(object):
 
     def fetch_tickers(self, symbols: Strings = None, params={}):
         raise NotSupported(self.id + ' fetchTickers() is not supported yet')
+
+    def fetch_mark_prices(self, symbols: Strings = None, params={}):
+        raise NotSupported(self.id + ' fetchMarkPrices() is not supported yet')
 
     def fetch_tickers_ws(self, symbols: Strings = None, params={}):
         raise NotSupported(self.id + ' fetchTickers() is not supported yet')

@@ -1511,6 +1511,7 @@ export default class Exchange {
                 'fetchStatus': undefined,
                 'fetchTicker': true,
                 'fetchTickers': undefined,
+                'fetchMarkPrices': undefined,
                 'fetchTickersWs': undefined,
                 'fetchTickerWs': undefined,
                 'fetchTime': undefined,
@@ -3250,8 +3251,10 @@ export default class Exchange {
             'change': this.parseNumber(change),
             'close': this.parseNumber(this.omitZero(close)),
             'high': this.parseNumber(this.omitZero(this.safeString(ticker, 'high'))),
+            'indexPrice': this.safeNumber(ticker, 'indexPrice'),
             'last': this.parseNumber(this.omitZero(last)),
             'low': this.parseNumber(this.omitZero(this.safeString(ticker, 'low'))),
+            'markPrice': this.safeNumber(ticker, 'markPrice'),
             'open': this.parseNumber(this.omitZero(open)),
             'percentage': this.parseNumber(percentage),
             'previousClose': this.safeNumber(ticker, 'previousClose'),
@@ -4480,6 +4483,9 @@ export default class Exchange {
     }
     async fetchTickers(symbols = undefined, params = {}) {
         throw new NotSupported(this.id + ' fetchTickers() is not supported yet');
+    }
+    async fetchMarkPrices(symbols = undefined, params = {}) {
+        throw new NotSupported(this.id + ' fetchMarkPrices() is not supported yet');
     }
     async fetchTickersWs(symbols = undefined, params = {}) {
         throw new NotSupported(this.id + ' fetchTickers() is not supported yet');
