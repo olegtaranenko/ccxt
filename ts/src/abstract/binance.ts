@@ -57,6 +57,7 @@ interface Exchange {
     dapiPublicGetContinuousKlines (params?: {}): Promise<implicitReturnType>;
     dapiPublicGetDepth (params?: {}): Promise<implicitReturnType>;
     dapiPublicGetExchangeInfo (params?: {}): Promise<implicitReturnType>;
+    dapiPublicGetFundingInfo (params?: {}): Promise<implicitReturnType>;
     dapiPublicGetFundingRate (params?: {}): Promise<implicitReturnType>;
     dapiPublicGetHistoricalTrades (params?: {}): Promise<implicitReturnType>;
     dapiPublicGetIndexPriceKlines (params?: {}): Promise<implicitReturnType>;

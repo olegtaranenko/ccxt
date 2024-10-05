@@ -151,6 +151,9 @@ abstract class binanceusdm extends \ccxt\async\binance {
     public function dapipublic_get_exchangeinfo($params = array()) {
         return $this->request('exchangeInfo', 'dapiPublic', 'GET', $params, null, null, array("cost" => 1));
     }
+    public function dapipublic_get_fundinginfo($params = array()) {
+        return $this->request('fundingInfo', 'dapiPublic', 'GET', $params, null, null, array("cost" => 1));
+    }
     public function dapipublic_get_fundingrate($params = array()) {
         return $this->request('fundingRate', 'dapiPublic', 'GET', $params, null, null, array("cost" => 1));
     }
@@ -2304,6 +2307,9 @@ abstract class binanceusdm extends \ccxt\async\binance {
     }
     public function dapiPublicGetExchangeInfo($params = array()) {
         return $this->request('exchangeInfo', 'dapiPublic', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function dapiPublicGetFundingInfo($params = array()) {
+        return $this->request('fundingInfo', 'dapiPublic', 'GET', $params, null, null, array("cost" => 1));
     }
     public function dapiPublicGetFundingRate($params = array()) {
         return $this->request('fundingRate', 'dapiPublic', 'GET', $params, null, null, array("cost" => 1));

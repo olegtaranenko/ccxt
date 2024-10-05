@@ -51,7 +51,7 @@ function _interopNamespace(e) {
 }
 
 // ----------------------------------------------------------------------------
-const { aggregate, arrayConcat, base16ToBinary, base58ToBinary, base64ToBinary, base64ToString, binaryConcat, binaryConcatArray, binaryToBase16, binaryToBase58, binaryToBase64, capitalize, clone, crc32, DECIMAL_PLACES, decimalToPrecision, decode, deepExtend, ecdsa, encode, extend, extractParams, filterBy, flatten, groupBy, hash, hmac, implodeParams, inArray, indexBy, isEmpty, isJsonEncodedObject, isNode, iso8601, json, keysort, merge, microseconds, milliseconds, NO_PADDING, now, numberToBE, numberToLE, numberToString, omit, omitZero, ordered, packb, parse8601, parseDate, parseTimeframe, precisionFromString, rawencode, ROUND, safeFloat, safeFloat2, safeFloatN, safeInteger, safeInteger2, safeIntegerN, safeIntegerProduct, safeIntegerProduct2, safeIntegerProductN, safeString, safeString2, safeStringLower, safeStringLower2, safeStringLowerN, safeStringN, safeStringUpper, safeStringUpper2, safeStringUpperN, safeTimestamp, safeTimestamp2, safeTimestampN, safeValue, safeValue2, safeValueN, seconds, selfIsDefined, SIGNIFICANT_DIGITS, sleep, sortBy, sortBy2, stringToBase64, strip, sum, Throttler, TICK_SIZE, toArray, TRUNCATE, unCamelCase, unique, urlencode, urlencodeBase64, urlencodeNested, urlencodeWithArrayRepeat, uuid, uuid16, uuid22, uuidv1, ymd, ymdhms, yymmdd, yyyymmdd } = functions;
+const { aggregate, arrayConcat, base16ToBinary, base58ToBinary, base64ToBinary, base64ToString, binaryConcat, binaryConcatArray, binaryToBase16, binaryToBase58, binaryToBase64, capitalize, clone, crc32, DECIMAL_PLACES, decimalToPrecision, decode, deepExtend, ecdsa, encode, extend, extractParams, filterBy, flatten, groupBy, hash, hmac, implodeParams, inArray, indexBy, isEmpty, isJsonEncodedObject, isNode, iso8601, json, keysort, merge, microseconds, milliseconds, NO_PADDING, now, numberToBE, numberToLE, numberToString, omit, omitZero, ordered, packb, parse8601, parseDate, parseTimeframe, precisionFromString, rawencode, roundTimeframe, ROUND, safeFloat, safeFloat2, safeFloatN, safeInteger, safeInteger2, safeIntegerN, safeIntegerProduct, safeIntegerProduct2, safeIntegerProductN, safeString, safeString2, safeStringLower, safeStringLower2, safeStringLowerN, safeStringN, safeStringUpper, safeStringUpper2, safeStringUpperN, safeTimestamp, safeTimestamp2, safeTimestampN, safeValue, safeValue2, safeValueN, seconds, selfIsDefined, SIGNIFICANT_DIGITS, sleep, sortBy, sortBy2, stringToBase64, strip, sum, Throttler, TICK_SIZE, toArray, TRUNCATE, unCamelCase, unique, urlencode, urlencodeBase64, urlencodeNested, urlencodeWithArrayRepeat, uuid, uuid16, uuid22, uuidv1, ymd, ymdhms, yymmdd, yyyymmdd } = functions;
 // ----------------------------------------------------------------------------
 /**
  * @class Exchange
@@ -148,6 +148,9 @@ class Exchange {
         this.triggerOrders = undefined;
         this.version = undefined;
         // WS/PRO options
+        this.clients = {};
+        this.newUpdates = true;
+        this.streaming = {};
         this.aggregate = aggregate;
         this.alias = false;
         this.arrayConcat = arrayConcat;
@@ -161,7 +164,6 @@ class Exchange {
         this.binaryToBase58 = binaryToBase58;
         this.binaryToBase64 = binaryToBase64;
         this.capitalize = capitalize;
-        this.clients = {};
         this.clone = clone;
         this.crc32 = crc32;
         this.decimalToPrecision = decimalToPrecision;
@@ -188,7 +190,6 @@ class Exchange {
         this.merge = merge;
         this.microseconds = microseconds;
         this.milliseconds = milliseconds;
-        this.newUpdates = true;
         this.now = now;
         this.numberToBE = numberToBE;
         this.numberToLE = numberToLE;
@@ -202,6 +203,7 @@ class Exchange {
         this.parseTimeframe = parseTimeframe;
         this.precisionFromString = precisionFromString;
         this.rawencode = rawencode;
+        this.roundTimeframe = roundTimeframe;
         this.safeFloat = safeFloat;
         this.safeFloat2 = safeFloat2;
         this.safeFloatN = safeFloatN;
@@ -229,7 +231,6 @@ class Exchange {
         this.seconds = seconds;
         this.sortBy = sortBy;
         this.sortBy2 = sortBy2;
-        this.streaming = {};
         this.stringToBase64 = stringToBase64;
         this.strip = strip;
         this.sum = sum;
@@ -1470,6 +1471,8 @@ class Exchange {
                 'fetchFundingHistory': undefined,
                 'fetchFundingRate': undefined,
                 'fetchFundingRateHistory': undefined,
+                'fetchFundingInterval': undefined,
+                'fetchFundingIntervals': undefined,
                 'fetchFundingRates': undefined,
                 'fetchGreeks': undefined,
                 'fetchIndexOHLCV': undefined,
@@ -2208,6 +2211,9 @@ class Exchange {
     }
     async fetchFundingRates(symbols = undefined, params = {}) {
         throw new errors.NotSupported(this.id + ' fetchFundingRates() is not supported yet');
+    }
+    async fetchFundingIntervals(symbols = undefined, params = {}) {
+        throw new errors.NotSupported(this.id + ' fetchFundingIntervals() is not supported yet');
     }
     async watchFundingRate(symbol, params = {}) {
         throw new errors.NotSupported(this.id + ' watchFundingRate() is not supported yet');
@@ -4478,6 +4484,24 @@ class Exchange {
             throw new errors.NotSupported(this.id + ' fetchTicker() is not supported yet');
         }
     }
+    async fetchMarkPrice(symbol, params = {}) {
+        if (this.has['fetchMarkPrices']) {
+            await this.loadMarkets();
+            const market = this.market(symbol);
+            symbol = market['symbol'];
+            const tickers = await this.fetchMarkPrices([symbol], params);
+            const ticker = this.safeDict(tickers, symbol);
+            if (ticker === undefined) {
+                throw new errors.NullResponse(this.id + ' fetchMarkPrices() could not find a ticker for ' + symbol);
+            }
+            else {
+                return ticker;
+            }
+        }
+        else {
+            throw new errors.NotSupported(this.id + ' fetchMarkPrices() is not supported yet');
+        }
+    }
     async fetchTickerWs(symbol, params = {}) {
         if (this.has['fetchTickersWs']) {
             await this.loadMarkets();
@@ -5262,7 +5286,8 @@ class Exchange {
             return this.forceString(fee);
         }
         else {
-            return this.decimalToPrecision(fee, ROUND, precision, this.precisionMode, this.paddingMode);
+            const roundingMode = this.safeInteger(this.options, 'currencyToPrecisionRoundingMode', ROUND);
+            return this.decimalToPrecision(fee, roundingMode, precision, this.precisionMode, this.paddingMode);
         }
     }
     forceString(value) {
@@ -5708,6 +5733,27 @@ class Exchange {
         }
         else {
             throw new errors.NotSupported(this.id + ' fetchFundingRate () is not supported yet');
+        }
+    }
+    async fetchFundingInterval(symbol, params = {}) {
+        if (this.has['fetchFundingIntervals']) {
+            await this.loadMarkets();
+            const market = this.market(symbol);
+            symbol = market['symbol'];
+            if (!market['contract']) {
+                throw new errors.BadSymbol(this.id + ' fetchFundingInterval() supports contract markets only');
+            }
+            const rates = await this.fetchFundingIntervals([symbol], params);
+            const rate = this.safeValue(rates, symbol);
+            if (rate === undefined) {
+                throw new errors.NullResponse(this.id + ' fetchFundingInterval() returned no data for ' + symbol);
+            }
+            else {
+                return rate;
+            }
+        }
+        else {
+            throw new errors.NotSupported(this.id + ' fetchFundingInterval() is not supported yet');
         }
     }
     async fetchMarkOHLCV(symbol, timeframe = '1m', since = undefined, limit = undefined, params = {}) {

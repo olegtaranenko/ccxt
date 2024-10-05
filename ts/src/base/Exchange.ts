@@ -172,7 +172,6 @@ const {
     numberToBE,
     numberToLE,
     numberToString,
-    roundTimeframe,
     omit,
     omitZero,
     ordered,

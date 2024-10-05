@@ -50,6 +50,7 @@ class ImplicitAPI:
     dapipublic_get_continuousklines = dapiPublicGetContinuousKlines = Entry('continuousKlines', 'dapiPublic', 'GET', {'cost': 1, 'byLimit': [[99, 1], [499, 2], [1000, 5], [10000, 10]]})
     dapipublic_get_depth = dapiPublicGetDepth = Entry('depth', 'dapiPublic', 'GET', {'cost': 2, 'byLimit': [[50, 2], [100, 5], [500, 10], [1000, 20]]})
     dapipublic_get_exchangeinfo = dapiPublicGetExchangeInfo = Entry('exchangeInfo', 'dapiPublic', 'GET', {'cost': 1})
+    dapipublic_get_fundinginfo = dapiPublicGetFundingInfo = Entry('fundingInfo', 'dapiPublic', 'GET', {'cost': 1})
     dapipublic_get_fundingrate = dapiPublicGetFundingRate = Entry('fundingRate', 'dapiPublic', 'GET', {'cost': 1})
     dapipublic_get_historicaltrades = dapiPublicGetHistoricalTrades = Entry('historicalTrades', 'dapiPublic', 'GET', {'cost': 20})
     dapipublic_get_indexpriceklines = dapiPublicGetIndexPriceKlines = Entry('indexPriceKlines', 'dapiPublic', 'GET', {'cost': 1, 'byLimit': [[99, 1], [499, 2], [1000, 5], [10000, 10]]})

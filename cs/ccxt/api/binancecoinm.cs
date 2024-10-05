@@ -251,6 +251,11 @@ public partial class binancecoinm : binance
         return await this.callAsync ("dapiPublicGetExchangeInfo",parameters);
     }
 
+    public async Task<object> dapiPublicGetFundingInfo (object parameters = null)
+    {
+        return await this.callAsync ("dapiPublicGetFundingInfo",parameters);
+    }
+
     public async Task<object> dapiPublicGetFundingRate (object parameters = null)
     {
         return await this.callAsync ("dapiPublicGetFundingRate",parameters);

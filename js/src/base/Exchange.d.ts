@@ -194,6 +194,9 @@ export default class Exchange {
         www?: string;
     };
     version: Str;
+    clients: Dictionary<WsClient>;
+    newUpdates: boolean;
+    streaming: {};
     aggregate: typeof functions.aggregate;
     alias: boolean;
     arrayConcat: (a: any[], b: any[]) => any[];
@@ -207,7 +210,6 @@ export default class Exchange {
     binaryToBase58: (data: Uint8Array) => string;
     binaryToBase64: (data: Uint8Array) => string;
     capitalize: (s: string) => string;
-    clients: Dictionary<WsClient>;
     clone: (x: any) => any;
     crc32: typeof functions.crc32;
     decimalToPrecision: (x: string, roundingMode: number, numPrecisionDigits: any, countingMode?: number, paddingMode?: number) => string;
@@ -247,7 +249,6 @@ export default class Exchange {
     merge: (target: Dictionary<any>, ...args: any) => Dictionary<any>;
     microseconds: () => number;
     milliseconds: () => number;
-    newUpdates: boolean;
     now: () => number;
     numberToBE: (n: number, padding: number) => Uint8Array;
     numberToLE: (n: number, padding: number) => Uint8Array;
@@ -261,6 +262,7 @@ export default class Exchange {
     parseTimeframe: (timeframe: string) => number;
     precisionFromString: typeof functions.precisionFromString;
     rawencode: (object: object) => string;
+    roundTimeframe: (timeframe: string, timestamp: number, direction?: number) => number;
     safeFloat: (o: any, k: IndexType, $default?: number) => number;
     safeFloat2: (o: any, k1: IndexType, k2: IndexType, $default?: number) => number;
     safeFloatN: (o: any, k: IndexType[], $default?: number) => number;
@@ -288,7 +290,6 @@ export default class Exchange {
     seconds: () => number;
     sortBy: (array: any[], key: IndexType, descending?: boolean, defaultValue?: any, direction?: number) => any[];
     sortBy2: (array: any[], key1: IndexType, key2: IndexType, descending?: boolean, direction?: number) => any[];
-    streaming: {};
     stringToBase64: (string: string) => string;
     strip: (s: string) => string;
     sum: (...xs: any[]) => any;
@@ -506,6 +507,8 @@ export default class Exchange {
             fetchFundingHistory: any;
             fetchFundingRate: any;
             fetchFundingRateHistory: any;
+            fetchFundingInterval: any;
+            fetchFundingIntervals: any;
             fetchFundingRates: any;
             fetchGreeks: any;
             fetchIndexOHLCV: any;
@@ -775,6 +778,7 @@ export default class Exchange {
     parseWsOrderTrade(trade: Dict, market?: Market): Trade;
     parseWsOHLCV(ohlcv: any, market?: Market): OHLCV;
     fetchFundingRates(symbols?: Strings, params?: {}): Promise<FundingRates>;
+    fetchFundingIntervals(symbols?: Strings, params?: {}): Promise<FundingRates>;
     watchFundingRate(symbol: string, params?: {}): Promise<FundingRate>;
     watchFundingRates(symbols: string[], params?: {}): Promise<FundingRates>;
     watchFundingRatesForSymbols(symbols: string[], params?: {}): Promise<{}>;
@@ -967,6 +971,7 @@ export default class Exchange {
     handleErrors(statusCode: int, statusText: string, url: string, method: string, responseHeaders: Dict, responseBody: string, response: any, requestHeaders: any, requestBody: any): any;
     calculateRateLimiterCost(api: any, method: any, path: any, params: any, config?: {}): any;
     fetchTicker(symbol: string, params?: {}): Promise<Ticker>;
+    fetchMarkPrice(symbol: string, params?: {}): Promise<Ticker>;
     fetchTickerWs(symbol: string, params?: {}): Promise<Ticker>;
     watchTicker(symbol: string, params?: {}): Promise<Ticker>;
     fetchTickers(symbols?: Strings, params?: {}): Promise<Tickers>;
@@ -1106,6 +1111,7 @@ export default class Exchange {
     parseOpenInterest(interest: any, market?: Market): OpenInterest;
     parseOpenInterests(response: any, market?: any, since?: Int, limit?: Int): OpenInterest[];
     fetchFundingRate(symbol: string, params?: {}): Promise<FundingRate>;
+    fetchFundingInterval(symbol: string, params?: {}): Promise<FundingRate>;
     fetchMarkOHLCV(symbol: any, timeframe?: string, since?: Int, limit?: Int, params?: {}): Promise<OHLCV[]>;
     fetchIndexOHLCV(symbol: string, timeframe?: string, since?: Int, limit?: Int, params?: {}): Promise<OHLCV[]>;
     fetchPremiumIndexOHLCV(symbol: string, timeframe?: string, since?: Int, limit?: Int, params?: {}): Promise<OHLCV[]>;
