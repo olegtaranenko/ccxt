@@ -257,9 +257,10 @@ export interface Account {
 
 export interface DepositAddress {
     address: string;
-    currency: Str;
+    currency: string;
     info: any;
-    status: Str;
+    network?: string;
+    tag?: Str;
 }
 
 export interface WithdrawalResponse {
