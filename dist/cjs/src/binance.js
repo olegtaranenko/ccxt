@@ -204,6 +204,7 @@ class binance extends binance$1 {
                         'apiTradingStatus': 1,
                         'balance': 5,
                         'commissionRate': 20,
+                        'convert/orderStatus': 5,
                         'feeBurn': 1,
                         'forceOrders': { 'cost': 20, 'noSymbol': 50 },
                         'income': 30,
@@ -232,6 +233,8 @@ class binance extends binance$1 {
                         'apiReferral/customization': 1,
                         'apiReferral/userCustomization': 1,
                         'batchOrders': 5,
+                        'convert/acceptQuote': 20,
+                        'convert/getQuote': 200,
                         'countdownCancelAll': 10,
                         'feeBurn': 1,
                         'leverage': 1,
@@ -272,6 +275,7 @@ class binance extends binance$1 {
                             'byLimit': [[99, 1], [499, 2], [1000, 5], [10000, 10]],
                             'cost': 1,
                         },
+                        'convert/exchangeInfo': 4,
                         'depth': { 'byLimit': [[50, 2], [100, 5], [500, 10], [1000, 20]], 'cost': 2 },
                         'exchangeInfo': 1,
                         'fundingInfo': 1,
@@ -2705,11 +2709,18 @@ class binance extends binance$1 {
         if (apiBackup !== undefined) {
             return undefined;
         }
-        const promises = [this.sapiGetCapitalConfigGetall(params), this.sapiGetMarginAllAssets(params)];
+        const promises = [this.sapiGetCapitalConfigGetall(params)];
+        const fetchMargins = this.safeBool(this.options, 'fetchMargins', false);
+        if (fetchMargins) {
+            promises.push(this.sapiGetMarginAllPairs(params));
+        }
         const results = await Promise.all(promises);
         const responseCurrencies = results[0];
-        const responseMarginables = results[1];
-        const marginablesById = this.indexBy(responseMarginables, 'assetName');
+        let marginablesById = undefined;
+        if (fetchMargins) {
+            const responseMarginables = results[1];
+            marginablesById = this.indexBy(responseMarginables, 'assetName');
+        }
         const result = {};
         for (let i = 0; i < responseCurrencies.length; i++) {
             //
@@ -3224,8 +3235,8 @@ class binance extends binance$1 {
         let fees = this.fees;
         let linear = undefined;
         let inverse = undefined;
-        const strike = this.safeString(market, 'strikePrice');
         let symbol = base + '/' + quote;
+        let strike = undefined;
         if (contract) {
             if (swap) {
                 symbol = symbol + ':' + settle;
@@ -3234,6 +3245,7 @@ class binance extends binance$1 {
                 symbol = symbol + ':' + settle + '-' + this.yymmdd(expiry);
             }
             else if (option) {
+                strike = this.numberToString(this.parseToNumeric(this.safeString(market, 'strikePrice')));
                 symbol = symbol + ':' + settle + '-' + this.yymmdd(expiry) + '-' + strike + '-' + this.safeString(optionParts, 3);
             }
             contractSize = this.safeNumber2(market, 'contractSize', 'unit', this.parseNumber('1'));
@@ -4308,7 +4320,7 @@ class binance extends binance$1 {
          * @description fetches mark price for the market
          * @see https://binance-docs.github.io/apidocs/futures/en/#mark-price
          * @see https://binance-docs.github.io/apidocs/delivery/en/#index-price-and-mark-price
-         * @param {string[]} [symbols] unified symbols of the markets to fetch the ticker for, all market tickers are returned if not assigned
+         * @param {string} symbol unified symbol of the market to fetch the ticker for
          * @param {object} [params] extra parameters specific to the exchange API endpoint
          * @param {string} [params.subType] "linear" or "inverse"
          * @returns {object} a dictionary of [ticker structures]{@link https://docs.ccxt.com/#/?id=ticker-structure}
@@ -6336,14 +6348,28 @@ class binance extends binance$1 {
                 request['quantity'] = this.parseToNumeric(amount);
             }
             else {
-                request['quantity'] = this.amountToPrecision(symbol, amount);
+                const marketAmountPrecision = this.safeString(market['precision'], 'amount');
+                const isPrecisionAvailable = (marketAmountPrecision !== undefined);
+                if (isPrecisionAvailable) {
+                    request['quantity'] = this.amountToPrecision(symbol, amount);
+                }
+                else {
+                    request['quantity'] = this.parseToNumeric(amount); // some options don't have the precision available
+                }
             }
         }
         if (priceIsRequired && !isPriceMatch) {
             if (price === undefined) {
                 throw new errors.InvalidOrder(this.id + ' createOrder() requires a price argument for a ' + type + ' order');
             }
-            request['price'] = this.priceToPrecision(symbol, price);
+            const pricePrecision = this.safeString(market['precision'], 'price');
+            const isPricePrecisionAvailable = (pricePrecision !== undefined);
+            if (isPricePrecisionAvailable) {
+                request['price'] = this.priceToPrecision(symbol, price);
+            }
+            else {
+                request['price'] = this.parseToNumeric(price); // some options don't have the precision available
+            }
         }
         if (stopPriceIsRequired) {
             if (market['contract']) {

@@ -388,6 +388,9 @@ abstract class binance extends \ccxt\async\Exchange {
     public function fapiprivate_get_commissionrate($params = array()) {
         return $this->request('commissionRate', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 20));
     }
+    public function fapiprivate_get_convert_orderstatus($params = array()) {
+        return $this->request('convert/orderStatus', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 5));
+    }
     public function fapiprivate_get_feeburn($params = array()) {
         return $this->request('feeBurn', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
     }
@@ -463,6 +466,12 @@ abstract class binance extends \ccxt\async\Exchange {
     public function fapiprivate_post_batchorders($params = array()) {
         return $this->request('batchOrders', 'fapiPrivate', 'POST', $params, null, null, array("cost" => 5));
     }
+    public function fapiprivate_post_convert_acceptquote($params = array()) {
+        return $this->request('convert/acceptQuote', 'fapiPrivate', 'POST', $params, null, null, array("cost" => 20));
+    }
+    public function fapiprivate_post_convert_getquote($params = array()) {
+        return $this->request('convert/getQuote', 'fapiPrivate', 'POST', $params, null, null, array("cost" => 200));
+    }
     public function fapiprivate_post_countdowncancelall($params = array()) {
         return $this->request('countdownCancelAll', 'fapiPrivate', 'POST', $params, null, null, array("cost" => 10));
     }
@@ -531,6 +540,9 @@ abstract class binance extends \ccxt\async\Exchange {
     }
     public function fapipublic_get_continuousklines($params = array()) {
         return $this->request('continuousKlines', 'fapiPublic', 'GET', $params, null, null, array("byLimit" => [[99, 1], [499, 2], [1000, 5], [10000, 10]], "cost" => 1));
+    }
+    public function fapipublic_get_convert_exchangeinfo($params = array()) {
+        return $this->request('convert/exchangeInfo', 'fapiPublic', 'GET', $params, null, null, array("cost" => 4));
     }
     public function fapipublic_get_depth($params = array()) {
         return $this->request('depth', 'fapiPublic', 'GET', $params, null, null, array("byLimit" => [[50, 2], [100, 5], [500, 10], [1000, 20]], "cost" => 2));
@@ -2545,6 +2557,9 @@ abstract class binance extends \ccxt\async\Exchange {
     public function fapiPrivateGetCommissionRate($params = array()) {
         return $this->request('commissionRate', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 20));
     }
+    public function fapiPrivateGetConvertOrderStatus($params = array()) {
+        return $this->request('convert/orderStatus', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 5));
+    }
     public function fapiPrivateGetFeeBurn($params = array()) {
         return $this->request('feeBurn', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
     }
@@ -2620,6 +2635,12 @@ abstract class binance extends \ccxt\async\Exchange {
     public function fapiPrivatePostBatchOrders($params = array()) {
         return $this->request('batchOrders', 'fapiPrivate', 'POST', $params, null, null, array("cost" => 5));
     }
+    public function fapiPrivatePostConvertAcceptQuote($params = array()) {
+        return $this->request('convert/acceptQuote', 'fapiPrivate', 'POST', $params, null, null, array("cost" => 20));
+    }
+    public function fapiPrivatePostConvertGetQuote($params = array()) {
+        return $this->request('convert/getQuote', 'fapiPrivate', 'POST', $params, null, null, array("cost" => 200));
+    }
     public function fapiPrivatePostCountdownCancelAll($params = array()) {
         return $this->request('countdownCancelAll', 'fapiPrivate', 'POST', $params, null, null, array("cost" => 10));
     }
@@ -2688,6 +2709,9 @@ abstract class binance extends \ccxt\async\Exchange {
     }
     public function fapiPublicGetContinuousKlines($params = array()) {
         return $this->request('continuousKlines', 'fapiPublic', 'GET', $params, null, null, array("byLimit" => [[99, 1], [499, 2], [1000, 5], [10000, 10]], "cost" => 1));
+    }
+    public function fapiPublicGetConvertExchangeInfo($params = array()) {
+        return $this->request('convert/exchangeInfo', 'fapiPublic', 'GET', $params, null, null, array("cost" => 4));
     }
     public function fapiPublicGetDepth($params = array()) {
         return $this->request('depth', 'fapiPublic', 'GET', $params, null, null, array("byLimit" => [[50, 2], [100, 5], [500, 10], [1000, 20]], "cost" => 2));

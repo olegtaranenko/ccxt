@@ -646,6 +646,11 @@ public partial class binance : Exchange
         return await this.callAsync ("fapiPrivateGetCommissionRate",parameters);
     }
 
+    public async Task<object> fapiPrivateGetConvertOrderStatus (object parameters = null)
+    {
+        return await this.callAsync ("fapiPrivateGetConvertOrderStatus",parameters);
+    }
+
     public async Task<object> fapiPrivateGetFeeBurn (object parameters = null)
     {
         return await this.callAsync ("fapiPrivateGetFeeBurn",parameters);
@@ -771,6 +776,16 @@ public partial class binance : Exchange
         return await this.callAsync ("fapiPrivatePostBatchOrders",parameters);
     }
 
+    public async Task<object> fapiPrivatePostConvertAcceptQuote (object parameters = null)
+    {
+        return await this.callAsync ("fapiPrivatePostConvertAcceptQuote",parameters);
+    }
+
+    public async Task<object> fapiPrivatePostConvertGetQuote (object parameters = null)
+    {
+        return await this.callAsync ("fapiPrivatePostConvertGetQuote",parameters);
+    }
+
     public async Task<object> fapiPrivatePostCountdownCancelAll (object parameters = null)
     {
         return await this.callAsync ("fapiPrivatePostCountdownCancelAll",parameters);
@@ -884,6 +899,11 @@ public partial class binance : Exchange
     public async Task<object> fapiPublicGetContinuousKlines (object parameters = null)
     {
         return await this.callAsync ("fapiPublicGetContinuousKlines",parameters);
+    }
+
+    public async Task<object> fapiPublicGetConvertExchangeInfo (object parameters = null)
+    {
+        return await this.callAsync ("fapiPublicGetConvertExchangeInfo",parameters);
     }
 
     public async Task<object> fapiPublicGetDepth (object parameters = null)

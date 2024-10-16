@@ -136,6 +136,7 @@ interface Exchange {
     fapiPrivateGetApiTradingStatus (params?: {}): Promise<implicitReturnType>;
     fapiPrivateGetBalance (params?: {}): Promise<implicitReturnType>;
     fapiPrivateGetCommissionRate (params?: {}): Promise<implicitReturnType>;
+    fapiPrivateGetConvertOrderStatus (params?: {}): Promise<implicitReturnType>;
     fapiPrivateGetFeeBurn (params?: {}): Promise<implicitReturnType>;
     fapiPrivateGetForceOrders (params?: {}): Promise<implicitReturnType>;
     fapiPrivateGetIncome (params?: {}): Promise<implicitReturnType>;
@@ -161,6 +162,8 @@ interface Exchange {
     fapiPrivatePostApiReferralCustomization (params?: {}): Promise<implicitReturnType>;
     fapiPrivatePostApiReferralUserCustomization (params?: {}): Promise<implicitReturnType>;
     fapiPrivatePostBatchOrders (params?: {}): Promise<implicitReturnType>;
+    fapiPrivatePostConvertAcceptQuote (params?: {}): Promise<implicitReturnType>;
+    fapiPrivatePostConvertGetQuote (params?: {}): Promise<implicitReturnType>;
     fapiPrivatePostCountdownCancelAll (params?: {}): Promise<implicitReturnType>;
     fapiPrivatePostFeeBurn (params?: {}): Promise<implicitReturnType>;
     fapiPrivatePostLeverage (params?: {}): Promise<implicitReturnType>;
@@ -184,6 +187,7 @@ interface Exchange {
     fapiPublicGetAssetIndex (params?: {}): Promise<implicitReturnType>;
     fapiPublicGetConstituents (params?: {}): Promise<implicitReturnType>;
     fapiPublicGetContinuousKlines (params?: {}): Promise<implicitReturnType>;
+    fapiPublicGetConvertExchangeInfo (params?: {}): Promise<implicitReturnType>;
     fapiPublicGetDepth (params?: {}): Promise<implicitReturnType>;
     fapiPublicGetExchangeInfo (params?: {}): Promise<implicitReturnType>;
     fapiPublicGetFundingInfo (params?: {}): Promise<implicitReturnType>;

@@ -70,6 +70,7 @@ export interface MarketInterface {
         cost?: MinMax,
         leverage?: MinMax,
         price?: MinMax,
+        market?: MinMax,
     };
     linear: Bool;
     lowercaseId?: Str;
