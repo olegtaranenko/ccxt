@@ -183,6 +183,7 @@ class kucoin(Exchange, ImplicitAPI):
                         'mark-price/{symbol}/current': 3,  # 2PW
                         'mark-price/all-symbols': 3,
                         'margin/config': 25,  # 25SW
+                        'announcements': 20,  # 20W
                     },
                     'post': {
                         # ws
@@ -472,6 +473,7 @@ class kucoin(Exchange, ImplicitAPI):
             'precisionMode': TICK_SIZE,
             'exceptions': {
                 'exact': {
+                    'The order does not exist.': OrderNotFound,
                     'order not exist': OrderNotFound,
                     'order not exist.': OrderNotFound,  # duplicated error temporarily
                     'order_not_exist': OrderNotFound,  # {"code":"order_not_exist","msg":"order_not_exist"} ¯\_(ツ)_/¯
@@ -672,6 +674,7 @@ class kucoin(Exchange, ImplicitAPI):
                             'currencies/{currency}': 'v3',
                             'symbols': 'v2',
                             'mark-price/all-symbols': 'v3',
+                            'announcements': 'v3',
                         },
                     },
                     'private': {
@@ -1529,11 +1532,12 @@ class kucoin(Exchange, ImplicitAPI):
         #        "chain": "ERC20"
         #    }
         #
+        minWithdrawFee = self.safe_number(fee, 'withdrawMinFee')
         result: dict = {
             'info': fee,
             'withdraw': {
-                'fee': None,
-                'percentage': None,
+                'fee': minWithdrawFee,
+                'percentage': False,
             },
             'deposit': {
                 'fee': None,
@@ -1541,26 +1545,15 @@ class kucoin(Exchange, ImplicitAPI):
             },
             'networks': {},
         }
-        isWithdrawEnabled = self.safe_bool(fee, 'isWithdrawEnabled', True)
-        minFee = None
-        if isWithdrawEnabled:
-            result['withdraw']['percentage'] = False
-            chains = self.safe_list(fee, 'chains', [])
-            for i in range(0, len(chains)):
-                chain = chains[i]
-                networkId = self.safe_string(chain, 'chainId')
-                networkCode = self.network_id_to_code(networkId, self.safe_string(currency, 'code'))
-                withdrawFee = self.safe_string(chain, 'withdrawalMinFee')
-                if minFee is None or (Precise.string_lt(withdrawFee, minFee)):
-                    minFee = withdrawFee
-                result['networks'][networkCode] = {
-                    'withdraw': self.parse_number(withdrawFee),
-                    'deposit': {
-                        'fee': None,
-                        'percentage': None,
-                    },
-                }
-            result['withdraw']['fee'] = self.parse_number(minFee)
+        networkId = self.safe_string(fee, 'chain')
+        networkCode = self.network_id_to_code(networkId, self.safe_string(currency, 'code'))
+        result['networks'][networkCode] = {
+            'withdraw': minWithdrawFee,
+            'deposit': {
+                'fee': None,
+                'percentage': None,
+            },
+        }
         return result
 
     def is_futures_method(self, methodName, params):
@@ -2920,7 +2913,7 @@ class kucoin(Exchange, ImplicitAPI):
             },
             'status': status,
             'lastTradeTimestamp': None,
-            'average': None,
+            'average': self.safe_string(order, 'avgDealPrice'),
             'trades': None,
         }, market)
 
@@ -4152,15 +4145,6 @@ class kucoin(Exchange, ImplicitAPI):
         elif version == 'v1' and ('v1' in config):
             return config['v1']
         return self.safe_value(config, 'cost', 1)
-
-    def parse_borrow_rate_history(self, response, code, since, limit):
-        result = []
-        for i in range(0, len(response)):
-            item = response[i]
-            borrowRate = self.parse_borrow_rate(item)
-            result.append(borrowRate)
-        sorted = self.sort_by(result, 'timestamp')
-        return self.filter_by_currency_since_limit(sorted, code, since, limit)
 
     def parse_borrow_rate(self, info, currency: Currency = None):
         #

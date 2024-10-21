@@ -18,6 +18,7 @@ from ccxt.base.errors import AccountSuspended
 from ccxt.base.errors import ArgumentsRequired
 from ccxt.base.errors import BadRequest
 from ccxt.base.errors import BadSymbol
+from ccxt.base.errors import OperationRejected
 from ccxt.base.errors import ManualInteractionNeeded
 from ccxt.base.errors import InsufficientFunds
 from ccxt.base.errors import InvalidAddress
@@ -379,6 +380,9 @@ class okx(Exchange, ImplicitAPI):
                         'account/fixed-loan/borrowing-limit': 4,
                         'account/fixed-loan/borrowing-quote': 5,
                         'account/fixed-loan/borrowing-orders-list': 5,
+                        'account/spot-manual-borrow-repay': 10,
+                        'account/set-auto-repay': 4,
+                        'account/spot-borrow-repay-history': 4,
                         # subaccount
                         'users/subaccount/list': 10,
                         'account/subaccount/balances': 10 / 3,
@@ -910,6 +914,11 @@ class okx(Exchange, ImplicitAPI):
                     '59301': ExchangeError,  # Margin adjustment failed for exceeding the max limit
                     '59313': ExchangeError,  # Unable to repay. You haven't borrowed any {ccy} {ccyPair} in Quick margin mode.
                     '59401': ExchangeError,  # Holdings already reached the limit
+                    '59410': OperationRejected,  # You can only borrow self crypto if it supports borrowing and borrowing is enabled.
+                    '59411': InsufficientFunds,  # Manual borrowing failed. Your account's free margin is insufficient
+                    '59412': OperationRejected,  # Manual borrowing failed. The amount exceeds your borrowing limit.
+                    '59413': OperationRejected,  # You didn't borrow self crypto. No repayment needed.
+                    '59414': BadRequest,  # Manual borrowing failed. The minimum borrowing limit is {param0}.needed.
                     '59500': ExchangeError,  # Only the APIKey of the main account has permission
                     '59501': ExchangeError,  # Only 50 APIKeys can be created per account
                     '59502': ExchangeError,  # Note name cannot be duplicate with the currently created APIKey note name
@@ -6230,15 +6239,6 @@ class okx(Exchange, ImplicitAPI):
             code = keys[i]
             borrowRateHistories[code] = self.filter_by_currency_since_limit(borrowRateHistories[code], code, since, limit)
         return borrowRateHistories
-
-    def parse_borrow_rate_history(self, response, code, since, limit):
-        result = []
-        for i in range(0, len(response)):
-            item = response[i]
-            borrowRate = self.parse_borrow_rate(item)
-            result.append(borrowRate)
-        sorted = self.sort_by(result, 'timestamp')
-        return self.filter_by_currency_since_limit(sorted, code, since, limit)
 
     async def fetch_borrow_rate_histories(self, codes=None, since: Int = None, limit: Int = None, params={}):
         """

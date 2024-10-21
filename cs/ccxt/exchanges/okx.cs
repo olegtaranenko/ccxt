@@ -334,6 +334,9 @@ public partial class okx : Exchange
                         { "account/fixed-loan/borrowing-limit", 4 },
                         { "account/fixed-loan/borrowing-quote", 5 },
                         { "account/fixed-loan/borrowing-orders-list", 5 },
+                        { "account/spot-manual-borrow-repay", 10 },
+                        { "account/set-auto-repay", 4 },
+                        { "account/spot-borrow-repay-history", 4 },
                         { "users/subaccount/list", 10 },
                         { "account/subaccount/balances", divide(10, 3) },
                         { "asset/subaccount/balances", divide(10, 3) },
@@ -838,6 +841,11 @@ public partial class okx : Exchange
                     { "59301", typeof(ExchangeError) },
                     { "59313", typeof(ExchangeError) },
                     { "59401", typeof(ExchangeError) },
+                    { "59410", typeof(OperationRejected) },
+                    { "59411", typeof(InsufficientFunds) },
+                    { "59412", typeof(OperationRejected) },
+                    { "59413", typeof(OperationRejected) },
+                    { "59414", typeof(BadRequest) },
                     { "59500", typeof(ExchangeError) },
                     { "59501", typeof(ExchangeError) },
                     { "59502", typeof(ExchangeError) },
@@ -6919,7 +6927,7 @@ public partial class okx : Exchange
         return this.parseBorrowRate(rate);
     }
 
-    public virtual object parseBorrowRate(object info, object currency = null)
+    public override object parseBorrowRate(object info, object currency = null)
     {
         //
         //    {
@@ -6976,19 +6984,6 @@ public partial class okx : Exchange
             ((IDictionary<string,object>)borrowRateHistories)[(string)code] = this.filterByCurrencySinceLimit(getValue(borrowRateHistories, code), code, since, limit);
         }
         return borrowRateHistories;
-    }
-
-    public virtual object parseBorrowRateHistory(object response, object code, object since, object limit)
-    {
-        object result = new List<object>() {};
-        for (object i = 0; isLessThan(i, getArrayLength(response)); postFixIncrement(ref i))
-        {
-            object item = getValue(response, i);
-            object borrowRate = this.parseBorrowRate(item);
-            ((IList<object>)result).Add(borrowRate);
-        }
-        object sorted = this.sortBy(result, "timestamp");
-        return this.filterByCurrencySinceLimit(sorted, code, since, limit);
     }
 
     public async virtual Task<object> fetchBorrowRateHistories(object codes = null, object since = null, object limit = null, object parameters = null)

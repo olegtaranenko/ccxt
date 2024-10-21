@@ -353,6 +353,9 @@ class okx extends okx$1 {
                         'account/fixed-loan/borrowing-limit': 4,
                         'account/fixed-loan/borrowing-quote': 5,
                         'account/fixed-loan/borrowing-orders-list': 5,
+                        'account/spot-manual-borrow-repay': 10,
+                        'account/set-auto-repay': 4,
+                        'account/spot-borrow-repay-history': 4,
                         // subaccount
                         'users/subaccount/list': 10,
                         'account/subaccount/balances': 10 / 3,
@@ -884,6 +887,11 @@ class okx extends okx$1 {
                     '59301': errors.ExchangeError,
                     '59313': errors.ExchangeError,
                     '59401': errors.ExchangeError,
+                    '59410': errors.OperationRejected,
+                    '59411': errors.InsufficientFunds,
+                    '59412': errors.OperationRejected,
+                    '59413': errors.OperationRejected,
+                    '59414': errors.BadRequest,
                     '59500': errors.ExchangeError,
                     '59501': errors.ExchangeError,
                     '59502': errors.ExchangeError,
@@ -6672,16 +6680,6 @@ class okx extends okx$1 {
             borrowRateHistories[code] = this.filterByCurrencySinceLimit(borrowRateHistories[code], code, since, limit);
         }
         return borrowRateHistories;
-    }
-    parseBorrowRateHistory(response, code, since, limit) {
-        const result = [];
-        for (let i = 0; i < response.length; i++) {
-            const item = response[i];
-            const borrowRate = this.parseBorrowRate(item);
-            result.push(borrowRate);
-        }
-        const sorted = this.sortBy(result, 'timestamp');
-        return this.filterByCurrencySinceLimit(sorted, code, since, limit);
     }
     async fetchBorrowRateHistories(codes = undefined, since = undefined, limit = undefined, params = {}) {
         /**

@@ -6,7 +6,7 @@
 
 //  ---------------------------------------------------------------------------
 import Exchange from './abstract/okx.js';
-import { ExchangeError, ExchangeNotAvailable, OnMaintenance, ArgumentsRequired, BadRequest, AccountSuspended, InvalidAddress, DDoSProtection, PermissionDenied, InsufficientFunds, InvalidNonce, InvalidOrder, OrderNotFound, AuthenticationError, RequestTimeout, BadSymbol, RateLimitExceeded, NetworkError, CancelPending, NotSupported, AccountNotEnabled, ContractUnavailable, ManualInteractionNeeded } from './base/errors.js';
+import { ExchangeError, ExchangeNotAvailable, OnMaintenance, ArgumentsRequired, BadRequest, AccountSuspended, InvalidAddress, DDoSProtection, PermissionDenied, InsufficientFunds, InvalidNonce, InvalidOrder, OrderNotFound, AuthenticationError, RequestTimeout, BadSymbol, RateLimitExceeded, NetworkError, CancelPending, NotSupported, AccountNotEnabled, ContractUnavailable, ManualInteractionNeeded, OperationRejected } from './base/errors.js';
 import { Precise } from './base/Precise.js';
 import { TICK_SIZE } from './base/functions/number.js';
 import { sha256 } from './static_dependencies/noble-hashes/sha256.js';
@@ -356,6 +356,9 @@ export default class okx extends Exchange {
                         'account/fixed-loan/borrowing-limit': 4,
                         'account/fixed-loan/borrowing-quote': 5,
                         'account/fixed-loan/borrowing-orders-list': 5,
+                        'account/spot-manual-borrow-repay': 10,
+                        'account/set-auto-repay': 4,
+                        'account/spot-borrow-repay-history': 4,
                         // subaccount
                         'users/subaccount/list': 10,
                         'account/subaccount/balances': 10 / 3,
@@ -887,6 +890,11 @@ export default class okx extends Exchange {
                     '59301': ExchangeError,
                     '59313': ExchangeError,
                     '59401': ExchangeError,
+                    '59410': OperationRejected,
+                    '59411': InsufficientFunds,
+                    '59412': OperationRejected,
+                    '59413': OperationRejected,
+                    '59414': BadRequest,
                     '59500': ExchangeError,
                     '59501': ExchangeError,
                     '59502': ExchangeError,
@@ -6675,16 +6683,6 @@ export default class okx extends Exchange {
             borrowRateHistories[code] = this.filterByCurrencySinceLimit(borrowRateHistories[code], code, since, limit);
         }
         return borrowRateHistories;
-    }
-    parseBorrowRateHistory(response, code, since, limit) {
-        const result = [];
-        for (let i = 0; i < response.length; i++) {
-            const item = response[i];
-            const borrowRate = this.parseBorrowRate(item);
-            result.push(borrowRate);
-        }
-        const sorted = this.sortBy(result, 'timestamp');
-        return this.filterByCurrencySinceLimit(sorted, code, since, limit);
     }
     async fetchBorrowRateHistories(codes = undefined, since = undefined, limit = undefined, params = {}) {
         /**

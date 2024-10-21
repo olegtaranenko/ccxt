@@ -170,6 +170,7 @@ class kucoin extends Exchange {
                         'mark-price/{symbol}/current' => 3, // 2PW
                         'mark-price/all-symbols' => 3,
                         'margin/config' => 25, // 25SW
+                        'announcements' => 20, // 20W
                     ),
                     'post' => array(
                         // ws
@@ -459,6 +460,7 @@ class kucoin extends Exchange {
             'precisionMode' => TICK_SIZE,
             'exceptions' => array(
                 'exact' => array(
+                    'The order does not exist.' => '\\ccxt\\OrderNotFound',
                     'order not exist' => '\\ccxt\\OrderNotFound',
                     'order not exist.' => '\\ccxt\\OrderNotFound', // duplicated error temporarily
                     'order_not_exist' => '\\ccxt\\OrderNotFound', // array("code":"order_not_exist","msg":"order_not_exist") ¯\_(ツ)_/¯
@@ -659,6 +661,7 @@ class kucoin extends Exchange {
                             'currencies/{currency}' => 'v3',
                             'symbols' => 'v2',
                             'mark-price/all-symbols' => 'v3',
+                            'announcements' => 'v3',
                         ),
                     ),
                     'private' => array(
@@ -1557,11 +1560,12 @@ class kucoin extends Exchange {
         //        "chain" => "ERC20"
         //    }
         //
+        $minWithdrawFee = $this->safe_number($fee, 'withdrawMinFee');
         $result = array(
             'info' => $fee,
             'withdraw' => array(
-                'fee' => null,
-                'percentage' => null,
+                'fee' => $minWithdrawFee,
+                'percentage' => false,
             ),
             'deposit' => array(
                 'fee' => null,
@@ -1569,29 +1573,15 @@ class kucoin extends Exchange {
             ),
             'networks' => array(),
         );
-        $isWithdrawEnabled = $this->safe_bool($fee, 'isWithdrawEnabled', true);
-        $minFee = null;
-        if ($isWithdrawEnabled) {
-            $result['withdraw']['percentage'] = false;
-            $chains = $this->safe_list($fee, 'chains', array());
-            for ($i = 0; $i < count($chains); $i++) {
-                $chain = $chains[$i];
-                $networkId = $this->safe_string($chain, 'chainId');
-                $networkCode = $this->network_id_to_code($networkId, $this->safe_string($currency, 'code'));
-                $withdrawFee = $this->safe_string($chain, 'withdrawalMinFee');
-                if ($minFee === null || (Precise::string_lt($withdrawFee, $minFee))) {
-                    $minFee = $withdrawFee;
-                }
-                $result['networks'][$networkCode] = array(
-                    'withdraw' => $this->parse_number($withdrawFee),
-                    'deposit' => array(
-                        'fee' => null,
-                        'percentage' => null,
-                    ),
-                );
-            }
-            $result['withdraw']['fee'] = $this->parse_number($minFee);
-        }
+        $networkId = $this->safe_string($fee, 'chain');
+        $networkCode = $this->network_id_to_code($networkId, $this->safe_string($currency, 'code'));
+        $result['networks'][$networkCode] = array(
+            'withdraw' => $minWithdrawFee,
+            'deposit' => array(
+                'fee' => null,
+                'percentage' => null,
+            ),
+        );
         return $result;
     }
 
@@ -3095,7 +3085,7 @@ class kucoin extends Exchange {
             ),
             'status' => $status,
             'lastTradeTimestamp' => null,
-            'average' => null,
+            'average' => $this->safe_string($order, 'avgDealPrice'),
             'trades' => null,
         ), $market);
     }
@@ -4433,17 +4423,6 @@ class kucoin extends Exchange {
             return $config['v1'];
         }
         return $this->safe_value($config, 'cost', 1);
-    }
-
-    public function parse_borrow_rate_history($response, $code, $since, $limit) {
-        $result = array();
-        for ($i = 0; $i < count($response); $i++) {
-            $item = $response[$i];
-            $borrowRate = $this->parse_borrow_rate($item);
-            $result[] = $borrowRate;
-        }
-        $sorted = $this->sort_by($result, 'timestamp');
-        return $this->filter_by_currency_since_limit($sorted, $code, $since, $limit);
     }
 
     public function parse_borrow_rate($info, ?array $currency = null) {
