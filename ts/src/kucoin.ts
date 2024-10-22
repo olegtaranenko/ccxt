@@ -166,6 +166,7 @@ export default class kucoin extends Exchange {
                         'mark-price/{symbol}/current': 3, // 2PW
                         'mark-price/all-symbols': 3,
                         'margin/config': 25, // 25SW
+                        'announcements': 20, // 20W
                     },
                     'post': {
                         // ws
@@ -455,6 +456,7 @@ export default class kucoin extends Exchange {
             'precisionMode': TICK_SIZE,
             'exceptions': {
                 'exact': {
+                    'The order does not exist.': OrderNotFound,
                     'order not exist': OrderNotFound,
                     'order not exist.': OrderNotFound, // duplicated error temporarily
                     'order_not_exist': OrderNotFound, // {"code":"order_not_exist","msg":"order_not_exist"} ¯\_(ツ)_/¯
@@ -655,6 +657,7 @@ export default class kucoin extends Exchange {
                             'currencies/{currency}': 'v3',
                             'symbols': 'v2',
                             'mark-price/all-symbols': 'v3',
+                            'announcements': 'v3',
                         },
                     },
                     'private': {
@@ -1551,11 +1554,12 @@ export default class kucoin extends Exchange {
         //        "chain": "ERC20"
         //    }
         //
+        const minWithdrawFee = this.safeNumber (fee, 'withdrawMinFee');
         const result: Dict = {
             'info': fee,
             'withdraw': {
-                'fee': undefined,
-                'percentage': undefined,
+                'fee': minWithdrawFee,
+                'percentage': false,
             },
             'deposit': {
                 'fee': undefined,
@@ -1563,29 +1567,15 @@ export default class kucoin extends Exchange {
             },
             'networks': {},
         };
-        const isWithdrawEnabled = this.safeBool (fee, 'isWithdrawEnabled', true);
-        let minFee = undefined;
-        if (isWithdrawEnabled) {
-            result['withdraw']['percentage'] = false;
-            const chains = this.safeList (fee, 'chains', []);
-            for (let i = 0; i < chains.length; i++) {
-                const chain = chains[i];
-                const networkId = this.safeString (chain, 'chainId');
-                const networkCode = this.networkIdToCode (networkId, this.safeString (currency, 'code'));
-                const withdrawFee = this.safeString (chain, 'withdrawalMinFee');
-                if (minFee === undefined || (Precise.stringLt (withdrawFee, minFee))) {
-                    minFee = withdrawFee;
-                }
-                result['networks'][networkCode] = {
-                    'withdraw': this.parseNumber (withdrawFee),
-                    'deposit': {
-                        'fee': undefined,
-                        'percentage': undefined,
-                    },
-                };
-            }
-            result['withdraw']['fee'] = this.parseNumber (minFee);
-        }
+        const networkId = this.safeString (fee, 'chain');
+        const networkCode = this.networkIdToCode (networkId, this.safeString (currency, 'code'));
+        result['networks'][networkCode] = {
+            'withdraw': minWithdrawFee,
+            'deposit': {
+                'fee': undefined,
+                'percentage': undefined,
+            },
+        };
         return result;
     }
 
@@ -3089,7 +3079,7 @@ export default class kucoin extends Exchange {
             },
             'status': status,
             'lastTradeTimestamp': undefined,
-            'average': undefined,
+            'average': this.safeString (order, 'avgDealPrice'),
             'trades': undefined,
         }, market);
     }
@@ -4425,17 +4415,6 @@ export default class kucoin extends Exchange {
             return config['v1'];
         }
         return this.safeValue (config, 'cost', 1);
-    }
-
-    parseBorrowRateHistory (response, code, since, limit) {
-        const result = [];
-        for (let i = 0; i < response.length; i++) {
-            const item = response[i];
-            const borrowRate = this.parseBorrowRate (item);
-            result.push (borrowRate);
-        }
-        const sorted = this.sortBy (result, 'timestamp');
-        return this.filterByCurrencySinceLimit (sorted, code, since, limit);
     }
 
     parseBorrowRate (info, currency: Currency = undefined) {
