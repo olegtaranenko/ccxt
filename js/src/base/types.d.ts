@@ -499,6 +499,14 @@ export interface Leverage {
     shortLeverage: number;
     symbol: string;
 }
+export interface LongShortRatio {
+    info: any;
+    symbol: string;
+    timestamp?: number;
+    datetime?: string;
+    timeframe?: string;
+    longShortRatio: number;
+}
 export interface MarginModification {
     'amount': Num;
     'code': Str;

@@ -81,6 +81,7 @@ import type {
     LeverageTier,
     LeverageTiers,
     Liquidation,
+    LongShortRatio,
     MarginMode,
     MarginModes,
     MarginModification,
@@ -264,6 +265,7 @@ export type {
     Leverages,
     LeverageTier,
     Liquidation,
+    LongShortRatio,
     MarginMode,
     MarginModes,
     Market,
@@ -1907,6 +1909,8 @@ export default class Exchange {
                 'fetchLeverages': undefined,
                 'fetchLeverageTiers': undefined,
                 'fetchLiquidations': undefined,
+                'fetchLongShortRatio': undefined,
+                'fetchLongShortRatioHistory': undefined,
                 'fetchMarginAdjustmentHistory': undefined,
                 'fetchMarginMode': undefined,
                 'fetchMarginModes': undefined,
@@ -2767,6 +2771,14 @@ export default class Exchange {
 
     async setMargin (symbol: string, amount: number, params = {}): Promise<{}> {
         throw new NotSupported (this.id + ' setMargin() is not supported yet');
+    }
+
+    async fetchLongShortRatio (symbol: string, timeframe: Str = undefined, params = {}): Promise<LongShortRatio> {
+        throw new NotSupported (this.id + ' fetchLongShortRatio() is not supported yet');
+    }
+
+    async fetchLongShortRatioHistory (symbol: Str = undefined, timeframe: Str = undefined, since: Int = undefined, limit: Int = undefined, params = {}): Promise<LongShortRatio[]> {
+        throw new NotSupported (this.id + ' fetchLongShortRatioHistory() is not supported yet');
     }
 
     async fetchMarginAdjustmentHistory (symbol: Str = undefined, type: Str = undefined, since: Num = undefined, limit: Num = undefined, params = {}): Promise<MarginModification[]> {
@@ -6330,6 +6342,21 @@ export default class Exchange {
             result[parsed['symbol']] = parsed;
         }
         return result;
+    }
+
+    parseLongShortRatio (info: Dict, market: Market = undefined): LongShortRatio {
+        throw new NotSupported (this.id + ' parseLongShortRatio() is not supported yet');
+    }
+
+    parseLongShortRatioHistory (response, market = undefined, since: Int = undefined, limit: Int = undefined): LongShortRatio[] {
+        const rates = [];
+        for (let i = 0; i < response.length; i++) {
+            const entry = response[i];
+            rates.push (this.parseLongShortRatio (entry, market));
+        }
+        const sorted = this.sortBy (rates, 'timestamp');
+        const symbol = (market === undefined) ? undefined : market['symbol'];
+        return this.filterBySymbolSinceLimit (sorted, symbol, since, limit) as LongShortRatio[];
     }
 
     handleTriggerAndParams (params) {

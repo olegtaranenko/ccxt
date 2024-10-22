@@ -2,11 +2,11 @@ import * as functions from './functions.js';
 import { AuthenticationError, DDoSProtection, ExchangeError, ExchangeNotAvailable, RateLimitExceeded, RequestTimeout } from "./errors.js";
 import WsClient from './ws/WsClient.js';
 import { CountedOrderBook, IndexedOrderBook, OrderBook as WsOrderBook } from './ws/OrderBook.js';
-import type { Account, Balance, BalanceAccount, Balances, Bool, BorrowInterest, CancellationRequest, Conversion, CrossBorrowRate, CrossBorrowRates, Currencies, Currency, CurrencyInterface, DepositAddress, DepositAddressResponse, DepositWithdrawFeeNetwork, Dict, Dictionary, FundingHistory, FundingRate, FundingRateHistory, FundingRates, Greeks, IndexType, int, Int, IsolatedBorrowRate, IsolatedBorrowRates, LastPrice, LastPrices, LedgerEntry, Leverage, Leverages, LeverageTier, LeverageTiers, Liquidation, MarginMode, MarginModes, MarginModification, Market, MarketInterface, MarketType, MinMax, Num, OHLCV, OHLCVC, OpenInterest, Option, OptionChain, Order, OrderBook, OrderRequest, OrderSide, OrderType, Position, Str, Strings, Ticker, Tickers, Trade, TradingFeeInterface, TradingFees, Transaction, TransferEntry } from './types.js';
+import type { Account, Balance, BalanceAccount, Balances, Bool, BorrowInterest, CancellationRequest, Conversion, CrossBorrowRate, CrossBorrowRates, Currencies, Currency, CurrencyInterface, DepositAddress, DepositAddressResponse, DepositWithdrawFeeNetwork, Dict, Dictionary, FundingHistory, FundingRate, FundingRateHistory, FundingRates, Greeks, IndexType, int, Int, IsolatedBorrowRate, IsolatedBorrowRates, LastPrice, LastPrices, LedgerEntry, Leverage, Leverages, LeverageTier, LeverageTiers, Liquidation, LongShortRatio, MarginMode, MarginModes, MarginModification, Market, MarketInterface, MarketType, MinMax, Num, OHLCV, OHLCVC, OpenInterest, Option, OptionChain, Order, OrderBook, OrderRequest, OrderSide, OrderType, Position, Str, Strings, Ticker, Tickers, Trade, TradingFeeInterface, TradingFees, Transaction, TransferEntry } from './types.js';
 import { ArrayCache, ArrayCacheByTimestamp } from './ws/Cache.js';
 import { OrderBook as Ob } from './ws/OrderBook.js';
 import Client from './ws/Client.js';
-export type { Account, Balance, BalanceAccount, Balances, Bool, BorrowInterest, Conversion, CrossBorrowRate, Currency, CurrencyInterface, DepositAddress, DepositAddressResponse, Dictionary, Fee, FundingHistory, FundingRateHistory, Greeks, IndexType, Int, LastPrice, LastPrices, LedgerEntry, Leverage, Leverages, LeverageTier, Liquidation, MarginMode, MarginModes, Market, MarketInterface, MarketType, MinMax, Num, OHLCV, OHLCVC, OpenInterest, Option, OptionChain, Order, OrderBook, OrderRequest, OrderSide, OrderType, Position, Str, Strings, Ticker, Tickers, Trade, Transaction, TransferEntry, } from './types.js';
+export type { Account, Balance, BalanceAccount, Balances, Bool, BorrowInterest, Conversion, CrossBorrowRate, Currency, CurrencyInterface, DepositAddress, DepositAddressResponse, Dictionary, Fee, FundingHistory, FundingRateHistory, Greeks, IndexType, Int, LastPrice, LastPrices, LedgerEntry, Leverage, Leverages, LeverageTier, Liquidation, LongShortRatio, MarginMode, MarginModes, Market, MarketInterface, MarketType, MinMax, Num, OHLCV, OHLCVC, OpenInterest, Option, OptionChain, Order, OrderBook, OrderRequest, OrderSide, OrderType, Position, Str, Strings, Ticker, Tickers, Trade, Transaction, TransferEntry, } from './types.js';
 /**
  * @class Exchange
  */
@@ -524,6 +524,8 @@ export default class Exchange {
             fetchLeverages: any;
             fetchLeverageTiers: any;
             fetchLiquidations: any;
+            fetchLongShortRatio: any;
+            fetchLongShortRatioHistory: any;
             fetchMarginAdjustmentHistory: any;
             fetchMarginMode: any;
             fetchMarginModes: any;
@@ -794,6 +796,8 @@ export default class Exchange {
     addMargin(symbol: string, amount: number, params?: {}): Promise<MarginModification>;
     reduceMargin(symbol: string, amount: number, params?: {}): Promise<MarginModification>;
     setMargin(symbol: string, amount: number, params?: {}): Promise<{}>;
+    fetchLongShortRatio(symbol: string, timeframe?: Str, params?: {}): Promise<LongShortRatio>;
+    fetchLongShortRatioHistory(symbol?: Str, timeframe?: Str, since?: Int, limit?: Int, params?: {}): Promise<LongShortRatio[]>;
     fetchMarginAdjustmentHistory(symbol?: Str, type?: Str, since?: Num, limit?: Num, params?: {}): Promise<MarginModification[]>;
     setMarginMode(marginMode: string, symbol?: Str, params?: {}): Promise<{}>;
     fetchDepositAddressesByNetwork(code: string, params?: {}): Promise<DepositAddress[]>;
@@ -1103,6 +1107,8 @@ export default class Exchange {
     safeSymbol(marketId: Str, market?: Market, delimiter?: Str, marketType?: Str): string;
     parseFundingRate(contract: string, market?: Market): FundingRate;
     parseFundingRates(response: any, market?: Market): FundingRates;
+    parseLongShortRatio(info: Dict, market?: Market): LongShortRatio;
+    parseLongShortRatioHistory(response: any, market?: any, since?: Int, limit?: Int): LongShortRatio[];
     handleTriggerAndParams(params: any): any[];
     isTriggerOrder(params: any): any[];
     isPostOnly(isMarketOrder: boolean, exchangeSpecificParam: any, params?: {}): boolean;
