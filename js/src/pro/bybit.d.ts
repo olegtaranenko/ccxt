@@ -35,7 +35,7 @@ export default class bybit extends bybitRest {
     unWatchTrades(symbol: string, params?: {}): Promise<any>;
     handleTrades(client: Client, message: any): void;
     parseWsTrade(trade: any, market?: any): Trade;
-    getPrivateType(url: any): "spot" | "usdc" | "unified";
+    getPrivateType(url: any): "spot" | "unified" | "usdc";
     watchMyTrades(symbol?: Str, since?: Int, limit?: Int, params?: {}): Promise<Trade[]>;
     unWatchMyTrades(symbol?: Str, params?: {}): Promise<any>;
     handleMyTrades(client: Client, message: any): void;
