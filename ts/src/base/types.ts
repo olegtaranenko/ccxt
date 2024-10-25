@@ -70,6 +70,7 @@ export interface MarketInterface {
         cost?: MinMax,
         leverage?: MinMax,
         price?: MinMax,
+        market?: MinMax,
     };
     linear: Bool;
     lowercaseId?: Str;
@@ -257,9 +258,14 @@ export interface Account {
 
 export interface DepositAddress {
     address: string;
-    currency: Str;
+    currency: string;
     info: any;
-    status: Str;
+    network?: string;
+    tag?: Str;
+    info: any;
+    currency: string;
+    network?: string;
+    tag?: Str;
 }
 
 export interface WithdrawalResponse {
@@ -542,6 +548,15 @@ export interface Leverage {
     marginMode: 'isolated' | 'cross' | Str;
     shortLeverage: number;
     symbol: string;
+}
+
+export interface LongShortRatio {
+    info: any,
+    symbol: string,
+    timestamp?: number,
+    datetime?: string,
+    timeframe?: string,
+    longShortRatio: number,
 }
 
 export interface MarginModification {
