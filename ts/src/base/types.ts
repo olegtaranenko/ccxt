@@ -262,10 +262,6 @@ export interface DepositAddress {
     info: any;
     network?: string;
     tag?: Str;
-    info: any;
-    currency: string;
-    network?: string;
-    tag?: Str;
 }
 
 export interface WithdrawalResponse {
@@ -316,7 +312,6 @@ export interface Position {
     lastUpdateTimestamp?: number;
     leverage?: number;
     liquidationPrice?: number;
-    maintenanceMargin?: number;
     maintenanceMarginPercentage?: number;
     maintenenceMargin?: number;
     marginMode?: Str;
