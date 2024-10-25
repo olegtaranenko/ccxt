@@ -5,7 +5,7 @@ import { Precise } from './base/Precise.js';
 import { TICK_SIZE } from './base/functions/number.js';
 import { ExchangeError, BadRequest, ArgumentsRequired, AuthenticationError, PermissionDenied, AccountSuspended, InsufficientFunds, RateLimitExceeded, ExchangeNotAvailable, BadSymbol, InvalidOrder, OrderNotFound, NotSupported, AccountNotEnabled, OrderImmediatelyFillable, BadResponse } from './base/errors.js';
 import { sha512 } from './static_dependencies/noble-hashes/sha512.js';
-import type { Int, OrderSide, OrderType, OHLCV, Trade, FundingRateHistory, OpenInterest, Order, Balances, OrderRequest, FundingHistory, Str, Transaction, Ticker, OrderBook, Tickers, Greeks, Strings, Market, Currency, MarketInterface, TransferEntry, Leverage, Leverages, Num, OptionChain, Option, MarginModification, TradingFeeInterface, Currencies, TradingFees, Position, Dict, LeverageTier, LeverageTiers, int, CancellationRequest, LedgerEntry, FundingRate, FundingRates, DepositAddress } from './base/types.js';
+import type { Int, OrderSide, OrderType, OHLCV, Trade, FundingRateHistory, OpenInterest, Order, Balances, OrderRequest, FundingHistory, Str, Transaction, Ticker, OrderBook, Tickers, Greeks, Strings, Market, Currency, MarketInterface, TransferEntry, Leverage, Leverages, Num, OptionChain, Option, MarginModification, TradingFeeInterface, Currencies, TradingFees, Position, Dict, LeverageTier, LeverageTiers, int, CancellationRequest, LedgerEntry, FundingRate, FundingRates, DepositAddress, Bool } from './base/types.js';
 
 /**
  * @class gate
@@ -1547,7 +1547,7 @@ export default class gate extends Exchange {
         return [ request, query ];
     }
 
-    multiOrderSpotPrepareRequest (market = undefined, stop = false, params = {}) {
+    multiOrderSpotPrepareRequest (market = undefined, trigger = false, params = {}) {
         /**
          * @ignore
          * @method
@@ -1558,12 +1558,12 @@ export default class gate extends Exchange {
          * @param {object} [params] request parameters
          * @returns the api request object, and the new params object with non-needed parameters removed
          */
-        const [ marginMode, query ] = this.getMarginMode (stop, params);
+        const [ marginMode, query ] = this.getMarginMode (trigger, params);
         const request: Dict = {
             'account': marginMode,
         };
         if (market !== undefined) {
-            if (stop) {
+            if (trigger) {
                 // gate spot and margin stop orders use the term market instead of currency_pair, and normal instead of spot. Neither parameter is used when fetching/cancelling a single order. They are used for creating a single stop order, but createOrder does not call this method
                 request['market'] = market['id'];
             } else {
@@ -4891,13 +4891,16 @@ export default class gate extends Exchange {
             market = this.market (symbol);
             symbol = market['symbol'];
         }
-        const stop = this.safeBool2 (params, 'stop', 'trigger');
-        params = this.omit (params, [ 'stop', 'trigger' ]);
+        let trigger: Bool = undefined;
+        [ trigger, params ] = this.handleParamBool2 (params, 'trigger', 'stop');
         let type: Str = undefined;
         [ type, params ] = this.handleMarketTypeAndParams ('fetchOrdersByStatus', market, params);
         const spot = (type === 'spot') || (type === 'margin');
         let request: Dict = {};
-        [ request, params ] = spot ? this.multiOrderSpotPrepareRequest (market, stop, params) : this.prepareRequest (market, type, params);
+        [ request, params ] = spot ? this.multiOrderSpotPrepareRequest (market, trigger, params) : this.prepareRequest (market, type, params);
+        if (spot && trigger) {
+            request = this.omit (request, 'account');
+        }
         if (status === 'closed') {
             status = 'finished';
         }
@@ -4929,31 +4932,33 @@ export default class gate extends Exchange {
             market = this.market (symbol);
             symbol = market['symbol'];
         }
-        const stop = this.safeBool2 (params, 'stop', 'trigger');
-        params = this.omit (params, [ 'trigger', 'stop' ]);
+        // don't omit here, omits done in prepareOrdersByStatusRequest
+        const trigger: Bool = this.safeBool2 (params, 'trigger', 'stop');
         const res = this.handleMarketTypeAndParams ('fetchOrdersByStatus', market, params);
         const type = this.safeString (res, 0);
-        params['type'] = type;
         const [ request, requestParams ] = this.prepareOrdersByStatusRequest (status, symbol, since, limit, params);
         const spot = (type === 'spot') || (type === 'margin');
-        const openSpotOrders = spot && (status === 'open') && !stop;
+        const openStatus = (status === 'open');
+        const openSpotOrders = spot && openStatus && !trigger;
         let response = undefined;
-        if (type === 'spot' || type === 'margin') {
-            if (openSpotOrders) {
-                response = await this.privateSpotGetOpenOrders (this.extend (request, requestParams));
-            } else if (stop) {
-                response = await this.privateSpotGetPriceOrders (this.extend (request, requestParams));
+        if (spot) {
+            if (!trigger) {
+                if (openStatus) {
+                    response = await this.privateSpotGetOpenOrders (this.extend (request, requestParams));
+                } else {
+                    response = await this.privateSpotGetOrders (this.extend (request, requestParams));
+                }
             } else {
-                response = await this.privateSpotGetOrders (this.extend (request, requestParams));
+                response = await this.privateSpotGetPriceOrders (this.extend (request, requestParams));
             }
         } else if (type === 'swap') {
-            if (stop) {
+            if (trigger) {
                 response = await this.privateFuturesGetSettlePriceOrders (this.extend (request, requestParams));
             } else {
                 response = await this.privateFuturesGetSettleOrders (this.extend (request, requestParams));
             }
         } else if (type === 'future') {
-            if (stop) {
+            if (trigger) {
                 response = await this.privateDeliveryGetSettlePriceOrders (this.extend (request, requestParams));
             } else {
                 response = await this.privateDeliveryGetSettleOrders (this.extend (request, requestParams));
@@ -6160,38 +6165,49 @@ export default class gate extends Exchange {
          * @name gate#repayCrossMargin
          * @description repay cross margin borrowed margin and interest
          * @see https://www.gate.io/docs/developers/apiv4/en/#cross-margin-repayments
+         * @see https://www.gate.io/docs/developers/apiv4/en/#borrow-or-repay
          * @param {string} code unified currency code of the currency to repay
          * @param {float} amount the amount to repay
          * @param {string} symbol unified market symbol, required for isolated margin
          * @param {object} [params] extra parameters specific to the exchange API endpoint
          * @param {string} [params.mode] 'all' or 'partial' payment mode, extra parameter required for isolated margin
          * @param {string} [params.id] '34267567' loan id, extra parameter required for isolated margin
+         * @param {boolean} [params.unifiedAccount] set to true for repaying in the unified account
          * @returns {object} a [margin loan structure]{@link https://docs.ccxt.com/#/?id=margin-loan-structure}
          */
         await this.loadMarkets ();
+        await this.loadUnifiedStatus ();
         const currency = this.currency (code);
         const request: Dict = {
             'currency': currency['id'].toUpperCase (), // todo: currencies have network-junctions
             'amount': this.currencyToPrecision (code, amount),
         };
-        let response = await this.privateMarginPostCrossRepayments (this.extend (request, params));
-        //
-        //     [
-        //         {
-        //             "id": "17",
-        //             "create_time": 1620381696159,
-        //             "update_time": 1620381696159,
-        //             "currency": "EOS",
-        //             "amount": "110.553635",
-        //             "text": "web",
-        //             "status": 2,
-        //             "repaid": "110.506649705159",
-        //             "repaid_interest": "0.046985294841",
-        //             "unpaid_interest": "0.0000074393366667"
-        //         }
-        //     ]
-        //
-        response = this.safeValue (response, 0);
+        let isUnifiedAccount = false;
+        [ isUnifiedAccount, params ] = this.handleOptionAndParams (params, 'repayCrossMargin', 'unifiedAccount');
+        let response = undefined;
+        if (isUnifiedAccount) {
+            request['type'] = 'repay';
+            response = await this.privateUnifiedPostLoans (this.extend (request, params));
+        } else {
+            response = await this.privateMarginPostCrossRepayments (this.extend (request, params));
+            response = this.safeDict (response, 0);
+            //
+            //     [
+            //         {
+            //             "id": "17",
+            //             "create_time": 1620381696159,
+            //             "update_time": 1620381696159,
+            //             "currency": "EOS",
+            //             "amount": "110.553635",
+            //             "text": "web",
+            //             "status": 2,
+            //             "repaid": "110.506649705159",
+            //             "repaid_interest": "0.046985294841",
+            //             "unpaid_interest": "0.0000074393366667"
+            //         }
+            //     ]
+            //
+        }
         return this.parseMarginLoan (response, currency);
     }
 
@@ -6247,34 +6263,45 @@ export default class gate extends Exchange {
          * @name gate#borrowMargin
          * @description create a loan to borrow margin
          * @see https://www.gate.io/docs/apiv4/en/#create-a-cross-margin-borrow-loan
+         * @see https://www.gate.io/docs/developers/apiv4/en/#borrow-or-repay
          * @param {string} code unified currency code of the currency to borrow
          * @param {float} amount the amount to borrow
          * @param {string} symbol unified market symbol, required for isolated margin
          * @param {object} [params] extra parameters specific to the exchange API endpoint
          * @param {string} [params.rate] '0.0002' or '0.002' extra parameter required for isolated margin
+         * @param {boolean} [params.unifiedAccount] set to true for borrowing in the unified account
          * @returns {object} a [margin loan structure]{@link https://docs.ccxt.com/#/?id=margin-loan-structure}
          */
         await this.loadMarkets ();
+        await this.loadUnifiedStatus ();
         const currency = this.currency (code);
         const request: Dict = {
             'currency': currency['id'].toUpperCase (), // todo: currencies have network-junctions
             'amount': this.currencyToPrecision (code, amount),
         };
-        const response = await this.privateMarginPostCrossLoans (this.extend (request, params));
-        //
-        //     {
-        //         "id": "17",
-        //         "create_time": 1620381696159,
-        //         "update_time": 1620381696159,
-        //         "currency": "EOS",
-        //         "amount": "110.553635",
-        //         "text": "web",
-        //         "status": 2,
-        //         "repaid": "110.506649705159",
-        //         "repaid_interest": "0.046985294841",
-        //         "unpaid_interest": "0.0000074393366667"
-        //     }
-        //
+        let isUnifiedAccount = false;
+        [ isUnifiedAccount, params ] = this.handleOptionAndParams (params, 'borrowCrossMargin', 'unifiedAccount');
+        let response = undefined;
+        if (isUnifiedAccount) {
+            request['type'] = 'borrow';
+            response = await this.privateUnifiedPostLoans (this.extend (request, params));
+        } else {
+            response = await this.privateMarginPostCrossLoans (this.extend (request, params));
+            //
+            //     {
+            //         "id": "17",
+            //         "create_time": 1620381696159,
+            //         "update_time": 1620381696159,
+            //         "currency": "EOS",
+            //         "amount": "110.553635",
+            //         "text": "web",
+            //         "status": 2,
+            //         "repaid": "110.506649705159",
+            //         "repaid_interest": "0.046985294841",
+            //         "unpaid_interest": "0.0000074393366667"
+            //     }
+            //
+        }
         return this.parseMarginLoan (response, currency);
     }
 

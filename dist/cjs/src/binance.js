@@ -395,7 +395,7 @@ class binance extends binance$1 {
                         'um/openOrder': 1,
                         'um/openOrders': { 'cost': 1, 'noSymbol': 40 },
                         'um/order': 1,
-                        'um/order/asyn/': 300,
+                        'um/order/asyn': 300,
                         'um/order/asyn/id': 2,
                         'um/orderAmendment': 1,
                         'um/positionRisk': 1,

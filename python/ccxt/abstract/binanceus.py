@@ -274,7 +274,7 @@ class ImplicitAPI:
     papi_get_um_openorder = papiGetUmOpenOrder = Entry('um/openOrder', 'papi', 'GET', {'cost': 1})
     papi_get_um_openorders = papiGetUmOpenOrders = Entry('um/openOrders', 'papi', 'GET', {'cost': 1, 'noSymbol': 40})
     papi_get_um_order = papiGetUmOrder = Entry('um/order', 'papi', 'GET', {'cost': 1})
-    papi_get_um_order_asyn = papiGetUmOrderAsyn = Entry('um/order/asyn/', 'papi', 'GET', {'cost': 300})
+    papi_get_um_order_asyn = papiGetUmOrderAsyn = Entry('um/order/asyn', 'papi', 'GET', {'cost': 300})
     papi_get_um_order_asyn_id = papiGetUmOrderAsynId = Entry('um/order/asyn/id', 'papi', 'GET', {'cost': 2})
     papi_get_um_orderamendment = papiGetUmOrderAmendment = Entry('um/orderAmendment', 'papi', 'GET', {'cost': 1})
     papi_get_um_positionrisk = papiGetUmPositionRisk = Entry('um/positionRisk', 'papi', 'GET', {'cost': 1})
