@@ -46,12 +46,16 @@ class binance extends Exchange {
                         'openOrder' => 1,
                         'openOrders' => array( 'cost' => 1, 'noSymbol' => 5 ),
                         'order' => 1,
+                        'order/asyn' => 0.5,
+                        'order/asyn/id' => 0.5,
                         'orderAmendment' => 1,
                         'pmAccountInfo' => 0.5, // Weight(IP) => 5 => cost = 0.1 * 5 = 0.5
                         'pmExchangeInfo' => 0.5, // Weight(IP) => 5 => cost = 0.1 * 5 = 0.5
                         'positionMargin/history' => 1,
                         'positionRisk' => 1,
                         'positionSide/dual' => 30,
+                        'trade/asyn' => 0.5,
+                        'trade/asyn/id' => 0.5,
                         'userTrades' => array( 'cost' => 20, 'noSymbol' => 40 ),
                     ),
                     'post' => array(
@@ -310,98 +314,117 @@ class binance extends Exchange {
                 ),
                 'papi' => array(
                     'delete' => array(
-                        'cm/allOpenOrders' => 1, // 1
+                        'cm/allOpenOrders' => 1,
                         'cm/conditional/allOpenOrders' => 1,
                         'cm/conditional/order' => 1,
-                        'cm/order' => 1, // 1
-                        'listenKey' => 1, // 1
-                        'margin/allOpenOrders' => 5, // 5
-                        'margin/order' => 1, // Weight(IP) => 10 => cost = 0.1 * 10 = 1
-                        'margin/orderList' => 2, // 2
-                        'um/allOpenOrders' => 1, // 1
+                        'cm/order' => 1,
+                        'listenKey' => 0.2,
+                        'margin/allOpenOrders' => 5,
+                        'margin/order' => 2,
+                        'margin/orderList' => 2,
+                        'um/allOpenOrders' => 1,
                         'um/conditional/allOpenOrders' => 1,
                         'um/conditional/order' => 1,
-                        'um/order' => 1, // 1
+                        'um/order' => 1,
                     ),
+                    // IP (papi) request rate limit of 6000 per minute
+                    // 1 IP (papi) => cost = 0.2 => (1000 / (50 * 0.2)) * 60 = 6000
+                    // Order (papi) request rate limit of 1200 per minute
+                    // 1 Order (papi) => cost = 1 => (1000 / (50 * 1)) * 60 = 1200
                     'get' => array(
-                        'account' => 20, // 20
-                        'balance' => 20, // 20
-                        'cm/account' => 5,
+                        'account' => 4,
+                        'balance' => 4,
+                        'cm/account' => 1,
+                        'cm/accountConfig' => 1,
                         'cm/adlQuantile' => 5,
-                        'cm/allOrders' => 20, // 20
-                        'cm/commissionRate' => 20, // 20
+                        'cm/allOrders' => 20,
+                        'cm/commissionRate' => 4,
                         'cm/conditional/allOrders' => 40,
                         'cm/conditional/openOrder' => 1,
                         'cm/conditional/openOrders' => array( 'cost' => 1, 'noSymbol' => 40 ),
                         'cm/conditional/orderHistory' => 1,
-                        'cm/forceOrders' => 20, // 20
-                        'cm/income' => 30,
-                        'cm/leverageBracket' => 1, // 1
-                        'cm/openOrder' => 1, // 1
+                        'cm/forceOrders' => array( 'cost' => 20, 'noSymbol' => 50 ),
+                        'cm/income' => 6,
+                        'cm/leverageBracket' => 0.2,
+                        'cm/openOrder' => 1,
                         'cm/openOrders' => array( 'cost' => 1, 'noSymbol' => 40 ),
-                        'cm/order' => 1, // 1
-                        'cm/positionRisk' => 1, // 1
-                        'cm/positionSide/dual' => 30, // 30
-                        'cm/userTrades' => 20, // 20
+                        'cm/order' => 1,
+                        'cm/orderAmendment' => 1,
+                        'cm/positionRisk' => 0.2,
+                        'cm/positionSide/dual' => 6,
+                        'cm/symbolConfig' => 1,
+                        'cm/userTrades' => 20,
                         'margin/allOrderList' => 100,
                         'margin/allOrders' => 100,
-                        'margin/forceOrders' => 1, // 1
-                        'margin/marginInterestHistory' => 1,
-                        'margin/marginLoan' => 10,
-                        'margin/maxBorrowable' => 5, // 5
-                        'margin/maxWithdraw' => 5, // 5
+                        'margin/forceOrders' => 1,
+                        'margin/marginInterestHistory' => 0.2,
+                        'margin/marginLoan' => 2,
+                        'margin/maxBorrowable' => 1,
+                        'margin/maxWithdraw' => 1,
                         'margin/myTrades' => 5,
                         'margin/openOrderList' => 5,
                         'margin/openOrders' => 5,
-                        'margin/order' => 5,
+                        'margin/order' => 10,
                         'margin/orderList' => 5,
-                        'margin/repayLoan' => 10,
-                        'ping' => 1,
-                        'portfolio/interest-history' => 50, // 50
-                        'repay-futures-switch' => 3, // Weight(IP) => 30 => cost = 0.1 * 30 = 3
-                        'um/account' => 5,
+                        'margin/repayLoan' => 2,
+                        'ping' => 0.2,
+                        'portfolio/interest-history' => 10,
+                        'repay-futures-switch' => 6,
+                        'um/account' => 1,
+                        'um/accountConfig' => 1,
                         'um/adlQuantile' => 5,
-                        'um/allOrders' => 5, // 5
-                        'um/apiTradingStatus' => 1, // 1
-                        'um/commissionRate' => 20, // 20
-                        'um/conditional/allOrders' => 40,
+                        'um/allOrders' => 5,
+                        'um/apiTradingStatus' => array( 'cost' => 0.2, 'noSymbol' => 2 ),
+                        'um/commissionRate' => 4,
+                        'um/conditional/allOrders' => array( 'cost' => 1, 'noSymbol' => 40 ),
                         'um/conditional/openOrder' => 1,
                         'um/conditional/openOrders' => array( 'cost' => 1, 'noSymbol' => 40 ),
                         'um/conditional/orderHistory' => 1,
-                        'um/forceOrders' => 20, // 20
-                        'um/income' => 30,
-                        'um/leverageBracket' => 1, // 1
-                        'um/openOrder' => 1, // 1
+                        'um/feeBurn' => 30,
+                        'um/forceOrders' => array( 'cost' => 20, 'noSymbol' => 50 ),
+                        'um/income' => 6,
+                        'um/income/asyn' => 300,
+                        'um/income/asyn/id' => 2,
+                        'um/leverageBracket' => 0.2,
+                        'um/openOrder' => 1,
                         'um/openOrders' => array( 'cost' => 1, 'noSymbol' => 40 ),
-                        'um/order' => 1, // 1
-                        'um/positionRisk' => 5, // 5
-                        'um/positionSide/dual' => 30, // 30
-                        'um/userTrades' => 5, // 5
+                        'um/order' => 1,
+                        'um/order/asyn' => 300,
+                        'um/order/asyn/id' => 2,
+                        'um/orderAmendment' => 1,
+                        'um/positionRisk' => 1,
+                        'um/positionSide/dual' => 6,
+                        'um/symbolConfig' => 1,
+                        'um/trade/asyn' => 300,
+                        'um/trade/asyn/id' => 2,
+                        'um/userTrades' => 5,
                     ),
                     'post' => array(
-                        'asset-collection' => 3,
-                        'auto-collection' => 0.6667, // Weight(UID) => 100 => cost = 0.006667 * 100 = 0.6667
-                        'bnb-transfer' => 0.6667, // Weight(UID) => 100 => cost = 0.006667 * 100 = 0.6667
+                        'asset-collection' => 6,
+                        'auto-collection' => 150,
+                        'bnb-transfer' => 150,
                         'cm/conditional/order' => 1,
-                        'cm/leverage' => 1, // 1
-                        'cm/order' => 1, // 0
-                        'cm/positionSide/dual' => 1, // 1
-                        'listenKey' => 1, // 1
-                        'margin/order' => 0.0133, // Weight(UID) => 2 => cost = 0.006667 * 2 = 0.013334
-                        'margin/order/oco' => 0.0400, // Weight(UID) => 6 => cost = 0.006667 * 6 = 0.040002
-                        'margin/repay-debt' => 0.4, // Weight(Order) => 0.4 => (1000 / (50 * 0.4)) * 60 = 3000
-                        'marginLoan' => 0.1333, // Weight(UID) => 20 => cost = 0.006667 * 20 = 0.13334
-                        'repay-futures-negative-balance' => 150, // Weight(IP) => 1500 => cost = 0.1 * 1500 = 150
-                        'repay-futures-switch' => 150, // Weight(IP) => 1500 => cost = 0.1 * 1500 = 150
-                        'repayLoan' => 0.1333, // Weight(UID) => 20 => cost = 0.006667 * 20 = 0.13334
+                        'cm/leverage' => 0.2,
+                        'cm/order' => 1,
+                        'cm/positionSide/dual' => 0.2,
+                        'listenKey' => 0.2,
+                        'margin/order' => 1,
+                        'margin/order/oco' => 1,
+                        'margin/repay-debt' => 3000,
+                        'marginLoan' => 100,
+                        'repay-futures-negative-balance' => 150,
+                        'repay-futures-switch' => 150,
+                        'repayLoan' => 100,
                         'um/conditional/order' => 1,
                         'um/feeBurn' => 1,
-                        'um/leverage' => 1, // 1
-                        'um/order' => 1, // 0
-                        'um/positionSide/dual' => 1, // 1
+                        'um/leverage' => 0.2,
+                        'um/order' => 1,
+                        'um/positionSide/dual' => 0.2,
                     ),
                     'put' => array(
-                        'listenKey' => 1, // 1
+                        'cm/order' => 1,
+                        'listenKey' => 0.2,
+                        'um/order' => 1,
                     ),
                 ),
                 'private' => array(
@@ -716,6 +739,7 @@ class binance extends Exchange {
                         'portfolio/asset-index-price' => 0.1,
                         'portfolio/repay-futures-switch' => 3, // Weight(IP) => 30 => cost = 0.1 * 30 = 3
                         'portfolio/margin-asset-leverage' => 5, // Weight(IP) => 50 => cost = 0.1 * 50 = 5
+                        'portfolio/balance' => 2,
                         // staking
                         'lending/auto-invest/all/asset' => 0.1,
                         'lending/auto-invest/history/list' => 0.1,
@@ -901,6 +925,7 @@ class binance extends Exchange {
                         'loan/flexible/ltv/adjustment/history' => 40, // Weight(IP) => 400 => cost = 0.1 * 400 = 40
                         'loan/flexible/ongoing/orders' => 30, // Weight(IP) => 300 => cost = 0.1 * 300 = 30
                         'loan/flexible/repay/history' => 40, // Weight(IP) => 400 => cost = 0.1 * 400 = 40
+                        'portfolio/account' => 2,
                         'sub-account/futures/account' => 0.1,
                         'sub-account/futures/accountSummary' => 1,
                         'sub-account/futures/positionRisk' => 0.1,
@@ -2037,6 +2062,8 @@ class binance extends Exchange {
                 'fetchLeverages' => true,
                 'fetchLeverageTiers' => true,
                 'fetchLiquidations' => false,
+                'fetchLongShortRatio' => false,
+                'fetchLongShortRatioHistory' => true,
                 'fetchMarginAdjustmentHistory' => true,
                 'fetchMarginMode' => 'emulated',
                 'fetchMarginModes' => true,
@@ -13516,5 +13543,104 @@ class binance extends Exchange {
         //
         $result = $this->parse_funding_rates($response, $market);
         return $this->filter_by_array($result, 'symbol', $symbols);
+    }
+
+    public function fetch_long_short_ratio_history(?string $symbol = null, ?string $timeframe = null, ?int $since = null, ?int $limit = null, $params = array ()): array {
+        /**
+         * fetches the long short ratio history for a unified $market $symbol
+         * @see https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Long-Short-Ratio
+         * @see https://developers.binance.com/docs/derivatives/coin-margined-futures/market-data/Long-Short-Ratio
+         * @param {string} $symbol unified $symbol of the $market to fetch the long short ratio for
+         * @param {string} [$timeframe] the period for the ratio, default is 24 hours
+         * @param {int} [$since] the earliest time in ms to fetch ratios for
+         * @param {int} [$limit] the maximum number of long short ratio structures to retrieve
+         * @param {array} [$params] extra parameters specific to the exchange API endpoint
+         * @param {int} [$params->until] timestamp in ms of the latest ratio to fetch
+         * @return {array[]} an array of ~@link https://docs.ccxt.com/#/?id=long-short-ratio-structure long short ratio structures~
+         */
+        $this->load_markets();
+        $market = $this->market($symbol);
+        if ($timeframe === null) {
+            $timeframe = '1d';
+        }
+        $request = array(
+            'period' => $timeframe,
+        );
+        list($request, $params) = $this->handle_until_option('endTime', $request, $params);
+        if ($since !== null) {
+            $request['startTime'] = $since;
+        }
+        if ($limit !== null) {
+            $request['limit'] = $limit;
+        }
+        $subType = null;
+        list($subType, $params) = $this->handle_sub_type_and_params('fetchLongShortRatioHistory', $market, $params);
+        $response = null;
+        if ($subType === 'linear') {
+            $request['symbol'] = $market['id'];
+            $response = $this->fapiDataGetGlobalLongShortAccountRatio ($this->extend($request, $params));
+            //
+            //     array(
+            //         array(
+            //             "symbol" => "BTCUSDT",
+            //             "longAccount" => "0.4558",
+            //             "longShortRatio" => "0.8376",
+            //             "shortAccount" => "0.5442",
+            //             "timestamp" => 1726790400000
+            //         ),
+            //     )
+            //
+        } elseif ($subType === 'inverse') {
+            $request['pair'] = $market['info']['pair'];
+            $response = $this->dapiDataGetGlobalLongShortAccountRatio ($this->extend($request, $params));
+            //
+            //     array(
+            //         array(
+            //             "longAccount" => "0.7262",
+            //             "longShortRatio" => "2.6523",
+            //             "shortAccount" => "0.2738",
+            //             "pair" => "BTCUSD",
+            //             "timestamp" => 1726790400000
+            //         ),
+            //     )
+            //
+        } else {
+            throw new BadRequest($this->id . ' fetchLongShortRatioHistory() supports linear and inverse subTypes only');
+        }
+        return $this->parse_long_short_ratio_history($response, $market);
+    }
+
+    public function parse_long_short_ratio(array $info, ?array $market = null): array {
+        //
+        // linear
+        //
+        //     {
+        //         "symbol" => "BTCUSDT",
+        //         "longAccount" => "0.4558",
+        //         "longShortRatio" => "0.8376",
+        //         "shortAccount" => "0.5442",
+        //         "timestamp" => 1726790400000
+        //     }
+        //
+        // inverse
+        //
+        //     {
+        //         "longAccount" => "0.7262",
+        //         "longShortRatio" => "2.6523",
+        //         "shortAccount" => "0.2738",
+        //         "pair" => "BTCUSD",
+        //         "timestamp" => 1726790400000
+        //     }
+        //
+        $marketId = $this->safe_string($info, 'symbol');
+        $timestamp = $this->safe_integer_omit_zero($info, 'timestamp');
+        return array(
+            'info' => $info,
+            'symbol' => $this->safe_symbol($marketId, $market, null, 'contract'),
+            'timestamp' => $timestamp,
+            'datetime' => $this->iso8601($timestamp),
+            'timeframe' => null,
+            'longShortRatio' => $this->safe_number($info, 'longShortRatio'),
+        );
     }
 }
