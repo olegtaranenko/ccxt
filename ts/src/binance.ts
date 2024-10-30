@@ -29,6 +29,7 @@ import {
 import { Precise } from './base/Precise.js';
 import type {
     Balances,
+    BorrowInterest,
     Conversion,
     CrossBorrowRate,
     Currencies,
@@ -12257,7 +12258,7 @@ export default class binance extends Exchange {
         return response;
     }
 
-    async fetchBorrowInterest (code: Str = undefined, symbol: Str = undefined, since: Int = undefined, limit: Int = undefined, params = {}) {
+    async fetchBorrowInterest (code: Str = undefined, symbol: Str = undefined, since: Int = undefined, limit: Int = undefined, params = {}): Promise<BorrowInterest[]> {
         /**
          * @method
          * @name binance#fetchBorrowInterest
@@ -12339,12 +12340,11 @@ export default class binance extends Exchange {
         return this.filterByCurrencySinceLimit (interest, code, since, limit);
     }
 
-    parseBorrowInterest (info: Dict, market: Market = undefined) {
+    parseBorrowInterest (info: Dict, market: Market = undefined): BorrowInterest {
         const symbol = this.safeString (info, 'isolatedSymbol');
         const timestamp = this.safeInteger (info, 'interestAccuredTime');
         const marginMode = (symbol === undefined) ? 'cross' : 'isolated';
         return {
-            'account': (symbol === undefined) ? 'cross' : symbol,
             'amountBorrowed': this.safeNumber (info, 'principal'),
             'currency': this.safeCurrencyCode (this.safeString (info, 'asset')),
             'datetime': this.iso8601 (timestamp),
@@ -12354,7 +12354,7 @@ export default class binance extends Exchange {
             'marginMode': marginMode,
             'symbol': symbol,
             'timestamp': timestamp,
-        };
+        } as BorrowInterest;
     }
 
     async repayCrossMargin (code: string, amount, params = {}) {

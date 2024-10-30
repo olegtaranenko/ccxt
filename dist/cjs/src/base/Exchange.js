@@ -61,6 +61,7 @@ class Exchange {
         this.api = undefined;
         this.certified = false;
         this.countries = undefined;
+        this.isSandboxModeEnabled = false;
         this.pro = false;
         this.sleep = sleep;
         this.throttleProp = undefined;
@@ -2039,6 +2040,8 @@ class Exchange {
             else {
                 throw new errors.NotSupported(this.id + ' does not have a sandbox URL');
             }
+            // set flag
+            this.isSandboxModeEnabled = true;
         }
         else if ('apiBackup' in this.urls) {
             if (typeof this.urls['api'] === 'string') {
@@ -2049,6 +2052,8 @@ class Exchange {
             }
             const newUrls = this.omit(this.urls, 'apiBackup');
             this.urls = newUrls;
+            // set flag
+            this.isSandboxModeEnabled = false;
         }
     }
     sign(path, api = 'public', method = 'GET', params = {}, headers = undefined, body = undefined) {

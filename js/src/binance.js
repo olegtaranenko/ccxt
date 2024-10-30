@@ -12463,7 +12463,6 @@ export default class binance extends Exchange {
         const timestamp = this.safeInteger(info, 'interestAccuredTime');
         const marginMode = (symbol === undefined) ? 'cross' : 'isolated';
         return {
-            'account': (symbol === undefined) ? 'cross' : symbol,
             'amountBorrowed': this.safeNumber(info, 'principal'),
             'currency': this.safeCurrencyCode(this.safeString(info, 'asset')),
             'datetime': this.iso8601(timestamp),

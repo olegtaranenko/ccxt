@@ -302,7 +302,6 @@ export interface Position {
     unrealizedPnl?: number;
 }
 export interface BorrowInterest {
-    account?: Str;
     amountBorrowed?: number;
     currency?: Str;
     datetime?: Str;
@@ -310,7 +309,8 @@ export interface BorrowInterest {
     interest?: number;
     interestRate?: number;
     marginMode?: Str;
-    timestamp?: number;
+    symbol?: Str;
+    timestamp?: Int;
 }
 export interface LeverageTier {
     currency?: Str;

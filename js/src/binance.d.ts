@@ -1,5 +1,5 @@
 import Exchange from './abstract/binance.js';
-import type { Balances, Conversion, CrossBorrowRate, Currencies, Currency, DepositAddress, Dict, FundingRate, FundingRateHistory, FundingRates, Greeks, int, Int, IsolatedBorrowRate, IsolatedBorrowRates, LedgerEntry, Leverage, Leverages, LeverageTier, LeverageTiers, Liquidation, LongShortRatio, MarginMode, MarginModes, MarginModification, Market, MarketInterface, Num, OHLCV, OpenInterest, Option, Order, OrderBook, OrderRequest, OrderSide, OrderType, Str, Strings, Ticker, Tickers, Trade, TradingFeeInterface, TradingFees, Transaction, TransferEntry } from './base/types.js';
+import type { Balances, BorrowInterest, Conversion, CrossBorrowRate, Currencies, Currency, DepositAddress, Dict, FundingRate, FundingRateHistory, FundingRates, Greeks, int, Int, IsolatedBorrowRate, IsolatedBorrowRates, LedgerEntry, Leverage, Leverages, LeverageTier, LeverageTiers, Liquidation, LongShortRatio, MarginMode, MarginModes, MarginModification, Market, MarketInterface, Num, OHLCV, OpenInterest, Option, Order, OrderBook, OrderRequest, OrderSide, OrderType, Str, Strings, Ticker, Tickers, Trade, TradingFeeInterface, TradingFees, Transaction, TransferEntry } from './base/types.js';
 /**
  * @class binance
  * @augments Exchange
@@ -247,19 +247,8 @@ export default class binance extends Exchange {
     }>;
     redeemGiftCode(giftcardCode: any, params?: {}): Promise<any>;
     verifyGiftCode(id: string, params?: {}): Promise<any>;
-    fetchBorrowInterest(code?: Str, symbol?: Str, since?: Int, limit?: Int, params?: {}): Promise<any>;
-    parseBorrowInterest(info: Dict, market?: Market): {
-        account: string;
-        amountBorrowed: number;
-        currency: string;
-        datetime: string;
-        info: Dict;
-        interest: number;
-        interestRate: number;
-        marginMode: string;
-        symbol: string;
-        timestamp: number;
-    };
+    fetchBorrowInterest(code?: Str, symbol?: Str, since?: Int, limit?: Int, params?: {}): Promise<BorrowInterest[]>;
+    parseBorrowInterest(info: Dict, market?: Market): BorrowInterest;
     repayCrossMargin(code: string, amount: any, params?: {}): Promise<{
         amount: number;
         currency: string;
