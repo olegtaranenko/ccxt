@@ -2493,7 +2493,7 @@ export default class binance extends Exchange {
                     'https://developers.binance.com/en',
                 ],
                 'fees': 'https://www.binance.com/en/fee/schedule',
-                'logo': 'https://user-images.githubusercontent.com/1294454/29604020-d5483cdc-87ee-11e7-94c7-d1a8d9169293.jpg',
+                'logo': 'https://github.com/user-attachments/assets/e9419b93-ccb0-46aa-9bff-c883f096274b',
                 'referral': {
                     'discount': 0.1,
                     'url': 'https://accounts.binance.com/en/register?ref=D7YA7CLY',

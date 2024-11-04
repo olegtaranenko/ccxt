@@ -204,7 +204,7 @@ export default class binanceus extends binance {
                 },
                 'doc': 'https://github.com/binance-us/binance-official-api-docs',
                 'fees': 'https://www.binance.us/en/fee/schedule',
-                'logo': 'https://user-images.githubusercontent.com/1294454/65177307-217b7c80-da5f-11e9-876e-0b748ba0a358.jpg',
+                'logo': 'https://github.com/user-attachments/assets/a9667919-b632-4d52-a832-df89f8a35e8c',
                 'referral': 'https://www.binance.us/?ref=35005074',
                 'www': 'https://www.binance.us',
             },
