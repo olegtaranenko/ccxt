@@ -1505,7 +1505,7 @@ export default class binance extends binanceRest {
         return this.createOHLCVObject (symbol, timeframe, filtered);
     }
 
-    async unWatchOHLCVForSymbols (symbolsAndTimeframes: string[][], params = {}) {
+    async unWatchOHLCVForSymbols (symbolsAndTimeframes: string[][], params = {}): Promise<any> {
         /**
          * @method
          * @name binance#unWatchOHLCVForSymbols
@@ -2023,7 +2023,7 @@ export default class binance extends binanceRest {
         if (symbolsDefined) {
             firstMarket = this.market (symbols[0]);
         }
-        const defaultMarket = (isMarkPrice) ? 'swap' : 'spot';
+        const defaultMarket = (isMarkPrice) ? 'swap' : undefined;
         [ marketType, params ] = this.handleMarketTypeAndParams (methodName, firstMarket, params, defaultMarket);
         let subType = undefined;
         [ subType, params ] = this.handleSubTypeAndParams (methodName, firstMarket, params);
