@@ -231,6 +231,49 @@
                   "BTC"
                 ]
             }
+        ],
+        "fetchDeposits": [
+            {
+                "description": "fetch USDT deposits",
+                "method": "fetchDeposits",
+                "url": "https://api.alpaca.markets/v2/wallets/transfers",
+                "input": [
+                  "USDT"
+                ]
+            }
+        ],
+        "fetchWithdrawals": [
+            {
+                "description": "fetch USDT withdrawals",
+                "method": "fetchWithdrawals",
+                "url": "https://api.alpaca.markets/v2/wallets/transfers",
+                "input": [
+                  "USDT"
+                ]
+            }
+        ],
+        "fetchDepositsWithdrawals": [
+            {
+                "description": "fetch USDT deposits and withdrawals",
+                "method": "fetchDepositsWithdrawals",
+                "url": "https://api.alpaca.markets/v2/wallets/transfers",
+                "input": [
+                  "USDT"
+                ]
+            }
+        ],
+        "withdraw": [
+            {
+                "description": "withdraw 20 USDT to a whitelisted address",
+                "method": "withdraw",
+                "url": "https://api.alpaca.markets/v2/wallets/transfers",
+                "input": [
+                  "USDT",
+                  20,
+                  "0x49a2c0925196e4dcf05945f67f690153190fbaab"
+                ],
+                "output": "{\"asset\":\"USDT\",\"address\":\"0x49a2c0925196e4dcf05945f67f690153190fbaab\",\"amount\":\"20\"}"
+            }
         ]
     }
 }

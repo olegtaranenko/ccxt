@@ -112,7 +112,7 @@ class bingx(Exchange, ImplicitAPI):
             },
             'hostname': 'bingx.com',
             'urls': {
-                'logo': 'https://github.com/user-attachments/assets/c5249c7b-03c7-47ad-96b6-3819b0ebd3be',
+                'logo': 'https://github-production-user-asset-6210df.s3.amazonaws.com/1294454/253675376-6983b72e-4999-4549-b177-33b374c195e3.jpg',
                 'api': {
                     'spot': 'https://open-api.{hostname}/openApi',
                     'swap': 'https://open-api.{hostname}/openApi',
@@ -2682,26 +2682,26 @@ class bingx(Exchange, ImplicitAPI):
         """
         self.load_markets()
         ordersRequests = []
-        symbol = None
+        marketIds = []
         for i in range(0, len(orders)):
             rawOrder = orders[i]
             marketId = self.safe_string(rawOrder, 'symbol')
-            if symbol is None:
-                symbol = marketId
-            else:
-                if symbol != marketId:
-                    raise BadRequest(self.id + ' createOrders() requires all orders to have the same symbol')
             type = self.safe_string(rawOrder, 'type')
+            marketIds.append(marketId)
             side = self.safe_string(rawOrder, 'side')
             amount = self.safe_number(rawOrder, 'amount')
             price = self.safe_number(rawOrder, 'price')
             orderParams = self.safe_dict(rawOrder, 'params', {})
             orderRequest = self.create_order_request(marketId, type, side, amount, price, orderParams)
             ordersRequests.append(orderRequest)
-        market = self.market(symbol)
+        symbols = self.market_symbols(marketIds, None, False, True, True)
+        symbolsLength = len(symbols)
+        market = self.market(symbols[0])
         request: dict = {}
         response = None
         if market['swap']:
+            if symbolsLength > 5:
+                raise InvalidOrder(self.id + ' createOrders() can not create more than 5 orders at once for swap markets')
             request['batchOrders'] = self.json(ordersRequests)
             response = self.swapV2PrivatePostTradeBatchOrders(request)
         else:
@@ -2755,6 +2755,12 @@ class bingx(Exchange, ImplicitAPI):
         #         }
         #     }
         #
+        if isinstance(response, str):
+            # broken api engine : order-ids are too long numbers(i.e. 1742930526912864656)
+            # and json.loadscan not handle them in JS, so we have to use .parseJson
+            # however, when order has an attached SL/TP, their value types need extra parsing
+            response = self.fix_stringified_json_members(response)
+            response = self.parse_json(response)
         data = self.safe_dict(response, 'data', {})
         result = self.safe_list(data, 'orders', [])
         return self.parse_orders(result, market)
@@ -4299,32 +4305,21 @@ class bingx(Exchange, ImplicitAPI):
 
     def parse_deposit_address(self, depositAddress, currency: Currency = None) -> DepositAddress:
         #
-        #     {
-        #         "coinId": "799",
-        #         "coin": "USDT",
-        #         "network": "BEP20",
-        #         "address": "6a7eda2817462dabb6493277a2cfe0f5c3f2550b",
-        #         "tag": ''
-        #     }
+        # {
+        #     "coinId":"4",
+        #     "coin":"USDT",
+        #     "network":"OMNI",
+        #     "address":"1HXyx8HVQRY7Nhqz63nwnRB7SpS9xQPzLN",
+        #     "addressWithPrefix":"1HXyx8HVQRY7Nhqz63nwnRB7SpS9xQPzLN"
+        # }
         #
-        address = self.safe_string(depositAddress, 'address')
         tag = self.safe_string(depositAddress, 'tag')
         currencyId = self.safe_string(depositAddress, 'coin')
         currency = self.safe_currency(currencyId, currency)
         code = currency['code']
-        # the exchange API returns deposit addresses without the leading '0x' prefix
-        # however, the exchange API does require the 0x prefix to withdraw
-        # so we append the prefix before returning the address to the user
-        # that is only if the underlying contract address has the 0x prefix
-        networkCode = self.safe_string(depositAddress, 'network')
-        if networkCode is not None:
-            if networkCode in currency['networks']:
-                network = currency['networks'][networkCode]
-                contractAddress = self.safe_string(network['info'], 'contractAddress')
-                if contractAddress is not None:
-                    if contractAddress[0] == '0' and contractAddress[1] == 'x':
-                        if address[0] != '0' or address[1] != 'x':
-                            address = '0x' + address
+        address = self.safe_string(depositAddress, 'addressWithPrefix')
+        networkdId = self.safe_string(depositAddress, 'network')
+        networkCode = self.network_id_to_code(networkdId, code)
         self.check_address(address)
         return {
             'info': depositAddress,
