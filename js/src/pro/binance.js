@@ -3735,12 +3735,6 @@ export default class binance extends binanceRest {
             market = this.getMarketFromSymbols(symbols);
             messageHash = '::' + symbols.join(',');
         }
-        const marketTypeObject = {};
-        if (market !== undefined) {
-            marketTypeObject['type'] = market['type'];
-            marketTypeObject['subType'] = market['subType'];
-        }
-        await this.authenticate(this.extend(marketTypeObject, params));
         let type = undefined;
         [type, params] = this.handleMarketTypeAndParams('watchPositions', market, params);
         if (type === 'spot' || type === 'margin') {
@@ -3754,6 +3748,10 @@ export default class binance extends binanceRest {
         else if (this.isInverse(type, subType)) {
             type = 'delivery';
         }
+        const marketTypeObject = {};
+        marketTypeObject['type'] = type;
+        marketTypeObject['subType'] = subType;
+        await this.authenticate(this.extend(marketTypeObject, params));
         messageHash = type + ':positions' + messageHash;
         let isPortfolioMargin = undefined;
         [isPortfolioMargin, params] = this.handleOptionAndParams2(params, 'watchPositions', 'papi', 'portfolioMargin', false);

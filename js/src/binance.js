@@ -129,12 +129,16 @@ export default class binance extends Exchange {
                         'allOpenOrders': 1,
                         'allOpenOrdersByUnderlying': 1,
                         'batchOrders': 1,
+                        'block/order/create': 5,
                         'listenKey': 1,
                         'order': 1,
                     },
                     'get': {
                         'account': 3,
                         'bill': 1,
+                        'block/order/execute': 5,
+                        'block/order/orders': 5,
+                        'block/user-trades': 5,
                         'countdownCancelAll': 1,
                         'exerciseRecord': 5,
                         'historyOrders': 3,
@@ -149,6 +153,8 @@ export default class binance extends Exchange {
                     },
                     'post': {
                         'batchOrders': 5,
+                        'block/order/create': 5,
+                        'block/order/execute': 5,
                         'countdownCancelAll': 1,
                         'countdownCancelAllHeartBeat': 10,
                         'listenKey': 1,
@@ -157,6 +163,7 @@ export default class binance extends Exchange {
                         'order': 1,
                     },
                     'put': {
+                        'block/order/create': 5,
                         'listenKey': 1,
                     },
                 },
