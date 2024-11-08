@@ -149,12 +149,16 @@ class binance(Exchange, ImplicitAPI):
                         'allOpenOrders': 1,
                         'allOpenOrdersByUnderlying': 1,
                         'batchOrders': 1,
+                        'block/order/create': 5,
                         'listenKey': 1,
                         'order': 1,
                     },
                     'get': {
                         'account': 3,
                         'bill': 1,
+                        'block/order/execute': 5,
+                        'block/order/orders': 5,
+                        'block/user-trades': 5,
                         'countdownCancelAll': 1,
                         'exerciseRecord': 5,
                         'historyOrders': 3,
@@ -169,6 +173,8 @@ class binance(Exchange, ImplicitAPI):
                     },
                     'post': {
                         'batchOrders': 5,
+                        'block/order/create': 5,
+                        'block/order/execute': 5,
                         'countdownCancelAll': 1,
                         'countdownCancelAllHeartBeat': 10,
                         'listenKey': 1,
@@ -177,6 +183,7 @@ class binance(Exchange, ImplicitAPI):
                         'order': 1,
                     },
                     'put': {
+                        'block/order/create': 5,
                         'listenKey': 1,
                     },
                 },
@@ -2513,7 +2520,7 @@ class binance(Exchange, ImplicitAPI):
                     'https://developers.binance.com/en',
                 ],
                 'fees': 'https://www.binance.com/en/fee/schedule',
-                'logo': 'https://user-images.githubusercontent.com/1294454/29604020-d5483cdc-87ee-11e7-94c7-d1a8d9169293.jpg',
+                'logo': 'https://github.com/user-attachments/assets/e9419b93-ccb0-46aa-9bff-c883f096274b',
                 'referral': {
                     'discount': 0.1,
                     'url': 'https://accounts.binance.com/en/register?ref=D7YA7CLY',
@@ -8534,7 +8541,7 @@ class binance(Exchange, ImplicitAPI):
             }
         return result
 
-    def withdraw(self, code: str, amount: float, address: str, tag=None, params={}):
+    def withdraw(self, code: str, amount: float, address: str, tag=None, params={}) -> Transaction:
         """
         make a withdrawal
         :see: https://developers.binance.com/docs/wallet/capital/withdraw

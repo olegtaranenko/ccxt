@@ -120,12 +120,16 @@ class binance extends Exchange {
                         'allOpenOrders' => 1,
                         'allOpenOrdersByUnderlying' => 1,
                         'batchOrders' => 1,
+                        'block/order/create' => 5,
                         'listenKey' => 1,
                         'order' => 1,
                     ),
                     'get' => array(
                         'account' => 3,
                         'bill' => 1,
+                        'block/order/execute' => 5,
+                        'block/order/orders' => 5,
+                        'block/user-trades' => 5,
                         'countdownCancelAll' => 1,
                         'exerciseRecord' => 5,
                         'historyOrders' => 3,
@@ -140,6 +144,8 @@ class binance extends Exchange {
                     ),
                     'post' => array(
                         'batchOrders' => 5,
+                        'block/order/create' => 5,
+                        'block/order/execute' => 5,
                         'countdownCancelAll' => 1,
                         'countdownCancelAllHeartBeat' => 10,
                         'listenKey' => 1,
@@ -148,6 +154,7 @@ class binance extends Exchange {
                         'order' => 1,
                     ),
                     'put' => array(
+                        'block/order/create' => 5,
                         'listenKey' => 1,
                     ),
                 ),
@@ -2484,7 +2491,7 @@ class binance extends Exchange {
                     'https://developers.binance.com/en',
                 ),
                 'fees' => 'https://www.binance.com/en/fee/schedule',
-                'logo' => 'https://user-images.githubusercontent.com/1294454/29604020-d5483cdc-87ee-11e7-94c7-d1a8d9169293.jpg',
+                'logo' => 'https://github.com/user-attachments/assets/e9419b93-ccb0-46aa-9bff-c883f096274b',
                 'referral' => array(
                     'discount' => 0.1,
                     'url' => 'https://accounts.binance.com/en/register?ref=D7YA7CLY',
@@ -8930,7 +8937,7 @@ class binance extends Exchange {
         return $result;
     }
 
-    public function withdraw(string $code, float $amount, string $address, $tag = null, $params = array ()) {
+    public function withdraw(string $code, float $amount, string $address, $tag = null, $params = array ()): array {
         /**
          * make a withdrawal
          * @see https://developers.binance.com/docs/wallet/capital/withdraw
