@@ -4,7 +4,7 @@
 
 # -----------------------------------------------------------------------------
 
-__version__ = '4.4.28'
+__version__ = '4.4.29'
 
 # -----------------------------------------------------------------------------
 
@@ -2476,6 +2476,9 @@ class Exchange(object):
 
     def fetch_order_book(self, symbol: str, limit: Int = None, params={}):
         raise NotSupported(self.id + ' fetchOrderBook() is not supported yet')
+
+    def fetch_order_book_ws(self, symbol: str, limit: Int = None, params={}):
+        raise NotSupported(self.id + ' fetchOrderBookWs() is not supported yet')
 
     def fetch_margin_mode(self, symbol: str, params={}):
         if self.has['fetchMarginModes']:

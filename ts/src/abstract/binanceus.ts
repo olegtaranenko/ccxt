@@ -520,6 +520,12 @@ interface binance {
     sapiGetEthStakingEthQuota (params?: {}): Promise<implicitReturnType>;
     sapiGetEthStakingWbethHistoryUnwrapHistory (params?: {}): Promise<implicitReturnType>;
     sapiGetEthStakingWbethHistoryWrapHistory (params?: {}): Promise<implicitReturnType>;
+    sapiGetSolStakingAccount (params?: {}): Promise<implicitReturnType>;
+    sapiGetSolStakingSolHistoryBnsolRewardsHistory (params?: {}): Promise<implicitReturnType>;
+    sapiGetSolStakingSolHistoryRateHistory (params?: {}): Promise<implicitReturnType>;
+    sapiGetSolStakingSolHistoryRedemptionHistory (params?: {}): Promise<implicitReturnType>;
+    sapiGetSolStakingSolHistoryStakingHistory (params?: {}): Promise<implicitReturnType>;
+    sapiGetSolStakingSolQuota (params?: {}): Promise<implicitReturnType>;
     sapiGetMiningPaymentList (params?: {}): Promise<implicitReturnType>;
     sapiGetMiningPaymentUid (params?: {}): Promise<implicitReturnType>;
     sapiGetMiningPubAlgoList (params?: {}): Promise<implicitReturnType>;
@@ -738,6 +744,8 @@ interface binance {
     sapiPostEthStakingEthRedeem (params?: {}): Promise<implicitReturnType>;
     sapiPostEthStakingEthStake (params?: {}): Promise<implicitReturnType>;
     sapiPostEthStakingWbethWrap (params?: {}): Promise<implicitReturnType>;
+    sapiPostSolStakingSolStake (params?: {}): Promise<implicitReturnType>;
+    sapiPostSolStakingSolRedeem (params?: {}): Promise<implicitReturnType>;
     sapiPostConvertAcceptQuote (params?: {}): Promise<implicitReturnType>;
     sapiPostConvertGetQuote (params?: {}): Promise<implicitReturnType>;
     sapiPostConvertLimitCancelOrder (params?: {}): Promise<implicitReturnType>;
@@ -770,6 +778,7 @@ interface binance {
     sapiPostSimpleEarnFlexibleSubscribe (params?: {}): Promise<implicitReturnType>;
     sapiPostSimpleEarnLockedRedeem (params?: {}): Promise<implicitReturnType>;
     sapiPostSimpleEarnLockedSetAutoSubscribe (params?: {}): Promise<implicitReturnType>;
+    sapiPostSimpleEarnLockedSetRedeemOption (params?: {}): Promise<implicitReturnType>;
     sapiPostSimpleEarnLockedSubscribe (params?: {}): Promise<implicitReturnType>;
     sapiPostDciProductAutoCompoundEdit (params?: {}): Promise<implicitReturnType>;
     sapiPostDciProductSubscribe (params?: {}): Promise<implicitReturnType>;

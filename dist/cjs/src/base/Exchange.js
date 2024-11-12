@@ -2130,6 +2130,9 @@ class Exchange {
     async fetchOrderBook(symbol, limit = undefined, params = {}) {
         throw new errors.NotSupported(this.id + ' fetchOrderBook() is not supported yet');
     }
+    async fetchOrderBookWs(symbol, limit = undefined, params = {}) {
+        throw new errors.NotSupported(this.id + ' fetchOrderBookWs() is not supported yet');
+    }
     async fetchMarginMode(symbol, params = {}) {
         if (this.has['fetchMarginModes']) {
             const marginModes = await this.fetchMarginModes([symbol], params);

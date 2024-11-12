@@ -54,7 +54,7 @@ export default class gate extends gateRest {
     cleanCache(subscription: Dict): void;
     handleMessage(client: Client, message: any): void;
     getUrlByMarket(market: any): any;
-    getTypeByMarket(market: Market): "spot" | "options" | "futures";
+    getTypeByMarket(market: Market): "spot" | "futures" | "options";
     getUrlByMarketType(type: MarketType, isInverse?: boolean): any;
     getMarketTypeByUrl(url: string): any;
     requestId(): any;

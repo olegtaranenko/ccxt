@@ -2551,6 +2551,36 @@ public partial class binanceusdm : binance
         return await this.callAsync ("sapiGetEthStakingWbethHistoryWrapHistory",parameters);
     }
 
+    public async Task<object> sapiGetSolStakingAccount (object parameters = null)
+    {
+        return await this.callAsync ("sapiGetSolStakingAccount",parameters);
+    }
+
+    public async Task<object> sapiGetSolStakingSolHistoryBnsolRewardsHistory (object parameters = null)
+    {
+        return await this.callAsync ("sapiGetSolStakingSolHistoryBnsolRewardsHistory",parameters);
+    }
+
+    public async Task<object> sapiGetSolStakingSolHistoryRateHistory (object parameters = null)
+    {
+        return await this.callAsync ("sapiGetSolStakingSolHistoryRateHistory",parameters);
+    }
+
+    public async Task<object> sapiGetSolStakingSolHistoryRedemptionHistory (object parameters = null)
+    {
+        return await this.callAsync ("sapiGetSolStakingSolHistoryRedemptionHistory",parameters);
+    }
+
+    public async Task<object> sapiGetSolStakingSolHistoryStakingHistory (object parameters = null)
+    {
+        return await this.callAsync ("sapiGetSolStakingSolHistoryStakingHistory",parameters);
+    }
+
+    public async Task<object> sapiGetSolStakingSolQuota (object parameters = null)
+    {
+        return await this.callAsync ("sapiGetSolStakingSolQuota",parameters);
+    }
+
     public async Task<object> sapiGetMiningPaymentList (object parameters = null)
     {
         return await this.callAsync ("sapiGetMiningPaymentList",parameters);
@@ -3486,6 +3516,16 @@ public partial class binanceusdm : binance
         return await this.callAsync ("sapiPostEthStakingWbethWrap",parameters);
     }
 
+    public async Task<object> sapiPostSolStakingSolStake (object parameters = null)
+    {
+        return await this.callAsync ("sapiPostSolStakingSolStake",parameters);
+    }
+
+    public async Task<object> sapiPostSolStakingSolRedeem (object parameters = null)
+    {
+        return await this.callAsync ("sapiPostSolStakingSolRedeem",parameters);
+    }
+
     public async Task<object> sapiPostConvertAcceptQuote (object parameters = null)
     {
         return await this.callAsync ("sapiPostConvertAcceptQuote",parameters);
@@ -3644,6 +3684,11 @@ public partial class binanceusdm : binance
     public async Task<object> sapiPostSimpleEarnLockedSetAutoSubscribe (object parameters = null)
     {
         return await this.callAsync ("sapiPostSimpleEarnLockedSetAutoSubscribe",parameters);
+    }
+
+    public async Task<object> sapiPostSimpleEarnLockedSetRedeemOption (object parameters = null)
+    {
+        return await this.callAsync ("sapiPostSimpleEarnLockedSetRedeemOption",parameters);
     }
 
     public async Task<object> sapiPostSimpleEarnLockedSubscribe (object parameters = null)

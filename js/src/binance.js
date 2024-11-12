@@ -677,6 +677,12 @@ export default class binance extends Exchange {
                         'eth-staking/eth/quota': 15,
                         'eth-staking/wbeth/history/unwrapHistory': 15,
                         'eth-staking/wbeth/history/wrapHistory': 15,
+                        'sol-staking/account': 15,
+                        'sol-staking/sol/history/bnsolRewardsHistory': 15,
+                        'sol-staking/sol/history/rateHistory': 15,
+                        'sol-staking/sol/history/redemptionHistory': 15,
+                        'sol-staking/sol/history/stakingHistory': 15,
+                        'sol-staking/sol/quota': 15,
                         // mining endpoints
                         'mining/payment/list': 0.5,
                         'mining/payment/uid': 0.5,
@@ -888,6 +894,8 @@ export default class binance extends Exchange {
                         'eth-staking/eth/redeem': 15,
                         'eth-staking/eth/stake': 15,
                         'eth-staking/wbeth/wrap': 15,
+                        'sol-staking/sol/stake': 15,
+                        'sol-staking/sol/redeem': 15,
                         // mining endpoints
                         'convert/acceptQuote': 3.3335,
                         'convert/getQuote': 1.3334,
@@ -922,6 +930,7 @@ export default class binance extends Exchange {
                         'simple-earn/flexible/subscribe': 0.1,
                         'simple-earn/locked/redeem': 0.1,
                         'simple-earn/locked/setAutoSubscribe': 15,
+                        'simple-earn/locked/setRedeemOption': 5,
                         'simple-earn/locked/subscribe': 0.1,
                         // convert
                         'dci/product/auto_compound/edit': 0.1,

@@ -857,6 +857,8 @@ export default class deribit extends Exchange {
                 else if (isSpot) {
                     type = 'spot';
                 }
+                let inverse = undefined;
+                let linear = undefined;
                 if (isSpot) {
                     symbol = base + '/' + quote;
                 }
@@ -871,6 +873,8 @@ export default class deribit extends Exchange {
                             symbol = symbol + '-' + this.numberToString(strike) + '-' + letter;
                         }
                     }
+                    inverse = (quote !== settle);
+                    linear = (settle === quote);
                 }
                 const parsedMarketValue = this.safeValue(parsedMarkets, symbol);
                 if (parsedMarketValue) {
@@ -896,8 +900,8 @@ export default class deribit extends Exchange {
                     'option': option,
                     'active': this.safeValue(market, 'is_active'),
                     'contract': !isSpot,
-                    'linear': (settle === quote),
-                    'inverse': (settle !== quote),
+                    'linear': linear,
+                    'inverse': inverse,
                     'taker': this.safeNumber(market, 'taker_commission'),
                     'maker': this.safeNumber(market, 'maker_commission'),
                     'contractSize': this.safeNumber(market, 'contract_size'),
