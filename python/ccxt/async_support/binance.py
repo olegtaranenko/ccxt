@@ -132,7 +132,7 @@ class binance(Exchange, ImplicitAPI):
                 'fetchLongShortRatio': False,
                 'fetchLongShortRatioHistory': True,
                 'fetchMarginAdjustmentHistory': True,
-                'fetchMarginMode': 'emulated',
+                'fetchMarginMode': True,
                 'fetchMarginModes': True,
                 'fetchMarketLeverageTiers': 'emulated',
                 'fetchMarkets': True,
@@ -4799,8 +4799,8 @@ class binance(Exchange, ImplicitAPI):
         :param str side: 'buy' or 'sell'
         :param float amount: how much of currency you want to trade in units of base currency
         :param float [price]: the price at which the order is to be fulfilled, in units of the quote currency, ignored in market orders
-        :param str [params.marginMode]: 'cross' or 'isolated', for spot margin trading
         :param dict [params]: extra parameters specific to the exchange API endpoint
+        :param str [params.marginMode]: 'cross' or 'isolated', for spot margin trading
         :returns dict: an `order structure <https://docs.ccxt.com/#/?id=order-structure>`
         """
         await self.load_markets()
@@ -5628,6 +5628,7 @@ class binance(Exchange, ImplicitAPI):
         :see: https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Place-Multiple-Orders
         :see: https://developers.binance.com/docs/derivatives/option/trade/Place-Multiple-Orders
         :param Array orders: list of orders to create, each object should contain the parameters required by createOrder, namely symbol, type, side, amount, price and params
+        :param dict [params]: extra parameters specific to the exchange API endpoint
         :returns dict: an `order structure <https://docs.ccxt.com/#/?id=order-structure>`
         """
         await self.load_markets()
@@ -8180,6 +8181,7 @@ class binance(Exchange, ImplicitAPI):
         :see: https://developers.binance.com/docs/wallet/capital/deposite-address
         :param str code: unified currency code
         :param dict [params]: extra parameters specific to the exchange API endpoint
+        :param str [params.network]: network for fetch deposit address
         :returns dict: an `address structure <https://docs.ccxt.com/#/?id=address-structure>`
         """
         await self.load_markets()
@@ -9807,7 +9809,8 @@ class binance(Exchange, ImplicitAPI):
         :see: https://developers.binance.com/docs/derivatives/option/trade/Option-Position-Information
         :param str[] [symbols]: list of unified market symbols
         :param dict [params]: extra parameters specific to the exchange API endpoint
-        :param str [method]: method name to call, "positionRisk", "account" or "option", default is "positionRisk"
+        :param dict [params.params]: extra parameters specific to the exchange API endpoint
+        :param str [params.method]: method name to call, "positionRisk", "account" or "option", default is "positionRisk"
         :param bool [params.useV2]: set to True if you want to use the obsolete endpoint, where some more additional fields were provided
         :returns dict[]: a list of `position structure <https://docs.ccxt.com/#/?id=position-structure>`
         """
@@ -12089,7 +12092,7 @@ class binance(Exchange, ImplicitAPI):
         :see: https://developers.binance.com/docs/derivatives/coin-margined-futures/account/Account-Information
         :see: https://developers.binance.com/docs/derivatives/usds-margined-futures/account/rest-api/Account-Information-V2
         :see: https://developers.binance.com/docs/derivatives/usds-margined-futures/account/rest-api/Symbol-Config
-        :param str symbol: unified symbol of the market the order was made in
+        :param str[] symbols: unified market symbols
         :param dict [params]: extra parameters specific to the exchange API endpoint
         :param str [params.subType]: "linear" or "inverse"
         :returns dict: a list of `margin mode structures <https://docs.ccxt.com/#/?id=margin-mode-structure>`
@@ -12171,6 +12174,44 @@ class binance(Exchange, ImplicitAPI):
         if isinstance(response, list):
             assets = response
         return self.parse_margin_modes(assets, symbols, 'symbol', 'swap')
+
+    async def fetch_margin_mode(self, symbol: str, params={}) -> MarginMode:
+        """
+        fetches the margin mode of a specific symbol
+        :see: https://developers.binance.com/docs/derivatives/usds-margined-futures/account/rest-api/Symbol-Config
+        :see: https://developers.binance.com/docs/derivatives/coin-margined-futures/account/Account-Information
+        :param str symbol: unified symbol of the market the order was made in
+        :param dict [params]: extra parameters specific to the exchange API endpoint
+        :param str [params.subType]: "linear" or "inverse"
+        :returns dict: a `margin mode structure <https://docs.ccxt.com/#/?id=margin-mode-structure>`
+        """
+        await self.load_markets()
+        market = self.market(symbol)
+        subType = None
+        subType, params = self.handle_sub_type_and_params('fetchMarginMode', market, params)
+        response = None
+        if subType == 'linear':
+            request: dict = {
+                'symbol': market['id'],
+            }
+            response = await self.fapiPrivateGetSymbolConfig(self.extend(request, params))
+            #
+            # [
+            #     {
+            #         "symbol": "BTCUSDT",
+            #         "marginType": "CROSSED",
+            #         "isAutoAddMargin": "false",
+            #         "leverage": 21,
+            #         "maxNotionalValue": "1000000",
+            #     }
+            # ]
+            #
+        elif subType == 'inverse':
+            fetchMarginModesResponse = await self.fetch_margin_modes([symbol], params)
+            return fetchMarginModesResponse[symbol]
+        else:
+            raise BadRequest(self.id + ' fetchMarginMode() supports linear and inverse subTypes only')
+        return self.parse_margin_mode(response[0], market)
 
     def parse_margin_mode(self, marginMode: dict, market=None) -> MarginMode:
         marketId = self.safe_string(marginMode, 'symbol')
