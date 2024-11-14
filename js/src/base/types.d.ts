@@ -319,6 +319,7 @@ export interface LeverageTier {
     maxLeverage?: number;
     maxNotional?: number;
     minNotional?: number;
+    symbol?: Str;
     tier?: number;
 }
 export interface LedgerEntry {

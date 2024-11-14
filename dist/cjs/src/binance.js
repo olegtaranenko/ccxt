@@ -10478,6 +10478,7 @@ class binance extends binance$1 {
                 'maxLeverage': this.safeNumber(bracket, 'initialLeverage'),
                 'maxNotional': this.safeNumber2(bracket, 'notionalCap', 'qtyCap'),
                 'minNotional': this.safeNumber2(bracket, 'notionalFloor', 'qtyFloor'),
+                'symbol': this.safeSymbol(marketId, market),
                 'tier': this.safeNumber(bracket, 'bracket'),
             });
         }

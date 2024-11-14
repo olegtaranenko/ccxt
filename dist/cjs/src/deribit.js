@@ -1764,7 +1764,7 @@ class deribit extends deribit$1 {
         const filledString = this.safeString(order, 'filled_amount');
         const amount = this.safeString(order, 'amount');
         let cost = Precise["default"].stringMul(filledString, averageString);
-        if (market['inverse']) {
+        if (this.safeBool(market, 'inverse')) {
             if (averageString !== '0') {
                 cost = Precise["default"].stringDiv(amount, averageString);
             }
