@@ -2665,18 +2665,18 @@ class binance extends binance$1 {
     nonce() {
         return this.milliseconds() - this.options['timeDifference'];
     }
+    /**
+     * @method
+     * @name binance#fetchTime
+     * @description fetches the current integer timestamp in milliseconds from the exchange server
+     * @see https://developers.binance.com/docs/binance-spot-api-docs/rest-api#check-server-time                            // spot
+     * @see https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Check-Server-Time    // swap
+     * @see https://developers.binance.com/docs/derivatives/coin-margined-futures/market-data/Check-Server-time             // future
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {string} [params.subType] "linear" or "inverse"
+     * @returns {int} the current integer timestamp in milliseconds from the exchange server
+     */
     async fetchTime(params = {}) {
-        /**
-         * @method
-         * @name binance#fetchTime
-         * @description fetches the current integer timestamp in milliseconds from the exchange server
-         * @see https://developers.binance.com/docs/binance-spot-api-docs/rest-api#check-server-time                            // spot
-         * @see https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Check-Server-Time    // swap
-         * @see https://developers.binance.com/docs/derivatives/coin-margined-futures/market-data/Check-Server-time             // future
-         * @param {object} [params] extra parameters specific to the exchange API endpoint
-         * @param {string} [params.subType] "linear" or "inverse"
-         * @returns {int} the current integer timestamp in milliseconds from the exchange server
-         */
         const defaultType = this.safeString2(this.options, 'fetchTime', 'defaultType', 'spot');
         const type = this.safeString(params, 'type', defaultType);
         const query = this.omit(params, 'type');
