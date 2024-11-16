@@ -336,7 +336,7 @@ export default class gate extends gateRest {
      * @name gate#fetchOrdersWs
      * @see https://www.gate.io/docs/developers/futures/ws/en/#order-list
      * @description fetches information on multiple orders made by the user by status
-     * @param status
+     * @param {string} status order status to fetch for
      * @param {string} symbol unified market symbol of the market orders were made in
      * @param {int|undefined} [since] the earliest time in ms to fetch orders for
      * @param {int|undefined} [limit] the maximum number of order structures to retrieve
