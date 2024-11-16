@@ -3609,6 +3609,7 @@ export default class hitbtc extends Exchange {
         /**
          * @ignore
          * @method
+         * @name hitbtc#handleMarginModeAndParams
          * @description marginMode specified by params["marginMode"], this.options["marginMode"], this.options["defaultMarginMode"], params["margin"] = true or this.options["defaultType"] = 'margin'
          * @param {object} [params] extra parameters specific to the exchange API endpoint
          * @returns {Array} the marginMode in lowercase
