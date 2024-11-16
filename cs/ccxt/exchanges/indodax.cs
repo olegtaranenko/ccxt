@@ -11,7 +11,7 @@ public partial class indodax : Exchange
             { "id", "indodax" },
             { "name", "INDODAX" },
             { "countries", new List<object>() {"ID"} },
-            { "rateLimit", 100 },
+            { "rateLimit", 50 },
             { "has", new Dictionary<string, object>() {
                 { "CORS", null },
                 { "spot", true },
@@ -1421,6 +1421,7 @@ public partial class indodax : Exchange
         // { success: 0, error: "invalid order." }
         // or
         // [{ data, ... }, { ... }, ... ]
+        // {"success":"1","status":"approved","withdraw_currency":"strm","withdraw_address":"0x2b9A8cd5535D99b419aEfFBF1ae8D90a7eBdb24E","withdraw_amount":"2165.05767839","fee":"21.11000000","amount_after_fee":"2143.94767839","submit_time":"1730759489","withdraw_id":"strm-3423","txid":""}
         if (isTrue(((response is IList<object>) || (response.GetType().IsGenericType && response.GetType().GetGenericTypeDefinition().IsAssignableFrom(typeof(List<>))))))
         {
             return null;  // public endpoints may return []-arrays
@@ -1429,6 +1430,11 @@ public partial class indodax : Exchange
         if (isTrue(!isTrue((inOp(response, "success"))) && isTrue(isEqual(error, ""))))
         {
             return null;  // no 'success' property on public responses
+        }
+        object status = this.safeString(response, "success");
+        if (isTrue(isEqual(status, "approved")))
+        {
+            return null;
         }
         if (isTrue(isEqual(this.safeInteger(response, "success", 0), 1)))
         {
