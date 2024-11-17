@@ -15,29 +15,29 @@ require_once __DIR__ . '/tests_helpers.php';
 
 #[\AllowDynamicProperties]
 class testMainClass {
-    $id_tests = false;
-    $request_tests_failed = false;
-    $response_tests_failed = false;
-    $request_tests = false;
-    $ws_tests = false;
-    $response_tests = false;
-    $static_tests = false;
-    $info = false;
-    $verbose = false;
-    $debug = false;
-    $private_test = false;
-    $private_test_only = false;
-    $load_keys = false;
-    $sandbox = false;
-    $only_specific_tests = [];
-    $skipped_settings_for_exchange = array();
-    $skipped_methods = array();
-    $checked_public_tests = array();
-    $test_files = array();
-    $public_tests = array();
-    $ext = '';
-    $lang = '';
-    $proxy_test_file_name = 'proxies';
+    public $id_tests = false;
+    public $request_tests_failed = false;
+    public $response_tests_failed = false;
+    public $request_tests = false;
+    public $ws_tests = false;
+    public $response_tests = false;
+    public $static_tests = false;
+    public $info = false;
+    public $verbose = false;
+    public $debug = false;
+    public $private_test = false;
+    public $private_test_only = false;
+    public $load_keys = false;
+    public $sandbox = false;
+    public $only_specific_tests = [];
+    public $skipped_settings_for_exchange = array();
+    public $skipped_methods = array();
+    public $checked_public_tests = array();
+    public $test_files = array();
+    public $public_tests = array();
+    public $ext = '';
+    public $lang = '';
+    public $proxy_test_file_name = 'proxies';
 
     public function parse_cli_args_and_props() {
         $this->response_tests = get_cli_arg_value('--responseTests') || get_cli_arg_value('--response');
@@ -895,7 +895,7 @@ class testMainClass {
                 $new_value = $new_output[$key];
                 $this->assert_new_and_stored_output($exchange, $skip_keys, $new_value, $stored_value, $strict_type_check, $key);
             }
-        } elseif (gettype($stored_output) === 'array' && array_keys($stored_output) === array_keys(array_keys($stored_output)) && (gettype($new_output) === 'array' && array_keys($new_output) === array_keys(array_keys($new_output)))) {
+        } elseif (gettype($stored_output) === 'array' && array_is_list($stored_output) && (gettype($new_output) === 'array' && array_is_list($new_output))) {
             $stored_array_length = count($stored_output);
             $new_array_length = count($new_output);
             $this->assert_static_error($stored_array_length === $new_array_length, 'output length mismatch', $stored_output, $new_output);
