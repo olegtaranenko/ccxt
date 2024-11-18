@@ -226,7 +226,7 @@ class binance(ccxt.async_support.binance):
         https://developers.binance.com/docs/derivatives/usds-margined-futures/websocket-market-streams/All-Market-Liquidation-Order-Streams
         https://developers.binance.com/docs/derivatives/coin-margined-futures/websocket-market-streams/All-Market-Liquidation-Order-Streams
 
-        :param str[] symbols:
+        :param str[] symbols: list of unified market symbols
         :param int [since]: the earliest time in ms to fetch liquidations for
         :param int [limit]: the maximum number of liquidation structures to retrieve
         :param dict [params]: exchange specific parameters for the bitmex api endpoint
@@ -439,7 +439,7 @@ class binance(ccxt.async_support.binance):
         https://developers.binance.com/docs/derivatives/usds-margined-futures/user-data-streams/Event-Order-Update
         https://developers.binance.com/docs/derivatives/coin-margined-futures/user-data-streams/Event-Order-Update
 
- @param symbols
+        :param str[] symbols: list of unified market symbols
         :param int [since]: the earliest time in ms to fetch liquidations for
         :param int [limit]: the maximum number of liquidation structures to retrieve
         :param dict [params]: exchange specific parameters for the bitmex api endpoint
@@ -2983,7 +2983,7 @@ class binance(ccxt.async_support.binance):
         https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/websocket-api/Cancel-Order
 
         :param str id: order id
-        :param str symbol: unified market symbol, default is None
+        :param str [symbol]: unified market symbol, default is None
         :param dict [params]: extra parameters specific to the exchange API endpoint
         :param str|None [params.cancelRestrictions]: Supported values: ONLY_NEW - Cancel will succeed if the order status is NEW. ONLY_PARTIALLY_FILLED - Cancel will succeed if order status is PARTIALLY_FILLED.
         :returns dict: an list of `order structures <https://docs.ccxt.com/#/?id=order-structure>`
@@ -3024,7 +3024,7 @@ class binance(ccxt.async_support.binance):
 
         https://developers.binance.com/docs/binance-spot-api-docs/web-socket-api#cancel-open-orders-trade
 
-        :param str symbol: unified market symbol of the market to cancel orders in
+        :param str [symbol]: unified market symbol of the market to cancel orders in
         :param dict [params]: extra parameters specific to the exchange API endpoint
         :returns dict[]: a list of `order structures <https://docs.ccxt.com/#/?id=order-structure>`
         """
@@ -3060,8 +3060,8 @@ class binance(ccxt.async_support.binance):
         https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/websocket-api/Query-Order
 
         :param str id: order id
-        :param str symbol: unified symbol of the market the order was made in
-        :param dict params: extra parameters specific to the exchange API endpoint
+        :param str [symbol]: unified symbol of the market the order was made in
+        :param dict [params]: extra parameters specific to the exchange API endpoint
         :returns dict: An `order structure <https://docs.ccxt.com/#/?id=order-structure>`
         """
         await self.load_markets()
@@ -3486,8 +3486,8 @@ class binance(ccxt.async_support.binance):
         """
         watch all open positions
         :param str[]|None symbols: list of unified market symbols
- @param since
- @param limit
+        :param number [since]: since timestamp
+        :param number [limit]: limit
         :param dict params: extra parameters specific to the exchange API endpoint
         :param boolean [params.portfolioMargin]: set to True if you would like to watch positions in a portfolio margin account
         :returns dict[]: a list of `position structure <https://docs.ccxt.com/en/latest/manual.html#position-structure>`

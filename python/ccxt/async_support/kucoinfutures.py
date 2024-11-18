@@ -1212,8 +1212,8 @@ class kucoinfutures(kucoin, ImplicitAPI):
         https://www.kucoin.com/docs/rest/futures-trading/positions/get-positions-history
 
         :param str[] [symbols]: list of unified market symbols
- @param since
- @param limit
+        :param int [since]: the earliest time in ms to fetch position history for
+        :param int [limit]: the maximum number of entries to retrieve
         :param dict [params]: extra parameters specific to the exchange API endpoint
         :param int [params.until]: closing end time
         :param int [params.pageId]: page id
@@ -1423,7 +1423,7 @@ class kucoinfutures(kucoin, ImplicitAPI):
         :param str [params.postOnly]: Post only flag, invalid when timeInForce is IOC or FOK
         :param float [params.cost]: the cost of the order in units of USDT
  ----------------- Exchange Specific Parameters -----------------
-        :param float [params.leverage]: Leverage size of the order
+        :param float [params.leverage]: Leverage size of the order(mandatory param in request, default is 1)
         :param str [params.clientOid]: client order id, defaults to uuid if not passed
         :param str [params.remark]: remark for the order, length cannot exceed 100 utf8 characters
         :param str [params.stop]: 'up' or 'down', the direction the stopPrice is triggered from, requires stopPrice. down: Triggers when the price reaches or goes below the stopPrice. up: Triggers when the price reaches or goes above the stopPrice.
@@ -2401,8 +2401,8 @@ class kucoinfutures(kucoin, ImplicitAPI):
             #         }
             #     }
             #
-        elif toAccount == 'future' or toAccount == 'swap':
-            request['payAccountType'] = 'MAIN'
+        elif toAccount == 'future' or toAccount == 'swap' or toAccount == 'contract':
+            request['payAccountType'] = self.parse_transfer_type(fromAccount)
             response = await self.futuresPrivatePostTransferIn(self.extend(request, params))
             #
             #    {

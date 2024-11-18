@@ -4,7 +4,7 @@
 
 # -----------------------------------------------------------------------------
 
-__version__ = '4.4.31'
+__version__ = '4.4.32'
 
 # -----------------------------------------------------------------------------
 
@@ -497,7 +497,9 @@ class Exchange(object):
         if self.quoteJsonNumbers and orjson is None:
             return json.loads(response_body, parse_float=str, parse_int=str)
         else:
-            return orjson.loads(response_body)
+            if orjson:
+                return orjson.loads(response_body)
+            return json.loads(response_body)
 
     def fetch(self, url, method='GET', headers=None, body=None):
         """Perform a HTTP request and return decoded JSON data"""

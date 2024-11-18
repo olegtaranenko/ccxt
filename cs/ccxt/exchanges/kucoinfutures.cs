@@ -1241,8 +1241,8 @@ public partial class kucoinfutures : kucoin
      * @description fetches historical positions
      * @see https://www.kucoin.com/docs/rest/futures-trading/positions/get-positions-history
      * @param {string[]} [symbols] list of unified market symbols
-     * @param since
-     * @param limit
+     * @param {int} [since] the earliest time in ms to fetch position history for
+     * @param {int} [limit] the maximum number of entries to retrieve
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @param {int} [params.until] closing end time
      * @param {int} [params.pageId] page id
@@ -1474,7 +1474,7 @@ public partial class kucoinfutures : kucoin
      * @param {string} [params.postOnly] Post only flag, invalid when timeInForce is IOC or FOK
      * @param {float} [params.cost] the cost of the order in units of USDT
      * ----------------- Exchange Specific Parameters -----------------
-     * @param {float} [params.leverage] Leverage size of the order
+     * @param {float} [params.leverage] Leverage size of the order (mandatory param in request, default is 1)
      * @param {string} [params.clientOid] client order id, defaults to uuid if not passed
      * @param {string} [params.remark] remark for the order, length cannot exceed 100 utf8 characters
      * @param {string} [params.stop] 'up' or 'down', the direction the stopPrice is triggered from, requires stopPrice. down: Triggers when the price reaches or goes below the stopPrice. up: Triggers when the price reaches or goes above the stopPrice.
@@ -2587,9 +2587,9 @@ public partial class kucoinfutures : kucoin
         {
             ((IDictionary<string,object>)request)["recAccountType"] = toAccountString;
             response = await this.futuresPrivatePostTransferOut(this.extend(request, parameters));
-        } else if (isTrue(isTrue(isEqual(toAccount, "future")) || isTrue(isEqual(toAccount, "swap"))))
+        } else if (isTrue(isTrue(isTrue(isEqual(toAccount, "future")) || isTrue(isEqual(toAccount, "swap"))) || isTrue(isEqual(toAccount, "contract"))))
         {
-            ((IDictionary<string,object>)request)["payAccountType"] = "MAIN";
+            ((IDictionary<string,object>)request)["payAccountType"] = this.parseTransferType(fromAccount);
             response = await this.futuresPrivatePostTransferIn(this.extend(request, parameters));
         } else
         {
@@ -3101,6 +3101,7 @@ public partial class kucoinfutures : kucoin
         /**
          * @ignore
          * @method
+         * @name kucoinfutures#parseMarketLeverageTiers
          * @param {object} info Exchange market response for 1 market
          * @param {object} market CCXT market
          */
@@ -3371,7 +3372,7 @@ public partial class kucoinfutures : kucoin
 
     /**
      * @method
-     * @name kucoin#fetchLeverage
+     * @name kucoinfutures#fetchLeverage
      * @description fetch the set leverage for a market
      * @see https://www.kucoin.com/docs/rest/futures-trading/positions/get-cross-margin-leverage
      * @param {string} symbol unified market symbol
