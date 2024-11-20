@@ -96,6 +96,7 @@ export default class Exchange {
     enableLastResponseHeaders: boolean;
     enableRateLimit: boolean;
     exceptions: Dictionary<string>;
+    features: Dictionary<Dictionary<any>>;
     fees: {
         trading: {
             tierBased: Bool;
@@ -817,6 +818,8 @@ export default class Exchange {
     isRoundNumber(value: number): boolean;
     safeIntegerOmitZero(obj: object, key: IndexType, defaultValue?: Int): Int;
     afterConstruct(): void;
+    featuresGenerator(): void;
+    featuresMapper(initialFeatures: any, marketType: Str, subType?: Str): any;
     orderbookChecksumMessage(symbol: Str): string;
     createNetworksByIdObject(): void;
     getDefaultOptions(): {
