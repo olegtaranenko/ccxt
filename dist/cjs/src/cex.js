@@ -118,7 +118,8 @@ class cex extends cex$1 {
                     'check failed': errors.BadRequest,
                     'Insufficient funds': errors.InsufficientFunds,
                     'Get deposit address for main account is not allowed': errors.PermissionDenied,
-                    'Market Trigger orders are not allowed': errors.BadRequest, // for some reason, triggerPrice does not work for market orders
+                    'Market Trigger orders are not allowed': errors.BadRequest,
+                    'key not passed or incorrect': errors.AuthenticationError,
                 },
             },
             'timeframes': {
@@ -860,7 +861,7 @@ class cex extends cex$1 {
      * @name cex#fetchOrders
      * @description fetches information on multiple orders made by the user
      * @see https://trade.cex.io/docs/#rest-private-api-calls-orders
-     * @param status
+     * @param {string} status order status to fetch for
      * @param {string} symbol unified market symbol of the market orders were made in
      * @param {int} [since] the earliest time in ms to fetch orders for
      * @param {int} [limit] the maximum number of order structures to retrieve
