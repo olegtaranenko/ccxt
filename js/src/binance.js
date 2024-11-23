@@ -991,13 +991,13 @@ export default class binance extends Exchange {
                 'spot': {
                     'sandbox': true,
                     'createOrder': {
+                        'marginMode': true,
                         'triggerPrice': true,
                         'triggerPriceType': undefined,
                         'triggerDirection': false,
                         'stopLossPrice': true,
                         'takeProfitPrice': true,
                         'attachedStopLossTakeProfit': undefined,
-                        'marginMode': true,
                         'timeInForce': {
                             'GTC': true,
                             'IOC': true,
@@ -1015,6 +1015,7 @@ export default class binance extends Exchange {
                     },
                     'createOrders': undefined,
                     'fetchMyTrades': {
+                        'marginMode': false,
                         'limit': 1000,
                         'daysBack': undefined,
                         'untilDays': 1, // days between start-end
@@ -1025,25 +1026,25 @@ export default class binance extends Exchange {
                         'trailing': false,
                     },
                     'fetchOpenOrders': {
-                        'limit': undefined,
                         'marginMode': true,
+                        'limit': undefined,
                         'trigger': false,
                         'trailing': false,
                     },
                     'fetchOrders': {
+                        'marginMode': true,
                         'limit': 1000,
                         'daysBack': undefined,
                         'untilDays': 10000,
-                        'marginMode': true,
                         'trigger': false,
                         'trailing': false,
                     },
                     'fetchClosedOrders': {
+                        'marginMode': true,
                         'limit': 1000,
                         'daysBackClosed': undefined,
                         'daysBackCanceled': undefined,
                         'untilDays': 10000,
-                        'marginMode': true,
                         'trigger': false,
                         'trailing': false,
                     },
@@ -1054,6 +1055,7 @@ export default class binance extends Exchange {
                 'default': {
                     'sandbox': true,
                     'createOrder': {
+                        'marginMode': false,
                         'triggerPrice': true,
                         'triggerPriceType': {
                             'mark': true,
@@ -1063,7 +1065,6 @@ export default class binance extends Exchange {
                         'stopLossPrice': true,
                         'takeProfitPrice': true,
                         'attachedStopLossTakeProfit': undefined,
-                        'marginMode': false,
                         'timeInForce': {
                             'GTC': true,
                             'IOC': true,
@@ -1084,6 +1085,7 @@ export default class binance extends Exchange {
                         'max': 5,
                     },
                     'fetchMyTrades': {
+                        'marginMode': false,
                         'daysBack': undefined,
                         'limit': 1000,
                         'untilDays': 7,
@@ -1094,25 +1096,25 @@ export default class binance extends Exchange {
                         'trailing': false,
                     },
                     'fetchOpenOrders': {
-                        'limit': 500,
                         'marginMode': true,
+                        'limit': 500,
                         'trigger': false,
                         'trailing': false,
                     },
                     'fetchOrders': {
+                        'marginMode': true,
                         'limit': 1000,
                         'daysBack': 90,
                         'untilDays': 7,
-                        'marginMode': true,
                         'trigger': false,
                         'trailing': false,
                     },
                     'fetchClosedOrders': {
+                        'marginMode': true,
                         'limit': 1000,
                         'daysBackClosed': 90,
                         'daysBackCanceled': 3,
                         'untilDays': 7,
-                        'marginMode': true,
                         'trigger': false,
                         'trailing': false,
                     },
