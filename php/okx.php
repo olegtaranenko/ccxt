@@ -1176,6 +1176,7 @@ class okx extends Exchange {
                 'default' => array(
                     'sandbox' => true,
                     'createOrder' => array(
+                        'marginMode' => true,
                         'triggerPrice' => true,
                         'triggerPriceType' => array(
                             'last' => true,
@@ -1185,7 +1186,6 @@ class okx extends Exchange {
                         'triggerDirection' => false,
                         'stopLossPrice' => true,
                         'takeProfitPrice' => true,
-                        'marginMode' => true,
                         'attachedStopLossTakeProfit' => array(
                             'triggerPriceType' => array(
                                 'last' => true,
@@ -1213,6 +1213,7 @@ class okx extends Exchange {
                         'max' => 20,
                     ),
                     'fetchMyTrades' => array(
+                        'marginMode' => false,
                         'daysBack' => 90,
                         'limit' => 100,
                         'untilDays' => 10000,
@@ -1223,18 +1224,18 @@ class okx extends Exchange {
                         'trailing' => true,
                     ),
                     'fetchOpenOrders' => array(
-                        'limit' => 100,
                         'marginMode' => false,
+                        'limit' => 100,
                         'trigger' => true,
                         'trailing' => true,
                     ),
                     'fetchOrders' => null, // not supported
                     'fetchClosedOrders' => array(
+                        'marginMode' => false,
                         'limit' => 100,
                         'daysBackClosed' => 90, // 3 months
                         'daysBackCanceled' => 1 / 12, // 2 hour
                         'untilDays' => null,
-                        'marginMode' => false,
                         'trigger' => true,
                         'trailing' => true,
                     ),
@@ -3290,7 +3291,7 @@ class okx extends Exchange {
                 $request['newPx'] = $this->price_to_precision($symbol, $price);
             }
         }
-        $params = $this->omit($params, array( 'clOrdId', 'clientOrderId', 'takeProfitPrice', 'stopLossPrice', 'stopLoss', 'takeProfit' ));
+        $params = $this->omit($params, array( 'clOrdId', 'clientOrderId', 'takeProfitPrice', 'stopLossPrice', 'stopLoss', 'takeProfit', 'postOnly' ));
         return $this->extend($request, $params);
     }
 
@@ -6473,7 +6474,7 @@ class okx extends Exchange {
          * @param {string} $symbol unified $market $symbol
          * @param {array} [$params] extra parameters specific to the exchange API endpoint
          * @param {string} [$params->marginMode] 'cross' or 'isolated'
-         * @param {string} [$params->posSide] 'long' or 'short' for isolated margin long/short mode on futures and swap markets
+         * @param {string} [$params->posSide] 'long' or 'short' or 'net' for isolated margin long/short mode on futures and swap markets, default is 'net'
          * @return {array} $response from the exchange
          */
         if ($symbol === null) {
@@ -6499,14 +6500,12 @@ class okx extends Exchange {
             'mgnMode' => $marginMode,
             'instId' => $market['id'],
         );
-        $posSide = $this->safe_string($params, 'posSide');
+        $posSide = $this->safe_string($params, 'posSide', 'net');
         if ($marginMode === 'isolated') {
-            if ($posSide === null) {
-                throw new ArgumentsRequired($this->id . ' setLeverage() requires a $posSide argument for isolated margin');
-            }
             if ($posSide !== 'long' && $posSide !== 'short' && $posSide !== 'net') {
                 throw new BadRequest($this->id . ' setLeverage() requires the $posSide argument to be either "long", "short" or "net"');
             }
+            $request['posSide'] = $posSide;
         }
         $response = $this->privatePostAccountSetLeverage ($this->extend($request, $params));
         //

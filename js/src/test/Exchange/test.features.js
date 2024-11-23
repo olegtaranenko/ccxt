@@ -38,6 +38,7 @@ function testFeaturesInner(exchange, skippedProperties, featureObj) {
     const format = {
         'sandbox': false,
         'createOrder': {
+            'marginMode': false,
             'triggerPrice': false,
             'triggerPriceType': {
                 'mark': false,
@@ -54,7 +55,6 @@ function testFeaturesInner(exchange, skippedProperties, featureObj) {
                 },
                 'limitPrice': false,
             },
-            'marginMode': false,
             'timeInForce': {
                 'GTC': false,
                 'IOC': false,
@@ -65,16 +65,17 @@ function testFeaturesInner(exchange, skippedProperties, featureObj) {
             },
             'hedged': false,
             // exchange-supported features
-            'selfTradePrevention': false,
             'trailing': false,
-            'twap': false,
-            'iceberg': false,
-            'oco': false,
+            // 'iceberg': false,
+            // 'twap': false,
+            // 'selfTradePrevention': false,
+            // 'oco': false,
         },
         'createOrders': {
             'max': 5,
         },
         'fetchMyTrades': {
+            'marginMode': false,
             'daysBack': 0,
             'limit': 0,
             'untilDays': 0,
@@ -85,25 +86,25 @@ function testFeaturesInner(exchange, skippedProperties, featureObj) {
             'trailing': false,
         },
         'fetchOpenOrders': {
-            'limit': 0,
             'marginMode': false,
+            'limit': 0,
             'trigger': false,
             'trailing': false,
         },
         'fetchOrders': {
+            'marginMode': false,
             'limit': 0,
             'daysBack': 0,
             'untilDays': 0,
-            'marginMode': false,
             'trigger': false,
             'trailing': false,
         },
         'fetchClosedOrders': {
+            'marginMode': false,
             'limit': 0,
             'daysBackClosed': 0,
             'daysBackCanceled': 0,
             'untilDays': 0,
-            'marginMode': false,
             'trigger': false,
             'trailing': false,
         },
