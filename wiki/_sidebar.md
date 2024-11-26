@@ -59,6 +59,7 @@
 	- [delta](exchanges/delta.md)
 	- [deribit](exchanges/deribit.md)
 	- [digifinex](exchanges/digifinex.md)
+	- [ellipx](exchanges/ellipx.md)
 	- [exmo](exchanges/exmo.md)
 	- [gate](exchanges/gate.md)
 	- [gemini](exchanges/gemini.md)
