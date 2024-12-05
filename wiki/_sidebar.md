@@ -21,7 +21,7 @@
 	- [bitbank](exchanges/bitbank.md)
 	- [bitbns](exchanges/bitbns.md)
 	- [bitfinex](exchanges/bitfinex.md)
-	- [bitfinex2](exchanges/bitfinex2.md)
+	- [bitfinex1](exchanges/bitfinex1.md)
 	- [bitflyer](exchanges/bitflyer.md)
 	- [bitget](exchanges/bitget.md)
 	- [bithumb](exchanges/bithumb.md)

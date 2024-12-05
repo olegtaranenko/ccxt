@@ -2466,9 +2466,14 @@ class Exchange {
                 featuresObj['createOrder']['stopLoss'] = value;
                 featuresObj['createOrder']['takeProfit'] = value;
             }
-            // false 'hedged' for spot
+            // for spot, default 'hedged' to false
             if (marketType === 'spot') {
                 featuresObj['createOrder']['hedged'] = false;
+            }
+            // default 'GTC' to true
+            const gtcValue = this.safeBool(featuresObj['createOrder']['timeInForce'], 'gtc');
+            if (gtcValue === undefined) {
+                featuresObj['createOrder']['timeInForce']['gtc'] = true;
             }
         }
         return featuresObj;

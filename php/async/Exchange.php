@@ -43,11 +43,11 @@ use React\EventLoop\Loop;
 
 use Exception;
 
-$version = '4.4.35';
+$version = '4.4.36';
 
 class Exchange extends \ccxt\Exchange {
 
-    const VERSION = '4.4.35';
+    const VERSION = '4.4.36';
 
     public $browser;
     public $marketsLoading = null;
@@ -1553,9 +1553,14 @@ class Exchange extends \ccxt\Exchange {
                 $featuresObj['createOrder']['stopLoss'] = $value;
                 $featuresObj['createOrder']['takeProfit'] = $value;
             }
-            // false 'hedged' for spot
+            // for spot, default 'hedged' to false
             if ($marketType === 'spot') {
                 $featuresObj['createOrder']['hedged'] = false;
+            }
+            // default 'GTC' to true
+            $gtcValue = $this->safe_bool($featuresObj['createOrder']['timeInForce'], 'gtc');
+            if ($gtcValue === null) {
+                $featuresObj['createOrder']['timeInForce']['gtc'] = true;
             }
         }
         return $featuresObj;

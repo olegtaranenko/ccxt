@@ -43,7 +43,7 @@ use BN\BN;
 use Sop\ASN1\Type\UnspecifiedType;
 use Exception;
 
-$version = '4.4.35';
+$version = '4.4.36';
 
 // rounding mode
 const TRUNCATE = 0;
@@ -62,7 +62,7 @@ const PAD_WITH_ZERO = 6;
 
 class Exchange {
 
-    const VERSION = '4.4.35';
+    const VERSION = '4.4.36';
 
     private static $base58_alphabet = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
     private static $base58_encoder = null;
@@ -351,7 +351,7 @@ class Exchange {
         'bitbns',
         'bitcoincom',
         'bitfinex',
-        'bitfinex2',
+        'bitfinex1',
         'bitflyer',
         'bitget',
         'bithumb',
@@ -3446,9 +3446,14 @@ class Exchange {
                 $featuresObj['createOrder']['stopLoss'] = $value;
                 $featuresObj['createOrder']['takeProfit'] = $value;
             }
-            // false 'hedged' for spot
+            // for spot, default 'hedged' to false
             if ($marketType === 'spot') {
                 $featuresObj['createOrder']['hedged'] = false;
+            }
+            // default 'GTC' to true
+            $gtcValue = $this->safe_bool($featuresObj['createOrder']['timeInForce'], 'gtc');
+            if ($gtcValue === null) {
+                $featuresObj['createOrder']['timeInForce']['gtc'] = true;
             }
         }
         return $featuresObj;
