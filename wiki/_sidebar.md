@@ -92,7 +92,7 @@
 	- [onetrading](exchanges/onetrading.md)
 	- [oxfun](exchanges/oxfun.md)
 	- [p2b](exchanges/p2b.md)
-	- [paradex](exchanges/paradex.md)
+	- [paradex()](exchanges/paradex().md)
 	- [paymium](exchanges/paymium.md)
 	- [phemex](exchanges/phemex.md)
 	- [poloniex](exchanges/poloniex.md)
