@@ -332,6 +332,7 @@ class okx extends Exchange {
                         'asset/convert/history' => 5 / 3,
                         'asset/monthly-statement' => 2,
                         // account
+                        'account/instruments' => 1,
                         'account/balance' => 2,
                         'account/positions' => 2,
                         'account/positions-history' => 100,
@@ -1205,7 +1206,6 @@ class okx extends Exchange {
                             'limitPrice' => true,
                         ),
                         'timeInForce' => array(
-                            'GTC' => true,
                             'IOC' => true,
                             'FOK' => true,
                             'PO' => true,

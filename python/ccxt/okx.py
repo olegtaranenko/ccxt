@@ -351,6 +351,7 @@ class okx(Exchange, ImplicitAPI):
                         'asset/convert/history': 5 / 3,
                         'asset/monthly-statement': 2,
                         # account
+                        'account/instruments': 1,
                         'account/balance': 2,
                         'account/positions': 2,
                         'account/positions-history': 100,
@@ -1223,7 +1224,6 @@ class okx(Exchange, ImplicitAPI):
                             'limitPrice': True,
                         },
                         'timeInForce': {
-                            'GTC': True,
                             'IOC': True,
                             'FOK': True,
                             'PO': True,
