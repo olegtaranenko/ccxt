@@ -6659,7 +6659,7 @@ class binance extends Exchange {
          * @param {int} [$params->until] the latest time in ms to fetch orders for
          * @param {boolean} [$params->paginate] default false, when true will automatically $paginate by calling this endpoint multiple times. See in the docs all the [available parameters](https://github.com/ccxt/ccxt/wiki/Manual#pagination-$params)
          * @param {boolean} [$params->portfolioMargin] set to true if you would like to fetch orders in a portfolio margin account
-         * @param {boolean} [$params->stop] set to true if you would like to fetch portfolio margin account stop or conditional orders
+         * @param {boolean} [$params->trigger] set to true if you would like to fetch portfolio margin account trigger or conditional orders
          * @return {Order[]} a list of ~@link https://docs.ccxt.com/#/?id=order-structure order structures~
          */
         if ($symbol === null) {
@@ -6928,7 +6928,7 @@ class binance extends Exchange {
          * @param {array} [$params] extra parameters specific to the exchange API endpoint
          * @param {string} [$params->marginMode] 'cross' or 'isolated', for spot margin trading
          * @param {boolean} [$params->portfolioMargin] set to true if you would like to fetch open orders in the portfolio margin account
-         * @param {boolean} [$params->stop] set to true if you would like to fetch portfolio margin account conditional orders
+         * @param {boolean} [$params->trigger] set to true if you would like to fetch portfolio margin account conditional orders
          * @param {string} [$params->subType] "linear" or "inverse"
          * @return {Order[]} a list of ~@link https://docs.ccxt.com/#/?id=order-structure order structures~
          */
@@ -7234,7 +7234,7 @@ class binance extends Exchange {
          * @param {array} [$params] extra parameters specific to the exchange API endpoint
          * @param {boolean} [$params->paginate] default false, when true will automatically paginate by calling this endpoint multiple times. See in the docs all the [available parameters](https://github.com/ccxt/ccxt/wiki/Manual#pagination-$params)
          * @param {boolean} [$params->portfolioMargin] set to true if you would like to fetch $orders in a portfolio margin account
-         * @param {boolean} [$params->stop] set to true if you would like to fetch portfolio margin account stop or conditional $orders
+         * @param {boolean} [$params->trigger] set to true if you would like to fetch portfolio margin account trigger or conditional $orders
          * @return {Order[]} a list of ~@link https://docs.ccxt.com/#/?id=order-structure order structures~
          */
         if ($symbol === null) {
@@ -7265,7 +7265,7 @@ class binance extends Exchange {
          * @param {array} [$params] extra parameters specific to the exchange API endpoint
          * @param {boolean} [$params->paginate] default false, when true will automatically paginate by calling this endpoint multiple times. See in the docs all the [available parameters](https://github.com/ccxt/ccxt/wiki/Manual#pagination-$params)
          * @param {boolean} [$params->portfolioMargin] set to true if you would like to fetch $orders in a portfolio margin account
-         * @param {boolean} [$params->stop] set to true if you would like to fetch portfolio margin account stop or conditional $orders
+         * @param {boolean} [$params->trigger] set to true if you would like to fetch portfolio margin account trigger or conditional $orders
          * @return {array[]} a list of ~@link https://docs.ccxt.com/#/?id=order-structure order structures~
          */
         if ($symbol === null) {
@@ -7296,7 +7296,7 @@ class binance extends Exchange {
          * @param {array} [$params] extra parameters specific to the exchange API endpoint
          * @param {boolean} [$params->paginate] default false, when true will automatically paginate by calling this endpoint multiple times. See in the docs all the [available parameters](https://github.com/ccxt/ccxt/wiki/Manual#pagination-$params)
          * @param {boolean} [$params->portfolioMargin] set to true if you would like to fetch $orders in a portfolio margin account
-         * @param {boolean} [$params->stop] set to true if you would like to fetch portfolio margin account stop or conditional $orders
+         * @param {boolean} [$params->trigger] set to true if you would like to fetch portfolio margin account trigger or conditional $orders
          * @return {array[]} a list of ~@link https://docs.ccxt.com/#/?id=order-structure order structures~
          */
         if ($symbol === null) {
@@ -7329,7 +7329,7 @@ class binance extends Exchange {
          * @param {string} $symbol unified $symbol of the $market the order was made in
          * @param {array} [$params] extra parameters specific to the exchange API endpoint
          * @param {boolean} [$params->portfolioMargin] set to true if you would like to cancel an order in a portfolio margin account
-         * @param {boolean} [$params->stop] set to true if you would like to cancel a portfolio margin account conditional order
+         * @param {boolean} [$params->trigger] set to true if you would like to cancel a portfolio margin account conditional order
          * @return {array} An ~@link https://docs.ccxt.com/#/?$id=order-structure order structure~
          */
         if ($symbol === null) {
@@ -7422,7 +7422,7 @@ class binance extends Exchange {
          * @param {array} [$params] extra parameters specific to the exchange API endpoint
          * @param {string} [$params->marginMode] 'cross' or 'isolated', for spot margin trading
          * @param {boolean} [$params->portfolioMargin] set to true if you would like to cancel orders in a portfolio margin account
-         * @param {boolean} [$params->stop] set to true if you would like to cancel portfolio margin account conditional orders
+         * @param {boolean} [$params->trigger] set to true if you would like to cancel portfolio margin account conditional orders
          * @return {array[]} a list of ~@link https://docs.ccxt.com/#/?id=order-structure order structures~
          */
         if ($symbol === null) {
@@ -11484,7 +11484,7 @@ class binance extends Exchange {
          * @param {string} $id the identification number of the ledger entry
          * @param {string} $code unified $currency $code
          * @param {array} [$params] extra parameters specific to the exchange API endpoint
-         * @return {array} a ~@link https://docs.ccxt.com/#/?$id=ledger-structure ledger structure~
+         * @return {array} a ~@link https://docs.ccxt.com/#/?$id=ledger ledger structure~
          */
         $this->load_markets();
         $type = null;
@@ -11532,7 +11532,7 @@ class binance extends Exchange {
          * @param {boolean} [$params->paginate] default false, when true will automatically $paginate by calling this endpoint multiple times. See in the docs all the [available parameters](https://github.com/ccxt/ccxt/wiki/Manual#pagination-$params)
          * @param {boolean} [$params->portfolioMargin] set to true if you would like to fetch the ledger for a portfolio margin account
          * @param {string} [$params->subType] "linear" or "inverse"
-         * @return {array} a ~@link https://docs.ccxt.com/#/?id=ledger-structure ledger structure~
+         * @return {array} a ~@link https://docs.ccxt.com/#/?id=ledger ledger structure~
          */
         $this->load_markets();
         $paginate = false;
