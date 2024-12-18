@@ -6079,7 +6079,7 @@ class binance extends binance$1 {
             'timeInForce': timeInForce,
             'timestamp': timestamp,
             'trades': fills,
-            'triggerPrice': stopPrice,
+            'triggerPrice': triggerPrice,
             'type': type,
         }, market);
     }

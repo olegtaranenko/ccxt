@@ -6060,7 +6060,7 @@ class binance extends Exchange {
             'timeInForce' => $timeInForce,
             'timestamp' => $timestamp,
             'trades' => $fills,
-            'triggerPrice' => $stopPrice,
+            'triggerPrice' => $triggerPrice,
             'type' => $type,
         ), $market);
     }

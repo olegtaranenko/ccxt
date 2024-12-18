@@ -5867,7 +5867,7 @@ class binance(Exchange, ImplicitAPI):
             'timeInForce': timeInForce,
             'timestamp': timestamp,
             'trades': fills,
-            'triggerPrice': stopPrice,
+            'triggerPrice': triggerPrice,
             'type': type,
         }, market)
 
