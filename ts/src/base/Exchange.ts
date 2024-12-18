@@ -93,6 +93,7 @@ import type {
     OHLCV,
     OHLCVC,
     OpenInterest,
+    OpenInterests,
     Option,
     OptionChain,
     Order,
@@ -1935,6 +1936,7 @@ export default class Exchange {
                 'fetchOHLCV': undefined,
                 'fetchOHLCVWs': undefined,
                 'fetchOpenInterest': undefined,
+                'fetchOpenInterests': undefined,
                 'fetchOpenInterestHistory': undefined,
                 'fetchOpenOrder': undefined,
                 'fetchOpenOrders': undefined,
@@ -2848,6 +2850,10 @@ export default class Exchange {
 
     async fetchOpenInterest (symbol: string, params = {}): Promise<OpenInterest> {
         throw new NotSupported (this.id + ' fetchOpenInterest() is not supported yet');
+    }
+
+    async fetchOpenInterests (symbols: Strings = undefined, params = {}): Promise<OpenInterests> {
+        throw new NotSupported (this.id + ' fetchOpenInterests() is not supported yet');
     }
 
     async signIn (params = {}): Promise<{}> {
@@ -6506,6 +6512,15 @@ export default class Exchange {
         return result;
     }
 
+    parseOpenInterests (response, market: Market = undefined): OpenInterests {
+        const result = {};
+        for (let i = 0; i < response.length; i++) {
+            const parsed = this.parseOpenInterest (response[i], market);
+            result[parsed['symbol']] = parsed;
+        }
+        return result;
+    }
+
     parseLongShortRatio (info: Dict, market: Market = undefined): LongShortRatio {
         throw new NotSupported (this.id + ' parseLongShortRatio() is not supported yet');
     }
@@ -6622,7 +6637,7 @@ export default class Exchange {
         throw new NotSupported (this.id + ' parseOpenInterest () is not supported yet');
     }
 
-    parseOpenInterests (response, market = undefined, since: Int = undefined, limit: Int = undefined): OpenInterest[] {
+    parseOpenInterestsHistory (response, market = undefined, since: Int = undefined, limit: Int = undefined): OpenInterest[] {
         const interests = [];
         for (let i = 0; i < response.length; i++) {
             const entry = response[i];
@@ -6986,7 +7001,7 @@ export default class Exchange {
         return [ maxEntriesPerRequest, params ];
     }
 
-    async fetchPaginatedCallDynamic (method: string, symbol: Str = undefined, since: Int = undefined, limit: Int = undefined, params = {}, maxEntriesPerRequest: Int = undefined): Promise<any> {
+    async fetchPaginatedCallDynamic (method: string, symbol: Str = undefined, since: Int = undefined, limit: Int = undefined, params = {}, maxEntriesPerRequest: Int = undefined, removeRepeated = true): Promise<any> {
         let maxCalls = undefined;
         [ maxCalls, params ] = this.handleOptionAndParams (params, method, 'paginationCalls', 10);
         let maxRetries = undefined;
@@ -6994,6 +7009,8 @@ export default class Exchange {
         let paginationDirection = undefined;
         [ paginationDirection, params ] = this.handleOptionAndParams (params, method, 'paginationDirection', 'backward');
         let paginationTimestamp = undefined;
+        let removeRepeatedOption = removeRepeated;
+        [ removeRepeatedOption, params ] = this.handleOptionAndParams (params, method, 'removeRepeated', removeRepeated);
         let calls = 0;
         let result = [];
         let errors = 0;
@@ -7066,7 +7083,10 @@ export default class Exchange {
                 }
             }
         }
-        const uniqueResults = this.removeRepeatedElementsFromArray (result);
+        let uniqueResults = result;
+        if (removeRepeatedOption) {
+            uniqueResults = this.removeRepeatedElementsFromArray (result);
+        }
         const key = (method === 'fetchOHLCV') ? 0 : 'timestamp';
         return this.filterBySinceLimit (uniqueResults, since, limit, key);
     }
