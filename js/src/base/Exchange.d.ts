@@ -542,6 +542,7 @@ export default class Exchange {
             fetchOHLCV: any;
             fetchOHLCVWs: any;
             fetchOpenInterest: any;
+            fetchOpenInterests: any;
             fetchOpenInterestHistory: any;
             fetchOpenOrder: any;
             fetchOpenOrders: any;
@@ -817,6 +818,7 @@ export default class Exchange {
     fetchDepositAddressesByNetwork(code: string, params?: {}): Promise<DepositAddress[]>;
     fetchOpenInterestHistory(symbol: string, timeframe?: string, since?: Int, limit?: Int, params?: {}): Promise<OpenInterest[]>;
     fetchOpenInterest(symbol: string, params?: {}): Promise<OpenInterest>;
+    fetchOpenInterests(symbols?: Strings, params?: {}): Promise<OpenInterests>;
     signIn(params?: {}): Promise<{}>;
     fetchPaymentMethods(params?: {}): Promise<{}>;
     parseToInt(number: any): number;
@@ -1126,6 +1128,7 @@ export default class Exchange {
     safeSymbol(marketId: Str, market?: Market, delimiter?: Str, marketType?: Str): string;
     parseFundingRate(contract: string, market?: Market): FundingRate;
     parseFundingRates(response: any, market?: Market): FundingRates;
+    parseOpenInterests(response: any, market?: Market): OpenInterests;
     parseLongShortRatio(info: Dict, market?: Market): LongShortRatio;
     parseLongShortRatioHistory(response: any, market?: any, since?: Int, limit?: Int): LongShortRatio[];
     handleTriggerAndParams(params: any): any[];
@@ -1138,7 +1141,7 @@ export default class Exchange {
     fetchTradingFee(symbol: string, params?: {}): Promise<TradingFeeInterface>;
     fetchConvertCurrencies(params?: {}): Promise<Currencies>;
     parseOpenInterest(interest: any, market?: Market): OpenInterest;
-    parseOpenInterests(response: any, market?: any, since?: Int, limit?: Int): OpenInterest[];
+    parseOpenInterestsHistory(response: any, market?: any, since?: Int, limit?: Int): OpenInterest[];
     fetchFundingRate(symbol: string, params?: {}): Promise<FundingRate>;
     fetchFundingInterval(symbol: string, params?: {}): Promise<FundingRate>;
     fetchMarkOHLCV(symbol: any, timeframe?: string, since?: Int, limit?: Int, params?: {}): Promise<OHLCV[]>;
@@ -1161,7 +1164,7 @@ export default class Exchange {
     filterByArrayTickers(objects: any, key: IndexType, values?: any, indexed?: boolean): Dictionary<Ticker>;
     createOHLCVObject(symbol: string, timeframe: string, data: any): Dictionary<Dictionary<OHLCV[]>>;
     handleMaxEntriesPerRequestAndParams(method: string, maxEntriesPerRequest?: Int, params?: {}): [Int, any];
-    fetchPaginatedCallDynamic(method: string, symbol?: Str, since?: Int, limit?: Int, params?: {}, maxEntriesPerRequest?: Int): Promise<any>;
+    fetchPaginatedCallDynamic(method: string, symbol?: Str, since?: Int, limit?: Int, params?: {}, maxEntriesPerRequest?: Int, removeRepeated?: boolean): Promise<any>;
     safeDeterministicCall(method: string, symbol?: Str, since?: Int, limit?: Int, timeframe?: Str, params?: {}): Promise<any>;
     fetchPaginatedCallDeterministic(method: string, symbol?: Str, since?: Int, limit?: Int, timeframe?: Str, params?: {}, maxEntriesPerRequest?: any): Promise<any>;
     fetchPaginatedCallCursor(method: string, symbol?: Str, since?: any, limit?: any, params?: {}, cursorReceived?: any, cursorSent?: any, cursorIncrement?: any, maxEntriesPerRequest?: any): Promise<any>;

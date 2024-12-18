@@ -396,6 +396,8 @@ export interface OpenInterest {
     symbol: string;
     timestamp?: number;
 }
+export interface OpenInterests extends Dictionary<OpenInterest> {
+}
 export interface Liquidation {
     baseValue?: number;
     datetime?: Str;
