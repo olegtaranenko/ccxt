@@ -2290,6 +2290,12 @@ abstract class binanceus extends \ccxt\binance {
     public function sapi_post_portfolio_bnb_transfer($params = array()) {
         return $this->request('portfolio/bnb-transfer', 'sapi', 'POST', $params, null, null, array("cost" => 150));
     }
+    public function sapi_post_portfolio_mint($params = array()) {
+        return $this->request('portfolio/mint', 'sapi', 'POST', $params, null, null, array("cost" => 20));
+    }
+    public function sapi_post_portfolio_redeem($params = array()) {
+        return $this->request('portfolio/redeem', 'sapi', 'POST', $params, null, null, array("cost" => 20));
+    }
     public function sapi_post_portfolio_repay($params = array()) {
         return $this->request('portfolio/repay', 'sapi', 'POST', $params, null, null, array("cost" => 20.001));
     }
@@ -4725,6 +4731,12 @@ abstract class binanceus extends \ccxt\binance {
     }
     public function sapiPostPortfolioBnbTransfer($params = array()) {
         return $this->request('portfolio/bnb-transfer', 'sapi', 'POST', $params, null, null, array("cost" => 150));
+    }
+    public function sapiPostPortfolioMint($params = array()) {
+        return $this->request('portfolio/mint', 'sapi', 'POST', $params, null, null, array("cost" => 20));
+    }
+    public function sapiPostPortfolioRedeem($params = array()) {
+        return $this->request('portfolio/redeem', 'sapi', 'POST', $params, null, null, array("cost" => 20));
     }
     public function sapiPostPortfolioRepay($params = array()) {
         return $this->request('portfolio/repay', 'sapi', 'POST', $params, null, null, array("cost" => 20.001));

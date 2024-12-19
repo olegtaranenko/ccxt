@@ -729,6 +729,8 @@ class ImplicitAPI:
     sapi_post_portfolio_asset_collection = sapiPostPortfolioAssetCollection = Entry('portfolio/asset-collection', 'sapi', 'POST', {'cost': 6})
     sapi_post_portfolio_auto_collection = sapiPostPortfolioAutoCollection = Entry('portfolio/auto-collection', 'sapi', 'POST', {'cost': 150})
     sapi_post_portfolio_bnb_transfer = sapiPostPortfolioBnbTransfer = Entry('portfolio/bnb-transfer', 'sapi', 'POST', {'cost': 150})
+    sapi_post_portfolio_mint = sapiPostPortfolioMint = Entry('portfolio/mint', 'sapi', 'POST', {'cost': 20})
+    sapi_post_portfolio_redeem = sapiPostPortfolioRedeem = Entry('portfolio/redeem', 'sapi', 'POST', {'cost': 20})
     sapi_post_portfolio_repay = sapiPostPortfolioRepay = Entry('portfolio/repay', 'sapi', 'POST', {'cost': 20.001})
     sapi_post_portfolio_repay_futures_negative_balance = sapiPostPortfolioRepayFuturesNegativeBalance = Entry('portfolio/repay-futures-negative-balance', 'sapi', 'POST', {'cost': 150})
     sapi_post_portfolio_repay_futures_switch = sapiPostPortfolioRepayFuturesSwitch = Entry('portfolio/repay-futures-switch', 'sapi', 'POST', {'cost': 150})

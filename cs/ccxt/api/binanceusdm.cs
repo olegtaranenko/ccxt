@@ -3646,6 +3646,16 @@ public partial class binanceusdm : binance
         return await this.callAsync ("sapiPostPortfolioBnbTransfer",parameters);
     }
 
+    public async Task<object> sapiPostPortfolioMint (object parameters = null)
+    {
+        return await this.callAsync ("sapiPostPortfolioMint",parameters);
+    }
+
+    public async Task<object> sapiPostPortfolioRedeem (object parameters = null)
+    {
+        return await this.callAsync ("sapiPostPortfolioRedeem",parameters);
+    }
+
     public async Task<object> sapiPostPortfolioRepay (object parameters = null)
     {
         return await this.callAsync ("sapiPostPortfolioRepay",parameters);

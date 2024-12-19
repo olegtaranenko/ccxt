@@ -921,6 +921,8 @@ export default class binance extends Exchange {
                         'portfolio/asset-collection': 6,
                         'portfolio/auto-collection': 150,
                         'portfolio/bnb-transfer': 150,
+                        'portfolio/mint': 20,
+                        'portfolio/redeem': 20,
                         'portfolio/repay': 20.001,
                         'portfolio/repay-futures-negative-balance': 150,
                         'portfolio/repay-futures-switch': 150,

@@ -736,6 +736,8 @@ interface Exchange {
     sapiPostPortfolioAssetCollection (params?: {}): Promise<implicitReturnType>;
     sapiPostPortfolioAutoCollection (params?: {}): Promise<implicitReturnType>;
     sapiPostPortfolioBnbTransfer (params?: {}): Promise<implicitReturnType>;
+    sapiPostPortfolioMint (params?: {}): Promise<implicitReturnType>;
+    sapiPostPortfolioRedeem (params?: {}): Promise<implicitReturnType>;
     sapiPostPortfolioRepay (params?: {}): Promise<implicitReturnType>;
     sapiPostPortfolioRepayFuturesNegativeBalance (params?: {}): Promise<implicitReturnType>;
     sapiPostPortfolioRepayFuturesSwitch (params?: {}): Promise<implicitReturnType>;
