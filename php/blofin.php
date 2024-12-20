@@ -900,7 +900,8 @@ class blofin extends Exchange {
     }
 
     public function parse_balance_by_type($type, $response) {
-        if ($type) {
+        $data = $this->safe_list($response, 'data');
+        if (gettype($data) === 'array' && array_keys($data) === array_keys(array_keys($data))) {
             return $this->parse_funding_balance($response);
         } else {
             return $this->parse_balance($response);
@@ -1025,7 +1026,7 @@ class blofin extends Exchange {
         $request = array(
         );
         $response = null;
-        if ($accountType !== null) {
+        if ($accountType !== null && $accountType !== 'swap') {
             $options = $this->safe_dict($this->options, 'accountsByType', array());
             $parsedAccountType = $this->safe_string($options, $accountType, $accountType);
             $request['accountType'] = $parsedAccountType;

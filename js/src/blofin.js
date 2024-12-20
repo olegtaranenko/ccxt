@@ -891,7 +891,8 @@ export default class blofin extends Exchange {
         return this.parseFundingRate(entry, market);
     }
     parseBalanceByType(type, response) {
-        if (type) {
+        const data = this.safeList(response, 'data');
+        if (Array.isArray(data)) {
             return this.parseFundingBalance(response);
         }
         else {
@@ -1013,7 +1014,7 @@ export default class blofin extends Exchange {
         [accountType, params] = this.handleOptionAndParams2(params, 'fetchBalance', 'accountType', 'type');
         const request = {};
         let response = undefined;
-        if (accountType !== undefined) {
+        if (accountType !== undefined && accountType !== 'swap') {
             const options = this.safeDict(this.options, 'accountsByType', {});
             const parsedAccountType = this.safeString(options, accountType, accountType);
             request['accountType'] = parsedAccountType;

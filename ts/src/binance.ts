@@ -208,6 +208,7 @@ export default class binance extends Exchange {
                         'block/order/execute': 5,
                         'block/order/orders': 5,
                         'block/user-trades': 5,
+                        'blockTrades': 5,
                         'countdownCancelAll': 1,
                         'exerciseRecord': 5,
                         'historyOrders': 3,

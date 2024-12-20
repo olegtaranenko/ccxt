@@ -241,6 +241,9 @@ abstract class binance extends \ccxt\Exchange {
     public function eapiprivate_get_block_user_trades($params = array()) {
         return $this->request('block/user-trades', 'eapiPrivate', 'GET', $params, null, null, array("cost" => 5));
     }
+    public function eapiprivate_get_blocktrades($params = array()) {
+        return $this->request('blockTrades', 'eapiPrivate', 'GET', $params, null, null, array("cost" => 5));
+    }
     public function eapiprivate_get_countdowncancelall($params = array()) {
         return $this->request('countdownCancelAll', 'eapiPrivate', 'GET', $params, null, null, array("cost" => 1));
     }
@@ -2526,6 +2529,9 @@ abstract class binance extends \ccxt\Exchange {
     }
     public function eapiPrivateGetBlockUserTrades($params = array()) {
         return $this->request('block/user-trades', 'eapiPrivate', 'GET', $params, null, null, array("cost" => 5));
+    }
+    public function eapiPrivateGetBlockTrades($params = array()) {
+        return $this->request('blockTrades', 'eapiPrivate', 'GET', $params, null, null, array("cost" => 5));
     }
     public function eapiPrivateGetCountdownCancelAll($params = array()) {
         return $this->request('countdownCancelAll', 'eapiPrivate', 'GET', $params, null, null, array("cost" => 1));

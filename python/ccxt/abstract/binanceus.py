@@ -80,6 +80,7 @@ class ImplicitAPI:
     eapiprivate_get_block_order_execute = eapiPrivateGetBlockOrderExecute = Entry('block/order/execute', 'eapiPrivate', 'GET', {'cost': 5})
     eapiprivate_get_block_order_orders = eapiPrivateGetBlockOrderOrders = Entry('block/order/orders', 'eapiPrivate', 'GET', {'cost': 5})
     eapiprivate_get_block_user_trades = eapiPrivateGetBlockUserTrades = Entry('block/user-trades', 'eapiPrivate', 'GET', {'cost': 5})
+    eapiprivate_get_blocktrades = eapiPrivateGetBlockTrades = Entry('blockTrades', 'eapiPrivate', 'GET', {'cost': 5})
     eapiprivate_get_countdowncancelall = eapiPrivateGetCountdownCancelAll = Entry('countdownCancelAll', 'eapiPrivate', 'GET', {'cost': 1})
     eapiprivate_get_exerciserecord = eapiPrivateGetExerciseRecord = Entry('exerciseRecord', 'eapiPrivate', 'GET', {'cost': 5})
     eapiprivate_get_historyorders = eapiPrivateGetHistoryOrders = Entry('historyOrders', 'eapiPrivate', 'GET', {'cost': 3})

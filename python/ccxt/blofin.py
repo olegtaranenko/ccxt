@@ -882,7 +882,8 @@ class blofin(Exchange, ImplicitAPI):
         return self.parse_funding_rate(entry, market)
 
     def parse_balance_by_type(self, type, response):
-        if type:
+        data = self.safe_list(response, 'data')
+        if isinstance(data, list):
             return self.parse_funding_balance(response)
         else:
             return self.parse_balance(response)
@@ -999,7 +1000,7 @@ class blofin(Exchange, ImplicitAPI):
         request: dict = {
         }
         response = None
-        if accountType is not None:
+        if accountType is not None and accountType != 'swap':
             options = self.safe_dict(self.options, 'accountsByType', {})
             parsedAccountType = self.safe_string(options, accountType, accountType)
             request['accountType'] = parsedAccountType

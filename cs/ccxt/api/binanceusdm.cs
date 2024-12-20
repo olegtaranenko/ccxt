@@ -401,6 +401,11 @@ public partial class binanceusdm : binance
         return await this.callAsync ("eapiPrivateGetBlockUserTrades",parameters);
     }
 
+    public async Task<object> eapiPrivateGetBlockTrades (object parameters = null)
+    {
+        return await this.callAsync ("eapiPrivateGetBlockTrades",parameters);
+    }
+
     public async Task<object> eapiPrivateGetCountdownCancelAll (object parameters = null)
     {
         return await this.callAsync ("eapiPrivateGetCountdownCancelAll",parameters);
