@@ -2134,6 +2134,12 @@ abstract class binance extends \ccxt\async\Exchange {
     public function sapi_post_lending_auto_invest_one_off($params = array()) {
         return $this->request('lending/auto-invest/one-off', 'sapi', 'POST', $params, null, null, array("cost" => 0.1));
     }
+    public function sapi_post_portfolio_mint($params = array()) {
+        return $this->request('portfolio/mint', 'sapi', 'POST', $params, null, null, array("cost" => 20));
+    }
+    public function sapi_post_portfolio_redeem($params = array()) {
+        return $this->request('portfolio/redeem', 'sapi', 'POST', $params, null, null, array("cost" => 20));
+    }
     public function sapi_post_lending_auto_invest_plan_add($params = array()) {
         return $this->request('lending/auto-invest/plan/add', 'sapi', 'POST', $params, null, null, array("cost" => 0.1));
     }
@@ -4422,6 +4428,12 @@ abstract class binance extends \ccxt\async\Exchange {
     }
     public function sapiPostLendingAutoInvestOneOff($params = array()) {
         return $this->request('lending/auto-invest/one-off', 'sapi', 'POST', $params, null, null, array("cost" => 0.1));
+    }
+    public function sapiPostPortfolioMint($params = array()) {
+        return $this->request('portfolio/mint', 'sapi', 'POST', $params, null, null, array("cost" => 20));
+    }
+    public function sapiPostPortfolioRedeem($params = array()) {
+        return $this->request('portfolio/redeem', 'sapi', 'POST', $params, null, null, array("cost" => 20));
     }
     public function sapiPostLendingAutoInvestPlanAdd($params = array()) {
         return $this->request('lending/auto-invest/plan/add', 'sapi', 'POST', $params, null, null, array("cost" => 0.1));

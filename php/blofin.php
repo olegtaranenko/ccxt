@@ -1034,7 +1034,7 @@ class blofin extends Exchange {
         } else {
             $response = $this->privateGetAccountBalance ($this->extend($request, $params));
         }
-        return $this->parse_balance_by_type($accountType, $response);
+        return $this->parse_balance_by_type($response);
     }
 
     public function create_order_request(string $symbol, string $type, string $side, float $amount, ?float $price = null, $params = array ()) {

@@ -3556,6 +3556,16 @@ public partial class binancecoinm : binance
         return await this.callAsync ("sapiPostLendingAutoInvestOneOff",parameters);
     }
 
+    public async Task<object> sapiPostPortfolioMint (object parameters = null)
+    {
+        return await this.callAsync ("sapiPostPortfolioMint",parameters);
+    }
+
+    public async Task<object> sapiPostPortfolioRedeem (object parameters = null)
+    {
+        return await this.callAsync ("sapiPostPortfolioRedeem",parameters);
+    }
+
     public async Task<object> sapiPostLendingAutoInvestPlanAdd (object parameters = null)
     {
         return await this.callAsync ("sapiPostLendingAutoInvestPlanAdd",parameters);

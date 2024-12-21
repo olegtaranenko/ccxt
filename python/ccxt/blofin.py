@@ -1007,7 +1007,7 @@ class blofin(Exchange, ImplicitAPI):
             response = self.privateGetAssetBalances(self.extend(request, params))
         else:
             response = self.privateGetAccountBalance(self.extend(request, params))
-        return self.parse_balance_by_type(accountType, response)
+        return self.parse_balance_by_type(response)
 
     def create_order_request(self, symbol: str, type: OrderType, side: OrderSide, amount: float, price: Num = None, params={}):
         market = self.market(symbol)

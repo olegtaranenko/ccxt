@@ -1023,7 +1023,7 @@ export default class blofin extends Exchange {
         else {
             response = await this.privateGetAccountBalance(this.extend(request, params));
         }
-        return this.parseBalanceByType(accountType, response);
+        return this.parseBalanceByType(response);
     }
     createOrderRequest(symbol, type, side, amount, price = undefined, params = {}) {
         const market = this.market(symbol);

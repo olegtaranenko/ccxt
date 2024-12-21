@@ -1059,7 +1059,7 @@ class blofin extends Exchange {
             } else {
                 $response = Async\await($this->privateGetAccountBalance ($this->extend($request, $params)));
             }
-            return $this->parse_balance_by_type($accountType, $response);
+            return $this->parse_balance_by_type($response);
         }) ();
     }
 
