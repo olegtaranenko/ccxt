@@ -890,9 +890,9 @@ export default class blofin extends Exchange {
         const entry = this.safeDict(data, 0, {});
         return this.parseFundingRate(entry, market);
     }
-    parseBalanceByType(type, response) {
+    parseBalanceByType(response) {
         const data = this.safeList(response, 'data');
-        if (Array.isArray(data)) {
+        if ((data !== undefined) && Array.isArray(data)) {
             return this.parseFundingBalance(response);
         }
         else {
