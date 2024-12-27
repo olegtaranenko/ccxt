@@ -987,7 +987,6 @@ class binance extends binance$1 {
                 'BNFCR': this.safeCurrencyStructure({ 'id': 'BNFCR', 'code': 'BNFCR', 'precision': this.parseNumber('0.001') }),
             },
             'features': {
-                // https://developers.binance.com/docs/binance-spot-api-docs/rest-api#:~:text=quoteOrderQty
                 'spot': {
                     'sandbox': true,
                     'createOrder': {
@@ -1005,12 +1004,13 @@ class binance extends binance$1 {
                             'GTD': false,
                         },
                         'hedged': true,
+                        'leverage': false,
+                        'marketBuyRequiresPrice': false,
+                        'marketBuyByCost': true,
                         // exchange-supported features
                         'selfTradePrevention': true,
                         'trailing': true,
-                        'twap': false,
-                        'iceberg': true,
-                        'oco': false,
+                        'iceberg': true, // todo implementation
                     },
                     'createOrders': undefined,
                     'fetchMyTrades': {
@@ -1075,9 +1075,10 @@ class binance extends binance$1 {
                         // exchange-supported features
                         'selfTradePrevention': true,
                         'trailing': true,
-                        'twap': false,
                         'iceberg': false,
-                        'oco': false,
+                        'leverage': false,
+                        'marketBuyRequiresPrice': false,
+                        'marketBuyByCost': true,
                     },
                     'createOrders': {
                         'max': 5,
