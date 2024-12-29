@@ -321,6 +321,7 @@ interface Exchange {
     papiPutCmOrder (params?: {}): Promise<implicitReturnType>;
     papiPutListenKey (params?: {}): Promise<implicitReturnType>;
     papiPutUmOrder (params?: {}): Promise<implicitReturnType>;
+    papiV2GetUmAccount (params?: {}): Promise<implicitReturnType>;
     privateDeleteOpenOrders (params?: {}): Promise<implicitReturnType>;
     privateDeleteOrder (params?: {}): Promise<implicitReturnType>;
     privateDeleteOrderList (params?: {}): Promise<implicitReturnType>;

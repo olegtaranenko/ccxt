@@ -943,6 +943,9 @@ abstract class binanceusdm extends \ccxt\binance {
     public function papi_put_um_order($params = array()) {
         return $this->request('um/order', 'papi', 'PUT', $params, null, null, array("cost" => 1));
     }
+    public function papiv2_get_um_account($params = array()) {
+        return $this->request('um/account', 'papiV2', 'GET', $params, null, null, array("cost" => 1));
+    }
     public function private_delete_openorders($params = array()) {
         return $this->request('openOrders', 'private', 'DELETE', $params, null, null, array("cost" => 0.2));
     }
@@ -3231,6 +3234,9 @@ abstract class binanceusdm extends \ccxt\binance {
     }
     public function papiPutUmOrder($params = array()) {
         return $this->request('um/order', 'papi', 'PUT', $params, null, null, array("cost" => 1));
+    }
+    public function papiV2GetUmAccount($params = array()) {
+        return $this->request('um/account', 'papiV2', 'GET', $params, null, null, array("cost" => 1));
     }
     public function privateDeleteOpenOrders($params = array()) {
         return $this->request('openOrders', 'private', 'DELETE', $params, null, null, array("cost" => 0.2));

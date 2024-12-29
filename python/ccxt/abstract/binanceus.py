@@ -314,6 +314,7 @@ class ImplicitAPI:
     papi_put_cm_order = papiPutCmOrder = Entry('cm/order', 'papi', 'PUT', {'cost': 1})
     papi_put_listenkey = papiPutListenKey = Entry('listenKey', 'papi', 'PUT', {'cost': 0.2})
     papi_put_um_order = papiPutUmOrder = Entry('um/order', 'papi', 'PUT', {'cost': 1})
+    papiv2_get_um_account = papiV2GetUmAccount = Entry('um/account', 'papiV2', 'GET', {'cost': 1})
     private_delete_openorders = privateDeleteOpenOrders = Entry('openOrders', 'private', 'DELETE', {'cost': 1})
     private_delete_order = privateDeleteOrder = Entry('order', 'private', 'DELETE', {'cost': 1})
     private_delete_orderlist = privateDeleteOrderList = Entry('orderList', 'private', 'DELETE', {'cost': 1})
