@@ -5419,10 +5419,10 @@ export default class binance extends Exchange {
             throw new NotSupported (this.id + ' editContractOrder() does not support ' + market['type'] + ' orders');
         }
         const request: Dict = {
-            'symbol': market['id'],
-            'side': side.toUpperCase (),
             'orderId': id,
             'quantity': this.amountToPrecision (symbol, amount),
+            'side': side.toUpperCase (),
+            'symbol': market['id'],
         };
         const clientOrderId = this.safeStringN (params, [ 'newClientOrderId', 'clientOrderId', 'origClientOrderId' ]);
         if (price !== undefined) {
