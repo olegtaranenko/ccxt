@@ -11988,7 +11988,7 @@ class binance extends Exchange {
         } elseif (str_starts_with($url, 'https://eapi.' . $hostname . '/')) {
             $marketType = 'option';
         } elseif (str_starts_with($url, 'https://papi.' . $hostname . '/')) {
-            $marketType = 'portfoliomargin';
+            $marketType = 'portfolioMargin';
         }
         if ($marketType !== null) {
             $exceptionsForMarketType = $this->safe_dict($this->exceptions, $marketType, array());

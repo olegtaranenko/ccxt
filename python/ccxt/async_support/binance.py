@@ -11246,7 +11246,7 @@ class binance(Exchange, ImplicitAPI):
         elif url.startswith('https://eapi.' + hostname + '/'):
             marketType = 'option'
         elif url.startswith('https://papi.' + hostname + '/'):
-            marketType = 'portfoliomargin'
+            marketType = 'portfolioMargin'
         if marketType is not None:
             exceptionsForMarketType = self.safe_dict(self.exceptions, marketType, {})
             return self.safe_dict(exceptionsForMarketType, exactOrBroad, {})
