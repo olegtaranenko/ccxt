@@ -734,7 +734,6 @@ class gate(Exchange, ImplicitAPI):
                         'takeProfitPrice': True,
                         'attachedStopLossTakeProfit': None,
                         'timeInForce': {
-                            'GTC': True,
                             'IOC': True,
                             'FOK': True,
                             'PO': True,
@@ -775,7 +774,7 @@ class gate(Exchange, ImplicitAPI):
                         'trailing': False,
                         'limit': 100,
                         'untilDays': 30,
-                        'daysBackClosed': None,
+                        'daysBack': None,
                         'daysBackCanceled': None,
                     },
                     'fetchOHLCV': {

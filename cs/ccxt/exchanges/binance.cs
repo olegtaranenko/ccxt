@@ -1641,7 +1641,7 @@ public partial class binance : Exchange
                     { "fetchClosedOrders", new Dictionary<string, object>() {
                         { "marginMode", true },
                         { "limit", 1000 },
-                        { "daysBackClosed", null },
+                        { "daysBack", null },
                         { "daysBackCanceled", null },
                         { "untilDays", 10000 },
                         { "trigger", false },
@@ -1709,7 +1709,7 @@ public partial class binance : Exchange
                     { "fetchClosedOrders", new Dictionary<string, object>() {
                         { "marginMode", true },
                         { "limit", 1000 },
-                        { "daysBackClosed", 90 },
+                        { "daysBack", 90 },
                         { "daysBackCanceled", 3 },
                         { "untilDays", 7 },
                         { "trigger", false },
@@ -2405,7 +2405,7 @@ public partial class binance : Exchange
                         { "-1151", typeof(BadRequest) },
                         { "-2010", typeof(InvalidOrder) },
                         { "-2011", typeof(OperationRejected) },
-                        { "-2013", typeof(BadRequest) },
+                        { "-2013", typeof(OrderNotFound) },
                         { "-2014", typeof(OperationRejected) },
                         { "-2015", typeof(OperationRejected) },
                         { "-2016", typeof(OperationFailed) },
@@ -3695,7 +3695,11 @@ public partial class binance : Exchange
                     ((IDictionary<string,object>)account)["total"] = this.safeString(entry, "crossMarginAsset");
                 } else
                 {
-                    ((IDictionary<string,object>)account)["total"] = this.safeString(entry, "totalWalletBalance");
+                    object usedLinear = this.safeString(entry, "umUnrealizedPNL");
+                    object usedInverse = this.safeString(entry, "cmUnrealizedPNL");
+                    object totalUsed = Precise.stringAdd(usedLinear, usedInverse);
+                    object totalWalletBalance = this.safeString(entry, "totalWalletBalance");
+                    ((IDictionary<string,object>)account)["total"] = Precise.stringAdd(totalUsed, totalWalletBalance);
                 }
                 ((IDictionary<string,object>)result)[(string)code] = account;
             }

@@ -227,7 +227,6 @@ class hyperliquid extends hyperliquid$1 {
                         'takeProfitPrice': false,
                         'attachedStopLossTakeProfit': undefined,
                         'timeInForce': {
-                            'GTC': true,
                             'IOC': true,
                             'FOK': false,
                             'PO': true,
@@ -272,7 +271,7 @@ class hyperliquid extends hyperliquid$1 {
                     'fetchClosedOrders': {
                         'marginMode': false,
                         'limit': 2000,
-                        'daysBackClosed': undefined,
+                        'daysBack': undefined,
                         'daysBackCanceled': undefined,
                         'untilDays': undefined,
                         'trigger': false,
