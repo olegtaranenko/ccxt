@@ -1118,7 +1118,7 @@ export default class binance extends Exchange {
                     'fetchClosedOrders': {
                         'marginMode': true,
                         'limit': 1000,
-                        'daysBackClosed': undefined,
+                        'daysBack': undefined,
                         'daysBackCanceled': undefined,
                         'untilDays': 10000,
                         'trigger': false,
@@ -1188,7 +1188,7 @@ export default class binance extends Exchange {
                     'fetchClosedOrders': {
                         'marginMode': true,
                         'limit': 1000,
-                        'daysBackClosed': 90,
+                        'daysBack': 90,
                         'daysBackCanceled': 3,
                         'untilDays': 7,
                         'trigger': false,
@@ -1793,7 +1793,7 @@ export default class binance extends Exchange {
                         //
                         '-2010': InvalidOrder, // NEW_ORDER_REJECTED
                         '-2011': OperationRejected, // CANCEL_REJECTED
-                        '-2013': BadRequest, // Order does not exist.
+                        '-2013': OrderNotFound, // Order does not exist.
                         '-2014': OperationRejected, // API-key format invalid.
                         '-2015': OperationRejected, // Invalid API-key, IP, or permissions for action.
                         '-2016': OperationFailed, // No trading window could be found for the symbol. Try ticker/24hrs instead.
@@ -3788,7 +3788,11 @@ export default class binance extends Exchange {
                     account['used'] = this.safeString (entry, 'crossMarginLocked');
                     account['total'] = this.safeString (entry, 'crossMarginAsset');
                 } else {
-                    account['total'] = this.safeString (entry, 'totalWalletBalance');
+                    const usedLinear = this.safeString (entry, 'umUnrealizedPNL');
+                    const usedInverse = this.safeString (entry, 'cmUnrealizedPNL');
+                    const totalUsed = Precise.stringAdd (usedLinear, usedInverse);
+                    const totalWalletBalance = this.safeString (entry, 'totalWalletBalance');
+                    account['total'] = Precise.stringAdd (totalUsed, totalWalletBalance);
                 }
                 result[code] = account;
             }

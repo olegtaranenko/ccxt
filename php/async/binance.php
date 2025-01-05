@@ -1053,7 +1053,7 @@ class binance extends Exchange {
                     'fetchClosedOrders' => array(
                         'marginMode' => true,
                         'limit' => 1000,
-                        'daysBackClosed' => null,
+                        'daysBack' => null,
                         'daysBackCanceled' => null,
                         'untilDays' => 10000,
                         'trigger' => false,
@@ -1123,7 +1123,7 @@ class binance extends Exchange {
                     'fetchClosedOrders' => array(
                         'marginMode' => true,
                         'limit' => 1000,
-                        'daysBackClosed' => 90,
+                        'daysBack' => 90,
                         'daysBackCanceled' => 3,
                         'untilDays' => 7,
                         'trigger' => false,
@@ -3632,7 +3632,11 @@ class binance extends Exchange {
                     $account['used'] = $this->safe_string($entry, 'crossMarginLocked');
                     $account['total'] = $this->safe_string($entry, 'crossMarginAsset');
                 } else {
-                    $account['total'] = $this->safe_string($entry, 'totalWalletBalance');
+                    $usedLinear = $this->safe_string($entry, 'umUnrealizedPNL');
+                    $usedInverse = $this->safe_string($entry, 'cmUnrealizedPNL');
+                    $totalUsed = Precise::string_add($usedLinear, $usedInverse);
+                    $totalWalletBalance = $this->safe_string($entry, 'totalWalletBalance');
+                    $account['total'] = Precise::string_add($totalUsed, $totalWalletBalance);
                 }
                 $result[$code] = $account;
             }

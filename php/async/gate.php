@@ -725,7 +725,6 @@ class gate extends Exchange {
                         'takeProfitPrice' => true,
                         'attachedStopLossTakeProfit' => null,
                         'timeInForce' => array(
-                            'GTC' => true,
                             'IOC' => true,
                             'FOK' => true,
                             'PO' => true,
@@ -766,7 +765,7 @@ class gate extends Exchange {
                         'trailing' => false,
                         'limit' => 100,
                         'untilDays' => 30,
-                        'daysBackClosed' => null,
+                        'daysBack' => null,
                         'daysBackCanceled' => null,
                     ),
                     'fetchOHLCV' => array(

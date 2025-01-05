@@ -1046,7 +1046,7 @@ class binance extends binance$1 {
                     'fetchClosedOrders': {
                         'marginMode': true,
                         'limit': 1000,
-                        'daysBackClosed': undefined,
+                        'daysBack': undefined,
                         'daysBackCanceled': undefined,
                         'untilDays': 10000,
                         'trigger': false,
@@ -1116,7 +1116,7 @@ class binance extends binance$1 {
                     'fetchClosedOrders': {
                         'marginMode': true,
                         'limit': 1000,
-                        'daysBackClosed': 90,
+                        'daysBack': 90,
                         'daysBackCanceled': 3,
                         'untilDays': 7,
                         'trigger': false,
@@ -1721,7 +1721,7 @@ class binance extends binance$1 {
                         //
                         '-2010': errors.InvalidOrder,
                         '-2011': errors.OperationRejected,
-                        '-2013': errors.BadRequest,
+                        '-2013': errors.OrderNotFound,
                         '-2014': errors.OperationRejected,
                         '-2015': errors.OperationRejected,
                         '-2016': errors.OperationFailed,
@@ -3730,7 +3730,11 @@ class binance extends binance$1 {
                     account['total'] = this.safeString(entry, 'crossMarginAsset');
                 }
                 else {
-                    account['total'] = this.safeString(entry, 'totalWalletBalance');
+                    const usedLinear = this.safeString(entry, 'umUnrealizedPNL');
+                    const usedInverse = this.safeString(entry, 'cmUnrealizedPNL');
+                    const totalUsed = Precise["default"].stringAdd(usedLinear, usedInverse);
+                    const totalWalletBalance = this.safeString(entry, 'totalWalletBalance');
+                    account['total'] = Precise["default"].stringAdd(totalUsed, totalWalletBalance);
                 }
                 result[code] = account;
             }

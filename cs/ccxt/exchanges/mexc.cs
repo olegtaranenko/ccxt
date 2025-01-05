@@ -432,6 +432,7 @@ public partial class mexc : Exchange
                         { "1h", "60m" },
                         { "4h", "4h" },
                         { "1d", "1d" },
+                        { "1w", "1W" },
                         { "1M", "1M" },
                     } },
                     { "swap", new Dictionary<string, object>() {
@@ -543,7 +544,7 @@ public partial class mexc : Exchange
                     { "fetchClosedOrders", new Dictionary<string, object>() {
                         { "marginMode", true },
                         { "limit", 1000 },
-                        { "daysBackClosed", 7 },
+                        { "daysBack", 7 },
                         { "daysBackCanceled", 7 },
                         { "untilDays", 7 },
                         { "trigger", false },
@@ -599,7 +600,7 @@ public partial class mexc : Exchange
                     { "fetchClosedOrders", new Dictionary<string, object>() {
                         { "marginMode", false },
                         { "limit", 100 },
-                        { "daysBackClosed", 90 },
+                        { "daysBack", 90 },
                         { "daysBackCanceled", null },
                         { "untilDays", 90 },
                         { "trigger", true },
