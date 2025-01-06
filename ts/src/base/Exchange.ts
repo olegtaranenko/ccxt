@@ -394,7 +394,7 @@ export default class Exchange {
     currencies: Currencies = {};
     currencies_by_id = undefined;
     enableLastHttpResponse: boolean = true;
-    enableLastJsonResponse: boolean = true;
+    enableLastJsonResponse: boolean = false;
     enableLastResponseHeaders: boolean = true;
     enableRateLimit: boolean = undefined;
     exceptions: Dictionary<string> = {};

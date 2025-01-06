@@ -723,7 +723,7 @@ class gate(Exchange, ImplicitAPI):
                 },
             },
             'features': {
-                'spot': {
+                'default': {
                     'sandbox': True,
                     'createOrder': {
                         'marginMode': True,
@@ -734,7 +734,6 @@ class gate(Exchange, ImplicitAPI):
                         'takeProfitPrice': True,
                         'attachedStopLossTakeProfit': None,
                         'timeInForce': {
-                            'GTC': True,
                             'IOC': True,
                             'FOK': True,
                             'PO': True,
@@ -742,9 +741,11 @@ class gate(Exchange, ImplicitAPI):
                         },
                         'hedged': False,
                         'trailing': False,
-                        # exchange-specific features
-                        'iceberg': True,
-                        'selfTradePrevention': True,
+                        'iceberg': True,  # todo implement
+                        'selfTradePrevention': True,  # todo implement
+                        'leverage': False,
+                        'marketBuyByCost': True,
+                        'marketBuyRequiresPrice': True,
                     },
                     'createOrders': {
                         'max': 40,  # NOTE! max 10 per symbol
@@ -773,12 +774,15 @@ class gate(Exchange, ImplicitAPI):
                         'trailing': False,
                         'limit': 100,
                         'untilDays': 30,
-                        'daysBackClosed': None,
+                        'daysBack': None,
                         'daysBackCanceled': None,
                     },
                     'fetchOHLCV': {
                         'limit': 1000,
                     },
+                },
+                'spot': {
+                    'extends': 'default',
                 },
                 'forDerivatives': {
                     'extends': 'spot',
@@ -2372,7 +2376,8 @@ class gate(Exchange, ImplicitAPI):
             chainKeys = list(withdrawFixOnChains.keys())
             for i in range(0, len(chainKeys)):
                 chainKey = chainKeys[i]
-                result['networks'][chainKey] = {
+                networkCode = self.network_id_to_code(chainKey, self.safe_string(fee, 'currency'))
+                result['networks'][networkCode] = {
                     'withdraw': {
                         'fee': self.parse_number(withdrawFixOnChains[chainKey]),
                         'percentage': False,
