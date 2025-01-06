@@ -103,7 +103,7 @@ class Exchange {
         this.currencies = {};
         this.currencies_by_id = undefined;
         this.enableLastHttpResponse = true;
-        this.enableLastJsonResponse = true;
+        this.enableLastJsonResponse = false;
         this.enableLastResponseHeaders = true;
         this.enableRateLimit = undefined;
         this.exceptions = {};
