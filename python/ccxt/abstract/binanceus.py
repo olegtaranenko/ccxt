@@ -262,6 +262,7 @@ class ImplicitAPI:
     papi_get_margin_repayloan = papiGetMarginRepayLoan = Entry('margin/repayLoan', 'papi', 'GET', {'cost': 2})
     papi_get_ping = papiGetPing = Entry('ping', 'papi', 'GET', {'cost': 0.2})
     papi_get_portfolio_interest_history = papiGetPortfolioInterestHistory = Entry('portfolio/interest-history', 'papi', 'GET', {'cost': 10})
+    papi_get_ratelimit_order = papiGetRateLimitOrder = Entry('rateLimit/order', 'papi', 'GET', {'cost': 1})
     papi_get_repay_futures_switch = papiGetRepayFuturesSwitch = Entry('repay-futures-switch', 'papi', 'GET', {'cost': 6})
     papi_get_um_account = papiGetUmAccount = Entry('um/account', 'papi', 'GET', {'cost': 1})
     papi_get_um_accountconfig = papiGetUmAccountConfig = Entry('um/accountConfig', 'papi', 'GET', {'cost': 1})

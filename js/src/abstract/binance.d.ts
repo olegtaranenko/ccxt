@@ -261,6 +261,7 @@ interface Exchange {
     papiGetMarginRepayLoan(params?: {}): Promise<implicitReturnType>;
     papiGetPing(params?: {}): Promise<implicitReturnType>;
     papiGetPortfolioInterestHistory(params?: {}): Promise<implicitReturnType>;
+    papiGetRateLimitOrder(params?: {}): Promise<implicitReturnType>;
     papiGetRepayFuturesSwitch(params?: {}): Promise<implicitReturnType>;
     papiGetUmAccount(params?: {}): Promise<implicitReturnType>;
     papiGetUmAccountConfig(params?: {}): Promise<implicitReturnType>;

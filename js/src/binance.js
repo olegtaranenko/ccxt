@@ -386,6 +386,7 @@ export default class binance extends Exchange {
                         'margin/repayLoan': 2,
                         'ping': 0.2,
                         'portfolio/interest-history': 10,
+                        'rateLimit/order': 1,
                         'repay-futures-switch': 6,
                         'um/account': 1,
                         'um/accountConfig': 1,

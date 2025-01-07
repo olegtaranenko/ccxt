@@ -205,6 +205,16 @@ class binanceus extends binance {
                 'referral': 'https://www.binance.us/?ref=35005074',
                 'www': 'https://www.binance.us',
             },
+            'features': {
+                'swap': {
+                    'linear': undefined,
+                    'inverse': undefined,
+                },
+                'future': {
+                    'linear': undefined,
+                    'inverse': undefined,
+                },
+            },
         });
     }
 }

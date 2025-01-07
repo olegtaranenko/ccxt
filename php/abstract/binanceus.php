@@ -787,6 +787,9 @@ abstract class binanceus extends \ccxt\binance {
     public function papi_get_portfolio_interest_history($params = array()) {
         return $this->request('portfolio/interest-history', 'papi', 'GET', $params, null, null, array("cost" => 10));
     }
+    public function papi_get_ratelimit_order($params = array()) {
+        return $this->request('rateLimit/order', 'papi', 'GET', $params, null, null, array("cost" => 1));
+    }
     public function papi_get_repay_futures_switch($params = array()) {
         return $this->request('repay-futures-switch', 'papi', 'GET', $params, null, null, array("cost" => 6));
     }
@@ -3234,6 +3237,9 @@ abstract class binanceus extends \ccxt\binance {
     }
     public function papiGetPortfolioInterestHistory($params = array()) {
         return $this->request('portfolio/interest-history', 'papi', 'GET', $params, null, null, array("cost" => 10));
+    }
+    public function papiGetRateLimitOrder($params = array()) {
+        return $this->request('rateLimit/order', 'papi', 'GET', $params, null, null, array("cost" => 1));
     }
     public function papiGetRepayFuturesSwitch($params = array()) {
         return $this->request('repay-futures-switch', 'papi', 'GET', $params, null, null, array("cost" => 6));

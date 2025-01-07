@@ -1311,6 +1311,11 @@ public partial class binanceusdm : binance
         return await this.callAsync ("papiGetPortfolioInterestHistory",parameters);
     }
 
+    public async Task<object> papiGetRateLimitOrder (object parameters = null)
+    {
+        return await this.callAsync ("papiGetRateLimitOrder",parameters);
+    }
+
     public async Task<object> papiGetRepayFuturesSwitch (object parameters = null)
     {
         return await this.callAsync ("papiGetRepayFuturesSwitch",parameters);

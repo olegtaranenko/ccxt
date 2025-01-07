@@ -209,4 +209,14 @@ class binanceus(binance, ImplicitAPI):
                 'referral': 'https://www.binance.us/?ref=35005074',
                 'www': 'https://www.binance.us',
             },
+            'features': {
+                'swap': {
+                    'linear': None,
+                    'inverse': None,
+                },
+                'future': {
+                    'linear': None,
+                    'inverse': None,
+                },
+            },
         })
