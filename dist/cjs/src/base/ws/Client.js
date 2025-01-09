@@ -12,6 +12,7 @@ require('../functions/crypto.js');
 var time = require('../functions/time.js');
 var index = require('../../static_dependencies/scure-base/index.js');
 
+// ----------------------------------------------------------------------------
 const TRUNCATE_LENGTH = 8192;
 /**
  * Truncates a string body for verbose logging purposes.

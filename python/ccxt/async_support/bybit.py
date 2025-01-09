@@ -2701,8 +2701,7 @@ class bybit(Exchange, ImplicitAPI):
         timestamp = self.safe_integer(response, 'time')
         for i in range(0, len(tickerList)):
             tickerList[i]['timestamp'] = timestamp  # will be removed inside the parser
-        result = self.parse_funding_rates(tickerList)
-        return self.filter_by_array(result, 'symbol', symbols)
+        return self.parse_funding_rates(tickerList, symbols)
 
     async def fetch_funding_rate_history(self, symbol: Str = None, since: Int = None, limit: Int = None, params={}):
         """
@@ -3211,7 +3210,11 @@ class bybit(Exchange, ImplicitAPI):
                         if (loan is not None) and (interest is not None):
                             account['debt'] = Precise.string_add(loan, interest)
                         account['total'] = self.safe_string(coinEntry, 'walletBalance')
-                        account['free'] = self.safe_string_2(coinEntry, 'availableToWithdraw', 'free')
+                        free = self.safe_string_2(coinEntry, 'availableToWithdraw', 'free')
+                        if free is not None:
+                            account['free'] = free
+                        else:
+                            account['used'] = self.safe_string(coinEntry, 'locked')
                         # account['used'] = self.safe_string(coinEntry, 'locked')
                         currencyId = self.safe_string(coinEntry, 'coin')
                         code = self.safe_currency_code(currencyId)

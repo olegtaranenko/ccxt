@@ -9926,8 +9926,7 @@ class binance extends Exchange {
             } else {
                 throw new NotSupported($this->id . ' fetchFundingRates() supports linear and inverse contracts only');
             }
-            $result = $this->parse_funding_rates($response);
-            return $this->filter_by_array($result, 'symbol', $symbols);
+            return $this->parse_funding_rates($response, $symbols);
         }) ();
     }
 
@@ -14281,8 +14280,7 @@ class binance extends Exchange {
             //         ),
             //     )
             //
-            $result = $this->parse_funding_rates($response, $market);
-            return $this->filter_by_array($result, 'symbol', $symbols);
+            return $this->parse_funding_rates($response, $symbols);
         }) ();
     }
 

@@ -2801,8 +2801,7 @@ class bybit extends Exchange {
             for ($i = 0; $i < count($tickerList); $i++) {
                 $tickerList[$i]['timestamp'] = $timestamp; // will be removed inside the parser
             }
-            $result = $this->parse_funding_rates($tickerList);
-            return $this->filter_by_array($result, 'symbol', $symbols);
+            return $this->parse_funding_rates($tickerList, $symbols);
         }) ();
     }
 
@@ -3352,7 +3351,12 @@ class bybit extends Exchange {
                             $account['debt'] = Precise::string_add($loan, $interest);
                         }
                         $account['total'] = $this->safe_string($coinEntry, 'walletBalance');
-                        $account['free'] = $this->safe_string_2($coinEntry, 'availableToWithdraw', 'free');
+                        $free = $this->safe_string_2($coinEntry, 'availableToWithdraw', 'free');
+                        if ($free !== null) {
+                            $account['free'] = $free;
+                        } else {
+                            $account['used'] = $this->safe_string($coinEntry, 'locked');
+                        }
                         // $account['used'] = $this->safe_string($coinEntry, 'locked');
                         $currencyId = $this->safe_string($coinEntry, 'coin');
                         $code = $this->safe_currency_code($currencyId);
