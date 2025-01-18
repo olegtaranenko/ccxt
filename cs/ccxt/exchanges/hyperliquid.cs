@@ -196,6 +196,8 @@ public partial class hyperliquid : Exchange
                     { "Order price cannot be more than 80% away from the reference price", typeof(InvalidOrder) },
                     { "Order has zero size.", typeof(InvalidOrder) },
                     { "Insufficient spot balance asset", typeof(InsufficientFunds) },
+                    { "Insufficient balance for withdrawal", typeof(InsufficientFunds) },
+                    { "Insufficient balance for token transfer", typeof(InsufficientFunds) },
                 } },
             } },
             { "precisionMode", TICK_SIZE },
@@ -705,6 +707,12 @@ public partial class hyperliquid : Exchange
         object price = this.safeNumber(market, "markPx", 0);
         object pricePrecision = this.calculatePricePrecision(price, amountPrecision, 6);
         object pricePrecisionStr = this.numberToString(pricePrecision);
+        object isDelisted = this.safeBool(market, "isDelisted");
+        object active = true;
+        if (isTrue(!isEqual(isDelisted, null)))
+        {
+            active = !isTrue(isDelisted);
+        }
         return this.safeMarketStructure(new Dictionary<string, object>() {
             { "id", baseId },
             { "symbol", symbol },
@@ -720,7 +728,7 @@ public partial class hyperliquid : Exchange
             { "swap", swap },
             { "future", false },
             { "option", false },
-            { "active", true },
+            { "active", active },
             { "contract", contract },
             { "linear", true },
             { "inverse", false },
@@ -1005,8 +1013,7 @@ public partial class hyperliquid : Exchange
             object data = this.extend(this.safeDict(universe, i, new Dictionary<string, object>() {}), this.safeDict(assetCtxs, i, new Dictionary<string, object>() {}));
             ((IList<object>)result).Add(data);
         }
-        object funding_rates = this.parseFundingRates(result);
-        return this.filterByArray(funding_rates, "symbol", symbols);
+        return this.parseFundingRates(result, symbols);
     }
 
     public override object parseFundingRate(object info, object market = null)
@@ -2072,6 +2079,10 @@ public partial class hyperliquid : Exchange
     {
         parameters ??= new Dictionary<string, object>();
         await this.loadMarkets();
+        if (isTrue(isEqual(symbol, null)))
+        {
+            throw new ArgumentsRequired ((string)add(this.id, " fetchFundingRateHistory() requires a symbol argument")) ;
+        }
         object market = this.market(symbol);
         object request = new Dictionary<string, object>() {
             { "type", "fundingHistory" },
@@ -3103,7 +3114,28 @@ public partial class hyperliquid : Exchange
             { "signature", sig },
         };
         object response = await this.privatePostExchange(request);
-        return response;
+        //
+        // {'response': {'type': 'default'}, 'status': 'ok'}
+        //
+        return this.parseTransfer(response);
+    }
+
+    public override object parseTransfer(object transfer, object currency = null)
+    {
+        //
+        // {'response': {'type': 'default'}, 'status': 'ok'}
+        //
+        return new Dictionary<string, object>() {
+            { "info", transfer },
+            { "id", null },
+            { "timestamp", null },
+            { "datetime", null },
+            { "currency", null },
+            { "amount", null },
+            { "fromAccount", null },
+            { "toAccount", null },
+            { "status", "ok" },
+        };
     }
 
     /**
@@ -3568,8 +3600,7 @@ public partial class hyperliquid : Exchange
         await this.loadMarkets();
         symbols = this.marketSymbols(symbols);
         object swapMarkets = await this.fetchSwapMarkets();
-        object result = this.parseOpenInterests(swapMarkets);
-        return this.filterByArray(result, "symbol", symbols);
+        return this.parseOpenInterests(swapMarkets, symbols);
     }
 
     /**

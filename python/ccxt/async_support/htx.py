@@ -969,6 +969,8 @@ class htx(Exchange, ImplicitAPI):
                         'inverse': True,
                     },
                 },
+                'timeDifference': 0,  # the difference between system clock and exchange clock
+                'adjustForTimeDifference': False,  # controls the adjustment logic upon instantiation
                 'fetchOHLCV': {
                     'useHistoricalEndpointForSpot': True,
                 },
@@ -1770,6 +1772,8 @@ class htx(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the exchange API endpoint
         :returns dict[]: an array of objects representing market data
         """
+        if self.options['adjustForTimeDifference']:
+            await self.load_time_difference()
         types = None
         types, params = self.handle_option_and_params(params, 'fetchMarkets', 'types', {})
         allMarkets = []
@@ -6780,8 +6784,7 @@ class htx(Exchange, ImplicitAPI):
         #     }
         #
         data = self.safe_value(response, 'data', [])
-        result = self.parse_funding_rates(data)
-        return self.filter_by_array(result, 'symbol', symbols)
+        return self.parse_funding_rates(data, symbols)
 
     async def fetch_borrow_interest(self, code: Str = None, symbol: Str = None, since: Int = None, limit: Int = None, params={}) -> List[BorrowInterest]:
         """
@@ -6903,6 +6906,9 @@ class htx(Exchange, ImplicitAPI):
             'datetime': self.iso8601(timestamp),
         }
 
+    def nonce(self):
+        return self.milliseconds() - self.options['timeDifference']
+
     def sign(self, path, api='public', method='GET', params={}, headers=None, body=None):
         url = '/'
         query = self.omit(params, self.extract_params(path))
@@ -6915,7 +6921,7 @@ class htx(Exchange, ImplicitAPI):
             url += '/' + self.implode_params(path, params)
             if api == 'private' or api == 'v2Private':
                 self.check_required_credentials()
-                timestamp = self.ymdhms(self.milliseconds(), 'T')
+                timestamp = self.ymdhms(self.nonce(), 'T')
                 request: dict = {
                     'SignatureMethod': 'HmacSHA256',
                     'SignatureVersion': '2',
@@ -6979,7 +6985,7 @@ class htx(Exchange, ImplicitAPI):
                         clientOrderId = self.safe_string(params, 'client-order-id')
                         if clientOrderId is None:
                             params['client-order-id'] = id + self.uuid()
-                timestamp = self.ymdhms(self.milliseconds(), 'T')
+                timestamp = self.ymdhms(self.nonce(), 'T')
                 request: dict = {
                     'SignatureMethod': 'HmacSHA256',
                     'SignatureVersion': '2',
@@ -8098,8 +8104,7 @@ class htx(Exchange, ImplicitAPI):
             #     }
             #
         data = self.safe_list(response, 'data', [])
-        result = self.parse_open_interests(data)
-        return self.filter_by_array(result, 'symbol', symbols)
+        return self.parse_open_interests(data, symbols)
 
     async def fetch_open_interest(self, symbol: str, params={}):
         """

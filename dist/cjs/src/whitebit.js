@@ -6,7 +6,7 @@ var Precise = require('./base/Precise.js');
 var number = require('./base/functions/number.js');
 var sha512 = require('./static_dependencies/noble-hashes/sha512.js');
 
-//  ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //  ---------------------------------------------------------------------------
 /**
  * @class whitebit
@@ -2469,8 +2469,7 @@ class whitebit extends whitebit$1 {
         //    ]
         //
         const data = this.safeList(response, 'result', []);
-        const result = this.parseFundingRates(data);
-        return this.filterByArray(result, 'symbol', symbols);
+        return this.parseFundingRates(data, symbols);
     }
     parseFundingRate(contract, market = undefined) {
         //

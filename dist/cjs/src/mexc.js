@@ -6,7 +6,7 @@ var number = require('./base/functions/number.js');
 var Precise = require('./base/Precise.js');
 var sha256 = require('./static_dependencies/noble-hashes/sha256.js');
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // ---------------------------------------------------------------------------
 /**
  * @class mexc
@@ -4694,7 +4694,7 @@ class mexc extends mexc$1 {
         return {
             'info': depositAddress,
             'currency': this.safeCurrencyCode(currencyId, currency),
-            'network': this.networkIdToCode(networkId),
+            'network': this.networkIdToCode(networkId, currencyId),
             'address': address,
             'tag': this.safeString(depositAddress, 'memo'),
         };

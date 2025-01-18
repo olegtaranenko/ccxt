@@ -208,6 +208,8 @@ export default class hyperliquid extends Exchange {
                     'Order price cannot be more than 80% away from the reference price': InvalidOrder,
                     'Order has zero size.': InvalidOrder,
                     'Insufficient spot balance asset': InsufficientFunds,
+                    'Insufficient balance for withdrawal': InsufficientFunds,
+                    'Insufficient balance for token transfer': InsufficientFunds,
                 },
             },
             'precisionMode': TICK_SIZE,
@@ -694,6 +696,11 @@ export default class hyperliquid extends Exchange {
         const price = this.safeNumber(market, 'markPx', 0);
         const pricePrecision = this.calculatePricePrecision(price, amountPrecision, 6);
         const pricePrecisionStr = this.numberToString(pricePrecision);
+        const isDelisted = this.safeBool(market, 'isDelisted');
+        let active = true;
+        if (isDelisted !== undefined) {
+            active = !isDelisted;
+        }
         return this.safeMarketStructure({
             'id': baseId,
             'symbol': symbol,
@@ -709,7 +716,7 @@ export default class hyperliquid extends Exchange {
             'swap': swap,
             'future': false,
             'option': false,
-            'active': true,
+            'active': active,
             'contract': contract,
             'linear': true,
             'inverse': false,
@@ -971,8 +978,7 @@ export default class hyperliquid extends Exchange {
             const data = this.extend(this.safeDict(universe, i, {}), this.safeDict(assetCtxs, i, {}));
             result.push(data);
         }
-        const funding_rates = this.parseFundingRates(result);
-        return this.filterByArray(funding_rates, 'symbol', symbols);
+        return this.parseFundingRates(result, symbols);
     }
     parseFundingRate(info, market = undefined) {
         //
@@ -1917,6 +1923,9 @@ export default class hyperliquid extends Exchange {
      */
     async fetchFundingRateHistory(symbol = undefined, since = undefined, limit = undefined, params = {}) {
         await this.loadMarkets();
+        if (symbol === undefined) {
+            throw new ArgumentsRequired(this.id + ' fetchFundingRateHistory() requires a symbol argument');
+        }
         const market = this.market(symbol);
         const request = {
             'type': 'fundingHistory',
@@ -2853,7 +2862,26 @@ export default class hyperliquid extends Exchange {
             'signature': sig,
         };
         const response = await this.privatePostExchange(request);
-        return response;
+        //
+        // {'response': {'type': 'default'}, 'status': 'ok'}
+        //
+        return this.parseTransfer(response);
+    }
+    parseTransfer(transfer, currency = undefined) {
+        //
+        // {'response': {'type': 'default'}, 'status': 'ok'}
+        //
+        return {
+            'info': transfer,
+            'id': undefined,
+            'timestamp': undefined,
+            'datetime': undefined,
+            'currency': undefined,
+            'amount': undefined,
+            'fromAccount': undefined,
+            'toAccount': undefined,
+            'status': 'ok',
+        };
     }
     /**
      * @method
@@ -3272,8 +3300,7 @@ export default class hyperliquid extends Exchange {
         await this.loadMarkets();
         symbols = this.marketSymbols(symbols);
         const swapMarkets = await this.fetchSwapMarkets();
-        const result = this.parseOpenInterests(swapMarkets);
-        return this.filterByArray(result, 'symbol', symbols);
+        return this.parseOpenInterests(swapMarkets, symbols);
     }
     /**
      * @method

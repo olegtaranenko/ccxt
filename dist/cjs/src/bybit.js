@@ -7,7 +7,7 @@ var Precise = require('./base/Precise.js');
 var sha256 = require('./static_dependencies/noble-hashes/sha256.js');
 var rsa = require('./base/functions/rsa.js');
 
-//  ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //  ---------------------------------------------------------------------------
 /**
  * @class bybit
@@ -2779,8 +2779,7 @@ class bybit extends bybit$1 {
         for (let i = 0; i < tickerList.length; i++) {
             tickerList[i]['timestamp'] = timestamp; // will be removed inside the parser
         }
-        const result = this.parseFundingRates(tickerList);
-        return this.filterByArray(result, 'symbol', symbols);
+        return this.parseFundingRates(tickerList, symbols);
     }
     /**
      * @method
@@ -3329,7 +3328,18 @@ class bybit extends bybit$1 {
                             account['debt'] = Precise["default"].stringAdd(loan, interest);
                         }
                         account['total'] = this.safeString(coinEntry, 'walletBalance');
-                        account['free'] = this.safeString2(coinEntry, 'availableToWithdraw', 'free');
+                        const free = this.safeString2(coinEntry, 'availableToWithdraw', 'free');
+                        if (free !== undefined) {
+                            account['free'] = free;
+                        }
+                        else {
+                            const locked = this.safeString(coinEntry, 'locked', '0');
+                            const totalPositionIm = this.safeString(coinEntry, 'totalPositionIM', '0');
+                            const totalOrderIm = this.safeString(coinEntry, 'totalOrderIM', '0');
+                            let totalUsed = Precise["default"].stringAdd(locked, totalPositionIm);
+                            totalUsed = Precise["default"].stringAdd(totalUsed, totalOrderIm);
+                            account['used'] = totalUsed;
+                        }
                         // account['used'] = this.safeString (coinEntry, 'locked');
                         const currencyId = this.safeString(coinEntry, 'coin');
                         const code = this.safeCurrencyCode(currencyId);
@@ -3853,7 +3863,7 @@ class bybit extends bybit$1 {
      * @param {bool} [params.reduceOnly] true or false whether the order is reduce-only
      * @param {string} [params.positionIdx] *contracts only* 0 for one-way mode, 1 buy side of hedged mode, 2 sell side of hedged mode
      * @param {bool} [params.hedged] *contracts only* true for hedged mode, false for one way mode, default is false
-     * @param {boolean} [params.isLeverage] *unified spot only* false then spot trading true then margin trading
+     * @param {int} [params.isLeverage] *unified spot only* false then spot trading true then margin trading
      * @param {string} [params.tpslMode] *contract only* 'full' or 'partial'
      * @param {string} [params.mmp] *option only* market maker protection
      * @param {string} [params.triggerDirection] *contract only* the direction for trigger orders, 'above' or 'below'

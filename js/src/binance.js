@@ -9873,20 +9873,24 @@ export default class binance extends Exchange {
         //         "fundingTime": "1621267200000",
         //     }
         //
-        const rates = [];
-        for (let i = 0; i < response.length; i++) {
-            const entry = response[i];
-            const timestamp = this.safeInteger(entry, 'fundingTime');
-            rates.push({
-                'info': entry,
-                'symbol': this.safeSymbol(this.safeString(entry, 'symbol'), undefined, undefined, 'swap'),
-                'fundingRate': this.safeNumber(entry, 'fundingRate'),
-                'timestamp': timestamp,
-                'datetime': this.iso8601(timestamp),
-            });
-        }
-        const sorted = this.sortBy(rates, 'timestamp');
-        return this.filterBySymbolSinceLimit(sorted, symbol, since, limit);
+        return this.parseFundingRateHistories(response, market, since, limit);
+    }
+    parseFundingRateHistory(contract, market = undefined) {
+        //
+        //     {
+        //         "symbol": "BTCUSDT",
+        //         "fundingRate": "0.00063521",
+        //         "fundingTime": "1621267200000",
+        //     }
+        //
+        const timestamp = this.safeInteger(contract, 'fundingTime');
+        return {
+            'info': contract,
+            'symbol': this.safeSymbol(this.safeString(contract, 'symbol'), undefined, undefined, 'swap'),
+            'fundingRate': this.safeNumber(contract, 'fundingRate'),
+            'timestamp': timestamp,
+            'datetime': this.iso8601(timestamp),
+        };
     }
     /**
      * @method
@@ -9917,8 +9921,7 @@ export default class binance extends Exchange {
         else {
             throw new NotSupported(this.id + ' fetchFundingRates() supports linear and inverse contracts only');
         }
-        const result = this.parseFundingRates(response);
-        return this.filterByArray(result, 'symbol', symbols);
+        return this.parseFundingRates(response, symbols);
     }
     parseFundingRate(contract, market = undefined) {
         // ensure it matches with https://www.binance.com/en/futures/funding-history/0
@@ -14196,8 +14199,7 @@ export default class binance extends Exchange {
         //         },
         //     ]
         //
-        const result = this.parseFundingRates(response, market);
-        return this.filterByArray(result, 'symbol', symbols);
+        return this.parseFundingRates(response, symbols);
     }
     /**
      * @method

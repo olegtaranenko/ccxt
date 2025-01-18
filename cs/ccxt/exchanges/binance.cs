@@ -10164,21 +10164,26 @@ public partial class binance : Exchange
         //         "fundingTime": "1621267200000",
         //     }
         //
-        object rates = new List<object>() {};
-        for (object i = 0; isLessThan(i, getArrayLength(response)); postFixIncrement(ref i))
-        {
-            object entry = getValue(response, i);
-            object timestamp = this.safeInteger(entry, "fundingTime");
-            ((IList<object>)rates).Add(new Dictionary<string, object>() {
-                { "info", entry },
-                { "symbol", this.safeSymbol(this.safeString(entry, "symbol"), null, null, "swap") },
-                { "fundingRate", this.safeNumber(entry, "fundingRate") },
-                { "timestamp", timestamp },
-                { "datetime", this.iso8601(timestamp) },
-            });
-        }
-        object sorted = this.sortBy(rates, "timestamp");
-        return this.filterBySymbolSinceLimit(sorted, symbol, since, limit);
+        return this.parseFundingRateHistories(response, market, since, limit);
+    }
+
+    public override object parseFundingRateHistory(object contract, object market = null)
+    {
+        //
+        //     {
+        //         "symbol": "BTCUSDT",
+        //         "fundingRate": "0.00063521",
+        //         "fundingTime": "1621267200000",
+        //     }
+        //
+        object timestamp = this.safeInteger(contract, "fundingTime");
+        return new Dictionary<string, object>() {
+            { "info", contract },
+            { "symbol", this.safeSymbol(this.safeString(contract, "symbol"), null, null, "swap") },
+            { "fundingRate", this.safeNumber(contract, "fundingRate") },
+            { "timestamp", timestamp },
+            { "datetime", this.iso8601(timestamp) },
+        };
     }
 
     /**
@@ -10215,8 +10220,7 @@ public partial class binance : Exchange
         {
             throw new NotSupported ((string)add(this.id, " fetchFundingRates() supports linear and inverse contracts only")) ;
         }
-        object result = this.parseFundingRates(response);
-        return this.filterByArray(result, "symbol", symbols);
+        return this.parseFundingRates(response, symbols);
     }
 
     public override object parseFundingRate(object contract, object market = null)
@@ -14755,8 +14759,7 @@ public partial class binance : Exchange
         //         },
         //     ]
         //
-        object result = this.parseFundingRates(response, market);
-        return this.filterByArray(result, "symbol", symbols);
+        return this.parseFundingRates(response, symbols);
     }
 
     /**

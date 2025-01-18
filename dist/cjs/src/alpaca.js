@@ -5,7 +5,7 @@ var Precise = require('./base/Precise.js');
 var errors = require('./base/errors.js');
 var number = require('./base/functions/number.js');
 
-//  ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //  ---------------------------------------------------------------------------xs
 /**
  * @class alpaca
@@ -333,6 +333,14 @@ class alpaca extends alpaca$1 {
                     'fetchOHLCV': {
                         'limit': 1000,
                     },
+                },
+                'swap': {
+                    'linear': undefined,
+                    'inverse': undefined,
+                },
+                'future': {
+                    'linear': undefined,
+                    'inverse': undefined,
                 },
             },
             'exceptions': {
