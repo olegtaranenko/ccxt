@@ -482,6 +482,7 @@ export default class binance extends Exchange {
                         'portfolio/repay-futures-switch': 3,
                         'portfolio/margin-asset-leverage': 5,
                         'portfolio/balance': 2,
+                        'portfolio/negative-balance-exchange-record': 2,
                         // staking
                         'staking/productList': 0.1,
                         'staking/position': 0.1,
@@ -5161,12 +5162,14 @@ export default class binance extends Exchange {
                 request['endTime'] = until;
             }
         }
-        if (limit !== undefined) {
-            const isFutureOrSwap = (market['swap'] || market['future']);
-            request['limit'] = isFutureOrSwap ? Math.min(limit, 1000) : limit; // default = 500, maximum = 1000
-        }
         let method = this.safeString(this.options, 'fetchTradesMethod');
         method = this.safeString2(params, 'fetchTradesMethod', 'method', method);
+        if (limit !== undefined) {
+            const isFutureOrSwap = (market['swap'] || market['future']);
+            const isHistoricalEndpoint = (method !== undefined) && (method.indexOf('GetHistoricalTrades') >= 0);
+            const maxLimitForContractHistorical = isHistoricalEndpoint ? 500 : 1000;
+            request['limit'] = isFutureOrSwap ? Math.min(limit, maxLimitForContractHistorical) : limit; // default = 500, maximum = 1000
+        }
         params = this.omit(params, ['until', 'fetchTradesMethod']);
         let response = undefined;
         if (market['option'] || method === 'eapiPublicGetTrades') {
@@ -7220,6 +7223,7 @@ export default class binance extends Exchange {
      * @param {string} symbol unified market symbol
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @param {string} [params.trigger] set to true if you would like to fetch portfolio margin account stop or conditional orders
+     * @param {boolean} [params.portfolioMargin] set to true if you would like to fetch for a portfolio margin account
      * @returns {object} an [order structure]{@link https://docs.ccxt.com/#/?id=order-structure}
      */
     async fetchOpenOrder(id, symbol = undefined, params = {}) {
@@ -10820,7 +10824,7 @@ export default class binance extends Exchange {
         //     }
         //
         const marketId = this.safeString(position, 'symbol');
-        market = this.safeMarket(marketId, market);
+        market = this.safeMarket(marketId, market, undefined, 'swap');
         const symbol = market['symbol'];
         const side = this.safeStringLower(position, 'side');
         let quantity = this.safeString(position, 'quantity');
