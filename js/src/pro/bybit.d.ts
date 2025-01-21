@@ -199,7 +199,7 @@ export default class bybit extends bybitRest {
     watchOrderBook(symbol: string, limit?: Int, params?: {}): Promise<OrderBook>;
     /**
      * @method
-     * @name bybit#watchOrderBook
+     * @name bybit#watchOrderBookForSymbols
      * @description watches information on open orders with bid (buy) and ask (sell) prices, volumes and other data
      * @see https://bybit-exchange.github.io/docs/v5/websocket/public/orderbook
      * @param {string[]} symbols unified array of symbols
@@ -279,7 +279,7 @@ export default class bybit extends bybitRest {
     unWatchTrades(symbol: string, params?: {}): Promise<any>;
     handleTrades(client: Client, message: any): void;
     parseWsTrade(trade: any, market?: any): Trade;
-    getPrivateType(url: any): "spot" | "usdc" | "unified";
+    getPrivateType(url: any): "spot" | "unified" | "usdc";
     /**
      * @method
      * @name bybit#watchMyTrades

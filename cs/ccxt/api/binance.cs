@@ -2946,6 +2946,11 @@ public partial class binance : Exchange
         return await this.callAsync ("sapiGetPortfolioBalance",parameters);
     }
 
+    public async Task<object> sapiGetPortfolioNegativeBalanceExchangeRecord (object parameters = null)
+    {
+        return await this.callAsync ("sapiGetPortfolioNegativeBalanceExchangeRecord",parameters);
+    }
+
     public async Task<object> sapiGetLendingAutoInvestAllAsset (object parameters = null)
     {
         return await this.callAsync ("sapiGetLendingAutoInvestAllAsset",parameters);
