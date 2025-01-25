@@ -2227,6 +2227,7 @@ class binance(ccxt.async_support.binance):
             response = None
             if isPortfolioMargin:
                 response = await self.papiPostListenKey(params)
+                params = self.extend(params, {'portfolioMargin': True})
             elif type == 'future':
                 response = await self.fapiPrivatePostListenKey(params)
             elif type == 'delivery':
@@ -2271,6 +2272,7 @@ class binance(ccxt.async_support.binance):
         try:
             if isPortfolioMargin:
                 await self.papiPutListenKey(self.extend(request, params))
+                params = self.extend(params, {'portfolioMargin': True})
             elif type == 'future':
                 await self.fapiPrivatePutListenKey(self.extend(request, params))
             elif type == 'delivery':
