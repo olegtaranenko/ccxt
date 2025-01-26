@@ -67,7 +67,7 @@
 	- [hashkey](exchanges/hashkey.md)
 	- [hitbtc](exchanges/hitbtc.md)
 	- [hollaex](exchanges/hollaex.md)
-	- [huobi](exchanges/huobi.md)
+	- [htx](exchanges/htx.md)
 	- [huobijp](exchanges/huobijp.md)
 	- [hyperliquid](exchanges/hyperliquid.md)
 	- [idex](exchanges/idex.md)
