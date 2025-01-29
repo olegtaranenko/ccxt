@@ -1337,6 +1337,7 @@ export default class binance extends Exchange {
                     'OMNI': 'OMNI',
                     'EOS': 'EOS',
                     'SPL': 'SOL',
+                    'SOL': 'SOL', // we shouldn't rename SOL
                 },
                 // keeping this object for backward-compatibility
                 'reverseNetworks': {
@@ -1434,6 +1435,7 @@ export default class binance extends Exchange {
                     'explorer.zensystem.io': 'ZEN',
                 },
                 'networksById': {
+                    'SOL': 'SOL',
                     'tronscan.org': 'TRC20',
                     'etherscan.io': 'ERC20',
                     'bscscan.com': 'BSC',
@@ -1588,24 +1590,30 @@ export default class binance extends Exchange {
                         },
                         'hedged': true,
                         'leverage': false,
-                        'marketBuyRequiresPrice': false,
                         'marketBuyByCost': true,
-                        // exchange-supported features
-                        'selfTradePrevention': true,
-                        'trailing': true,
-                        'iceberg': true, // todo implementation
+                        'marketBuyRequiresPrice': false,
+                        'selfTradePrevention': {
+                            'expire_maker': true,
+                            'expire_taker': true,
+                            'expire_both': true,
+                            'none': true,
+                        },
+                        'trailing': false,
+                        'icebergAmount': true,
                     },
                     'createOrders': undefined,
                     'fetchMyTrades': {
                         'marginMode': false,
                         'limit': 1000,
                         'daysBack': undefined,
-                        'untilDays': 1, // days between start-end
+                        'untilDays': 1,
+                        'symbolRequired': true,
                     },
                     'fetchOrder': {
                         'marginMode': true,
                         'trigger': false,
                         'trailing': false,
+                        'symbolRequired': true,
                     },
                     'fetchOpenOrders': {
                         'marginMode': true,
@@ -1620,6 +1628,7 @@ export default class binance extends Exchange {
                         'untilDays': 10000,
                         'trigger': false,
                         'trailing': false,
+                        'symbolRequired': true,
                     },
                     'fetchClosedOrders': {
                         'marginMode': true,
@@ -1629,12 +1638,13 @@ export default class binance extends Exchange {
                         'untilDays': 10000,
                         'trigger': false,
                         'trailing': false,
+                        'symbolRequired': true,
                     },
                     'fetchOHLCV': {
                         'limit': 1000,
                     },
                 },
-                'default': {
+                'forDerivatives': {
                     'sandbox': true,
                     'createOrder': {
                         'marginMode': false,
@@ -1671,17 +1681,20 @@ export default class binance extends Exchange {
                         'daysBack': undefined,
                         'limit': 1000,
                         'untilDays': 7,
+                        'symbolRequired': true,
                     },
                     'fetchOrder': {
                         'marginMode': false,
                         'trigger': false,
                         'trailing': false,
+                        'symbolRequired': true,
                     },
                     'fetchOpenOrders': {
                         'marginMode': true,
                         'limit': 500,
                         'trigger': false,
                         'trailing': false,
+                        'symbolRequired': false,
                     },
                     'fetchOrders': {
                         'marginMode': true,
@@ -1690,6 +1703,7 @@ export default class binance extends Exchange {
                         'untilDays': 7,
                         'trigger': false,
                         'trailing': false,
+                        'symbolRequired': true,
                     },
                     'fetchClosedOrders': {
                         'marginMode': true,
@@ -1699,6 +1713,7 @@ export default class binance extends Exchange {
                         'untilDays': 7,
                         'trigger': false,
                         'trailing': false,
+                        'symbolRequired': true,
                     },
                     'fetchOHLCV': {
                         'limit': 1500,
@@ -1706,18 +1721,18 @@ export default class binance extends Exchange {
                 },
                 'swap': {
                     'linear': {
-                        'extends': 'default',
+                        'extends': 'forDerivatives',
                     },
                     'inverse': {
-                        'extends': 'default',
+                        'extends': 'forDerivatives',
                     },
                 },
                 'future': {
                     'linear': {
-                        'extends': 'default',
+                        'extends': 'forDerivatives',
                     },
                     'inverse': {
-                        'extends': 'default',
+                        'extends': 'forDerivatives',
                     },
                 },
             },
@@ -6246,7 +6261,7 @@ export default class binance extends Exchange {
      * @method
      * @name binance#createOrder
      * @description create a trade order
-     * @see https://developers.binance.com/docs/binance-spot-api-docs/rest-api/public-api-endpoints#new-order-trade
+     * @see https://developers.binance.com/docs/binance-spot-api-docs/rest-api/trading-endpoints#new-order-trade
      * @see https://developers.binance.com/docs/binance-spot-api-docs/rest-api/public-api-endpoints#test-new-order-trade
      * @see https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/New-Order
      * @see https://developers.binance.com/docs/derivatives/coin-margined-futures/trade/New-Order
@@ -6274,6 +6289,8 @@ export default class binance extends Exchange {
      * @param {float} [params.stopLossPrice] the price that a stop loss order is triggered at
      * @param {float} [params.takeProfitPrice] the price that a take profit order is triggered at
      * @param {boolean} [params.portfolioMargin] set to true if you would like to create an order in a portfolio margin account
+     * @param {string} [params.selfTradePrevention] set unified value for stp (see .features for available values)
+     * @param {float} [params.icebergAmount] set iceberg amount for limit orders
      * @param {string} [params.stopLossOrTakeProfit] 'stopLoss' or 'takeProfit', required for spot trailing orders
      * @param {string} [params.positionSide] *swap and portfolio margin only* "BOTH" for one-way mode, "LONG" for buy side of hedged mode, "SHORT" for sell side of hedged mode
      * @param {bool} [params.hedged] *swap and portfolio margin only* true for hedged mode, false for one way mode, default is false
@@ -6660,7 +6677,7 @@ export default class binance extends Exchange {
             }
         }
         if (timeInForceIsRequired && (this.safeString(params, 'timeInForce') === undefined) && (this.safeString(request, 'timeInForce') === undefined)) {
-            request['timeInForce'] = this.options['defaultTimeInForce']; // 'GTC' = Good To Cancel (default), 'IOC' = Immediate Or Cancel
+            request['timeInForce'] = this.safeString(this.options, 'defaultTimeInForce'); // 'GTC' = Good To Cancel (default), 'IOC' = Immediate Or Cancel
         }
         if (!isPortfolioMargin && market['contract'] && postOnly) {
             request['timeInForce'] = 'GTX';
@@ -6677,7 +6694,21 @@ export default class binance extends Exchange {
             }
             request['positionSide'] = (side === 'buy') ? 'LONG' : 'SHORT';
         }
-        const requestParams = this.omit(params, ['type', 'newClientOrderId', 'clientOrderId', 'postOnly', 'stopLossPrice', 'takeProfitPrice', 'stopPrice', 'triggerPrice', 'trailingTriggerPrice', 'trailingPercent', 'quoteOrderQty', 'cost', 'test', 'hedged']);
+        // unified stp
+        const selfTradePrevention = this.safeString(params, 'selfTradePrevention');
+        if (selfTradePrevention !== undefined) {
+            if (market['spot']) {
+                request['selfTradePreventionMode'] = selfTradePrevention.toUpperCase(); // binance enums exactly match the unified ccxt enums (but needs uppercase)
+            }
+        }
+        // unified iceberg
+        const icebergAmount = this.safeNumber(params, 'icebergAmount');
+        if (icebergAmount !== undefined) {
+            if (market['spot']) {
+                request['icebergQty'] = this.amountToPrecision(symbol, icebergAmount);
+            }
+        }
+        const requestParams = this.omit(params, ['type', 'newClientOrderId', 'clientOrderId', 'postOnly', 'stopLossPrice', 'takeProfitPrice', 'stopPrice', 'triggerPrice', 'trailingTriggerPrice', 'trailingPercent', 'quoteOrderQty', 'cost', 'test', 'hedged', 'selfTradePrevention', 'icebergAmount']);
         return this.extend(request, requestParams);
     }
     /**

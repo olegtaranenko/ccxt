@@ -178,6 +178,7 @@
     },
     "bitfinex1": {
         "skipMethods": {
+            "features": "not implemented for this old ex",
             "loadMarkets": "linear and inverse values are same",
             "ticker": {
                 "symbol": "something broken with symbol",
@@ -667,6 +668,12 @@
     },
     "coinmetro": {
         "skipMethods": {
+            "loadMarkets": {
+                "currencyIdAndCode": "some currencies show in fetchMarkets but not in fetchCurrencies"
+            },
+            "fetchCurrencies": {
+                "precision": "not always provided"
+            },
             "fetchTrades": {
                 "side":"side is undefined"
             },
@@ -1686,6 +1693,9 @@
     },
     "coinlist": {
         "skipMethods": {
+            "loadMarkets": {
+                "precision": "ammount is sometimes 0"
+            },
             "ticker": {
                 "baseVolume": "quoteVolume >= baseVolume * low  is failing",
                 "bid": "invalid"

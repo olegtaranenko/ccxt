@@ -529,17 +529,20 @@ class coinex extends Exchange {
                         'limit' => 1000,
                         'daysBack' => null,
                         'untilDays' => 100000,
+                        'symbolRequired' => true,
                     ),
                     'fetchOrder' => array(
                         'marginMode' => false,
                         'trigger' => false,
                         'trailing' => false,
+                        'symbolRequired' => true,
                     ),
                     'fetchOpenOrders' => array(
                         'marginMode' => true,
                         'limit' => 1000,
                         'trigger' => true,
                         'trailing' => false,
+                        'symbolRequired' => false,
                     ),
                     'fetchOrders' => null,
                     'fetchClosedOrders' => array(
@@ -550,6 +553,7 @@ class coinex extends Exchange {
                         'untilDays' => null,
                         'trigger' => true,
                         'trailing' => false,
+                        'symbolRequired' => false,
                     ),
                     'fetchOHLCV' => array(
                         'limit' => 1000,
@@ -3896,7 +3900,7 @@ class coinex extends Exchange {
             'currency' => $this->safe_currency_code(null, $currency),
             'network' => null,
             'address' => $address,
-            'tag' => $tag,
+            'tag' => $this->safe_string($depositAddress, 'memo', $tag),
         );
     }
 
