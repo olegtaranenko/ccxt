@@ -1028,12 +1028,14 @@ class binance extends binance$1 {
                         'marginMode': false,
                         'limit': 1000,
                         'daysBack': undefined,
-                        'untilDays': 1, // days between start-end
+                        'untilDays': 1,
+                        'symbolRequired': true,
                     },
                     'fetchOrder': {
                         'marginMode': true,
                         'trigger': false,
                         'trailing': false,
+                        'symbolRequired': true,
                     },
                     'fetchOpenOrders': {
                         'marginMode': true,
@@ -1048,6 +1050,7 @@ class binance extends binance$1 {
                         'untilDays': 10000,
                         'trigger': false,
                         'trailing': false,
+                        'symbolRequired': true,
                     },
                     'fetchClosedOrders': {
                         'marginMode': true,
@@ -1057,6 +1060,7 @@ class binance extends binance$1 {
                         'untilDays': 10000,
                         'trigger': false,
                         'trailing': false,
+                        'symbolRequired': true,
                     },
                     'fetchOHLCV': {
                         'limit': 1000,
@@ -1099,17 +1103,20 @@ class binance extends binance$1 {
                         'daysBack': undefined,
                         'limit': 1000,
                         'untilDays': 7,
+                        'symbolRequired': true,
                     },
                     'fetchOrder': {
                         'marginMode': false,
                         'trigger': false,
                         'trailing': false,
+                        'symbolRequired': true,
                     },
                     'fetchOpenOrders': {
                         'marginMode': true,
                         'limit': 500,
                         'trigger': false,
                         'trailing': false,
+                        'symbolRequired': false,
                     },
                     'fetchOrders': {
                         'marginMode': true,
@@ -1118,6 +1125,7 @@ class binance extends binance$1 {
                         'untilDays': 7,
                         'trigger': false,
                         'trailing': false,
+                        'symbolRequired': true,
                     },
                     'fetchClosedOrders': {
                         'marginMode': true,
@@ -1127,6 +1135,7 @@ class binance extends binance$1 {
                         'untilDays': 7,
                         'trigger': false,
                         'trailing': false,
+                        'symbolRequired': true,
                     },
                     'fetchOHLCV': {
                         'limit': 1500,
@@ -2518,6 +2527,7 @@ class binance extends binance$1 {
                     'EOS': 'EOS',
                     'ERC20': 'ETH',
                     'OMNI': 'OMNI',
+                    'SOL': 'SOL',
                     'SPL': 'SOL',
                     'TRC20': 'TRX',
                 },
@@ -2597,6 +2607,7 @@ class binance extends binance$1 {
                     'scan.tomochain.com': 'TOMO',
                     'scope.klaytn.com': 'KLAY',
                     'secretnodes.com': 'SCRT',
+                    'SOL': 'SOL',
                     'solscan.io': 'SOL',
                     'steemscan.com': 'STEEM',
                     'stellar.expert': 'XLM',

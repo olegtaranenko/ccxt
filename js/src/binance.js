@@ -1031,12 +1031,14 @@ export default class binance extends Exchange {
                         'marginMode': false,
                         'limit': 1000,
                         'daysBack': undefined,
-                        'untilDays': 1, // days between start-end
+                        'untilDays': 1,
+                        'symbolRequired': true,
                     },
                     'fetchOrder': {
                         'marginMode': true,
                         'trigger': false,
                         'trailing': false,
+                        'symbolRequired': true,
                     },
                     'fetchOpenOrders': {
                         'marginMode': true,
@@ -1051,6 +1053,7 @@ export default class binance extends Exchange {
                         'untilDays': 10000,
                         'trigger': false,
                         'trailing': false,
+                        'symbolRequired': true,
                     },
                     'fetchClosedOrders': {
                         'marginMode': true,
@@ -1060,6 +1063,7 @@ export default class binance extends Exchange {
                         'untilDays': 10000,
                         'trigger': false,
                         'trailing': false,
+                        'symbolRequired': true,
                     },
                     'fetchOHLCV': {
                         'limit': 1000,
@@ -1102,17 +1106,20 @@ export default class binance extends Exchange {
                         'daysBack': undefined,
                         'limit': 1000,
                         'untilDays': 7,
+                        'symbolRequired': true,
                     },
                     'fetchOrder': {
                         'marginMode': false,
                         'trigger': false,
                         'trailing': false,
+                        'symbolRequired': true,
                     },
                     'fetchOpenOrders': {
                         'marginMode': true,
                         'limit': 500,
                         'trigger': false,
                         'trailing': false,
+                        'symbolRequired': false,
                     },
                     'fetchOrders': {
                         'marginMode': true,
@@ -1121,6 +1128,7 @@ export default class binance extends Exchange {
                         'untilDays': 7,
                         'trigger': false,
                         'trailing': false,
+                        'symbolRequired': true,
                     },
                     'fetchClosedOrders': {
                         'marginMode': true,
@@ -1130,6 +1138,7 @@ export default class binance extends Exchange {
                         'untilDays': 7,
                         'trigger': false,
                         'trailing': false,
+                        'symbolRequired': true,
                     },
                     'fetchOHLCV': {
                         'limit': 1500,
@@ -2521,6 +2530,7 @@ export default class binance extends Exchange {
                     'EOS': 'EOS',
                     'ERC20': 'ETH',
                     'OMNI': 'OMNI',
+                    'SOL': 'SOL',
                     'SPL': 'SOL',
                     'TRC20': 'TRX',
                 },
@@ -2600,6 +2610,7 @@ export default class binance extends Exchange {
                     'scan.tomochain.com': 'TOMO',
                     'scope.klaytn.com': 'KLAY',
                     'secretnodes.com': 'SCRT',
+                    'SOL': 'SOL',
                     'solscan.io': 'SOL',
                     'steemscan.com': 'STEEM',
                     'stellar.expert': 'XLM',

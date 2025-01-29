@@ -1052,11 +1052,13 @@ class binance(Exchange, ImplicitAPI):
                         'limit': 1000,
                         'daysBack': None,
                         'untilDays': 1,  # days between start-end
+                        'symbolRequired': True,
                     },
                     'fetchOrder': {
                         'marginMode': True,
                         'trigger': False,
                         'trailing': False,
+                        'symbolRequired': True,
                     },
                     'fetchOpenOrders': {
                         'marginMode': True,
@@ -1071,6 +1073,7 @@ class binance(Exchange, ImplicitAPI):
                         'untilDays': 10000,
                         'trigger': False,
                         'trailing': False,
+                        'symbolRequired': True,
                     },
                     'fetchClosedOrders': {
                         'marginMode': True,
@@ -1080,6 +1083,7 @@ class binance(Exchange, ImplicitAPI):
                         'untilDays': 10000,
                         'trigger': False,
                         'trailing': False,
+                        'symbolRequired': True,
                     },
                     'fetchOHLCV': {
                         'limit': 1000,
@@ -1122,17 +1126,20 @@ class binance(Exchange, ImplicitAPI):
                         'daysBack': None,
                         'limit': 1000,
                         'untilDays': 7,
+                        'symbolRequired': True,
                     },
                     'fetchOrder': {
                         'marginMode': False,
                         'trigger': False,
                         'trailing': False,
+                        'symbolRequired': True,
                     },
                     'fetchOpenOrders': {
                         'marginMode': True,
                         'limit': 500,
                         'trigger': False,
                         'trailing': False,
+                        'symbolRequired': False,
                     },
                     'fetchOrders': {
                         'marginMode': True,
@@ -1141,6 +1148,7 @@ class binance(Exchange, ImplicitAPI):
                         'untilDays': 7,
                         'trigger': False,
                         'trailing': False,
+                        'symbolRequired': True,
                     },
                     'fetchClosedOrders': {
                         'marginMode': True,
@@ -1150,6 +1158,7 @@ class binance(Exchange, ImplicitAPI):
                         'untilDays': 7,
                         'trigger': False,
                         'trailing': False,
+                        'symbolRequired': True,
                     },
                     'fetchOHLCV': {
                         'limit': 1500,
@@ -2541,7 +2550,8 @@ class binance(Exchange, ImplicitAPI):
                     'EOS': 'EOS',
                     'ERC20': 'ETH',
                     'OMNI': 'OMNI',
-                    'SPL': 'SOL',
+                    'SOL': 'SOL',  # we shouldn't rename SOL
+                    'SPL': 'SOL',  # temporarily keep support for SPL(old name)
                     'TRC20': 'TRX',
                 },
                 'networksById': {
@@ -2620,6 +2630,7 @@ class binance(Exchange, ImplicitAPI):
                     'scan.tomochain.com': 'TOMO',
                     'scope.klaytn.com': 'KLAY',
                     'secretnodes.com': 'SCRT',
+                    'SOL': 'SOL',  # temporary fix for SPL definition
                     'solscan.io': 'SOL',
                     'steemscan.com': 'STEEM',
                     'stellar.expert': 'XLM',

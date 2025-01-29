@@ -1036,11 +1036,13 @@ class binance extends Exchange {
                         'limit' => 1000,
                         'daysBack' => null,
                         'untilDays' => 1, // days between start-end
+                        'symbolRequired' => true,
                     ),
                     'fetchOrder' => array(
                         'marginMode' => true,
                         'trigger' => false,
                         'trailing' => false,
+                        'symbolRequired' => true,
                     ),
                     'fetchOpenOrders' => array(
                         'marginMode' => true,
@@ -1055,6 +1057,7 @@ class binance extends Exchange {
                         'untilDays' => 10000,
                         'trigger' => false,
                         'trailing' => false,
+                        'symbolRequired' => true,
                     ),
                     'fetchClosedOrders' => array(
                         'marginMode' => true,
@@ -1064,6 +1067,7 @@ class binance extends Exchange {
                         'untilDays' => 10000,
                         'trigger' => false,
                         'trailing' => false,
+                        'symbolRequired' => true,
                     ),
                     'fetchOHLCV' => array(
                         'limit' => 1000,
@@ -1106,17 +1110,20 @@ class binance extends Exchange {
                         'daysBack' => null,
                         'limit' => 1000,
                         'untilDays' => 7,
+                        'symbolRequired' => true,
                     ),
                     'fetchOrder' => array(
                         'marginMode' => false,
                         'trigger' => false,
                         'trailing' => false,
+                        'symbolRequired' => true,
                     ),
                     'fetchOpenOrders' => array(
                         'marginMode' => true,
                         'limit' => 500,
                         'trigger' => false,
                         'trailing' => false,
+                        'symbolRequired' => false,
                     ),
                     'fetchOrders' => array(
                         'marginMode' => true,
@@ -1125,6 +1132,7 @@ class binance extends Exchange {
                         'untilDays' => 7,
                         'trigger' => false,
                         'trailing' => false,
+                        'symbolRequired' => true,
                     ),
                     'fetchClosedOrders' => array(
                         'marginMode' => true,
@@ -1134,6 +1142,7 @@ class binance extends Exchange {
                         'untilDays' => 7,
                         'trigger' => false,
                         'trailing' => false,
+                        'symbolRequired' => true,
                     ),
                     'fetchOHLCV' => array(
                         'limit' => 1500,
@@ -2525,7 +2534,8 @@ class binance extends Exchange {
                     'EOS' => 'EOS',
                     'ERC20' => 'ETH',
                     'OMNI' => 'OMNI',
-                    'SPL' => 'SOL',
+                    'SOL' => 'SOL', // we shouldn't rename SOL
+                    'SPL' => 'SOL', // temporarily keep support for SPL (old name)
                     'TRC20' => 'TRX',
                 ),
                 'networksById' => array(
@@ -2604,6 +2614,7 @@ class binance extends Exchange {
                     'scan.tomochain.com' => 'TOMO',
                     'scope.klaytn.com' => 'KLAY',
                     'secretnodes.com' => 'SCRT',
+                    'SOL' => 'SOL', // temporary fix for SPL definition
                     'solscan.io' => 'SOL',
                     'steemscan.com' => 'STEEM',
                     'stellar.expert' => 'XLM',
