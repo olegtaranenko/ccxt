@@ -144,6 +144,8 @@ export interface OrderBook {
     symbol: Str;
     timestamp: Int;
 }
+export interface OrderBooks extends Dictionary<OrderBook> {
+}
 export interface Ticker {
     ask: Num;
     askVolume: Num;
