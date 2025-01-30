@@ -7,6 +7,5926 @@
 
 package ccxt
 
+func (this *binanceus) DapiDataGetBasis (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiDataGetBasis", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiDataGetDeliveryPrice (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiDataGetDeliveryPrice", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiDataGetGlobalLongShortAccountRatio (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiDataGetGlobalLongShortAccountRatio", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiDataGetOpenInterestHist (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiDataGetOpenInterestHist", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiDataGetTakerBuySellVol (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiDataGetTakerBuySellVol", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiDataGetTopLongShortAccountRatio (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiDataGetTopLongShortAccountRatio", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiDataGetTopLongShortPositionRatio (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiDataGetTopLongShortPositionRatio", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiPrivateDeleteAllOpenOrders (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiPrivateDeleteAllOpenOrders", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiPrivateDeleteBatchOrders (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiPrivateDeleteBatchOrders", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiPrivateDeleteListenKey (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiPrivateDeleteListenKey", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiPrivateDeleteOrder (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiPrivateDeleteOrder", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiPrivateGetAccount (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiPrivateGetAccount", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiPrivateGetAdlQuantile (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiPrivateGetAdlQuantile", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiPrivateGetAllOrders (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiPrivateGetAllOrders", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiPrivateGetBalance (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiPrivateGetBalance", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiPrivateGetCommissionRate (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiPrivateGetCommissionRate", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiPrivateGetForceOrders (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiPrivateGetForceOrders", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiPrivateGetIncome (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiPrivateGetIncome", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiPrivateGetIncomeAsyn (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiPrivateGetIncomeAsyn", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiPrivateGetIncomeAsynId (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiPrivateGetIncomeAsynId", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiPrivateGetLeverageBracket (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiPrivateGetLeverageBracket", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiPrivateGetOpenOrder (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiPrivateGetOpenOrder", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiPrivateGetOpenOrders (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiPrivateGetOpenOrders", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiPrivateGetOrder (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiPrivateGetOrder", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiPrivateGetOrderAsyn (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiPrivateGetOrderAsyn", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiPrivateGetOrderAsynId (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiPrivateGetOrderAsynId", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiPrivateGetOrderAmendment (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiPrivateGetOrderAmendment", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiPrivateGetPmAccountInfo (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiPrivateGetPmAccountInfo", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiPrivateGetPmExchangeInfo (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiPrivateGetPmExchangeInfo", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiPrivateGetPositionMarginHistory (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiPrivateGetPositionMarginHistory", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiPrivateGetPositionRisk (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiPrivateGetPositionRisk", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiPrivateGetPositionSideDual (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiPrivateGetPositionSideDual", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiPrivateGetTradeAsyn (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiPrivateGetTradeAsyn", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiPrivateGetTradeAsynId (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiPrivateGetTradeAsynId", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiPrivateGetUserTrades (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiPrivateGetUserTrades", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiPrivatePostBatchOrders (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiPrivatePostBatchOrders", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiPrivatePostCountdownCancelAll (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiPrivatePostCountdownCancelAll", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiPrivatePostLeverage (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiPrivatePostLeverage", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiPrivatePostListenKey (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiPrivatePostListenKey", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiPrivatePostMarginType (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiPrivatePostMarginType", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiPrivatePostOrder (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiPrivatePostOrder", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiPrivatePostPositionMargin (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiPrivatePostPositionMargin", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiPrivatePostPositionSideDual (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiPrivatePostPositionSideDual", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiPrivatePutBatchOrders (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiPrivatePutBatchOrders", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiPrivatePutListenKey (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiPrivatePutListenKey", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiPrivatePutOrder (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiPrivatePutOrder", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiPrivateV2GetLeverageBracket (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiPrivateV2GetLeverageBracket", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiPublicGetAggTrades (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiPublicGetAggTrades", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiPublicGetConstituents (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiPublicGetConstituents", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiPublicGetContinuousKlines (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiPublicGetContinuousKlines", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiPublicGetDepth (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiPublicGetDepth", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiPublicGetExchangeInfo (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiPublicGetExchangeInfo", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiPublicGetFundingInfo (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiPublicGetFundingInfo", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiPublicGetFundingRate (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiPublicGetFundingRate", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiPublicGetHistoricalTrades (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiPublicGetHistoricalTrades", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiPublicGetIndexPriceKlines (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiPublicGetIndexPriceKlines", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiPublicGetKlines (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiPublicGetKlines", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiPublicGetMarkPriceKlines (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiPublicGetMarkPriceKlines", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiPublicGetOpenInterest (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiPublicGetOpenInterest", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiPublicGetPing (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiPublicGetPing", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiPublicGetPremiumIndex (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiPublicGetPremiumIndex", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiPublicGetPremiumIndexKlines (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiPublicGetPremiumIndexKlines", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiPublicGetTicker24hr (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiPublicGetTicker24hr", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiPublicGetTickerBookTicker (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiPublicGetTickerBookTicker", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiPublicGetTickerPrice (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiPublicGetTickerPrice", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiPublicGetTime (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiPublicGetTime", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) DapiPublicGetTrades (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("dapiPublicGetTrades", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) EapiPrivateDeleteAllOpenOrders (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("eapiPrivateDeleteAllOpenOrders", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) EapiPrivateDeleteAllOpenOrdersByUnderlying (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("eapiPrivateDeleteAllOpenOrdersByUnderlying", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) EapiPrivateDeleteBatchOrders (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("eapiPrivateDeleteBatchOrders", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) EapiPrivateDeleteBlockOrderCreate (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("eapiPrivateDeleteBlockOrderCreate", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) EapiPrivateDeleteListenKey (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("eapiPrivateDeleteListenKey", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) EapiPrivateDeleteOrder (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("eapiPrivateDeleteOrder", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) EapiPrivateGetAccount (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("eapiPrivateGetAccount", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) EapiPrivateGetBill (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("eapiPrivateGetBill", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) EapiPrivateGetBlockOrderExecute (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("eapiPrivateGetBlockOrderExecute", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) EapiPrivateGetBlockOrderOrders (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("eapiPrivateGetBlockOrderOrders", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) EapiPrivateGetBlockUserTrades (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("eapiPrivateGetBlockUserTrades", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) EapiPrivateGetBlockTrades (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("eapiPrivateGetBlockTrades", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) EapiPrivateGetCountdownCancelAll (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("eapiPrivateGetCountdownCancelAll", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) EapiPrivateGetExerciseRecord (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("eapiPrivateGetExerciseRecord", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) EapiPrivateGetHistoryOrders (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("eapiPrivateGetHistoryOrders", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) EapiPrivateGetIncomeAsyn (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("eapiPrivateGetIncomeAsyn", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) EapiPrivateGetIncomeAsynId (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("eapiPrivateGetIncomeAsynId", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) EapiPrivateGetMarginAccount (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("eapiPrivateGetMarginAccount", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) EapiPrivateGetMmp (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("eapiPrivateGetMmp", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) EapiPrivateGetOpenOrders (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("eapiPrivateGetOpenOrders", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) EapiPrivateGetOrder (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("eapiPrivateGetOrder", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) EapiPrivateGetPosition (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("eapiPrivateGetPosition", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) EapiPrivateGetUserTrades (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("eapiPrivateGetUserTrades", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) EapiPrivatePostBatchOrders (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("eapiPrivatePostBatchOrders", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) EapiPrivatePostBlockOrderCreate (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("eapiPrivatePostBlockOrderCreate", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) EapiPrivatePostBlockOrderExecute (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("eapiPrivatePostBlockOrderExecute", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) EapiPrivatePostCountdownCancelAll (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("eapiPrivatePostCountdownCancelAll", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) EapiPrivatePostCountdownCancelAllHeartBeat (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("eapiPrivatePostCountdownCancelAllHeartBeat", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) EapiPrivatePostListenKey (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("eapiPrivatePostListenKey", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) EapiPrivatePostMmpReset (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("eapiPrivatePostMmpReset", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) EapiPrivatePostMmpSet (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("eapiPrivatePostMmpSet", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) EapiPrivatePostOrder (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("eapiPrivatePostOrder", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) EapiPrivatePutBlockOrderCreate (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("eapiPrivatePutBlockOrderCreate", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) EapiPrivatePutListenKey (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("eapiPrivatePutListenKey", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) EapiPublicGetDepth (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("eapiPublicGetDepth", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) EapiPublicGetExchangeInfo (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("eapiPublicGetExchangeInfo", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) EapiPublicGetExerciseHistory (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("eapiPublicGetExerciseHistory", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) EapiPublicGetHistoricalTrades (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("eapiPublicGetHistoricalTrades", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) EapiPublicGetIndex (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("eapiPublicGetIndex", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) EapiPublicGetKlines (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("eapiPublicGetKlines", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) EapiPublicGetMark (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("eapiPublicGetMark", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) EapiPublicGetOpenInterest (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("eapiPublicGetOpenInterest", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) EapiPublicGetPing (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("eapiPublicGetPing", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) EapiPublicGetTicker (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("eapiPublicGetTicker", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) EapiPublicGetTime (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("eapiPublicGetTime", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) EapiPublicGetTrades (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("eapiPublicGetTrades", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiDataGetBasis (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiDataGetBasis", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiDataGetDeliveryPrice (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiDataGetDeliveryPrice", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiDataGetGlobalLongShortAccountRatio (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiDataGetGlobalLongShortAccountRatio", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiDataGetOpenInterestHist (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiDataGetOpenInterestHist", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiDataGetTakerlongshortRatio (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiDataGetTakerlongshortRatio", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiDataGetTopLongShortAccountRatio (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiDataGetTopLongShortAccountRatio", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiDataGetTopLongShortPositionRatio (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiDataGetTopLongShortPositionRatio", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivateDeleteAllOpenOrders (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivateDeleteAllOpenOrders", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivateDeleteBatchOrders (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivateDeleteBatchOrders", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivateDeleteListenKey (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivateDeleteListenKey", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivateDeleteOrder (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivateDeleteOrder", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivateGetAccount (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivateGetAccount", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivateGetAccountConfig (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivateGetAccountConfig", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivateGetAdlQuantile (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivateGetAdlQuantile", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivateGetAllOrders (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivateGetAllOrders", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivateGetApiReferralCustomization (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivateGetApiReferralCustomization", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivateGetApiReferralIfNewUser (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivateGetApiReferralIfNewUser", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivateGetApiReferralOverview (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivateGetApiReferralOverview", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivateGetApiReferralRebateVol (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivateGetApiReferralRebateVol", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivateGetApiReferralTraderNum (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivateGetApiReferralTraderNum", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivateGetApiReferralTraderSummary (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivateGetApiReferralTraderSummary", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivateGetApiReferralTradeVol (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivateGetApiReferralTradeVol", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivateGetApiReferralUserCustomization (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivateGetApiReferralUserCustomization", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivateGetApiTradingStatus (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivateGetApiTradingStatus", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivateGetBalance (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivateGetBalance", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivateGetCommissionRate (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivateGetCommissionRate", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivateGetConvertOrderStatus (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivateGetConvertOrderStatus", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivateGetFeeBurn (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivateGetFeeBurn", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivateGetForceOrders (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivateGetForceOrders", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivateGetIncome (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivateGetIncome", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivateGetIncomeAsyn (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivateGetIncomeAsyn", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivateGetIncomeAsynId (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivateGetIncomeAsynId", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivateGetLeverageBracket (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivateGetLeverageBracket", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivateGetMultiAssetsMargin (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivateGetMultiAssetsMargin", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivateGetOpenOrder (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivateGetOpenOrder", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivateGetOpenOrders (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivateGetOpenOrders", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivateGetOrder (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivateGetOrder", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivateGetOrderAsyn (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivateGetOrderAsyn", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivateGetOrderAsynId (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivateGetOrderAsynId", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivateGetOrderAmendment (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivateGetOrderAmendment", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivateGetPmAccountInfo (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivateGetPmAccountInfo", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivateGetPositionMarginHistory (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivateGetPositionMarginHistory", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivateGetPositionRisk (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivateGetPositionRisk", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivateGetPositionSideDual (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivateGetPositionSideDual", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivateGetRateLimitOrder (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivateGetRateLimitOrder", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivateGetSymbolConfig (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivateGetSymbolConfig", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivateGetTradeAsyn (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivateGetTradeAsyn", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivateGetTradeAsynId (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivateGetTradeAsynId", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivateGetUserTrades (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivateGetUserTrades", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivatePostApiReferralCustomization (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivatePostApiReferralCustomization", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivatePostApiReferralUserCustomization (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivatePostApiReferralUserCustomization", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivatePostBatchOrders (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivatePostBatchOrders", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivatePostConvertAcceptQuote (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivatePostConvertAcceptQuote", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivatePostConvertGetQuote (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivatePostConvertGetQuote", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivatePostCountdownCancelAll (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivatePostCountdownCancelAll", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivatePostFeeBurn (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivatePostFeeBurn", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivatePostLeverage (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivatePostLeverage", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivatePostListenKey (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivatePostListenKey", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivatePostMarginType (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivatePostMarginType", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivatePostMultiAssetsMargin (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivatePostMultiAssetsMargin", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivatePostOrder (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivatePostOrder", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivatePostPositionMargin (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivatePostPositionMargin", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivatePostPositionSideDual (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivatePostPositionSideDual", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivatePutBatchOrders (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivatePutBatchOrders", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivatePutListenKey (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivatePutListenKey", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivatePutOrder (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivatePutOrder", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivateV2GetAccount (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivateV2GetAccount", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivateV2GetBalance (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivateV2GetBalance", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivateV2GetPositionRisk (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivateV2GetPositionRisk", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivateV3GetAccount (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivateV3GetAccount", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivateV3GetBalance (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivateV3GetBalance", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPrivateV3GetPositionRisk (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPrivateV3GetPositionRisk", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPublicGetAggTrades (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPublicGetAggTrades", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPublicGetApiTradingStatus (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPublicGetApiTradingStatus", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPublicGetAssetIndex (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPublicGetAssetIndex", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPublicGetConstituents (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPublicGetConstituents", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPublicGetContinuousKlines (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPublicGetContinuousKlines", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPublicGetConvertExchangeInfo (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPublicGetConvertExchangeInfo", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPublicGetDepth (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPublicGetDepth", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPublicGetExchangeInfo (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPublicGetExchangeInfo", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPublicGetFundingInfo (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPublicGetFundingInfo", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPublicGetFundingRate (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPublicGetFundingRate", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPublicGetHistoricalTrades (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPublicGetHistoricalTrades", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPublicGetIndexInfo (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPublicGetIndexInfo", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPublicGetIndexPriceKlines (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPublicGetIndexPriceKlines", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPublicGetKlines (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPublicGetKlines", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPublicGetLvtKlines (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPublicGetLvtKlines", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPublicGetMarkPriceKlines (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPublicGetMarkPriceKlines", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPublicGetOpenInterest (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPublicGetOpenInterest", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPublicGetPing (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPublicGetPing", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPublicGetPremiumIndex (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPublicGetPremiumIndex", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPublicGetPremiumIndexKlines (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPublicGetPremiumIndexKlines", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPublicGetTicker24hr (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPublicGetTicker24hr", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPublicGetTickerBookTicker (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPublicGetTickerBookTicker", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPublicGetTickerPrice (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPublicGetTickerPrice", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPublicGetTime (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPublicGetTime", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPublicGetTrades (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPublicGetTrades", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) FapiPublicV2GetTickerPrice (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("fapiPublicV2GetTickerPrice", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiDeleteCmAllOpenOrders (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiDeleteCmAllOpenOrders", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiDeleteCmConditionalAllOpenOrders (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiDeleteCmConditionalAllOpenOrders", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiDeleteCmConditionalOrder (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiDeleteCmConditionalOrder", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiDeleteCmOrder (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiDeleteCmOrder", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiDeleteListenKey (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiDeleteListenKey", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiDeleteMarginAllOpenOrders (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiDeleteMarginAllOpenOrders", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiDeleteMarginOrder (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiDeleteMarginOrder", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiDeleteMarginOrderList (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiDeleteMarginOrderList", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiDeleteUmAllOpenOrders (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiDeleteUmAllOpenOrders", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiDeleteUmConditionalAllOpenOrders (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiDeleteUmConditionalAllOpenOrders", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiDeleteUmConditionalOrder (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiDeleteUmConditionalOrder", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiDeleteUmOrder (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiDeleteUmOrder", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetAccount (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetAccount", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetBalance (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetBalance", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetCmAccount (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetCmAccount", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetCmAccountConfig (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetCmAccountConfig", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetCmAdlQuantile (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetCmAdlQuantile", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetCmAllOrders (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetCmAllOrders", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetCmCommissionRate (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetCmCommissionRate", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetCmConditionalAllOrders (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetCmConditionalAllOrders", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetCmConditionalOpenOrder (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetCmConditionalOpenOrder", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetCmConditionalOpenOrders (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetCmConditionalOpenOrders", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetCmConditionalOrderHistory (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetCmConditionalOrderHistory", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetCmForceOrders (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetCmForceOrders", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetCmIncome (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetCmIncome", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetCmLeverageBracket (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetCmLeverageBracket", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetCmOpenOrder (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetCmOpenOrder", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetCmOpenOrders (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetCmOpenOrders", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetCmOrder (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetCmOrder", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetCmOrderAmendment (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetCmOrderAmendment", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetCmPositionRisk (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetCmPositionRisk", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetCmPositionSideDual (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetCmPositionSideDual", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetCmSymbolConfig (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetCmSymbolConfig", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetCmUserTrades (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetCmUserTrades", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetMarginAllOrderList (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetMarginAllOrderList", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetMarginAllOrders (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetMarginAllOrders", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetMarginForceOrders (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetMarginForceOrders", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetMarginMarginInterestHistory (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetMarginMarginInterestHistory", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetMarginMarginLoan (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetMarginMarginLoan", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetMarginMaxBorrowable (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetMarginMaxBorrowable", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetMarginMaxWithdraw (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetMarginMaxWithdraw", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetMarginMyTrades (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetMarginMyTrades", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetMarginOpenOrderList (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetMarginOpenOrderList", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetMarginOpenOrders (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetMarginOpenOrders", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetMarginOrder (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetMarginOrder", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetMarginOrderList (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetMarginOrderList", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetMarginRepayLoan (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetMarginRepayLoan", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetPing (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetPing", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetPortfolioInterestHistory (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetPortfolioInterestHistory", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetRateLimitOrder (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetRateLimitOrder", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetRepayFuturesSwitch (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetRepayFuturesSwitch", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetUmAccount (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetUmAccount", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetUmAccountConfig (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetUmAccountConfig", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetUmAdlQuantile (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetUmAdlQuantile", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetUmAllOrders (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetUmAllOrders", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetUmApiTradingStatus (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetUmApiTradingStatus", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetUmCommissionRate (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetUmCommissionRate", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetUmConditionalAllOrders (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetUmConditionalAllOrders", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetUmConditionalOpenOrder (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetUmConditionalOpenOrder", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetUmConditionalOpenOrders (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetUmConditionalOpenOrders", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetUmConditionalOrderHistory (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetUmConditionalOrderHistory", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetUmFeeBurn (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetUmFeeBurn", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetUmForceOrders (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetUmForceOrders", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetUmIncome (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetUmIncome", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetUmIncomeAsyn (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetUmIncomeAsyn", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetUmIncomeAsynId (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetUmIncomeAsynId", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetUmLeverageBracket (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetUmLeverageBracket", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetUmOpenOrder (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetUmOpenOrder", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetUmOpenOrders (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetUmOpenOrders", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetUmOrder (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetUmOrder", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetUmOrderAsyn (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetUmOrderAsyn", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetUmOrderAsynId (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetUmOrderAsynId", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetUmOrderAmendment (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetUmOrderAmendment", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetUmPositionRisk (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetUmPositionRisk", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetUmPositionSideDual (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetUmPositionSideDual", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetUmSymbolConfig (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetUmSymbolConfig", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetUmTradeAsyn (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetUmTradeAsyn", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetUmTradeAsynId (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetUmTradeAsynId", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiGetUmUserTrades (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiGetUmUserTrades", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiPostAssetCollection (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiPostAssetCollection", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiPostAutoCollection (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiPostAutoCollection", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiPostBnbTransfer (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiPostBnbTransfer", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiPostCmConditionalOrder (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiPostCmConditionalOrder", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiPostCmLeverage (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiPostCmLeverage", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiPostCmOrder (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiPostCmOrder", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiPostCmPositionSideDual (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiPostCmPositionSideDual", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiPostListenKey (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiPostListenKey", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiPostMarginOrder (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiPostMarginOrder", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiPostMarginOrderOco (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiPostMarginOrderOco", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiPostMarginRepayDebt (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiPostMarginRepayDebt", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiPostMarginLoan (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiPostMarginLoan", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiPostRepayFuturesNegativeBalance (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiPostRepayFuturesNegativeBalance", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiPostRepayFuturesSwitch (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiPostRepayFuturesSwitch", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiPostRepayLoan (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiPostRepayLoan", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiPostUmConditionalOrder (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiPostUmConditionalOrder", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiPostUmFeeBurn (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiPostUmFeeBurn", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiPostUmLeverage (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiPostUmLeverage", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiPostUmOrder (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiPostUmOrder", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiPostUmPositionSideDual (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiPostUmPositionSideDual", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiPutCmOrder (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiPutCmOrder", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiPutListenKey (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiPutListenKey", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiPutUmOrder (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiPutUmOrder", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PapiV2GetUmAccount (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("papiV2GetUmAccount", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PrivateDeleteOpenOrders (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("privateDeleteOpenOrders", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PrivateDeleteOrder (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("privateDeleteOrder", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PrivateDeleteOrderList (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("privateDeleteOrderList", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PrivateGetAccount (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("privateGetAccount", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PrivateGetAccountCommission (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("privateGetAccountCommission", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PrivateGetAllOrderList (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("privateGetAllOrderList", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PrivateGetAllOrders (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("privateGetAllOrders", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PrivateGetMyAllocations (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("privateGetMyAllocations", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PrivateGetMyPreventedMatches (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("privateGetMyPreventedMatches", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PrivateGetMyTrades (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("privateGetMyTrades", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PrivateGetOpenOrderList (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("privateGetOpenOrderList", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PrivateGetOpenOrders (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("privateGetOpenOrders", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PrivateGetOrder (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("privateGetOrder", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PrivateGetOrderList (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("privateGetOrderList", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PrivateGetRateLimitOrder (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("privateGetRateLimitOrder", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PrivatePostOrder (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("privatePostOrder", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PrivatePostOrderCancelReplace (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("privatePostOrderCancelReplace", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PrivatePostOrderOco (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("privatePostOrderOco", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PrivatePostOrderTest (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("privatePostOrderTest", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PrivatePostOrderListOco (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("privatePostOrderListOco", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PrivatePostOrderListOto (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("privatePostOrderListOto", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PrivatePostOrderListOtoco (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("privatePostOrderListOtoco", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PrivatePostSorOrder (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("privatePostSorOrder", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PrivatePostSorOrderTest (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("privatePostSorOrderTest", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PublicDeleteUserDataStream (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("publicDeleteUserDataStream", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PublicGetAggTrades (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("publicGetAggTrades", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PublicGetAvgPrice (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("publicGetAvgPrice", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PublicGetDepth (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("publicGetDepth", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PublicGetExchangeInfo (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("publicGetExchangeInfo", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PublicGetHistoricalTrades (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("publicGetHistoricalTrades", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PublicGetKlines (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("publicGetKlines", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PublicGetPing (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("publicGetPing", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PublicGetTicker (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("publicGetTicker", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PublicGetTicker24hr (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("publicGetTicker24hr", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PublicGetTickerBookTicker (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("publicGetTickerBookTicker", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PublicGetTickerPrice (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("publicGetTickerPrice", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PublicGetTickerTradingDay (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("publicGetTickerTradingDay", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PublicGetTime (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("publicGetTime", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PublicGetTrades (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("publicGetTrades", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PublicGetUiKlines (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("publicGetUiKlines", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PublicPostUserDataStream (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("publicPostUserDataStream", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) PublicPutUserDataStream (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("publicPutUserDataStream", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiDeleteAlgoFuturesOrder (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiDeleteAlgoFuturesOrder", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiDeleteAlgoSpotOrder (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiDeleteAlgoSpotOrder", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiDeleteBrokerSubAccountApi (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiDeleteBrokerSubAccountApi", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiDeleteBrokerSubAccountApiIpRestrictionIpList (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiDeleteBrokerSubAccountApiIpRestrictionIpList", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiDeleteMarginIsolatedAccount (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiDeleteMarginIsolatedAccount", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiDeleteMarginOpenOrders (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiDeleteMarginOpenOrders", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiDeleteMarginOrder (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiDeleteMarginOrder", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiDeleteMarginOrderList (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiDeleteMarginOrderList", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiDeleteSubAccountSubAccountApiIpRestrictionIpList (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiDeleteSubAccountSubAccountApiIpRestrictionIpList", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiDeleteUserDataStream (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiDeleteUserDataStream", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiDeleteUserDataStreamIsolated (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiDeleteUserDataStreamIsolated", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiDeleteCustodianCancelOcoOrder (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiDeleteCustodianCancelOcoOrder", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiDeleteCustodianCancelOrder (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiDeleteCustodianCancelOrder", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiDeleteCustodianCancelOrdersBySymbol (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiDeleteCustodianCancelOrdersBySymbol", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
 func (this *binanceus) SapiGetCopyTradingFuturesUserStatus (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
@@ -55,22 +5975,6 @@ func (this *binanceus) SapiGetSystemStatus (args ...interface{}) <-chan interfac
    return ch
 }
 
-func (this *binanceus) SapiGetAccountSnapshot (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetAccountSnapshot", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
 func (this *binanceus) SapiGetAccountInfo (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
@@ -87,7 +5991,7 @@ func (this *binanceus) SapiGetAccountInfo (args ...interface{}) <-chan interface
    return ch
 }
 
-func (this *binanceus) SapiGetMarginAsset (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiGetAccountSnapshot (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -97,23 +6001,7 @@ func (this *binanceus) SapiGetMarginAsset (args ...interface{}) <-chan interface
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiGetMarginAsset", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetMarginPair (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetMarginPair", parameters))
+       ch <- (<-this.callEndpoint ("sapiGetAccountSnapshot", parameters))
        PanicOnError(ch)
    }()
    return ch
@@ -151,6 +6039,38 @@ func (this *binanceus) SapiGetMarginAllPairs (args ...interface{}) <-chan interf
    return ch
 }
 
+func (this *binanceus) SapiGetMarginAsset (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetMarginAsset", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetMarginPair (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetMarginPair", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
 func (this *binanceus) SapiGetMarginPriceIndex (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
@@ -167,7 +6087,7 @@ func (this *binanceus) SapiGetMarginPriceIndex (args ...interface{}) <-chan inte
    return ch
 }
 
-func (this *binanceus) SapiGetSpotDelistSchedule (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiGetAccountApiRestrictionsIpRestriction (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -177,13 +6097,13 @@ func (this *binanceus) SapiGetSpotDelistSchedule (args ...interface{}) <-chan in
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiGetSpotDelistSchedule", parameters))
+       ch <- (<-this.callEndpoint ("sapiGetAccountApiRestrictionsIpRestriction", parameters))
        PanicOnError(ch)
    }()
    return ch
 }
 
-func (this *binanceus) SapiGetAssetAssetDividend (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiGetAccountApiTradingStatus (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -193,13 +6113,13 @@ func (this *binanceus) SapiGetAssetAssetDividend (args ...interface{}) <-chan in
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiGetAssetAssetDividend", parameters))
+       ch <- (<-this.callEndpoint ("sapiGetAccountApiTradingStatus", parameters))
        PanicOnError(ch)
    }()
    return ch
 }
 
-func (this *binanceus) SapiGetAssetDribblet (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiGetAccountStatus (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -209,23 +6129,7 @@ func (this *binanceus) SapiGetAssetDribblet (args ...interface{}) <-chan interfa
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiGetAssetDribblet", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetAssetTransfer (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetAssetTransfer", parameters))
+       ch <- (<-this.callEndpoint ("sapiGetAccountStatus", parameters))
        PanicOnError(ch)
    }()
    return ch
@@ -247,7 +6151,7 @@ func (this *binanceus) SapiGetAssetAssetDetail (args ...interface{}) <-chan inte
    return ch
 }
 
-func (this *binanceus) SapiGetAssetTradeFee (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiGetAssetAssetDividend (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -257,23 +6161,7 @@ func (this *binanceus) SapiGetAssetTradeFee (args ...interface{}) <-chan interfa
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiGetAssetTradeFee", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetAssetLedgerTransferCloudMiningQueryByPage (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetAssetLedgerTransferCloudMiningQueryByPage", parameters))
+       ch <- (<-this.callEndpoint ("sapiGetAssetAssetDividend", parameters))
        PanicOnError(ch)
    }()
    return ch
@@ -295,22 +6183,6 @@ func (this *binanceus) SapiGetAssetConvertTransferQueryByPage (args ...interface
    return ch
 }
 
-func (this *binanceus) SapiGetAssetWalletBalance (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetAssetWalletBalance", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
 func (this *binanceus) SapiGetAssetCustodyTransferHistory (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
@@ -327,7 +6199,7 @@ func (this *binanceus) SapiGetAssetCustodyTransferHistory (args ...interface{}) 
    return ch
 }
 
-func (this *binanceus) SapiGetMarginBorrowRepay (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiGetAssetDribblet (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -337,13 +6209,13 @@ func (this *binanceus) SapiGetMarginBorrowRepay (args ...interface{}) <-chan int
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiGetMarginBorrowRepay", parameters))
+       ch <- (<-this.callEndpoint ("sapiGetAssetDribblet", parameters))
        PanicOnError(ch)
    }()
    return ch
 }
 
-func (this *binanceus) SapiGetMarginLoan (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiGetAssetLedgerTransferCloudMiningQueryByPage (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -353,13 +6225,13 @@ func (this *binanceus) SapiGetMarginLoan (args ...interface{}) <-chan interface{
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiGetMarginLoan", parameters))
+       ch <- (<-this.callEndpoint ("sapiGetAssetLedgerTransferCloudMiningQueryByPage", parameters))
        PanicOnError(ch)
    }()
    return ch
 }
 
-func (this *binanceus) SapiGetMarginRepay (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiGetAssetTradeFee (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -369,13 +6241,13 @@ func (this *binanceus) SapiGetMarginRepay (args ...interface{}) <-chan interface
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiGetMarginRepay", parameters))
+       ch <- (<-this.callEndpoint ("sapiGetAssetTradeFee", parameters))
        PanicOnError(ch)
    }()
    return ch
 }
 
-func (this *binanceus) SapiGetMarginAccount (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiGetAssetTransfer (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -385,13 +6257,13 @@ func (this *binanceus) SapiGetMarginAccount (args ...interface{}) <-chan interfa
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiGetMarginAccount", parameters))
+       ch <- (<-this.callEndpoint ("sapiGetAssetTransfer", parameters))
        PanicOnError(ch)
    }()
    return ch
 }
 
-func (this *binanceus) SapiGetMarginTransfer (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiGetAssetWalletBalance (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -401,13 +6273,13 @@ func (this *binanceus) SapiGetMarginTransfer (args ...interface{}) <-chan interf
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiGetMarginTransfer", parameters))
+       ch <- (<-this.callEndpoint ("sapiGetAssetWalletBalance", parameters))
        PanicOnError(ch)
    }()
    return ch
 }
 
-func (this *binanceus) SapiGetMarginInterestHistory (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiGetBnbBurn (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -417,887 +6289,7 @@ func (this *binanceus) SapiGetMarginInterestHistory (args ...interface{}) <-chan
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiGetMarginInterestHistory", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetMarginForceLiquidationRec (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetMarginForceLiquidationRec", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetMarginOrder (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetMarginOrder", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetMarginOpenOrders (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetMarginOpenOrders", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetMarginAllOrders (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetMarginAllOrders", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetMarginMyTrades (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetMarginMyTrades", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetMarginMaxBorrowable (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetMarginMaxBorrowable", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetMarginMaxTransferable (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetMarginMaxTransferable", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetMarginTradeCoeff (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetMarginTradeCoeff", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetMarginIsolatedTransfer (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetMarginIsolatedTransfer", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetMarginIsolatedAccount (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetMarginIsolatedAccount", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetMarginIsolatedPair (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetMarginIsolatedPair", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetMarginIsolatedAllPairs (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetMarginIsolatedAllPairs", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetMarginIsolatedAccountLimit (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetMarginIsolatedAccountLimit", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetMarginInterestRateHistory (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetMarginInterestRateHistory", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetMarginOrderList (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetMarginOrderList", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetMarginAllOrderList (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetMarginAllOrderList", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetMarginOpenOrderList (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetMarginOpenOrderList", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetMarginCrossMarginData (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetMarginCrossMarginData", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetMarginIsolatedMarginData (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetMarginIsolatedMarginData", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetMarginIsolatedMarginTier (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetMarginIsolatedMarginTier", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetMarginRateLimitOrder (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetMarginRateLimitOrder", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetMarginDribblet (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetMarginDribblet", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetMarginDust (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetMarginDust", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetMarginCrossMarginCollateralRatio (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetMarginCrossMarginCollateralRatio", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetMarginExchangeSmallLiability (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetMarginExchangeSmallLiability", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetMarginExchangeSmallLiabilityHistory (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetMarginExchangeSmallLiabilityHistory", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetMarginNextHourlyInterestRate (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetMarginNextHourlyInterestRate", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetMarginCapitalFlow (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetMarginCapitalFlow", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetMarginDelistSchedule (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetMarginDelistSchedule", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetMarginAvailableInventory (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetMarginAvailableInventory", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetMarginLeverageBracket (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetMarginLeverageBracket", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetLoanVipLoanableData (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetLoanVipLoanableData", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetLoanVipCollateralData (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetLoanVipCollateralData", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetLoanVipRequestData (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetLoanVipRequestData", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetLoanVipRequestInterestRate (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetLoanVipRequestInterestRate", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetLoanIncome (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetLoanIncome", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetLoanOngoingOrders (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetLoanOngoingOrders", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetLoanLtvAdjustmentHistory (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetLoanLtvAdjustmentHistory", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetLoanBorrowHistory (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetLoanBorrowHistory", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetLoanRepayHistory (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetLoanRepayHistory", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetLoanLoanableData (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetLoanLoanableData", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetLoanCollateralData (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetLoanCollateralData", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetLoanRepayCollateralRate (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetLoanRepayCollateralRate", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetLoanFlexibleOngoingOrders (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetLoanFlexibleOngoingOrders", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetLoanFlexibleBorrowHistory (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetLoanFlexibleBorrowHistory", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetLoanFlexibleRepayHistory (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetLoanFlexibleRepayHistory", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetLoanFlexibleLtvAdjustmentHistory (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetLoanFlexibleLtvAdjustmentHistory", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetLoanVipOngoingOrders (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetLoanVipOngoingOrders", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetLoanVipRepayHistory (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetLoanVipRepayHistory", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetLoanVipCollateralAccount (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetLoanVipCollateralAccount", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetFiatOrders (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetFiatOrders", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetFiatPayments (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetFiatPayments", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetFuturesTransfer (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetFuturesTransfer", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetFuturesHistDataLink (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetFuturesHistDataLink", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetRebateTaxQuery (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetRebateTaxQuery", parameters))
+       ch <- (<-this.callEndpoint ("sapiGetBnbBurn", parameters))
        PanicOnError(ch)
    }()
    return ch
@@ -1314,6 +6306,22 @@ func (this *binanceus) SapiGetCapitalConfigGetall (args ...interface{}) <-chan i
            }
        }()
        ch <- (<-this.callEndpoint ("sapiGetCapitalConfigGetall", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetCapitalContractConvertibleCoins (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetCapitalContractConvertibleCoins", parameters))
        PanicOnError(ch)
    }()
    return ch
@@ -1399,22 +6407,6 @@ func (this *binanceus) SapiGetCapitalDepositSubHisrec (args ...interface{}) <-ch
    return ch
 }
 
-func (this *binanceus) SapiGetCapitalWithdrawHistory (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetCapitalWithdrawHistory", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
 func (this *binanceus) SapiGetCapitalWithdrawAddressList (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
@@ -1431,7 +6423,7 @@ func (this *binanceus) SapiGetCapitalWithdrawAddressList (args ...interface{}) <
    return ch
 }
 
-func (this *binanceus) SapiGetCapitalContractConvertibleCoins (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiGetCapitalWithdrawHistory (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -1441,39 +6433,7 @@ func (this *binanceus) SapiGetCapitalContractConvertibleCoins (args ...interface
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiGetCapitalContractConvertibleCoins", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetConvertTradeFlow (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetConvertTradeFlow", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetConvertExchangeInfo (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetConvertExchangeInfo", parameters))
+       ch <- (<-this.callEndpoint ("sapiGetCapitalWithdrawHistory", parameters))
        PanicOnError(ch)
    }()
    return ch
@@ -1495,7 +6455,7 @@ func (this *binanceus) SapiGetConvertAssetInfo (args ...interface{}) <-chan inte
    return ch
 }
 
-func (this *binanceus) SapiGetConvertOrderStatus (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiGetConvertExchangeInfo (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -1505,7 +6465,7 @@ func (this *binanceus) SapiGetConvertOrderStatus (args ...interface{}) <-chan in
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiGetConvertOrderStatus", parameters))
+       ch <- (<-this.callEndpoint ("sapiGetConvertExchangeInfo", parameters))
        PanicOnError(ch)
    }()
    return ch
@@ -1527,7 +6487,7 @@ func (this *binanceus) SapiGetConvertLimitQueryOpenOrders (args ...interface{}) 
    return ch
 }
 
-func (this *binanceus) SapiGetAccountStatus (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiGetConvertOrderStatus (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -1537,13 +6497,13 @@ func (this *binanceus) SapiGetAccountStatus (args ...interface{}) <-chan interfa
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiGetAccountStatus", parameters))
+       ch <- (<-this.callEndpoint ("sapiGetConvertOrderStatus", parameters))
        PanicOnError(ch)
    }()
    return ch
 }
 
-func (this *binanceus) SapiGetAccountApiTradingStatus (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiGetConvertTradeFlow (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -1553,13 +6513,13 @@ func (this *binanceus) SapiGetAccountApiTradingStatus (args ...interface{}) <-ch
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiGetAccountApiTradingStatus", parameters))
+       ch <- (<-this.callEndpoint ("sapiGetConvertTradeFlow", parameters))
        PanicOnError(ch)
    }()
    return ch
 }
 
-func (this *binanceus) SapiGetAccountApiRestrictionsIpRestriction (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiGetFiatOrders (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -1569,13 +6529,13 @@ func (this *binanceus) SapiGetAccountApiRestrictionsIpRestriction (args ...inter
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiGetAccountApiRestrictionsIpRestriction", parameters))
+       ch <- (<-this.callEndpoint ("sapiGetFiatOrders", parameters))
        PanicOnError(ch)
    }()
    return ch
 }
 
-func (this *binanceus) SapiGetBnbBurn (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiGetFiatPayments (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -1585,7 +6545,1159 @@ func (this *binanceus) SapiGetBnbBurn (args ...interface{}) <-chan interface{} {
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiGetBnbBurn", parameters))
+       ch <- (<-this.callEndpoint ("sapiGetFiatPayments", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetFuturesHistDataLink (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetFuturesHistDataLink", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetFuturesTransfer (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetFuturesTransfer", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetLoanBorrowHistory (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetLoanBorrowHistory", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetLoanCollateralData (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetLoanCollateralData", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetLoanFlexibleBorrowHistory (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetLoanFlexibleBorrowHistory", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetLoanFlexibleCollateralData (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetLoanFlexibleCollateralData", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetLoanFlexibleLoanableData (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetLoanFlexibleLoanableData", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetLoanFlexibleLtvAdjustmentHistory (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetLoanFlexibleLtvAdjustmentHistory", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetLoanFlexibleOngoingOrders (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetLoanFlexibleOngoingOrders", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetLoanFlexibleRepayHistory (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetLoanFlexibleRepayHistory", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetLoanIncome (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetLoanIncome", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetLoanLoanableData (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetLoanLoanableData", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetLoanLtvAdjustmentHistory (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetLoanLtvAdjustmentHistory", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetLoanOngoingOrders (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetLoanOngoingOrders", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetLoanRepayCollateralRate (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetLoanRepayCollateralRate", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetLoanRepayHistory (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetLoanRepayHistory", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetLoanVipCollateralAccount (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetLoanVipCollateralAccount", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetLoanVipCollateralData (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetLoanVipCollateralData", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetLoanVipLoanableData (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetLoanVipLoanableData", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetLoanVipOngoingOrders (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetLoanVipOngoingOrders", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetLoanVipRepayHistory (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetLoanVipRepayHistory", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetLoanVipRequestData (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetLoanVipRequestData", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetLoanVipRequestInterestRate (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetLoanVipRequestInterestRate", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetManagedSubaccountAccountSnapshot (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetManagedSubaccountAccountSnapshot", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetManagedSubaccountAsset (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetManagedSubaccountAsset", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetManagedSubaccountDepositAddress (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetManagedSubaccountDepositAddress", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetManagedSubaccountFetchFutureAsset (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetManagedSubaccountFetchFutureAsset", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetManagedSubaccountInfo (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetManagedSubaccountInfo", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetManagedSubaccountMarginAsset (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetManagedSubaccountMarginAsset", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetManagedSubaccountQueryTransLog (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetManagedSubaccountQueryTransLog", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetManagedSubaccountQueryTransLogForInvestor (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetManagedSubaccountQueryTransLogForInvestor", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetManagedSubaccountQueryTransLogForTradeParent (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetManagedSubaccountQueryTransLogForTradeParent", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetMarginAccount (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetMarginAccount", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetMarginAllOrderList (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetMarginAllOrderList", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetMarginAllOrders (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetMarginAllOrders", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetMarginAvailableInventory (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetMarginAvailableInventory", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetMarginBorrowRepay (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetMarginBorrowRepay", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetMarginCapitalFlow (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetMarginCapitalFlow", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetMarginCrossMarginCollateralRatio (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetMarginCrossMarginCollateralRatio", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetMarginCrossMarginData (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetMarginCrossMarginData", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetMarginDelistSchedule (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetMarginDelistSchedule", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetMarginDribblet (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetMarginDribblet", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetMarginDust (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetMarginDust", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetMarginExchangeSmallLiability (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetMarginExchangeSmallLiability", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetMarginExchangeSmallLiabilityHistory (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetMarginExchangeSmallLiabilityHistory", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetMarginForceLiquidationRec (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetMarginForceLiquidationRec", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetMarginInterestHistory (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetMarginInterestHistory", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetMarginInterestRateHistory (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetMarginInterestRateHistory", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetMarginIsolatedAccount (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetMarginIsolatedAccount", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetMarginIsolatedAccountLimit (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetMarginIsolatedAccountLimit", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetMarginIsolatedAllPairs (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetMarginIsolatedAllPairs", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetMarginIsolatedPair (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetMarginIsolatedPair", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetMarginIsolatedTransfer (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetMarginIsolatedTransfer", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetMarginIsolatedMarginData (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetMarginIsolatedMarginData", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetMarginIsolatedMarginTier (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetMarginIsolatedMarginTier", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetMarginLeverageBracket (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetMarginLeverageBracket", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetMarginLoan (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetMarginLoan", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetMarginMaxBorrowable (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetMarginMaxBorrowable", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetMarginMaxTransferable (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetMarginMaxTransferable", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetMarginMyTrades (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetMarginMyTrades", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetMarginNextHourlyInterestRate (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetMarginNextHourlyInterestRate", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetMarginOpenOrderList (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetMarginOpenOrderList", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetMarginOpenOrders (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetMarginOpenOrders", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetMarginOrder (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetMarginOrder", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetMarginOrderList (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetMarginOrderList", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetMarginRateLimitOrder (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetMarginRateLimitOrder", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetMarginRepay (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetMarginRepay", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetMarginTradeCoeff (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetMarginTradeCoeff", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetMarginTransfer (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetMarginTransfer", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetRebateTaxQuery (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetRebateTaxQuery", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetSpotDelistSchedule (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetSpotDelistSchedule", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetSubAccountApiRestrictionsIpRestrictionThirdPartyList (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetSubAccountApiRestrictionsIpRestrictionThirdPartyList", parameters))
        PanicOnError(ch)
    }()
    return ch
@@ -1623,22 +7735,6 @@ func (this *binanceus) SapiGetSubAccountFuturesAccountSummary (args ...interface
    return ch
 }
 
-func (this *binanceus) SapiGetSubAccountFuturesPositionRisk (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetSubAccountFuturesPositionRisk", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
 func (this *binanceus) SapiGetSubAccountFuturesInternalTransfer (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
@@ -1650,6 +7746,22 @@ func (this *binanceus) SapiGetSubAccountFuturesInternalTransfer (args ...interfa
            }
        }()
        ch <- (<-this.callEndpoint ("sapiGetSubAccountFuturesInternalTransfer", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetSubAccountFuturesPositionRisk (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetSubAccountFuturesPositionRisk", parameters))
        PanicOnError(ch)
    }()
    return ch
@@ -1751,6 +7863,38 @@ func (this *binanceus) SapiGetSubAccountSubTransferHistory (args ...interface{})
    return ch
 }
 
+func (this *binanceus) SapiGetSubAccountSubAccountApiIpRestriction (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetSubAccountSubAccountApiIpRestriction", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetSubAccountTransactionStatistics (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetSubAccountTransactionStatistics", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
 func (this *binanceus) SapiGetSubAccountTransferSubUserHistory (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
@@ -1783,198 +7927,6 @@ func (this *binanceus) SapiGetSubAccountUniversalTransfer (args ...interface{}) 
    return ch
 }
 
-func (this *binanceus) SapiGetSubAccountApiRestrictionsIpRestrictionThirdPartyList (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetSubAccountApiRestrictionsIpRestrictionThirdPartyList", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetSubAccountTransactionStatistics (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetSubAccountTransactionStatistics", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetSubAccountSubAccountApiIpRestriction (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetSubAccountSubAccountApiIpRestriction", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetManagedSubaccountAsset (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetManagedSubaccountAsset", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetManagedSubaccountAccountSnapshot (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetManagedSubaccountAccountSnapshot", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetManagedSubaccountQueryTransLogForInvestor (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetManagedSubaccountQueryTransLogForInvestor", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetManagedSubaccountQueryTransLogForTradeParent (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetManagedSubaccountQueryTransLogForTradeParent", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetManagedSubaccountFetchFutureAsset (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetManagedSubaccountFetchFutureAsset", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetManagedSubaccountMarginAsset (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetManagedSubaccountMarginAsset", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetManagedSubaccountInfo (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetManagedSubaccountInfo", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetManagedSubaccountDepositAddress (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetManagedSubaccountDepositAddress", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetManagedSubaccountQueryTransLog (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetManagedSubaccountQueryTransLog", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
 func (this *binanceus) SapiGetLendingDailyProductList (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
@@ -1986,6 +7938,22 @@ func (this *binanceus) SapiGetLendingDailyProductList (args ...interface{}) <-ch
            }
        }()
        ch <- (<-this.callEndpoint ("sapiGetLendingDailyProductList", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetLendingDailyTokenPosition (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetLendingDailyTokenPosition", parameters))
        PanicOnError(ch)
    }()
    return ch
@@ -2023,7 +7991,7 @@ func (this *binanceus) SapiGetLendingDailyUserRedemptionQuota (args ...interface
    return ch
 }
 
-func (this *binanceus) SapiGetLendingDailyTokenPosition (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiGetLendingProjectList (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -2033,7 +8001,23 @@ func (this *binanceus) SapiGetLendingDailyTokenPosition (args ...interface{}) <-
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiGetLendingDailyTokenPosition", parameters))
+       ch <- (<-this.callEndpoint ("sapiGetLendingProjectList", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetLendingProjectPositionList (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetLendingProjectPositionList", parameters))
        PanicOnError(ch)
    }()
    return ch
@@ -2050,6 +8034,22 @@ func (this *binanceus) SapiGetLendingUnionAccount (args ...interface{}) <-chan i
            }
        }()
        ch <- (<-this.callEndpoint ("sapiGetLendingUnionAccount", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetLendingUnionInterestHistory (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetLendingUnionInterestHistory", parameters))
        PanicOnError(ch)
    }()
    return ch
@@ -2087,7 +8087,7 @@ func (this *binanceus) SapiGetLendingUnionRedemptionRecord (args ...interface{})
    return ch
 }
 
-func (this *binanceus) SapiGetLendingUnionInterestHistory (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiGetEthStakingAccount (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -2097,13 +8097,13 @@ func (this *binanceus) SapiGetLendingUnionInterestHistory (args ...interface{}) 
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiGetLendingUnionInterestHistory", parameters))
+       ch <- (<-this.callEndpoint ("sapiGetEthStakingAccount", parameters))
        PanicOnError(ch)
    }()
    return ch
 }
 
-func (this *binanceus) SapiGetLendingProjectList (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiGetEthStakingEthHistoryRateHistory (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -2113,39 +8113,7 @@ func (this *binanceus) SapiGetLendingProjectList (args ...interface{}) <-chan in
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiGetLendingProjectList", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetLendingProjectPositionList (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetLendingProjectPositionList", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetEthStakingEthHistoryStakingHistory (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetEthStakingEthHistoryStakingHistory", parameters))
+       ch <- (<-this.callEndpoint ("sapiGetEthStakingEthHistoryRateHistory", parameters))
        PanicOnError(ch)
    }()
    return ch
@@ -2183,7 +8151,7 @@ func (this *binanceus) SapiGetEthStakingEthHistoryRewardsHistory (args ...interf
    return ch
 }
 
-func (this *binanceus) SapiGetEthStakingEthQuota (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiGetEthStakingEthHistoryStakingHistory (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -2193,71 +8161,7 @@ func (this *binanceus) SapiGetEthStakingEthQuota (args ...interface{}) <-chan in
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiGetEthStakingEthQuota", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetEthStakingEthHistoryRateHistory (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetEthStakingEthHistoryRateHistory", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetEthStakingAccount (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetEthStakingAccount", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetEthStakingWbethHistoryWrapHistory (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetEthStakingWbethHistoryWrapHistory", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetEthStakingWbethHistoryUnwrapHistory (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetEthStakingWbethHistoryUnwrapHistory", parameters))
+       ch <- (<-this.callEndpoint ("sapiGetEthStakingEthHistoryStakingHistory", parameters))
        PanicOnError(ch)
    }()
    return ch
@@ -2279,7 +8183,7 @@ func (this *binanceus) SapiGetEthStakingEthHistoryWbethRewardsHistory (args ...i
    return ch
 }
 
-func (this *binanceus) SapiGetSolStakingSolHistoryStakingHistory (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiGetEthStakingEthQuota (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -2289,13 +8193,13 @@ func (this *binanceus) SapiGetSolStakingSolHistoryStakingHistory (args ...interf
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiGetSolStakingSolHistoryStakingHistory", parameters))
+       ch <- (<-this.callEndpoint ("sapiGetEthStakingEthQuota", parameters))
        PanicOnError(ch)
    }()
    return ch
 }
 
-func (this *binanceus) SapiGetSolStakingSolHistoryRedemptionHistory (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiGetEthStakingWbethHistoryUnwrapHistory (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -2305,7 +8209,39 @@ func (this *binanceus) SapiGetSolStakingSolHistoryRedemptionHistory (args ...int
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiGetSolStakingSolHistoryRedemptionHistory", parameters))
+       ch <- (<-this.callEndpoint ("sapiGetEthStakingWbethHistoryUnwrapHistory", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetEthStakingWbethHistoryWrapHistory (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetEthStakingWbethHistoryWrapHistory", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetSolStakingAccount (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetSolStakingAccount", parameters))
        PanicOnError(ch)
    }()
    return ch
@@ -2343,7 +8279,7 @@ func (this *binanceus) SapiGetSolStakingSolHistoryRateHistory (args ...interface
    return ch
 }
 
-func (this *binanceus) SapiGetSolStakingAccount (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiGetSolStakingSolHistoryRedemptionHistory (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -2353,7 +8289,23 @@ func (this *binanceus) SapiGetSolStakingAccount (args ...interface{}) <-chan int
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiGetSolStakingAccount", parameters))
+       ch <- (<-this.callEndpoint ("sapiGetSolStakingSolHistoryRedemptionHistory", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetSolStakingSolHistoryStakingHistory (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetSolStakingSolHistoryStakingHistory", parameters))
        PanicOnError(ch)
    }()
    return ch
@@ -2370,6 +8322,38 @@ func (this *binanceus) SapiGetSolStakingSolQuota (args ...interface{}) <-chan in
            }
        }()
        ch <- (<-this.callEndpoint ("sapiGetSolStakingSolQuota", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetMiningPaymentList (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetMiningPaymentList", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetMiningPaymentUid (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetMiningPaymentUid", parameters))
        PanicOnError(ch)
    }()
    return ch
@@ -2407,6 +8391,38 @@ func (this *binanceus) SapiGetMiningPubCoinList (args ...interface{}) <-chan int
    return ch
 }
 
+func (this *binanceus) SapiGetMiningStatisticsUserList (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetMiningStatisticsUserList", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetMiningStatisticsUserStatus (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetMiningStatisticsUserStatus", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
 func (this *binanceus) SapiGetMiningWorkerDetail (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
@@ -2439,7 +8455,7 @@ func (this *binanceus) SapiGetMiningWorkerList (args ...interface{}) <-chan inte
    return ch
 }
 
-func (this *binanceus) SapiGetMiningPaymentList (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiGetBswapAddLiquidityPreview (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -2449,13 +8465,13 @@ func (this *binanceus) SapiGetMiningPaymentList (args ...interface{}) <-chan int
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiGetMiningPaymentList", parameters))
+       ch <- (<-this.callEndpoint ("sapiGetBswapAddLiquidityPreview", parameters))
        PanicOnError(ch)
    }()
    return ch
 }
 
-func (this *binanceus) SapiGetMiningStatisticsUserStatus (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiGetBswapClaimedHistory (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -2465,55 +8481,7 @@ func (this *binanceus) SapiGetMiningStatisticsUserStatus (args ...interface{}) <
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiGetMiningStatisticsUserStatus", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetMiningStatisticsUserList (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetMiningStatisticsUserList", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetMiningPaymentUid (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetMiningPaymentUid", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetBswapPools (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetBswapPools", parameters))
+       ch <- (<-this.callEndpoint ("sapiGetBswapClaimedHistory", parameters))
        PanicOnError(ch)
    }()
    return ch
@@ -2551,38 +8519,6 @@ func (this *binanceus) SapiGetBswapLiquidityOps (args ...interface{}) <-chan int
    return ch
 }
 
-func (this *binanceus) SapiGetBswapQuote (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetBswapQuote", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetBswapSwap (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetBswapSwap", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
 func (this *binanceus) SapiGetBswapPoolConfigure (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
@@ -2599,7 +8535,7 @@ func (this *binanceus) SapiGetBswapPoolConfigure (args ...interface{}) <-chan in
    return ch
 }
 
-func (this *binanceus) SapiGetBswapAddLiquidityPreview (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiGetBswapPools (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -2609,7 +8545,23 @@ func (this *binanceus) SapiGetBswapAddLiquidityPreview (args ...interface{}) <-c
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiGetBswapAddLiquidityPreview", parameters))
+       ch <- (<-this.callEndpoint ("sapiGetBswapPools", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetBswapQuote (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetBswapQuote", parameters))
        PanicOnError(ch)
    }()
    return ch
@@ -2631,6 +8583,22 @@ func (this *binanceus) SapiGetBswapRemoveLiquidityPreview (args ...interface{}) 
    return ch
 }
 
+func (this *binanceus) SapiGetBswapSwap (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetBswapSwap", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
 func (this *binanceus) SapiGetBswapUnclaimedRewards (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
@@ -2642,54 +8610,6 @@ func (this *binanceus) SapiGetBswapUnclaimedRewards (args ...interface{}) <-chan
            }
        }()
        ch <- (<-this.callEndpoint ("sapiGetBswapUnclaimedRewards", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetBswapClaimedHistory (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetBswapClaimedHistory", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetBlvtTokenInfo (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetBlvtTokenInfo", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetBlvtSubscribeRecord (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetBlvtSubscribeRecord", parameters))
        PanicOnError(ch)
    }()
    return ch
@@ -2711,6 +8631,38 @@ func (this *binanceus) SapiGetBlvtRedeemRecord (args ...interface{}) <-chan inte
    return ch
 }
 
+func (this *binanceus) SapiGetBlvtSubscribeRecord (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetBlvtSubscribeRecord", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetBlvtTokenInfo (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetBlvtTokenInfo", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
 func (this *binanceus) SapiGetBlvtUserLimit (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
@@ -2722,22 +8674,6 @@ func (this *binanceus) SapiGetBlvtUserLimit (args ...interface{}) <-chan interfa
            }
        }()
        ch <- (<-this.callEndpoint ("sapiGetBlvtUserLimit", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetApiReferralIfNewUser (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetApiReferralIfNewUser", parameters))
        PanicOnError(ch)
    }()
    return ch
@@ -2759,7 +8695,7 @@ func (this *binanceus) SapiGetApiReferralCustomization (args ...interface{}) <-c
    return ch
 }
 
-func (this *binanceus) SapiGetApiReferralUserCustomization (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiGetApiReferralIfNewUser (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -2769,55 +8705,7 @@ func (this *binanceus) SapiGetApiReferralUserCustomization (args ...interface{})
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiGetApiReferralUserCustomization", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetApiReferralRebateRecentRecord (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetApiReferralRebateRecentRecord", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetApiReferralRebateHistoricalRecord (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetApiReferralRebateHistoricalRecord", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetApiReferralKickbackRecentRecord (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetApiReferralKickbackRecentRecord", parameters))
+       ch <- (<-this.callEndpoint ("sapiGetApiReferralIfNewUser", parameters))
        PanicOnError(ch)
    }()
    return ch
@@ -2839,7 +8727,7 @@ func (this *binanceus) SapiGetApiReferralKickbackHistoricalRecord (args ...inter
    return ch
 }
 
-func (this *binanceus) SapiGetBrokerSubAccountApi (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiGetApiReferralKickbackRecentRecord (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -2849,13 +8737,13 @@ func (this *binanceus) SapiGetBrokerSubAccountApi (args ...interface{}) <-chan i
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiGetBrokerSubAccountApi", parameters))
+       ch <- (<-this.callEndpoint ("sapiGetApiReferralKickbackRecentRecord", parameters))
        PanicOnError(ch)
    }()
    return ch
 }
 
-func (this *binanceus) SapiGetBrokerSubAccount (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiGetApiReferralRebateHistoricalRecord (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -2865,13 +8753,13 @@ func (this *binanceus) SapiGetBrokerSubAccount (args ...interface{}) <-chan inte
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiGetBrokerSubAccount", parameters))
+       ch <- (<-this.callEndpoint ("sapiGetApiReferralRebateHistoricalRecord", parameters))
        PanicOnError(ch)
    }()
    return ch
 }
 
-func (this *binanceus) SapiGetBrokerSubAccountApiCommissionFutures (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiGetApiReferralRebateRecentRecord (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -2881,13 +8769,13 @@ func (this *binanceus) SapiGetBrokerSubAccountApiCommissionFutures (args ...inte
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiGetBrokerSubAccountApiCommissionFutures", parameters))
+       ch <- (<-this.callEndpoint ("sapiGetApiReferralRebateRecentRecord", parameters))
        PanicOnError(ch)
    }()
    return ch
 }
 
-func (this *binanceus) SapiGetBrokerSubAccountApiCommissionCoinFutures (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiGetApiReferralUserCustomization (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -2897,7 +8785,7 @@ func (this *binanceus) SapiGetBrokerSubAccountApiCommissionCoinFutures (args ...
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiGetBrokerSubAccountApiCommissionCoinFutures", parameters))
+       ch <- (<-this.callEndpoint ("sapiGetApiReferralUserCustomization", parameters))
        PanicOnError(ch)
    }()
    return ch
@@ -2919,7 +8807,7 @@ func (this *binanceus) SapiGetBrokerInfo (args ...interface{}) <-chan interface{
    return ch
 }
 
-func (this *binanceus) SapiGetBrokerTransfer (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiGetBrokerRebateFuturesRecentRecord (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -2929,13 +8817,13 @@ func (this *binanceus) SapiGetBrokerTransfer (args ...interface{}) <-chan interf
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiGetBrokerTransfer", parameters))
+       ch <- (<-this.callEndpoint ("sapiGetBrokerRebateFuturesRecentRecord", parameters))
        PanicOnError(ch)
    }()
    return ch
 }
 
-func (this *binanceus) SapiGetBrokerTransferFutures (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiGetBrokerRebateHistoricalRecord (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -2945,7 +8833,7 @@ func (this *binanceus) SapiGetBrokerTransferFutures (args ...interface{}) <-chan
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiGetBrokerTransferFutures", parameters))
+       ch <- (<-this.callEndpoint ("sapiGetBrokerRebateHistoricalRecord", parameters))
        PanicOnError(ch)
    }()
    return ch
@@ -2967,7 +8855,7 @@ func (this *binanceus) SapiGetBrokerRebateRecentRecord (args ...interface{}) <-c
    return ch
 }
 
-func (this *binanceus) SapiGetBrokerRebateHistoricalRecord (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiGetBrokerSubAccount (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -2977,7 +8865,7 @@ func (this *binanceus) SapiGetBrokerRebateHistoricalRecord (args ...interface{})
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiGetBrokerRebateHistoricalRecord", parameters))
+       ch <- (<-this.callEndpoint ("sapiGetBrokerSubAccount", parameters))
        PanicOnError(ch)
    }()
    return ch
@@ -3015,7 +8903,7 @@ func (this *binanceus) SapiGetBrokerSubAccountDepositHist (args ...interface{}) 
    return ch
 }
 
-func (this *binanceus) SapiGetBrokerSubAccountSpotSummary (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiGetBrokerSubAccountFuturesSummary (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -3025,7 +8913,7 @@ func (this *binanceus) SapiGetBrokerSubAccountSpotSummary (args ...interface{}) 
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiGetBrokerSubAccountSpotSummary", parameters))
+       ch <- (<-this.callEndpoint ("sapiGetBrokerSubAccountFuturesSummary", parameters))
        PanicOnError(ch)
    }()
    return ch
@@ -3047,7 +8935,7 @@ func (this *binanceus) SapiGetBrokerSubAccountMarginSummary (args ...interface{}
    return ch
 }
 
-func (this *binanceus) SapiGetBrokerSubAccountFuturesSummary (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiGetBrokerSubAccountSpotSummary (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -3057,13 +8945,13 @@ func (this *binanceus) SapiGetBrokerSubAccountFuturesSummary (args ...interface{
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiGetBrokerSubAccountFuturesSummary", parameters))
+       ch <- (<-this.callEndpoint ("sapiGetBrokerSubAccountSpotSummary", parameters))
        PanicOnError(ch)
    }()
    return ch
 }
 
-func (this *binanceus) SapiGetBrokerRebateFuturesRecentRecord (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiGetBrokerSubAccountApi (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -3073,7 +8961,39 @@ func (this *binanceus) SapiGetBrokerRebateFuturesRecentRecord (args ...interface
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiGetBrokerRebateFuturesRecentRecord", parameters))
+       ch <- (<-this.callEndpoint ("sapiGetBrokerSubAccountApi", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetBrokerSubAccountApiCommissionCoinFutures (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetBrokerSubAccountApiCommissionCoinFutures", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetBrokerSubAccountApiCommissionFutures (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetBrokerSubAccountApiCommissionFutures", parameters))
        PanicOnError(ch)
    }()
    return ch
@@ -3090,6 +9010,38 @@ func (this *binanceus) SapiGetBrokerSubAccountApiIpRestriction (args ...interfac
            }
        }()
        ch <- (<-this.callEndpoint ("sapiGetBrokerSubAccountApiIpRestriction", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetBrokerTransfer (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetBrokerTransfer", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetBrokerTransferFutures (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetBrokerTransferFutures", parameters))
        PanicOnError(ch)
    }()
    return ch
@@ -3511,102 +9463,6 @@ func (this *binanceus) SapiGetPortfolioNegativeBalanceExchangeRecord (args ...in
    return ch
 }
 
-func (this *binanceus) SapiGetStakingProductList (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetStakingProductList", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetStakingPosition (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetStakingPosition", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetStakingStakingRecord (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetStakingStakingRecord", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetStakingPersonalLeftQuota (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetStakingPersonalLeftQuota", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetLendingAutoInvestTargetAssetList (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetLendingAutoInvestTargetAssetList", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetLendingAutoInvestTargetAssetRoiList (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetLendingAutoInvestTargetAssetRoiList", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
 func (this *binanceus) SapiGetLendingAutoInvestAllAsset (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
@@ -3618,54 +9474,6 @@ func (this *binanceus) SapiGetLendingAutoInvestAllAsset (args ...interface{}) <-
            }
        }()
        ch <- (<-this.callEndpoint ("sapiGetLendingAutoInvestAllAsset", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetLendingAutoInvestSourceAssetList (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetLendingAutoInvestSourceAssetList", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetLendingAutoInvestPlanList (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetLendingAutoInvestPlanList", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetLendingAutoInvestPlanId (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetLendingAutoInvestPlanId", parameters))
        PanicOnError(ch)
    }()
    return ch
@@ -3735,7 +9543,7 @@ func (this *binanceus) SapiGetLendingAutoInvestOneOffStatus (args ...interface{}
    return ch
 }
 
-func (this *binanceus) SapiGetLendingAutoInvestRedeemHistory (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiGetLendingAutoInvestPlanId (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -3745,7 +9553,23 @@ func (this *binanceus) SapiGetLendingAutoInvestRedeemHistory (args ...interface{
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiGetLendingAutoInvestRedeemHistory", parameters))
+       ch <- (<-this.callEndpoint ("sapiGetLendingAutoInvestPlanId", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetLendingAutoInvestPlanList (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetLendingAutoInvestPlanList", parameters))
        PanicOnError(ch)
    }()
    return ch
@@ -3762,6 +9586,134 @@ func (this *binanceus) SapiGetLendingAutoInvestRebalanceHistory (args ...interfa
            }
        }()
        ch <- (<-this.callEndpoint ("sapiGetLendingAutoInvestRebalanceHistory", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetLendingAutoInvestRedeemHistory (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetLendingAutoInvestRedeemHistory", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetLendingAutoInvestSourceAssetList (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetLendingAutoInvestSourceAssetList", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetLendingAutoInvestTargetAssetList (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetLendingAutoInvestTargetAssetList", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetLendingAutoInvestTargetAssetRoiList (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetLendingAutoInvestTargetAssetRoiList", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetStakingPersonalLeftQuota (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetStakingPersonalLeftQuota", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetStakingPosition (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetStakingPosition", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetStakingProductList (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetStakingProductList", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetStakingStakingRecord (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetStakingStakingRecord", parameters))
        PanicOnError(ch)
    }()
    return ch
@@ -4087,6 +10039,38 @@ func (this *binanceus) SapiGetDciProductAccounts (args ...interface{}) <-chan in
    return ch
 }
 
+func (this *binanceus) SapiGetApipartnerCheckEligibility (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetApipartnerCheckEligibility", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetApipartnerRebateHistory (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetApipartnerRebateHistory", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
 func (this *binanceus) SapiGetAssetAssetDistributionHistory (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
@@ -4098,6 +10082,38 @@ func (this *binanceus) SapiGetAssetAssetDistributionHistory (args ...interface{}
            }
        }()
        ch <- (<-this.callEndpoint ("sapiGetAssetAssetDistributionHistory", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetAssetQueryDustAssets (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetAssetQueryDustAssets", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetAssetQueryDustLogs (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetAssetQueryDustLogs", parameters))
        PanicOnError(ch)
    }()
    return ch
@@ -4135,102 +10151,6 @@ func (this *binanceus) SapiGetAssetQueryTradingVolume (args ...interface{}) <-ch
    return ch
 }
 
-func (this *binanceus) SapiGetOtcCoinPairs (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetOtcCoinPairs", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetOtcOrdersOrderId (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetOtcOrdersOrderId", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetOtcOrders (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetOtcOrders", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetOcbsOrders (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetOcbsOrders", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetFiatpaymentQueryWithdrawHistory (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetFiatpaymentQueryWithdrawHistory", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetFiatpaymentQueryDepositHistory (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetFiatpaymentQueryDepositHistory", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
 func (this *binanceus) SapiGetCapitalSubAccountDepositAddress (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
@@ -4263,7 +10183,7 @@ func (this *binanceus) SapiGetCapitalSubAccountDepositHistory (args ...interface
    return ch
 }
 
-func (this *binanceus) SapiGetAssetQueryDustLogs (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiGetClTransferHistory (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -4273,103 +10193,7 @@ func (this *binanceus) SapiGetAssetQueryDustLogs (args ...interface{}) <-chan in
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiGetAssetQueryDustLogs", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetAssetQueryDustAssets (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetAssetQueryDustAssets", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetMarketingReferralRewardHistory (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetMarketingReferralRewardHistory", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetStakingAsset (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetStakingAsset", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetStakingStakingBalance (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetStakingStakingBalance", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetStakingHistory (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetStakingHistory", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetStakingStakingRewardsHistory (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetStakingStakingRewardsHistory", parameters))
+       ch <- (<-this.callEndpoint ("sapiGetClTransferHistory", parameters))
        PanicOnError(ch)
    }()
    return ch
@@ -4386,38 +10210,6 @@ func (this *binanceus) SapiGetCustodianBalance (args ...interface{}) <-chan inte
            }
        }()
        ch <- (<-this.callEndpoint ("sapiGetCustodianBalance", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetCustodianSupportedAssetList (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetCustodianSupportedAssetList", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiGetCustodianWalletTransferHistory (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiGetCustodianWalletTransferHistory", parameters))
        PanicOnError(ch)
    }()
    return ch
@@ -4487,7 +10279,7 @@ func (this *binanceus) SapiGetCustodianOrderHistory (args ...interface{}) <-chan
    return ch
 }
 
-func (this *binanceus) SapiGetCustodianTradeHistory (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiGetCustodianSettlementHistory (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -4497,7 +10289,7 @@ func (this *binanceus) SapiGetCustodianTradeHistory (args ...interface{}) <-chan
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiGetCustodianTradeHistory", parameters))
+       ch <- (<-this.callEndpoint ("sapiGetCustodianSettlementHistory", parameters))
        PanicOnError(ch)
    }()
    return ch
@@ -4519,7 +10311,7 @@ func (this *binanceus) SapiGetCustodianSettlementSetting (args ...interface{}) <
    return ch
 }
 
-func (this *binanceus) SapiGetCustodianSettlementHistory (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiGetCustodianSupportedAssetList (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -4529,13 +10321,13 @@ func (this *binanceus) SapiGetCustodianSettlementHistory (args ...interface{}) <
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiGetCustodianSettlementHistory", parameters))
+       ch <- (<-this.callEndpoint ("sapiGetCustodianSupportedAssetList", parameters))
        PanicOnError(ch)
    }()
    return ch
 }
 
-func (this *binanceus) SapiGetClTransferHistory (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiGetCustodianTradeHistory (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -4545,13 +10337,13 @@ func (this *binanceus) SapiGetClTransferHistory (args ...interface{}) <-chan int
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiGetClTransferHistory", parameters))
+       ch <- (<-this.callEndpoint ("sapiGetCustodianTradeHistory", parameters))
        PanicOnError(ch)
    }()
    return ch
 }
 
-func (this *binanceus) SapiGetApipartnerCheckEligibility (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiGetCustodianWalletTransferHistory (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -4561,13 +10353,13 @@ func (this *binanceus) SapiGetApipartnerCheckEligibility (args ...interface{}) <
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiGetApipartnerCheckEligibility", parameters))
+       ch <- (<-this.callEndpoint ("sapiGetCustodianWalletTransferHistory", parameters))
        PanicOnError(ch)
    }()
    return ch
 }
 
-func (this *binanceus) SapiGetApipartnerRebateHistory (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiGetFiatpaymentQueryDepositHistory (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -4577,13 +10369,13 @@ func (this *binanceus) SapiGetApipartnerRebateHistory (args ...interface{}) <-ch
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiGetApipartnerRebateHistory", parameters))
+       ch <- (<-this.callEndpoint ("sapiGetFiatpaymentQueryDepositHistory", parameters))
        PanicOnError(ch)
    }()
    return ch
 }
 
-func (this *binanceus) SapiPostAssetDust (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiGetFiatpaymentQueryWithdrawHistory (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -4593,13 +10385,13 @@ func (this *binanceus) SapiPostAssetDust (args ...interface{}) <-chan interface{
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiPostAssetDust", parameters))
+       ch <- (<-this.callEndpoint ("sapiGetFiatpaymentQueryWithdrawHistory", parameters))
        PanicOnError(ch)
    }()
    return ch
 }
 
-func (this *binanceus) SapiPostAssetDustBtc (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiGetMarketingReferralRewardHistory (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -4609,13 +10401,13 @@ func (this *binanceus) SapiPostAssetDustBtc (args ...interface{}) <-chan interfa
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiPostAssetDustBtc", parameters))
+       ch <- (<-this.callEndpoint ("sapiGetMarketingReferralRewardHistory", parameters))
        PanicOnError(ch)
    }()
    return ch
 }
 
-func (this *binanceus) SapiPostAssetTransfer (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiGetOcbsOrders (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -4625,13 +10417,13 @@ func (this *binanceus) SapiPostAssetTransfer (args ...interface{}) <-chan interf
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiPostAssetTransfer", parameters))
+       ch <- (<-this.callEndpoint ("sapiGetOcbsOrders", parameters))
        PanicOnError(ch)
    }()
    return ch
 }
 
-func (this *binanceus) SapiPostAssetGetFundingAsset (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiGetOtcCoinPairs (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -4641,13 +10433,13 @@ func (this *binanceus) SapiPostAssetGetFundingAsset (args ...interface{}) <-chan
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiPostAssetGetFundingAsset", parameters))
+       ch <- (<-this.callEndpoint ("sapiGetOtcCoinPairs", parameters))
        PanicOnError(ch)
    }()
    return ch
 }
 
-func (this *binanceus) SapiPostAssetConvertTransfer (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiGetOtcOrders (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -4657,7 +10449,87 @@ func (this *binanceus) SapiPostAssetConvertTransfer (args ...interface{}) <-chan
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiPostAssetConvertTransfer", parameters))
+       ch <- (<-this.callEndpoint ("sapiGetOtcOrders", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetOtcOrdersOrderId (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetOtcOrdersOrderId", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetStakingAsset (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetStakingAsset", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetStakingHistory (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetStakingHistory", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetStakingStakingBalance (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetStakingStakingBalance", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiGetStakingStakingRewardsHistory (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiGetStakingStakingRewardsHistory", parameters))
        PanicOnError(ch)
    }()
    return ch
@@ -4695,7 +10567,7 @@ func (this *binanceus) SapiPostAccountEnableFastWithdrawSwitch (args ...interfac
    return ch
 }
 
-func (this *binanceus) SapiPostCapitalWithdrawApply (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiPostAssetConvertTransfer (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -4705,7 +10577,87 @@ func (this *binanceus) SapiPostCapitalWithdrawApply (args ...interface{}) <-chan
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiPostCapitalWithdrawApply", parameters))
+       ch <- (<-this.callEndpoint ("sapiPostAssetConvertTransfer", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostAssetDust (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostAssetDust", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostAssetDustBtc (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostAssetDustBtc", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostAssetGetFundingAsset (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostAssetGetFundingAsset", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostAssetTransfer (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostAssetTransfer", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostBnbBurn (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostBnbBurn", parameters))
        PanicOnError(ch)
    }()
    return ch
@@ -4743,7 +10695,7 @@ func (this *binanceus) SapiPostCapitalDepositCreditApply (args ...interface{}) <
    return ch
 }
 
-func (this *binanceus) SapiPostMarginBorrowRepay (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiPostCapitalWithdrawApply (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -4753,13 +10705,13 @@ func (this *binanceus) SapiPostMarginBorrowRepay (args ...interface{}) <-chan in
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiPostMarginBorrowRepay", parameters))
+       ch <- (<-this.callEndpoint ("sapiPostCapitalWithdrawApply", parameters))
        PanicOnError(ch)
    }()
    return ch
 }
 
-func (this *binanceus) SapiPostMarginTransfer (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiPostFuturesTransfer (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -4769,327 +10721,7 @@ func (this *binanceus) SapiPostMarginTransfer (args ...interface{}) <-chan inter
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiPostMarginTransfer", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiPostMarginLoan (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiPostMarginLoan", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiPostMarginRepay (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiPostMarginRepay", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiPostMarginOrder (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiPostMarginOrder", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiPostMarginOrderOco (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiPostMarginOrderOco", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiPostMarginDust (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiPostMarginDust", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiPostMarginExchangeSmallLiability (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiPostMarginExchangeSmallLiability", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiPostMarginIsolatedTransfer (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiPostMarginIsolatedTransfer", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiPostMarginIsolatedAccount (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiPostMarginIsolatedAccount", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiPostMarginMaxLeverage (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiPostMarginMaxLeverage", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiPostBnbBurn (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiPostBnbBurn", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiPostSubAccountVirtualSubAccount (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiPostSubAccountVirtualSubAccount", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiPostSubAccountMarginTransfer (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiPostSubAccountMarginTransfer", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiPostSubAccountMarginEnable (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiPostSubAccountMarginEnable", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiPostSubAccountFuturesEnable (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiPostSubAccountFuturesEnable", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiPostSubAccountFuturesTransfer (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiPostSubAccountFuturesTransfer", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiPostSubAccountFuturesInternalTransfer (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiPostSubAccountFuturesInternalTransfer", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiPostSubAccountTransferSubToSub (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiPostSubAccountTransferSubToSub", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiPostSubAccountTransferSubToMaster (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiPostSubAccountTransferSubToMaster", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiPostSubAccountUniversalTransfer (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiPostSubAccountUniversalTransfer", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiPostSubAccountOptionsEnable (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiPostSubAccountOptionsEnable", parameters))
+       ch <- (<-this.callEndpoint ("sapiPostFuturesTransfer", parameters))
        PanicOnError(ch)
    }()
    return ch
@@ -5127,6 +10759,342 @@ func (this *binanceus) SapiPostManagedSubaccountWithdraw (args ...interface{}) <
    return ch
 }
 
+func (this *binanceus) SapiPostMarginBorrowRepay (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostMarginBorrowRepay", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostMarginDust (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostMarginDust", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostMarginExchangeSmallLiability (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostMarginExchangeSmallLiability", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostMarginIsolatedAccount (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostMarginIsolatedAccount", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostMarginIsolatedTransfer (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostMarginIsolatedTransfer", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostMarginLoan (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostMarginLoan", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostMarginMaxLeverage (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostMarginMaxLeverage", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostMarginOrder (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostMarginOrder", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostMarginOrderOco (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostMarginOrderOco", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostMarginRepay (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostMarginRepay", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostMarginTransfer (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostMarginTransfer", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostSubAccountFuturesEnable (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostSubAccountFuturesEnable", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostSubAccountFuturesInternalTransfer (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostSubAccountFuturesInternalTransfer", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostSubAccountFuturesTransfer (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostSubAccountFuturesTransfer", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostSubAccountMarginEnable (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostSubAccountMarginEnable", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostSubAccountMarginTransfer (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostSubAccountMarginTransfer", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostSubAccountOptionsEnable (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostSubAccountOptionsEnable", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostSubAccountTransferSubToMaster (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostSubAccountTransferSubToMaster", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostSubAccountTransferSubToSub (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostSubAccountTransferSubToSub", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostSubAccountUniversalTransfer (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostSubAccountUniversalTransfer", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostSubAccountVirtualSubAccount (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostSubAccountVirtualSubAccount", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
 func (this *binanceus) SapiPostUserDataStream (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
@@ -5154,22 +11122,6 @@ func (this *binanceus) SapiPostUserDataStreamIsolated (args ...interface{}) <-ch
            }
        }()
        ch <- (<-this.callEndpoint ("sapiPostUserDataStreamIsolated", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiPostFuturesTransfer (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiPostFuturesTransfer", parameters))
        PanicOnError(ch)
    }()
    return ch
@@ -5223,6 +11175,22 @@ func (this *binanceus) SapiPostLendingDailyRedeem (args ...interface{}) <-chan i
    return ch
 }
 
+func (this *binanceus) SapiPostBswapClaimRewards (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostBswapClaimRewards", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
 func (this *binanceus) SapiPostBswapLiquidityAdd (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
@@ -5271,7 +11239,7 @@ func (this *binanceus) SapiPostBswapSwap (args ...interface{}) <-chan interface{
    return ch
 }
 
-func (this *binanceus) SapiPostBswapClaimRewards (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiPostBlvtRedeem (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -5281,7 +11249,7 @@ func (this *binanceus) SapiPostBswapClaimRewards (args ...interface{}) <-chan in
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiPostBswapClaimRewards", parameters))
+       ch <- (<-this.callEndpoint ("sapiPostBlvtRedeem", parameters))
        PanicOnError(ch)
    }()
    return ch
@@ -5303,22 +11271,6 @@ func (this *binanceus) SapiPostBlvtSubscribe (args ...interface{}) <-chan interf
    return ch
 }
 
-func (this *binanceus) SapiPostBlvtRedeem (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiPostBlvtRedeem", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
 func (this *binanceus) SapiPostApiReferralCustomization (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
@@ -5330,38 +11282,6 @@ func (this *binanceus) SapiPostApiReferralCustomization (args ...interface{}) <-
            }
        }()
        ch <- (<-this.callEndpoint ("sapiPostApiReferralCustomization", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiPostApiReferralUserCustomization (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiPostApiReferralUserCustomization", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiPostApiReferralRebateHistoricalRecord (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiPostApiReferralRebateHistoricalRecord", parameters))
        PanicOnError(ch)
    }()
    return ch
@@ -5383,7 +11303,7 @@ func (this *binanceus) SapiPostApiReferralKickbackHistoricalRecord (args ...inte
    return ch
 }
 
-func (this *binanceus) SapiPostBrokerSubAccount (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiPostApiReferralRebateHistoricalRecord (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -5393,13 +11313,13 @@ func (this *binanceus) SapiPostBrokerSubAccount (args ...interface{}) <-chan int
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiPostBrokerSubAccount", parameters))
+       ch <- (<-this.callEndpoint ("sapiPostApiReferralRebateHistoricalRecord", parameters))
        PanicOnError(ch)
    }()
    return ch
 }
 
-func (this *binanceus) SapiPostBrokerSubAccountMargin (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiPostApiReferralUserCustomization (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -5409,135 +11329,7 @@ func (this *binanceus) SapiPostBrokerSubAccountMargin (args ...interface{}) <-ch
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiPostBrokerSubAccountMargin", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiPostBrokerSubAccountFutures (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiPostBrokerSubAccountFutures", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiPostBrokerSubAccountApi (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiPostBrokerSubAccountApi", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiPostBrokerSubAccountApiPermission (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiPostBrokerSubAccountApiPermission", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiPostBrokerSubAccountApiCommission (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiPostBrokerSubAccountApiCommission", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiPostBrokerSubAccountApiCommissionFutures (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiPostBrokerSubAccountApiCommissionFutures", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiPostBrokerSubAccountApiCommissionCoinFutures (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiPostBrokerSubAccountApiCommissionCoinFutures", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiPostBrokerTransfer (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiPostBrokerTransfer", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiPostBrokerTransferFutures (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiPostBrokerTransferFutures", parameters))
+       ch <- (<-this.callEndpoint ("sapiPostApiReferralUserCustomization", parameters))
        PanicOnError(ch)
    }()
    return ch
@@ -5559,7 +11351,7 @@ func (this *binanceus) SapiPostBrokerRebateHistoricalRecord (args ...interface{}
    return ch
 }
 
-func (this *binanceus) SapiPostBrokerSubAccountBnbBurnSpot (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiPostBrokerSubAccount (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -5569,7 +11361,23 @@ func (this *binanceus) SapiPostBrokerSubAccountBnbBurnSpot (args ...interface{})
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiPostBrokerSubAccountBnbBurnSpot", parameters))
+       ch <- (<-this.callEndpoint ("sapiPostBrokerSubAccount", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostBrokerSubAccountBlvt (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostBrokerSubAccountBlvt", parameters))
        PanicOnError(ch)
    }()
    return ch
@@ -5591,7 +11399,7 @@ func (this *binanceus) SapiPostBrokerSubAccountBnbBurnMarginInterest (args ...in
    return ch
 }
 
-func (this *binanceus) SapiPostBrokerSubAccountBlvt (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiPostBrokerSubAccountBnbBurnSpot (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -5601,7 +11409,103 @@ func (this *binanceus) SapiPostBrokerSubAccountBlvt (args ...interface{}) <-chan
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiPostBrokerSubAccountBlvt", parameters))
+       ch <- (<-this.callEndpoint ("sapiPostBrokerSubAccountBnbBurnSpot", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostBrokerSubAccountFutures (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostBrokerSubAccountFutures", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostBrokerSubAccountMargin (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostBrokerSubAccountMargin", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostBrokerSubAccountApi (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostBrokerSubAccountApi", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostBrokerSubAccountApiCommission (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostBrokerSubAccountApiCommission", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostBrokerSubAccountApiCommissionCoinFutures (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostBrokerSubAccountApiCommissionCoinFutures", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostBrokerSubAccountApiCommissionFutures (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostBrokerSubAccountApiCommissionFutures", parameters))
        PanicOnError(ch)
    }()
    return ch
@@ -5639,7 +11543,7 @@ func (this *binanceus) SapiPostBrokerSubAccountApiIpRestrictionIpList (args ...i
    return ch
 }
 
-func (this *binanceus) SapiPostBrokerUniversalTransfer (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiPostBrokerSubAccountApiPermission (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -5649,7 +11553,7 @@ func (this *binanceus) SapiPostBrokerUniversalTransfer (args ...interface{}) <-c
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiPostBrokerUniversalTransfer", parameters))
+       ch <- (<-this.callEndpoint ("sapiPostBrokerSubAccountApiPermission", parameters))
        PanicOnError(ch)
    }()
    return ch
@@ -5687,6 +11591,118 @@ func (this *binanceus) SapiPostBrokerSubAccountApiPermissionVanillaOptions (args
    return ch
 }
 
+func (this *binanceus) SapiPostBrokerTransfer (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostBrokerTransfer", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostBrokerTransferFutures (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostBrokerTransferFutures", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostBrokerUniversalTransfer (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostBrokerUniversalTransfer", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostAlgoFuturesNewOrderTwap (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostAlgoFuturesNewOrderTwap", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostAlgoFuturesNewOrderVp (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostAlgoFuturesNewOrderVp", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostAlgoSpotNewOrderTwap (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostAlgoSpotNewOrderTwap", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostGiftcardBuyCode (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostGiftcardBuyCode", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
 func (this *binanceus) SapiPostGiftcardCreateCode (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
@@ -5714,70 +11730,6 @@ func (this *binanceus) SapiPostGiftcardRedeemCode (args ...interface{}) <-chan i
            }
        }()
        ch <- (<-this.callEndpoint ("sapiPostGiftcardRedeemCode", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiPostGiftcardBuyCode (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiPostGiftcardBuyCode", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiPostAlgoSpotNewOrderTwap (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiPostAlgoSpotNewOrderTwap", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiPostAlgoFuturesNewOrderVp (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiPostAlgoFuturesNewOrderVp", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiPostAlgoFuturesNewOrderTwap (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiPostAlgoFuturesNewOrderTwap", parameters))
        PanicOnError(ch)
    }()
    return ch
@@ -5831,22 +11783,6 @@ func (this *binanceus) SapiPostStakingSetAutoStaking (args ...interface{}) <-cha
    return ch
 }
 
-func (this *binanceus) SapiPostEthStakingEthStake (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiPostEthStakingEthStake", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
 func (this *binanceus) SapiPostEthStakingEthRedeem (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
@@ -5858,6 +11794,22 @@ func (this *binanceus) SapiPostEthStakingEthRedeem (args ...interface{}) <-chan 
            }
        }()
        ch <- (<-this.callEndpoint ("sapiPostEthStakingEthRedeem", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostEthStakingEthStake (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostEthStakingEthStake", parameters))
        PanicOnError(ch)
    }()
    return ch
@@ -5911,7 +11863,7 @@ func (this *binanceus) SapiPostSolStakingSolRedeem (args ...interface{}) <-chan 
    return ch
 }
 
-func (this *binanceus) SapiPostMiningHashTransferConfig (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiPostConvertAcceptQuote (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -5921,183 +11873,7 @@ func (this *binanceus) SapiPostMiningHashTransferConfig (args ...interface{}) <-
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiPostMiningHashTransferConfig", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiPostMiningHashTransferConfigCancel (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiPostMiningHashTransferConfigCancel", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiPostPortfolioRepay (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiPostPortfolioRepay", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiPostLoanVipRenew (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiPostLoanVipRenew", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiPostLoanVipBorrow (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiPostLoanVipBorrow", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiPostLoanBorrow (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiPostLoanBorrow", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiPostLoanRepay (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiPostLoanRepay", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiPostLoanAdjustLtv (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiPostLoanAdjustLtv", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiPostLoanCustomizeMarginCall (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiPostLoanCustomizeMarginCall", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiPostLoanFlexibleRepay (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiPostLoanFlexibleRepay", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiPostLoanFlexibleAdjustLtv (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiPostLoanFlexibleAdjustLtv", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiPostLoanVipRepay (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiPostLoanVipRepay", parameters))
+       ch <- (<-this.callEndpoint ("sapiPostConvertAcceptQuote", parameters))
        PanicOnError(ch)
    }()
    return ch
@@ -6119,7 +11895,7 @@ func (this *binanceus) SapiPostConvertGetQuote (args ...interface{}) <-chan inte
    return ch
 }
 
-func (this *binanceus) SapiPostConvertAcceptQuote (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiPostConvertLimitCancelOrder (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -6129,7 +11905,7 @@ func (this *binanceus) SapiPostConvertAcceptQuote (args ...interface{}) <-chan i
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiPostConvertAcceptQuote", parameters))
+       ch <- (<-this.callEndpoint ("sapiPostConvertLimitCancelOrder", parameters))
        PanicOnError(ch)
    }()
    return ch
@@ -6151,7 +11927,7 @@ func (this *binanceus) SapiPostConvertLimitPlaceOrder (args ...interface{}) <-ch
    return ch
 }
 
-func (this *binanceus) SapiPostConvertLimitCancelOrder (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiPostLendingAutoInvestOneOff (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -6161,119 +11937,7 @@ func (this *binanceus) SapiPostConvertLimitCancelOrder (args ...interface{}) <-c
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiPostConvertLimitCancelOrder", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiPostPortfolioAutoCollection (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiPostPortfolioAutoCollection", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiPostPortfolioAssetCollection (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiPostPortfolioAssetCollection", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiPostPortfolioBnbTransfer (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiPostPortfolioBnbTransfer", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiPostPortfolioRepayFuturesSwitch (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiPostPortfolioRepayFuturesSwitch", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiPostPortfolioRepayFuturesNegativeBalance (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiPostPortfolioRepayFuturesNegativeBalance", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiPostPortfolioMint (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiPostPortfolioMint", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiPostPortfolioRedeem (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiPostPortfolioRedeem", parameters))
+       ch <- (<-this.callEndpoint ("sapiPostLendingAutoInvestOneOff", parameters))
        PanicOnError(ch)
    }()
    return ch
@@ -6327,22 +11991,6 @@ func (this *binanceus) SapiPostLendingAutoInvestPlanEditStatus (args ...interfac
    return ch
 }
 
-func (this *binanceus) SapiPostLendingAutoInvestOneOff (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiPostLendingAutoInvestOneOff", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
 func (this *binanceus) SapiPostLendingAutoInvestRedeem (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
@@ -6359,7 +12007,7 @@ func (this *binanceus) SapiPostLendingAutoInvestRedeem (args ...interface{}) <-c
    return ch
 }
 
-func (this *binanceus) SapiPostSimpleEarnFlexibleSubscribe (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiPostLoanAdjustLtv (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -6369,13 +12017,13 @@ func (this *binanceus) SapiPostSimpleEarnFlexibleSubscribe (args ...interface{})
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiPostSimpleEarnFlexibleSubscribe", parameters))
+       ch <- (<-this.callEndpoint ("sapiPostLoanAdjustLtv", parameters))
        PanicOnError(ch)
    }()
    return ch
 }
 
-func (this *binanceus) SapiPostSimpleEarnLockedSubscribe (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiPostLoanBorrow (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -6385,7 +12033,295 @@ func (this *binanceus) SapiPostSimpleEarnLockedSubscribe (args ...interface{}) <
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiPostSimpleEarnLockedSubscribe", parameters))
+       ch <- (<-this.callEndpoint ("sapiPostLoanBorrow", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostLoanCustomizeMarginCall (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostLoanCustomizeMarginCall", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostLoanFlexibleAdjustLtv (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostLoanFlexibleAdjustLtv", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostLoanFlexibleBorrow (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostLoanFlexibleBorrow", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostLoanFlexibleRepay (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostLoanFlexibleRepay", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostLoanRepay (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostLoanRepay", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostLoanVipBorrow (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostLoanVipBorrow", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostLoanVipRenew (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostLoanVipRenew", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostLoanVipRepay (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostLoanVipRepay", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostMiningHashTransferConfig (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostMiningHashTransferConfig", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostMiningHashTransferConfigCancel (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostMiningHashTransferConfigCancel", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostPortfolioAssetCollection (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostPortfolioAssetCollection", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostPortfolioAutoCollection (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostPortfolioAutoCollection", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostPortfolioBnbTransfer (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostPortfolioBnbTransfer", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostPortfolioMint (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostPortfolioMint", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostPortfolioRedeem (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostPortfolioRedeem", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostPortfolioRepay (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostPortfolioRepay", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostPortfolioRepayFuturesNegativeBalance (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostPortfolioRepayFuturesNegativeBalance", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostPortfolioRepayFuturesSwitch (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostPortfolioRepayFuturesSwitch", parameters))
        PanicOnError(ch)
    }()
    return ch
@@ -6407,22 +12343,6 @@ func (this *binanceus) SapiPostSimpleEarnFlexibleRedeem (args ...interface{}) <-
    return ch
 }
 
-func (this *binanceus) SapiPostSimpleEarnLockedRedeem (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiPostSimpleEarnLockedRedeem", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
 func (this *binanceus) SapiPostSimpleEarnFlexibleSetAutoSubscribe (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
@@ -6434,6 +12354,38 @@ func (this *binanceus) SapiPostSimpleEarnFlexibleSetAutoSubscribe (args ...inter
            }
        }()
        ch <- (<-this.callEndpoint ("sapiPostSimpleEarnFlexibleSetAutoSubscribe", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostSimpleEarnFlexibleSubscribe (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostSimpleEarnFlexibleSubscribe", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostSimpleEarnLockedRedeem (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostSimpleEarnLockedRedeem", parameters))
        PanicOnError(ch)
    }()
    return ch
@@ -6471,7 +12423,7 @@ func (this *binanceus) SapiPostSimpleEarnLockedSetRedeemOption (args ...interfac
    return ch
 }
 
-func (this *binanceus) SapiPostDciProductSubscribe (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiPostSimpleEarnLockedSubscribe (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -6481,7 +12433,7 @@ func (this *binanceus) SapiPostDciProductSubscribe (args ...interface{}) <-chan 
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiPostDciProductSubscribe", parameters))
+       ch <- (<-this.callEndpoint ("sapiPostSimpleEarnLockedSubscribe", parameters))
        PanicOnError(ch)
    }()
    return ch
@@ -6503,7 +12455,7 @@ func (this *binanceus) SapiPostDciProductAutoCompoundEdit (args ...interface{}) 
    return ch
 }
 
-func (this *binanceus) SapiPostOtcQuotes (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiPostDciProductSubscribe (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -6513,7 +12465,119 @@ func (this *binanceus) SapiPostOtcQuotes (args ...interface{}) <-chan interface{
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiPostOtcQuotes", parameters))
+       ch <- (<-this.callEndpoint ("sapiPostDciProductSubscribe", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostClTransfer (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostClTransfer", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostCustodianCustodianTransfer (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostCustodianCustodianTransfer", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostCustodianOcoOrder (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostCustodianOcoOrder", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostCustodianOrder (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostCustodianOrder", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostCustodianUndoTransfer (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostCustodianUndoTransfer", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostCustodianWalletTransfer (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostCustodianWalletTransfer", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiPostFiatpaymentWithdrawApply (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiPostFiatpaymentWithdrawApply", parameters))
        PanicOnError(ch)
    }()
    return ch
@@ -6535,7 +12599,7 @@ func (this *binanceus) SapiPostOtcOrders (args ...interface{}) <-chan interface{
    return ch
 }
 
-func (this *binanceus) SapiPostFiatpaymentWithdrawApply (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiPostOtcQuotes (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -6545,7 +12609,7 @@ func (this *binanceus) SapiPostFiatpaymentWithdrawApply (args ...interface{}) <-
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiPostFiatpaymentWithdrawApply", parameters))
+       ch <- (<-this.callEndpoint ("sapiPostOtcQuotes", parameters))
        PanicOnError(ch)
    }()
    return ch
@@ -6583,102 +12647,6 @@ func (this *binanceus) SapiPostStakingUnstake (args ...interface{}) <-chan inter
    return ch
 }
 
-func (this *binanceus) SapiPostCustodianWalletTransfer (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiPostCustodianWalletTransfer", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiPostCustodianCustodianTransfer (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiPostCustodianCustodianTransfer", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiPostCustodianUndoTransfer (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiPostCustodianUndoTransfer", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiPostCustodianOrder (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiPostCustodianOrder", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiPostCustodianOcoOrder (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiPostCustodianOcoOrder", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiPostClTransfer (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiPostClTransfer", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
 func (this *binanceus) SapiPutUserDataStream (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
@@ -6711,230 +12679,6 @@ func (this *binanceus) SapiPutUserDataStreamIsolated (args ...interface{}) <-cha
    return ch
 }
 
-func (this *binanceus) SapiDeleteMarginOpenOrders (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiDeleteMarginOpenOrders", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiDeleteMarginOrder (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiDeleteMarginOrder", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiDeleteMarginOrderList (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiDeleteMarginOrderList", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiDeleteMarginIsolatedAccount (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiDeleteMarginIsolatedAccount", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiDeleteUserDataStream (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiDeleteUserDataStream", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiDeleteUserDataStreamIsolated (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiDeleteUserDataStreamIsolated", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiDeleteBrokerSubAccountApi (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiDeleteBrokerSubAccountApi", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiDeleteBrokerSubAccountApiIpRestrictionIpList (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiDeleteBrokerSubAccountApiIpRestrictionIpList", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiDeleteAlgoSpotOrder (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiDeleteAlgoSpotOrder", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiDeleteAlgoFuturesOrder (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiDeleteAlgoFuturesOrder", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiDeleteSubAccountSubAccountApiIpRestrictionIpList (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiDeleteSubAccountSubAccountApiIpRestrictionIpList", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiDeleteCustodianCancelOrder (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiDeleteCustodianCancelOrder", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiDeleteCustodianCancelOrdersBySymbol (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiDeleteCustodianCancelOrdersBySymbol", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiDeleteCustodianCancelOcoOrder (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiDeleteCustodianCancelOcoOrder", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
 func (this *binanceus) SapiV2GetEthStakingAccount (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
@@ -6946,6 +12690,118 @@ func (this *binanceus) SapiV2GetEthStakingAccount (args ...interface{}) <-chan i
            }
        }()
        ch <- (<-this.callEndpoint ("sapiV2GetEthStakingAccount", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiV2GetLoanFlexibleBorrowHistory (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiV2GetLoanFlexibleBorrowHistory", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiV2GetLoanFlexibleCollateralData (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiV2GetLoanFlexibleCollateralData", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiV2GetLoanFlexibleLoanableData (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiV2GetLoanFlexibleLoanableData", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiV2GetLoanFlexibleLtvAdjustmentHistory (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiV2GetLoanFlexibleLtvAdjustmentHistory", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiV2GetLoanFlexibleOngoingOrders (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiV2GetLoanFlexibleOngoingOrders", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiV2GetLoanFlexibleRepayHistory (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiV2GetLoanFlexibleRepayHistory", parameters))
+       PanicOnError(ch)
+   }()
+   return ch
+}
+
+func (this *binanceus) SapiV2GetPortfolioAccount (args ...interface{}) <-chan interface{} {
+   parameters := GetArg(args, 0, nil)
+   ch := make(chan interface{})
+   go func() {
+       defer close(ch)
+       defer func() {
+           if r := recover(); r != nil {
+               ch <- "panic:" + ToString(r)
+           }
+       }()
+       ch <- (<-this.callEndpoint ("sapiV2GetPortfolioAccount", parameters))
        PanicOnError(ch)
    }()
    return ch
@@ -6999,118 +12855,6 @@ func (this *binanceus) SapiV2GetSubAccountFuturesPositionRisk (args ...interface
    return ch
 }
 
-func (this *binanceus) SapiV2GetLoanFlexibleOngoingOrders (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiV2GetLoanFlexibleOngoingOrders", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiV2GetLoanFlexibleBorrowHistory (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiV2GetLoanFlexibleBorrowHistory", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiV2GetLoanFlexibleRepayHistory (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiV2GetLoanFlexibleRepayHistory", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiV2GetLoanFlexibleLtvAdjustmentHistory (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiV2GetLoanFlexibleLtvAdjustmentHistory", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiV2GetLoanFlexibleLoanableData (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiV2GetLoanFlexibleLoanableData", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiV2GetLoanFlexibleCollateralData (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiV2GetLoanFlexibleCollateralData", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) SapiV2GetPortfolioAccount (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("sapiV2GetPortfolioAccount", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
 func (this *binanceus) SapiV2GetClAccount (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
@@ -7159,7 +12903,7 @@ func (this *binanceus) SapiV2PostEthStakingEthStake (args ...interface{}) <-chan
    return ch
 }
 
-func (this *binanceus) SapiV2PostSubAccountSubAccountApiIpRestriction (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiV2PostLoanFlexibleAdjustLtv (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -7169,7 +12913,7 @@ func (this *binanceus) SapiV2PostSubAccountSubAccountApiIpRestriction (args ...i
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiV2PostSubAccountSubAccountApiIpRestriction", parameters))
+       ch <- (<-this.callEndpoint ("sapiV2PostLoanFlexibleAdjustLtv", parameters))
        PanicOnError(ch)
    }()
    return ch
@@ -7207,7 +12951,7 @@ func (this *binanceus) SapiV2PostLoanFlexibleRepay (args ...interface{}) <-chan 
    return ch
 }
 
-func (this *binanceus) SapiV2PostLoanFlexibleAdjustLtv (args ...interface{}) <-chan interface{} {
+func (this *binanceus) SapiV2PostSubAccountSubAccountApiIpRestriction (args ...interface{}) <-chan interface{} {
    parameters := GetArg(args, 0, nil)
    ch := make(chan interface{})
    go func() {
@@ -7217,7 +12961,7 @@ func (this *binanceus) SapiV2PostLoanFlexibleAdjustLtv (args ...interface{}) <-c
                ch <- "panic:" + ToString(r)
            }
        }()
-       ch <- (<-this.callEndpoint ("sapiV2PostLoanFlexibleAdjustLtv", parameters))
+       ch <- (<-this.callEndpoint ("sapiV2PostSubAccountSubAccountApiIpRestriction", parameters))
        PanicOnError(ch)
    }()
    return ch
@@ -7346,5686 +13090,6 @@ func (this *binanceus) SapiV4GetSubAccountAssets (args ...interface{}) <-chan in
            }
        }()
        ch <- (<-this.callEndpoint ("sapiV4GetSubAccountAssets", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiPublicGetPing (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiPublicGetPing", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiPublicGetTime (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiPublicGetTime", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiPublicGetExchangeInfo (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiPublicGetExchangeInfo", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiPublicGetDepth (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiPublicGetDepth", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiPublicGetTrades (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiPublicGetTrades", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiPublicGetHistoricalTrades (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiPublicGetHistoricalTrades", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiPublicGetAggTrades (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiPublicGetAggTrades", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiPublicGetPremiumIndex (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiPublicGetPremiumIndex", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiPublicGetFundingRate (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiPublicGetFundingRate", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiPublicGetKlines (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiPublicGetKlines", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiPublicGetContinuousKlines (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiPublicGetContinuousKlines", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiPublicGetIndexPriceKlines (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiPublicGetIndexPriceKlines", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiPublicGetMarkPriceKlines (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiPublicGetMarkPriceKlines", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiPublicGetPremiumIndexKlines (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiPublicGetPremiumIndexKlines", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiPublicGetTicker24hr (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiPublicGetTicker24hr", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiPublicGetTickerPrice (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiPublicGetTickerPrice", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiPublicGetTickerBookTicker (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiPublicGetTickerBookTicker", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiPublicGetConstituents (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiPublicGetConstituents", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiPublicGetOpenInterest (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiPublicGetOpenInterest", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiPublicGetFundingInfo (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiPublicGetFundingInfo", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiDataGetDeliveryPrice (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiDataGetDeliveryPrice", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiDataGetOpenInterestHist (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiDataGetOpenInterestHist", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiDataGetTopLongShortAccountRatio (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiDataGetTopLongShortAccountRatio", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiDataGetTopLongShortPositionRatio (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiDataGetTopLongShortPositionRatio", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiDataGetGlobalLongShortAccountRatio (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiDataGetGlobalLongShortAccountRatio", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiDataGetTakerBuySellVol (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiDataGetTakerBuySellVol", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiDataGetBasis (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiDataGetBasis", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiPrivateGetPositionSideDual (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiPrivateGetPositionSideDual", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiPrivateGetOrderAmendment (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiPrivateGetOrderAmendment", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiPrivateGetOrder (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiPrivateGetOrder", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiPrivateGetOpenOrder (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiPrivateGetOpenOrder", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiPrivateGetOpenOrders (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiPrivateGetOpenOrders", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiPrivateGetAllOrders (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiPrivateGetAllOrders", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiPrivateGetBalance (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiPrivateGetBalance", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiPrivateGetAccount (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiPrivateGetAccount", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiPrivateGetPositionMarginHistory (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiPrivateGetPositionMarginHistory", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiPrivateGetPositionRisk (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiPrivateGetPositionRisk", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiPrivateGetUserTrades (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiPrivateGetUserTrades", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiPrivateGetIncome (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiPrivateGetIncome", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiPrivateGetLeverageBracket (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiPrivateGetLeverageBracket", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiPrivateGetForceOrders (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiPrivateGetForceOrders", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiPrivateGetAdlQuantile (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiPrivateGetAdlQuantile", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiPrivateGetCommissionRate (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiPrivateGetCommissionRate", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiPrivateGetIncomeAsyn (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiPrivateGetIncomeAsyn", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiPrivateGetIncomeAsynId (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiPrivateGetIncomeAsynId", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiPrivateGetTradeAsyn (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiPrivateGetTradeAsyn", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiPrivateGetTradeAsynId (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiPrivateGetTradeAsynId", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiPrivateGetOrderAsyn (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiPrivateGetOrderAsyn", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiPrivateGetOrderAsynId (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiPrivateGetOrderAsynId", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiPrivateGetPmExchangeInfo (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiPrivateGetPmExchangeInfo", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiPrivateGetPmAccountInfo (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiPrivateGetPmAccountInfo", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiPrivatePostPositionSideDual (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiPrivatePostPositionSideDual", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiPrivatePostOrder (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiPrivatePostOrder", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiPrivatePostBatchOrders (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiPrivatePostBatchOrders", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiPrivatePostCountdownCancelAll (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiPrivatePostCountdownCancelAll", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiPrivatePostLeverage (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiPrivatePostLeverage", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiPrivatePostMarginType (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiPrivatePostMarginType", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiPrivatePostPositionMargin (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiPrivatePostPositionMargin", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiPrivatePostListenKey (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiPrivatePostListenKey", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiPrivatePutListenKey (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiPrivatePutListenKey", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiPrivatePutOrder (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiPrivatePutOrder", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiPrivatePutBatchOrders (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiPrivatePutBatchOrders", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiPrivateDeleteOrder (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiPrivateDeleteOrder", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiPrivateDeleteAllOpenOrders (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiPrivateDeleteAllOpenOrders", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiPrivateDeleteBatchOrders (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiPrivateDeleteBatchOrders", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiPrivateDeleteListenKey (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiPrivateDeleteListenKey", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) DapiPrivateV2GetLeverageBracket (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("dapiPrivateV2GetLeverageBracket", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPublicGetPing (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPublicGetPing", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPublicGetTime (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPublicGetTime", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPublicGetExchangeInfo (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPublicGetExchangeInfo", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPublicGetDepth (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPublicGetDepth", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPublicGetTrades (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPublicGetTrades", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPublicGetHistoricalTrades (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPublicGetHistoricalTrades", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPublicGetAggTrades (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPublicGetAggTrades", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPublicGetKlines (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPublicGetKlines", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPublicGetContinuousKlines (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPublicGetContinuousKlines", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPublicGetMarkPriceKlines (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPublicGetMarkPriceKlines", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPublicGetIndexPriceKlines (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPublicGetIndexPriceKlines", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPublicGetPremiumIndexKlines (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPublicGetPremiumIndexKlines", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPublicGetFundingRate (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPublicGetFundingRate", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPublicGetFundingInfo (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPublicGetFundingInfo", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPublicGetPremiumIndex (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPublicGetPremiumIndex", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPublicGetTicker24hr (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPublicGetTicker24hr", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPublicGetTickerPrice (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPublicGetTickerPrice", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPublicGetTickerBookTicker (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPublicGetTickerBookTicker", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPublicGetOpenInterest (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPublicGetOpenInterest", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPublicGetIndexInfo (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPublicGetIndexInfo", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPublicGetAssetIndex (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPublicGetAssetIndex", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPublicGetConstituents (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPublicGetConstituents", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPublicGetApiTradingStatus (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPublicGetApiTradingStatus", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPublicGetLvtKlines (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPublicGetLvtKlines", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPublicGetConvertExchangeInfo (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPublicGetConvertExchangeInfo", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiDataGetDeliveryPrice (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiDataGetDeliveryPrice", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiDataGetOpenInterestHist (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiDataGetOpenInterestHist", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiDataGetTopLongShortAccountRatio (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiDataGetTopLongShortAccountRatio", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiDataGetTopLongShortPositionRatio (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiDataGetTopLongShortPositionRatio", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiDataGetGlobalLongShortAccountRatio (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiDataGetGlobalLongShortAccountRatio", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiDataGetTakerlongshortRatio (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiDataGetTakerlongshortRatio", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiDataGetBasis (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiDataGetBasis", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivateGetForceOrders (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivateGetForceOrders", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivateGetAllOrders (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivateGetAllOrders", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivateGetOpenOrder (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivateGetOpenOrder", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivateGetOpenOrders (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivateGetOpenOrders", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivateGetOrder (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivateGetOrder", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivateGetAccount (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivateGetAccount", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivateGetBalance (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivateGetBalance", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivateGetLeverageBracket (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivateGetLeverageBracket", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivateGetPositionMarginHistory (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivateGetPositionMarginHistory", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivateGetPositionRisk (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivateGetPositionRisk", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivateGetPositionSideDual (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivateGetPositionSideDual", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivateGetUserTrades (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivateGetUserTrades", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivateGetIncome (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivateGetIncome", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivateGetCommissionRate (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivateGetCommissionRate", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivateGetRateLimitOrder (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivateGetRateLimitOrder", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivateGetApiTradingStatus (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivateGetApiTradingStatus", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivateGetMultiAssetsMargin (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivateGetMultiAssetsMargin", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivateGetApiReferralIfNewUser (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivateGetApiReferralIfNewUser", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivateGetApiReferralCustomization (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivateGetApiReferralCustomization", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivateGetApiReferralUserCustomization (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivateGetApiReferralUserCustomization", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivateGetApiReferralTraderNum (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivateGetApiReferralTraderNum", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivateGetApiReferralOverview (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivateGetApiReferralOverview", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivateGetApiReferralTradeVol (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivateGetApiReferralTradeVol", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivateGetApiReferralRebateVol (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivateGetApiReferralRebateVol", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivateGetApiReferralTraderSummary (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivateGetApiReferralTraderSummary", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivateGetAdlQuantile (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivateGetAdlQuantile", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivateGetPmAccountInfo (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivateGetPmAccountInfo", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivateGetOrderAmendment (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivateGetOrderAmendment", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivateGetIncomeAsyn (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivateGetIncomeAsyn", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivateGetIncomeAsynId (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivateGetIncomeAsynId", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivateGetOrderAsyn (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivateGetOrderAsyn", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivateGetOrderAsynId (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivateGetOrderAsynId", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivateGetTradeAsyn (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivateGetTradeAsyn", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivateGetTradeAsynId (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivateGetTradeAsynId", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivateGetFeeBurn (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivateGetFeeBurn", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivateGetSymbolConfig (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivateGetSymbolConfig", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivateGetAccountConfig (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivateGetAccountConfig", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivateGetConvertOrderStatus (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivateGetConvertOrderStatus", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivatePostBatchOrders (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivatePostBatchOrders", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivatePostPositionSideDual (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivatePostPositionSideDual", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivatePostPositionMargin (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivatePostPositionMargin", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivatePostMarginType (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivatePostMarginType", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivatePostOrder (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivatePostOrder", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivatePostLeverage (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivatePostLeverage", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivatePostListenKey (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivatePostListenKey", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivatePostCountdownCancelAll (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivatePostCountdownCancelAll", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivatePostMultiAssetsMargin (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivatePostMultiAssetsMargin", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivatePostApiReferralCustomization (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivatePostApiReferralCustomization", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivatePostApiReferralUserCustomization (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivatePostApiReferralUserCustomization", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivatePostFeeBurn (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivatePostFeeBurn", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivatePostConvertGetQuote (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivatePostConvertGetQuote", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivatePostConvertAcceptQuote (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivatePostConvertAcceptQuote", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivatePutListenKey (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivatePutListenKey", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivatePutOrder (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivatePutOrder", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivatePutBatchOrders (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivatePutBatchOrders", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivateDeleteBatchOrders (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivateDeleteBatchOrders", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivateDeleteOrder (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivateDeleteOrder", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivateDeleteAllOpenOrders (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivateDeleteAllOpenOrders", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivateDeleteListenKey (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivateDeleteListenKey", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPublicV2GetTickerPrice (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPublicV2GetTickerPrice", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivateV2GetAccount (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivateV2GetAccount", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivateV2GetBalance (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivateV2GetBalance", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivateV2GetPositionRisk (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivateV2GetPositionRisk", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivateV3GetAccount (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivateV3GetAccount", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivateV3GetBalance (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivateV3GetBalance", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) FapiPrivateV3GetPositionRisk (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("fapiPrivateV3GetPositionRisk", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) EapiPublicGetPing (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("eapiPublicGetPing", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) EapiPublicGetTime (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("eapiPublicGetTime", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) EapiPublicGetExchangeInfo (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("eapiPublicGetExchangeInfo", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) EapiPublicGetIndex (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("eapiPublicGetIndex", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) EapiPublicGetTicker (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("eapiPublicGetTicker", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) EapiPublicGetMark (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("eapiPublicGetMark", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) EapiPublicGetDepth (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("eapiPublicGetDepth", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) EapiPublicGetKlines (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("eapiPublicGetKlines", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) EapiPublicGetTrades (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("eapiPublicGetTrades", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) EapiPublicGetHistoricalTrades (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("eapiPublicGetHistoricalTrades", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) EapiPublicGetExerciseHistory (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("eapiPublicGetExerciseHistory", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) EapiPublicGetOpenInterest (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("eapiPublicGetOpenInterest", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) EapiPrivateGetAccount (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("eapiPrivateGetAccount", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) EapiPrivateGetPosition (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("eapiPrivateGetPosition", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) EapiPrivateGetOpenOrders (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("eapiPrivateGetOpenOrders", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) EapiPrivateGetHistoryOrders (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("eapiPrivateGetHistoryOrders", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) EapiPrivateGetUserTrades (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("eapiPrivateGetUserTrades", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) EapiPrivateGetExerciseRecord (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("eapiPrivateGetExerciseRecord", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) EapiPrivateGetBill (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("eapiPrivateGetBill", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) EapiPrivateGetIncomeAsyn (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("eapiPrivateGetIncomeAsyn", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) EapiPrivateGetIncomeAsynId (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("eapiPrivateGetIncomeAsynId", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) EapiPrivateGetMarginAccount (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("eapiPrivateGetMarginAccount", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) EapiPrivateGetMmp (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("eapiPrivateGetMmp", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) EapiPrivateGetCountdownCancelAll (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("eapiPrivateGetCountdownCancelAll", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) EapiPrivateGetOrder (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("eapiPrivateGetOrder", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) EapiPrivateGetBlockOrderOrders (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("eapiPrivateGetBlockOrderOrders", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) EapiPrivateGetBlockOrderExecute (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("eapiPrivateGetBlockOrderExecute", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) EapiPrivateGetBlockUserTrades (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("eapiPrivateGetBlockUserTrades", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) EapiPrivateGetBlockTrades (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("eapiPrivateGetBlockTrades", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) EapiPrivatePostOrder (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("eapiPrivatePostOrder", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) EapiPrivatePostBatchOrders (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("eapiPrivatePostBatchOrders", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) EapiPrivatePostListenKey (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("eapiPrivatePostListenKey", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) EapiPrivatePostMmpSet (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("eapiPrivatePostMmpSet", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) EapiPrivatePostMmpReset (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("eapiPrivatePostMmpReset", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) EapiPrivatePostCountdownCancelAll (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("eapiPrivatePostCountdownCancelAll", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) EapiPrivatePostCountdownCancelAllHeartBeat (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("eapiPrivatePostCountdownCancelAllHeartBeat", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) EapiPrivatePostBlockOrderCreate (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("eapiPrivatePostBlockOrderCreate", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) EapiPrivatePostBlockOrderExecute (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("eapiPrivatePostBlockOrderExecute", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) EapiPrivatePutListenKey (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("eapiPrivatePutListenKey", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) EapiPrivatePutBlockOrderCreate (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("eapiPrivatePutBlockOrderCreate", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) EapiPrivateDeleteOrder (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("eapiPrivateDeleteOrder", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) EapiPrivateDeleteBatchOrders (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("eapiPrivateDeleteBatchOrders", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) EapiPrivateDeleteAllOpenOrders (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("eapiPrivateDeleteAllOpenOrders", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) EapiPrivateDeleteAllOpenOrdersByUnderlying (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("eapiPrivateDeleteAllOpenOrdersByUnderlying", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) EapiPrivateDeleteListenKey (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("eapiPrivateDeleteListenKey", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) EapiPrivateDeleteBlockOrderCreate (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("eapiPrivateDeleteBlockOrderCreate", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PublicGetPing (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("publicGetPing", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PublicGetTime (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("publicGetTime", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PublicGetDepth (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("publicGetDepth", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PublicGetTrades (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("publicGetTrades", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PublicGetAggTrades (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("publicGetAggTrades", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PublicGetHistoricalTrades (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("publicGetHistoricalTrades", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PublicGetKlines (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("publicGetKlines", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PublicGetUiKlines (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("publicGetUiKlines", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PublicGetTicker24hr (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("publicGetTicker24hr", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PublicGetTicker (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("publicGetTicker", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PublicGetTickerTradingDay (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("publicGetTickerTradingDay", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PublicGetTickerPrice (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("publicGetTickerPrice", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PublicGetTickerBookTicker (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("publicGetTickerBookTicker", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PublicGetExchangeInfo (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("publicGetExchangeInfo", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PublicGetAvgPrice (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("publicGetAvgPrice", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PublicPutUserDataStream (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("publicPutUserDataStream", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PublicPostUserDataStream (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("publicPostUserDataStream", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PublicDeleteUserDataStream (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("publicDeleteUserDataStream", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PrivateGetAllOrderList (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("privateGetAllOrderList", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PrivateGetOpenOrderList (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("privateGetOpenOrderList", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PrivateGetOrderList (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("privateGetOrderList", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PrivateGetOrder (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("privateGetOrder", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PrivateGetOpenOrders (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("privateGetOpenOrders", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PrivateGetAllOrders (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("privateGetAllOrders", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PrivateGetAccount (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("privateGetAccount", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PrivateGetMyTrades (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("privateGetMyTrades", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PrivateGetRateLimitOrder (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("privateGetRateLimitOrder", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PrivateGetMyPreventedMatches (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("privateGetMyPreventedMatches", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PrivateGetMyAllocations (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("privateGetMyAllocations", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PrivateGetAccountCommission (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("privateGetAccountCommission", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PrivatePostOrderOco (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("privatePostOrderOco", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PrivatePostOrderListOco (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("privatePostOrderListOco", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PrivatePostOrderListOto (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("privatePostOrderListOto", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PrivatePostOrderListOtoco (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("privatePostOrderListOtoco", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PrivatePostSorOrder (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("privatePostSorOrder", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PrivatePostSorOrderTest (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("privatePostSorOrderTest", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PrivatePostOrder (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("privatePostOrder", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PrivatePostOrderCancelReplace (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("privatePostOrderCancelReplace", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PrivatePostOrderTest (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("privatePostOrderTest", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PrivateDeleteOpenOrders (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("privateDeleteOpenOrders", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PrivateDeleteOrderList (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("privateDeleteOrderList", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PrivateDeleteOrder (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("privateDeleteOrder", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetPing (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetPing", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetUmOrder (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetUmOrder", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetUmOpenOrder (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetUmOpenOrder", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetUmOpenOrders (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetUmOpenOrders", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetUmAllOrders (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetUmAllOrders", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetCmOrder (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetCmOrder", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetCmOpenOrder (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetCmOpenOrder", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetCmOpenOrders (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetCmOpenOrders", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetCmAllOrders (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetCmAllOrders", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetUmConditionalOpenOrder (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetUmConditionalOpenOrder", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetUmConditionalOpenOrders (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetUmConditionalOpenOrders", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetUmConditionalOrderHistory (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetUmConditionalOrderHistory", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetUmConditionalAllOrders (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetUmConditionalAllOrders", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetCmConditionalOpenOrder (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetCmConditionalOpenOrder", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetCmConditionalOpenOrders (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetCmConditionalOpenOrders", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetCmConditionalOrderHistory (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetCmConditionalOrderHistory", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetCmConditionalAllOrders (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetCmConditionalAllOrders", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetMarginOrder (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetMarginOrder", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetMarginOpenOrders (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetMarginOpenOrders", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetMarginAllOrders (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetMarginAllOrders", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetMarginOrderList (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetMarginOrderList", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetMarginAllOrderList (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetMarginAllOrderList", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetMarginOpenOrderList (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetMarginOpenOrderList", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetMarginMyTrades (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetMarginMyTrades", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetBalance (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetBalance", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetAccount (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetAccount", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetMarginMaxBorrowable (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetMarginMaxBorrowable", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetMarginMaxWithdraw (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetMarginMaxWithdraw", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetUmPositionRisk (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetUmPositionRisk", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetCmPositionRisk (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetCmPositionRisk", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetUmPositionSideDual (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetUmPositionSideDual", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetCmPositionSideDual (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetCmPositionSideDual", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetUmUserTrades (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetUmUserTrades", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetCmUserTrades (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetCmUserTrades", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetUmLeverageBracket (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetUmLeverageBracket", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetCmLeverageBracket (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetCmLeverageBracket", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetMarginForceOrders (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetMarginForceOrders", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetUmForceOrders (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetUmForceOrders", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetCmForceOrders (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetCmForceOrders", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetUmApiTradingStatus (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetUmApiTradingStatus", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetUmCommissionRate (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetUmCommissionRate", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetCmCommissionRate (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetCmCommissionRate", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetMarginMarginLoan (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetMarginMarginLoan", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetMarginRepayLoan (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetMarginRepayLoan", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetMarginMarginInterestHistory (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetMarginMarginInterestHistory", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetPortfolioInterestHistory (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetPortfolioInterestHistory", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetUmIncome (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetUmIncome", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetCmIncome (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetCmIncome", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetUmAccount (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetUmAccount", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetCmAccount (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetCmAccount", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetRepayFuturesSwitch (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetRepayFuturesSwitch", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetUmAdlQuantile (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetUmAdlQuantile", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetCmAdlQuantile (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetCmAdlQuantile", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetUmTradeAsyn (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetUmTradeAsyn", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetUmTradeAsynId (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetUmTradeAsynId", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetUmOrderAsyn (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetUmOrderAsyn", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetUmOrderAsynId (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetUmOrderAsynId", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetUmIncomeAsyn (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetUmIncomeAsyn", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetUmIncomeAsynId (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetUmIncomeAsynId", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetUmOrderAmendment (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetUmOrderAmendment", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetCmOrderAmendment (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetCmOrderAmendment", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetUmFeeBurn (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetUmFeeBurn", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetUmAccountConfig (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetUmAccountConfig", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetUmSymbolConfig (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetUmSymbolConfig", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetCmAccountConfig (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetCmAccountConfig", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetCmSymbolConfig (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetCmSymbolConfig", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiGetRateLimitOrder (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiGetRateLimitOrder", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiPostUmOrder (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiPostUmOrder", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiPostUmConditionalOrder (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiPostUmConditionalOrder", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiPostCmOrder (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiPostCmOrder", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiPostCmConditionalOrder (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiPostCmConditionalOrder", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiPostMarginOrder (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiPostMarginOrder", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiPostMarginLoan (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiPostMarginLoan", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiPostRepayLoan (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiPostRepayLoan", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiPostMarginOrderOco (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiPostMarginOrderOco", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiPostUmLeverage (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiPostUmLeverage", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiPostCmLeverage (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiPostCmLeverage", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiPostUmPositionSideDual (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiPostUmPositionSideDual", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiPostCmPositionSideDual (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiPostCmPositionSideDual", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiPostAutoCollection (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiPostAutoCollection", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiPostBnbTransfer (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiPostBnbTransfer", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiPostRepayFuturesSwitch (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiPostRepayFuturesSwitch", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiPostRepayFuturesNegativeBalance (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiPostRepayFuturesNegativeBalance", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiPostListenKey (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiPostListenKey", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiPostAssetCollection (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiPostAssetCollection", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiPostMarginRepayDebt (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiPostMarginRepayDebt", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiPostUmFeeBurn (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiPostUmFeeBurn", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiPutListenKey (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiPutListenKey", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiPutUmOrder (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiPutUmOrder", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiPutCmOrder (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiPutCmOrder", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiDeleteUmOrder (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiDeleteUmOrder", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiDeleteUmConditionalOrder (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiDeleteUmConditionalOrder", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiDeleteUmAllOpenOrders (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiDeleteUmAllOpenOrders", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiDeleteUmConditionalAllOpenOrders (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiDeleteUmConditionalAllOpenOrders", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiDeleteCmOrder (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiDeleteCmOrder", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiDeleteCmConditionalOrder (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiDeleteCmConditionalOrder", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiDeleteCmAllOpenOrders (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiDeleteCmAllOpenOrders", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiDeleteCmConditionalAllOpenOrders (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiDeleteCmConditionalAllOpenOrders", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiDeleteMarginOrder (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiDeleteMarginOrder", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiDeleteMarginAllOpenOrders (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiDeleteMarginAllOpenOrders", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiDeleteMarginOrderList (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiDeleteMarginOrderList", parameters))
-       PanicOnError(ch)
-   }()
-   return ch
-}
-
-func (this *binanceus) PapiDeleteListenKey (args ...interface{}) <-chan interface{} {
-   parameters := GetArg(args, 0, nil)
-   ch := make(chan interface{})
-   go func() {
-       defer close(ch)
-       defer func() {
-           if r := recover(); r != nil {
-               ch <- "panic:" + ToString(r)
-           }
-       }()
-       ch <- (<-this.callEndpoint ("papiDeleteListenKey", parameters))
        PanicOnError(ch)
    }()
    return ch
