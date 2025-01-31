@@ -57,8 +57,8 @@ export interface MarketInterface {
         amount?: MinMax;
         cost?: MinMax;
         leverage?: MinMax;
-        price?: MinMax;
         market?: MinMax;
+        price?: MinMax;
     };
     linear: Bool;
     lowercaseId?: Str;
@@ -143,8 +143,6 @@ export interface OrderBook {
     nonce: Int;
     symbol: Str;
     timestamp: Int;
-}
-export interface OrderBooks extends Dictionary<OrderBook> {
 }
 export interface Ticker {
     ask: Num;
@@ -502,12 +500,12 @@ export interface Leverage {
     symbol: string;
 }
 export interface LongShortRatio {
-    info: any;
-    symbol: string;
-    timestamp?: number;
     datetime?: string;
-    timeframe?: string;
+    info: any;
     longShortRatio: number;
+    symbol: string;
+    timeframe?: string;
+    timestamp?: number;
 }
 export interface MarginModification {
     'amount': Num;
@@ -545,6 +543,8 @@ export interface MarginModes extends Dictionary<MarginMode> {
 export interface OpenInterests extends Dictionary<OpenInterest> {
 }
 export interface OptionChain extends Dictionary<Option> {
+}
+export interface OrderBooks extends Dictionary<OrderBook> {
 }
 export interface PartialBalances extends Dictionary<number> {
 }
