@@ -13225,7 +13225,7 @@ export default class binance extends Exchange {
         //         "clientOrderId": "autoclose-1596107620040000020",
         //         "closePosition": false,
         //         "cumQuote": "10.91321",
-        //         "executedQty": "0.001",
+        //         "executedQty": "0.002",
         //         "orderId": 6071832819,
         //         "origQty": "0.001",
         //         "origType": "LIMIT",
