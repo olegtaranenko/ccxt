@@ -260,8 +260,8 @@ func  (this *bit2c) FetchBalance(optionalArgs ...interface{}) <- chan interface{
                     params := GetArg(optionalArgs, 0, map[string]interface{} {})
             _ = params
         
-            retRes714608 := (<-this.LoadMarkets())
-            PanicOnError(retRes714608)
+            retRes483380 := (<-this.LoadMarkets())
+            PanicOnError(retRes483380)
         
             response:= (<-this.PrivateGetAccountBalanceV2(params))
             PanicOnError(response)
@@ -334,8 +334,8 @@ func  (this *bit2c) FetchOrderBook(symbol interface{}, optionalArgs ...interface
             params := GetArg(optionalArgs, 1, map[string]interface{} {})
             _ = params
         
-            retRes382262 := (<-this.LoadMarkets())
-            PanicOnError(retRes382262)
+            retRes127246 := (<-this.LoadMarkets())
+            PanicOnError(retRes127246)
             var market interface{} = this.Market(symbol)
             var request interface{} = map[string]interface{} {
                 "pair": GetValue(market, "id"),
@@ -397,8 +397,8 @@ func  (this *bit2c) FetchTicker(symbol interface{}, optionalArgs ...interface{})
                     params := GetArg(optionalArgs, 0, map[string]interface{} {})
             _ = params
         
-            retRes729366 := (<-this.LoadMarkets())
-            PanicOnError(retRes729366)
+            retRes779958 := (<-this.LoadMarkets())
+            PanicOnError(retRes779958)
             var market interface{} = this.Market(symbol)
             var request interface{} = map[string]interface{} {
                 "pair": GetValue(market, "id"),
@@ -437,8 +437,8 @@ func  (this *bit2c) FetchTrades(symbol interface{}, optionalArgs ...interface{})
             params := GetArg(optionalArgs, 2, map[string]interface{} {})
             _ = params
         
-            retRes903939 := (<-this.LoadMarkets())
-            PanicOnError(retRes903939)
+            retRes549928 := (<-this.LoadMarkets())
+            PanicOnError(retRes549928)
             var market interface{} = this.Market(symbol)
             var method interface{} = GetValue(this.Options, "fetchTradesMethod") // public_get_exchanges_pair_trades or public_get_exchanges_pair_lasttrades
             var request interface{} = map[string]interface{} {
@@ -493,8 +493,8 @@ func  (this *bit2c) FetchTradingFees(optionalArgs ...interface{}) <- chan interf
                     params := GetArg(optionalArgs, 0, map[string]interface{} {})
             _ = params
         
-            retRes288952 := (<-this.LoadMarkets())
-            PanicOnError(retRes288952)
+            retRes559051 := (<-this.LoadMarkets())
+            PanicOnError(retRes559051)
         
             response:= (<-this.PrivateGetAccountBalance(params))
             PanicOnError(response)
@@ -564,8 +564,8 @@ func  (this *bit2c) CreateOrder(symbol interface{}, typeVar interface{}, side in
             params := GetArg(optionalArgs, 1, map[string]interface{} {})
             _ = params
         
-            retRes86009 := (<-this.LoadMarkets())
-            PanicOnError(retRes86009)
+            retRes823526 := (<-this.LoadMarkets())
+            PanicOnError(retRes823526)
             var method interface{} = "privatePostOrderAddOrder"
             var market interface{} = this.Market(symbol)
             var request interface{} = map[string]interface{} {
@@ -651,8 +651,8 @@ func  (this *bit2c) FetchOpenOrders(optionalArgs ...interface{}) <- chan interfa
                 panic(ArgumentsRequired(Add(this.Id, " fetchOpenOrders() requires a symbol argument")))
             }
         
-            retRes951707 := (<-this.LoadMarkets())
-            PanicOnError(retRes951707)
+            retRes143650 := (<-this.LoadMarkets())
+            PanicOnError(retRes143650)
             var market interface{} = this.Market(symbol)
             var request interface{} = map[string]interface{} {
                 "pair": GetValue(market, "id"),
@@ -690,8 +690,8 @@ func  (this *bit2c) FetchOrder(id interface{}, optionalArgs ...interface{}) <- c
             params := GetArg(optionalArgs, 1, map[string]interface{} {})
             _ = params
         
-            retRes255858 := (<-this.LoadMarkets())
-            PanicOnError(retRes255858)
+            retRes639319 := (<-this.LoadMarkets())
+            PanicOnError(retRes639319)
             var market interface{} = this.Market(symbol)
             var request interface{} = map[string]interface{} {
                 "id": id,
@@ -860,8 +860,8 @@ func  (this *bit2c) FetchMyTrades(optionalArgs ...interface{}) <- chan interface
             params := GetArg(optionalArgs, 3, map[string]interface{} {})
             _ = params
         
-            retRes291434 := (<-this.LoadMarkets())
-            PanicOnError(retRes291434)
+            retRes502027 := (<-this.LoadMarkets())
+            PanicOnError(retRes502027)
             var market interface{} = nil
             var request interface{} = map[string]interface{} {}
             if IsTrue(!IsEqual(limit, nil)) {
@@ -1053,8 +1053,8 @@ func  (this *bit2c) FetchDepositAddress(code interface{}, optionalArgs ...interf
                     params := GetArg(optionalArgs, 0, map[string]interface{} {})
             _ = params
         
-            retRes296498 := (<-this.LoadMarkets())
-            PanicOnError(retRes296498)
+            retRes531320 := (<-this.LoadMarkets())
+            PanicOnError(retRes531320)
             var currency interface{} = this.Currency(code)
             if IsTrue(this.IsFiat(code)) {
                 panic(NotSupported(Add(this.Id, " fetchDepositAddress() does not support fiat currencies")))
