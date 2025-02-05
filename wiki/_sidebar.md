@@ -81,7 +81,6 @@
 	- [latoken](exchanges/latoken.md)
 	- [lbank](exchanges/lbank.md)
 	- [luno](exchanges/luno.md)
-	- [lykke](exchanges/lykke.md)
 	- [mercado](exchanges/mercado.md)
 	- [mexc](exchanges/mexc.md)
 	- [ndax](exchanges/ndax.md)
