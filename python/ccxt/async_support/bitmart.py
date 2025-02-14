@@ -6,7 +6,7 @@
 from ccxt.async_support.base.exchange import Exchange
 from ccxt.abstract.bitmart import ImplicitAPI
 import hashlib
-from ccxt.base.types import Balances, BorrowInterest, Currencies, Currency, DepositAddress, FundingHistory, Int, IsolatedBorrowRate, IsolatedBorrowRates, LedgerEntry, Market, Num, Order, OrderBook, OrderRequest, OrderSide, OrderType, Str, Strings, Ticker, Tickers, FundingRate, Trade, TradingFeeInterface, Transaction, MarketInterface, TransferEntry
+from ccxt.base.types import Any, Balances, BorrowInterest, Currencies, Currency, DepositAddress, FundingHistory, Int, IsolatedBorrowRate, IsolatedBorrowRates, LedgerEntry, Market, Num, Order, OrderBook, OrderRequest, OrderSide, OrderType, Str, Strings, Ticker, Tickers, FundingRate, Trade, TradingFeeInterface, Transaction, MarketInterface, TransferEntry
 from typing import List
 from ccxt.base.errors import ExchangeError
 from ccxt.base.errors import AuthenticationError
@@ -32,7 +32,7 @@ from ccxt.base.precise import Precise
 
 class bitmart(Exchange, ImplicitAPI):
 
-    def describe(self):
+    def describe(self) -> Any:
         return self.deep_extend(super(bitmart, self).describe(), {
             'id': 'bitmart',
             'name': 'BitMart',
@@ -860,7 +860,7 @@ class bitmart(Exchange, ImplicitAPI):
             },
         })
 
-    async def fetch_time(self, params={}):
+    async def fetch_time(self, params={}) -> Int:
         """
         fetches the current integer timestamp in milliseconds from the exchange server
         :param dict [params]: extra parameters specific to the exchange API endpoint
@@ -971,6 +971,7 @@ class bitmart(Exchange, ImplicitAPI):
         data = self.safe_dict(response, 'data', {})
         symbols = self.safe_list(data, 'symbols', [])
         result = []
+        fees = self.fees['trading']
         for i in range(0, len(symbols)):
             market = symbols[i]
             id = self.safe_string(market, 'symbol')
@@ -1009,6 +1010,8 @@ class bitmart(Exchange, ImplicitAPI):
                 'expiryDatetime': None,
                 'strike': None,
                 'optionType': None,
+                'maker': fees['maker'],
+                'taker': fees['taker'],
                 'precision': {
                     'amount': baseMinSize,
                     'price': self.parse_number(self.parse_precision(self.safe_string(market, 'price_max_precision'))),
@@ -1080,6 +1083,7 @@ class bitmart(Exchange, ImplicitAPI):
         data = self.safe_dict(response, 'data', {})
         symbols = self.safe_list(data, 'symbols', [])
         result = []
+        fees = self.fees['trading']
         for i in range(0, len(symbols)):
             market = symbols[i]
             id = self.safe_string(market, 'symbol')
@@ -1121,6 +1125,8 @@ class bitmart(Exchange, ImplicitAPI):
                 'expiryDatetime': self.iso8601(expiry),
                 'strike': None,
                 'optionType': None,
+                'maker': fees['maker'],
+                'taker': fees['taker'],
                 'precision': {
                     'amount': self.safe_number(market, 'vol_precision'),
                     'price': self.safe_number(market, 'price_precision'),

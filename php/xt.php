@@ -10,7 +10,7 @@ use ccxt\abstract\xt as Exchange;
 
 class xt extends Exchange {
 
-    public function describe() {
+    public function describe(): mixed {
         return $this->deep_extend(parent::describe(), array(
             'id' => 'xt',
             'name' => 'XT',
@@ -111,7 +111,7 @@ class xt extends Exchange {
                 'repayMargin' => false,
                 'setLeverage' => true,
                 'setMargin' => false,
-                'setMarginMode' => false,
+                'setMarginMode' => true,
                 'setPositionMode' => false,
                 'signIn' => false,
                 'transfer' => true,
@@ -269,6 +269,7 @@ class xt extends Exchange {
                             'future/user/v1/position/margin' => 1,
                             'future/user/v1/user/collection/add' => 1,
                             'future/user/v1/user/collection/cancel' => 1,
+                            'future/user/v1/position/change-type' => 1,
                         ),
                     ),
                     'inverse' => array(
@@ -796,7 +797,7 @@ class xt extends Exchange {
         return $this->milliseconds() - $this->options['timeDifference'];
     }
 
-    public function fetch_time($params = array ()) {
+    public function fetch_time($params = array ()): ?int {
         /**
          * fetches the current integer timestamp in milliseconds from the xt server
          *
@@ -4813,6 +4814,59 @@ class xt extends Exchange {
             'toAccount' => null,
             'status' => null,
         );
+    }
+
+    public function set_margin_mode(string $marginMode, ?string $symbol = null, $params = array ()) {
+        /**
+         * set margin mode to 'cross' or 'isolated'
+         *
+         * @see https://doc.xt.com/#futures_userchangePositionType
+         *
+         * @param {string} $marginMode 'cross' or 'isolated'
+         * @param {string} [$symbol] required
+         * @param {array} [$params] extra parameters specific to the exchange API endpoint
+         * @param {string} [$params->positionSide] *required* "long" or "short"
+         * @return {array} $response from the exchange
+         */
+        if ($symbol === null) {
+            throw new ArgumentsRequired($this->id . ' setMarginMode() requires a $symbol argument');
+        }
+        $this->load_markets();
+        $market = $this->market($symbol);
+        if ($market['spot']) {
+            throw new BadSymbol($this->id . ' setMarginMode() supports contract markets only');
+        }
+        $marginMode = strtolower($marginMode);
+        if ($marginMode !== 'isolated' && $marginMode !== 'cross') {
+            throw new BadRequest($this->id . ' setMarginMode() $marginMode argument should be isolated or cross');
+        }
+        if ($marginMode === 'cross') {
+            $marginMode = 'CROSSED';
+        } else {
+            $marginMode = 'ISOLATED';
+        }
+        $posSide = $this->safe_string_upper($params, 'positionSide');
+        if ($posSide === null) {
+            throw new ArgumentsRequired($this->id . ' setMarginMode() requires a positionSide parameter, either "LONG" or "SHORT"');
+        }
+        $request = array(
+            'positionType' => $marginMode,
+            'positionSide' => $posSide,
+            'symbol' => $market['id'],
+        );
+        $response = $this->privateLinearPostFutureUserV1PositionChangeType ($this->extend($request, $params));
+        //
+        // {
+        //     "error" => array(
+        //       "code" => "",
+        //       "msg" => ""
+        //     ),
+        //     "msgInfo" => "",
+        //     "result" => array(),
+        //     "returnCode" => 0
+        // }
+        //
+        return $response; // unify return type
     }
 
     public function handle_errors($code, $reason, $url, $method, $headers, $body, $response, $requestHeaders, $requestBody) {

@@ -15,7 +15,7 @@ import type { Int, OrderSide, Balances, OrderType, OHLCV, Order, Str, Trade, Tra
  * @augments Exchange
  */
 export default class bitmart extends Exchange {
-    describe () {
+    describe (): any {
         return this.deepExtend (super.describe (), {
             'id': 'bitmart',
             'name': 'BitMart',
@@ -851,7 +851,7 @@ export default class bitmart extends Exchange {
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @returns {int} the current integer timestamp in milliseconds from the exchange server
      */
-    async fetchTime (params = {}) {
+    async fetchTime (params = {}): Promise<Int> {
         const response = await this.publicGetSystemTime (params);
         //
         //     {
@@ -964,6 +964,7 @@ export default class bitmart extends Exchange {
         const data = this.safeDict (response, 'data', {});
         const symbols = this.safeList (data, 'symbols', []);
         const result = [];
+        const fees = this.fees['trading'];
         for (let i = 0; i < symbols.length; i++) {
             const market = symbols[i];
             const id = this.safeString (market, 'symbol');
@@ -1002,6 +1003,8 @@ export default class bitmart extends Exchange {
                 'expiryDatetime': undefined,
                 'strike': undefined,
                 'optionType': undefined,
+                'maker': fees['maker'],
+                'taker': fees['taker'],
                 'precision': {
                     'amount': baseMinSize,
                     'price': this.parseNumber (this.parsePrecision (this.safeString (market, 'price_max_precision'))),
@@ -1075,6 +1078,7 @@ export default class bitmart extends Exchange {
         const data = this.safeDict (response, 'data', {});
         const symbols = this.safeList (data, 'symbols', []);
         const result = [];
+        const fees = this.fees['trading'];
         for (let i = 0; i < symbols.length; i++) {
             const market = symbols[i];
             const id = this.safeString (market, 'symbol');
@@ -1117,6 +1121,8 @@ export default class bitmart extends Exchange {
                 'expiryDatetime': this.iso8601 (expiry),
                 'strike': undefined,
                 'optionType': undefined,
+                'maker': fees['maker'],
+                'taker': fees['taker'],
                 'precision': {
                     'amount': this.safeNumber (market, 'vol_precision'),
                     'price': this.safeNumber (market, 'price_precision'),
