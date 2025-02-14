@@ -7,7 +7,7 @@ import binanceusRest from '../binanceus.js';
 // ---------------------------------------------------------------------------
 
 export default class binanceus extends binance {
-    describe () {
+    describe (): any {
         // eslint-disable-next-line new-cap
         const restInstance = new binanceusRest ();
         const restDescribe = restInstance.describe ();
@@ -35,7 +35,7 @@ export default class binanceus extends binance {
             'urls': {
                 'api': {
                     'private': 'https://api.binance.us/api/v3',
-                    'public': 'https://api.binance.us/api/v1',
+                    'public': 'https://api.binance.us/api/v3',
                     'sapi': 'https://api.binance.us/sapi/v1',
                     'v1': 'https://api.binance.us/api/v1',
                     'v3': 'https://api.binance.us/api/v3',

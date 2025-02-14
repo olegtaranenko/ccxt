@@ -7,7 +7,7 @@ import { InvalidOrder } from './base/errors.js';
 //  ---------------------------------------------------------------------------
 
 export default class binanceusdm extends binance {
-    describe () {
+    describe (): any {
         return this.deepExtend (super.describe (), {
             // https://binance-docs.github.io/apidocs/futures/en/#error-codes
             // https://developers.binance.com/docs/derivatives/usds-margined-futures/error-code
