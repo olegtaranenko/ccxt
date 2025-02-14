@@ -15,7 +15,7 @@ import { sha256 } from './static_dependencies/noble-hashes/sha256.js';
  * @augments Exchange
  */
 export default class xt extends Exchange {
-    describe () {
+    describe (): any {
         return this.deepExtend (super.describe (), {
             'id': 'xt',
             'name': 'XT',
@@ -810,7 +810,7 @@ export default class xt extends Exchange {
      * @param {object} params extra parameters specific to the xt api endpoint
      * @returns {int} the current integer timestamp in milliseconds from the xt server
      */
-    async fetchTime (params = {}) {
+    async fetchTime (params = {}): Promise<Int> {
         const response = await this.publicSpotGetTime (params);
         //
         //     {

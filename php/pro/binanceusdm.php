@@ -9,7 +9,7 @@ use Exception; // a common import
 
 class binanceusdm extends \ccxt\pro\binance {
 
-    public function describe() {
+    public function describe(): mixed {
         return $this->deep_extend(parent::describe(), array(
             // https://binance-docs.github.io/apidocs/futures/en/#error-codes
             // https://developers.binance.com/docs/derivatives/usds-margined-futures/error-code

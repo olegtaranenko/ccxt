@@ -103,7 +103,6 @@
 	- [upbit](exchanges/upbit.md)
 	- [vertex](exchanges/vertex.md)
 	- [wavesexchange](exchanges/wavesexchange.md)
-	- [wazirx](exchanges/wazirx.md)
 	- [whitebit](exchanges/whitebit.md)
 	- [woo](exchanges/woo.md)
 	- [woofipro](exchanges/woofipro.md)
