@@ -9,34 +9,6 @@ import { InvalidOrder } from './base/errors.js';
 export default class binanceusdm extends binance {
     describe (): any {
         return this.deepExtend (super.describe (), {
-            'id': 'binanceusdm',
-            'name': 'Binance USDⓈ-M',
-            'urls': {
-                'logo': 'https://github.com/user-attachments/assets/871cbea7-eebb-4b28-b260-c1c91df0487a',
-                'doc': [
-                    'https://binance-docs.github.io/apidocs/futures/en/',
-                    'https://binance-docs.github.io/apidocs/spot/en',
-                    'https://developers.binance.com/en',
-                ],
-            },
-            'has': {
-                'CORS': undefined,
-                'spot': false,
-                'margin': false,
-                'swap': true,
-                'future': true,
-                'option': undefined,
-                'createStopMarketOrder': true,
-            },
-            'options': {
-                'fetchMarkets': [ 'linear' ],
-                'defaultSubType': 'linear',
-                // https://www.binance.com/en/support/faq/360033162192
-                // tier amount, maintenance margin, initial margin
-                'leverageBrackets': undefined,
-                'marginTypes': {},
-                'marginModes': {},
-            },
             // https://binance-docs.github.io/apidocs/futures/en/#error-codes
             // https://developers.binance.com/docs/derivatives/usds-margined-futures/error-code
             'exceptions': {
@@ -45,6 +17,34 @@ export default class binanceusdm extends binance {
                     '-5022': InvalidOrder, // {"code":-5022,"msg":"Due to the order could not be executed as maker, the Post Only order will be rejected."}
                     '-5028': InvalidOrder, // {"code":-5028,"msg":"Timestamp for this request is outside of the ME recvWindow."}
                 },
+            },
+            'has': {
+                'CORS': undefined,
+                'createStopMarketOrder': true,
+                'future': true,
+                'margin': false,
+                'option': undefined,
+                'spot': false,
+                'swap': true,
+            },
+            'id': 'binanceusdm',
+            'name': 'Binance USDⓈ-M',
+            'options': {
+                'defaultSubType': 'linear',
+                'fetchMarkets': [ 'linear' ],
+                // https://www.binance.com/en/support/faq/360033162192
+                // tier amount, maintenance margin, initial margin
+                'leverageBrackets': undefined,
+                'marginModes': {},
+                'marginTypes': {},
+            },
+            'urls': {
+                'doc': [
+                    'https://binance-docs.github.io/apidocs/futures/en/',
+                    'https://binance-docs.github.io/apidocs/spot/en',
+                    'https://developers.binance.com/en',
+                ],
+                'logo': 'https://github.com/user-attachments/assets/871cbea7-eebb-4b28-b260-c1c91df0487a',
             },
         });
     }
