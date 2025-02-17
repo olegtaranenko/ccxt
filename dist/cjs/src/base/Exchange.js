@@ -1446,6 +1446,7 @@ class Exchange {
                 'createTriggerOrderWs': undefined,
                 'deposit': undefined,
                 'editOrder': 'emulated',
+                'editOrders': undefined,
                 'editOrderWs': undefined,
                 'fetchAccounts': undefined,
                 'fetchBalance': true,
@@ -5286,6 +5287,9 @@ class Exchange {
     }
     async createOrders(orders, params = {}) {
         throw new errors.NotSupported(this.id + ' createOrders() is not supported yet');
+    }
+    async editOrders(orders, params = {}) {
+        throw new errors.NotSupported(this.id + ' editOrders() is not supported yet');
     }
     async createOrderWs(symbol, type, side, amount, price = undefined, params = {}) {
         throw new errors.NotSupported(this.id + ' createOrderWs() is not supported yet');
