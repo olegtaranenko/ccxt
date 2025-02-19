@@ -69,6 +69,7 @@ class Exchange {
         this.userAgent = undefined;
         //
         this.headers = {};
+        this.MAX_VALUE = Number.MAX_VALUE;
         this.origin = '*'; // CORS origin
         this.userAgents = {
             'chrome': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36',
@@ -372,10 +373,6 @@ class Exchange {
         }
         this.newUpdates = (this.options.newUpdates !== undefined) ? this.options.newUpdates : true;
         this.afterConstruct();
-        const isSandbox = this.safeBool2(this.options, 'sandbox', 'testnet', false);
-        if (isSandbox) {
-            this.setSandboxMode(isSandbox);
-        }
     }
     encodeURIComponent(...args) {
         // @ts-expect-error
@@ -405,21 +402,11 @@ class Exchange {
         }
         return result;
     }
-    initRestRateLimiter() {
-        if (this.rateLimit === undefined) {
-            throw new Error(this.id + '.rateLimit property is not configured');
-        }
-        this.tokenBucket = this.extend({
-            delay: 0.001,
-            capacity: 1,
-            cost: 1,
-            maxCapacity: 1000,
-            refillRate: (this.rateLimit > 0) ? 1 / this.rateLimit : Number.MAX_VALUE,
-        }, this.tokenBucket);
-        this.throttler = new Throttler(this.tokenBucket);
-    }
     throttle(cost = undefined) {
         return this.throttler.throttle(cost);
+    }
+    initThrottler() {
+        this.throttler = new Throttler(this.tokenBucket);
     }
     defineRestApiEndpoint(methodName, uppercaseMethod, lowercaseMethod, camelcaseMethod, path, paths, config = {}) {
         const splitPath = path.split(/[^a-zA-Z0-9]/);
@@ -2400,8 +2387,39 @@ class Exchange {
         return timestamp;
     }
     afterConstruct() {
+        // networks
         this.createNetworksByIdObject();
         this.featuresGenerator();
+        // init predefined markets if any
+        if (this.markets) {
+            this.setMarkets(this.markets);
+        }
+        // init the request rate limiter
+        this.initRestRateLimiter();
+        // sanbox mode
+        const isSandbox = this.safeBool2(this.options, 'sandbox', 'testnet', false);
+        if (isSandbox) {
+            this.setSandboxMode(isSandbox);
+        }
+    }
+    initRestRateLimiter() {
+        if (this.rateLimit === undefined || (this.id !== undefined && this.rateLimit === -1)) {
+            throw new errors.ExchangeError(this.id + '.rateLimit property is not configured');
+        }
+        let refillRate = this.MAX_VALUE;
+        if (this.rateLimit > 0) {
+            refillRate = 1 / this.rateLimit;
+        }
+        const defaultBucket = {
+            'delay': 0.001,
+            'capacity': 1,
+            'cost': 1,
+            'maxCapacity': 1000,
+            'refillRate': refillRate,
+        };
+        const existingBucket = (this.tokenBucket === undefined) ? {} : this.tokenBucket;
+        this.tokenBucket = this.extend(defaultBucket, existingBucket);
+        this.initThrottler();
     }
     featuresGenerator() {
         //

@@ -50,6 +50,7 @@ export default class Exchange {
     wsSocksProxy: string;
     wssProxy: string;
     headers: any;
+    MAX_VALUE: Num;
     origin: string;
     userAgents: any;
     agent: any;
@@ -314,8 +315,8 @@ export default class Exchange {
     constructor(userConfig?: {});
     encodeURIComponent(...args: any[]): string;
     checkRequiredVersion(requiredVersion: any, error?: boolean): boolean;
-    initRestRateLimiter(): void;
     throttle(cost?: any): any;
+    initThrottler(): void;
     defineRestApiEndpoint(methodName: any, uppercaseMethod: any, lowercaseMethod: any, camelcaseMethod: any, path: any, paths: any, config?: {}): void;
     defineRestApi(api: any, methodName: any, paths?: any[]): void;
     log(...args: any[]): void;
@@ -498,6 +499,7 @@ export default class Exchange {
     safeNumberOmitZero(obj: object, key: IndexType, defaultValue?: Num): Num;
     safeIntegerOmitZero(obj: object, key: IndexType, defaultValue?: Int): Int;
     afterConstruct(): void;
+    initRestRateLimiter(): void;
     featuresGenerator(): void;
     featuresMapper(initialFeatures: any, marketType: Str, subType?: Str): any;
     orderbookChecksumMessage(symbol: Str): string;
