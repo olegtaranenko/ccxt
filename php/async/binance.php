@@ -1000,7 +1000,6 @@ class binance extends Exchange {
             'currencies' => array(
                 'BNFCR' => $this->safe_currency_structure(array( 'id' => 'BNFCR', 'code' => 'BNFCR', 'precision' => $this->parse_number('0.001') )),
             ),
-            'defaultWithdrawPrecision' => 0.00000001,
             'features' => array(
                 'spot' => array(
                     'sandbox' => true,
@@ -2470,6 +2469,7 @@ class binance extends Exchange {
                 'defaultSubType' => null, // 'linear', 'inverse'
                 'defaultTimeInForce' => 'GTC', // 'GTC' = Good To Cancel (default), 'IOC' = Immediate Or Cancel
                 'defaultType' => 'spot', // 'spot', 'future', 'margin', 'delivery', 'option'
+                'defaultWithdrawPrecision' => 0.00000001,
                 'fetchCurrencies' => true, // this is a private call and it requires API keys
                 'fetchMargins' => true,
                 'fetchMarkets' => array(

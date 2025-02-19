@@ -1017,7 +1017,6 @@ class binance(Exchange, ImplicitAPI):
             'currencies': {
                 'BNFCR': self.safe_currency_structure({'id': 'BNFCR', 'code': 'BNFCR', 'precision': self.parse_number('0.001')}),
             },
-            'defaultWithdrawPrecision': 0.00000001,
             'features': {
                 'spot': {
                     'sandbox': True,
@@ -2487,6 +2486,7 @@ class binance(Exchange, ImplicitAPI):
                 'defaultSubType': None,  # 'linear', 'inverse'
                 'defaultTimeInForce': 'GTC',  # 'GTC' = Good To Cancel(default), 'IOC' = Immediate Or Cancel
                 'defaultType': 'spot',  # 'spot', 'future', 'margin', 'delivery', 'option'
+                'defaultWithdrawPrecision': 0.00000001,
                 'fetchCurrencies': True,  # self is a private call and it requires API keys
                 'fetchMargins': True,
                 'fetchMarkets': [

@@ -996,7 +996,6 @@ export default class binance extends Exchange {
             'currencies': {
                 'BNFCR': this.safeCurrencyStructure({ 'id': 'BNFCR', 'code': 'BNFCR', 'precision': this.parseNumber('0.001') }),
             },
-            'defaultWithdrawPrecision': 0.00000001,
             'features': {
                 'spot': {
                     'sandbox': true,
@@ -2466,6 +2465,7 @@ export default class binance extends Exchange {
                 'defaultSubType': undefined,
                 'defaultTimeInForce': 'GTC',
                 'defaultType': 'spot',
+                'defaultWithdrawPrecision': 0.00000001,
                 'fetchCurrencies': true,
                 'fetchMargins': true,
                 'fetchMarkets': [
