@@ -1065,7 +1065,6 @@ export default class binance extends Exchange {
             'currencies': {
                 'BNFCR': this.safeCurrencyStructure ({ 'id': 'BNFCR', 'code': 'BNFCR', 'precision': this.parseNumber ('0.001') }),
             },
-            'defaultWithdrawPrecision': 0.00000001,
             'features': {
                 'spot': {
                     'sandbox': true,
@@ -2535,6 +2534,7 @@ export default class binance extends Exchange {
                 'defaultSubType': undefined, // 'linear', 'inverse'
                 'defaultTimeInForce': 'GTC', // 'GTC' = Good To Cancel (default), 'IOC' = Immediate Or Cancel
                 'defaultType': 'spot', // 'spot', 'future', 'margin', 'delivery', 'option'
+                'defaultWithdrawPrecision': 0.00000001,
                 'fetchCurrencies': true, // this is a private call and it requires API keys
                 'fetchMargins': true,
                 'fetchMarkets': [
