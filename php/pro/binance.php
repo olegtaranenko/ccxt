@@ -2601,6 +2601,7 @@ class binance extends \ccxt\async\binance {
              *
              * @see https://developers.binance.com/docs/derivatives/usds-margined-futures/account/websocket-api/Futures-Account-Balance
              * @see https://developers.binance.com/docs/binance-spot-api-docs/web-socket-api#account-information-user_data
+             * @see https://developers.binance.com/docs/derivatives/coin-margined-futures/account/websocket-api
              *
              * @param {array} [$params] extra parameters specific to the exchange API endpoint
              * @param {string|null} [$params->type] 'future', 'delivery', 'savings', 'funding', or 'spot'
@@ -2611,7 +2612,7 @@ class binance extends \ccxt\async\binance {
              */
             Async\await($this->load_markets());
             $type = $this->get_market_type('fetchBalanceWs', null, $params);
-            if ($type !== 'spot' && $type !== 'future') {
+            if ($type !== 'spot' && $type !== 'future' && $type !== 'delivery') {
                 throw new BadRequest($this->id . ' fetchBalanceWs only supports spot or swap markets');
             }
             $url = $this->urls['api']['ws']['ws-api'][$type];
@@ -2727,25 +2728,32 @@ class binance extends \ccxt\async\binance {
              * fetch all open positions
              *
              * @see https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/websocket-api/Position-Information
+             * @see https://developers.binance.com/docs/derivatives/coin-margined-futures/trade/websocket-api/Position-Information
              *
-             * @param {string[]} [$symbols] list of unified market $symbols
+             * @param {string[]} [$symbols] list of unified $market $symbols
              * @param {array} [$params] extra parameters specific to the exchange API endpoint
              * @param {boolean} [$params->returnRateLimits] set to true to return rate limit informations, defaults to false.
              * @param {string|null} [$params->method] $method to use. Can be account.position or v2/account.position
              * @return {array[]} a list of ~@link https://docs.ccxt.com/#/?id=position-structure position structure~
              */
             Async\await($this->load_markets());
-            $symbols = $this->market_symbols($symbols, 'swap', true, true, true);
-            $url = $this->urls['api']['ws']['ws-api']['future'];
-            $requestId = $this->request_id($url);
-            $messageHash = (string) $requestId;
             $payload = array();
+            $market = null;
+            $symbols = $this->market_symbols($symbols, 'swap', true, true, true);
             if ($symbols !== null) {
                 $symbolsLength = count($symbols);
                 if ($symbolsLength === 1) {
-                    $payload['symbol'] = $this->market_id($symbols[0]);
+                    $market = $this->market($symbols[0]);
+                    $payload['symbol'] = $market['id'];
                 }
             }
+            $type = $this->get_market_type('fetchPositionsWs', $market, $params);
+            if ($type !== 'future' && $type !== 'delivery') {
+                throw new BadRequest($this->id . ' fetchPositionsWs only supports swap markets');
+            }
+            $url = $this->urls['api']['ws']['ws-api'][$type];
+            $requestId = $this->request_id($url);
+            $messageHash = (string) $requestId;
             $returnRateLimits = false;
             list($returnRateLimits, $params) = $this->handle_option_and_params($params, 'fetchPositionsWs', 'returnRateLimits', false);
             $payload['returnRateLimits'] = $returnRateLimits;
@@ -2974,6 +2982,7 @@ class binance extends \ccxt\async\binance {
              *
              * @see https://developers.binance.com/docs/binance-spot-api-docs/web-socket-api#place-new-order-trade
              * @see https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/websocket-api/New-Order
+             * @see https://developers.binance.com/docs/derivatives/coin-margined-futures/trade/websocket-api
              *
              * @param {string} $symbol unified $symbol of the $market to create an order in
              * @param {string} $type 'market' or 'limit'
@@ -2988,7 +2997,7 @@ class binance extends \ccxt\async\binance {
             Async\await($this->load_markets());
             $market = $this->market($symbol);
             $marketType = $this->get_market_type('createOrderWs', $market, $params);
-            if ($marketType !== 'spot' && $marketType !== 'future') {
+            if ($marketType !== 'spot' && $marketType !== 'future' && $marketType !== 'delivery') {
                 throw new BadRequest($this->id . ' createOrderWs only supports spot or swap markets');
             }
             $url = $this->urls['api']['ws']['ws-api'][$marketType];
@@ -3126,6 +3135,7 @@ class binance extends \ccxt\async\binance {
              *
              * @see https://developers.binance.com/docs/binance-spot-api-docs/web-socket-api#cancel-and-replace-order-trade
              * @see https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/websocket-api/Modify-Order
+             * @see https://developers.binance.com/docs/derivatives/coin-margined-futures/trade/websocket-api/Modify-Order
              *
              * @param {string} $id order $id
              * @param {string} $symbol unified $symbol of the $market to create an order in
@@ -3139,16 +3149,17 @@ class binance extends \ccxt\async\binance {
             Async\await($this->load_markets());
             $market = $this->market($symbol);
             $marketType = $this->get_market_type('editOrderWs', $market, $params);
-            if ($marketType !== 'spot' && $marketType !== 'future') {
+            if ($marketType !== 'spot' && $marketType !== 'future' && $marketType !== 'delivery') {
                 throw new BadRequest($this->id . ' editOrderWs only supports spot or swap markets');
             }
             $url = $this->urls['api']['ws']['ws-api'][$marketType];
             $requestId = $this->request_id($url);
             $messageHash = (string) $requestId;
+            $isSwap = ($marketType === 'future' || $marketType === 'delivery');
             $payload = null;
             if ($marketType === 'spot') {
                 $payload = $this->editSpotOrderRequest ($id, $symbol, $type, $side, $amount, $price, $params);
-            } elseif ($marketType === 'future') {
+            } elseif ($isSwap) {
                 $payload = $this->editContractOrderRequest ($id, $symbol, $type, $side, $amount, $price, $params);
             }
             $returnRateLimits = false;
@@ -3156,7 +3167,7 @@ class binance extends \ccxt\async\binance {
             $payload['returnRateLimits'] = $returnRateLimits;
             $message = array(
                 'id' => $messageHash,
-                'method' => ($marketType === 'future') ? 'order.modify' : 'order.cancelReplace',
+                'method' => ($isSwap) ? 'order.modify' : 'order.cancelReplace',
                 'params' => $this->sign_params($this->extend($payload, $params)),
             );
             $subscription = array(
@@ -3284,6 +3295,7 @@ class binance extends \ccxt\async\binance {
              *
              * @see https://developers.binance.com/docs/binance-spot-api-docs/web-socket-api#cancel-order-trade
              * @see https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/websocket-api/Cancel-Order
+             * @see https://developers.binance.com/docs/derivatives/coin-margined-futures/trade/websocket-api/Cancel-Order
              *
              * @param {string} $id order $id
              * @param {string} [$symbol] unified $market $symbol, default is null
@@ -3370,6 +3382,7 @@ class binance extends \ccxt\async\binance {
              *
              * @see https://developers.binance.com/docs/binance-spot-api-docs/web-socket-api#query-order-user_data
              * @see https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/websocket-api/Query-Order
+             * @see https://developers.binance.com/docs/derivatives/coin-margined-futures/trade/websocket-api/Query-Order
              *
              * @param {string} $id order $id
              * @param {string} [$symbol] unified $symbol of the $market the order was made in
@@ -3382,7 +3395,7 @@ class binance extends \ccxt\async\binance {
             }
             $market = $this->market($symbol);
             $type = $this->get_market_type('fetchOrderWs', $market, $params);
-            if ($type !== 'spot' && $type !== 'future') {
+            if ($type !== 'spot' && $type !== 'future' && $type !== 'delivery') {
                 throw new BadRequest($this->id . ' fetchOrderWs only supports spot or swap markets');
             }
             $url = $this->urls['api']['ws']['ws-api'][$type];

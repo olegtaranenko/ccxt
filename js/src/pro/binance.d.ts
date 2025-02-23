@@ -129,6 +129,7 @@ export default class binance extends binanceRest {
                     papi: string;
                     spot: string;
                     'ws-api': {
+                        delivery: string;
                         future: string;
                         spot: string;
                     };
@@ -142,6 +143,7 @@ export default class binance extends binanceRest {
                     margin: string;
                     spot: string;
                     'ws-api': {
+                        delivery: string;
                         future: string;
                         spot: string;
                     };
@@ -552,6 +554,7 @@ export default class binance extends binanceRest {
      * @description fetch balance and get the amount of funds available for trading or funds locked in orders
      * @see https://developers.binance.com/docs/derivatives/usds-margined-futures/account/websocket-api/Futures-Account-Balance
      * @see https://developers.binance.com/docs/binance-spot-api-docs/web-socket-api#account-information-user_data
+     * @see https://developers.binance.com/docs/derivatives/coin-margined-futures/account/websocket-api
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @param {string|undefined} [params.type] 'future', 'delivery', 'savings', 'funding', or 'spot'
      * @param {string|undefined} [params.marginMode] 'cross' or 'isolated', for margin trading, uses this.options.defaultMarginMode if not passed, defaults to undefined/None/null
@@ -577,6 +580,7 @@ export default class binance extends binanceRest {
      * @name binance#fetchPositionsWs
      * @description fetch all open positions
      * @see https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/websocket-api/Position-Information
+     * @see https://developers.binance.com/docs/derivatives/coin-margined-futures/trade/websocket-api/Position-Information
      * @param {string[]} [symbols] list of unified market symbols
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @param {boolean} [params.returnRateLimits] set to true to return rate limit informations, defaults to false.
@@ -602,6 +606,7 @@ export default class binance extends binanceRest {
      * @description create a trade order
      * @see https://developers.binance.com/docs/binance-spot-api-docs/web-socket-api#place-new-order-trade
      * @see https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/websocket-api/New-Order
+     * @see https://developers.binance.com/docs/derivatives/coin-margined-futures/trade/websocket-api
      * @param {string} symbol unified symbol of the market to create an order in
      * @param {string} type 'market' or 'limit'
      * @param {string} side 'buy' or 'sell'
@@ -621,6 +626,7 @@ export default class binance extends binanceRest {
      * @description edit a trade order
      * @see https://developers.binance.com/docs/binance-spot-api-docs/web-socket-api#cancel-and-replace-order-trade
      * @see https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/websocket-api/Modify-Order
+     * @see https://developers.binance.com/docs/derivatives/coin-margined-futures/trade/websocket-api/Modify-Order
      * @param {string} id order id
      * @param {string} symbol unified symbol of the market to create an order in
      * @param {string} type 'market' or 'limit'
@@ -638,6 +644,7 @@ export default class binance extends binanceRest {
      * @description cancel multiple orders
      * @see https://developers.binance.com/docs/binance-spot-api-docs/web-socket-api#cancel-order-trade
      * @see https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/websocket-api/Cancel-Order
+     * @see https://developers.binance.com/docs/derivatives/coin-margined-futures/trade/websocket-api/Cancel-Order
      * @param {string} id order id
      * @param {string} [symbol] unified market symbol, default is undefined
      * @param {object} [params] extra parameters specific to the exchange API endpoint
@@ -661,6 +668,7 @@ export default class binance extends binanceRest {
      * @description fetches information on an order made by the user
      * @see https://developers.binance.com/docs/binance-spot-api-docs/web-socket-api#query-order-user_data
      * @see https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/websocket-api/Query-Order
+     * @see https://developers.binance.com/docs/derivatives/coin-margined-futures/trade/websocket-api/Query-Order
      * @param {string} id order id
      * @param {string} [symbol] unified symbol of the market the order was made in
      * @param {object} [params] extra parameters specific to the exchange API endpoint
