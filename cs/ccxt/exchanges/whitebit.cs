@@ -152,6 +152,8 @@ public partial class whitebit : Exchange
                 } },
             } },
             { "options", new Dictionary<string, object>() {
+                { "timeDifference", 0 },
+                { "adjustForTimeDifference", false },
                 { "fiatCurrencies", new List<object>() {"EUR", "USD", "RUB", "UAH"} },
                 { "fetchBalance", new Dictionary<string, object>() {
                     { "account", "spot" },
@@ -168,6 +170,78 @@ public partial class whitebit : Exchange
                 } },
                 { "defaultType", "spot" },
                 { "brokerId", "ccxt" },
+            } },
+            { "features", new Dictionary<string, object>() {
+                { "default", new Dictionary<string, object>() {
+                    { "sandbox", false },
+                    { "createOrder", new Dictionary<string, object>() {
+                        { "marginMode", true },
+                        { "triggerPrice", true },
+                        { "triggerDirection", false },
+                        { "triggerPriceType", null },
+                        { "stopLossPrice", false },
+                        { "takeProfitPrice", false },
+                        { "attachedStopLossTakeProfit", null },
+                        { "timeInForce", new Dictionary<string, object>() {
+                            { "IOC", true },
+                            { "FOK", false },
+                            { "PO", true },
+                            { "GTD", false },
+                        } },
+                        { "hedged", false },
+                        { "trailing", false },
+                        { "leverage", false },
+                        { "marketBuyByCost", true },
+                        { "marketBuyRequiresPrice", false },
+                        { "selfTradePrevention", false },
+                        { "iceberg", false },
+                    } },
+                    { "createOrders", null },
+                    { "fetchMyTrades", new Dictionary<string, object>() {
+                        { "marginMode", false },
+                        { "limit", 100 },
+                        { "daysBack", null },
+                        { "untilDays", null },
+                        { "symbolRequired", false },
+                    } },
+                    { "fetchOrder", null },
+                    { "fetchOpenOrders", new Dictionary<string, object>() {
+                        { "marginMode", false },
+                        { "limit", 100 },
+                        { "trigger", false },
+                        { "trailing", false },
+                        { "symbolRequired", false },
+                    } },
+                    { "fetchOrders", null },
+                    { "fetchClosedOrders", new Dictionary<string, object>() {
+                        { "marginMode", false },
+                        { "limit", 100 },
+                        { "daysBack", null },
+                        { "daysBackCanceled", null },
+                        { "untilDays", null },
+                        { "trigger", false },
+                        { "trailing", false },
+                        { "symbolRequired", false },
+                    } },
+                    { "fetchOHLCV", new Dictionary<string, object>() {
+                        { "limit", 1440 },
+                    } },
+                } },
+                { "spot", new Dictionary<string, object>() {
+                    { "extends", "default" },
+                } },
+                { "swap", new Dictionary<string, object>() {
+                    { "linear", new Dictionary<string, object>() {
+                        { "extends", "default" },
+                    } },
+                    { "inverse", new Dictionary<string, object>() {
+                        { "extends", "default" },
+                    } },
+                } },
+                { "future", new Dictionary<string, object>() {
+                    { "linear", null },
+                    { "inverse", null },
+                } },
             } },
             { "precisionMode", TICK_SIZE },
             { "exceptions", new Dictionary<string, object>() {
@@ -211,6 +285,10 @@ public partial class whitebit : Exchange
     public async override Task<object> fetchMarkets(object parameters = null)
     {
         parameters ??= new Dictionary<string, object>();
+        if (isTrue(getValue(this.options, "adjustForTimeDifference")))
+        {
+            await this.loadTimeDifference();
+        }
         object markets = await this.v4PublicGetMarkets();
         //
         //    [
@@ -1030,6 +1108,7 @@ public partial class whitebit : Exchange
         //         "clientOrderId": "customId11",
         //         "role": 2, // 1 = maker, 2 = taker
         //         "deal": "0.00419198" // amount in money
+        //         "feeAsset": "USDT"
         //     }
         //
         // fetchMyTrades
@@ -1045,6 +1124,7 @@ public partial class whitebit : Exchange
         //          "deal": "9.981007",
         //          "fee": "0.009981007",
         //          "orderId": 58166729555,
+        //          "feeAsset": "USDT"
         //      }
         //
         market = this.safeMarket(null, market);
@@ -1068,7 +1148,7 @@ public partial class whitebit : Exchange
         {
             fee = new Dictionary<string, object>() {
                 { "cost", feeCost },
-                { "currency", getValue(market, "quote") },
+                { "currency", this.safeCurrencyCode(this.safeString(trade, "feeAsset")) },
             };
         }
         return this.safeTrade(new Dictionary<string, object>() {
@@ -1198,7 +1278,7 @@ public partial class whitebit : Exchange
         object response = await this.v4PublicGetTime(parameters);
         //
         //     {
-        //         "time":1635467280514
+        //         "time":1737380046
         //     }
         //
         return this.safeInteger(response, "time");
@@ -1217,11 +1297,9 @@ public partial class whitebit : Exchange
     public async override Task<object> createMarketOrderWithCost(object symbol, object side, object cost, object parameters = null)
     {
         parameters ??= new Dictionary<string, object>();
-        object req = new Dictionary<string, object>() {
-            { "cost", cost },
-        };
+        ((IDictionary<string,object>)parameters)["cost"] = cost;
         // only buy side is supported
-        return await this.createOrder(symbol, "market", side, 0, null, this.extend(req, parameters));
+        return await this.createOrder(symbol, "market", side, 0, null, parameters);
     }
 
     /**
@@ -2720,7 +2798,7 @@ public partial class whitebit : Exchange
 
     public override object nonce()
     {
-        return this.milliseconds();
+        return subtract(this.milliseconds(), getValue(this.options, "timeDifference"));
     }
 
     public override object sign(object path, object api = null, object method = null, object parameters = null, object headers = null, object body = null)
@@ -2782,12 +2860,13 @@ public partial class whitebit : Exchange
             // For cases where we have a meaningful status
             // {"response":null,"status":422,"errors":{"orderId":["Finished order id 435453454535 not found on your account"]},"notification":null,"warning":"Finished order id 435453454535 not found on your account","_token":null}
             object status = this.safeString(response, "status");
+            object errors = this.safeValue(response, "errors");
             // {"code":10,"message":"Unauthorized request."}
             object message = this.safeString(response, "message");
             // For these cases where we have a generic code variable error key
             // {"code":0,"message":"Validation failed","errors":{"amount":["Amount must be greater than 0"]}}
             object codeNew = this.safeInteger(response, "code");
-            object hasErrorStatus = isTrue(!isEqual(status, null)) && isTrue(!isEqual(status, "200"));
+            object hasErrorStatus = isTrue(isTrue(!isEqual(status, null)) && isTrue(!isEqual(status, "200"))) && isTrue(!isEqual(errors, null));
             if (isTrue(isTrue(hasErrorStatus) || isTrue(!isEqual(codeNew, null))))
             {
                 object feedback = add(add(this.id, " "), body);

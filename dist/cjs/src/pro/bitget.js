@@ -6,7 +6,7 @@ var Precise = require('../base/Precise.js');
 var Cache = require('../base/ws/Cache.js');
 var sha256 = require('../static_dependencies/noble-hashes/sha256.js');
 
-// ----------------------------------------------------------------------------
+//  ---------------------------------------------------------------------------
 //  ---------------------------------------------------------------------------
 /**
  * @class bitget
@@ -2017,7 +2017,7 @@ class bitget extends bitget$1 {
         if (messageHash in client.subscriptions) {
             delete client.subscriptions[messageHash];
         }
-        const error = new errors.UnsubscribeError(this.id + 'orderbook ' + symbol);
+        const error = new errors.UnsubscribeError(this.id + ' orderbook ' + symbol);
         client.reject(error, subMessageHash);
         client.resolve(true, messageHash);
     }
@@ -2042,7 +2042,7 @@ class bitget extends bitget$1 {
         if (messageHash in client.subscriptions) {
             delete client.subscriptions[messageHash];
         }
-        const error = new errors.UnsubscribeError(this.id + 'trades ' + symbol);
+        const error = new errors.UnsubscribeError(this.id + ' trades ' + symbol);
         client.reject(error, subMessageHash);
         client.resolve(true, messageHash);
     }
@@ -2067,7 +2067,7 @@ class bitget extends bitget$1 {
         if (messageHash in client.subscriptions) {
             delete client.subscriptions[messageHash];
         }
-        const error = new errors.UnsubscribeError(this.id + 'ticker ' + symbol);
+        const error = new errors.UnsubscribeError(this.id + ' ticker ' + symbol);
         client.reject(error, subMessageHash);
         client.resolve(true, messageHash);
     }
