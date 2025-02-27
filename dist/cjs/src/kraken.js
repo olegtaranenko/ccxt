@@ -7,7 +7,7 @@ var number = require('./base/functions/number.js');
 var sha256 = require('./static_dependencies/noble-hashes/sha256.js');
 var sha512 = require('./static_dependencies/noble-hashes/sha512.js');
 
-// ----------------------------------------------------------------------------
+//  ---------------------------------------------------------------------------
 //  ---------------------------------------------------------------------------
 /**
  * @class kraken
@@ -976,9 +976,9 @@ class kraken extends kraken$1 {
             'high': this.safeString(high, 1),
             'low': this.safeString(low, 1),
             'bid': this.safeString(bid, 0),
-            'bidVolume': undefined,
+            'bidVolume': this.safeString(bid, 2),
             'ask': this.safeString(ask, 0),
-            'askVolume': undefined,
+            'askVolume': this.safeString(ask, 2),
             'vwap': vwap,
             'open': this.safeString(ticker, 'o'),
             'close': last,
