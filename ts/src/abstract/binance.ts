@@ -597,6 +597,7 @@ interface Exchange {
     sapiGetPortfolioMarginAssetLeverage (params?: {}): Promise<implicitReturnType>;
     sapiGetPortfolioBalance (params?: {}): Promise<implicitReturnType>;
     sapiGetPortfolioNegativeBalanceExchangeRecord (params?: {}): Promise<implicitReturnType>;
+    sapiGetPortfolioPmloanHistory (params?: {}): Promise<implicitReturnType>;
     sapiGetLendingAutoInvestAllAsset (params?: {}): Promise<implicitReturnType>;
     sapiGetLendingAutoInvestHistoryList (params?: {}): Promise<implicitReturnType>;
     sapiGetLendingAutoInvestIndexInfo (params?: {}): Promise<implicitReturnType>;

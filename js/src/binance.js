@@ -770,6 +770,7 @@ export default class binance extends Exchange {
                         'portfolio/margin-asset-leverage': 5,
                         'portfolio/balance': 2,
                         'portfolio/negative-balance-exchange-record': 2,
+                        'portfolio/pmloan-history': 5,
                         // staking
                         'lending/auto-invest/all/asset': 0.1,
                         'lending/auto-invest/history/list': 0.1,
@@ -6463,11 +6464,10 @@ export default class binance extends Exchange {
     async createOrder(symbol, type, side, amount, price = undefined, params = {}) {
         await this.loadMarkets();
         const market = this.market(symbol);
+        // don't handle/omit params here, omitting happens inside createOrderRequest
         const marketType = this.safeString(params, 'type', market['type']);
-        let marginMode = undefined;
-        [marginMode, params] = this.handleMarginModeAndParams('createOrder', params);
-        let isPortfolioMargin = undefined;
-        [isPortfolioMargin, params] = this.handleOptionAndParams2(params, 'createOrder', 'papi', 'portfolioMargin', false);
+        const marginMode = this.safeString(params, 'marginMode');
+        const isPortfolioMargin = this.safeBool2(params, 'papi', 'portfolioMargin', false);
         const triggerPrice = this.safeString2(params, 'triggerPrice', 'stopPrice');
         const stopLossPrice = this.safeString(params, 'stopLossPrice');
         const takeProfitPrice = this.safeString(params, 'takeProfitPrice');

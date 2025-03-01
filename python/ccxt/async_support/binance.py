@@ -791,6 +791,7 @@ class binance(Exchange, ImplicitAPI):
                         'portfolio/margin-asset-leverage': 5,  # Weight(IP): 50 => cost = 0.1 * 50 = 5
                         'portfolio/balance': 2,
                         'portfolio/negative-balance-exchange-record': 2,
+                        'portfolio/pmloan-history': 5,
                         # staking
                         'lending/auto-invest/all/asset': 0.1,
                         'lending/auto-invest/history/list': 0.1,
@@ -6230,11 +6231,10 @@ class binance(Exchange, ImplicitAPI):
         """
         await self.load_markets()
         market = self.market(symbol)
+        # don't handle/omit params here, omitting happens inside createOrderRequest
         marketType = self.safe_string(params, 'type', market['type'])
-        marginMode = None
-        marginMode, params = self.handle_margin_mode_and_params('createOrder', params)
-        isPortfolioMargin = None
-        isPortfolioMargin, params = self.handle_option_and_params_2(params, 'createOrder', 'papi', 'portfolioMargin', False)
+        marginMode = self.safe_string(params, 'marginMode')
+        isPortfolioMargin = self.safe_bool_2(params, 'papi', 'portfolioMargin', False)
         triggerPrice = self.safe_string_2(params, 'triggerPrice', 'stopPrice')
         stopLossPrice = self.safe_string(params, 'stopLossPrice')
         takeProfitPrice = self.safe_string(params, 'takeProfitPrice')

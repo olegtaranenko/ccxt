@@ -151,6 +151,7 @@ class binance extends \ccxt\async\binance {
                         'papi' => 'wss://fstream.binance.com/pm/ws',
                         'spot' => 'wss://stream.binance.com:9443/ws',
                         'ws-api' => array(
+                            'delivery' => 'wss://ws-dapi.binance.com/ws-dapi/v1',
                             'future' => 'wss://ws-fapi.binance.com/ws-fapi/v1',
                             'spot' => 'wss://ws-api.binance.com:443/ws-api/v3',
                         ),
@@ -164,6 +165,7 @@ class binance extends \ccxt\async\binance {
                         'margin' => 'wss://testnet.binance.vision/ws',
                         'spot' => 'wss://testnet.binance.vision/ws',
                         'ws-api' => array(
+                            'delivery' => 'wss://testnet.binancefuture.com/ws-dapi/v1',
                             'future' => 'wss://testnet.binancefuture.com/ws-fapi/v1',
                             'spot' => 'wss://testnet.binance.vision/ws-api/v3',
                         ),

@@ -2951,6 +2951,11 @@ public partial class binancecoinm : binance
         return await this.callAsync ("sapiGetPortfolioNegativeBalanceExchangeRecord",parameters);
     }
 
+    public async Task<object> sapiGetPortfolioPmloanHistory (object parameters = null)
+    {
+        return await this.callAsync ("sapiGetPortfolioPmloanHistory",parameters);
+    }
+
     public async Task<object> sapiGetLendingAutoInvestAllAsset (object parameters = null)
     {
         return await this.callAsync ("sapiGetLendingAutoInvestAllAsset",parameters);

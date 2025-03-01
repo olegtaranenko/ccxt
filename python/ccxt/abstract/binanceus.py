@@ -593,6 +593,7 @@ class ImplicitAPI:
     sapi_get_portfolio_margin_asset_leverage = sapiGetPortfolioMarginAssetLeverage = Entry('portfolio/margin-asset-leverage', 'sapi', 'GET', {'cost': 5})
     sapi_get_portfolio_balance = sapiGetPortfolioBalance = Entry('portfolio/balance', 'sapi', 'GET', {'cost': 2})
     sapi_get_portfolio_negative_balance_exchange_record = sapiGetPortfolioNegativeBalanceExchangeRecord = Entry('portfolio/negative-balance-exchange-record', 'sapi', 'GET', {'cost': 2})
+    sapi_get_portfolio_pmloan_history = sapiGetPortfolioPmloanHistory = Entry('portfolio/pmloan-history', 'sapi', 'GET', {'cost': 5})
     sapi_get_lending_auto_invest_all_asset = sapiGetLendingAutoInvestAllAsset = Entry('lending/auto-invest/all/asset', 'sapi', 'GET', {'cost': 0.1})
     sapi_get_lending_auto_invest_history_list = sapiGetLendingAutoInvestHistoryList = Entry('lending/auto-invest/history/list', 'sapi', 'GET', {'cost': 0.1})
     sapi_get_lending_auto_invest_index_info = sapiGetLendingAutoInvestIndexInfo = Entry('lending/auto-invest/index/info', 'sapi', 'GET', {'cost': 0.1})

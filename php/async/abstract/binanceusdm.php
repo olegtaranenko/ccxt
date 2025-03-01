@@ -1771,6 +1771,9 @@ abstract class binanceusdm extends \ccxt\async\binance {
     public function sapi_get_portfolio_negative_balance_exchange_record($params = array()) {
         return $this->request('portfolio/negative-balance-exchange-record', 'sapi', 'GET', $params, null, null, array("cost" => 2));
     }
+    public function sapi_get_portfolio_pmloan_history($params = array()) {
+        return $this->request('portfolio/pmloan-history', 'sapi', 'GET', $params, null, null, array("cost" => 5));
+    }
     public function sapi_get_lending_auto_invest_all_asset($params = array()) {
         return $this->request('lending/auto-invest/all/asset', 'sapi', 'GET', $params, null, null, array("cost" => 0.1));
     }
@@ -4068,6 +4071,9 @@ abstract class binanceusdm extends \ccxt\async\binance {
     }
     public function sapiGetPortfolioNegativeBalanceExchangeRecord($params = array()) {
         return $this->request('portfolio/negative-balance-exchange-record', 'sapi', 'GET', $params, null, null, array("cost" => 2));
+    }
+    public function sapiGetPortfolioPmloanHistory($params = array()) {
+        return $this->request('portfolio/pmloan-history', 'sapi', 'GET', $params, null, null, array("cost" => 5));
     }
     public function sapiGetLendingAutoInvestAllAsset($params = array()) {
         return $this->request('lending/auto-invest/all/asset', 'sapi', 'GET', $params, null, null, array("cost" => 0.1));
