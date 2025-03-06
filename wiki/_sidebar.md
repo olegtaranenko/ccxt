@@ -55,6 +55,7 @@
 	- [coinsph](exchanges/coinsph.md)
 	- [coinspot](exchanges/coinspot.md)
 	- [cryptocom](exchanges/cryptocom.md)
+	- [cryptomus](exchanges/cryptomus.md)
 	- [defx](exchanges/defx.md)
 	- [delta](exchanges/delta.md)
 	- [deribit](exchanges/deribit.md)
