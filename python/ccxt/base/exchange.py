@@ -4,7 +4,7 @@
 
 # -----------------------------------------------------------------------------
 
-__version__ = '4.4.65'
+__version__ = '4.4.66'
 
 # -----------------------------------------------------------------------------
 
@@ -2019,6 +2019,7 @@ class Exchange(object):
                 'watchOHLCV': None,
                 'watchOHLCVForSymbols': None,
                 'watchOrderBook': None,
+                'watchBidsAsks': None,
                 'watchOrderBookForSymbols': None,
                 'watchOrders': None,
                 'watchOrdersForSymbols': None,

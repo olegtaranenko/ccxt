@@ -176,7 +176,6 @@ const {
     numberToBE,
     numberToLE,
     numberToString,
-    roundTimeframe,
     omit,
     omitZero,
     ordered,
@@ -187,6 +186,7 @@ const {
     precisionFromString,
     rawencode,
     ROUND,
+    roundTimeframe,
     safeFloat,
     safeFloat2,
     safeFloatN,
@@ -450,9 +450,9 @@ export default class Exchange {
     positions: any;
     precision: {
         amount: Num,
-        price: Num,
-        cost?: Num,
         base?: Num,
+        cost?: Num,
+        price: Num,
         quote?: Num,
     } = undefined;
     precisionMode: Num = undefined;
@@ -474,11 +474,11 @@ export default class Exchange {
     requiresWeb3: boolean = false;
     stablePairs = {};
     status: {
+        eta: Num,
+        info: any,
         status: Str,
         updated: Num,
-        eta: Num,
         url: Str,
-        info: any,
     } = undefined;
     symbols: string[] = undefined;
     targetAccount = undefined;
@@ -1708,6 +1708,10 @@ export default class Exchange {
         return {};
     }
 
+    convertToSafeDictionary(dict) {
+        return dict;
+    }
+
     randomBytes (length: number) {
         const rng = new SecureRandom();
         const x:number[] = [];
@@ -1895,10 +1899,10 @@ export default class Exchange {
                 'fetchDepositWithdrawFee': undefined,
                 'fetchDepositWithdrawFees': undefined,
                 'fetchFundingHistory': undefined,
-                'fetchFundingRate': undefined,
-                'fetchFundingRateHistory': undefined,
                 'fetchFundingInterval': undefined,
                 'fetchFundingIntervals': undefined,
+                'fetchFundingRate': undefined,
+                'fetchFundingRateHistory': undefined,
                 'fetchFundingRates': undefined,
                 'fetchGreeks': undefined,
                 'fetchIndexOHLCV': undefined,
@@ -1923,6 +1927,7 @@ export default class Exchange {
                 'fetchMarkets': true,
                 'fetchMarketsWs': undefined,
                 'fetchMarkOHLCV': undefined,
+                'fetchMarkPrices': undefined,
                 'fetchMyLiquidations': undefined,
                 'fetchMySettlementHistory': undefined,
                 'fetchMyTrades': undefined,
@@ -1930,8 +1935,8 @@ export default class Exchange {
                 'fetchOHLCV': undefined,
                 'fetchOHLCVWs': undefined,
                 'fetchOpenInterest': undefined,
-                'fetchOpenInterests': undefined,
                 'fetchOpenInterestHistory': undefined,
+                'fetchOpenInterests': undefined,
                 'fetchOpenOrder': undefined,
                 'fetchOpenOrders': undefined,
                 'fetchOpenOrdersWs': undefined,
@@ -1961,7 +1966,6 @@ export default class Exchange {
                 'fetchStatus': undefined,
                 'fetchTicker': true,
                 'fetchTickers': undefined,
-                'fetchMarkPrices': undefined,
                 'fetchTickersWs': undefined,
                 'fetchTickerWs': undefined,
                 'fetchTime': undefined,
@@ -2001,6 +2005,7 @@ export default class Exchange {
                 'swap': undefined,
                 'transfer': undefined,
                 'watchBalance': undefined,
+                'watchBidsAsks': undefined,
                 'watchLiquidations': undefined,
                 'watchLiquidationsForSymbols': undefined,
                 'watchMyLiquidations': undefined,

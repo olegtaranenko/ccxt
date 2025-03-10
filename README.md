@@ -229,13 +229,13 @@ console.log(version, Object.keys(exchanges));
 
 All-in-one browser bundle (dependencies included), served from a CDN of your choice:
 
-* jsDelivr: https://cdn.jsdelivr.net/npm/ccxt@4.4.65/dist/ccxt.browser.min.js
-* unpkg: https://unpkg.com/ccxt@4.4.65/dist/ccxt.browser.min.js
+* jsDelivr: https://cdn.jsdelivr.net/npm/ccxt@4.4.66/dist/ccxt.browser.min.js
+* unpkg: https://unpkg.com/ccxt@4.4.66/dist/ccxt.browser.min.js
 
 CDNs are not updated in real-time and may have delays. Defaulting to the most recent version without specifying the version number is not recommended. Please, keep in mind that we are not responsible for the correct operation of those CDN servers.
 
 ```HTML
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/ccxt@4.4.65/dist/ccxt.browser.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/ccxt@4.4.66/dist/ccxt.browser.min.js"></script>
 ```
 
 Creates a global `ccxt` object:
@@ -301,7 +301,7 @@ Console.WriteLine(ccxt.Exchanges) // check this later
 [ccxt in GO with **PKG**](https://pkg.go.dev/github.com/ccxt/ccxt/go/v4)
 
 ```shell
-go get github.com/ccxt/ccxt/go/v4
+go install github.com/ccxt/ccxt/go/v4@latest
 ```
 
 ```Go
