@@ -146,9 +146,9 @@ export default class Exchange {
     positions: any;
     precision: {
         amount: Num;
-        price: Num;
-        cost?: Num;
         base?: Num;
+        cost?: Num;
+        price: Num;
         quote?: Num;
     };
     precisionMode: Num;
@@ -170,11 +170,11 @@ export default class Exchange {
     requiresWeb3: boolean;
     stablePairs: {};
     status: {
+        eta: Num;
+        info: any;
         status: Str;
         updated: Num;
-        eta: Num;
         url: Str;
-        info: any;
     };
     symbols: string[];
     targetAccount: any;

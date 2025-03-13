@@ -4,7 +4,7 @@
 
 # -----------------------------------------------------------------------------
 
-__version__ = '4.4.66'
+__version__ = '4.4.67'
 
 # -----------------------------------------------------------------------------
 
@@ -1905,10 +1905,10 @@ class Exchange(object):
                 'fetchDepositWithdrawFee': None,
                 'fetchDepositWithdrawFees': None,
                 'fetchFundingHistory': None,
-                'fetchFundingRate': None,
-                'fetchFundingRateHistory': None,
                 'fetchFundingInterval': None,
                 'fetchFundingIntervals': None,
+                'fetchFundingRate': None,
+                'fetchFundingRateHistory': None,
                 'fetchFundingRates': None,
                 'fetchGreeks': None,
                 'fetchIndexOHLCV': None,
@@ -1933,6 +1933,7 @@ class Exchange(object):
                 'fetchMarkets': True,
                 'fetchMarketsWs': None,
                 'fetchMarkOHLCV': None,
+                'fetchMarkPrices': None,
                 'fetchMyLiquidations': None,
                 'fetchMySettlementHistory': None,
                 'fetchMyTrades': None,
@@ -1940,8 +1941,8 @@ class Exchange(object):
                 'fetchOHLCV': None,
                 'fetchOHLCVWs': None,
                 'fetchOpenInterest': None,
-                'fetchOpenInterests': None,
                 'fetchOpenInterestHistory': None,
+                'fetchOpenInterests': None,
                 'fetchOpenOrder': None,
                 'fetchOpenOrders': None,
                 'fetchOpenOrdersWs': None,
@@ -1971,7 +1972,6 @@ class Exchange(object):
                 'fetchStatus': None,
                 'fetchTicker': True,
                 'fetchTickers': None,
-                'fetchMarkPrices': None,
                 'fetchTickersWs': None,
                 'fetchTickerWs': None,
                 'fetchTime': None,
@@ -2011,6 +2011,7 @@ class Exchange(object):
                 'swap': None,
                 'transfer': None,
                 'watchBalance': None,
+                'watchBidsAsks': None,
                 'watchLiquidations': None,
                 'watchLiquidationsForSymbols': None,
                 'watchMyLiquidations': None,
@@ -2019,7 +2020,6 @@ class Exchange(object):
                 'watchOHLCV': None,
                 'watchOHLCVForSymbols': None,
                 'watchOrderBook': None,
-                'watchBidsAsks': None,
                 'watchOrderBookForSymbols': None,
                 'watchOrders': None,
                 'watchOrdersForSymbols': None,

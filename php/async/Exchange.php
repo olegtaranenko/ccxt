@@ -43,11 +43,11 @@ use React\EventLoop\Loop;
 
 use Exception;
 
-$version = '4.4.66';
+$version = '4.4.67';
 
 class Exchange extends \ccxt\Exchange {
 
-    const VERSION = '4.4.66';
+    const VERSION = '4.4.67';
 
     public $browser;
     public $marketsLoading = null;
@@ -477,10 +477,10 @@ class Exchange extends \ccxt\Exchange {
                 'fetchDepositWithdrawFee' => null,
                 'fetchDepositWithdrawFees' => null,
                 'fetchFundingHistory' => null,
-                'fetchFundingRate' => null,
-                'fetchFundingRateHistory' => null,
                 'fetchFundingInterval' => null,
                 'fetchFundingIntervals' => null,
+                'fetchFundingRate' => null,
+                'fetchFundingRateHistory' => null,
                 'fetchFundingRates' => null,
                 'fetchGreeks' => null,
                 'fetchIndexOHLCV' => null,
@@ -505,6 +505,7 @@ class Exchange extends \ccxt\Exchange {
                 'fetchMarkets' => true,
                 'fetchMarketsWs' => null,
                 'fetchMarkOHLCV' => null,
+                'fetchMarkPrices' => null,
                 'fetchMyLiquidations' => null,
                 'fetchMySettlementHistory' => null,
                 'fetchMyTrades' => null,
@@ -512,8 +513,8 @@ class Exchange extends \ccxt\Exchange {
                 'fetchOHLCV' => null,
                 'fetchOHLCVWs' => null,
                 'fetchOpenInterest' => null,
-                'fetchOpenInterests' => null,
                 'fetchOpenInterestHistory' => null,
+                'fetchOpenInterests' => null,
                 'fetchOpenOrder' => null,
                 'fetchOpenOrders' => null,
                 'fetchOpenOrdersWs' => null,
@@ -543,7 +544,6 @@ class Exchange extends \ccxt\Exchange {
                 'fetchStatus' => null,
                 'fetchTicker' => true,
                 'fetchTickers' => null,
-                'fetchMarkPrices' => null,
                 'fetchTickersWs' => null,
                 'fetchTickerWs' => null,
                 'fetchTime' => null,
@@ -583,6 +583,7 @@ class Exchange extends \ccxt\Exchange {
                 'swap' => null,
                 'transfer' => null,
                 'watchBalance' => null,
+                'watchBidsAsks' => null,
                 'watchLiquidations' => null,
                 'watchLiquidationsForSymbols' => null,
                 'watchMyLiquidations' => null,
@@ -591,7 +592,6 @@ class Exchange extends \ccxt\Exchange {
                 'watchOHLCV' => null,
                 'watchOHLCVForSymbols' => null,
                 'watchOrderBook' => null,
-                'watchBidsAsks' => null,
                 'watchOrderBookForSymbols' => null,
                 'watchOrders' => null,
                 'watchOrdersForSymbols' => null,

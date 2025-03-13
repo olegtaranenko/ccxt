@@ -43,7 +43,7 @@ use BN\BN;
 use Sop\ASN1\Type\UnspecifiedType;
 use Exception;
 
-$version = '4.4.66';
+$version = '4.4.67';
 
 // rounding mode
 const TRUNCATE = 0;
@@ -62,7 +62,7 @@ const PAD_WITH_ZERO = 6;
 
 class Exchange {
 
-    const VERSION = '4.4.66';
+    const VERSION = '4.4.67';
 
     private static $base58_alphabet = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
     private static $base58_encoder = null;
@@ -2370,10 +2370,10 @@ class Exchange {
                 'fetchDepositWithdrawFee' => null,
                 'fetchDepositWithdrawFees' => null,
                 'fetchFundingHistory' => null,
-                'fetchFundingRate' => null,
-                'fetchFundingRateHistory' => null,
                 'fetchFundingInterval' => null,
                 'fetchFundingIntervals' => null,
+                'fetchFundingRate' => null,
+                'fetchFundingRateHistory' => null,
                 'fetchFundingRates' => null,
                 'fetchGreeks' => null,
                 'fetchIndexOHLCV' => null,
@@ -2398,6 +2398,7 @@ class Exchange {
                 'fetchMarkets' => true,
                 'fetchMarketsWs' => null,
                 'fetchMarkOHLCV' => null,
+                'fetchMarkPrices' => null,
                 'fetchMyLiquidations' => null,
                 'fetchMySettlementHistory' => null,
                 'fetchMyTrades' => null,
@@ -2405,8 +2406,8 @@ class Exchange {
                 'fetchOHLCV' => null,
                 'fetchOHLCVWs' => null,
                 'fetchOpenInterest' => null,
-                'fetchOpenInterests' => null,
                 'fetchOpenInterestHistory' => null,
+                'fetchOpenInterests' => null,
                 'fetchOpenOrder' => null,
                 'fetchOpenOrders' => null,
                 'fetchOpenOrdersWs' => null,
@@ -2436,7 +2437,6 @@ class Exchange {
                 'fetchStatus' => null,
                 'fetchTicker' => true,
                 'fetchTickers' => null,
-                'fetchMarkPrices' => null,
                 'fetchTickersWs' => null,
                 'fetchTickerWs' => null,
                 'fetchTime' => null,
@@ -2476,6 +2476,7 @@ class Exchange {
                 'swap' => null,
                 'transfer' => null,
                 'watchBalance' => null,
+                'watchBidsAsks' => null,
                 'watchLiquidations' => null,
                 'watchLiquidationsForSymbols' => null,
                 'watchMyLiquidations' => null,
@@ -2484,7 +2485,6 @@ class Exchange {
                 'watchOHLCV' => null,
                 'watchOHLCVForSymbols' => null,
                 'watchOrderBook' => null,
-                'watchBidsAsks' => null,
                 'watchOrderBookForSymbols' => null,
                 'watchOrders' => null,
                 'watchOrdersForSymbols' => null,
