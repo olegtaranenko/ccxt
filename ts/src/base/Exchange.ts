@@ -1781,7 +1781,6 @@ export default class Exchange {
             'api': undefined,
             'certified': false, // if certified by the CCXT dev team
             'commonCurrencies': {
-                'BCC': 'BCH',
                 'BCHSV': 'BSV',
                 'XBT': 'BTC',
             },
