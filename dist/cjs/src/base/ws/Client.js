@@ -13,25 +13,6 @@ var time = require('../functions/time.js');
 var index = require('../../static_dependencies/scure-base/index.js');
 
 // ----------------------------------------------------------------------------
-const TRUNCATE_LENGTH = 8192;
-/**
- * Truncates a string body for verbose logging purposes.
- * @param body - The string body to be truncated.
- * @param verboseTruncate - A flag indicating whether to truncate the body.
- * @returns The truncated body if `verboseTruncate` is true and `body` is not empty.
- *          If `verboseTruncate` is false or `body` is empty, the original `body` is returned.
- *          If `body` is longer than `TRUNCATE_LENGTH`, it is truncated to half of `TRUNCATE_LENGTH`
- *          on both sides, with an ellipsis in the middle.
- */
-function getBodyTruncated(body, verboseTruncate) {
-    if (verboseTruncate && body) {
-        const len = body.length + 8;
-        if (body.length >= TRUNCATE_LENGTH) {
-            return body.substring(0, TRUNCATE_LENGTH / 2) + '\n ... \n' + body.substring(len - TRUNCATE_LENGTH / 2);
-        }
-    }
-    return body;
-}
 class Client {
     constructor(url, onMessageCallback, onErrorCallback, onCloseCallback, onConnectedCallback, config = {}) {
         this.useMessageQueue = false;

@@ -632,7 +632,12 @@ class Exchange extends \ccxt\Exchange {
                 '526' => '\\ccxt\\ExchangeNotAvailable',
                 '530' => '\\ccxt\\ExchangeNotAvailable',
             ),
-            'id' => null,
+            'commonCurrencies' => array(
+                'XBT' => 'BTC',
+                'BCHSV' => 'BSV',
+            ),
+            'precisionMode' => TICK_SIZE,
+            'paddingMode' => NO_PADDING,
             'limits' => array(
                 'amount' => array( 'min' => null, 'max' => null ),
                 'cost' => array( 'min' => null, 'max' => null ),

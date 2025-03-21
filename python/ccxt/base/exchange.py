@@ -2061,7 +2061,12 @@ class Exchange(object):
                 '526': ExchangeNotAvailable,
                 '530': ExchangeNotAvailable,
             },
-            'id': None,
+            'commonCurrencies': {
+                'XBT': 'BTC',
+                'BCHSV': 'BSV',
+            },
+            'precisionMode': TICK_SIZE,
+            'paddingMode': NO_PADDING,
             'limits': {
                 'amount': {'min': None, 'max': None},
                 'cost': {'min': None, 'max': None},

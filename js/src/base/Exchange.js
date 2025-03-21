@@ -1611,7 +1611,12 @@ export default class Exchange {
                 '526': ExchangeNotAvailable,
                 '530': ExchangeNotAvailable,
             },
-            'id': undefined,
+            'commonCurrencies': {
+                'XBT': 'BTC',
+                'BCHSV': 'BSV',
+            },
+            'precisionMode': TICK_SIZE,
+            'paddingMode': NO_PADDING,
             'limits': {
                 'amount': { 'min': undefined, 'max': undefined },
                 'cost': { 'min': undefined, 'max': undefined },

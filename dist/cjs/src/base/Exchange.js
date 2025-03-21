@@ -1629,7 +1629,12 @@ class Exchange {
                 '526': errors.ExchangeNotAvailable,
                 '530': errors.ExchangeNotAvailable,
             },
-            'id': undefined,
+            'commonCurrencies': {
+                'XBT': 'BTC',
+                'BCHSV': 'BSV',
+            },
+            'precisionMode': TICK_SIZE,
+            'paddingMode': NO_PADDING,
             'limits': {
                 'amount': { 'min': undefined, 'max': undefined },
                 'cost': { 'min': undefined, 'max': undefined },
