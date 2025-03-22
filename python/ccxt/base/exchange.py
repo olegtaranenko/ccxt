@@ -1788,7 +1788,6 @@ class Exchange(object):
             'api': None,
             'certified': False,  # if certified by the CCXT dev team
             'commonCurrencies': {
-                'BCC': 'BCH',
                 'BCHSV': 'BSV',
                 'XBT': 'BTC',
             },
@@ -2061,12 +2060,7 @@ class Exchange(object):
                 '526': ExchangeNotAvailable,
                 '530': ExchangeNotAvailable,
             },
-            'commonCurrencies': {
-                'XBT': 'BTC',
-                'BCHSV': 'BSV',
-            },
-            'precisionMode': TICK_SIZE,
-            'paddingMode': NO_PADDING,
+            'id': None,
             'limits': {
                 'amount': {'min': None, 'max': None},
                 'cost': {'min': None, 'max': None},

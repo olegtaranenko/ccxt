@@ -359,7 +359,6 @@ class Exchange extends \ccxt\Exchange {
             'api' => null,
             'certified' => false, // if certified by the CCXT dev team
             'commonCurrencies' => array(
-                'BCC' => 'BCH',
                 'BCHSV' => 'BSV',
                 'XBT' => 'BTC',
             ),
@@ -632,12 +631,7 @@ class Exchange extends \ccxt\Exchange {
                 '526' => '\\ccxt\\ExchangeNotAvailable',
                 '530' => '\\ccxt\\ExchangeNotAvailable',
             ),
-            'commonCurrencies' => array(
-                'XBT' => 'BTC',
-                'BCHSV' => 'BSV',
-            ),
-            'precisionMode' => TICK_SIZE,
-            'paddingMode' => NO_PADDING,
+            'id' => null,
             'limits' => array(
                 'amount' => array( 'min' => null, 'max' => null ),
                 'cost' => array( 'min' => null, 'max' => null ),

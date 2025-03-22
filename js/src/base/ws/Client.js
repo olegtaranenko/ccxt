@@ -4,8 +4,8 @@
 // https://github.com/ccxt/ccxt/blob/master/CONTRIBUTING.md#how-to-contribute-code
 // EDIT THE CORRESPONDENT .ts FILE INSTEAD
 
-import { RequestTimeout, NetworkError, NotSupported, BaseError, ExchangeClosedByUser } from '../../base/errors.js';
-import { inflateSync, gunzipSync } from '../../static_dependencies/fflake/browser.js';
+import { BaseError, ExchangeClosedByUser, NetworkError, NotSupported, RequestTimeout } from '../../base/errors.js';
+import { gunzipSync, inflateSync } from '../../static_dependencies/fflake/browser.js';
 import { Future } from './Future.js';
 import { deepExtend, isJsonEncodedObject, isNode, milliseconds, } from '../../base/functions.js';
 import { utf8 } from '../../static_dependencies/scure-base/index.js';
