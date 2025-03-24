@@ -1,7 +1,7 @@
 export declare type Bool = boolean | undefined;
 export declare type IndexType = number | string;
-export declare type int = number;
 export declare type Int = number | undefined;
+export declare type int = number;
 export declare type MarketType = 'future' | 'margin' | 'option' | 'spot' | 'swap' | 'delivery' | 'index';
 export declare type Num = number | undefined;
 export declare type OrderSide = 'buy' | 'sell' | string;
@@ -286,8 +286,8 @@ export interface Position {
     lastUpdateTimestamp?: number;
     leverage?: number;
     liquidationPrice?: number;
+    maintenanceMargin?: number;
     maintenanceMarginPercentage?: number;
-    maintenenceMargin?: number;
     marginMode?: Str;
     marginRatio?: number;
     markPrice?: number;
@@ -524,13 +524,13 @@ export interface Balances extends Dictionary<Balance> {
     info: any;
     timestamp?: any;
 }
-export interface CrossBorrowRates extends Dictionary<CrossBorrowRates> {
+export interface CrossBorrowRates extends Dictionary<CrossBorrowRate> {
 }
 export interface Currencies extends Dictionary<CurrencyInterface> {
 }
 export interface FundingRates extends Dictionary<FundingRate> {
 }
-export interface IsolatedBorrowRates extends Dictionary<IsolatedBorrowRates> {
+export interface IsolatedBorrowRates extends Dictionary<IsolatedBorrowRate> {
 }
 export interface LastPrices extends Dictionary<LastPrice> {
 }
