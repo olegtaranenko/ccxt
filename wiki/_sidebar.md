@@ -96,7 +96,6 @@
 	- [paymium](exchanges/paymium.md)
 	- [phemex](exchanges/phemex.md)
 	- [poloniex](exchanges/poloniex.md)
-	- [poloniexfutures](exchanges/poloniexfutures.md)
 	- [probit](exchanges/probit.md)
 	- [timex](exchanges/timex.md)
 	- [tokocrypto](exchanges/tokocrypto.md)

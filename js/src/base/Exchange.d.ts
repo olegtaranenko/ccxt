@@ -1,7 +1,7 @@
 import * as functions from './functions.js';
 import WsClient from './ws/WsClient.js';
 import { CountedOrderBook, IndexedOrderBook, OrderBook as WsOrderBook } from './ws/OrderBook.js';
-import type { Account, Balance, BalanceAccount, Balances, Bool, BorrowInterest, CancellationRequest, Conversion, CrossBorrowRate, CrossBorrowRates, Currencies, Currency, CurrencyInterface, DepositAddress, DepositAddressResponse, DepositWithdrawFeeNetwork, Dict, Dictionary, FundingHistory, FundingRate, FundingRateHistory, FundingRates, Greeks, IndexType, int, Int, IsolatedBorrowRate, IsolatedBorrowRates, LastPrice, LastPrices, LedgerEntry, Leverage, Leverages, LeverageTier, LeverageTiers, Liquidation, LongShortRatio, MarginMode, MarginModes, MarginModification, Market, MarketInterface, MarketType, MinMax, Num, OHLCV, OHLCVC, OpenInterest, OpenInterests, Option, OptionChain, Order, OrderBook, OrderBooks, OrderRequest, OrderSide, OrderType, Position, Str, Strings, Ticker, Tickers, Trade, TradingFeeInterface, TradingFees, Transaction, TransferEntry } from './types.js';
+import type { Account, Balance, BalanceAccount, Balances, Bool, BorrowInterest, CancellationRequest, ConstructorArgs, Conversion, CrossBorrowRate, CrossBorrowRates, Currencies, Currency, CurrencyInterface, DepositAddress, DepositAddressResponse, DepositWithdrawFeeNetwork, Dict, Dictionary, FundingHistory, FundingRate, FundingRateHistory, FundingRates, Greeks, IndexType, int, Int, IsolatedBorrowRate, IsolatedBorrowRates, LastPrice, LastPrices, LedgerEntry, Leverage, Leverages, LeverageTier, LeverageTiers, Liquidation, LongShortRatio, MarginMode, MarginModes, MarginModification, Market, MarketInterface, MarketType, MinMax, Num, OHLCV, OHLCVC, OpenInterest, OpenInterests, Option, OptionChain, Order, OrderBook, OrderBooks, OrderRequest, OrderSide, OrderType, Position, Str, Strings, Ticker, Tickers, Trade, TradingFeeInterface, TradingFees, Transaction, TransferEntry } from './types.js';
 import { ArrayCache, ArrayCacheByTimestamp } from './ws/Cache.js';
 import { OrderBook as Ob } from './ws/OrderBook.js';
 import Client from './ws/Client.js';
@@ -228,13 +228,13 @@ export default class Exchange {
         outputLen: number;
         blockLen: number;
         create(): import("../static_dependencies/noble-hashes/utils.js").Hash<import("../static_dependencies/noble-hashes/utils.js").Hash<any>>;
-    }, digest?: "binary" | "hex" | "base64") => any;
+    }, digest?: "hex" | "base64" | "binary") => any;
     hmac: (request: import("../static_dependencies/noble-hashes/utils.js").Input, secret: import("../static_dependencies/noble-hashes/utils.js").Input, hash: {
         (message: import("../static_dependencies/noble-hashes/utils.js").Input): Uint8Array;
         outputLen: number;
         blockLen: number;
         create(): import("../static_dependencies/noble-hashes/utils.js").Hash<import("../static_dependencies/noble-hashes/utils.js").Hash<any>>;
-    }, digest?: "binary" | "hex" | "base64") => any;
+    }, digest?: "hex" | "base64" | "binary") => any;
     implodeParams: (string: string, params: any[] | Dictionary<any>) => string;
     inArray: (needle: any, haystack: any[]) => boolean;
     indexBy: (x: Dictionary<any>, k: IndexType, out?: Dictionary<any>) => Dictionary<any>;
@@ -312,7 +312,7 @@ export default class Exchange {
     ymdhms: (timestamp: any, infix?: string) => string;
     yymmdd: (timestamp: any, infix?: string) => string;
     yyyymmdd: (timestamp: any, infix?: string) => string;
-    constructor(userConfig?: {});
+    constructor(userConfig?: ConstructorArgs);
     encodeURIComponent(...args: any[]): string;
     checkRequiredVersion(requiredVersion: any, error?: boolean): boolean;
     throttle(cost?: any): any;
