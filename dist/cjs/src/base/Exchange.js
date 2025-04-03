@@ -91,7 +91,7 @@ class Exchange {
         this.validateClientSsl = false;
         this.validateServerSsl = true;
         this.timeout = 10000; // milliseconds
-        this.twofa = undefined; // two-factor authentication (2FA)
+        this.twofa = undefined; // two-factor authentication (2-FA)
         this.verbose = false;
         this.verboseTruncate = false;
         this.accounts = undefined;
