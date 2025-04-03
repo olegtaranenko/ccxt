@@ -370,9 +370,9 @@ export default class Exchange {
     validateClientSsl: boolean = false
     validateServerSsl: boolean = true
 
-    timeout: Int      = 10000; // milliseconds
-    twofa             = undefined; // two-factor authentication (2FA)
-    verbose: boolean  = false;
+    timeout: Int = 10000; // milliseconds
+    twofa = undefined; // two-factor authentication (2-FA)
+    verbose: boolean = false;
     verboseLogVeto: any;
     verboseTruncate: boolean = false;
 
