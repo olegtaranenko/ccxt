@@ -2448,11 +2448,12 @@ class binance extends Exchange {
                 'adjustForTimeDifference' => false, // controls the adjustment logic upon instantiation
                 'broker' => array(
                     'delivery' => 'x-xcKtGhcu',
-                    'future' => 'x-xcKtGhcu',
-                    'margin' => 'x-R4BD3S82',
+                    'future' => 'x-cvBPrNm9',
+                    'inverse' => 'x-xcKtGhcu',
+                    'margin' => 'x-TKT5PX2F',
                     'option' => 'x-xcKtGhcu',
-                    'spot' => 'x-R4BD3S82',
-                    'swap' => 'x-xcKtGhcu',
+                    'spot' => 'x-TKT5PX2F',
+                    'swap' => 'x-cvBPrNm9',
                 ),
                 'defaultSubType' => null, // 'linear', 'inverse'
                 'defaultTimeInForce' => 'GTC', // 'GTC' = Good To Cancel (default), 'IOC' = Immediate Or Cancel
@@ -5333,7 +5334,7 @@ class binance extends Exchange {
         //         ),
         //         "cancelResult" => "SUCCESS",
         //         "newOrderResponse" => array(
-        //             "clientOrderId" => "x-R4BD3S8222ecb58eb9074fb1be018c",
+        //             "clientOrderId" => "x-TKT5PX2F22ecb58eb9074fb1be018c",
         //             "cummulativeQuoteQty" => "0.00000000",
         //             "executedQty" => "0.00000000",
         //             "fills" => array(),
@@ -5730,7 +5731,7 @@ class binance extends Exchange {
         // spot => editOrder
         //
         //     {
-        //         "clientOrderId" => "x-R4BD3S8222ecb58eb9074fb1be018c",
+        //         "clientOrderId" => "x-TKT5PX2F22ecb58eb9074fb1be018c",
         //         "cummulativeQuoteQty" => "0.00000000",
         //         "executedQty" => "0.00000000",
         //         "fills" => array(),
@@ -5793,7 +5794,7 @@ class binance extends Exchange {
         // createOrder with array( "newOrderRespType" => "FULL" )
         //
         //     {
-        //       "clientOrderId" => "x-R4BD3S825e669e75b6c14f69a2c43e",
+        //       "clientOrderId" => "x-TKT5PX2F5e669e75b6c14f69a2c43e",
         //       "cummulativeQuoteQty" => "29.47081500",
         //       "executedQty" => "0.00050000",
         //       "fills" => array(
@@ -5971,7 +5972,7 @@ class binance extends Exchange {
         // createOrder, cancelAllOrders, cancelOrder => portfolio margin spot margin
         //
         //     {
-        //         "clientOrderId" => "x-R4BD3S82e9ef29d8346440f0b28b86",
+        //         "clientOrderId" => "x-TKT5PX2Fe9ef29d8346440f0b28b86",
         //         "cummulativeQuoteQty" => "0.00000000",
         //         "executedQty" => "0.00000000",
         //         "fills" => array(),
@@ -5991,7 +5992,7 @@ class binance extends Exchange {
         //
         //     {
         //         "accountId" => 200180970,
-        //         "clientOrderId" => "x-R4BD3S826f724c2a4af6425f98c7b6",
+        //         "clientOrderId" => "x-TKT5PX2F6f724c2a4af6425f98c7b6",
         //         "cummulativeQuoteQty" => "0.00000000",
         //         "executedQty" => "0.00000000",
         //         "icebergQty" => "0.00000000",
@@ -6567,8 +6568,12 @@ class binance extends Exchange {
         $clientOrderIdRequest = $isPortfolioMarginConditional ? 'newClientStrategyId' : 'newClientOrderId';
         if ($clientOrderId === null) {
             $broker = $this->safe_dict($this->options, 'broker', array());
-            $defaultId = ($market['contract']) ? 'x-xcKtGhcu' : 'x-R4BD3S82';
-            $brokerId = $this->safe_string($broker, $marketType, $defaultId);
+            $defaultId = ($market['contract']) ? 'x-xcKtGhcu' : 'x-TKT5PX2F';
+            $idMarketType = 'spot';
+            if ($market['contract']) {
+                $idMarketType = ($market['swap'] && $market['linear']) ? 'swap' : 'inverse';
+            }
+            $brokerId = $this->safe_string($broker, $idMarketType, $defaultId);
             $request[$clientOrderIdRequest] = $brokerId . $this->uuid22();
         } else {
             $request[$clientOrderIdRequest] = $clientOrderId;
@@ -7149,7 +7154,7 @@ class binance extends Exchange {
         //     array(
         //         array(
         //             "accountId" => 200180970,
-        //             "clientOrderId" => "x-R4BD3S82e9ef29d8346440f0b28b86",
+        //             "clientOrderId" => "x-TKT5PX2Fe9ef29d8346440f0b28b86",
         //             "cummulativeQuoteQty" => "0.00000000",
         //             "executedQty" => "0.00000000",
         //             "icebergQty" => "0.00000000",
@@ -7810,7 +7815,7 @@ class binance extends Exchange {
             //    array(
             //        {
             //            "symbol" => "ADAUSDT",
-            //            "origClientOrderId" => "x-R4BD3S82662cde7a90114475b86e21",
+            //            "origClientOrderId" => "x-TKT5PX2F662cde7a90114475b86e21",
             //            "orderId" => 3935107,
             //            "orderListId" => -1,
             //            "clientOrderId" => "bqM2w1oTlugfRAjnTIFBE8",
@@ -12002,7 +12007,7 @@ class binance extends Exchange {
                 if ($newClientOrderId === null) {
                     $isSpotOrMargin = (mb_strpos($api, 'sapi') > -1 || $api === 'private');
                     $marketType = $isSpotOrMargin ? 'spot' : 'future';
-                    $defaultId = (!$isSpotOrMargin) ? 'x-xcKtGhcu' : 'x-R4BD3S82';
+                    $defaultId = (!$isSpotOrMargin) ? 'x-xcKtGhcu' : 'x-TKT5PX2F';
                     $broker = $this->safe_dict($this->options, 'broker', array());
                     $brokerId = $this->safe_string($broker, $marketType, $defaultId);
                     $params['newClientOrderId'] = $brokerId . $this->uuid22();
