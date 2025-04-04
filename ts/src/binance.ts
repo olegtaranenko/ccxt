@@ -2526,11 +2526,12 @@ export default class binance extends Exchange {
                 'adjustForTimeDifference': false, // controls the adjustment logic upon instantiation
                 'broker': {
                     'delivery': 'x-xcKtGhcu',
-                    'future': 'x-xcKtGhcu',
-                    'margin': 'x-R4BD3S82',
+                    'future': 'x-cvBPrNm9',
+                    'inverse': 'x-xcKtGhcu',
+                    'margin': 'x-TKT5PX2F',
                     'option': 'x-xcKtGhcu',
-                    'spot': 'x-R4BD3S82',
-                    'swap': 'x-xcKtGhcu',
+                    'spot': 'x-TKT5PX2F',
+                    'swap': 'x-cvBPrNm9',
                 },
                 'defaultSubType': undefined, // 'linear', 'inverse'
                 'defaultTimeInForce': 'GTC', // 'GTC' = Good To Cancel (default), 'IOC' = Immediate Or Cancel
@@ -4275,9 +4276,9 @@ export default class binance extends Exchange {
         //
         //     {
         //         "symbol": "BTCUSDT",
-        //         "markPrice": "11793.63104562",  // mark price
+        //         "markPrice": "11793.63104562", // mark price
         //         "indexPrice": "11781.80495970", // index price
-        //         "estimatedSettlePrice": "11781.16138815", // Estimated Settle Price, only useful in the last hour before the settlement starts.
+        //         "estimatedSettlePrice": "11781.16138815", // Estimated Settle Price, only useful in the last hour before the settlement starts
         //         "lastFundingRate": "0.00038246",  // This is the lastest estimated funding rate
         //         "nextFundingTime": 1597392000000,
         //         "interestRate": "0.00010000",
@@ -5403,7 +5404,7 @@ export default class binance extends Exchange {
         //         },
         //         "cancelResult": "SUCCESS",
         //         "newOrderResponse": {
-        //             "clientOrderId": "x-R4BD3S8222ecb58eb9074fb1be018c",
+        //             "clientOrderId": "x-TKT5PX2F22ecb58eb9074fb1be018c",
         //             "cummulativeQuoteQty": "0.00000000",
         //             "executedQty": "0.00000000",
         //             "fills": [],
@@ -5802,7 +5803,7 @@ export default class binance extends Exchange {
         // spot: editOrder
         //
         //     {
-        //         "clientOrderId": "x-R4BD3S8222ecb58eb9074fb1be018c",
+        //         "clientOrderId": "x-TKT5PX2F22ecb58eb9074fb1be018c",
         //         "cummulativeQuoteQty": "0.00000000",
         //         "executedQty": "0.00000000",
         //         "fills": [],
@@ -5865,7 +5866,7 @@ export default class binance extends Exchange {
         // createOrder with { "newOrderRespType": "FULL" }
         //
         //     {
-        //       "clientOrderId": "x-R4BD3S825e669e75b6c14f69a2c43e",
+        //       "clientOrderId": "x-TKT5PX2F5e669e75b6c14f69a2c43e",
         //       "cummulativeQuoteQty": "29.47081500",
         //       "executedQty": "0.00050000",
         //       "fills": [
@@ -6043,7 +6044,7 @@ export default class binance extends Exchange {
         // createOrder, cancelAllOrders, cancelOrder: portfolio margin spot margin
         //
         //     {
-        //         "clientOrderId": "x-R4BD3S82e9ef29d8346440f0b28b86",
+        //         "clientOrderId": "x-TKT5PX2Fe9ef29d8346440f0b28b86",
         //         "cummulativeQuoteQty": "0.00000000",
         //         "executedQty": "0.00000000",
         //         "fills": [],
@@ -6063,7 +6064,7 @@ export default class binance extends Exchange {
         //
         //     {
         //         "accountId": 200180970,
-        //         "clientOrderId": "x-R4BD3S826f724c2a4af6425f98c7b6",
+        //         "clientOrderId": "x-TKT5PX2F6f724c2a4af6425f98c7b6",
         //         "cummulativeQuoteQty": "0.00000000",
         //         "executedQty": "0.00000000",
         //         "icebergQty": "0.00000000",
@@ -6641,8 +6642,12 @@ export default class binance extends Exchange {
         const clientOrderIdRequest = isPortfolioMarginConditional ? 'newClientStrategyId' : 'newClientOrderId';
         if (clientOrderId === undefined) {
             const broker = this.safeDict (this.options, 'broker', {});
-            const defaultId = (market['contract']) ? 'x-xcKtGhcu' : 'x-R4BD3S82';
-            const brokerId = this.safeString (broker, marketType, defaultId);
+            const defaultId = (market['contract']) ? 'x-xcKtGhcu' : 'x-TKT5PX2F';
+            let idMarketType = 'spot';
+            if (market['contract']) {
+                idMarketType = (market['swap'] && market['linear']) ? 'swap' : 'inverse';
+            }
+            const brokerId = this.safeString (broker, idMarketType, defaultId);
             request[clientOrderIdRequest] = brokerId + this.uuid22 ();
         } else {
             request[clientOrderIdRequest] = clientOrderId;
@@ -7223,7 +7228,7 @@ export default class binance extends Exchange {
         //     [
         //         {
         //             "accountId": 200180970,
-        //             "clientOrderId": "x-R4BD3S82e9ef29d8346440f0b28b86",
+        //             "clientOrderId": "x-TKT5PX2Fe9ef29d8346440f0b28b86",
         //             "cummulativeQuoteQty": "0.00000000",
         //             "executedQty": "0.00000000",
         //             "icebergQty": "0.00000000",
@@ -7884,7 +7889,7 @@ export default class binance extends Exchange {
             //    [
             //        {
             //            "symbol": "ADAUSDT",
-            //            "origClientOrderId": "x-R4BD3S82662cde7a90114475b86e21",
+            //            "origClientOrderId": "x-TKT5PX2F662cde7a90114475b86e21",
             //            "orderId": 3935107,
             //            "orderListId": -1,
             //            "clientOrderId": "bqM2w1oTlugfRAjnTIFBE8",
@@ -12056,7 +12061,7 @@ export default class binance extends Exchange {
                 if (newClientOrderId === undefined) {
                     const isSpotOrMargin = (api.indexOf ('sapi') > -1 || api === 'private');
                     const marketType = isSpotOrMargin ? 'spot' : 'future';
-                    const defaultId = (!isSpotOrMargin) ? 'x-xcKtGhcu' : 'x-R4BD3S82';
+                    const defaultId = (!isSpotOrMargin) ? 'x-xcKtGhcu' : 'x-TKT5PX2F';
                     const broker = this.safeDict (this.options, 'broker', {});
                     const brokerId = this.safeString (broker, marketType, defaultId);
                     params['newClientOrderId'] = brokerId + this.uuid22 ();
