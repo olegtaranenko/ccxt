@@ -37,7 +37,7 @@ class binanceusdm(binance, ImplicitAPI):
                 'defaultSubType': 'linear',
                 'fetchMarkets': ['linear'],
                 # https://www.binance.com/en/support/faq/360033162192
-                # tier amount, maintenance margin, initial margin
+                # tier amount, maintenance margin, initial margin,
                 'leverageBrackets': None,
                 'marginModes': {},
                 'marginTypes': {},

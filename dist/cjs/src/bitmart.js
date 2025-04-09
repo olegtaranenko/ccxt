@@ -1194,7 +1194,7 @@ class bitmart extends bitmart$1 {
         //     {
         //         "message": "OK",
         //         "code": 1000,
-        //         "trace": "619294ecef584282b26a3be322b1e01f.66.17403093228242228",
+        //         "trace": "619294ecef584282b26a3be322b1e01f.66.17403093228242229",
         //         "data": {
         //             "currencies": [
         //                 {
@@ -4057,10 +4057,12 @@ class bitmart extends bitmart$1 {
         const timestamp = this.safeInteger(transaction, 'apply_time');
         let currencyId = this.safeString(transaction, 'currency');
         let networkId = undefined;
-        if (currencyId.indexOf('NFT') < 0) {
-            const parts = currencyId.split('-');
-            currencyId = this.safeString(parts, 0);
-            networkId = this.safeString(parts, 1);
+        if (currencyId !== undefined) {
+            if (currencyId.indexOf('NFT') < 0) {
+                const parts = currencyId.split('-');
+                currencyId = this.safeString(parts, 0);
+                networkId = this.safeString(parts, 1);
+            }
         }
         const code = this.safeCurrencyCode(currencyId, currency);
         const status = this.parseTransactionStatus(this.safeString(transaction, 'status'));
