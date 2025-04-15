@@ -4,7 +4,7 @@
 
 # -----------------------------------------------------------------------------
 
-__version__ = '4.4.73'
+__version__ = '4.4.75'
 
 # -----------------------------------------------------------------------------
 
@@ -509,7 +509,7 @@ class Exchange(object):
         proxyUrl = self.check_proxy_url_settings(url, method, headers, body)
         if proxyUrl is not None:
             request_headers.update({'Origin': self.origin})
-            url = proxyUrl + url
+            url = proxyUrl + self.url_encoder_for_proxy_url(url)
         # proxy agents
         proxies = None  # set default
         httpProxy, httpsProxy, socksProxy = self.check_proxy_settings(url, method, headers, body)
@@ -2245,6 +2245,12 @@ class Exchange(object):
             raise InvalidProxySettings(self.id + ' you have multiple conflicting proxy settings(' + joinedProxyNames + '), please use only one from : proxyUrl, proxy_url, proxyUrlCallback, proxy_url_callback')
         return proxyUrl
 
+    def url_encoder_for_proxy_url(self, targetUrl: str):
+        # to be overriden
+        includesQuery = targetUrl.find('?') >= 0
+        finalUrl = self.encode_uri_component(targetUrl) if includesQuery else targetUrl
+        return finalUrl
+
     def check_proxy_settings(self, url: Str = None, method: Str = None, headers=None, body=None):
         usedProxies = []
         httpProxy = None
@@ -2904,9 +2910,6 @@ class Exchange(object):
 
     def safe_currency_structure(self, currency: object):
         # derive data from networks: deposit, withdraw, active, fee, limits, precision
-        currencyDeposit = self.safe_bool(currency, 'deposit')
-        currencyWithdraw = self.safe_bool(currency, 'withdraw')
-        currencyActive = self.safe_bool(currency, 'active')
         networks = self.safe_dict(currency, 'networks', {})
         keys = list(networks.keys())
         length = len(keys)
@@ -2915,20 +2918,24 @@ class Exchange(object):
                 key = keys[i]
                 network = networks[key]
                 deposit = self.safe_bool(network, 'deposit')
+                currencyDeposit = self.safe_bool(currency, 'deposit')
                 if currencyDeposit is None or deposit:
                     currency['deposit'] = deposit
                 withdraw = self.safe_bool(network, 'withdraw')
+                currencyWithdraw = self.safe_bool(currency, 'withdraw')
                 if currencyWithdraw is None or withdraw:
                     currency['withdraw'] = withdraw
-                active = self.safe_bool(network, 'active')
-                if currencyActive is None or active:
-                    currency['active'] = active
                 # set network 'active' to False if D or W is disabled
-                if self.safe_bool(network, 'active') is None:
+                active = self.safe_bool(network, 'active')
+                if active is None:
                     if deposit and withdraw:
                         currency['networks'][key]['active'] = True
                     elif deposit is not None and withdraw is not None:
                         currency['networks'][key]['active'] = False
+                active = self.safe_bool(network, 'active')
+                currencyActive = self.safe_bool(currency, 'active')
+                if currencyActive is None or active:
+                    currency['active'] = active
                 # find lowest fee(which is more desired)
                 fee = self.safe_string(network, 'fee')
                 feeMain = self.safe_string(currency, 'fee')

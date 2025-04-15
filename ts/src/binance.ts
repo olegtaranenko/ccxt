@@ -2609,99 +2609,7 @@ export default class binance extends Exchange {
                     'TRC20': 'TRX',
                 },
                 'networksById': {
-                    'algoexplorer.io': 'ALGO',
-                    'atomscan.com': 'ATOM',
-                    'bithomp.com': 'XRP',
-                    'block.gxb.io': 'GXS',
-                    'blockchair.com/bitcoin': 'BTC',
-                    'blockchair.com/bitcoin-cash': 'BCH',
-                    'blockchair.com/ecash': 'XEC',
-                    'blockscout.com': 'ETC',
-                    'bloks.io': 'EOS',
-                    'bscscan.com': 'BSC',
-                    'btgexplorer.com': 'BTG',
-                    'bts.ai': 'BTS',
-                    'cardanoscan.io': 'ADA',
-                    'cerebro.cortexlabs.ai': 'CTXC',
-                    'chain.nem.ninja': 'XEM',
-                    'chainz.cryptoid.info': 'VIA',
-                    'dashboard.internetcomputer.org': 'ICP',
-                    'digiexplorer.info': 'DGB',
-                    'dock.subscan.io': 'DOCK',
-                    'dogechain.info': 'DOGE',
-                    'etherscan.io': 'ERC20',
-                    'explore-fetchhub.fetch.ai': 'FET',
-                    'explore.vechain.org': 'VET',
-                    'explorer.ambrosus.com': 'AMB',
-                    'explorer.ark.io': 'ARK',
-                    'explorer.avax.network': 'AVAX',
-                    'explorer.binance.org': 'BEP2',
-                    'explorer.bitcoindiamond.org': 'BCD',
-                    'explorer.celo.org': 'CELO',
-                    'explorer.chiliz.com': 'CHZ',
-                    'explorer.dcrdata.org': 'DCR',
-                    'explorer.elrond.com': 'EGLD',
-                    'explorer.firo.org': 'FIRO',
-                    'explorer.gochain.io': 'GO',
-                    'explorer.harmony.one': 'ONE',
-                    'explorer.helium.com': 'HNT',
-                    'explorer.iota.org': 'IOTA',
-                    'explorer.litecoin.net': 'LTC',
-                    'explorer.lto.network': 'LTO',
-                    'explorer.nbs.plus': 'NBS',
-                    'explorer.nebl.io': 'NEBL',
-                    'explorer.nebulas.io': 'NAS',
-                    'explorer.nervos.org': 'CKB',
-                    'explorer.ont.io': 'ONT',
-                    'explorer.poa.network': 'POA',
-                    'explorer.rsk.co': 'RSK',
-                    'explorer.skycoin.com': 'SKY',
-                    'explorer.stacks.co': 'STX',
-                    'explorer.vite.net': 'VITE',
-                    'explorer.yoyow.org': 'YOYOW',
-                    'explorer.zcha.in': 'ZEC',
-                    'explorer.zensystem.io': 'ZEN',
-                    'filfox.info': 'FIL',
-                    'fio.bloks.io': 'FIO',
-                    'ftmscan.com': 'FTM',
-                    'hash-hash.info': 'HBAR',
-                    'iotexscan.io': 'IOTX',
-                    'irishub.iobscan.io': 'IRIS',
-                    'kava.mintscan.io': 'KAVA',
-                    'kmdexplorer.io': 'KMD',
-                    'kusama.subscan.io': 'KSM',
-                    'mainnet.theoan.com': 'AION',
-                    'minaexplorer.com': 'MINA',
-                    'nanolooker.com': 'NANO',
-                    'neoscan.io': 'NEO',
-                    'nulscan.io': 'NULS',
-                    'nxscan.com': 'NXS',
-                    'polkadot.subscan.io': 'DOT',
-                    'polygonscan.com': 'POLYGON',
-                    'qtum.info': 'QTUM',
-                    'ravencoin.network': 'RVN',
-                    'sc.tokenview.com': 'SC',
-                    'scan.tomochain.com': 'TOMO',
-                    'scope.klaytn.com': 'KLAY',
-                    'secretnodes.com': 'SCRT',
                     'SOL': 'SOL', // temporary fix for SPL definition
-                    'solscan.io': 'SOL',
-                    'steemscan.com': 'STEEM',
-                    'stellar.expert': 'XLM',
-                    'tracker.icon.foundation': 'ICX',
-                    'tronscan.org': 'TRC20',
-                    'verge-blockchain.info': 'XVG',
-                    'viewblock.io/arweave': 'AR',
-                    'viewblock.io/zilliqa': 'ZIL',
-                    'waltonchain.pro': 'WTC',
-                    'wavesexplorer.com': 'WAVES',
-                    'wax.eosx.io': 'WAXP',
-                    'www.hiveblockexplorer.com': 'HIVE',
-                    'www.iostabc.com': 'IOST',
-                    'www.mintscan.io': 'CTK',
-                    'www.oasisscan.com': 'ROSE',
-                    'www.thetascan.io': 'THETA',
-                    'www.wanscan.org': 'WAN',
                 },
                 'newOrderRespType': {
                     'market': 'FULL', // 'ACK' for order id, 'RESULT' for full order or 'FULL' for order with fills
@@ -2710,101 +2618,6 @@ export default class binance extends Exchange {
                 'quoteOrderQty': true, // whether market orders support amounts in quote currency
                 'recvWindow': 10 * 1000, // 10 sec
                 // 'repayCrossMarginMethod': 'papiPostRepayLoan', // papiPostMarginRepayDebt
-                // keeping this object for backward-compatibility
-                'reverseNetworks': {
-                    'algoexplorer.io': 'ALGO',
-                    'atomscan.com': 'ATOM',
-                    'bithomp.com': 'XRP',
-                    'block.gxb.io': 'GXS',
-                    'blockchair.com/bitcoin': 'BTC',
-                    'blockchair.com/bitcoin-cash': 'BCH',
-                    'blockchair.com/ecash': 'XEC',
-                    'blockscout.com': 'ETC',
-                    'bloks.io': 'EOS',
-                    'bscscan.com': 'BSC',
-                    'btgexplorer.com': 'BTG',
-                    'bts.ai': 'BTS',
-                    'cardanoscan.io': 'ADA',
-                    'cerebro.cortexlabs.ai': 'CTXC',
-                    'chain.nem.ninja': 'XEM',
-                    'chainz.cryptoid.info': 'VIA',
-                    'dashboard.internetcomputer.org': 'ICP',
-                    'digiexplorer.info': 'DGB',
-                    'dock.subscan.io': 'DOCK',
-                    'dogechain.info': 'DOGE',
-                    'etherscan.io': 'ERC20',
-                    'explore-fetchhub.fetch.ai': 'FET',
-                    'explore.vechain.org': 'VET',
-                    'explorer.ambrosus.com': 'AMB',
-                    'explorer.ark.io': 'ARK',
-                    'explorer.avax.network': 'AVAX',
-                    'explorer.binance.org': 'BEP2',
-                    'explorer.bitcoindiamond.org': 'BCD',
-                    'explorer.celo.org': 'CELO',
-                    'explorer.chiliz.com': 'CHZ',
-                    'explorer.dcrdata.org': 'DCR',
-                    'explorer.elrond.com': 'EGLD',
-                    'explorer.firo.org': 'FIRO',
-                    'explorer.gochain.io': 'GO',
-                    'explorer.harmony.one': 'ONE',
-                    'explorer.helium.com': 'HNT',
-                    'explorer.iota.org': 'IOTA',
-                    'explorer.litecoin.net': 'LTC',
-                    'explorer.lto.network': 'LTO',
-                    'explorer.nbs.plus': 'NBS',
-                    'explorer.nebl.io': 'NEBL',
-                    'explorer.nebulas.io': 'NAS',
-                    'explorer.nervos.org': 'CKB',
-                    'explorer.ont.io': 'ONT',
-                    'explorer.poa.network': 'POA',
-                    'explorer.rsk.co': 'RSK',
-                    'explorer.skycoin.com': 'SKY',
-                    'explorer.stacks.co': 'STX',
-                    'explorer.vite.net': 'VITE',
-                    'explorer.yoyow.org': 'YOYOW',
-                    'explorer.zcha.in': 'ZEC',
-                    'explorer.zensystem.io': 'ZEN',
-                    'filfox.info': 'FIL',
-                    'fio.bloks.io': 'FIO',
-                    'ftmscan.com': 'FTM',
-                    'hash-hash.info': 'HBAR',
-                    'iotexscan.io': 'IOTX',
-                    'irishub.iobscan.io': 'IRIS',
-                    'kava.mintscan.io': 'KAVA',
-                    'kmdexplorer.io': 'KMD',
-                    'kusama.subscan.io': 'KSM',
-                    'mainnet.theoan.com': 'AION',
-                    'minaexplorer.com': 'MINA',
-                    'nanolooker.com': 'NANO',
-                    'neoscan.io': 'NEO',
-                    'nulscan.io': 'NULS',
-                    'nxscan.com': 'NXS',
-                    'polkadot.subscan.io': 'DOT',
-                    'polygonscan.com': 'POLYGON',
-                    'qtum.info': 'QTUM',
-                    'ravencoin.network': 'RVN',
-                    'sc.tokenview.com': 'SC',
-                    'scan.tomochain.com': 'TOMO',
-                    'scope.klaytn.com': 'KLAY',
-                    'secretnodes.com': 'SCRT',
-                    'solscan.io': 'SOL',
-                    'steemscan.com': 'STEEM',
-                    'stellar.expert': 'XLM',
-                    'tracker.icon.foundation': 'ICX',
-                    'tronscan.org': 'TRC20',
-                    'verge-blockchain.info': 'XVG',
-                    'viewblock.io/arweave': 'AR',
-                    'viewblock.io/zilliqa': 'ZIL',
-                    'waltonchain.pro': 'WTC',
-                    'wavesexplorer.com': 'WAVES',
-                    'wax.eosx.io': 'WAXP',
-                    'www.hiveblockexplorer.com': 'HIVE',
-                    'www.iostabc.com': 'IOST',
-                    'www.mintscan.io': 'CTK',
-                    'www.oasisscan.com': 'ROSE',
-                    'www.thetascan.io': 'THETA',
-                    'www.wanscan.org': 'WAN',
-                },
                 'sandboxMode': false,
                 'throwMarginModeAlreadySet': false,
                 'timeDifference': 0, // the difference between system clock and Binance clock
@@ -9252,43 +9065,19 @@ export default class binance extends Exchange {
     parseDepositAddress (response, currency: Currency = undefined): DepositAddress {
         //
         //     {
-        //         "currency": "XRP",
+        //         "coin": "XRP",
         //         "address": "rEb8TK3gBgk5auZkwc6sHnwrGVJH8DuaLh",
         //         "tag": "108618262",
-        //         "info": {
-        //             "coin": "XRP",
-        //             "address": "rEb8TK3gBgk5auZkwc6sHnwrGVJH8DuaLh",
-        //             "tag": "108618262",
-        //             "url": "https://bithomp.com/explorer/rEb8TK3gBgk5auZkwc6sHnwrGVJH8DuaLh"
-        //         }
+        //         "url": "https://bithomp.com/explorer/rEb8TK3gBgk5auZkwc6sHnwrGVJH8DuaLh"
         //     }
         //
-        const info = this.safeDict (response, 'info', {});
-        const url = this.safeString (info, 'url');
+        const url = this.safeString (response, 'url');
         const address = this.safeString (response, 'address');
         const currencyId = this.safeString (response, 'currency');
         const code = this.safeCurrencyCode (currencyId, currency);
-        let impliedNetwork = undefined;
-        if (url !== undefined) {
-            const reverseNetworks = this.safeDict (this.options, 'reverseNetworks', {});
-            const parts = url.split ('/');
-            let topLevel = this.safeString (parts, 2);
-            if ((topLevel === 'blockchair.com') || (topLevel === 'viewblock.io')) {
-                const subLevel = this.safeString (parts, 3);
-                if (subLevel !== undefined) {
-                    topLevel = topLevel + '/' + subLevel;
-                }
-            }
-            impliedNetwork = this.safeString (reverseNetworks, topLevel);
-            const impliedNetworks = this.safeDict (this.options, 'impliedNetworks', {
-                'ETH': { 'ERC20': 'ETH' },
-                'TRX': { 'TRC20': 'TRX' },
-            });
-            if (code in impliedNetworks) {
-                const conversion = this.safeDict (impliedNetworks, code, {});
-                impliedNetwork = this.safeString (conversion, impliedNetwork, impliedNetwork);
-            }
-        }
+        // deposit-address endpoint provides only network url (not network ID/CODE)
+        // so we should map the url to network (their data is inside currencies)
+        const networkCode = this.getNetworkCodeByNetworkUrl (code, url);
         let tag = this.safeString (response, 'tag', '');
         if (tag.length === 0) {
             tag = undefined;
@@ -9298,7 +9087,7 @@ export default class binance extends Exchange {
             'address': address,
             'currency': code,
             'info': response,
-            'network': impliedNetwork,
+            'network': networkCode,
             'tag': tag,
         } as DepositAddress;
     }
@@ -12050,6 +11839,43 @@ export default class binance extends Exchange {
             'WELCOME_BONUS': 'cashback',
         };
         return this.safeString (ledgerType, type, type);
+    }
+
+    getNetworkCodeByNetworkUrl (currencyCode: string, depositUrl: Str = undefined): Str {
+        // depositUrl is like : https://bscscan.com/address/0xEF238AB229342849..
+        if (depositUrl === undefined) {
+            return undefined;
+        }
+        let networkCode = undefined;
+        const currency = this.currency (currencyCode);
+        const networks = this.safeDict (currency, 'networks', {});
+        const networkCodes = Object.keys (networks);
+        for (let i = 0; i < networkCodes.length; i++) {
+            const currentNetworkCode = networkCodes[i];
+            const info = this.safeDict (networks[currentNetworkCode], 'info', {});
+            const siteUrl = this.safeString (info, 'contractAddressUrl');
+            // check if url matches the field's value
+            if (siteUrl !== undefined && depositUrl.startsWith (this.getBaseDomainFromUrl (siteUrl))) {
+                networkCode = currentNetworkCode;
+            }
+        }
+        return networkCode;
+    }
+
+    getBaseDomainFromUrl (url: Str): Str {
+        if (url === undefined) {
+            return undefined;
+        }
+        const urlParts = url.split ('/');
+        const scheme = this.safeString (urlParts, 0);
+        if (scheme === undefined) {
+            return undefined;
+        }
+        const domain = this.safeString (urlParts, 2);
+        if (domain === undefined) {
+            return undefined;
+        }
+        return scheme + '//' + domain + '/';
     }
 
     sign (path, api = 'public', method = 'GET', params = {}, headers = undefined, body = undefined) {

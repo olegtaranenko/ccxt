@@ -8773,39 +8773,19 @@ class binance(Exchange, ImplicitAPI):
     def parse_deposit_address(self, response, currency: Currency = None) -> DepositAddress:
         #
         #     {
-        #         "currency": "XRP",
+        #         "coin": "XRP",
         #         "address": "rEb8TK3gBgk5auZkwc6sHnwrGVJH8DuaLh",
         #         "tag": "108618262",
-        #         "info": {
-        #             "coin": "XRP",
-        #             "address": "rEb8TK3gBgk5auZkwc6sHnwrGVJH8DuaLh",
-        #             "tag": "108618262",
-        #             "url": "https://bithomp.com/explorer/rEb8TK3gBgk5auZkwc6sHnwrGVJH8DuaLh"
-        #         }
+        #         "url": "https://bithomp.com/explorer/rEb8TK3gBgk5auZkwc6sHnwrGVJH8DuaLh"
         #     }
         #
-        info = self.safe_dict(response, 'info', {})
-        url = self.safe_string(info, 'url')
+        url = self.safe_string(response, 'url')
         address = self.safe_string(response, 'address')
         currencyId = self.safe_string(response, 'currency')
         code = self.safe_currency_code(currencyId, currency)
-        impliedNetwork = None
-        if url is not None:
-            reverseNetworks = self.safe_dict(self.options, 'reverseNetworks', {})
-            parts = url.split('/')
-            topLevel = self.safe_string(parts, 2)
-            if (topLevel == 'blockchair.com') or (topLevel == 'viewblock.io'):
-                subLevel = self.safe_string(parts, 3)
-                if subLevel is not None:
-                    topLevel = topLevel + '/' + subLevel
-            impliedNetwork = self.safe_string(reverseNetworks, topLevel)
-            impliedNetworks = self.safe_dict(self.options, 'impliedNetworks', {
-                'ETH': {'ERC20': 'ETH'},
-                'TRX': {'TRC20': 'TRX'},
-            })
-            if code in impliedNetworks:
-                conversion = self.safe_dict(impliedNetworks, code, {})
-                impliedNetwork = self.safe_string(conversion, impliedNetwork, impliedNetwork)
+        # deposit-address endpoint provides only network url(not network ID/CODE)
+        # so we should map the url to network(their data is inside currencies)
+        networkCode = self.get_network_code_by_network_url(code, url)
         tag = self.safe_string(response, 'tag', '')
         if len(tag) == 0:
             tag = None
@@ -11378,6 +11358,35 @@ class binance(Exchange, ImplicitAPI):
             'WELCOME_BONUS': 'cashback',
         }
         return self.safe_string(ledgerType, type, type)
+
+    def get_network_code_by_network_url(self, currencyCode: str, depositUrl: Str = None) -> Str:
+        # depositUrl is like : https://bscscan.com/address/0xEF238AB229342849..
+        if depositUrl is None:
+            return None
+        networkCode = None
+        currency = self.currency(currencyCode)
+        networks = self.safe_dict(currency, 'networks', {})
+        networkCodes = list(networks.keys())
+        for i in range(0, len(networkCodes)):
+            currentNetworkCode = networkCodes[i]
+            info = self.safe_dict(networks[currentNetworkCode], 'info', {})
+            siteUrl = self.safe_string(info, 'contractAddressUrl')
+            # check if url matches the field's value
+            if siteUrl is not None and depositUrl.startswith(self.get_base_domain_from_url(siteUrl)):
+                networkCode = currentNetworkCode
+        return networkCode
+
+    def get_base_domain_from_url(self, url: Str) -> Str:
+        if url is None:
+            return None
+        urlParts = url.split('/')
+        scheme = self.safe_string(urlParts, 0)
+        if scheme is None:
+            return None
+        domain = self.safe_string(urlParts, 2)
+        if domain is None:
+            return None
+        return scheme + '//' + domain + '/'
 
     def sign(self, path, api='public', method='GET', params={}, headers=None, body=None):
         urls = self.urls

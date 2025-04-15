@@ -58,7 +58,7 @@ public partial class coinlist : Exchange
                 { "fetchDepositWithdrawFee", false },
                 { "fetchDepositWithdrawFees", false },
                 { "fetchFundingHistory", false },
-                { "fetchFundingRate", false },
+                { "fetchFundingRate", true },
                 { "fetchFundingRateHistory", false },
                 { "fetchFundingRates", false },
                 { "fetchIndexOHLCV", false },
@@ -148,6 +148,7 @@ public partial class coinlist : Exchange
                         { "v1/leaderboard", 1 },
                         { "v1/affiliate/{competition_code}", 1 },
                         { "v1/competition/{competition_id}", 1 },
+                        { "v1/symbols/{symbol}/funding", 1 },
                     } },
                 } },
                 { "private", new Dictionary<string, object>() {
@@ -171,6 +172,7 @@ public partial class coinlist : Exchange
                         { "v1/credits", 1 },
                         { "v1/positions", 1 },
                         { "v1/accounts/{trader_id}/competitions", 1 },
+                        { "v1/closedPositions", 1 },
                     } },
                     { "post", new Dictionary<string, object>() {
                         { "v1/keys", 1 },
@@ -188,6 +190,9 @@ public partial class coinlist : Exchange
                     { "patch", new Dictionary<string, object>() {
                         { "v1/orders/{order_id}", 1 },
                         { "v1/orders/bulk", 1 },
+                    } },
+                    { "put", new Dictionary<string, object>() {
+                        { "v1/accounts/{trader_id}/alias", 1 },
                     } },
                     { "delete", new Dictionary<string, object>() {
                         { "v1/keys/{key}", 1 },
@@ -2597,6 +2602,96 @@ public partial class coinlist : Exchange
             { "withdrawal", "transfer" },
         };
         return this.safeString(types, type, type);
+    }
+
+    /**
+     * @method
+     * @name coinlist#fetchFundingRate
+     * @description fetch the current funding rate
+     * @see https://trade-docs.coinlist.co/#coinlist-pro-api-Funding-Rates
+     * @param {string} symbol unified market symbol
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object} a [funding rate structure]{@link https://docs.ccxt.com/#/?id=funding-rate-structure}
+     */
+    public async override Task<object> fetchFundingRate(object symbol, object parameters = null)
+    {
+        parameters ??= new Dictionary<string, object>();
+        await this.loadMarkets();
+        object market = this.market(symbol);
+        if (!isTrue(getValue(market, "swap")))
+        {
+            throw new BadSymbol ((string)add(this.id, " fetchFundingRate() supports swap contracts only")) ;
+        }
+        object request = new Dictionary<string, object>() {
+            { "symbol", getValue(market, "id") },
+        };
+        object response = await this.publicGetV1SymbolsSymbolFunding(this.extend(request, parameters));
+        //
+        //     {
+        //         "last": {
+        //             "funding_rate": "-0.00043841",
+        //             "funding_time": "2025-04-15T04:00:00.000Z"
+        //         },
+        //         "next": {
+        //             "funding_rate": "-0.00046952",
+        //             "funding_time": "2025-04-15T12:00:00.000Z"
+        //         },
+        //         "indicative": {
+        //             "funding_rate": "-0.00042517",
+        //             "funding_time": "2025-04-15T20:00:00.000Z"
+        //         },
+        //         "timestamp": "2025-04-15T07:01:15.219Z"
+        //     }
+        //
+        return this.parseFundingRate(response, market);
+    }
+
+    public override object parseFundingRate(object contract, object market = null)
+    {
+        //
+        //     {
+        //         "last": {
+        //             "funding_rate": "-0.00043841",
+        //             "funding_time": "2025-04-15T04:00:00.000Z"
+        //         },
+        //         "next": {
+        //             "funding_rate": "-0.00046952",
+        //             "funding_time": "2025-04-15T12:00:00.000Z"
+        //         },
+        //         "indicative": {
+        //             "funding_rate": "-0.00042517",
+        //             "funding_time": "2025-04-15T20:00:00.000Z"
+        //         },
+        //         "timestamp": "2025-04-15T07:01:15.219Z"
+        //     }
+        //
+        object previous = this.safeDict(contract, "last", new Dictionary<string, object>() {});
+        object current = this.safeDict(contract, "next", new Dictionary<string, object>() {});
+        object next = this.safeDict(contract, "indicative", new Dictionary<string, object>() {});
+        object previousDatetime = this.safeString(previous, "funding_time");
+        object currentDatetime = this.safeString(current, "funding_time");
+        object nextDatetime = this.safeString(next, "funding_time");
+        object datetime = this.safeString(contract, "timestamp");
+        return new Dictionary<string, object>() {
+            { "info", contract },
+            { "symbol", this.safeSymbol(null, market) },
+            { "markPrice", null },
+            { "indexPrice", null },
+            { "interestRate", null },
+            { "estimatedSettlePrice", null },
+            { "timestamp", this.parse8601(datetime) },
+            { "datetime", datetime },
+            { "fundingRate", this.safeNumber(current, "funding_rate") },
+            { "fundingTimestamp", this.parse8601(currentDatetime) },
+            { "fundingDatetime", currentDatetime },
+            { "nextFundingRate", this.safeNumber(next, "funding_rate") },
+            { "nextFundingTimestamp", this.parse8601(nextDatetime) },
+            { "nextFundingDatetime", nextDatetime },
+            { "previousFundingRate", this.safeNumber(previous, "funding_rate") },
+            { "previousFundingTimestamp", this.parse8601(previousDatetime) },
+            { "previousFundingDatetime", previousDatetime },
+            { "interval", "8h" },
+        };
     }
 
     public override object sign(object path, object api = null, object method = null, object parameters = null, object headers = null, object body = null)

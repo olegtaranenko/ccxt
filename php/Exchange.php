@@ -43,7 +43,7 @@ use BN\BN;
 use Sop\ASN1\Type\UnspecifiedType;
 use Exception;
 
-$version = '4.4.73';
+$version = '4.4.75';
 
 // rounding mode
 const TRUNCATE = 0;
@@ -62,7 +62,7 @@ const PAD_WITH_ZERO = 6;
 
 class Exchange {
 
-    const VERSION = '4.4.73';
+    const VERSION = '4.4.75';
 
     private static $base58_alphabet = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
     private static $base58_encoder = null;
@@ -1435,7 +1435,7 @@ class Exchange {
         $proxyUrl = $this->check_proxy_url_settings($url, $method, $headers, $body);
         if ($proxyUrl !== null) {
             $headers['Origin'] = $this->origin;
-            $url = $proxyUrl . $url;
+            $url = $proxyUrl . $this->url_encoder_for_proxy_url($url);
         }
         // proxy agents
         [ $httpProxy, $httpsProxy, $socksProxy ] = $this->check_proxy_settings($url, $method, $headers, $body);
@@ -2740,6 +2740,13 @@ class Exchange {
         return $proxyUrl;
     }
 
+    public function url_encoder_for_proxy_url(string $targetUrl) {
+        // to be overriden
+        $includesQuery = mb_strpos($targetUrl, '?') !== false;
+        $finalUrl = $includesQuery ? $this->encode_uri_component($targetUrl) : $targetUrl;
+        return $finalUrl;
+    }
+
     public function check_proxy_settings(?string $url = null, ?string $method = null, $headers = null, $body = null) {
         $usedProxies = array();
         $httpProxy = null;
@@ -3570,9 +3577,6 @@ class Exchange {
 
     public function safe_currency_structure(array $currency) {
         // derive data from $networks => $deposit, $withdraw, $active, $fee, $limits, $precision
-        $currencyDeposit = $this->safe_bool($currency, 'deposit');
-        $currencyWithdraw = $this->safe_bool($currency, 'withdraw');
-        $currencyActive = $this->safe_bool($currency, 'active');
         $networks = $this->safe_dict($currency, 'networks', array());
         $keys = is_array($networks) ? array_keys($networks) : array();
         $length = count($keys);
@@ -3581,24 +3585,28 @@ class Exchange {
                 $key = $keys[$i];
                 $network = $networks[$key];
                 $deposit = $this->safe_bool($network, 'deposit');
+                $currencyDeposit = $this->safe_bool($currency, 'deposit');
                 if ($currencyDeposit === null || $deposit) {
                     $currency['deposit'] = $deposit;
                 }
                 $withdraw = $this->safe_bool($network, 'withdraw');
+                $currencyWithdraw = $this->safe_bool($currency, 'withdraw');
                 if ($currencyWithdraw === null || $withdraw) {
                     $currency['withdraw'] = $withdraw;
                 }
-                $active = $this->safe_bool($network, 'active');
-                if ($currencyActive === null || $active) {
-                    $currency['active'] = $active;
-                }
                 // set $network 'active' to false if D or W is disabled
-                if ($this->safe_bool($network, 'active') === null) {
+                $active = $this->safe_bool($network, 'active');
+                if ($active === null) {
                     if ($deposit && $withdraw) {
                         $currency['networks'][$key]['active'] = true;
                     } elseif ($deposit !== null && $withdraw !== null) {
                         $currency['networks'][$key]['active'] = false;
                     }
+                }
+                $active = $this->safe_bool($network, 'active');
+                $currencyActive = $this->safe_bool($currency, 'active');
+                if ($currencyActive === null || $active) {
+                    $currency['active'] = $active;
                 }
                 // find lowest $fee (which is more desired)
                 $fee = $this->safe_string($network, 'fee');
