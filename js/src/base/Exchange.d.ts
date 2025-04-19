@@ -400,6 +400,7 @@ export default class Exchange {
     getCacheIndex(orderbook: any, deltas: any): number;
     findTimeframe(timeframe: any, timeframes?: any): string;
     checkProxyUrlSettings(url?: Str, method?: Str, headers?: any, body?: any): any;
+    urlEncoderForProxyUrl(targetUrl: string): string;
     checkProxySettings(url?: Str, method?: Str, headers?: any, body?: any): any[];
     checkWsProxySettings(): any[];
     checkConflictingProxies(proxyAgentSet: any, proxyUrlSet: any): void;
@@ -859,6 +860,7 @@ export default class Exchange {
     fetchPaginatedCallIncremental(method: string, symbol?: Str, since?: any, limit?: any, params?: {}, pageKey?: any, maxEntriesPerRequest?: any): Promise<any>;
     sortCursorPaginatedResult(result: any): any;
     removeRepeatedElementsFromArray(input: any, fallbackToTimestamp?: boolean): any;
+    removeRepeatedTradesFromArray(input: any): any;
     handleUntilOption(key: string, request: any, params: any, multiplier?: number): any[];
     safeOpenInterest(interest: Dict, market?: Market): OpenInterest;
     parseLiquidation(liquidation: any, market?: Market): Liquidation;

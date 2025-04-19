@@ -4,7 +4,7 @@
 
 # -----------------------------------------------------------------------------
 
-__version__ = '4.4.73'
+__version__ = '4.4.76'
 
 # -----------------------------------------------------------------------------
 
@@ -509,7 +509,7 @@ class Exchange(object):
         proxyUrl = self.check_proxy_url_settings(url, method, headers, body)
         if proxyUrl is not None:
             request_headers.update({'Origin': self.origin})
-            url = proxyUrl + url
+            url = proxyUrl + self.url_encoder_for_proxy_url(url)
         # proxy agents
         proxies = None  # set default
         httpProxy, httpsProxy, socksProxy = self.check_proxy_settings(url, method, headers, body)
@@ -2254,6 +2254,12 @@ class Exchange(object):
             raise InvalidProxySettings(self.id + ' you have multiple conflicting proxy settings(' + joinedProxyNames + '), please use only one from : proxyUrl, proxy_url, proxyUrlCallback, proxy_url_callback')
         return proxyUrl
 
+    def url_encoder_for_proxy_url(self, targetUrl: str):
+        # to be overriden
+        includesQuery = targetUrl.find('?') >= 0
+        finalUrl = self.encode_uri_component(targetUrl) if includesQuery else targetUrl
+        return finalUrl
+
     def check_proxy_settings(self, url: Str = None, method: Str = None, headers=None, body=None):
         usedProxies = []
         httpProxy = None
@@ -2913,9 +2919,6 @@ class Exchange(object):
 
     def safe_currency_structure(self, currency: object):
         # derive data from networks: deposit, withdraw, active, fee, limits, precision
-        currencyDeposit = self.safe_bool(currency, 'deposit')
-        currencyWithdraw = self.safe_bool(currency, 'withdraw')
-        currencyActive = self.safe_bool(currency, 'active')
         networks = self.safe_dict(currency, 'networks', {})
         keys = list(networks.keys())
         length = len(keys)
@@ -2924,20 +2927,24 @@ class Exchange(object):
                 key = keys[i]
                 network = networks[key]
                 deposit = self.safe_bool(network, 'deposit')
+                currencyDeposit = self.safe_bool(currency, 'deposit')
                 if currencyDeposit is None or deposit:
                     currency['deposit'] = deposit
                 withdraw = self.safe_bool(network, 'withdraw')
+                currencyWithdraw = self.safe_bool(currency, 'withdraw')
                 if currencyWithdraw is None or withdraw:
                     currency['withdraw'] = withdraw
-                active = self.safe_bool(network, 'active')
-                if currencyActive is None or active:
-                    currency['active'] = active
                 # set network 'active' to False if D or W is disabled
-                if self.safe_bool(network, 'active') is None:
+                active = self.safe_bool(network, 'active')
+                if active is None:
                     if deposit and withdraw:
                         currency['networks'][key]['active'] = True
                     elif deposit is not None and withdraw is not None:
                         currency['networks'][key]['active'] = False
+                active = self.safe_bool(network, 'active')
+                currencyActive = self.safe_bool(currency, 'active')
+                if currencyActive is None or active:
+                    currency['active'] = active
                 # find lowest fee(which is more desired)
                 fee = self.safe_string(network, 'fee')
                 feeMain = self.safe_string(currency, 'fee')
@@ -6472,17 +6479,35 @@ class Exchange(object):
         return result
 
     def remove_repeated_elements_from_array(self, input, fallbackToTimestamp: bool = True):
-        uniqueResult = {}
+        uniqueDic = {}
+        uniqueResult = []
         for i in range(0, len(input)):
             entry = input[i]
             uniqValue = self.safe_string_n(entry, ['id', 'timestamp', 0]) if fallbackToTimestamp else self.safe_string(entry, 'id')
-            if uniqValue is not None and not (uniqValue in uniqueResult):
-                uniqueResult[uniqValue] = entry
-        values = list(uniqueResult.values())
-        valuesLength = len(values)
+            if uniqValue is not None and not (uniqValue in uniqueDic):
+                uniqueDic[uniqValue] = 1
+                uniqueResult.append(entry)
+        valuesLength = len(uniqueResult)
         if valuesLength > 0:
-            return values
+            return uniqueResult
         return input
+
+    def remove_repeated_trades_from_array(self, input):
+        uniqueResult = {}
+        for i in range(0, len(input)):
+            entry = input[i]
+            id = self.safe_string(entry, 'id')
+            if id is None:
+                price = self.safe_string(entry, 'price')
+                amount = self.safe_string(entry, 'amount')
+                timestamp = self.safe_string(entry, 'timestamp')
+                side = self.safe_string(entry, 'side')
+                # unique trade identifier
+                id = 't_' + str(timestamp) + '_' + side + '_' + price + '_' + amount
+            if id is not None and not (id in uniqueResult):
+                uniqueResult[id] = entry
+        values = list(uniqueResult.values())
+        return values
 
     def handle_until_option(self, key: str, request, params, multiplier=1):
         until = self.safe_integer_2(params, 'until', 'till')
