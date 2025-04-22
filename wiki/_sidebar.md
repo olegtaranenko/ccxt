@@ -13,6 +13,7 @@
 - API Spec by Exchange
 	- [ace](exchanges/ace.md)
 	- [alpaca](exchanges/alpaca.md)
+	- [apex](exchanges/apex.md)
 	- [ascendex](exchanges/ascendex.md)
 	- [bigone](exchanges/bigone.md)
 	- [binance](exchanges/binance.md)

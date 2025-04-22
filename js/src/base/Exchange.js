@@ -23,8 +23,10 @@ import ethers from '../static_dependencies/ethers/index.js';
 import { TypedDataEncoder } from '../static_dependencies/ethers/hash/index.js';
 import { SecureRandom } from "../static_dependencies/jsencrypt/lib/jsbn/rng.js";
 import { getStarkKey, ethSigToPrivate, sign as starknetCurveSign } from '../static_dependencies/scure-starknet/index.js';
+import init, * as zklink from '../static_dependencies/zklink/zklink-sdk-web.js';
 import * as Starknet from '../static_dependencies/starknet/index.js';
 import { getBodyTruncated } from './ws/Client.js';
+import { sha256 } from '../static_dependencies/noble-hashes/sha256.js';
 const { aggregate, arrayConcat, base16ToBinary, base58ToBinary, base64ToBinary, base64ToString, binaryConcat, binaryConcatArray, binaryToBase16, binaryToBase58, binaryToBase64, capitalize, clone, crc32, DECIMAL_PLACES, decimalToPrecision, decode, deepExtend, ecdsa, encode, extend, extractParams, filterBy, flatten, groupBy, hash, hmac, implodeParams, inArray, indexBy, isEmpty, isJsonEncodedObject, isNode, iso8601, json, keysort, merge, microseconds, milliseconds, NO_PADDING, now, numberToBE, numberToLE, numberToString, omit, omitZero, ordered, packb, parse8601, parseDate, parseTimeframe, precisionFromString, rawencode, ROUND, roundTimeframe, safeFloat, safeFloat2, safeFloatN, safeInteger, safeInteger2, safeIntegerN, safeIntegerProduct, safeIntegerProduct2, safeIntegerProductN, safeString, safeString2, safeStringLower, safeStringLower2, safeStringLowerN, safeStringN, safeStringUpper, safeStringUpper2, safeStringUpperN, safeTimestamp, safeTimestamp2, safeTimestampN, safeValue, safeValue2, safeValueN, seconds, selfIsDefined, SIGNIFICANT_DIGITS, sleep, sortBy, sortBy2, stringToBase64, strip, sum, Throttler, TICK_SIZE, toArray, TRUNCATE, unCamelCase, unique, urlencode, urlencodeBase64, urlencodeNested, urlencodeWithArrayRepeat, uuid, uuid16, uuid22, uuidv1, ymd, ymdhms, yymmdd, yyyymmdd } = functions;
 // ----------------------------------------------------------------------------
 /**
@@ -1265,6 +1267,45 @@ export default class Exchange {
         // TODO: unify to ecdsa
         const signature = starknetCurveSign(hash.replace('0x', ''), pri.slice(-64));
         return this.json([signature.r.toString(), signature.s.toString()]);
+    }
+    async getZKContractSignatureObj(seed, params = {}) {
+        const formattedSlotId = BigInt('0x' + this.remove0xPrefix(this.hash(this.encode(this.safeString(params, 'slotId')), sha256, 'hex'))).toString();
+        const formattedNonce = BigInt('0x' + this.remove0xPrefix(this.hash(this.encode(this.safeString(params, 'nonce')), sha256, 'hex'))).toString();
+        const formattedUint64 = '18446744073709551615';
+        const formattedUint32 = '4294967295';
+        const accountId = parseInt(Precise.stringMod(this.safeString(params, 'accountId'), formattedUint32), 10);
+        const slotId = parseInt(Precise.stringDiv(Precise.stringMod(formattedSlotId, formattedUint64), formattedUint32), 10);
+        const nonce = parseInt(Precise.stringMod(formattedNonce, formattedUint32), 10);
+        await init();
+        const _signer = zklink.newRpcSignerWithProvider({});
+        await _signer.initZklinkSigner(seed);
+        let tx_builder = new zklink.ContractBuilder(accountId, 0, slotId, nonce, this.safeInteger(params, 'pairId'), Precise.stringMul(this.safeString(params, 'size'), '1e18'), Precise.stringMul(this.safeString(params, 'price'), '1e18'), this.safeString(params, 'direction') === 'BUY', parseInt(Precise.stringMul(this.safeString(params, 'makerFeeRate'), '10000')), parseInt(Precise.stringMul(this.safeString(params, 'takerFeeRate'), '10000')), false);
+        let contractor = zklink.newContract(tx_builder);
+        //const signer = ZkLinkSigner.ethSig(seed);
+        //const signer = new Signer(seed);
+        contractor?.sign(_signer?.getZkLinkSigner());
+        const tx = contractor.jsValue();
+        const zkSign = tx?.signature?.signature;
+        return zkSign;
+    }
+    async getZKTransferSignatureObj(seed, params = {}) {
+        await init();
+        const _signer = zklink.newRpcSignerWithProvider({});
+        await _signer.initZklinkSigner(seed);
+        let nonce = this.safeString(params, 'nonce', '0');
+        if (this.safeBool(params, 'isContract') === true) {
+            const formattedUint32 = '4294967295';
+            const formattedNonce = BigInt('0x' + this.remove0xPrefix(this.hash(this.encode(nonce), sha256, 'hex'))).toString();
+            nonce = Precise.stringMod(formattedNonce, formattedUint32);
+        }
+        let tx_builder = new zklink.TransferBuilder(this.safeNumber(params, 'zkAccountId', 0), this.safeString(params, 'receiverAddress'), this.safeNumber(params, 'subAccountId', 0), this.safeNumber(params, 'receiverSubAccountId', 0), this.safeNumber(params, 'tokenId', 0), this.safeString(params, 'fee', '0'), this.safeString(params, 'amount', '0'), this.parseToInt(nonce), this.safeNumber(params, 'timestampSeconds', 0));
+        let contractor = zklink.newTransfer(tx_builder);
+        //const signer = ZkLinkSigner.ethSig(seed);
+        //const signer = new Signer(seed);
+        contractor?.sign(_signer?.getZkLinkSigner());
+        const tx = contractor.jsValue();
+        const zkSign = tx?.signature?.signature;
+        return zkSign;
     }
     intToBase16(elem) {
         return elem.toString(16);
