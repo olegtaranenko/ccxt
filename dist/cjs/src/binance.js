@@ -990,7 +990,7 @@ class binance extends binance$1 {
                 'BCC': 'BCC',
                 'YOYO': 'YOYOW',
             },
-            'countries': ['JP', 'MT'],
+            'countries': [],
             'currencies': {
                 'BNFCR': this.safeCurrencyStructure({ 'id': 'BNFCR', 'code': 'BNFCR', 'precision': this.parseNumber('0.001') }),
             },

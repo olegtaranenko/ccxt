@@ -993,7 +993,7 @@ export default class binance extends Exchange {
                 'BCC': 'BCC',
                 'YOYO': 'YOYOW',
             },
-            'countries': ['JP', 'MT'],
+            'countries': [],
             'currencies': {
                 'BNFCR': this.safeCurrencyStructure({ 'id': 'BNFCR', 'code': 'BNFCR', 'precision': this.parseNumber('0.001') }),
             },
