@@ -65,6 +65,7 @@ import type {
     OrderRequest,
     OrderSide,
     OrderType,
+    Position,
     Str,
     Strings,
     Ticker,
@@ -10798,7 +10799,7 @@ export default class binance extends Exchange {
      * @param {bool} [params.useV2] set to true if you want to use the obsolete endpoint, where some more additional fields were provided
      * @returns {object[]} a list of [position structure]{@link https://docs.ccxt.com/#/?id=position-structure}
      */
-    async fetchPositions (symbols: Strings = undefined, params = {}) {
+    async fetchPositions (symbols: Strings = undefined, params = {}): Promise<Position[]> {
         let defaultMethod = undefined;
         [ defaultMethod, params ] = this.handleOptionAndParams (params, 'fetchPositions', 'method');
         if (defaultMethod === undefined) {

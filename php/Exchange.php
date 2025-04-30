@@ -337,7 +337,6 @@ class Exchange {
     public $quoteCurrencies = null;
 
     public static $exchanges = array(
-        'ace',
         'alpaca',
         'apex',
         'ascendex',
@@ -3618,7 +3617,7 @@ class Exchange {
                 // find lowest $precision (which is more desired)
                 $precision = $this->safe_string($network, 'precision');
                 $precisionMain = $this->safe_string($currency, 'precision');
-                if ($precisionMain === null || Precise::string_lt($precision, $precisionMain)) {
+                if ($precisionMain === null || Precise::string_gt($precision, $precisionMain)) {
                     $currency['precision'] = $this->parse_number($precision);
                 }
                 // $limits

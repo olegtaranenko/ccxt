@@ -1,5 +1,5 @@
 import Exchange from './abstract/binance.js';
-import type { Balances, BorrowInterest, Conversion, CrossBorrowRate, Currencies, Currency, DepositAddress, Dict, FundingRate, FundingRateHistory, FundingRates, Greeks, int, Int, IsolatedBorrowRate, IsolatedBorrowRates, LedgerEntry, Leverage, Leverages, LeverageTier, LeverageTiers, Liquidation, LongShortRatio, MarginMode, MarginModes, MarginModification, Market, MarketInterface, Num, OHLCV, OpenInterest, Option, Order, OrderBook, OrderRequest, OrderSide, OrderType, Str, Strings, Ticker, Tickers, Trade, TradingFeeInterface, TradingFees, Transaction, TransferEntry } from './base/types.js';
+import type { Balances, BorrowInterest, Conversion, CrossBorrowRate, Currencies, Currency, DepositAddress, Dict, FundingRate, FundingRateHistory, FundingRates, Greeks, int, Int, IsolatedBorrowRate, IsolatedBorrowRates, LedgerEntry, Leverage, Leverages, LeverageTier, LeverageTiers, Liquidation, LongShortRatio, MarginMode, MarginModes, MarginModification, Market, MarketInterface, Num, OHLCV, OpenInterest, Option, Order, OrderBook, OrderRequest, OrderSide, OrderType, Position, Str, Strings, Ticker, Tickers, Trade, TradingFeeInterface, TradingFees, Transaction, TransferEntry } from './base/types.js';
 /**
  * @class binance
  * @augments Exchange
@@ -986,7 +986,7 @@ export default class binance extends Exchange {
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @returns {object} a [position structure]{@link https://docs.ccxt.com/#/?id=position-structure}
      */
-    fetchPosition(symbol: string, params?: {}): Promise<import("./base/types.js").Position>;
+    fetchPosition(symbol: string, params?: {}): Promise<Position>;
     /**
      * @method
      * @name binance#fetchOptionPositions
@@ -996,8 +996,8 @@ export default class binance extends Exchange {
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @returns {object[]} a list of [position structures]{@link https://docs.ccxt.com/#/?id=position-structure}
      */
-    fetchOptionPositions(symbols?: Strings, params?: {}): Promise<import("./base/types.js").Position[]>;
-    parsePosition(position: Dict, market?: Market): import("./base/types.js").Position;
+    fetchOptionPositions(symbols?: Strings, params?: {}): Promise<Position[]>;
+    parsePosition(position: Dict, market?: Market): Position;
     /**
      * @method
      * @name binance#fetchPositions
@@ -1014,7 +1014,7 @@ export default class binance extends Exchange {
      * @param {bool} [params.useV2] set to true if you want to use the obsolete endpoint, where some more additional fields were provided
      * @returns {object[]} a list of [position structure]{@link https://docs.ccxt.com/#/?id=position-structure}
      */
-    fetchPositions(symbols?: Strings, params?: {}): Promise<import("./base/types.js").Position[]>;
+    fetchPositions(symbols?: Strings, params?: {}): Promise<Position[]>;
     /**
      * @method
      * @name binance#fetchAccountPositions
@@ -1033,7 +1033,7 @@ export default class binance extends Exchange {
      * @param {boolean} [params.useV2] set to true if you want to use obsolete endpoint, where some more additional fields were provided
      * @returns {object} data on account positions
      */
-    fetchAccountPositions(symbols?: Strings, params?: {}): Promise<import("./base/types.js").Position[]>;
+    fetchAccountPositions(symbols?: Strings, params?: {}): Promise<Position[]>;
     /**
      * @method
      * @name binance#fetchPositionsRisk
@@ -1051,7 +1051,7 @@ export default class binance extends Exchange {
      * @param {boolean} [params.useV2] set to true if you want to use the obsolete endpoint, where some more additional fields were provided
      * @returns {object} data on the positions risk
      */
-    fetchPositionsRisk(symbols?: Strings, params?: {}): Promise<import("./base/types.js").Position[]>;
+    fetchPositionsRisk(symbols?: Strings, params?: {}): Promise<Position[]>;
     /**
      * @method
      * @name binance#fetchFundingHistory
