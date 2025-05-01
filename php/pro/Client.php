@@ -31,7 +31,7 @@ class Client {
     public $subscriptions = array();
     public $rejections = array();
     public $message_queue = array();
-    public $useMessageQueue = true;
+    public $useMessageQueue = false;
     public $options = array();
 
     public $on_message_callback;
@@ -61,6 +61,9 @@ class Client {
     public $log = null;
     public $heartbeat = null;
     public $cost = 1;
+    public $timeframes = null;
+    public $watchTradesForSymbols = null;
+    public $watchOrderBookForSymbols = null;
 
     // ratchet/pawl/reactphp stuff
     public $connector = null;
@@ -83,6 +86,7 @@ class Client {
             $queue = $this->message_queue[$message_hash];
             if (count($queue) > 0) {
                 $future->resolve(array_shift($queue));
+                unset($this->futures[$message_hash]);
             }
         }
         return $future;

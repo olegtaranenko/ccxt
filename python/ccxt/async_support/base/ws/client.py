@@ -15,7 +15,7 @@ class Client(object):
     subscriptions = {}
     rejections = {}
     message_queue = {}
-    useMessageQueue = True
+    useMessageQueue = False
     on_message_callback = None
     on_error_callback = None
     on_close_callback = None
@@ -76,6 +76,7 @@ class Client(object):
             queue = self.message_queue[message_hash]
             if len(queue):
                 future.resolve(queue.popleft())
+                del self.futures[message_hash]
         return future
 
     def resolve(self, result, message_hash):

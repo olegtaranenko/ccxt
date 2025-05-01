@@ -87,11 +87,11 @@ public partial class upbit
     /// </list>
     /// </remarks>
     /// <returns> <term>object</term> a dictionary of [order book structures]{@link https://docs.ccxt.com/#/?id=order-book-structure} indexed by market symbol.</returns>
-    public async Task<Dictionary<string, OrderBook>> FetchOrderBooks(List<String> symbols = null, Int64? limit2 = 0, Dictionary<string, object> parameters = null)
+    public async Task<OrderBooks> FetchOrderBooks(List<String> symbols = null, Int64? limit2 = 0, Dictionary<string, object> parameters = null)
     {
         var limit = limit2 == 0 ? null : (object)limit2;
         var res = await this.fetchOrderBooks(symbols, limit, parameters);
-        return ((Dictionary<string, OrderBook>)res);
+        return new OrderBooks(res);
     }
     /// <summary>
     /// fetches information on open orders with bid (buy) and ask (sell) prices, volumes and other data
@@ -215,6 +215,25 @@ public partial class upbit
         return new TradingFeeInterface(res);
     }
     /// <summary>
+    /// fetch the trading fees for markets
+    /// </summary>
+    /// <remarks>
+    /// <list type="table">
+    /// <item>
+    /// <term>params</term>
+    /// <description>
+    /// object : extra parameters specific to the exchange API endpoint
+    /// </description>
+    /// </item>
+    /// </list>
+    /// </remarks>
+    /// <returns> <term>object</term> a [trading fee structure]{@link https://docs.ccxt.com/#/?id=trading-fee-structure}.</returns>
+    public async Task<TradingFees> FetchTradingFees(Dictionary<string, object> parameters = null)
+    {
+        var res = await this.fetchTradingFees(parameters);
+        return new TradingFees(res);
+    }
+    /// <summary>
     /// fetches historical candlestick data containing the open, high, low, and close price, and the volume of a market
     /// </summary>
     /// <remarks>
@@ -270,13 +289,19 @@ public partial class upbit
     /// <item>
     /// <term>params.cost</term>
     /// <description>
-    /// float : for market buy orders, the quote quantity that can be used as an alternative for the amount
+    /// float : for market buy and best buy orders, the quote quantity that can be used as an alternative for the amount
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <term>params.ordType</term>
+    /// <description>
+    /// string : this field can be used to place a ‘best’ type order
     /// </description>
     /// </item>
     /// <item>
     /// <term>params.timeInForce</term>
     /// <description>
-    /// string : 'IOC' or 'FOK'
+    /// string : 'IOC' or 'FOK'. only for limit or best type orders. this field is required when the order type is 'best'.
     /// </description>
     /// </item>
     /// </list>
@@ -306,6 +331,58 @@ public partial class upbit
     public async Task<Order> CancelOrder(string id, string symbol = null, Dictionary<string, object> parameters = null)
     {
         var res = await this.cancelOrder(id, symbol, parameters);
+        return new Order(res);
+    }
+    /// <summary>
+    /// canceled existing order and create new order. It's only generated same side and symbol as the canceled order. it returns the data of the canceled order, except for `new_order_uuid` and `new_identifier`. to get the details of the new order, use `fetchOrder(new_order_uuid)`.
+    /// </summary>
+    /// <remarks>
+    /// See <see href="https://docs.upbit.com/reference/%EC%B7%A8%EC%86%8C-%ED%9B%84-%EC%9E%AC%EC%A3%BC%EB%AC%B8"/>  <br/>
+    /// <list type="table">
+    /// <item>
+    /// <term>params</term>
+    /// <description>
+    /// object : extra parameters specific to the exchange API endpoint.
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <term>params.clientOrderId</term>
+    /// <description>
+    /// string : to identify the previous order, either the id or this field is required in this method.
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <term>params.cost</term>
+    /// <description>
+    /// float : for market buy and best buy orders, the quote quantity that can be used as an alternative for the amount.
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <term>params.newTimeInForce</term>
+    /// <description>
+    /// string : 'IOC' or 'FOK'. only for limit or best type orders. this field is required when the order type is 'best'.
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <term>params.newClientOrderId</term>
+    /// <description>
+    /// string : the order ID that the user can define.
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <term>params.newOrdType</term>
+    /// <description>
+    /// string : this field only accepts limit, price, market, or best. You can refer to the Upbit developer documentation for details on how to use this field.
+    /// </description>
+    /// </item>
+    /// </list>
+    /// </remarks>
+    /// <returns> <term>object</term> An [order structure]{@link https://docs.ccxt.com/#/?id=order-structure}.</returns>
+    public async Task<Order> EditOrder(string id, string symbol, string type, string side, double? amount2 = 0, double? price2 = 0, Dictionary<string, object> parameters = null)
+    {
+        var amount = amount2 == 0 ? null : (object)amount2;
+        var price = price2 == 0 ? null : (object)price2;
+        var res = await this.editOrder(id, symbol, type, side, amount, price, parameters);
         return new Order(res);
     }
     /// <summary>
@@ -440,18 +517,11 @@ public partial class upbit
         var res = await this.fetchWithdrawal(id, code, parameters);
         return new Transaction(res);
     }
-    public async Task<List<Order>> FetchOrdersByState(object state, string symbol = null, Int64? since2 = 0, Int64? limit2 = 0, Dictionary<string, object> parameters = null)
-    {
-        var since = since2 == 0 ? null : (object)since2;
-        var limit = limit2 == 0 ? null : (object)limit2;
-        var res = await this.fetchOrdersByState(state, symbol, since, limit, parameters);
-        return ((IList<object>)res).Select(item => new Order(item)).ToList<Order>();
-    }
     /// <summary>
     /// fetch all unfilled currently open orders
     /// </summary>
     /// <remarks>
-    /// See <see href="https://docs.upbit.com/reference/%EC%A3%BC%EB%AC%B8-%EB%A6%AC%EC%8A%A4%ED%8A%B8-%EC%A1%B0%ED%9A%8C"/>  <br/>
+    /// See <see href="https://global-docs.upbit.com/reference/open-order"/>  <br/>
     /// <list type="table">
     /// <item>
     /// <term>since</term>
@@ -462,13 +532,19 @@ public partial class upbit
     /// <item>
     /// <term>limit</term>
     /// <description>
-    /// int : the maximum number of  open orders structures to retrieve
+    /// int : the maximum number of open order structures to retrieve
     /// </description>
     /// </item>
     /// <item>
     /// <term>params</term>
     /// <description>
     /// object : extra parameters specific to the exchange API endpoint
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <term>params.state</term>
+    /// <description>
+    /// string : default is 'wait', set to 'watch' for stop limit orders
     /// </description>
     /// </item>
     /// </list>
@@ -485,7 +561,7 @@ public partial class upbit
     /// fetches information on multiple closed orders made by the user
     /// </summary>
     /// <remarks>
-    /// See <see href="https://docs.upbit.com/reference/%EC%A3%BC%EB%AC%B8-%EB%A6%AC%EC%8A%A4%ED%8A%B8-%EC%A1%B0%ED%9A%8C"/>  <br/>
+    /// See <see href="https://global-docs.upbit.com/reference/closed-order"/>  <br/>
     /// <list type="table">
     /// <item>
     /// <term>since</term>
@@ -505,6 +581,12 @@ public partial class upbit
     /// object : extra parameters specific to the exchange API endpoint
     /// </description>
     /// </item>
+    /// <item>
+    /// <term>params.until</term>
+    /// <description>
+    /// int : timestamp in ms of the latest order
+    /// </description>
+    /// </item>
     /// </list>
     /// </remarks>
     /// <returns> <term>Order[]</term> a list of [order structures]{@link https://docs.ccxt.com/#/?id=order-structure}.</returns>
@@ -519,7 +601,7 @@ public partial class upbit
     /// fetches information on multiple canceled orders made by the user
     /// </summary>
     /// <remarks>
-    /// See <see href="https://docs.upbit.com/reference/%EC%A3%BC%EB%AC%B8-%EB%A6%AC%EC%8A%A4%ED%8A%B8-%EC%A1%B0%ED%9A%8C"/>  <br/>
+    /// See <see href="https://global-docs.upbit.com/reference/closed-order"/>  <br/>
     /// <list type="table">
     /// <item>
     /// <term>since</term>
@@ -537,6 +619,12 @@ public partial class upbit
     /// <term>params</term>
     /// <description>
     /// object : extra parameters specific to the exchange API endpoint
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <term>params.until</term>
+    /// <description>
+    /// int : timestamp in ms of the latest order
     /// </description>
     /// </item>
     /// </list>
@@ -584,10 +672,10 @@ public partial class upbit
     /// </list>
     /// </remarks>
     /// <returns> <term>object</term> a list of [address structures]{@link https://docs.ccxt.com/#/?id=address-structure}.</returns>
-    public async Task<Dictionary<string, object>> FetchDepositAddresses(List<String> codes = null, Dictionary<string, object> parameters = null)
+    public async Task<List<DepositAddress>> FetchDepositAddresses(List<String> codes = null, Dictionary<string, object> parameters = null)
     {
         var res = await this.fetchDepositAddresses(codes, parameters);
-        return ((Dictionary<string, object>)res);
+        return ((IList<object>)res).Select(item => new DepositAddress(item)).ToList<DepositAddress>();
     }
     /// <summary>
     /// fetch the deposit address for a currency associated with this account
@@ -604,10 +692,10 @@ public partial class upbit
     /// </list>
     /// </remarks>
     /// <returns> <term>object</term> an [address structure]{@link https://docs.ccxt.com/#/?id=address-structure}.</returns>
-    public async Task<Dictionary<string, object>> FetchDepositAddress(string code, Dictionary<string, object> parameters = null)
+    public async Task<DepositAddress> FetchDepositAddress(string code, Dictionary<string, object> parameters = null)
     {
         var res = await this.fetchDepositAddress(code, parameters);
-        return ((Dictionary<string, object>)res);
+        return new DepositAddress(res);
     }
     /// <summary>
     /// create a currency deposit address
@@ -624,10 +712,10 @@ public partial class upbit
     /// </list>
     /// </remarks>
     /// <returns> <term>object</term> an [address structure]{@link https://docs.ccxt.com/#/?id=address-structure}.</returns>
-    public async Task<Dictionary<string, object>> CreateDepositAddress(string code, Dictionary<string, object> parameters = null)
+    public async Task<DepositAddress> CreateDepositAddress(string code, Dictionary<string, object> parameters = null)
     {
         var res = await this.createDepositAddress(code, parameters);
-        return ((Dictionary<string, object>)res);
+        return new DepositAddress(res);
     }
     /// <summary>
     /// make a withdrawal
