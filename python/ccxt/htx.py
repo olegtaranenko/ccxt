@@ -3270,7 +3270,7 @@ class htx(Exchange, ImplicitAPI):
         #                        "withdrawQuotaPerYear": null,
         #                        "withdrawQuotaTotal": null,
         #                        "withdrawFeeType": "fixed",
-        #                        "transactFeeWithdraw": "11.1653",
+        #                        "transactFeeWithdraw": "11.1654",
         #                        "addrWithTag": False,
         #                        "addrDepositTag": False
         #                    }
@@ -3293,6 +3293,8 @@ class htx(Exchange, ImplicitAPI):
             chains = self.safe_value(entry, 'chains', [])
             networks: dict = {}
             instStatus = self.safe_string(entry, 'instStatus')
+            assetType = self.safe_string(entry, 'assetType')
+            type = assetType == 'crypto' if '1' else 'fiat'
             currencyActive = instStatus == 'normal'
             minPrecision = None
             minDeposit = None
@@ -3350,6 +3352,7 @@ class htx(Exchange, ImplicitAPI):
                 'withdraw': withdraw,
                 'fee': None,
                 'name': None,
+                'type': type,
                 'limits': {
                     'amount': {
                         'min': None,

@@ -1,20 +1,7 @@
 {
-    "ace": {
-        "skip": "temporary unavailable",
-        "until": "2025-05-20",
-        "skipMethods": {
-            "loadMarkets": {
-                "currencyIdAndCode": "temporary skip, because ids are numeric and we are in wip for numeric id tests",
-                "active":"is undefined"
-            },
-            "orderBook": {
-                "timestamp": "not provided"
-            }
-        }
-    },
     "alpaca": {
-        "skip": "private endpoints",
-        "skipWs": "private endpoints"
+        "skip": "private endpoints, todo",
+        "skipWs": "private endpoints, todo"
     },
     "ascendex": {
         "skipMethods": {
@@ -23,8 +10,7 @@
             },
             "fetchCurrencies": {
                 "currencyIdAndCode": "https://app.travis-ci.com/github/ccxt/ccxt/builds/269432480#L3364",
-                "activeMajorCurrencies": "todo",
-                "allowNull": ["withdraw", "deposit", "type"]
+                "allowNull": ["type"]
             },
             "watchOrderBook": {
                 "bid": " bid > ask issue, https://github.com/ccxt/ccxt/actions/runs/14316810634/job/40125014500?pr=25623#step:11:420"
@@ -55,10 +41,6 @@
     },
     "binanceus": {
         "skipMethods": {
-            "loadMarkets": {
-                "expiry": "expiry not set for future markets",
-                "expiryDatetime": "expiry not set for future markets"
-            },
             "ticker": {
                 "baseVolume": "quoteVolume >= baseVolume * low is failing, https://app.travis-ci.com/github/ccxt/ccxt/builds/267900037#L2466"
             },
@@ -110,8 +92,6 @@
                 "spread": "same bid-ask https://app.travis-ci.com/github/ccxt/ccxt/builds/269550508#L3581"
             },
             "fetchCurrencies": {
-                "deposit": "not provided",
-                "precision": "not provided",
                 "limits": "min/max essup temrporarily"
             },
             "orderBook": {
@@ -219,9 +199,9 @@
                 "currencyIdAndCode": "broken currencies"
             },
             "fetchCurrencies": {
-                "precision": "not provided",
                 "currencyIdAndCode": "broken currencies",
-                "type": "todo"
+                "type": "todo",
+                "skipCurrenciesWithoutNetworks": "those currencies deosnt have data"
             },
             "ticker": {
 		        "open": "negative numbers: https://github.com/ccxt/ccxt/actions/runs/14228305116/job/39873134339?pr=25624#step:11:102",
@@ -239,9 +219,6 @@
             },
             "orderBook": {
                 "bid": "frequently, zero amount is set in some orderbook entry"
-            },
-            "watchTrades":{
-                "timestamp": "it could be ahead of the current time"
             }
         }
     },
@@ -254,8 +231,7 @@
             },
             "fetchCurrencies": {
                 "currencyIdAndCode": "broken currencies",
-                "precision":"not provided",
-                "type": "todo"
+                "precision":"not provided"
             },
             "ticker": {
                 "baseVolume": "quoteVolume >= baseVolume * low is failing",
@@ -703,7 +679,8 @@
                 "baseVolume": "quote scale isn't right"
             },
             "fetchCurrencies": {
-                "type": "todo"
+                "type": "todo",
+                "activeMajorCurrencies": "todo"
             }
         }
     },
@@ -1012,7 +989,8 @@
         "skipMethods": {
             "fetchCurrencies": {
                 "fee": "not provided",
-                "type": "todo"
+                "type": "todo",
+                "activeMajorCurrencies": "todo"
             },
             "ticker": {
                 "bid":"messed bid-ask"
@@ -1095,7 +1073,8 @@
             "fetchCurrencies": {
                 "fee": "not provided",
                 "currencyIdAndCode": "https://app.travis-ci.com/github/ccxt/ccxt/builds/268371892#L2455",
-                "type": "todo"
+                "type": "todo",
+                "activeMajorCurrencies": "todo"
             },
             "ticker": {
                 "bid":"messed bid-ask"
@@ -1571,7 +1550,7 @@
     "p2b": {
         "skip": "temp issues",
         "skipWs": "flaky",
-        "httpsProxy": "http://51.83.140.52:11230",
+        "httpsProxy": "http://188.34.194.190:8911",
         "skipMethods": {
             "loadMarkets": "invalid URL",
             "fetchTrades": "requires order id"
