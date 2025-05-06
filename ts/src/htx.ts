@@ -2202,7 +2202,7 @@ export default class htx extends Exchange {
         let ask = undefined;
         let askVolume = undefined;
         if ('bid' in ticker) {
-            if (Array.isArray (ticker['bid'])) {
+            if (ticker['bid'] !== undefined && Array.isArray (ticker['bid'])) {
                 bid = this.safeString (ticker['bid'], 0);
                 bidVolume = this.safeString (ticker['bid'], 1);
             } else {
@@ -2211,7 +2211,7 @@ export default class htx extends Exchange {
             }
         }
         if ('ask' in ticker) {
-            if (Array.isArray (ticker['ask'])) {
+            if (ticker['ask'] !== undefined && Array.isArray (ticker['ask'])) {
                 ask = this.safeString (ticker['ask'], 0);
                 askVolume = this.safeString (ticker['ask'], 1);
             } else {
@@ -3386,7 +3386,7 @@ export default class htx extends Exchange {
         //                        "withdrawQuotaPerYear": null,
         //                        "withdrawQuotaTotal": null,
         //                        "withdrawFeeType": "fixed",
-        //                        "transactFeeWithdraw": "11.1653",
+        //                        "transactFeeWithdraw": "11.1654",
         //                        "addrWithTag": false,
         //                        "addrDepositTag": false
         //                    }
@@ -3409,6 +3409,8 @@ export default class htx extends Exchange {
             const chains = this.safeValue (entry, 'chains', []);
             const networks: Dict = {};
             const instStatus = this.safeString (entry, 'instStatus');
+            const assetType = this.safeString (entry, 'assetType');
+            const type = assetType === '1' ? 'crypto' : 'fiat';
             const currencyActive = instStatus === 'normal';
             let minPrecision = undefined;
             let minDeposit = undefined;
@@ -3468,6 +3470,7 @@ export default class htx extends Exchange {
                 'withdraw': withdraw,
                 'fee': undefined,
                 'name': undefined,
+                'type': type,
                 'limits': {
                     'amount': {
                         'min': undefined,
