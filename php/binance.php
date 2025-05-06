@@ -2520,6 +2520,7 @@ class binance extends Exchange {
                 'legalMoneyCurrenciesById' => array(
                     'BUSD' => 'USD',
                 ),
+                'loadAllOptions' => false,
                 'networks' => array(
                     'BEP2' => 'BNB',
                     'BEP20' => 'BSC',
@@ -3066,6 +3067,13 @@ class binance extends Exchange {
          */
         $promisesRaw = array();
         $rawFetchMarkets = $this->safe_list($this->options, 'fetchMarkets', array( 'spot', 'linear', 'inverse' ));
+        // handle $loadAllOptions option
+        $loadAllOptions = $this->safe_bool($this->options, 'loadAllOptions', false);
+        if ($loadAllOptions) {
+            if (!$this->in_array('option', $rawFetchMarkets)) {
+                $rawFetchMarkets[] = 'option';
+            }
+        }
         $sandboxMode = $this->safe_bool($this->options, 'sandboxMode', false);
         $fetchMarkets = array();
         for ($i = 0; $i < count($rawFetchMarkets); $i++) {

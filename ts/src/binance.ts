@@ -2599,6 +2599,7 @@ export default class binance extends Exchange {
                 'legalMoneyCurrenciesById': {
                     'BUSD': 'USD',
                 },
+                'loadAllOptions': false,
                 'networks': {
                     'BEP2': 'BNB',
                     'BEP20': 'BSC',
@@ -3145,6 +3146,13 @@ export default class binance extends Exchange {
     async fetchMarkets (params = {}): Promise<Market[]> {
         const promisesRaw = [];
         const rawFetchMarkets = this.safeList (this.options, 'fetchMarkets', [ 'spot', 'linear', 'inverse' ]);
+        // handle loadAllOptions option
+        const loadAllOptions = this.safeBool (this.options, 'loadAllOptions', false);
+        if (loadAllOptions) {
+            if (!this.inArray ('option', rawFetchMarkets)) {
+                rawFetchMarkets.push ('option');
+            }
+        }
         const sandboxMode = this.safeBool (this.options, 'sandboxMode', false);
         const fetchMarkets = [];
         for (let i = 0; i < rawFetchMarkets.length; i++) {
