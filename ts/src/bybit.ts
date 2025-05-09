@@ -2186,7 +2186,7 @@ export default class bybit extends Exchange {
                     'quoteId': quoteId,
                     'settleId': settleId,
                     'type': 'option',
-                    'subType': 'linear',
+                    'subType': undefined,
                     'spot': false,
                     'margin': false,
                     'swap': false,
@@ -2194,8 +2194,8 @@ export default class bybit extends Exchange {
                     'option': true,
                     'active': isActive,
                     'contract': true,
-                    'linear': true,
-                    'inverse': false,
+                    'linear': undefined,
+                    'inverse': undefined,
                     'taker': this.safeNumber (market, 'takerFee', this.parseNumber ('0.0006')),
                     'maker': this.safeNumber (market, 'makerFee', this.parseNumber ('0.0001')),
                     'contractSize': this.parseNumber ('1'),
@@ -4082,12 +4082,12 @@ export default class bybit extends Exchange {
         }
         if (market['spot']) {
             request['category'] = 'spot';
+        } else if (market['option']) {
+            request['category'] = 'option';
         } else if (market['linear']) {
             request['category'] = 'linear';
         } else if (market['inverse']) {
             request['category'] = 'inverse';
-        } else if (market['option']) {
-            request['category'] = 'option';
         }
         const cost = this.safeString (params, 'cost');
         params = this.omit (params, 'cost');
@@ -5976,7 +5976,8 @@ export default class bybit extends Exchange {
         [ subType, params ] = this.handleSubTypeAndParams ('fetchLedger', undefined, params);
         let response = undefined;
         if (enableUnified[1]) {
-            if (subType === 'inverse') {
+            const unifiedMarginStatus = this.safeInteger (this.options, 'unifiedMarginStatus', 5); // 3/4 uta 1.0, 5/6 uta 2.0
+            if (subType === 'inverse' && (unifiedMarginStatus < 5)) {
                 response = await this.privateGetV5AccountContractTransactionLog (this.extend (request, params));
             } else {
                 response = await this.privateGetV5AccountTransactionLog (this.extend (request, params));
