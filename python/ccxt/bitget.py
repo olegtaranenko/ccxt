@@ -1566,6 +1566,8 @@ class bitget(Exchange, ImplicitAPI):
                     'method': 'privateMixGetV2MixPositionAllPosition',  # or privateMixGetV2MixPositionHistoryPosition
                 },
                 'defaultTimeInForce': 'GTC',  # 'GTC' = Good To Cancel(default), 'IOC' = Immediate Or Cancel
+                # fiat currencies on deposit page
+                'fiatCurrencies': ['EUR', 'VND', 'PLN', 'CZK', 'HUF', 'DKK', 'AUD', 'CAD', 'NOK', 'SEK', 'CHF', 'MXN', 'COP', 'ARS', 'GBP', 'BRL', 'UAH', 'ZAR'],
             },
             'features': {
                 'spot': {
@@ -2058,6 +2060,7 @@ class bitget(Exchange, ImplicitAPI):
         #
         result: dict = {}
         data = self.safe_value(response, 'data', [])
+        fiatCurrencies = self.safe_list(self.options, 'fiatCurrencies', [])
         for i in range(0, len(data)):
             entry = data[i]
             id = self.safe_string(entry, 'coin')  # we don't use 'coinId' has no use. it is 'coin' field that needs to be used in currency related endpoints(deposit, withdraw, etc..)
@@ -2090,12 +2093,13 @@ class bitget(Exchange, ImplicitAPI):
                     'fee': self.safe_number(chain, 'withdrawFee'),
                     'precision': self.parse_number(self.parse_precision(self.safe_string(chain, 'withdrawMinScale'))),
                 }
+            isFiat = self.in_array(code, fiatCurrencies)
             result[code] = self.safe_currency_structure({
                 'info': entry,
                 'id': id,
                 'code': code,
                 'networks': networks,
-                'type': None,
+                'type': 'fiat' if isFiat else 'crypto',
                 'name': None,
                 'active': None,
                 'deposit': None,
@@ -2736,7 +2740,7 @@ class bitget(Exchange, ImplicitAPI):
         close = self.safe_string(ticker, 'lastPr')
         timestamp = self.safe_integer_omit_zero(ticker, 'ts')  # exchange bitget provided 0
         change = self.safe_string(ticker, 'change24h')
-        open24 = self.safe_string(ticker, 'open24')
+        open24 = self.safe_string_2(ticker, 'open24', 'open24h')
         open = self.safe_string(ticker, 'open')
         symbol: str
         openValue: str

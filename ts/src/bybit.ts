@@ -1025,9 +1025,6 @@ export default class bybit extends Exchange {
                 'usePrivateInstrumentsInfo': false,
                 'enableDemoTrading': false,
                 'fetchMarkets': [ 'spot', 'linear', 'inverse', 'option' ],
-                'createOrder': {
-                    'method': 'privatePostV5OrderCreate', // 'privatePostV5PositionTradingStop'
-                },
                 'enableUnifiedMargin': undefined,
                 'enableUnifiedAccount': undefined,
                 'unifiedMarginStatus': undefined,
@@ -2189,7 +2186,7 @@ export default class bybit extends Exchange {
                     'quoteId': quoteId,
                     'settleId': settleId,
                     'type': 'option',
-                    'subType': 'linear',
+                    'subType': undefined,
                     'spot': false,
                     'margin': false,
                     'swap': false,
@@ -2197,8 +2194,8 @@ export default class bybit extends Exchange {
                     'option': true,
                     'active': isActive,
                     'contract': true,
-                    'linear': true,
-                    'inverse': false,
+                    'linear': undefined,
+                    'inverse': undefined,
                     'taker': this.safeNumber (market, 'takerFee', this.parseNumber ('0.0006')),
                     'maker': this.safeNumber (market, 'makerFee', this.parseNumber ('0.0001')),
                     'contractSize': this.parseNumber ('1'),
@@ -3929,12 +3926,22 @@ export default class bybit extends Exchange {
         const parts = await this.isUnifiedEnabled ();
         const enableUnifiedAccount = parts[1];
         const trailingAmount = this.safeString2 (params, 'trailingAmount', 'trailingStop');
+        const stopLossPrice = this.safeString (params, 'stopLossPrice');
+        const takeProfitPrice = this.safeString (params, 'takeProfitPrice');
         const isTrailingAmountOrder = trailingAmount !== undefined;
+        const isStopLoss = stopLossPrice !== undefined;
+        const isTakeProfit = takeProfitPrice !== undefined;
         const orderRequest = this.createOrderRequest (symbol, type, side, amount, price, params, enableUnifiedAccount);
-        const options = this.safeDict (this.options, 'createOrder', {});
-        const defaultMethod = this.safeString (options, 'method', 'privatePostV5OrderCreate');
+        let defaultMethod = undefined;
+        if (isTrailingAmountOrder || isStopLoss || isTakeProfit) {
+            defaultMethod = 'privatePostV5PositionTradingStop';
+        } else {
+            defaultMethod = 'privatePostV5OrderCreate';
+        }
+        let method = undefined;
+        [ method, params ] = this.handleOptionAndParams (params, 'createOrder', 'method', defaultMethod);
         let response = undefined;
-        if (isTrailingAmountOrder || (defaultMethod === 'privatePostV5PositionTradingStop')) {
+        if (method === 'privatePostV5PositionTradingStop') {
             response = await this.privatePostV5PositionTradingStop (orderRequest);
         } else {
             response = await this.privatePostV5OrderCreate (orderRequest); // already extended inside createOrderRequest
@@ -3962,8 +3969,6 @@ export default class bybit extends Exchange {
         if ((price === undefined) && (lowerCaseType === 'limit')) {
             throw new ArgumentsRequired (this.id + ' createOrder requires a price argument for limit orders');
         }
-        let defaultMethod = undefined;
-        [ defaultMethod, params ] = this.handleOptionAndParams (params, 'createOrder', 'method', 'privatePostV5OrderCreate');
         const request: Dict = {
             'symbol': market['id'],
             // 'side': this.capitalize (side),
@@ -4007,7 +4012,15 @@ export default class bybit extends Exchange {
         const isMarket = lowerCaseType === 'market';
         const isLimit = lowerCaseType === 'limit';
         const isBuy = side === 'buy';
-        const isAlternativeEndpoint = defaultMethod === 'privatePostV5PositionTradingStop';
+        let defaultMethod = undefined;
+        if (isTrailingAmountOrder || isStopLossTriggerOrder || isTakeProfitTriggerOrder) {
+            defaultMethod = 'privatePostV5PositionTradingStop';
+        } else {
+            defaultMethod = 'privatePostV5OrderCreate';
+        }
+        let method = undefined;
+        [ method, params ] = this.handleOptionAndParams (params, 'createOrder', 'method', defaultMethod);
+        const isAlternativeEndpoint = method === 'privatePostV5PositionTradingStop';
         const amountString = this.getAmount (symbol, amount);
         const priceString = (price !== undefined) ? this.getPrice (symbol, this.numberToString (price)) : undefined;
         if (isTrailingAmountOrder || isAlternativeEndpoint) {
@@ -4069,12 +4082,12 @@ export default class bybit extends Exchange {
         }
         if (market['spot']) {
             request['category'] = 'spot';
+        } else if (market['option']) {
+            request['category'] = 'option';
         } else if (market['linear']) {
             request['category'] = 'linear';
         } else if (market['inverse']) {
             request['category'] = 'inverse';
-        } else if (market['option']) {
-            request['category'] = 'option';
         }
         const cost = this.safeString (params, 'cost');
         params = this.omit (params, 'cost');
@@ -5963,7 +5976,8 @@ export default class bybit extends Exchange {
         [ subType, params ] = this.handleSubTypeAndParams ('fetchLedger', undefined, params);
         let response = undefined;
         if (enableUnified[1]) {
-            if (subType === 'inverse') {
+            const unifiedMarginStatus = this.safeInteger (this.options, 'unifiedMarginStatus', 5); // 3/4 uta 1.0, 5/6 uta 2.0
+            if (subType === 'inverse' && (unifiedMarginStatus < 5)) {
                 response = await this.privateGetV5AccountContractTransactionLog (this.extend (request, params));
             } else {
                 response = await this.privateGetV5AccountTransactionLog (this.extend (request, params));

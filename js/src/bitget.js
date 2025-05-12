@@ -1546,7 +1546,9 @@ export default class bitget extends Exchange {
                 'fetchPositions': {
                     'method': 'privateMixGetV2MixPositionAllPosition', // or privateMixGetV2MixPositionHistoryPosition
                 },
-                'defaultTimeInForce': 'GTC', // 'GTC' = Good To Cancel (default), 'IOC' = Immediate Or Cancel
+                'defaultTimeInForce': 'GTC',
+                // fiat currencies on deposit page
+                'fiatCurrencies': ['EUR', 'VND', 'PLN', 'CZK', 'HUF', 'DKK', 'AUD', 'CAD', 'NOK', 'SEK', 'CHF', 'MXN', 'COP', 'ARS', 'GBP', 'BRL', 'UAH', 'ZAR'],
             },
             'features': {
                 'spot': {
@@ -2067,6 +2069,7 @@ export default class bitget extends Exchange {
         //
         const result = {};
         const data = this.safeValue(response, 'data', []);
+        const fiatCurrencies = this.safeList(this.options, 'fiatCurrencies', []);
         for (let i = 0; i < data.length; i++) {
             const entry = data[i];
             const id = this.safeString(entry, 'coin'); // we don't use 'coinId' as it has no use. it is 'coin' field that needs to be used in currency related endpoints (deposit, withdraw, etc..)
@@ -2101,12 +2104,13 @@ export default class bitget extends Exchange {
                     'precision': this.parseNumber(this.parsePrecision(this.safeString(chain, 'withdrawMinScale'))),
                 };
             }
+            const isFiat = this.inArray(code, fiatCurrencies);
             result[code] = this.safeCurrencyStructure({
                 'info': entry,
                 'id': id,
                 'code': code,
                 'networks': networks,
-                'type': undefined,
+                'type': isFiat ? 'fiat' : 'crypto',
                 'name': undefined,
                 'active': undefined,
                 'deposit': undefined,
@@ -2773,7 +2777,7 @@ export default class bitget extends Exchange {
         const close = this.safeString(ticker, 'lastPr');
         const timestamp = this.safeIntegerOmitZero(ticker, 'ts'); // exchange bitget provided 0
         const change = this.safeString(ticker, 'change24h');
-        const open24 = this.safeString(ticker, 'open24');
+        const open24 = this.safeString2(ticker, 'open24', 'open24h');
         const open = this.safeString(ticker, 'open');
         let symbol;
         let openValue;
