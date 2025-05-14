@@ -298,7 +298,7 @@ export default class Exchange {
     toArray: (object: any[] | Dictionary<any>) => any[];
     unCamelCase: (s: string) => string;
     unique: (x: any[]) => any[];
-    urlencode: (object: object) => string;
+    urlencode: (object: object, sort?: boolean) => string;
     urlencodeBase64: (payload: string | Uint8Array) => string;
     urlencodeNested: (object: object) => string;
     urlencodeWithArrayRepeat: (object: object) => string;
@@ -767,6 +767,7 @@ export default class Exchange {
     currency(code: string): any;
     market(symbol: string): MarketInterface;
     createExpiredOptionMarket(symbol: string): MarketInterface;
+    isLeveragedCurrency(currencyCode: any, checkBaseCoin?: Bool, existingCurrencies?: Dict): boolean;
     handleWithdrawTagAndParams(tag: any, params: any): any;
     createLimitOrder(symbol: string, side: OrderSide, amount: number, price: number, params?: {}): Promise<Order>;
     createLimitOrderWs(symbol: string, side: OrderSide, amount: number, price: number, params?: {}): Promise<Order>;
