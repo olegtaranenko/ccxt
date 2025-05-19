@@ -433,6 +433,7 @@ export interface Greeks {
     bidImpliedVolatility: number;
     bidPrice: number;
     bidSize: number;
+    charm?: number;
     datetime?: Str;
     delta: number;
     gamma: number;
@@ -445,7 +446,9 @@ export interface Greeks {
     theta: number;
     timestamp?: number;
     underlyingPrice: number;
+    vanna?: number;
     vega: number;
+    volga?: number;
 }
 export interface Conversion {
     datetime?: string;

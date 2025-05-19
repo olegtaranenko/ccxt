@@ -32,7 +32,6 @@
 	- [bitstamp](exchanges/bitstamp.md)
 	- [bitteam](exchanges/bitteam.md)
 	- [bitvavo](exchanges/bitvavo.md)
-	- [bl3p](exchanges/bl3p.md)
 	- [blockchaincom](exchanges/blockchaincom.md)
 	- [blofin](exchanges/blofin.md)
 	- [btcalpha](exchanges/btcalpha.md)

@@ -771,7 +771,7 @@ class binance extends \ccxt\async\binance {
             /**
              * fetches information on open orders with bid (buy) and ask (sell) prices, volumes and other data
              *
-             * @see https://developers.binance.com/docs/binance-spot-api-docs/web-socket-api/market-data-requests#order-book
+             * @see https://developers.binance.com/docs/binance-spot-api-docs/websocket-api/market-data-requests#order-book
              * @see https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/websocket-api/Order-Book
              *
              * @param {string} $symbol unified $symbol of the $market to fetch the order book for
@@ -941,10 +941,8 @@ class binance extends \ccxt\async\binance {
         //         )
         //     }
         //
-        $isTestnetSpot = mb_strpos($client->url, 'testnet') > 0;
-        $isSpotMainNet = mb_strpos($client->url, '/stream.binance.') > 0;
-        $isSpot = $isTestnetSpot || $isSpotMainNet;
-        $marketType = $isSpot ? 'spot' : 'contract';
+        $isSpot = (mb_strpos($client->url, '/stream') > -1);
+        $marketType = ($isSpot) ? 'spot' : 'contract';
         $marketId = $this->safe_string($message, 's');
         $market = $this->safe_market($marketId, null, null, $marketType);
         $symbol = $market['symbol'];
@@ -1080,8 +1078,8 @@ class binance extends \ccxt\async\binance {
             /**
              * get the list of most recent $trades for a list of $symbols
              *
-             * @see https://developers.binance.com/docs/binance-spot-api-docs/web-socket-api/market-data-requests#aggregate-$trades
-             * @see https://developers.binance.com/docs/binance-spot-api-docs/web-socket-api/market-data-requests#recent-$trades
+             * @see https://developers.binance.com/docs/binance-spot-api-docs/websocket-api/market-data-requests#aggregate-$trades
+             * @see https://developers.binance.com/docs/binance-spot-api-docs/websocket-api/market-data-requests#recent-$trades
              * @see https://developers.binance.com/docs/derivatives/usds-margined-futures/websocket-$market-streams/Aggregate-Trade-Streams
              * @see https://developers.binance.com/docs/derivatives/coin-margined-futures/websocket-$market-streams/Aggregate-Trade-Streams
              *
@@ -1150,8 +1148,8 @@ class binance extends \ccxt\async\binance {
             /**
              * unsubscribes from the trades channel
              *
-             * @see https://developers.binance.com/docs/binance-spot-api-docs/web-socket-api/market-data-requests#aggregate-trades
-             * @see https://developers.binance.com/docs/binance-spot-api-docs/web-socket-api/market-data-requests#recent-trades
+             * @see https://developers.binance.com/docs/binance-spot-api-docs/websocket-api/market-data-requests#aggregate-trades
+             * @see https://developers.binance.com/docs/binance-spot-api-docs/websocket-api/market-data-requests#recent-trades
              * @see https://developers.binance.com/docs/derivatives/usds-margined-futures/websocket-$market-streams/Aggregate-Trade-Streams
              * @see https://developers.binance.com/docs/derivatives/coin-margined-futures/websocket-$market-streams/Aggregate-Trade-Streams
              *
@@ -1215,8 +1213,8 @@ class binance extends \ccxt\async\binance {
             /**
              * unsubscribes from the trades channel
              *
-             * @see https://developers.binance.com/docs/binance-spot-api-docs/web-socket-api/market-data-requests#aggregate-trades
-             * @see https://developers.binance.com/docs/binance-spot-api-docs/web-socket-api/market-data-requests#recent-trades
+             * @see https://developers.binance.com/docs/binance-spot-api-docs/websocket-api/market-data-requests#aggregate-trades
+             * @see https://developers.binance.com/docs/binance-spot-api-docs/websocket-api/market-data-requests#recent-trades
              * @see https://developers.binance.com/docs/derivatives/usds-margined-futures/websocket-market-streams/Aggregate-Trade-Streams
              * @see https://developers.binance.com/docs/derivatives/coin-margined-futures/websocket-market-streams/Aggregate-Trade-Streams
              *
@@ -1235,8 +1233,8 @@ class binance extends \ccxt\async\binance {
             /**
              * get the list of most recent trades for a particular $symbol
              *
-             * @see https://developers.binance.com/docs/binance-spot-api-docs/web-socket-api/market-data-requests#aggregate-trades
-             * @see https://developers.binance.com/docs/binance-spot-api-docs/web-socket-api/market-data-requests#recent-trades
+             * @see https://developers.binance.com/docs/binance-spot-api-docs/websocket-api/market-data-requests#aggregate-trades
+             * @see https://developers.binance.com/docs/binance-spot-api-docs/websocket-api/market-data-requests#recent-trades
              * @see https://developers.binance.com/docs/derivatives/usds-margined-futures/websocket-market-streams/Aggregate-Trade-Streams
              * @see https://developers.binance.com/docs/derivatives/coin-margined-futures/websocket-market-streams/Aggregate-Trade-Streams
              *
@@ -1426,7 +1424,7 @@ class binance extends \ccxt\async\binance {
     public function handle_trade(Client $client, $message) {
         // the $trade streams push raw $trade information in real-time
         // each $trade has a unique buyer and seller
-        $isSpot = ((mb_strpos($client->url, 'wss://stream.binance.com') > -1) || (mb_strpos($client->url, '/testnet.binance') > -1));
+        $isSpot = (mb_strpos($client->url, '/stream') > -1);
         $marketType = ($isSpot) ? 'spot' : 'contract';
         $marketId = $this->safe_string($message, 's');
         $market = $this->safe_market($marketId, null, null, $marketType);
@@ -1448,7 +1446,7 @@ class binance extends \ccxt\async\binance {
             /**
              * watches historical candlestick data containing the open, high, low, and close price, and the volume of a $market
              *
-             * @see https://developers.binance.com/docs/binance-spot-api-docs/web-socket-api/market-data-requests#klines
+             * @see https://developers.binance.com/docs/binance-spot-api-docs/websocket-api/market-data-requests#klines
              * @see https://developers.binance.com/docs/derivatives/coin-margined-futures/websocket-$market-streams/Kline-Candlestick-Streams
              * @see https://developers.binance.com/docs/derivatives/usds-margined-futures/websocket-$market-streams/Kline-Candlestick-Streams
              *
@@ -1474,7 +1472,7 @@ class binance extends \ccxt\async\binance {
             /**
              * watches historical candlestick data containing the open, high, low, and close price, and the volume of a $market
              *
-             * @see https://developers.binance.com/docs/binance-spot-api-docs/web-socket-api/market-data-requests#klines
+             * @see https://developers.binance.com/docs/binance-spot-api-docs/websocket-api/market-data-requests#klines
              * @see https://developers.binance.com/docs/derivatives/coin-margined-futures/websocket-$market-streams/Kline-Candlestick-Streams
              * @see https://developers.binance.com/docs/derivatives/usds-margined-futures/websocket-$market-streams/Kline-Candlestick-Streams
              *
@@ -1543,7 +1541,7 @@ class binance extends \ccxt\async\binance {
             /**
              * unWatches historical candlestick data containing the open, high, low, and close price, and the volume of a $market
              *
-             * @see https://developers.binance.com/docs/binance-spot-api-docs/web-socket-api/market-data-requests#klines
+             * @see https://developers.binance.com/docs/binance-spot-api-docs/websocket-api/market-data-requests#klines
              * @see https://developers.binance.com/docs/derivatives/coin-margined-futures/websocket-$market-streams/Kline-Candlestick-Streams
              * @see https://developers.binance.com/docs/derivatives/usds-margined-futures/websocket-$market-streams/Kline-Candlestick-Streams
              *
@@ -1613,7 +1611,7 @@ class binance extends \ccxt\async\binance {
             /**
              * unWatches historical candlestick data containing the open, high, low, and close price, and the volume of a $market
              *
-             * @see https://developers.binance.com/docs/binance-spot-api-docs/web-socket-api/market-data-requests#klines
+             * @see https://developers.binance.com/docs/binance-spot-api-docs/websocket-api/market-data-requests#klines
              * @see https://developers.binance.com/docs/derivatives/coin-margined-futures/websocket-$market-streams/Kline-Candlestick-Streams
              * @see https://developers.binance.com/docs/derivatives/usds-margined-futures/websocket-$market-streams/Kline-Candlestick-Streams
              *
@@ -1681,7 +1679,7 @@ class binance extends \ccxt\async\binance {
             $this->safe_float($kline, 'c'),
             $this->safe_float($kline, 'v'),
         );
-        $isSpot = ((mb_strpos($client->url, '/stream') > -1) || (mb_strpos($client->url, '/testnet.binance') > -1));
+        $isSpot = (mb_strpos($client->url, '/stream') > -1);
         $marketType = ($isSpot) ? 'spot' : 'contract';
         $symbol = $this->safe_symbol($marketId, null, null, $marketType);
         $messageHash = 'ohlcv::' . $symbol . '::' . $unifiedTimeframe;
@@ -1743,7 +1741,7 @@ class binance extends \ccxt\async\binance {
             /**
              * query historical candlestick data containing the open, high, low, and close price, and the volume of a $market
              *
-             * @see https://developers.binance.com/docs/binance-spot-api-docs/web-socket-api/market-data-requests#klines
+             * @see https://developers.binance.com/docs/binance-spot-api-docs/websocket-api/market-data-requests#klines
              *
              * @param {string} $symbol unified $symbol of the $market to query OHLCV data for
              * @param {string} $timeframe the length of time each candle represents
@@ -2046,7 +2044,7 @@ class binance extends \ccxt\async\binance {
             /**
              * watches best bid & ask for $symbols
              *
-             * @see https://developers.binance.com/docs/binance-spot-api-docs/web-socket-api/market-data-requests#symbol-order-book-ticker
+             * @see https://developers.binance.com/docs/binance-spot-api-docs/websocket-api/market-data-requests#symbol-order-book-ticker
              * @see https://developers.binance.com/docs/derivatives/coin-margined-futures/websocket-market-streams/All-Book-Tickers-Stream
              * @see https://developers.binance.com/docs/derivatives/usds-margined-futures/websocket-market-streams/All-Book-Tickers-Stream
              *
@@ -2347,7 +2345,7 @@ class binance extends \ccxt\async\binance {
     }
 
     public function handle_tickers_and_bids_asks(Client $client, $message, $methodType) {
-        $isSpot = ((mb_strpos($client->url, '/stream') > -1) || (mb_strpos($client->url, '/testnet.binance') > -1));
+        $isSpot = (mb_strpos($client->url, '/stream') > -1);
         $marketType = ($isSpot) ? 'spot' : 'contract';
         $isBidAsk = ($methodType === 'bidasks');
         $channelName = null;
@@ -2602,7 +2600,7 @@ class binance extends \ccxt\async\binance {
              * fetch balance and get the amount of funds available for trading or funds locked in orders
              *
              * @see https://developers.binance.com/docs/derivatives/usds-margined-futures/account/websocket-api/Futures-Account-Balance
-             * @see https://developers.binance.com/docs/binance-spot-api-docs/web-socket-api/account-requests#account-information-user_data
+             * @see https://developers.binance.com/docs/binance-spot-api-docs/websocket-api/account-requests#account-information-user_data
              * @see https://developers.binance.com/docs/derivatives/coin-margined-futures/account/websocket-api
              *
              * @param {array} [$params] extra parameters specific to the exchange API endpoint
@@ -2982,7 +2980,7 @@ class binance extends \ccxt\async\binance {
             /**
              * create a trade order
              *
-             * @see https://developers.binance.com/docs/binance-spot-api-docs/web-socket-api/trading-requests#place-new-order-trade
+             * @see https://developers.binance.com/docs/binance-spot-api-docs/websocket-api/trading-requests#place-new-order-trade
              * @see https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/websocket-api/New-Order
              * @see https://developers.binance.com/docs/derivatives/coin-margined-futures/trade/websocket-api
              *
@@ -3135,7 +3133,7 @@ class binance extends \ccxt\async\binance {
             /**
              * edit a trade order
              *
-             * @see https://developers.binance.com/docs/binance-spot-api-docs/web-socket-api/trading-requests#cancel-and-replace-order-trade
+             * @see https://developers.binance.com/docs/binance-spot-api-docs/websocket-api/trading-requests#cancel-and-replace-order-trade
              * @see https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/websocket-api/Modify-Order
              * @see https://developers.binance.com/docs/derivatives/coin-margined-futures/trade/websocket-api/Modify-Order
              *
@@ -3295,7 +3293,7 @@ class binance extends \ccxt\async\binance {
             /**
              * cancel multiple orders
              *
-             * @see https://developers.binance.com/docs/binance-spot-api-docs/web-socket-api/trading-requests#cancel-order-trade
+             * @see https://developers.binance.com/docs/binance-spot-api-docs/websocket-api/trading-requests#cancel-order-trade
              * @see https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/websocket-api/Cancel-Order
              * @see https://developers.binance.com/docs/derivatives/coin-margined-futures/trade/websocket-api/Cancel-Order
              *
@@ -3344,7 +3342,7 @@ class binance extends \ccxt\async\binance {
             /**
              * cancel all open orders in a $market
              *
-             * @see https://developers.binance.com/docs/binance-spot-api-docs/web-socket-api/trading-requests#cancel-open-orders-trade
+             * @see https://developers.binance.com/docs/binance-spot-api-docs/websocket-api/trading-requests#cancel-open-orders-trade
              *
              * @param {string} [$symbol] unified $market $symbol of the $market to cancel orders in
              * @param {array} [$params] extra parameters specific to the exchange API endpoint
@@ -3382,7 +3380,7 @@ class binance extends \ccxt\async\binance {
             /**
              * fetches information on an order made by the user
              *
-             * @see https://developers.binance.com/docs/binance-spot-api-docs/web-socket-api/trading-requests#query-order-user_data
+             * @see https://developers.binance.com/docs/binance-spot-api-docs/websocket-api/trading-requests#query-order-user_data
              * @see https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/websocket-api/Query-Order
              * @see https://developers.binance.com/docs/derivatives/coin-margined-futures/trade/websocket-api/Query-Order
              *
@@ -3432,7 +3430,7 @@ class binance extends \ccxt\async\binance {
             /**
              * fetches information on multiple $orders made by the user
              *
-             * @see https://developers.binance.com/docs/binance-spot-api-docs/web-socket-api/trading-requests#order-lists
+             * @see https://developers.binance.com/docs/binance-spot-api-docs/websocket-api/trading-requests#order-lists
              *
              * @param {string} $symbol unified $market $symbol of the $market $orders were made in
              * @param {int|null} [$since] the earliest time in ms to fetch $orders for
@@ -3480,7 +3478,7 @@ class binance extends \ccxt\async\binance {
             /**
              * fetch closed $orders
              *
-             * @see https://developers.binance.com/docs/binance-spot-api-docs/web-socket-api/trading-requests#$order-lists
+             * @see https://developers.binance.com/docs/binance-spot-api-docs/websocket-api/trading-requests#$order-lists
              *
              * @param {string} $symbol unified market $symbol
              * @param {int} [$since] the earliest time in ms to fetch open $orders for
@@ -3505,7 +3503,7 @@ class binance extends \ccxt\async\binance {
             /**
              * fetch all unfilled currently open $orders
              *
-             * @see https://developers.binance.com/docs/binance-spot-api-docs/web-socket-api/trading-requests#current-open-$orders-user_data
+             * @see https://developers.binance.com/docs/binance-spot-api-docs/websocket-api/trading-requests#current-open-$orders-user_data
              *
              * @param {string} $symbol unified $market $symbol
              * @param {int|null} [$since] the earliest time in ms to fetch open $orders for
@@ -4080,7 +4078,7 @@ class binance extends \ccxt\async\binance {
             /**
              * fetch all $trades made by the user
              *
-             * @see https://developers.binance.com/docs/binance-spot-api-docs/web-socket-api/account-requests#account-trade-history-user_data
+             * @see https://developers.binance.com/docs/binance-spot-api-docs/websocket-api/account-requests#account-trade-history-user_data
              *
              * @param {string} $symbol unified $market $symbol
              * @param {int|null} [$since] the earliest time in ms to fetch $trades for
@@ -4136,7 +4134,7 @@ class binance extends \ccxt\async\binance {
             /**
              * fetch all $trades made by the user
              *
-             * @see https://developers.binance.com/docs/binance-spot-api-docs/web-socket-api/market-data-requests#recent-$trades
+             * @see https://developers.binance.com/docs/binance-spot-api-docs/websocket-api/market-data-requests#recent-$trades
              *
              * @param {string} $symbol unified $market $symbol
              * @param {int} [$since] the earliest time in ms to fetch $trades for
