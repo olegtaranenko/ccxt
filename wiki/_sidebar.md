@@ -69,7 +69,6 @@
 	- [htx](exchanges/htx.md)
 	- [huobijp](exchanges/huobijp.md)
 	- [hyperliquid](exchanges/hyperliquid.md)
-	- [idex](exchanges/idex.md)
 	- [independentreserve](exchanges/independentreserve.md)
 	- [indodax](exchanges/indodax.md)
 	- [kraken()](exchanges/kraken().md)
