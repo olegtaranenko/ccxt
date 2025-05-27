@@ -27,6 +27,10 @@ function countAllParams(fn) {
     if (!match) return 0;
 
     const params = match[1].split(',').filter(p => p);
+    const objectParamsIndex = params.indexOf('params={}');
+    if (objectParamsIndex >= 0) {
+        return objectParamsIndex;
+    }
     return params.length;
 }
 
@@ -85,12 +89,11 @@ for (let i = 0; i < process.argv.length; i++) {
                             lastParamObject = {}
                         }
                         const key = parsed[0];
-                        const value = parsed[1];
+                        const value = evaluateExpression(parsed[1]);
                         if (key === 'symbol') {
                             symbol = value
                         }
                         lastParamObject[key] = value
-                        params.splice(paramIndex, 1)
                     } else {
                         throw new Error ('Invalid usage of --param. Please provide a key=value pair after --param.')
                     }
@@ -100,6 +103,7 @@ for (let i = 0; i < process.argv.length; i++) {
                     }
                     lastParamObject[nextParam] = true
                 }
+                params.splice(paramIndex, 1)
             } else {
                 throw new Error (`Unexpected error by parsing parameters: ${nextParam} is not found in params array.`)
             }
@@ -356,6 +360,14 @@ const printHumanReadable = (exchange, result) => {
 
 //-----------------------------------------------------------------------------
 
+function evaluateExpression(s) {
+    try {
+        return eval('(() => (' + s + ')) ()')
+    } catch (e) {
+        return s
+    }
+}
+
 async function run () {
 
 
@@ -371,11 +383,7 @@ async function run () {
             .map (s => {
                 return (() => {
                     if (s.match(/^\d+$/g)) return s < Number.MAX_SAFE_INTEGER ? Number(s) : s
-                    try {
-                        return eval('(() => (' + s + ')) ()')
-                    } catch (e) {
-                        return s
-                    }
+                    return evaluateExpression(s);
                 })();
             })
 
@@ -479,7 +487,7 @@ async function run () {
                         const fn = exchange[methodName]
                         const fnParams = countAllParams(fn)
                         const argsContainsParams = args.find( arg=> arg && typeof arg === 'object' && !Array.isArray(arg) && Object.keys(arg).length > 0)
-                        if (argsContainsParams && fnParams !== args.length) {
+                        if (argsContainsParams && args.length < fnParams) {
                             // populate the missing params with undefined
                             const missingParams = fnParams - args.length
                             const paramsObj = args[args.length - 1]
