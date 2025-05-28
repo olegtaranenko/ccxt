@@ -279,7 +279,7 @@ export default class bybit extends bybitRest {
     unWatchTrades(symbol: string, params?: {}): Promise<any>;
     handleTrades(client: Client, message: any): void;
     parseWsTrade(trade: any, market?: any): Trade;
-    getPrivateType(url: any): "spot" | "unified" | "usdc";
+    getPrivateType(url: any): "spot" | "usdc" | "unified";
     /**
      * @method
      * @name bybit#watchMyTrades
