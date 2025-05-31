@@ -2725,12 +2725,14 @@ class binance(Exchange, ImplicitAPI):
             'type': 'option',
         }
 
-    def market(self, symbol: str) -> MarketInterface:
+    def market(self, symbol: str, allowNonMarketSymbol=None) -> MarketInterface:
         if self.markets is None:
             raise ExchangeError(self.id + ' markets not loaded')
         # defaultType has legacy support on binance
         defaultType = self.safe_string(self.options, 'defaultType')
         defaultSubType = self.safe_string(self.options, 'defaultSubType')
+        if allowNonMarketSymbol is None:
+            allowNonMarketSymbol = self.safe_bool(self.options, 'allowNonMarketSymbol')
         isLegacyLinear = defaultType == 'future'
         isLegacyInverse = defaultType == 'delivery'
         isLegacy = isLegacyLinear or isLegacyInverse
@@ -2770,7 +2772,8 @@ class binance(Exchange, ImplicitAPI):
                     return self.markets[futuresSymbol]
             elif (symbol.find('-C') > -1) or (symbol.find('-P') > -1):  # both exchange-id and unified symbols are supported self way regardless of the defaultType
                 return self.create_expired_option_market(symbol)
-        raise BadSymbol(self.id + ' does not have market symbol ' + symbol)
+        if not allowNonMarketSymbol:
+            raise BadSymbol(self.id + ' does not have market symbol ' + symbol)
 
     def safe_market(self, marketId: Str = None, market: Market = None, delimiter: Str = None, marketType: Str = None) -> MarketInterface:
         isOption = (marketId is not None) and ((marketId.find('-C') > -1) or (marketId.find('-P') > -1))
@@ -4512,7 +4515,40 @@ class binance(Exchange, ImplicitAPI):
         paginate, params = self.handle_option_and_params(params, 'fetchOHLCV', 'paginate', False)
         if paginate:
             return self.fetch_paginated_call_deterministic('fetchOHLCV', symbol, since, limit, timeframe, params, 1000)
-        market = self.market(symbol)
+        allowNonMarketSymbol: Bool
+        allowNonMarketSymbol, params = self.handle_option_and_params(params, 'fetchOHLCV', 'allowNonMarketSymbol')
+        market: MarketInterface
+        linear: Bool
+        inverse: Bool
+        option: Bool
+        # defaultSubType = self.safe_string(self.options, 'subType', 'defaultSubType')
+        # defaultType = self.safe_string_2(self.options, 'type', 'defaultType')
+        try:
+            market = self.market(symbol, allowNonMarketSymbol)
+        except Exception as e:
+            market = None
+        marketType = None
+        marketType, params = self.handle_market_type_and_params('fetchOpenOrders', market, params)
+        subType = None
+        subType, params = self.handle_sub_type_and_params('fetchOpenOrders', market, params, 'linear')
+        if market:
+            inverse = market['inverse']
+            linear = market['linear']
+            option = market['option']
+            params = self.omit(params, ['inverse', 'linear', 'option'])
+        if allowNonMarketSymbol:
+            if inverse is None:
+                inverse, params = self.handle_option_and_params(params, 'fetchOHLCV', 'inverse', subType == 'inverse')
+            else:
+                params = self.omit(params, 'inverse')
+            if linear is None:
+                linear, params = self.handle_option_and_params(params, 'fetchOHLCV', 'linear', subType == 'linear')
+            else:
+                params = self.omit(params, 'linear')
+            if option is None:
+                option, params = self.handle_option_and_params(params, 'fetchOHLCV', 'option', marketType == 'option')
+            else:
+                params = self.omit(params, 'option')
         # binance docs say that the default limit 500, max 1500 for futures, max 1000 for spot markets
         # the reality is that the time range wider than 500 candles won't work right
         defaultLimit: Num
@@ -4529,11 +4565,18 @@ class binance(Exchange, ImplicitAPI):
             'interval': self.safe_string(self.timeframes, timeframe, timeframe),
             'limit': limit,
         }
-        marketId = market['id']
+        marketId: str
+        if market is not None:
+            marketId = market['id']
+        else:
+            marketId = symbol
         if price == 'index':
             parts = marketId.split('_')
             pair = self.safe_string(parts, 0)
-            request['pair'] = pair   # Index price takes self argument instead of symbol
+            if pair:
+                request['pair'] = pair   # Index price takes self argument instead of symbol
+            elif not allowNonMarketSymbol:
+                raise BadSymbol(self.id + " fetchOHLCV() requires a valid market symbol for price 'index'")
         else:
             request['symbol'] = marketId
         # duration = self.parse_timeframe(timeframe)
@@ -4543,7 +4586,7 @@ class binance(Exchange, ImplicitAPI):
             # It didn't work before without the endTime
             # https://github.com/ccxt/ccxt/issues/8454
             #
-            if market['inverse']:
+            if inverse:
                 if since > 0:
                     duration = self.parse_timeframe(timeframe)
                     endTime = self.sum(since, limit * duration * 1000 - 1)
@@ -4552,26 +4595,26 @@ class binance(Exchange, ImplicitAPI):
         if until is not None:
             request['endTime'] = until
         response = None
-        if market['option']:
+        if option:
             response = self.eapiPublicGetKlines(self.extend(request, params))
         elif price == 'mark':
-            if market['inverse']:
+            if inverse:
                 response = self.dapiPublicGetMarkPriceKlines(self.extend(request, params))
             else:
                 response = self.fapiPublicGetMarkPriceKlines(self.extend(request, params))
         elif price == 'index':
-            if market['inverse']:
+            if inverse:
                 response = self.dapiPublicGetIndexPriceKlines(self.extend(request, params))
             else:
                 response = self.fapiPublicGetIndexPriceKlines(self.extend(request, params))
         elif price == 'premiumIndex':
-            if market['inverse']:
+            if inverse:
                 response = self.dapiPublicGetPremiumIndexKlines(self.extend(request, params))
             else:
                 response = self.fapiPublicGetPremiumIndexKlines(self.extend(request, params))
-        elif market['linear']:
+        elif linear:
             response = self.fapiPublicGetKlines(self.extend(request, params))
-        elif market['inverse']:
+        elif inverse:
             response = self.dapiPublicGetKlines(self.extend(request, params))
         else:
             response = self.publicGetKlines(self.extend(request, params))
@@ -4600,7 +4643,12 @@ class binance(Exchange, ImplicitAPI):
         #             "volume": "0",
         #         }
         #     ]
-        #
+        if market is None and (option or linear or inverse):
+            market = {
+                'inverse': inverse,
+                'linear': linear,
+                'option': option,
+            }
         candles = self.parse_ohlcvs(response, market, timeframe, since, limit)
         return candles
 

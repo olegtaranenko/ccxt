@@ -4768,7 +4768,7 @@ class Exchange(object):
         defaultType = self.safe_string_2(self.options, 'defaultType', 'type', 'spot')
         return [defaultType, params]
 
-    def handle_sub_type_and_params(self, methodName: str, market=None, params={}, defaultValue=None):
+    def handle_sub_type_and_params(self, methodName: str, market: Market = None, params={}, defaultValue=None):
         subType = None
         # if set in params, it takes precedence
         subTypeInParams = self.safe_string_2(params, 'subType', 'defaultSubType')
@@ -5449,9 +5449,21 @@ class Exchange(object):
                 return self.currencies_by_id[code]
         raise ExchangeError(self.id + ' does not have currency code ' + code)
 
-    def market(self, symbol: str):
+    def market(self, symbol: str, silentBadSymbol=None):
+        """
+        Retrieves a market by its symbol.
+        :param str symbol: - The symbol of the market to retrieve.
+        :param boolean [silentBadSymbol]: - Whether to raise an error if the market symbol is not found.
+        :returns MarketInterface: - The market object corresponding to the symbol.
+        :throws ExchangeError -: If the markets have not been loaded.
+        :throws BadSymbol -: If the market symbol is not found and `silentBadSymbol` is False. Additional to the
+ silentBadSymbol argument the method use the self.options.allowNonMarketSymbol option to prevent throwing
+ an error, if the market symbol is not found.
+        """
         if self.markets is None:
             raise ExchangeError(self.id + ' markets not loaded')
+        if silentBadSymbol is None:
+            silentBadSymbol = self.safe_bool(self.options, 'allowNonMarketSymbol', False)
         if symbol in self.markets:
             return self.markets[symbol]
         elif symbol in self.markets_by_id:
@@ -5464,7 +5476,9 @@ class Exchange(object):
             return markets[0]
         elif (symbol.endswith('-C')) or (symbol.endswith('-P')) or (symbol.startswith('C-')) or (symbol.startswith('P-')):
             return self.create_expired_option_market(symbol)
-        raise BadSymbol(self.id + ' does not have market symbol ' + symbol)
+        if not silentBadSymbol:
+            raise BadSymbol(self.id + ' does not have market symbol ' + symbol)
+        return None
 
     def create_expired_option_market(self, symbol: str):
         raise NotSupported(self.id + ' createExpiredOptionMarket() is not supported yet')

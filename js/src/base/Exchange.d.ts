@@ -690,8 +690,8 @@ export default class Exchange {
     handleOptionAndParams(params: object, methodName: string, optionName: string, defaultValue?: any): any[];
     handleOptionAndParams2(params: object, methodName1: string, optionName1: string, optionName2: string, defaultValue?: any): any[];
     handleOption(methodName: string, optionName: string, defaultValue?: any): any;
-    handleMarketTypeAndParams(methodName: string, market?: Market, params?: {}, defaultValue?: any): any;
-    handleSubTypeAndParams(methodName: string, market?: any, params?: {}, defaultValue?: any): any[];
+    handleMarketTypeAndParams(methodName: string, market?: Partial<Market>, params?: {}, defaultValue?: any): any;
+    handleSubTypeAndParams(methodName: string, market?: Partial<Market>, params?: {}, defaultValue?: any): any[];
     handleMarginModeAndParams(methodName: string, params?: {}, defaultValue?: any): any[];
     throwExactlyMatchedException(exact: any, string: any, message: any): void;
     throwBroadlyMatchedException(broad: any, string: any, message: any): void;
@@ -779,7 +779,18 @@ export default class Exchange {
     account(): BalanceAccount;
     commonCurrencyCode(code: string): string;
     currency(code: string): any;
-    market(symbol: string): MarketInterface;
+    /**
+     * @method
+     * @description Retrieves a market by its symbol.
+     * @param {string} symbol - The symbol of the market to retrieve.
+     * @param {boolean} [silentBadSymbol] - Whether to throw an error if the market symbol is not found.
+     * @returns {MarketInterface} - The market object corresponding to the symbol.
+     * @throws {ExchangeError} - If the markets have not been loaded.
+     * @throws {BadSymbol} - If the market symbol is not found and `silentBadSymbol` is false. Additional to the
+     * silentBadSymbol argument the method use the this.options.allowNonMarketSymbol option to prevent throwing
+     * an error, if the market symbol is not found.
+     */
+    market(symbol: string, silentBadSymbol?: any): MarketInterface;
     createExpiredOptionMarket(symbol: string): MarketInterface;
     isLeveragedCurrency(currencyCode: any, checkBaseCoin?: Bool, existingCurrencies?: Dict): boolean;
     handleWithdrawTagAndParams(tag: any, params: any): any;

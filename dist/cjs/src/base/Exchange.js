@@ -5623,9 +5623,23 @@ class Exchange {
         }
         throw new errors.ExchangeError(this.id + ' does not have currency code ' + code);
     }
-    market(symbol) {
+    /**
+     * @method
+     * @description Retrieves a market by its symbol.
+     * @param {string} symbol - The symbol of the market to retrieve.
+     * @param {boolean} [silentBadSymbol] - Whether to throw an error if the market symbol is not found.
+     * @returns {MarketInterface} - The market object corresponding to the symbol.
+     * @throws {ExchangeError} - If the markets have not been loaded.
+     * @throws {BadSymbol} - If the market symbol is not found and `silentBadSymbol` is false. Additional to the
+     * silentBadSymbol argument the method use the this.options.allowNonMarketSymbol option to prevent throwing
+     * an error, if the market symbol is not found.
+     */
+    market(symbol, silentBadSymbol = undefined) {
         if (this.markets === undefined) {
             throw new errors.ExchangeError(this.id + ' markets not loaded');
+        }
+        if (silentBadSymbol === undefined) {
+            silentBadSymbol = this.safeBool(this.options, 'allowNonMarketSymbol', false);
         }
         if (symbol in this.markets) {
             return this.markets[symbol];
@@ -5644,7 +5658,10 @@ class Exchange {
         else if ((symbol.endsWith('-C')) || (symbol.endsWith('-P')) || (symbol.startsWith('C-')) || (symbol.startsWith('P-'))) {
             return this.createExpiredOptionMarket(symbol);
         }
-        throw new errors.BadSymbol(this.id + ' does not have market symbol ' + symbol);
+        if (!silentBadSymbol) {
+            throw new errors.BadSymbol(this.id + ' does not have market symbol ' + symbol);
+        }
+        return undefined;
     }
     createExpiredOptionMarket(symbol) {
         throw new errors.NotSupported(this.id + ' createExpiredOptionMarket () is not supported yet');

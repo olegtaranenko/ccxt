@@ -2717,13 +2717,16 @@ class binance extends Exchange {
         );
     }
 
-    public function market(string $symbol): array {
+    public function market(string $symbol, $allowNonMarketSymbol = null): array {
         if ($this->markets === null) {
             throw new ExchangeError($this->id . ' $markets not loaded');
         }
         // $defaultType has legacy support on binance
         $defaultType = $this->safe_string($this->options, 'defaultType');
         $defaultSubType = $this->safe_string($this->options, 'defaultSubType');
+        if ($allowNonMarketSymbol === null) {
+            $allowNonMarketSymbol = $this->safe_bool($this->options, 'allowNonMarketSymbol');
+        }
         $isLegacyLinear = $defaultType === 'future';
         $isLegacyInverse = $defaultType === 'delivery';
         $isLegacy = $isLegacyLinear || $isLegacyInverse;
@@ -2771,7 +2774,9 @@ class binance extends Exchange {
                 return $this->create_expired_option_market($symbol);
             }
         }
-        throw new BadSymbol($this->id . ' does not have $market $symbol ' . $symbol);
+        if (!$allowNonMarketSymbol) {
+            throw new BadSymbol($this->id . ' does not have $market $symbol ' . $symbol);
+        }
     }
 
     public function safe_market(?string $marketId = null, ?array $market = null, ?string $delimiter = null, ?string $marketType = null): array {
@@ -4633,7 +4638,41 @@ class binance extends Exchange {
             if ($paginate) {
                 return Async\await($this->fetch_paginated_call_deterministic('fetchOHLCV', $symbol, $since, $limit, $timeframe, $params, 1000));
             }
-            $market = $this->market($symbol);
+            list($allowNonMarketSymbol, $params) = $this->handle_option_and_params($params, 'fetchOHLCV', 'allowNonMarketSymbol');
+            // $defaultSubType = $this->safe_string($this->options, 'subType', 'defaultSubType');
+            // $defaultType = $this->safe_string_2($this->options, 'type', 'defaultType');
+            try {
+                $market = $this->market($symbol, $allowNonMarketSymbol);
+            } catch (Exception $e) {
+                $market = null;
+            }
+            $marketType = null;
+            list($marketType, $params) = $this->handle_market_type_and_params('fetchOpenOrders', $market, $params);
+            $subType = null;
+            list($subType, $params) = $this->handle_sub_type_and_params('fetchOpenOrders', $market, $params, 'linear');
+            if ($market) {
+                $inverse = $market['inverse'];
+                $linear = $market['linear'];
+                $option = $market['option'];
+                $params = $this->omit($params, array( 'inverse', 'linear', 'option' ));
+            }
+            if ($allowNonMarketSymbol) {
+                if ($inverse === null) {
+                    list($inverse, $params) = $this->handle_option_and_params($params, 'fetchOHLCV', 'inverse', $subType === 'inverse');
+                } else {
+                    $params = $this->omit($params, 'inverse');
+                }
+                if ($linear === null) {
+                    list($linear, $params) = $this->handle_option_and_params($params, 'fetchOHLCV', 'linear', $subType === 'linear');
+                } else {
+                    $params = $this->omit($params, 'linear');
+                }
+                if ($option === null) {
+                    list($option, $params) = $this->handle_option_and_params($params, 'fetchOHLCV', 'option', $marketType === 'option');
+                } else {
+                    $params = $this->omit($params, 'option');
+                }
+            }
             // binance docs say that the default $limit 500, max 1500 for futures, max 1000 for spot markets
             // the reality is that the time range wider than 500 $candles won't work right
             list($defaultLimit, $params) = $this->handle_option_and_params($params, 'fetchOHLCV', 'defaultLimit', 500);
@@ -4649,11 +4688,19 @@ class binance extends Exchange {
                 'interval' => $this->safe_string($this->timeframes, $timeframe, $timeframe),
                 'limit' => $limit,
             );
-            $marketId = $market['id'];
+            if ($market !== null) {
+                $marketId = $market['id'];
+            } else {
+                $marketId = $symbol;
+            }
             if ($price === 'index') {
                 $parts = explode('_', $marketId);
                 $pair = $this->safe_string($parts, 0);
-                $request['pair'] = $pair;   // Index $price takes this argument instead of $symbol
+                if ($pair) {
+                    $request['pair'] = $pair;   // Index $price takes this argument instead of $symbol
+                } elseif (!$allowNonMarketSymbol) {
+                    throw new BadSymbol($this->id . " fetchOHLCV() requires a valid $market $symbol for $price 'index'");
+                }
             } else {
                 $request['symbol'] = $marketId;
             }
@@ -4664,7 +4711,7 @@ class binance extends Exchange {
                 // It didn't work before without the $endTime
                 // https://github.com/ccxt/ccxt/issues/8454
                 //
-                if ($market['inverse']) {
+                if ($inverse) {
                     if ($since > 0) {
                         $duration = $this->parse_timeframe($timeframe);
                         $endTime = $this->sum($since, $limit * $duration * 1000 - 1);
@@ -4677,29 +4724,29 @@ class binance extends Exchange {
                 $request['endTime'] = $until;
             }
             $response = null;
-            if ($market['option']) {
+            if ($option) {
                 $response = Async\await($this->eapiPublicGetKlines ($this->extend($request, $params)));
             } elseif ($price === 'mark') {
-                if ($market['inverse']) {
+                if ($inverse) {
                     $response = Async\await($this->dapiPublicGetMarkPriceKlines ($this->extend($request, $params)));
                 } else {
                     $response = Async\await($this->fapiPublicGetMarkPriceKlines ($this->extend($request, $params)));
                 }
             } elseif ($price === 'index') {
-                if ($market['inverse']) {
+                if ($inverse) {
                     $response = Async\await($this->dapiPublicGetIndexPriceKlines ($this->extend($request, $params)));
                 } else {
                     $response = Async\await($this->fapiPublicGetIndexPriceKlines ($this->extend($request, $params)));
                 }
             } elseif ($price === 'premiumIndex') {
-                if ($market['inverse']) {
+                if ($inverse) {
                     $response = Async\await($this->dapiPublicGetPremiumIndexKlines ($this->extend($request, $params)));
                 } else {
                     $response = Async\await($this->fapiPublicGetPremiumIndexKlines ($this->extend($request, $params)));
                 }
-            } elseif ($market['linear']) {
+            } elseif ($linear) {
                 $response = Async\await($this->fapiPublicGetKlines ($this->extend($request, $params)));
-            } elseif ($market['inverse']) {
+            } elseif ($inverse) {
                 $response = Async\await($this->dapiPublicGetKlines ($this->extend($request, $params)));
             } else {
                 $response = Async\await($this->publicGetKlines ($this->extend($request, $params)));
@@ -4729,7 +4776,13 @@ class binance extends Exchange {
             //             "volume" => "0",
             //         }
             //     )
-            //
+            if ($market === null && ($option || $linear || $inverse)) {
+                $market = array(
+                    'inverse' => $inverse,
+                    'linear' => $linear,
+                    'option' => $option,
+                );
+            }
             $candles = $this->parse_ohlcvs($response, $market, $timeframe, $since, $limit);
             return $candles;
         }) ();

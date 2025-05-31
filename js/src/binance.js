@@ -2711,13 +2711,16 @@ export default class binance extends Exchange {
             'type': 'option',
         };
     }
-    market(symbol) {
+    market(symbol, allowNonMarketSymbol = undefined) {
         if (this.markets === undefined) {
             throw new ExchangeError(this.id + ' markets not loaded');
         }
         // defaultType has legacy support on binance
         let defaultType = this.safeString(this.options, 'defaultType');
         const defaultSubType = this.safeString(this.options, 'defaultSubType');
+        if (allowNonMarketSymbol === undefined) {
+            allowNonMarketSymbol = this.safeBool(this.options, 'allowNonMarketSymbol');
+        }
         const isLegacyLinear = defaultType === 'future';
         const isLegacyInverse = defaultType === 'delivery';
         const isLegacy = isLegacyLinear || isLegacyInverse;
@@ -2771,7 +2774,9 @@ export default class binance extends Exchange {
                 return this.createExpiredOptionMarket(symbol);
             }
         }
-        throw new BadSymbol(this.id + ' does not have market symbol ' + symbol);
+        if (!allowNonMarketSymbol) {
+            throw new BadSymbol(this.id + ' does not have market symbol ' + symbol);
+        }
     }
     safeMarket(marketId = undefined, market = undefined, delimiter = undefined, marketType = undefined) {
         const isOption = (marketId !== undefined) && ((marketId.indexOf('-C') > -1) || (marketId.indexOf('-P') > -1));
@@ -4643,7 +4648,50 @@ export default class binance extends Exchange {
         if (paginate) {
             return await this.fetchPaginatedCallDeterministic('fetchOHLCV', symbol, since, limit, timeframe, params, 1000);
         }
-        const market = this.market(symbol);
+        let allowNonMarketSymbol;
+        [allowNonMarketSymbol, params] = this.handleOptionAndParams(params, 'fetchOHLCV', 'allowNonMarketSymbol');
+        let market;
+        let linear;
+        let inverse;
+        let option;
+        // const defaultSubType = this.safeString (this.options, 'subType', 'defaultSubType');
+        // const defaultType = this.safeString2 (this.options, 'type', 'defaultType');
+        try {
+            market = this.market(symbol, allowNonMarketSymbol);
+        }
+        catch (e) {
+            market = undefined;
+        }
+        let marketType = undefined;
+        [marketType, params] = this.handleMarketTypeAndParams('fetchOpenOrders', market, params);
+        let subType = undefined;
+        [subType, params] = this.handleSubTypeAndParams('fetchOpenOrders', market, params, 'linear');
+        if (market) {
+            inverse = market['inverse'];
+            linear = market['linear'];
+            option = market['option'];
+            params = this.omit(params, ['inverse', 'linear', 'option']);
+        }
+        if (allowNonMarketSymbol) {
+            if (inverse === undefined) {
+                [inverse, params] = this.handleOptionAndParams(params, 'fetchOHLCV', 'inverse', subType === 'inverse');
+            }
+            else {
+                params = this.omit(params, 'inverse');
+            }
+            if (linear === undefined) {
+                [linear, params] = this.handleOptionAndParams(params, 'fetchOHLCV', 'linear', subType === 'linear');
+            }
+            else {
+                params = this.omit(params, 'linear');
+            }
+            if (option === undefined) {
+                [option, params] = this.handleOptionAndParams(params, 'fetchOHLCV', 'option', marketType === 'option');
+            }
+            else {
+                params = this.omit(params, 'option');
+            }
+        }
         // binance docs say that the default limit 500, max 1500 for futures, max 1000 for spot markets
         // the reality is that the time range wider than 500 candles won't work right
         let defaultLimit;
@@ -4661,11 +4709,22 @@ export default class binance extends Exchange {
             'interval': this.safeString(this.timeframes, timeframe, timeframe),
             'limit': limit,
         };
-        const marketId = market['id'];
+        let marketId;
+        if (market !== undefined) {
+            marketId = market['id'];
+        }
+        else {
+            marketId = symbol;
+        }
         if (price === 'index') {
             const parts = marketId.split('_');
             const pair = this.safeString(parts, 0);
-            request['pair'] = pair; // Index price takes this argument instead of symbol
+            if (pair) {
+                request['pair'] = pair; // Index price takes this argument instead of symbol
+            }
+            else if (!allowNonMarketSymbol) {
+                throw new BadSymbol(this.id + " fetchOHLCV() requires a valid market symbol for price 'index'");
+            }
         }
         else {
             request['symbol'] = marketId;
@@ -4677,7 +4736,7 @@ export default class binance extends Exchange {
             // It didn't work before without the endTime
             // https://github.com/ccxt/ccxt/issues/8454
             //
-            if (market['inverse']) {
+            if (inverse) {
                 if (since > 0) {
                     const duration = this.parseTimeframe(timeframe);
                     const endTime = this.sum(since, limit * duration * 1000 - 1);
@@ -4690,11 +4749,11 @@ export default class binance extends Exchange {
             request['endTime'] = until;
         }
         let response = undefined;
-        if (market['option']) {
+        if (option) {
             response = await this.eapiPublicGetKlines(this.extend(request, params));
         }
         else if (price === 'mark') {
-            if (market['inverse']) {
+            if (inverse) {
                 response = await this.dapiPublicGetMarkPriceKlines(this.extend(request, params));
             }
             else {
@@ -4702,7 +4761,7 @@ export default class binance extends Exchange {
             }
         }
         else if (price === 'index') {
-            if (market['inverse']) {
+            if (inverse) {
                 response = await this.dapiPublicGetIndexPriceKlines(this.extend(request, params));
             }
             else {
@@ -4710,17 +4769,17 @@ export default class binance extends Exchange {
             }
         }
         else if (price === 'premiumIndex') {
-            if (market['inverse']) {
+            if (inverse) {
                 response = await this.dapiPublicGetPremiumIndexKlines(this.extend(request, params));
             }
             else {
                 response = await this.fapiPublicGetPremiumIndexKlines(this.extend(request, params));
             }
         }
-        else if (market['linear']) {
+        else if (linear) {
             response = await this.fapiPublicGetKlines(this.extend(request, params));
         }
-        else if (market['inverse']) {
+        else if (inverse) {
             response = await this.dapiPublicGetKlines(this.extend(request, params));
         }
         else {
@@ -4751,7 +4810,13 @@ export default class binance extends Exchange {
         //             "volume": "0",
         //         }
         //     ]
-        //
+        if (market === undefined && (option || linear || inverse)) {
+            market = {
+                'inverse': inverse,
+                'linear': linear,
+                'option': option,
+            };
+        }
         const candles = this.parseOHLCVs(response, market, timeframe, since, limit);
         return candles;
     }

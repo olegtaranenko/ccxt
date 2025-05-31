@@ -5807,7 +5807,7 @@ class Exchange {
         return array( $defaultType, $params );
     }
 
-    public function handle_sub_type_and_params(string $methodName, $market = null, $params = array (), $defaultValue = null) {
+    public function handle_sub_type_and_params(string $methodName, ?array $market = null, $params = array (), $defaultValue = null) {
         $subType = null;
         // if set in $params, it takes precedence
         $subTypeInParams = $this->safe_string_2($params, 'subType', 'defaultSubType');
@@ -6645,9 +6645,22 @@ class Exchange {
         throw new ExchangeError($this->id . ' does not have currency $code ' . $code);
     }
 
-    public function market(string $symbol) {
+    public function market(string $symbol, $silentBadSymbol = null) {
+        /**
+         * Retrieves a $market by its $symbol->
+         * @param {string} $symbol - The $symbol of the $market to retrieve.
+         * @param {boolean} [$silentBadSymbol] - Whether to throw an error if the $market $symbol is not found.
+         * @return {MarketInterface} - The $market object corresponding to the $symbol->
+         * @throws {ExchangeError} - If the $markets have not been loaded.
+         * @throws {BadSymbol} - If the $market $symbol is not found and `$silentBadSymbol` is false. Additional to the
+         * $silentBadSymbol argument the method use the $this->options.allowNonMarketSymbol option to prevent throwing
+         * an error, if the $market $symbol is not found.
+         */
         if ($this->markets === null) {
             throw new ExchangeError($this->id . ' $markets not loaded');
+        }
+        if ($silentBadSymbol === null) {
+            $silentBadSymbol = $this->safe_bool($this->options, 'allowNonMarketSymbol', false);
         }
         if (is_array($this->markets) && array_key_exists($symbol, $this->markets)) {
             return $this->markets[$symbol];
@@ -6664,7 +6677,10 @@ class Exchange {
         } elseif ((str_ends_with($symbol, '-C')) || (str_ends_with($symbol, '-P')) || (str_starts_with($symbol, 'C-')) || (str_starts_with($symbol, 'P-'))) {
             return $this->create_expired_option_market($symbol);
         }
-        throw new BadSymbol($this->id . ' does not have $market $symbol ' . $symbol);
+        if (!$silentBadSymbol) {
+            throw new BadSymbol($this->id . ' does not have $market $symbol ' . $symbol);
+        }
+        return null;
     }
 
     public function create_expired_option_market(string $symbol) {

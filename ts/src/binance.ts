@@ -4826,7 +4826,6 @@ export default class binance extends Exchange {
         //             "volume": "0",
         //         }
         //     ]
-
         if (market === undefined && (option || linear || inverse)) {
             market = {
                 'inverse': inverse,
