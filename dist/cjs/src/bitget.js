@@ -2077,9 +2077,7 @@ class bitget extends bitget$1 {
                 const chain = chains[j];
                 const networkId = this.safeString(chain, 'chain');
                 let network = this.networkIdToCode(networkId, code);
-                if (network !== undefined) {
-                    network = network.toUpperCase();
-                }
+                network = network.toUpperCase();
                 networks[network] = {
                     'info': chain,
                     'id': networkId,
@@ -2392,7 +2390,7 @@ class bitget extends bitget$1 {
             'coin': currency['id'],
             'address': address,
             'chain': networkId,
-            'size': amount,
+            'size': this.currencyToPrecision(code, amount, networkCode),
             'transferType': 'on_chain',
         };
         if (tag !== undefined) {
@@ -2417,8 +2415,6 @@ class bitget extends bitget$1 {
         const fillResponseFromRequest = this.safeBool(withdrawOptions, 'fillResponseFromRequest', true);
         if (fillResponseFromRequest) {
             result['currency'] = code;
-            result['timestamp'] = this.milliseconds();
-            result['datetime'] = this.iso8601(this.milliseconds());
             result['amount'] = amount;
             result['tag'] = tag;
             result['address'] = address;
@@ -2542,7 +2538,10 @@ class bitget extends bitget$1 {
         const status = this.safeString(transaction, 'status');
         const tag = this.safeString(transaction, 'tag');
         const feeCostString = this.safeString(transaction, 'fee');
-        const feeCostAbsString = Precise["default"].stringAbs(feeCostString);
+        let feeCostAbsString = undefined;
+        if (feeCostString !== undefined) {
+            feeCostAbsString = Precise["default"].stringAbs(feeCostString);
+        }
         let fee = undefined;
         let amountString = this.safeString(transaction, 'size');
         if (feeCostAbsString !== undefined) {
@@ -3474,6 +3473,7 @@ class bitget extends bitget$1 {
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @param {int} [params.until] timestamp in ms of the latest candle to fetch
      * @param {boolean} [params.useHistoryEndpoint] whether to force to use historical endpoint (it has max limit of 200)
+     * @param {boolean} [params.useHistoryEndpointForPagination] whether to force to use historical endpoint for pagination (default true)
      * @param {boolean} [params.paginate] default false, when true will automatically paginate by calling this endpoint multiple times. See in the docs all the [available parameters](https://github.com/ccxt/ccxt/wiki/Manual#pagination-params)
      * @param {string} [params.price] *swap only* "mark" (to fetch mark price candles) or "index" (to fetch index price candles)
      * @returns {int[][]} A list of candles ordered as timestamp, open, high, low, close, volume
@@ -3483,12 +3483,14 @@ class bitget extends bitget$1 {
         const defaultLimit = 100; // default 100, max 1000
         const maxLimitForRecentEndpoint = 1000;
         const maxLimitForHistoryEndpoint = 200; // note, max 1000 bars are supported for "recent-candles" endpoint, but "historical-candles" support only max 200
+        const useHistoryEndpoint = this.safeBool(params, 'useHistoryEndpoint', false);
+        const useHistoryEndpointForPagination = this.safeBool(params, 'useHistoryEndpointForPagination', true);
         let paginate = false;
         [paginate, params] = this.handleOptionAndParams(params, 'fetchOHLCV', 'paginate');
         if (paginate) {
-            return await this.fetchPaginatedCallDeterministic('fetchOHLCV', symbol, since, limit, timeframe, params, maxLimitForRecentEndpoint);
+            const limitForPagination = useHistoryEndpointForPagination ? maxLimitForHistoryEndpoint : maxLimitForRecentEndpoint;
+            return await this.fetchPaginatedCallDeterministic('fetchOHLCV', symbol, since, limit, timeframe, params, limitForPagination);
         }
-        const useHistoryEndpoint = this.safeBool(params, 'useHistoryEndpoint', false);
         const market = this.market(symbol);
         const marketType = market['spot'] ? 'spot' : 'swap';
         const timeframes = this.options['timeframes'][marketType];
@@ -4137,7 +4139,8 @@ class bitget extends bitget$1 {
         market = this.safeMarket(marketId, market, undefined, marketType);
         const timestamp = this.safeInteger2(order, 'cTime', 'ctime');
         const updateTimestamp = this.safeInteger(order, 'uTime');
-        const rawStatus = this.safeString2(order, 'status', 'state');
+        let rawStatus = this.safeString2(order, 'status', 'state');
+        rawStatus = this.safeString(order, 'planStatus', rawStatus);
         let fee = undefined;
         const feeCostString = this.safeString(order, 'fee');
         if (feeCostString !== undefined) {

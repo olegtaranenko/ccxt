@@ -91,10 +91,6 @@ import "github.com/ccxt/ccxt/go/v4"
             AppendToArray(&emptyAllowedFor,"optionType")
             AppendToArray(&emptyAllowedFor,"strike")
         }
-        if IsTrue(option) {
-            AppendToArray(&emptyAllowedFor,"linear")
-            AppendToArray(&emptyAllowedFor,"inverse")
-        }
         AssertStructure(exchange, skippedProperties, method, market, format, emptyAllowedFor)
         AssertSymbol(exchange, skippedProperties, method, market, "symbol")
         var logText interface{} = LogTemplate(exchange, method, market)
@@ -198,7 +194,7 @@ import "github.com/ccxt/ccxt/go/v4"
                 Assert(IsEqual(GetValue(market, "strike"), nil), Add("\"strike\" must be undefined when \"option\" is false", logText))
                 Assert(IsEqual(GetValue(market, "optionType"), nil), Add("\"optionType\" must be undefined when \"option\" is false", logText))
             }
-        } else {
+        } else if IsTrue(spot) {
             // otherwise, expiry needs to be undefined
             Assert(IsTrue((IsEqual(GetValue(market, "expiry"), nil))) && IsTrue((IsEqual(GetValue(market, "expiryDatetime"), nil))), Add("\"expiry\" and \"expiryDatetime\" must be undefined when it is not future|option market", logText))
         }

@@ -2071,8 +2071,7 @@ class bitget(Exchange, ImplicitAPI):
                 chain = chains[j]
                 networkId = self.safe_string(chain, 'chain')
                 network = self.network_id_to_code(networkId, code)
-                if network is not None:
-                    network = network.upper()
+                network = network.upper()
                 networks[network] = {
                     'info': chain,
                     'id': networkId,
@@ -2371,7 +2370,7 @@ class bitget(Exchange, ImplicitAPI):
             'coin': currency['id'],
             'address': address,
             'chain': networkId,
-            'size': amount,
+            'size': self.currency_to_precision(code, amount, networkCode),
             'transferType': 'on_chain',
         }
         if tag is not None:
@@ -2395,8 +2394,6 @@ class bitget(Exchange, ImplicitAPI):
         fillResponseFromRequest = self.safe_bool(withdrawOptions, 'fillResponseFromRequest', True)
         if fillResponseFromRequest:
             result['currency'] = code
-            result['timestamp'] = self.milliseconds()
-            result['datetime'] = self.iso8601(self.milliseconds())
             result['amount'] = amount
             result['tag'] = tag
             result['address'] = address
@@ -2514,7 +2511,9 @@ class bitget(Exchange, ImplicitAPI):
         status = self.safe_string(transaction, 'status')
         tag = self.safe_string(transaction, 'tag')
         feeCostString = self.safe_string(transaction, 'fee')
-        feeCostAbsString = Precise.string_abs(feeCostString)
+        feeCostAbsString = None
+        if feeCostString is not None:
+            feeCostAbsString = Precise.string_abs(feeCostString)
         fee = None
         amountString = self.safe_string(transaction, 'size')
         if feeCostAbsString is not None:
@@ -3407,6 +3406,7 @@ class bitget(Exchange, ImplicitAPI):
         :param dict [params]: extra parameters specific to the exchange API endpoint
         :param int [params.until]: timestamp in ms of the latest candle to fetch
         :param boolean [params.useHistoryEndpoint]: whether to force to use historical endpoint(it has max limit of 200)
+        :param boolean [params.useHistoryEndpointForPagination]: whether to force to use historical endpoint for pagination(default True)
         :param boolean [params.paginate]: default False, when True will automatically paginate by calling self endpoint multiple times. See in the docs all the [available parameters](https://github.com/ccxt/ccxt/wiki/Manual#pagination-params)
         :param str [params.price]: *swap only* "mark"(to fetch mark price candles) or "index"(to fetch index price candles)
         :returns int[][]: A list of candles ordered, open, high, low, close, volume
@@ -3415,11 +3415,13 @@ class bitget(Exchange, ImplicitAPI):
         defaultLimit = 100  # default 100, max 1000
         maxLimitForRecentEndpoint = 1000
         maxLimitForHistoryEndpoint = 200  # note, max 1000 bars are supported for "recent-candles" endpoint, but "historical-candles" support only max 200
+        useHistoryEndpoint = self.safe_bool(params, 'useHistoryEndpoint', False)
+        useHistoryEndpointForPagination = self.safe_bool(params, 'useHistoryEndpointForPagination', True)
         paginate = False
         paginate, params = self.handle_option_and_params(params, 'fetchOHLCV', 'paginate')
         if paginate:
-            return self.fetch_paginated_call_deterministic('fetchOHLCV', symbol, since, limit, timeframe, params, maxLimitForRecentEndpoint)
-        useHistoryEndpoint = self.safe_bool(params, 'useHistoryEndpoint', False)
+            limitForPagination = maxLimitForHistoryEndpoint if useHistoryEndpointForPagination else maxLimitForRecentEndpoint
+            return self.fetch_paginated_call_deterministic('fetchOHLCV', symbol, since, limit, timeframe, params, limitForPagination)
         market = self.market(symbol)
         marketType = 'spot' if market['spot'] else 'swap'
         timeframes = self.options['timeframes'][marketType]
@@ -4038,6 +4040,7 @@ class bitget(Exchange, ImplicitAPI):
         timestamp = self.safe_integer_2(order, 'cTime', 'ctime')
         updateTimestamp = self.safe_integer(order, 'uTime')
         rawStatus = self.safe_string_2(order, 'status', 'state')
+        rawStatus = self.safe_string(order, 'planStatus', rawStatus)
         fee = None
         feeCostString = self.safe_string(order, 'fee')
         if feeCostString is not None:

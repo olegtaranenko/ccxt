@@ -2267,7 +2267,7 @@ public partial class bitmart : Exchange
                 object code = this.safeCurrencyCode(currencyId);
                 object account = this.account();
                 ((IDictionary<string,object>)account)["free"] = this.safeString2(balance, "available", "available_balance");
-                ((IDictionary<string,object>)account)["used"] = this.safeString2(balance, "frozen", "frozen_balance");
+                ((IDictionary<string,object>)account)["used"] = this.safeStringN(balance, new List<object>() {"unAvailable", "frozen", "frozen_balance"});
                 ((IDictionary<string,object>)result)[(string)code] = account;
             }
             return this.safeBalance(result);
@@ -5115,7 +5115,7 @@ public partial class bitmart : Exchange
             // only supports symbols as undefined or sending one symbol
             ((IDictionary<string,object>)request)["symbol"] = getValue(market, "id");
         }
-        object response = await ((Task<object>)callDynamically(this, "privateGetContractPrivatePositionV2", new object[] { this.extend(request, parameters) }));
+        object response = await this.privateGetContractPrivatePositionV2(this.extend(request, parameters));
         //
         //     {
         //         "code": 1000,

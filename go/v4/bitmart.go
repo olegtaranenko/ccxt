@@ -2400,7 +2400,7 @@ func  (this *bitmart) CustomParseBalance(response interface{}, marketType interf
             var code interface{} = this.SafeCurrencyCode(currencyId)
             var account interface{} = this.Account()
             AddElementToObject(account, "free", this.SafeString2(balance, "available", "available_balance"))
-            AddElementToObject(account, "used", this.SafeString2(balance, "frozen", "frozen_balance"))
+            AddElementToObject(account, "used", this.SafeStringN(balance, []interface{}{"unAvailable", "frozen", "frozen_balance"}))
             AddElementToObject(result, code, account)
         }
         return this.SafeBalance(result)
@@ -5576,7 +5576,7 @@ func  (this *bitmart) FetchPositions(optionalArgs ...interface{}) <- chan interf
                 AddElementToObject(request, "symbol", GetValue(market, "id"))
             }
         
-            response:= (<-this.callDynamically("privateGetContractPrivatePositionV2", this.Extend(request, params)))
+            response:= (<-this.PrivateGetContractPrivatePositionV2(this.Extend(request, params)))
             PanicOnError(response)
             //
             //     {

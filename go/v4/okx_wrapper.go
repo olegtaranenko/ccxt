@@ -98,6 +98,21 @@ func (this *Okx) FetchMarketsByType(typeVar interface{}, options ...FetchMarkets
 }
 /**
  * @method
+ * @name okx#fetchCurrencies
+ * @description fetches all available currencies on an exchange
+ * @see https://www.okx.com/docs-v5/en/#rest-api-funding-get-currencies
+ * @param {object} [params] extra parameters specific to the exchange API endpoint
+ * @returns {object} an associative dictionary of currencies
+ */
+func (this *Okx) FetchCurrencies(params ...interface{}) (Currencies, error) {
+    res := <- this.Core.FetchCurrencies(params...)
+    if IsError(res) {
+        return Currencies{}, CreateReturnError(res)
+    }
+    return NewCurrencies(res), nil
+}
+/**
+ * @method
  * @name okx#fetchOrderBook
  * @description fetches information on open orders with bid (buy) and ask (sell) prices, volumes and other data
  * @see https://www.okx.com/docs-v5/en/#order-book-trading-market-data-get-order-book
@@ -1600,6 +1615,38 @@ func (this *Okx) FetchFundingRate(symbol string, options ...FetchFundingRateOpti
         return FundingRate{}, CreateReturnError(res)
     }
     return NewFundingRate(res), nil
+}
+/**
+ * @method
+ * @name okx#fetchFundingRates
+ * @description fetches the current funding rates for multiple symbols
+ * @see https://www.okx.com/docs-v5/en/#public-data-rest-api-get-funding-rate
+ * @param {string[]} symbols unified market symbols
+ * @param {object} [params] extra parameters specific to the exchange API endpoint
+ * @returns {object} a dictionary of [funding rates structure]{@link https://docs.ccxt.com/#/?id=funding-rates-structure}
+ */
+func (this *Okx) FetchFundingRates(options ...FetchFundingRatesOptions) (FundingRates, error) {
+
+    opts := FetchFundingRatesOptionsStruct{}
+
+    for _, opt := range options {
+        opt(&opts)
+    }
+
+    var symbols interface{} = nil
+    if opts.Symbols != nil {
+        symbols = *opts.Symbols
+    }
+
+    var params interface{} = nil
+    if opts.Params != nil {
+        params = *opts.Params
+    }
+    res := <- this.Core.FetchFundingRates(symbols, params)
+    if IsError(res) {
+        return FundingRates{}, CreateReturnError(res)
+    }
+    return NewFundingRates(res), nil
 }
 /**
  * @method
