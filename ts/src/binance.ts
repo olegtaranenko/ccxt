@@ -5344,7 +5344,6 @@ export default class binance extends Exchange {
         if (postOnly) {
             uppercaseType = 'LIMIT_MAKER';
         }
-        request['type'] = uppercaseType;
         const triggerPrice = this.safeNumber2 (params, 'stopPrice', 'triggerPrice');
         if (triggerPrice !== undefined) {
             if (uppercaseType === 'MARKET') {
@@ -5353,6 +5352,7 @@ export default class binance extends Exchange {
                 uppercaseType = 'STOP_LOSS_LIMIT';
             }
         }
+        request['type'] = uppercaseType;
         const validOrderTypes = this.safeList (market['info'], 'orderTypes');
         if (!this.inArray (uppercaseType, validOrderTypes)) {
             if (initialUppercaseType !== uppercaseType) {
