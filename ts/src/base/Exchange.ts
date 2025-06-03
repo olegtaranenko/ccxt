@@ -1159,7 +1159,7 @@ export default class Exchange {
             if (cleanupOutside) {
                 this.omit (params, 'currenciesFromOutside');
                 this.omit (params, 'fetchCurrenciesCallback');
-        }
+            }
         }
         let markets;
         const loadFromOutside = this.safeValue(params, 'loadFromOutside', undefined);
