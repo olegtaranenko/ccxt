@@ -80,6 +80,7 @@
 	- [luno](exchanges/luno.md)
 	- [mercado](exchanges/mercado.md)
 	- [mexc](exchanges/mexc.md)
+	- [modetrade](exchanges/modetrade.md)
 	- [ndax](exchanges/ndax.md)
 	- [novadax](exchanges/novadax.md)
 	- [oceanex](exchanges/oceanex.md)
