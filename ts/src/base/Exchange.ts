@@ -1166,7 +1166,6 @@ export default class Exchange {
         if (!loadFromOutside || reload) {
             cleanupOutside = false;
             markets = await this.fetchMarkets (params);
-            delete this.options['cachedCurrencies'];
             const loadedMarketCallback = this.safeValue (params, 'loadedMarketCallback', undefined);
             if (loadedMarketCallback) {
                 loadedMarketCallback (markets);
@@ -1181,6 +1180,9 @@ export default class Exchange {
             this.omit (params, 'loadedMarketCallback');
         }
 
+        if ('cachedCurrencies' in this.options) {
+            delete this.options['cachedCurrencies'];
+        }
         return this.setMarkets (markets, currencies);
     }
 
