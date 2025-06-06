@@ -14,34 +14,42 @@ export default class binanceus extends binance {
         const parentWsDescribe = super.describeData ();
         const extended = this.deepExtend (restDescribe, parentWsDescribe);
         return this.deepExtend (extended, {
+            'certified': false,
+            'countries': [ 'US' ],
+            'fees': {
+                'trading': {
+                    'maker': 0.0, // 0.1% trading fee, zero fees for all trading pairs before November 1
+                    'percentage': true,
+                    'taker': 0.0, // 0.1% trading fee, zero fees for all trading pairs before November 1
+                    'tierBased': false,
+                },
+            }, // US
             'id': 'binanceus',
             'name': 'Binance US',
-            'countries': [ 'US' ], // US
-            'certified': false,
+            'options': {
+                'defaultType': 'spot',
+                'fetchCurrencies': false,
+                'fetchMarkets': [ 'spot' ],
+                'quoteOrderQty': false,
+            },
             'urls': {
-                'logo': 'https://user-images.githubusercontent.com/1294454/65177307-217b7c80-da5f-11e9-876e-0b748ba0a358.jpg',
                 'api': {
+                    'private': 'https://api.binance.us/api/v3',
+                    'public': 'https://api.binance.us/api/v3',
+                    'sapi': 'https://api.binance.us/sapi/v1',
+                    'v1': 'https://api.binance.us/api/v1',
+                    'v3': 'https://api.binance.us/api/v3',
+                    'wapi': 'https://api.binance.us/wapi/v3',
+                    'web': 'https://www.binance.us',
                     'ws': {
                         'spot': 'wss://stream.binance.us:9443/ws',
                     },
-                    'web': 'https://www.binance.us',
-                    'sapi': 'https://api.binance.us/sapi/v1',
-                    'wapi': 'https://api.binance.us/wapi/v3',
-                    'public': 'https://api.binance.us/api/v3',
-                    'private': 'https://api.binance.us/api/v3',
-                    'v3': 'https://api.binance.us/api/v3',
-                    'v1': 'https://api.binance.us/api/v1',
                 },
-                'www': 'https://www.binance.us',
-                'referral': 'https://www.binance.us/?ref=35005074',
                 'doc': 'https://github.com/binance-us/binance-official-api-docs',
                 'fees': 'https://www.binance.us/en/fee/schedule',
-            },
-            'options': {
-                'fetchCurrencies': false,
-                'quoteOrderQty': false,
-                'defaultType': 'spot',
-                'fetchMarkets': [ 'spot' ],
+                'logo': 'https://user-images.githubusercontent.com/1294454/65177307-217b7c80-da5f-11e9-876e-0b748ba0a358.jpg',
+                'referral': 'https://www.binance.us/?ref=35005074',
+                'www': 'https://www.binance.us',
             },
         });
     }

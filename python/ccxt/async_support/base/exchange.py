@@ -1903,7 +1903,7 @@ class Exchange(BaseExchange):
                     response = await getattr(self, method)(symbol, None, maxEntriesPerRequest, params)
                     responseLength = len(response)
                     if self.verbose or self.verboseTruncate:
-                        if not callable(self.verboseLogVeto) or self.verboseLogVeto('pagination', method, None, response):
+                        if not callable(self.verboseLogVeto) or not self.verboseLogVeto('pagination', method, None, response):
                             backwardMessage = 'Dynamic pagination call ' + self.number_to_string(calls) + ' method ' + method + ' response length ' + self.number_to_string(responseLength)
                             if paginationTimestamp is not None:
                                 backwardMessage += ' timestamp ' + self.number_to_string(paginationTimestamp)
@@ -1921,7 +1921,7 @@ class Exchange(BaseExchange):
                     response = await getattr(self, method)(symbol, paginationTimestamp, maxEntriesPerRequest, params)
                     responseLength = len(response)
                     if self.verbose or self.verboseTruncate:
-                        if not callable(self.verboseLogVeto) or self.verboseLogVeto('pagination', method, None, response):
+                        if not callable(self.verboseLogVeto) or not self.verboseLogVeto('pagination', method, None, response):
                             forwardMessage = 'Dynamic pagination call ' + self.number_to_string(calls) + ' method ' + method + ' response length ' + self.number_to_string(responseLength)
                             if paginationTimestamp is not None:
                                 forwardMessage += ' timestamp ' + self.number_to_string(paginationTimestamp)
@@ -2025,9 +2025,10 @@ class Exchange(BaseExchange):
                 errors = 0
                 responseLength = len(response)
                 if self.verbose or self.verboseTruncate:
-                    if not callable(self.verboseLogVeto) or self.verboseLogVeto('pagination', method, None, response):
-                        iteration = (i + str(1))
-                        cursorMessage = 'Cursor pagination call ' + str(iteration) + ' method ' + method + ' response length ' + str(responseLength) + ' cursor ' + cursorValue
+                    if not callable(self.verboseLogVeto) or not self.verboseLogVeto('pagination', method, None, response):
+                        cursorString = '' if (cursorValue is None) else cursorValue
+                        iteration = (i + 1)
+                        cursorMessage = 'Cursor pagination call ' + str(iteration) + ' method ' + method + ' response length ' + str(responseLength) + ' cursor ' + cursorString
                         self.log(cursorMessage)
                 if responseLength == 0:
                     break
@@ -2073,7 +2074,7 @@ class Exchange(BaseExchange):
                 errors = 0
                 responseLength = len(response)
                 if self.verbose or self.verboseTruncate:
-                    if not callable(self.verboseLogVeto) or self.verboseLogVeto('pagination', method, None, response):
+                    if not callable(self.verboseLogVeto) or not self.verboseLogVeto('pagination', method, None, response):
                         iteration = (i + str(1))
                         incrementalMessage = 'Incremental pagination call ' + iteration + ' method ' + method + ' response length ' + str(responseLength)
                         self.log(incrementalMessage)

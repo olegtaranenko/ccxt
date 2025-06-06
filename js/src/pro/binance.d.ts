@@ -1,17 +1,37 @@
 import binanceRest from '../binance.js';
-import type { Int, OrderSide, OrderType, Str, Strings, Trade, OrderBook, Order, Ticker, Tickers, OHLCV, Position, Balances, Num, Dict, Liquidation } from '../base/types.js';
+import type { Balances, Dict, Int, Liquidation, Num, OHLCV, Order, OrderBook, OrderSide, OrderType, Position, Str, Strings, Ticker, Tickers, Trade } from '../base/types.js';
 import Client from '../base/ws/Client.js';
 export default class binance extends binanceRest {
     describe(): any;
     describeData(): {
         has: {
-            ws: boolean;
+            cancelAllOrdersWs: boolean;
+            cancelOrdersWs: boolean;
+            cancelOrderWs: boolean;
+            createOrderWs: boolean;
+            editOrderWs: boolean;
+            fetchBalanceWs: boolean;
+            fetchDepositsWs: boolean;
+            fetchMarketsWs: boolean;
+            fetchMyTradesWs: boolean;
+            fetchOHLCVWs: boolean;
+            fetchOpenOrdersWs: boolean;
+            fetchOrderBookWs: boolean;
+            fetchOrdersWs: boolean;
+            fetchOrderWs: boolean;
+            fetchPositionForSymbolWs: boolean;
+            fetchPositionsWs: boolean;
+            fetchPositionWs: boolean;
+            fetchTickerWs: boolean;
+            fetchTradesWs: boolean;
+            fetchTradingFeesWs: boolean;
+            fetchWithdrawalsWs: boolean;
             watchBalance: boolean;
+            watchBidsAsks: boolean;
             watchLiquidations: boolean;
             watchLiquidationsForSymbols: boolean;
             watchMyLiquidations: boolean;
             watchMyLiquidationsForSymbols: boolean;
-            watchBidsAsks: boolean;
             watchMyTrades: boolean;
             watchOHLCV: boolean;
             watchOHLCVForSymbols: boolean;
@@ -26,87 +46,60 @@ export default class binance extends binanceRest {
             watchMarkPrice: boolean;
             watchTrades: boolean;
             watchTradesForSymbols: boolean;
-            createOrderWs: boolean;
-            editOrderWs: boolean;
-            cancelOrderWs: boolean;
-            cancelOrdersWs: boolean;
-            cancelAllOrdersWs: boolean;
-            fetchBalanceWs: boolean;
-            fetchDepositsWs: boolean;
-            fetchMarketsWs: boolean;
-            fetchMyTradesWs: boolean;
-            fetchOHLCVWs: boolean;
-            fetchOrderBookWs: boolean;
-            fetchOpenOrdersWs: boolean;
-            fetchOrderWs: boolean;
-            fetchOrdersWs: boolean;
-            fetchPositionWs: boolean;
-            fetchPositionForSymbolWs: boolean;
-            fetchPositionsWs: boolean;
-            fetchTickerWs: boolean;
-            fetchTradesWs: boolean;
-            fetchTradingFeesWs: boolean;
-            fetchWithdrawalsWs: boolean;
-        };
-        urls: {
-            test: {
-                ws: {
-                    spot: string;
-                    margin: string;
-                    future: string;
-                    delivery: string;
-                    'ws-api': {
-                        spot: string;
-                        future: string;
-                        delivery: string;
-                    };
-                };
-            };
-            api: {
-                ws: {
-                    spot: string;
-                    margin: string;
-                    future: string;
-                    delivery: string;
-                    'ws-api': {
-                        spot: string;
-                        future: string;
-                        delivery: string;
-                    };
-                    papi: string;
-                };
-            };
-            doc: string;
-        };
-        streaming: {
-            keepAlive: number;
+            ws: boolean;
         };
         options: {
+            liquidationsLimit: number;
+            listenKeyRefreshRate: number;
+            myLiquidationsLimit: number;
+            OHLCVLimit: number;
+            ordersLimit: number;
+            requestId: {};
             returnRateLimits: boolean;
-            streamLimits: {
-                spot: number;
-                margin: number;
-                future: number;
-                delivery: number;
-            };
-            subscriptionLimitByStream: {
-                spot: number;
-                margin: number;
-                future: number;
-                delivery: number;
-            };
             streamBySubscriptionsHash: {};
             streamIndex: number;
-            watchOrderBookRate: number;
-            liquidationsLimit: number;
-            myLiquidationsLimit: number;
+            streamLimits: {
+                delivery: number;
+                future: number;
+                margin: number;
+                spot: number;
+            };
+            subscriptionLimitByStream: {
+                delivery: number;
+                future: number;
+                margin: number;
+                spot: number;
+            };
+            tickerChannelsMap: {
+                '24hrMiniTicker': string;
+                '24hrTicker': string;
+                markPriceUpdate: string;
+                '1dTicker': string;
+                '1hTicker': string;
+                '4hTicker': string;
+                bookTicker: string;
+            };
             tradesLimit: number;
-            ordersLimit: number;
-            OHLCVLimit: number;
-            requestId: {};
-            watchOrderBookLimit: number;
-            watchTrades: {
+            wallet: string;
+            watchBalance: {
+                awaitBalanceSnapshot: boolean;
+                fetchBalanceSnapshot: boolean;
+            };
+            watchLiquidationsForSymbols: {
+                defaultType: string;
+            };
+            watchOHLCV: {
                 name: string;
+            };
+            watchOrderBook: {
+                checksum: boolean;
+                maxRetries: number;
+            };
+            watchOrderBookLimit: number;
+            watchOrderBookRate: number;
+            watchPositions: {
+                awaitPositionsSnapshot: boolean;
+                fetchPositionsSnapshot: boolean;
             };
             watchTicker: {
                 name: string;
@@ -114,37 +107,47 @@ export default class binance extends binanceRest {
             watchTickers: {
                 name: string;
             };
-            watchOHLCV: {
+            watchTrades: {
                 name: string;
             };
-            watchOrderBook: {
-                maxRetries: number;
-                checksum: boolean;
+            watchTradesForSymbols: {
+                name: string;
             };
-            watchBalance: {
-                fetchBalanceSnapshot: boolean;
-                awaitBalanceSnapshot: boolean;
-            };
-            watchLiquidationsForSymbols: {
-                defaultType: string;
-            };
-            watchPositions: {
-                fetchPositionsSnapshot: boolean;
-                awaitPositionsSnapshot: boolean;
-            };
-            wallet: string;
-            listenKeyRefreshRate: number;
             ws: {
                 cost: number;
             };
-            tickerChannelsMap: {
-                '24hrTicker': string;
-                '24hrMiniTicker': string;
-                markPriceUpdate: string;
-                '1hTicker': string;
-                '4hTicker': string;
-                '1dTicker': string;
-                bookTicker: string;
+        };
+        streaming: {
+            keepAlive: number;
+        };
+        urls: {
+            api: {
+                ws: {
+                    delivery: string;
+                    future: string;
+                    margin: string;
+                    papi: string;
+                    spot: string;
+                    'ws-api': {
+                        delivery: string;
+                        future: string;
+                        spot: string;
+                    };
+                };
+            };
+            doc: string;
+            test: {
+                ws: {
+                    delivery: string;
+                    future: string;
+                    margin: string;
+                    spot: string;
+                    'ws-api': {
+                        delivery: string;
+                        future: string;
+                        spot: string;
+                    };
+                };
             };
         };
     };

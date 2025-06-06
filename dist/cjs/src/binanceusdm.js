@@ -8,15 +8,14 @@ var errors = require('./base/errors.js');
 class binanceusdm extends binance {
     describe() {
         return this.deepExtend(super.describe(), {
-            'id': 'binanceusdm',
-            'name': 'Binance USDⓈ-M',
-            'urls': {
-                'logo': 'https://github.com/user-attachments/assets/871cbea7-eebb-4b28-b260-c1c91df0487a',
-                'doc': [
-                    'https://binance-docs.github.io/apidocs/futures/en/',
-                    'https://binance-docs.github.io/apidocs/spot/en',
-                    'https://developers.binance.com/en',
-                ],
+            // https://binance-docs.github.io/apidocs/futures/en/#error-codes
+            // https://developers.binance.com/docs/derivatives/usds-margined-futures/error-code
+            'exceptions': {
+                'exact': {
+                    '-5021': errors.InvalidOrder,
+                    '-5022': errors.InvalidOrder,
+                    '-5028': errors.InvalidOrder, // {"code":-5028,"msg":"Timestamp for this request is outside of the ME recvWindow."}
+                },
             },
             'has': {
                 'CORS': undefined,
@@ -27,23 +26,24 @@ class binanceusdm extends binance {
                 'option': undefined,
                 'createStopMarketOrder': true,
             },
+            'id': 'binanceusdm',
+            'name': 'Binance USDⓈ-M',
             'options': {
-                'fetchMarkets': ['linear'],
                 'defaultSubType': 'linear',
+                'fetchMarkets': ['linear'],
                 // https://www.binance.com/en/support/faq/360033162192
                 // tier amount, maintenance margin, initial margin,
                 'leverageBrackets': undefined,
-                'marginTypes': {},
                 'marginModes': {},
+                'marginTypes': {},
             },
-            // https://binance-docs.github.io/apidocs/futures/en/#error-codes
-            // https://developers.binance.com/docs/derivatives/usds-margined-futures/error-code
-            'exceptions': {
-                'exact': {
-                    '-5021': errors.InvalidOrder,
-                    '-5022': errors.InvalidOrder,
-                    '-5028': errors.InvalidOrder, // {"code":-5028,"msg":"Timestamp for this request is outside of the ME recvWindow."}
-                },
+            'urls': {
+                'doc': [
+                    'https://binance-docs.github.io/apidocs/futures/en/',
+                    'https://binance-docs.github.io/apidocs/spot/en',
+                    'https://developers.binance.com/en',
+                ],
+                'logo': 'https://github.com/user-attachments/assets/871cbea7-eebb-4b28-b260-c1c91df0487a',
             },
         });
     }

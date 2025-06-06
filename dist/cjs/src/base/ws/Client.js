@@ -1,5 +1,7 @@
 'use strict';
 
+Object.defineProperty(exports, '__esModule', { value: true });
+
 var errors = require('../errors.js');
 var browser = require('../../static_dependencies/fflake/browser.js');
 var Future = require('./Future.js');
@@ -11,10 +13,28 @@ var time = require('../functions/time.js');
 var index = require('../../static_dependencies/scure-base/index.js');
 
 // ----------------------------------------------------------------------------
+const TRUNCATE_LENGTH = 8192;
+/**
+ * Truncates a string body for verbose logging purposes.
+ * @param body - The string body to be truncated.
+ * @param verboseTruncate - A flag indicating whether to truncate the body.
+ * @returns The truncated body if `verboseTruncate` is true and `body` is not empty.
+ *          If `verboseTruncate` is false or `body` is empty, the original `body` is returned.
+ *          If `body` is longer than `TRUNCATE_LENGTH`, it is truncated to half of `TRUNCATE_LENGTH`
+ *          on both sides, with an ellipsis in the middle.
+ */
+function getBodyTruncated(body, verboseTruncate) {
+    if (verboseTruncate && body) {
+        const len = body.length + 8;
+        if (body.length >= TRUNCATE_LENGTH) {
+            return body.substring(0, TRUNCATE_LENGTH / 2) + '\n ... \n' + body.substring(len - TRUNCATE_LENGTH / 2);
+        }
+    }
+    return body;
+}
 class Client {
     constructor(url, onMessageCallback, onErrorCallback, onCloseCallback, onConnectedCallback, config = {}) {
         this.useMessageQueue = false;
-        this.verbose = false;
         const defaults = {
             url,
             onMessageCallback,
@@ -22,6 +42,7 @@ class Client {
             onCloseCallback,
             onConnectedCallback,
             verbose: false,
+            verboseTruncate: false,
             protocols: undefined,
             options: undefined,
             futures: {},
@@ -203,7 +224,7 @@ class Client {
         }
     }
     onOpen() {
-        if (this.verbose) {
+        if (this.verbose || this.verboseTruncate) {
             if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto('onOpen')) {
                 this.log(new Date(), 'onOpen');
             }
@@ -220,7 +241,7 @@ class Client {
     // respond to pings coming from the server with pongs automatically
     // however, some devs may want to track connection states in their app
     onPing() {
-        if (this.verbose) {
+        if (this.verbose || this.verboseTruncate) {
             if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto('onPing')) {
                 this.log(new Date(), 'onPing');
             }
@@ -228,14 +249,14 @@ class Client {
     }
     onPong() {
         this.lastPong = time.milliseconds();
-        if (this.verbose) {
+        if (this.verbose || this.verboseTruncate) {
             if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto('onPong')) {
                 this.log(new Date(), 'onPong');
             }
         }
     }
     onError(error) {
-        if (this.verbose) {
+        if (this.verbose || this.verboseTruncate) {
             if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto('onError', error)) {
                 this.log(new Date(), 'onError', error.message);
             }
@@ -250,7 +271,7 @@ class Client {
     }
     /* eslint-disable no-shadow */
     onClose(event) {
-        if (this.verbose) {
+        if (this.verbose || this.verboseTruncate) {
             if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto('onClose', event)) {
                 this.log(new Date(), 'onClose', event);
             }
@@ -270,14 +291,14 @@ class Client {
     // this method is not used at this time
     // but may be used to read protocol-level data like cookies, headers, etc
     onUpgrade(message) {
-        if (this.verbose) {
+        if (this.verbose || this.verboseTruncate) {
             if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto('onUpdate')) {
                 this.log(new Date(), 'onUpgrade');
             }
         }
     }
     async send(message) {
-        if (this.verbose) {
+        if (this.verbose || this.verboseTruncate) {
             if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto('send', message)) {
                 this.log(new Date(), 'sending', message);
             }
@@ -330,9 +351,12 @@ class Client {
             if (encode.isJsonEncodedObject(message)) {
                 message = JSON.parse(message.replace(/:(\d{15,}),/g, ':"$1",'));
             }
-            if (this.verbose) {
+            if (this.verbose || this.verboseTruncate) {
                 if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto('onMessage', message)) {
-                    this.log(new Date(), 'onMessage', message);
+                    // this.log (new Date (), 'onMessage', message)
+                    const messageText = JSON.stringify(message);
+                    const truncated = getBodyTruncated(messageText, this.verboseTruncate);
+                    this.log(new Date(), 'onMessage', truncated);
                 }
                 // unlimited depth
                 // this.log (new Date (), 'onMessage', util.inspect (message, false, null, true))
@@ -352,4 +376,5 @@ class Client {
     }
 }
 
-module.exports = Client;
+exports["default"] = Client;
+exports.getBodyTruncated = getBodyTruncated;

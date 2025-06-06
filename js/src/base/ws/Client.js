@@ -4,15 +4,33 @@
 // https://github.com/ccxt/ccxt/blob/master/CONTRIBUTING.md#how-to-contribute-code
 // EDIT THE CORRESPONDENT .ts FILE INSTEAD
 
-import { RequestTimeout, NetworkError, NotSupported, BaseError, ExchangeClosedByUser } from '../../base/errors.js';
-import { inflateSync, gunzipSync } from '../../static_dependencies/fflake/browser.js';
+import { BaseError, ExchangeClosedByUser, NetworkError, NotSupported, RequestTimeout } from '../../base/errors.js';
+import { gunzipSync, inflateSync } from '../../static_dependencies/fflake/browser.js';
 import { Future } from './Future.js';
-import { isNode, isJsonEncodedObject, deepExtend, milliseconds, } from '../../base/functions.js';
+import { deepExtend, isJsonEncodedObject, isNode, milliseconds, } from '../../base/functions.js';
 import { utf8 } from '../../static_dependencies/scure-base/index.js';
+const TRUNCATE_LENGTH = 8192;
+/**
+ * Truncates a string body for verbose logging purposes.
+ * @param body - The string body to be truncated.
+ * @param verboseTruncate - A flag indicating whether to truncate the body.
+ * @returns The truncated body if `verboseTruncate` is true and `body` is not empty.
+ *          If `verboseTruncate` is false or `body` is empty, the original `body` is returned.
+ *          If `body` is longer than `TRUNCATE_LENGTH`, it is truncated to half of `TRUNCATE_LENGTH`
+ *          on both sides, with an ellipsis in the middle.
+ */
+export function getBodyTruncated(body, verboseTruncate) {
+    if (verboseTruncate && body) {
+        const len = body.length + 8;
+        if (body.length >= TRUNCATE_LENGTH) {
+            return body.substring(0, TRUNCATE_LENGTH / 2) + '\n ... \n' + body.substring(len - TRUNCATE_LENGTH / 2);
+        }
+    }
+    return body;
+}
 export default class Client {
     constructor(url, onMessageCallback, onErrorCallback, onCloseCallback, onConnectedCallback, config = {}) {
         this.useMessageQueue = false;
-        this.verbose = false;
         const defaults = {
             url,
             onMessageCallback,
@@ -20,6 +38,7 @@ export default class Client {
             onCloseCallback,
             onConnectedCallback,
             verbose: false,
+            verboseTruncate: false,
             protocols: undefined,
             options: undefined,
             futures: {},
@@ -201,15 +220,10 @@ export default class Client {
         }
     }
     onOpen() {
-<<<<<<< HEAD
-        if (this.verbose) {
+        if (this.verbose || this.verboseTruncate) {
             if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto('onOpen')) {
                 this.log(new Date(), 'onOpen');
             }
-=======
-        if (this.verbose || this.verboseTruncate) {
-            this.log(new Date(), 'onOpen');
->>>>>>> @{-1}
         }
         this.connectionEstablished = milliseconds();
         this.isConnected = true;
@@ -223,40 +237,25 @@ export default class Client {
     // respond to pings coming from the server with pongs automatically
     // however, some devs may want to track connection states in their app
     onPing() {
-<<<<<<< HEAD
-        if (this.verbose) {
+        if (this.verbose || this.verboseTruncate) {
             if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto('onPing')) {
                 this.log(new Date(), 'onPing');
             }
-=======
-        if (this.verbose || this.verboseTruncate) {
-            this.log(new Date(), 'onPing');
->>>>>>> @{-1}
         }
     }
     onPong() {
         this.lastPong = milliseconds();
-<<<<<<< HEAD
-        if (this.verbose) {
+        if (this.verbose || this.verboseTruncate) {
             if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto('onPong')) {
                 this.log(new Date(), 'onPong');
             }
         }
     }
     onError(error) {
-        if (this.verbose) {
+        if (this.verbose || this.verboseTruncate) {
             if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto('onError', error)) {
                 this.log(new Date(), 'onError', error.message);
             }
-=======
-        if (this.verbose || this.verboseTruncate) {
-            this.log(new Date(), 'onPong');
-        }
-    }
-    onError(error) {
-        if (this.verbose || this.verboseTruncate) {
-            this.log(new Date(), 'onError', error.message);
->>>>>>> @{-1}
         }
         if (!(error instanceof BaseError)) {
             // in case of ErrorEvent from node_modules/ws/lib/event-target.js
@@ -268,15 +267,10 @@ export default class Client {
     }
     /* eslint-disable no-shadow */
     onClose(event) {
-<<<<<<< HEAD
-        if (this.verbose) {
+        if (this.verbose || this.verboseTruncate) {
             if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto('onClose', event)) {
                 this.log(new Date(), 'onClose', event);
             }
-=======
-        if (this.verbose || this.verboseTruncate) {
-            this.log(new Date(), 'onClose', event);
->>>>>>> @{-1}
         }
         if (!this.error) {
             // todo: exception types for server-side disconnects
@@ -293,27 +287,17 @@ export default class Client {
     // this method is not used at this time
     // but may be used to read protocol-level data like cookies, headers, etc
     onUpgrade(message) {
-<<<<<<< HEAD
-        if (this.verbose) {
+        if (this.verbose || this.verboseTruncate) {
             if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto('onUpdate')) {
                 this.log(new Date(), 'onUpgrade');
             }
         }
     }
     async send(message) {
-        if (this.verbose) {
+        if (this.verbose || this.verboseTruncate) {
             if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto('send', message)) {
                 this.log(new Date(), 'sending', message);
             }
-=======
-        if (this.verbose || this.verboseTruncate) {
-            this.log(new Date(), 'onUpgrade');
-        }
-    }
-    async send(message) {
-        if (this.verbose || this.verboseTruncate) {
-            this.log(new Date(), 'sending', message);
->>>>>>> @{-1}
         }
         message = (typeof message === 'string') ? message : JSON.stringify(message);
         const future = Future();
@@ -363,15 +347,13 @@ export default class Client {
             if (isJsonEncodedObject(message)) {
                 message = JSON.parse(message.replace(/:(\d{15,}),/g, ':"$1",'));
             }
-<<<<<<< HEAD
-            if (this.verbose) {
-                if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto('onMessage', message)) {
-                    this.log(new Date(), 'onMessage', message);
-                }
-=======
             if (this.verbose || this.verboseTruncate) {
-                this.log(new Date(), 'onMessage', message);
->>>>>>> @{-1}
+                if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto('onMessage', message)) {
+                    // this.log (new Date (), 'onMessage', message)
+                    const messageText = JSON.stringify(message);
+                    const truncated = getBodyTruncated(messageText, this.verboseTruncate);
+                    this.log(new Date(), 'onMessage', truncated);
+                }
                 // unlimited depth
                 // this.log (new Date (), 'onMessage', util.inspect (message, false, null, true))
                 // this.log (new Date (), 'onMessage', JSON.stringify (message, null, 4))

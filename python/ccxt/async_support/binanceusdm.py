@@ -13,15 +13,14 @@ class binanceusdm(binance, ImplicitAPI):
 
     def describe(self) -> Any:
         return self.deep_extend(super(binanceusdm, self).describe(), {
-            'id': 'binanceusdm',
-            'name': 'Binance USDⓈ-M',
-            'urls': {
-                'logo': 'https://github.com/user-attachments/assets/871cbea7-eebb-4b28-b260-c1c91df0487a',
-                'doc': [
-                    'https://binance-docs.github.io/apidocs/futures/en/',
-                    'https://binance-docs.github.io/apidocs/spot/en',
-                    'https://developers.binance.com/en',
-                ],
+            # https://binance-docs.github.io/apidocs/futures/en/#error-codes
+            # https://developers.binance.com/docs/derivatives/usds-margined-futures/error-code
+            'exceptions': {
+                'exact': {
+                    '-5021': InvalidOrder,  # {"code":-5021,"msg":"Due to the order could not be filled immediately, the FOK order has been rejected."}
+                    '-5022': InvalidOrder,  # {"code":-5022,"msg":"Due to the order could not be executed, the Post Only order will be rejected."}
+                    '-5028': InvalidOrder,  # {"code":-5028,"msg":"Timestamp for self request is outside of the ME recvWindow."}
+                },
             },
             'has': {
                 'CORS': None,
@@ -32,23 +31,24 @@ class binanceusdm(binance, ImplicitAPI):
                 'option': None,
                 'createStopMarketOrder': True,
             },
+            'id': 'binanceusdm',
+            'name': 'Binance USDⓈ-M',
             'options': {
-                'fetchMarkets': ['linear'],
                 'defaultSubType': 'linear',
+                'fetchMarkets': ['linear'],
                 # https://www.binance.com/en/support/faq/360033162192
                 # tier amount, maintenance margin, initial margin,
                 'leverageBrackets': None,
-                'marginTypes': {},
                 'marginModes': {},
+                'marginTypes': {},
             },
-            # https://binance-docs.github.io/apidocs/futures/en/#error-codes
-            # https://developers.binance.com/docs/derivatives/usds-margined-futures/error-code
-            'exceptions': {
-                'exact': {
-                    '-5021': InvalidOrder,  # {"code":-5021,"msg":"Due to the order could not be filled immediately, the FOK order has been rejected."}
-                    '-5022': InvalidOrder,  # {"code":-5022,"msg":"Due to the order could not be executed, the Post Only order will be rejected."}
-                    '-5028': InvalidOrder,  # {"code":-5028,"msg":"Timestamp for self request is outside of the ME recvWindow."}
-                },
+            'urls': {
+                'doc': [
+                    'https://binance-docs.github.io/apidocs/futures/en/',
+                    'https://binance-docs.github.io/apidocs/spot/en',
+                    'https://developers.binance.com/en',
+                ],
+                'logo': 'https://github.com/user-attachments/assets/871cbea7-eebb-4b28-b260-c1c91df0487a',
             },
         })
 

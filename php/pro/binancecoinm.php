@@ -17,13 +17,13 @@ class binancecoinm extends \ccxt\pro\binance {
         return $this->deep_extend($extended, array(
             'id' => 'binancecoinm',
             'name' => 'Binance COIN-M',
+            'options' => array(
+                'defaultSubType' => 'inverse',
+                'fetchMarkets' => array( 'inverse' ),
+            ),
             'urls' => array(
                 'logo' => 'https://user-images.githubusercontent.com/1294454/117738721-668c8d80-b205-11eb-8c49-3fad84c4a07f.jpg',
                 'doc' => 'https://developers.binance.com/en',
-            ),
-            'options' => array(
-                'fetchMarkets' => array( 'inverse' ),
-                'defaultSubType' => 'inverse',
             ),
         ));
     }

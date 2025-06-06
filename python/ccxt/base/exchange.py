@@ -1773,78 +1773,6 @@ class Exchange(object):
     def create_safe_dictionary(self):
         return {}
 
-    def convert_to_safe_dictionary(self, dictionary):
-        return dictionary
-
-    def rand_number(self, size):
-        return int(''.join([str(random.randint(0, 9)) for _ in range(size)]))
-
-    def binary_length(self, binary):
-        return len(binary)
-
-    def get_zk_contract_signature_obj(self, seeds: str, params={}):
-        if zklink_sdk is None:
-            raise Exception('zklink_sdk is not installed, please do pip3 install apexomni-arm or apexomni-x86-mac or apexomni-x86-windows-linux')
-
-        slotId = self.safe_string(params, 'slotId')
-        nonceInt = int(self.remove0x_prefix(self.hash(self.encode(slotId), 'sha256', 'hex')), 16)
-
-        maxUint64 = 18446744073709551615
-        maxUint32 = 4294967295
-
-        slotId = (nonceInt % maxUint64) / maxUint32
-        nonce = nonceInt % maxUint32
-        accountId = int(self.safe_string(params, 'accountId'), 10) % maxUint32
-
-        priceStr = (Decimal(self.safe_string(params, 'price')) * Decimal(10) ** Decimal('18')).quantize(Decimal(0), rounding='ROUND_DOWN')
-        sizeStr = (Decimal(self.safe_string(params, 'size')) * Decimal(10) ** Decimal('18')).quantize(Decimal(0), rounding='ROUND_DOWN')
-
-        takerFeeRateStr = (Decimal(self.safe_string(params, 'takerFeeRate')) * Decimal(10000)).quantize(Decimal(0), rounding='ROUND_UP')
-        makerFeeRateStr = (Decimal(self.safe_string(params, 'makerFeeRate')) * Decimal(10000)).quantize(Decimal(0), rounding='ROUND_UP')
-
-        builder = zklink_sdk.ContractBuilder(
-            int(accountId), int(0), int(slotId), int(nonce), int(self.safe_number(params, 'pairId')),
-            sizeStr.__str__(), priceStr.__str__(), self.safe_string(params, 'direction') == "BUY",
-            int(takerFeeRateStr), int(makerFeeRateStr), False)
-
-
-        tx = zklink_sdk.Contract(builder)
-        seedsByte = bytes.fromhex(seeds.removeprefix('0x'))
-        signerSeed = zklink_sdk.ZkLinkSigner().new_from_seed(seedsByte)
-        auth_data = signerSeed.sign_musig(tx.get_bytes())
-        signature = auth_data.signature
-        return signature
-
-    def get_zk_transfer_signature_obj(self, seeds: str, params={}):
-        if zklink_sdk is None:
-            raise Exception('zklink_sdk is not installed, please do pip3 install apexomni-arm or apexomni-x86-mac or apexomni-x86-windows-linux')
-
-        nonce = self.safe_string(params, 'nonce', '0')
-        if self.safe_bool(params, 'isContract'):
-            formattedUint32 = '4294967295'
-            formattedNonce = int(self.remove0x_prefix(self.hash(self.encode(nonce), 'sha256', 'hex')), 16)
-            nonce = Precise.string_mod(str(formattedNonce), formattedUint32)
-
-        tx_builder = zklink_sdk.TransferBuilder(
-            int(self.safe_number(params, 'zkAccountId', 0)),
-            self.safe_string(params, 'receiverAddress'),
-            int(self.safe_number(params, 'subAccountId', 0)),
-            int(self.safe_number(params, 'receiverSubAccountId', 0)),
-            int(self.safe_number(params, 'tokenId', 0)),
-            self.safe_string(params, 'amount', '0'),
-            self.safe_string(params, 'fee', '0'),
-            self.parse_to_int(nonce),
-            int(self.safe_number(params, 'timestampSeconds', 0))
-        )
-
-        tx = zklink_sdk.Transfer(tx_builder)
-        seedsByte = bytes.fromhex(seeds.removeprefix('0x'))
-        signerSeed = zklink_sdk.ZkLinkSigner().new_from_seed(seedsByte)
-        auth_data = signerSeed.sign_musig(tx.get_bytes())
-        signature = auth_data.signature
-        return signature
-
-
     # ########################################################################
     # ########################################################################
     # ########################################################################
@@ -1886,26 +1814,33 @@ class Exchange(object):
 
     def describe(self) -> Any:
         return {
-            'id': None,
-            'name': None,
-            'countries': None,
-            'enableRateLimit': True,
-            'rateLimit': 2000,  # milliseconds = seconds * 1000
-            'timeout': self.timeout,  # milliseconds = seconds * 1000
-            'certified': False,  # if certified by the CCXT dev team
-            'pro': False,  # if it is integrated with CCXT Pro for WebSocket support
             'alias': False,  # whether self exchange is an alias to another exchange
+            'api': None,
+            'certified': False,  # if certified by the CCXT dev team
+            'commonCurrencies': {
+                'BCHSV': 'BSV',
+                'XBT': 'BTC',
+            },
+            'countries': None,
+            'currencies': {},  # to be filled manually or by fetchMarkets
             'dex': False,
+            'enableRateLimit': True,
+            'exceptions': None,
+            'fees': {
+                'funding': {
+                    'deposit': {},
+                    'percentage': None,
+                    'tierBased': None,
+                    'withdraw': {},
+                },
+                'trading': {
+                    'maker': None,
+                    'percentage': None,
+                    'taker': None,
+                    'tierBased': None,
+                },
+            },
             'has': {
-                'publicAPI': True,
-                'privateAPI': True,
-                'CORS': None,
-                'sandbox': None,
-                'spot': None,
-                'margin': None,
-                'swap': None,
-                'future': None,
-                'option': None,
                 'addMargin': None,
                 'borrowCrossMargin': None,
                 'borrowIsolatedMargin': None,
@@ -1913,11 +1848,12 @@ class Exchange(object):
                 'cancelAllOrders': None,
                 'cancelAllOrdersWs': None,
                 'cancelOrder': True,
-                'cancelOrderWs': None,
                 'cancelOrders': None,
                 'cancelOrdersWs': None,
+                'cancelOrderWs': None,
                 'closeAllPositions': None,
                 'closePosition': None,
+                'CORS': None,
                 'createDepositAddress': None,
                 'createLimitBuyOrder': None,
                 'createLimitBuyOrderWs': None,
@@ -1926,22 +1862,22 @@ class Exchange(object):
                 'createLimitSellOrder': None,
                 'createLimitSellOrderWs': None,
                 'createMarketBuyOrder': None,
-                'createMarketBuyOrderWs': None,
                 'createMarketBuyOrderWithCost': None,
                 'createMarketBuyOrderWithCostWs': None,
+                'createMarketBuyOrderWs': None,
                 'createMarketOrder': True,
-                'createMarketOrderWs': True,
                 'createMarketOrderWithCost': None,
                 'createMarketOrderWithCostWs': None,
+                'createMarketOrderWs': True,
                 'createMarketSellOrder': None,
-                'createMarketSellOrderWs': None,
                 'createMarketSellOrderWithCost': None,
                 'createMarketSellOrderWithCostWs': None,
+                'createMarketSellOrderWs': None,
                 'createOrder': True,
-                'createOrderWs': None,
                 'createOrders': None,
                 'createOrderWithTakeProfitAndStopLoss': None,
                 'createOrderWithTakeProfitAndStopLossWs': None,
+                'createOrderWs': None,
                 'createPostOnlyOrder': None,
                 'createPostOnlyOrderWs': None,
                 'createReduceOnlyOrder': None,
@@ -1999,16 +1935,15 @@ class Exchange(object):
                 'fetchDepositWithdrawFee': None,
                 'fetchDepositWithdrawFees': None,
                 'fetchFundingHistory': None,
-                'fetchFundingRate': None,
-                'fetchFundingRateHistory': None,
                 'fetchFundingInterval': None,
                 'fetchFundingIntervals': None,
+                'fetchFundingRate': None,
+                'fetchFundingRateHistory': None,
                 'fetchFundingRates': None,
                 'fetchGreeks': None,
                 'fetchIndexOHLCV': None,
                 'fetchIsolatedBorrowRate': None,
                 'fetchIsolatedBorrowRates': None,
-                'fetchMarginAdjustmentHistory': None,
                 'fetchIsolatedPositions': None,
                 'fetchL2OrderBook': True,
                 'fetchL3OrderBook': None,
@@ -2021,12 +1956,14 @@ class Exchange(object):
                 'fetchLiquidations': None,
                 'fetchLongShortRatio': None,
                 'fetchLongShortRatioHistory': None,
+                'fetchMarginAdjustmentHistory': None,
                 'fetchMarginMode': None,
                 'fetchMarginModes': None,
                 'fetchMarketLeverageTiers': None,
                 'fetchMarkets': True,
                 'fetchMarketsWs': None,
                 'fetchMarkOHLCV': None,
+                'fetchMarkPrices': None,
                 'fetchMyLiquidations': None,
                 'fetchMySettlementHistory': None,
                 'fetchMyTrades': None,
@@ -2034,8 +1971,8 @@ class Exchange(object):
                 'fetchOHLCV': None,
                 'fetchOHLCVWs': None,
                 'fetchOpenInterest': None,
-                'fetchOpenInterests': None,
                 'fetchOpenInterestHistory': None,
+                'fetchOpenInterests': None,
                 'fetchOpenOrder': None,
                 'fetchOpenOrders': None,
                 'fetchOpenOrdersWs': None,
@@ -2052,22 +1989,21 @@ class Exchange(object):
                 'fetchOrderWs': None,
                 'fetchPosition': None,
                 'fetchPositionHistory': None,
-                'fetchPositionsHistory': None,
-                'fetchPositionWs': None,
                 'fetchPositionMode': None,
                 'fetchPositions': None,
-                'fetchPositionsWs': None,
                 'fetchPositionsForSymbol': None,
                 'fetchPositionsForSymbolWs': None,
+                'fetchPositionsHistory': None,
                 'fetchPositionsRisk': None,
+                'fetchPositionsWs': None,
+                'fetchPositionWs': None,
                 'fetchPremiumIndexOHLCV': None,
                 'fetchSettlementHistory': None,
                 'fetchStatus': None,
                 'fetchTicker': True,
-                'fetchTickerWs': None,
                 'fetchTickers': None,
-                'fetchMarkPrices': None,
                 'fetchTickersWs': None,
+                'fetchTickerWs': None,
                 'fetchTime': None,
                 'fetchTrades': True,
                 'fetchTradesWs': None,
@@ -2087,21 +2023,33 @@ class Exchange(object):
                 'fetchWithdrawals': None,
                 'fetchWithdrawalsWs': None,
                 'fetchWithdrawalWhitelist': None,
+                'future': None,
+                'margin': None,
+                'option': None,
+                'privateAPI': True,
+                'publicAPI': True,
                 'reduceMargin': None,
                 'repayCrossMargin': None,
                 'repayIsolatedMargin': None,
+                'sandbox': None,
                 'setLeverage': None,
                 'setMargin': None,
                 'setMarginMode': None,
                 'setPositionMode': None,
                 'signIn': None,
+                'spot': None,
+                'swap': None,
                 'transfer': None,
                 'watchBalance': None,
+                'watchBidsAsks': None,
+                'watchLiquidations': None,
+                'watchLiquidationsForSymbols': None,
+                'watchMyLiquidations': None,
+                'watchMyLiquidationsForSymbols': None,
                 'watchMyTrades': None,
                 'watchOHLCV': None,
                 'watchOHLCVForSymbols': None,
                 'watchOrderBook': None,
-                'watchBidsAsks': None,
                 'watchOrderBookForSymbols': None,
                 'watchOrders': None,
                 'watchOrdersForSymbols': None,
@@ -2112,95 +2060,75 @@ class Exchange(object):
                 'watchTickers': None,
                 'watchTrades': None,
                 'watchTradesForSymbols': None,
-                'watchLiquidations': None,
-                'watchLiquidationsForSymbols': None,
-                'watchMyLiquidations': None,
-                'watchMyLiquidationsForSymbols': None,
                 'withdraw': None,
                 'ws': None,
             },
-            'urls': {
-                'logo': None,
-                'api': None,
-                'www': None,
-                'doc': None,
-                'fees': None,
-            },
-            'api': None,
-            'requiredCredentials': {
-                'apiKey': True,
-                'secret': True,
-                'uid': False,
-                'accountId': False,
-                'login': False,
-                'password': False,
-                'twofa': False,  # 2-factor authentication(one-time password key)
-                'privateKey': False,  # a "0x"-prefixed hexstring private key for a wallet
-                'walletAddress': False,  # the wallet address "0x"-prefixed hexstring
-                'token': False,  # reserved for HTTP auth in some cases
-            },
-            'markets': None,  # to be filled manually or by fetchMarkets
-            'currencies': {},  # to be filled manually or by fetchMarkets
-            'timeframes': None,  # redefine if the exchange has.fetchOHLCV
-            'fees': {
-                'trading': {
-                    'tierBased': None,
-                    'percentage': None,
-                    'taker': None,
-                    'maker': None,
-                },
-                'funding': {
-                    'tierBased': None,
-                    'percentage': None,
-                    'withdraw': {},
-                    'deposit': {},
-                },
-            },
-            'status': {
-                'status': 'ok',
-                'updated': None,
-                'eta': None,
-                'url': None,
-            },
-            'exceptions': None,
             'httpExceptions': {
-                '422': ExchangeError,
-                '418': DDoSProtection,
-                '429': RateLimitExceeded,
+                '400': ExchangeNotAvailable,
+                '401': AuthenticationError,
+                '403': ExchangeNotAvailable,
                 '404': ExchangeNotAvailable,
+                '405': ExchangeNotAvailable,
+                '407': AuthenticationError,
+                '408': RequestTimeout,
                 '409': ExchangeNotAvailable,
                 '410': ExchangeNotAvailable,
+                '418': DDoSProtection,
+                '422': ExchangeError,
+                '429': RateLimitExceeded,
                 '451': ExchangeNotAvailable,
                 '500': ExchangeNotAvailable,
                 '501': ExchangeNotAvailable,
                 '502': ExchangeNotAvailable,
+                '503': ExchangeNotAvailable,
+                '504': RequestTimeout,
+                '511': AuthenticationError,
                 '520': ExchangeNotAvailable,
                 '521': ExchangeNotAvailable,
                 '522': ExchangeNotAvailable,
                 '525': ExchangeNotAvailable,
                 '526': ExchangeNotAvailable,
-                '400': ExchangeNotAvailable,
-                '403': ExchangeNotAvailable,
-                '405': ExchangeNotAvailable,
-                '503': ExchangeNotAvailable,
                 '530': ExchangeNotAvailable,
-                '408': RequestTimeout,
-                '504': RequestTimeout,
-                '401': AuthenticationError,
-                '407': AuthenticationError,
-                '511': AuthenticationError,
             },
-            'commonCurrencies': {
-                'XBT': 'BTC',
-                'BCHSV': 'BSV',
-            },
-            'precisionMode': TICK_SIZE,
-            'paddingMode': NO_PADDING,
+            'id': None,
             'limits': {
-                'leverage': {'min': None, 'max': None},
                 'amount': {'min': None, 'max': None},
-                'price': {'min': None, 'max': None},
                 'cost': {'min': None, 'max': None},
+                'leverage': {'min': None, 'max': None},
+                'price': {'min': None, 'max': None},
+            },
+            'markets': None,  # to be filled manually or by fetchMarkets
+            'name': None,
+            'paddingMode': NO_PADDING,
+            'precisionMode': TICK_SIZE,
+            'pro': False,  # if it is integrated with CCXT Pro for WebSocket support
+            'rateLimit': 2000,  # milliseconds = seconds * 1000
+            'requiredCredentials': {
+                'accountId': False,
+                'apiKey': True,
+                'login': False,
+                'password': False,
+                'privateKey': False,  # a "0x"-prefixed hexstring private key for a wallet
+                'secret': True,
+                'token': False,  # reserved for HTTP auth in some cases
+                'twofa': False,  # 2-factor authentication(one-time password key)
+                'uid': False,
+                'walletAddress': False,  # the wallet address "0x"-prefixed hexstring
+            },
+            'status': {
+                'eta': None,
+                'status': 'ok',
+                'updated': None,
+                'url': None,
+            },
+            'timeframes': None,  # redefine if the exchange has.fetchOHLCV
+            'timeout': self.timeout,  # milliseconds = seconds * 1000
+            'urls': {
+                'api': None,
+                'doc': None,
+                'fees': None,
+                'logo': None,
+                'www': None,
             },
         }
 
@@ -2960,10 +2888,10 @@ class Exchange(object):
     def get_default_options(self):
         return {
             'defaultNetworkCodeReplacements': {
+                'BRC20': {'BRC20': 'BTC'},
+                'CRO': {'CRC20': 'CRONOS'},
                 'ETH': {'ERC20': 'ETH'},
                 'TRX': {'TRC20': 'TRX'},
-                'CRO': {'CRC20': 'CRONOS'},
-                'BRC20': {'BRC20': 'BTC'},
             },
         }
 
@@ -2990,21 +2918,21 @@ class Exchange(object):
         timestamp = self.safe_integer(entry, 'timestamp')
         info = self.safe_dict(entry, 'info', {})
         return {
-            'id': self.safe_string(entry, 'id'),
-            'timestamp': timestamp,
-            'datetime': self.iso8601(timestamp),
-            'direction': direction,
             'account': self.safe_string(entry, 'account'),
-            'referenceId': self.safe_string(entry, 'referenceId'),
-            'referenceAccount': self.safe_string(entry, 'referenceAccount'),
-            'type': self.safe_string(entry, 'type'),
-            'currency': currency['code'],
+            'after': self.parse_number(after),
             'amount': self.parse_number(amount),
             'before': self.parse_number(before),
-            'after': self.parse_number(after),
-            'status': self.safe_string(entry, 'status'),
+            'currency': currency['code'],
+            'datetime': self.iso8601(timestamp),
+            'direction': direction,
             'fee': fee,
+            'id': self.safe_string(entry, 'id'),
             'info': info,
+            'referenceAccount': self.safe_string(entry, 'referenceAccount'),
+            'referenceId': self.safe_string(entry, 'referenceId'),
+            'status': self.safe_string(entry, 'status'),
+            'timestamp': timestamp,
+            'type': self.safe_string(entry, 'type'),
         }
 
     def safe_currency_structure(self, currency: object):
@@ -3081,92 +3009,92 @@ class Exchange(object):
                 if limitsWithdrawMaxMain is None or Precise.string_gt(limitsWithdrawMax, limitsWithdrawMaxMain):
                     currency['limits']['withdraw']['max'] = self.parse_number(limitsWithdrawMax)
         return self.extend({
-            'info': None,
-            'id': None,
-            'numericId': None,
-            'code': None,
-            'precision': None,
-            'type': None,
-            'name': None,
             'active': None,
+            'code': None,
             'deposit': None,
-            'withdraw': None,
             'fee': None,
             'fees': {},
-            'networks': {},
+            'id': None,
+            'info': None,
             'limits': {
                 'deposit': {
-                    'min': None,
                     'max': None,
+                    'min': None,
                 },
                 'withdraw': {
-                    'min': None,
                     'max': None,
+                    'min': None,
                 },
             },
+            'name': None,
+            'networks': {},
+            'numericId': None,
+            'precision': None,
+            'type': None,
+            'withdraw': None,
         }, currency)
 
     def safe_market_structure(self, market: dict = None):
         cleanStructure = {
-            'id': None,
-            'lowercaseId': None,
-            'symbol': None,
-            'base': None,
-            'quote': None,
-            'settle': None,
-            'baseId': None,
-            'quoteId': None,
-            'settleId': None,
-            'type': None,
-            'spot': None,
-            'margin': None,
-            'swap': None,
-            'future': None,
-            'option': None,
-            'index': None,
             'active': None,
+            'base': None,
+            'baseId': None,
             'contract': None,
-            'linear': None,
-            'inverse': None,
-            'subType': None,
-            'taker': None,
-            'maker': None,
             'contractSize': None,
+            'created': None,
             'expiry': None,
             'expiryDatetime': None,
-            'strike': None,
-            'optionType': None,
-            'precision': {
-                'amount': None,
-                'price': None,
-                'cost': None,
-                'base': None,
-                'quote': None,
-            },
+            'future': None,
+            'id': None,
+            'index': None,
+            'info': None,
+            'inverse': None,
             'limits': {
-                'leverage': {
-                    'min': None,
-                    'max': None,
-                },
                 'amount': {
-                    'min': None,
                     'max': None,
-                },
-                'price': {
                     'min': None,
-                    'max': None,
                 },
                 'cost': {
-                    'min': None,
                     'max': None,
+                    'min': None,
+                },
+                'leverage': {
+                    'max': None,
+                    'min': None,
+                },
+                'price': {
+                    'max': None,
+                    'min': None,
                 },
             },
+            'linear': None,
+            'lowercaseId': None,
+            'maker': None,
+            'margin': None,
             'marginModes': {
                 'cross': None,
                 'isolated': None,
             },
-            'created': None,
-            'info': None,
+            'option': None,
+            'optionType': None,
+            'precision': {
+                'amount': None,
+                'base': None,
+                'cost': None,
+                'price': None,
+                'quote': None,
+            },
+            'quote': None,
+            'quoteId': None,
+            'settle': None,
+            'settleId': None,
+            'spot': None,
+            'strike': None,
+            'subType': None,
+            'swap': None,
+            'symbol': None,
+            'taker': None,
+            'type': None,
         }
         if market is not None:
             result = self.extend(cleanStructure, market)
@@ -3499,31 +3427,31 @@ class Exchange(object):
         takeProfitPrice = self.parse_number(self.safe_string(order, 'takeProfitPrice'))
         stopLossPrice = self.parse_number(self.safe_string(order, 'stopLossPrice'))
         return self.extend(order, {
-            'id': self.safe_string(order, 'id'),
+            'amount': self.parse_number(amount),
+            'average': self.parse_number(average),
             'clientOrderId': self.safe_string(order, 'clientOrderId'),
-            'timestamp': timestamp,
+            'cost': self.parse_number(cost),
             'datetime': datetime,
-            'symbol': symbol,
-            'type': self.safe_string(order, 'type'),
-            'side': side,
+            'fee': self.safe_value(order, 'fee'),
+            'filled': self.parse_number(filled),
+            'id': self.safe_string(order, 'id'),
             'lastTradeTimestamp': lastTradeTimeTimestamp,
             'lastUpdateTimestamp': lastUpdateTimestamp,
-            'price': self.parse_number(price),
-            'amount': self.parse_number(amount),
-            'cost': self.parse_number(cost),
-            'average': self.parse_number(average),
-            'filled': self.parse_number(filled),
-            'remaining': self.parse_number(remaining),
-            'timeInForce': timeInForce,
             'postOnly': postOnly,
-            'trades': trades,
+            'price': self.parse_number(price),
             'reduceOnly': self.safe_value(order, 'reduceOnly'),
-            'stopPrice': triggerPrice,  # ! deprecated, use triggerPrice instead
-            'triggerPrice': triggerPrice,
-            'takeProfitPrice': takeProfitPrice,
-            'stopLossPrice': stopLossPrice,
+            'remaining': self.parse_number(remaining),
+            'side': side,
             'status': status,
-            'fee': self.safe_value(order, 'fee'),
+            'stopLossPrice': stopLossPrice,
+            'stopPrice': triggerPrice,  # ! deprecated, use triggerPrice instead
+            'symbol': symbol,
+            'takeProfitPrice': takeProfitPrice,
+            'timeInForce': timeInForce,
+            'timestamp': timestamp,
+            'trades': trades,
+            'triggerPrice': triggerPrice,
+            'type': self.safe_string(order, 'type'),
         })
 
     def parse_orders(self, orders: object, market: Market = None, since: Int = None, limit: Int = None, params={}):
@@ -3609,10 +3537,10 @@ class Exchange(object):
         rate = self.safe_string(market, takerOrMaker)
         cost = Precise.string_mul(cost, rate)
         return {
-            'type': takerOrMaker,
+            'cost': self.parse_number(cost),
             'currency': market[key],
             'rate': self.parse_number(rate),
-            'cost': self.parse_number(cost),
+            'type': takerOrMaker,
         }
 
     def safe_liquidation(self, liquidation: dict, market: Market = None):
@@ -3650,8 +3578,8 @@ class Exchange(object):
         trade['fee'] = resultFee
         trade['fees'] = resultFees
         trade['amount'] = self.parse_number(amount)
-        trade['price'] = self.parse_number(price)
         trade['cost'] = self.parse_number(cost)
+        trade['price'] = self.parse_number(price)
         return trade
 
     def parsed_fee_and_fees(self, container: Any):
@@ -3776,8 +3704,8 @@ class Exchange(object):
                     reduced[feeCurrencyCode][rateKey]['cost'] = Precise.string_add(reduced[feeCurrencyCode][rateKey]['cost'], cost)
                 else:
                     reduced[feeCurrencyCode][rateKey] = {
-                        'currency': code,
                         'cost': cost,
+                        'currency': code,
                     }
                     if rate is not None:
                         reduced[feeCurrencyCode][rateKey]['rate'] = rate
@@ -3824,24 +3752,24 @@ class Exchange(object):
         # timestamp and symbol operations don't belong in safeTicker
         # they should be done in the derived classes
         return self.extend(ticker, {
-            'bid': self.parse_number(self.omit_zero(self.safe_string(ticker, 'bid'))),
-            'bidVolume': self.safe_number(ticker, 'bidVolume'),
             'ask': self.parse_number(self.omit_zero(self.safe_string(ticker, 'ask'))),
             'askVolume': self.safe_number(ticker, 'askVolume'),
-            'high': self.parse_number(self.omit_zero(self.safe_string(ticker, 'high'))),
-            'low': self.parse_number(self.omit_zero(self.safe_string(ticker, 'low'))),
-            'open': self.parse_number(self.omit_zero(open)),
-            'close': self.parse_number(self.omit_zero(close)),
-            'last': self.parse_number(self.omit_zero(last)),
-            'change': self.parse_number(change),
-            'percentage': self.parse_number(percentage),
             'average': self.parse_number(average),
-            'vwap': self.parse_number(vwap),
             'baseVolume': self.parse_number(baseVolume),
-            'quoteVolume': self.parse_number(quoteVolume),
-            'previousClose': self.safe_number(ticker, 'previousClose'),
+            'bid': self.parse_number(self.omit_zero(self.safe_string(ticker, 'bid'))),
+            'bidVolume': self.safe_number(ticker, 'bidVolume'),
+            'change': self.parse_number(change),
+            'close': self.parse_number(self.omit_zero(close)),
+            'high': self.parse_number(self.omit_zero(self.safe_string(ticker, 'high'))),
             'indexPrice': self.safe_number(ticker, 'indexPrice'),
+            'last': self.parse_number(self.omit_zero(last)),
+            'low': self.parse_number(self.omit_zero(self.safe_string(ticker, 'low'))),
             'markPrice': self.safe_number(ticker, 'markPrice'),
+            'open': self.parse_number(self.omit_zero(open)),
+            'percentage': self.parse_number(percentage),
+            'previousClose': self.safe_number(ticker, 'previousClose'),
+            'quoteVolume': self.parse_number(quoteVolume),
+            'vwap': self.parse_number(vwap),
         })
 
     def fetch_borrow_rate(self, code: str, amount: float, params={}):
@@ -3901,11 +3829,11 @@ class Exchange(object):
 
     def convert_ohlcv_to_trading_view(self, ohlcvs: List[List[float]], timestamp='t', open='o', high='h', low='l', close='c', volume='v', ms=False):
         result = {}
-        result[timestamp] = []
-        result[open] = []
+        result[close] = []
         result[high] = []
         result[low] = []
-        result[close] = []
+        result[open] = []
+        result[timestamp] = []
         result[volume] = []
         for i in range(0, len(ohlcvs)):
             ts = ohlcvs[i][0] if ms else self.parse_to_int(ohlcvs[i][0] / 1000)
@@ -4195,12 +4123,12 @@ class Exchange(object):
         bids = self.parse_bids_asks(self.safe_value(orderbook, bidsKey, []), priceKey, amountKey, countOrIdKey)
         asks = self.parse_bids_asks(self.safe_value(orderbook, asksKey, []), priceKey, amountKey, countOrIdKey)
         return {
-            'symbol': symbol,
-            'bids': self.sort_by(bids, 0, True),
             'asks': self.sort_by(asks, 0),
-            'timestamp': timestamp,
+            'bids': self.sort_by(bids, 0, True),
             'datetime': self.iso8601(timestamp),
             'nonce': None,
+            'symbol': symbol,
+            'timestamp': timestamp,
         }
 
     def parse_ohlcvs(self, ohlcvs: List[object], market: Any = None, timeframe: str = '1m', since: Int = None, limit: Int = None, tail: Bool = False):
@@ -4844,7 +4772,7 @@ class Exchange(object):
         defaultType = self.safe_string_2(self.options, 'defaultType', 'type', 'spot')
         return [defaultType, params]
 
-    def handle_sub_type_and_params(self, methodName: str, market=None, params={}, defaultValue=None):
+    def handle_sub_type_and_params(self, methodName: str, market: Market = None, params={}, defaultValue=None):
         subType = None
         # if set in params, it takes precedence
         subTypeInParams = self.safe_string_2(params, 'subType', 'defaultSubType')
@@ -5525,9 +5453,21 @@ class Exchange(object):
                 return self.currencies_by_id[code]
         raise ExchangeError(self.id + ' does not have currency code ' + code)
 
-    def market(self, symbol: str):
+    def market(self, symbol: str, silentBadSymbol=None):
+        """
+        Retrieves a market by its symbol.
+        :param str symbol: - The symbol of the market to retrieve.
+        :param boolean [silentBadSymbol]: - Whether to raise an error if the market symbol is not found.
+        :returns MarketInterface: - The market object corresponding to the symbol.
+        :throws ExchangeError -: If the markets have not been loaded.
+        :throws BadSymbol -: If the market symbol is not found and `silentBadSymbol` is False. Additional to the
+ silentBadSymbol argument the method use the self.options.allowNonMarketSymbol option to prevent throwing
+ an error, if the market symbol is not found.
+        """
         if self.markets is None:
             raise ExchangeError(self.id + ' markets not loaded')
+        if silentBadSymbol is None:
+            silentBadSymbol = self.safe_bool(self.options, 'allowNonMarketSymbol', False)
         if symbol in self.markets:
             return self.markets[symbol]
         elif symbol in self.markets_by_id:
@@ -5540,7 +5480,9 @@ class Exchange(object):
             return markets[0]
         elif (symbol.endswith('-C')) or (symbol.endswith('-P')) or (symbol.startswith('C-')) or (symbol.startswith('P-')):
             return self.create_expired_option_market(symbol)
-        raise BadSymbol(self.id + ' does not have market symbol ' + symbol)
+        if not silentBadSymbol:
+            raise BadSymbol(self.id + ' does not have market symbol ' + symbol)
+        return None
 
     def create_expired_option_market(self, symbol: str):
         raise NotSupported(self.id + ' createExpiredOptionMarket() is not supported yet')
@@ -6251,16 +6193,16 @@ class Exchange(object):
 
     def deposit_withdraw_fee(self, info):
         return {
-            'info': info,
-            'withdraw': {
-                'fee': None,
-                'percentage': None,
-            },
             'deposit': {
                 'fee': None,
                 'percentage': None,
             },
+            'info': info,
             'networks': {},
+            'withdraw': {
+                'fee': None,
+                'percentage': None,
+            },
         }
 
     def assign_default_deposit_withdraw_fees(self, fee, currency=None):
@@ -6281,8 +6223,8 @@ class Exchange(object):
         for i in range(0, numNetworks):
             network = networkKeys[i]
             if network == currencyCode:
-                fee['withdraw'] = fee['networks'][networkKeys[i]]['withdraw']
                 fee['deposit'] = fee['networks'][networkKeys[i]]['deposit']
+                fee['withdraw'] = fee['networks'][networkKeys[i]]['withdraw']
         return fee
 
     def parse_income(self, info, market: Market = None):
@@ -6393,11 +6335,12 @@ class Exchange(object):
                         params['until'] = paginationTimestamp - 1
                     response = getattr(self, method)(symbol, None, maxEntriesPerRequest, params)
                     responseLength = len(response)
-                    if self.verbose:
-                        backwardMessage = 'Dynamic pagination call ' + self.number_to_string(calls) + ' method ' + method + ' response length ' + self.number_to_string(responseLength)
-                        if paginationTimestamp is not None:
-                            backwardMessage += ' timestamp ' + self.number_to_string(paginationTimestamp)
-                        self.log(backwardMessage)
+                    if self.verbose or self.verboseTruncate:
+                        if not callable(self.verboseLogVeto) or not self.verboseLogVeto('pagination', method, None, response):
+                            backwardMessage = 'Dynamic pagination call ' + self.number_to_string(calls) + ' method ' + method + ' response length ' + self.number_to_string(responseLength)
+                            if paginationTimestamp is not None:
+                                backwardMessage += ' timestamp ' + self.number_to_string(paginationTimestamp)
+                            self.log(backwardMessage)
                     if responseLength == 0:
                         break
                     errors = 0
@@ -6410,11 +6353,12 @@ class Exchange(object):
                     # do it forwards, starting from the since
                     response = getattr(self, method)(symbol, paginationTimestamp, maxEntriesPerRequest, params)
                     responseLength = len(response)
-                    if self.verbose:
-                        forwardMessage = 'Dynamic pagination call ' + self.number_to_string(calls) + ' method ' + method + ' response length ' + self.number_to_string(responseLength)
-                        if paginationTimestamp is not None:
-                            forwardMessage += ' timestamp ' + self.number_to_string(paginationTimestamp)
-                        self.log(forwardMessage)
+                    if self.verbose or self.verboseTruncate:
+                        if not callable(self.verboseLogVeto) or not self.verboseLogVeto('pagination', method, None, response):
+                            forwardMessage = 'Dynamic pagination call ' + self.number_to_string(calls) + ' method ' + method + ' response length ' + self.number_to_string(responseLength)
+                            if paginationTimestamp is not None:
+                                forwardMessage += ' timestamp ' + self.number_to_string(paginationTimestamp)
+                            self.log(forwardMessage)
                     if responseLength == 0:
                         break
                     errors = 0
@@ -6513,11 +6457,12 @@ class Exchange(object):
                     response = getattr(self, method)(symbol, since, maxEntriesPerRequest, params)
                 errors = 0
                 responseLength = len(response)
-                if self.verbose:
-                    cursorString = '' if (cursorValue is None) else cursorValue
-                    iteration = (i + 1)
-                    cursorMessage = 'Cursor pagination call ' + str(iteration) + ' method ' + method + ' response length ' + str(responseLength) + ' cursor ' + cursorString
-                    self.log(cursorMessage)
+                if self.verbose or self.verboseTruncate:
+                    if not callable(self.verboseLogVeto) or not self.verboseLogVeto('pagination', method, None, response):
+                        cursorString = '' if (cursorValue is None) else cursorValue
+                        iteration = (i + 1)
+                        cursorMessage = 'Cursor pagination call ' + str(iteration) + ' method ' + method + ' response length ' + str(responseLength) + ' cursor ' + cursorString
+                        self.log(cursorMessage)
                 if responseLength == 0:
                     break
                 result = self.array_concat(result, response)
@@ -6561,10 +6506,11 @@ class Exchange(object):
                 response = getattr(self, method)(symbol, since, maxEntriesPerRequest, params)
                 errors = 0
                 responseLength = len(response)
-                if self.verbose:
-                    iteration = (i + str(1))
-                    incrementalMessage = 'Incremental pagination call ' + iteration + ' method ' + method + ' response length ' + str(responseLength)
-                    self.log(incrementalMessage)
+                if self.verbose or self.verboseTruncate:
+                    if not callable(self.verboseLogVeto) or not self.verboseLogVeto('pagination', method, None, response):
+                        iteration = (i + str(1))
+                        incrementalMessage = 'Incremental pagination call ' + iteration + ' method ' + method + ' response length ' + str(responseLength)
+                        self.log(incrementalMessage)
                 if responseLength == 0:
                     break
                 result = self.array_concat(result, response)
@@ -6629,14 +6575,14 @@ class Exchange(object):
         if symbol is None:
             symbol = self.safe_string(market, 'symbol')
         return self.extend(interest, {
-            'symbol': symbol,
             'baseVolume': self.safe_number(interest, 'baseVolume'),  # deprecated
-            'quoteVolume': self.safe_number(interest, 'quoteVolume'),  # deprecated
-            'openInterestAmount': self.safe_number(interest, 'openInterestAmount'),
-            'openInterestValue': self.safe_number(interest, 'openInterestValue'),
-            'timestamp': self.safe_integer(interest, 'timestamp'),
             'datetime': self.safe_string(interest, 'datetime'),
             'info': self.safe_value(interest, 'info'),
+            'openInterestAmount': self.safe_number(interest, 'openInterestAmount'),
+            'openInterestValue': self.safe_number(interest, 'openInterestValue'),
+            'quoteVolume': self.safe_number(interest, 'quoteVolume'),  # deprecated
+            'symbol': symbol,
+            'timestamp': self.safe_integer(interest, 'timestamp'),
         })
 
     def parse_liquidation(self, liquidation, market: Market = None):

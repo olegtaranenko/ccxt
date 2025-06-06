@@ -16,14 +16,16 @@ var WebSocket__default = /*#__PURE__*/_interopDefaultLegacy(WebSocket);
 // ----------------------------------------------------------------------------
 // eslint-disable-next-line no-restricted-globals
 const WebSocketPlatform = platform.isNode || !misc.selfIsDefined() ? WebSocket__default["default"] : self.WebSocket;
-class WsClient extends Client {
+class WsClient extends Client["default"] {
     constructor() {
         super(...arguments);
         this.startedConnecting = false;
     }
     createConnection() {
-        if (this.verbose) {
-            this.log(new Date(), 'connecting to', this.url);
+        if (this.verbose || this.verboseTruncate) {
+            if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto('createConnection', this.url)) {
+                this.log(new Date(), 'connecting to', this.url);
+            }
         }
         this.connectionStarted = time.milliseconds();
         this.setConnectionTimeout();

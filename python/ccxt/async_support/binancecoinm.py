@@ -12,16 +12,6 @@ class binancecoinm(binance, ImplicitAPI):
 
     def describe(self) -> Any:
         return self.deep_extend(super(binancecoinm, self).describe(), {
-            'id': 'binancecoinm',
-            'name': 'Binance COIN-M',
-            'urls': {
-                'logo': 'https://github.com/user-attachments/assets/387cfc4e-5f33-48cd-8f5c-cd4854dabf0c',
-                'doc': [
-                    'https://binance-docs.github.io/apidocs/delivery/en/',
-                    'https://binance-docs.github.io/apidocs/spot/en',
-                    'https://developers.binance.com/en',
-                ],
-            },
             'has': {
                 'CORS': None,
                 'spot': False,
@@ -31,10 +21,20 @@ class binancecoinm(binance, ImplicitAPI):
                 'option': None,
                 'createStopMarketOrder': True,
             },
+            'id': 'binancecoinm',
+            'name': 'Binance COIN-M',
             'options': {
-                'fetchMarkets': ['inverse'],
                 'defaultSubType': 'inverse',
+                'fetchMarkets': ['inverse'],
                 'leverageBrackets': None,
+            },
+            'urls': {
+                'logo': 'https://github.com/user-attachments/assets/387cfc4e-5f33-48cd-8f5c-cd4854dabf0c',
+                'doc': [
+                    'https://binance-docs.github.io/apidocs/delivery/en/',
+                    'https://binance-docs.github.io/apidocs/spot/en',
+                    'https://developers.binance.com/en',
+                ],
             },
         })
 
