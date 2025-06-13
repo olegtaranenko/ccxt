@@ -217,6 +217,7 @@ export default class Exchange {
     decimalToPrecision: (x: string, roundingMode: number, numPrecisionDigits: any, countingMode?: number, paddingMode?: number) => string;
     decode: (data: Uint8Array) => string;
     deepExtend: (...xs: any) => any;
+    deepExtendSafe: (...xs: any) => any;
     encode: (str: string) => Uint8Array;
     extend: (...args: any[]) => any;
     extractParams: (string: string) => string[];
@@ -238,6 +239,7 @@ export default class Exchange {
     implodeParams: (string: string, params: any[] | Dictionary<any>) => string;
     inArray: (needle: any, haystack: any[]) => boolean;
     indexBy: (x: Dictionary<any>, k: IndexType, out?: Dictionary<any>) => Dictionary<any>;
+    indexBySafe: (x: Dictionary<any>, k: IndexType, out?: Dictionary<any>) => Dictionary<any>;
     isEmpty: (object: any[] | Dictionary<any>) => boolean;
     isJsonEncodedObject: (object: any) => boolean;
     isNode: boolean;
