@@ -9966,7 +9966,7 @@ class binance(Exchange, ImplicitAPI):
                 response = leveragesFromOutside
                 self.omit(params, 'leveragesFromOutside')
                 self.omit(self.options, 'leveragesFromOutside')
-            self.options['leverageBrackets'] = {}
+            self.options['leverageBrackets'] = self.create_safe_dictionary()
             for i in range(0, len(response)):
                 entry = response[i]
                 marketId = self.safe_string(entry, 'symbol')

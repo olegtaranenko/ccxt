@@ -10640,7 +10640,7 @@ class binance extends binance$1 {
                 this.omit(params, 'leveragesFromOutside');
                 this.omit(this.options, 'leveragesFromOutside');
             }
-            this.options['leverageBrackets'] = {};
+            this.options['leverageBrackets'] = this.createSafeDictionary();
             for (let i = 0; i < response.length; i++) {
                 const entry = response[i];
                 const marketId = this.safeString(entry, 'symbol');

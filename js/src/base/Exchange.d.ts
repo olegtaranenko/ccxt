@@ -229,13 +229,13 @@ export default class Exchange {
         outputLen: number;
         blockLen: number;
         create(): import("../static_dependencies/noble-hashes/utils.js").Hash<import("../static_dependencies/noble-hashes/utils.js").Hash<any>>;
-    }, digest?: "hex" | "base64" | "binary") => any;
+    }, digest?: "binary" | "hex" | "base64") => any;
     hmac: (request: import("../static_dependencies/noble-hashes/utils.js").Input, secret: import("../static_dependencies/noble-hashes/utils.js").Input, hash: {
         (message: import("../static_dependencies/noble-hashes/utils.js").Input): Uint8Array;
         outputLen: number;
         blockLen: number;
         create(): import("../static_dependencies/noble-hashes/utils.js").Hash<import("../static_dependencies/noble-hashes/utils.js").Hash<any>>;
-    }, digest?: "hex" | "base64" | "binary") => any;
+    }, digest?: "binary" | "hex" | "base64") => any;
     implodeParams: (string: string, params: any[] | Dictionary<any>) => string;
     inArray: (needle: any, haystack: any[]) => boolean;
     indexBy: (x: Dictionary<any>, k: IndexType, out?: Dictionary<any>) => Dictionary<any>;
@@ -265,7 +265,7 @@ export default class Exchange {
     parseDate: (x: any) => number;
     parseTimeframe: (timeframe: string) => number;
     precisionFromString: typeof functions.precisionFromString;
-    rawencode: (object: object) => string;
+    rawencode: (object: object, sort?: boolean) => string;
     roundTimeframe: (timeframe: string, timestamp: number, direction?: number) => number;
     safeFloat: (o: any, k: IndexType, $default?: number) => number;
     safeFloat2: (o: any, k1: IndexType, k2: IndexType, $default?: number) => number;
@@ -292,6 +292,7 @@ export default class Exchange {
     safeValue2: (o: any, k1: IndexType, k2: IndexType, $default?: any) => any;
     safeValueN: (o: any, k: IndexType[], $default?: any) => any;
     seconds: () => number;
+    sort: (array: any) => any;
     sortBy: (array: any[], key: IndexType, descending?: boolean, defaultValue?: any, direction?: number) => any[];
     sortBy2: (array: any[], key1: IndexType, key2: IndexType, descending?: boolean, direction?: number) => any[];
     stringToBase64: (string: string) => string;
