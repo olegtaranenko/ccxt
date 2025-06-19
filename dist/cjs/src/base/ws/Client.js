@@ -34,7 +34,6 @@ function getBodyTruncated(body, verboseTruncate) {
 }
 class Client {
     constructor(url, onMessageCallback, onErrorCallback, onCloseCallback, onConnectedCallback, config = {}) {
-        this.useMessageQueue = false;
         const defaults = {
             url,
             onMessageCallback,
@@ -48,8 +47,6 @@ class Client {
             futures: {},
             subscriptions: {},
             rejections: {},
-            messageQueue: {},
-            useMessageQueue: false,
             connected: undefined,
             error: undefined,
             connectionStarted: undefined,
@@ -80,15 +77,6 @@ class Client {
         if (messageHash in this.rejections) {
             future.reject(this.rejections[messageHash]);
             delete this.rejections[messageHash];
-            delete this.messageQueue[messageHash];
-            return future;
-        }
-        if (this.useMessageQueue) {
-            const queue = this.messageQueue[messageHash];
-            if (queue && queue.length) {
-                future.resolve(queue.shift());
-                delete this.futures[messageHash];
-            }
         }
         return future;
     }
@@ -98,27 +86,10 @@ class Client {
                 this.log(new Date(), 'resolve received undefined messageHash');
             }
         }
-        if (this.useMessageQueue === true) {
-            if (!(messageHash in this.messageQueue)) {
-                this.messageQueue[messageHash] = [];
-            }
-            const queue = this.messageQueue[messageHash];
-            queue.push(result);
-            while (queue.length > 10) { // limit size to 10 messages in the queue
-                queue.shift();
-            }
-            if ((messageHash !== undefined) && (messageHash in this.futures)) {
-                const promise = this.futures[messageHash];
-                promise.resolve(queue.shift());
-                delete this.futures[messageHash];
-            }
-        }
-        else {
-            if (messageHash in this.futures) {
-                const promise = this.futures[messageHash];
-                promise.resolve(result);
-                delete this.futures[messageHash];
-            }
+        if ((messageHash !== undefined) && (messageHash in this.futures)) {
+            const promise = this.futures[messageHash];
+            promise.resolve(result);
+            delete this.futures[messageHash];
         }
         return result;
     }
@@ -159,7 +130,6 @@ class Client {
     reset(error) {
         this.clearConnectionTimeout();
         this.clearPingInterval();
-        this.messageQueue = {};
         this.reject(error);
     }
     onConnectionTimeout() {
