@@ -47,7 +47,6 @@
 	- [coincatch](exchanges/coincatch.md)
 	- [coincheck](exchanges/coincheck.md)
 	- [coinex](exchanges/coinex.md)
-	- [coinlist](exchanges/coinlist.md)
 	- [coinmate](exchanges/coinmate.md)
 	- [coinmetro](exchanges/coinmetro.md)
 	- [coinone](exchanges/coinone.md)
