@@ -1577,15 +1577,10 @@ export default class Exchange {
         const closedClients = [];
         for (let i = 0; i < clients.length; i++) {
             const client = clients[i] as WsClient;
-            client.error = new ExchangeClosedByUser (this.id + ' closedByUser');
+            delete this.clients[client.url];
             closedClients.push(client.close ());
         }
-        await Promise.all (closedClients);
-        for (let i = 0; i < clients.length; i++) {
-            const client = clients[i] as WsClient;
-            delete this.clients[client.url];
-        }
-        return;
+        return Promise.all (closedClients);
     }
 
     async loadOrderBook (client, messageHash: string, symbol: string, limit: Int = undefined, params = {}) {
@@ -2643,6 +2638,10 @@ export default class Exchange {
 
     async watchTrades (symbol: string, since: Int = undefined, limit: Int = undefined, params = {}): Promise<Trade[]> {
         throw new NotSupported (this.id + ' watchTrades() is not supported yet');
+    }
+
+    async unWatchOrders (symbol: Str = undefined, params = {}): Promise<any> {
+        throw new NotSupported (this.id + ' unWatchOrders() is not supported yet');
     }
 
     async unWatchTrades (symbol: string, params = {}): Promise<any> {
@@ -8030,7 +8029,7 @@ export default class Exchange {
                 const symbolAndTimeFrame = symbolsAndTimeFrames[i];
                 const symbol = this.safeString (symbolAndTimeFrame, 0);
                 const timeframe = this.safeString (symbolAndTimeFrame, 1);
-                if (symbol in this.ohlcvs) {
+                if ((this.ohlcvs !== undefined) && (symbol in this.ohlcvs)) {
                     if (timeframe in this.ohlcvs[symbol]) {
                         delete this.ohlcvs[symbol][timeframe];
                     }
@@ -8054,7 +8053,7 @@ export default class Exchange {
                 }
             }
         } else {
-            if (topic === 'myTrades') {
+            if (topic === 'myTrades' && (this.myTrades !== undefined)) {
                 // don't reset this.myTrades directly here
                 // because in c# we need to use a different object (thread-safe dict)
                 const keys = Object.keys (this.myTrades);
@@ -8064,7 +8063,7 @@ export default class Exchange {
                         delete this.myTrades[key];
                     }
                 }
-            } else if (topic === 'orders') {
+            } else if (topic === 'orders' && (this.orders !== undefined)) {
                 const orderSymbols = Object.keys (this.orders);
                 for (let i = 0; i < orderSymbols.length; i++) {
                     const orderSymbol = orderSymbols[i];
@@ -8072,7 +8071,7 @@ export default class Exchange {
                         delete this.orders[orderSymbol];
                     }
                 }
-            } else if (topic === 'ticker') {
+            } else if (topic === 'ticker' && (this.tickers !== undefined)) {
                 const tickerSymbols = Object.keys (this.tickers);
                 for (let i = 0; i < tickerSymbols.length; i++) {
                     const tickerSymbol = tickerSymbols[i];
