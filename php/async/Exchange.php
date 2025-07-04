@@ -44,11 +44,11 @@ use React\EventLoop\Loop;
 
 use Exception;
 
-$version = '4.4.86';
+$version = '4.4.92';
 
 class Exchange extends \ccxt\Exchange {
 
-    const VERSION = '4.4.86';
+    const VERSION = '4.4.92';
 
     public $browser;
     public $marketsLoading = null;
@@ -249,8 +249,10 @@ class Exchange extends \ccxt\Exchange {
             $currencies = null;
             if (array_key_exists('fetchCurrencies', $this->has) && $this->has['fetchCurrencies'] === true) {
                 $currencies = React\Async\await($this->fetch_currencies());
+                $this->options['cachedCurrencies'] = $currencies;
             }
             $markets = React\Async\await($this->fetch_markets($params));
+            unset($this->options['cachedCurrencies']);
             return $this->set_markets ($markets, $currencies);
         }) ();
     }
@@ -1134,6 +1136,10 @@ class Exchange extends \ccxt\Exchange {
         throw new NotSupported($this->id . ' watchTrades() is not supported yet');
     }
 
+    public function un_watch_orders(?string $symbol = null, $params = array ()) {
+        throw new NotSupported($this->id . ' unWatchOrders() is not supported yet');
+    }
+
     public function un_watch_trades(string $symbol, $params = array ()) {
         throw new NotSupported($this->id . ' unWatchTrades() is not supported yet');
     }
@@ -1898,7 +1904,7 @@ class Exchange extends \ccxt\Exchange {
 
     public function set_markets($markets, $currencies = null) {
         $values = array();
-        $this->markets_by_id = array();
+        $this->markets_by_id = $this->create_safe_dictionary();
         // handle marketId conflicts
         // we insert spot $markets first
         $marketValues = $this->sort_by($this->to_array($markets), 'spot', true, true);
@@ -1924,14 +1930,14 @@ class Exchange extends \ccxt\Exchange {
             }
             $values[] = $market;
         }
-        $this->markets = $this->index_by($values, 'symbol');
+        $this->markets = $this->map_to_safe_map($this->index_by($values, 'symbol'));
         $marketsSortedBySymbol = $this->keysort($this->markets);
         $marketsSortedById = $this->keysort($this->markets_by_id);
         $this->symbols = is_array($marketsSortedBySymbol) ? array_keys($marketsSortedBySymbol) : array();
         $this->ids = is_array($marketsSortedById) ? array_keys($marketsSortedById) : array();
         if ($currencies !== null) {
             // $currencies is always null when called in constructor but not when called from loadMarkets
-            $this->currencies = $this->deep_extend($this->currencies, $currencies);
+            $this->currencies = $this->map_to_safe_map($this->deep_extend($this->currencies, $currencies));
         } else {
             $baseCurrencies = array();
             $quoteCurrencies = array();
@@ -1960,8 +1966,8 @@ class Exchange extends \ccxt\Exchange {
             }
             $baseCurrencies = $this->sort_by($baseCurrencies, 'code', false, '');
             $quoteCurrencies = $this->sort_by($quoteCurrencies, 'code', false, '');
-            $this->baseCurrencies = $this->index_by($baseCurrencies, 'code');
-            $this->quoteCurrencies = $this->index_by($quoteCurrencies, 'code');
+            $this->baseCurrencies = $this->map_to_safe_map($this->index_by($baseCurrencies, 'code'));
+            $this->quoteCurrencies = $this->map_to_safe_map($this->index_by($quoteCurrencies, 'code'));
             $allCurrencies = $this->array_concat($baseCurrencies, $quoteCurrencies);
             $groupedCurrencies = $this->group_by($allCurrencies, 'code');
             $codes = is_array($groupedCurrencies) ? array_keys($groupedCurrencies) : array();
@@ -1981,9 +1987,9 @@ class Exchange extends \ccxt\Exchange {
                 $resultingCurrencies[] = $highestPrecisionCurrency;
             }
             $sortedCurrencies = $this->sort_by($resultingCurrencies, 'code');
-            $this->currencies = $this->deep_extend($this->currencies, $this->index_by($sortedCurrencies, 'code'));
+            $this->currencies = $this->map_to_safe_map($this->deep_extend($this->currencies, $this->index_by($sortedCurrencies, 'code')));
         }
-        $this->currencies_by_id = $this->index_by($this->currencies, 'id');
+        $this->currencies_by_id = $this->index_by_safe($this->currencies, 'id');
         $currenciesSortedByCode = $this->keysort($this->currencies);
         $this->codes = is_array($currenciesSortedByCode) ? array_keys($currenciesSortedByCode) : array();
         return $this->markets;
@@ -3086,11 +3092,11 @@ class Exchange extends \ccxt\Exchange {
                 throw new NotSupported($this->id . ' - ' . $networkCode . ' network did not return any result for ' . $currencyCode);
             } else {
                 // if $networkCode was provided by user, we should check it after response, referenced exchange doesn't support network-code during request
-                $networkId = $isIndexedByUnifiedNetworkCode ? $networkCode : $this->network_code_to_id($networkCode, $currencyCode);
-                if (is_array($indexedNetworkEntries) && array_key_exists($networkId, $indexedNetworkEntries)) {
-                    $chosenNetworkId = $networkId;
+                $networkIdOrCode = $isIndexedByUnifiedNetworkCode ? $networkCode : $this->network_code_to_id($networkCode, $currencyCode);
+                if (is_array($indexedNetworkEntries) && array_key_exists($networkIdOrCode, $indexedNetworkEntries)) {
+                    $chosenNetworkId = $networkIdOrCode;
                 } else {
-                    throw new NotSupported($this->id . ' - ' . $networkId . ' network was not found for ' . $currencyCode . ', use one of ' . implode(', ', $availableNetworkIds));
+                    throw new NotSupported($this->id . ' - ' . $networkIdOrCode . ' network was not found for ' . $currencyCode . ', use one of ' . implode(', ', $availableNetworkIds));
                 }
             }
         } else {
@@ -3137,7 +3143,7 @@ class Exchange extends \ccxt\Exchange {
     }
 
     public function parse_leverage_tiers(mixed $response, ?array $symbols = null, $marketIdKey = null) {
-        // $marketIdKey should only be null when $response is a dictionary
+        // $marketIdKey should only be null when $response is a dictionary.
         $symbols = $this->market_symbols($symbols);
         $tiers = array();
         $symbolsLength = 0;
@@ -3458,15 +3464,15 @@ class Exchange extends \ccxt\Exchange {
                 $cost = $this->calculate_rate_limiter_cost($api, $method, $path, $params, $config);
                 Async\await($this->throttle($cost));
             }
+            $retries = null;
+            list($retries, $params) = $this->handle_option_and_params($params, $path, 'maxRetriesOnFailure', 0);
+            $retryDelay = null;
+            list($retryDelay, $params) = $this->handle_option_and_params($params, $path, 'maxRetriesOnFailureDelay', 0);
             $this->lastRestRequestTimestamp = $this->milliseconds();
             $request = $this->sign($path, $api, $method, $params, $headers, $body);
             $this->last_request_headers = $request['headers'];
             $this->last_request_body = $request['body'];
             $this->last_request_url = $request['url'];
-            $retries = null;
-            list($retries, $params) = $this->handle_option_and_params($params, $path, 'maxRetriesOnFailure', 0);
-            $retryDelay = null;
-            list($retryDelay, $params) = $this->handle_option_and_params($params, $path, 'maxRetriesOnFailureDelay', 0);
             for ($i = 0; $i < $retries + 1; $i++) {
                 try {
                     return Async\await($this->fetch($request['url'], $request['method'], $request['headers'], $request['body']));
@@ -4736,6 +4742,10 @@ class Exchange extends \ccxt\Exchange {
 
     public function fetch_greeks(string $symbol, $params = array ()) {
         throw new NotSupported($this->id . ' fetchGreeks() is not supported yet');
+    }
+
+    public function fetch_all_greeks(?array $symbols = null, $params = array ()) {
+        throw new NotSupported($this->id . ' fetchAllGreeks() is not supported yet');
     }
 
     public function fetch_option_chain(string $code, $params = array ()) {
@@ -6327,6 +6337,31 @@ class Exchange extends \ccxt\Exchange {
         throw new NotSupported($this->id . ' parseGreeks () is not supported yet');
     }
 
+    public function parse_all_greeks($greeks, ?array $symbols = null, $params = array ()) {
+        //
+        // the value of $greeks is either a dict or a list
+        //
+        $results = array();
+        if (gettype($greeks) === 'array' && array_keys($greeks) === array_keys(array_keys($greeks))) {
+            for ($i = 0; $i < count($greeks); $i++) {
+                $parsedTicker = $this->parse_greeks($greeks[$i]);
+                $greek = $this->extend($parsedTicker, $params);
+                $results[] = $greek;
+            }
+        } else {
+            $marketIds = is_array($greeks) ? array_keys($greeks) : array();
+            for ($i = 0; $i < count($marketIds); $i++) {
+                $marketId = $marketIds[$i];
+                $market = $this->safe_market($marketId);
+                $parsed = $this->parse_greeks($greeks[$marketId], $market);
+                $greek = $this->extend($parsed, $params);
+                $results[] = $greek;
+            }
+        }
+        $symbols = $this->market_symbols($symbols);
+        return $this->filter_by_array($results, 'symbol', $symbols);
+    }
+
     public function parse_option(array $chain, ?array $currency = null, ?array $market = null) {
         throw new NotSupported($this->id . ' parseOption () is not supported yet');
     }
@@ -6466,7 +6501,7 @@ class Exchange extends \ccxt\Exchange {
     }
 
     public function convert_market_id_expire_date(string $date) {
-        // parse 03JAN24 to 240103
+        // parse 03JAN24 to 240103.
         $monthMappping = array(
             'JAN' => '01',
             'FEB' => '02',
@@ -6564,16 +6599,34 @@ class Exchange extends \ccxt\Exchange {
         throw new NotSupported($this->id . ' fetchTransfers () is not supported yet');
     }
 
-    public function clean_unsubscription($client, string $subHash, string $unsubHash) {
+    public function clean_unsubscription($client, string $subHash, string $unsubHash, $subHashIsPrefix = false) {
         if (is_array($client->subscriptions) && array_key_exists($unsubHash, $client->subscriptions)) {
             unset($client->subscriptions[$unsubHash]);
         }
-        if (is_array($client->subscriptions) && array_key_exists($subHash, $client->subscriptions)) {
-            unset($client->subscriptions[$subHash]);
-        }
-        if (is_array($client->futures) && array_key_exists($subHash, $client->futures)) {
-            $error = new UnsubscribeError ($this->id . ' ' . $subHash);
-            $client->reject ($error, $subHash);
+        if (!$subHashIsPrefix) {
+            if (is_array($client->subscriptions) && array_key_exists($subHash, $client->subscriptions)) {
+                unset($client->subscriptions[$subHash]);
+            }
+            if (is_array($client->futures) && array_key_exists($subHash, $client->futures)) {
+                $error = new UnsubscribeError ($this->id . ' ' . $subHash);
+                $client->reject ($error, $subHash);
+            }
+        } else {
+            $clientSubscriptions = is_array($client->subscriptions) ? array_keys($client->subscriptions) : array();
+            for ($i = 0; $i < count($clientSubscriptions); $i++) {
+                $sub = $clientSubscriptions[$i];
+                if (str_starts_with($sub, $subHash)) {
+                    unset($client->subscriptions[$sub]);
+                }
+            }
+            $clientFutures = is_array($client->futures) ? array_keys($client->futures) : array();
+            for ($i = 0; $i < count($clientFutures); $i++) {
+                $future = $clientFutures[$i];
+                if (str_starts_with($future, $subHash)) {
+                    $error = new UnsubscribeError ($this->id . ' ' . $future);
+                    $client->reject ($error, $future);
+                }
+            }
         }
         $client->resolve (true, $unsubHash);
     }
@@ -6588,7 +6641,7 @@ class Exchange extends \ccxt\Exchange {
                 $symbolAndTimeFrame = $symbolsAndTimeFrames[$i];
                 $symbol = $this->safe_string($symbolAndTimeFrame, 0);
                 $timeframe = $this->safe_string($symbolAndTimeFrame, 1);
-                if (is_array($this->ohlcvs) && array_key_exists($symbol, $this->ohlcvs)) {
+                if (($this->ohlcvs !== null) && (is_array($this->ohlcvs) && array_key_exists($symbol, $this->ohlcvs))) {
                     if (is_array($this->ohlcvs[$symbol]) && array_key_exists($timeframe, $this->ohlcvs[$symbol])) {
                         unset($this->ohlcvs[$symbol][$timeframe]);
                     }
@@ -6612,25 +6665,11 @@ class Exchange extends \ccxt\Exchange {
                 }
             }
         } else {
-            if ($topic === 'myTrades') {
-                // don't reset $this->myTrades directly here
-                // because in c# we need to use a different object (thread-safe dict)
-                $keys = is_array($this->myTrades) ? array_keys($this->myTrades) : array();
-                for ($i = 0; $i < count($keys); $i++) {
-                    $key = $keys[$i];
-                    if (is_array($this->myTrades) && array_key_exists($key, $this->myTrades)) {
-                        unset($this->myTrades[$key]);
-                    }
-                }
-            } elseif ($topic === 'orders') {
-                $orderSymbols = is_array($this->orders) ? array_keys($this->orders) : array();
-                for ($i = 0; $i < count($orderSymbols); $i++) {
-                    $orderSymbol = $orderSymbols[$i];
-                    if (is_array($this->orders) && array_key_exists($orderSymbol, $this->orders)) {
-                        unset($this->orders[$orderSymbol]);
-                    }
-                }
-            } elseif ($topic === 'ticker') {
+            if ($topic === 'myTrades' && ($this->myTrades !== null)) {
+                $this->myTrades = null;
+            } elseif ($topic === 'orders' && ($this->orders !== null)) {
+                $this->orders = null;
+            } elseif ($topic === 'ticker' && ($this->tickers !== null)) {
                 $tickerSymbols = is_array($this->tickers) ? array_keys($this->tickers) : array();
                 for ($i = 0; $i < count($tickerSymbols); $i++) {
                     $tickerSymbol = $tickerSymbols[$i];

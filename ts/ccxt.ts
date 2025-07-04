@@ -40,7 +40,7 @@ import {BaseError, ExchangeError, AuthenticationError, PermissionDenied, Account
 //-----------------------------------------------------------------------------
 // this is updated by vss.js when building
 
-const version = '4.4.86';
+const version = '4.4.92';
 
 (Exchange as any).ccxtVersion = version
 
@@ -87,7 +87,6 @@ import coinbaseinternational from  './src/coinbaseinternational.js'
 import coincatch from  './src/coincatch.js'
 import coincheck from  './src/coincheck.js'
 import coinex from  './src/coinex.js'
-import coinlist from  './src/coinlist.js'
 import coinmate from  './src/coinmate.js'
 import coinmetro from  './src/coinmetro.js'
 import coinone from  './src/coinone.js'
@@ -123,12 +122,14 @@ import lbank from  './src/lbank.js'
 import luno from  './src/luno.js'
 import mercado from  './src/mercado.js'
 import mexc from  './src/mexc.js'
+import modetrade from  './src/modetrade.js'
 import myokx from  './src/myokx.js'
 import ndax from  './src/ndax.js'
 import novadax from  './src/novadax.js'
 import oceanex from  './src/oceanex.js'
 import okcoin from  './src/okcoin.js'
 import okx from  './src/okx.js'
+import okxus from  './src/okxus.js'
 import onetrading from  './src/onetrading.js'
 import oxfun from  './src/oxfun.js'
 import p2b from  './src/p2b.js'
@@ -206,10 +207,12 @@ import kucoinfuturesPro from  './src/pro/kucoinfutures.js'
 import lbankPro from  './src/pro/lbank.js'
 import lunoPro from  './src/pro/luno.js'
 import mexcPro from  './src/pro/mexc.js'
+import modetradePro from  './src/pro/modetrade.js'
 import myokxPro from  './src/pro/myokx.js'
 import ndaxPro from  './src/pro/ndax.js'
 import okcoinPro from  './src/pro/okcoin.js'
 import okxPro from  './src/pro/okx.js'
+import okxusPro from  './src/pro/okxus.js'
 import onetradingPro from  './src/pro/onetrading.js'
 import oxfunPro from  './src/pro/oxfun.js'
 import p2bPro from  './src/pro/p2b.js'
@@ -267,7 +270,6 @@ const exchanges = {
     'coincatch':              coincatch,
     'coincheck':              coincheck,
     'coinex':                 coinex,
-    'coinlist':               coinlist,
     'coinmate':               coinmate,
     'coinmetro':              coinmetro,
     'coinone':                coinone,
@@ -303,12 +305,14 @@ const exchanges = {
     'luno':                   luno,
     'mercado':                mercado,
     'mexc':                   mexc,
+    'modetrade':              modetrade,
     'myokx':                  myokx,
     'ndax':                   ndax,
     'novadax':                novadax,
     'oceanex':                oceanex,
     'okcoin':                 okcoin,
     'okx':                    okx,
+    'okxus':                  okxus,
     'onetrading':             onetrading,
     'oxfun':                  oxfun,
     'p2b':                    p2b,
@@ -386,10 +390,12 @@ const pro = {
     'lbank':                  lbankPro,
     'luno':                   lunoPro,
     'mexc':                   mexcPro,
+    'modetrade':              modetradePro,
     'myokx':                  myokxPro,
     'ndax':                   ndaxPro,
     'okcoin':                 okcoinPro,
     'okx':                    okxPro,
+    'okxus':                  okxusPro,
     'onetrading':             onetradingPro,
     'oxfun':                  oxfunPro,
     'p2b':                    p2bPro,
@@ -588,7 +594,6 @@ export {
     coincatch,
     coincheck,
     coinex,
-    coinlist,
     coinmate,
     coinmetro,
     coinone,
@@ -624,12 +629,14 @@ export {
     luno,
     mercado,
     mexc,
+    modetrade,
     myokx,
     ndax,
     novadax,
     oceanex,
     okcoin,
     okx,
+    okxus,
     onetrading,
     oxfun,
     p2b,
