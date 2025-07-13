@@ -3,11 +3,6 @@
 Object.defineProperty(exports, '__esModule', { value: true });
 
 require('./_virtual/_commonjsHelpers.js');
-require('./_virtual/formats.cjs2.js');
-require('./_virtual/index.cjs2.js');
-require('./_virtual/parse.cjs2.js');
-require('./_virtual/stringify.cjs2.js');
-require('./_virtual/utils.cjs2.js');
 require('./_virtual/formats.cjs.js');
 require('./_virtual/index.cjs.js');
 require('./_virtual/parse.cjs.js');
@@ -198,7 +193,7 @@ var xt$1 = require('./src/pro/xt.js');
 
 //-----------------------------------------------------------------------------
 // this is updated by vss.js when building
-const version = '4.4.92';
+const version = '4.4.94';
 Exchange["default"].ccxtVersion = version;
 const exchanges = {
     'alpaca': alpaca,

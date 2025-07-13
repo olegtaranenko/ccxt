@@ -43,11 +43,11 @@ use React\EventLoop\Loop;
 
 use Exception;
 
-$version = '4.4.92';
+$version = '4.4.94';
 
 class Exchange extends \ccxt\Exchange {
 
-    const VERSION = '4.4.92';
+    const VERSION = '4.4.94';
 
     public $browser;
     public $marketsLoading = null;
@@ -2614,8 +2614,7 @@ class Exchange extends \ccxt\Exchange {
 
     public function safe_ticker(array $ticker, ?array $market = null) {
         $open = $this->omit_zero($this->safe_string($ticker, 'open'));
-        $close = $this->omit_zero($this->safe_string($ticker, 'close'));
-        $last = $this->omit_zero($this->safe_string($ticker, 'last'));
+        $close = $this->omit_zero($this->safe_string_2($ticker, 'close', 'last'));
         $change = $this->omit_zero($this->safe_string($ticker, 'change'));
         $percentage = $this->omit_zero($this->safe_string($ticker, 'percentage'));
         $average = $this->omit_zero($this->safe_string($ticker, 'average'));
@@ -2625,16 +2624,52 @@ class Exchange extends \ccxt\Exchange {
         if ($vwap === null) {
             $vwap = Precise::string_div($this->omit_zero($quoteVolume), $baseVolume);
         }
-        if (($last !== null) && ($close === null)) {
-            $close = $last;
-        } elseif (($last === null) && ($close !== null)) {
-            $last = $close;
-        }
-        if (($last !== null) && ($open !== null)) {
-            if ($change === null) {
-                $change = Precise::string_sub($last, $open);
+        // calculate $open
+        if ($change !== null) {
+            if ($close === null && $average !== null) {
+                $close = Precise::string_add($average, Precise::string_div($change, '2'));
             }
-            if ($average === null) {
+            if ($open === null && $close !== null) {
+                $open = Precise::string_sub($close, $change);
+            }
+        } elseif ($percentage !== null) {
+            if ($close === null && $average !== null) {
+                $openAddClose = Precise::string_mul($average, '2');
+                // $openAddClose = $open * (1 . (100 . $percentage)/100)
+                $denominator = Precise::string_add('2', Precise::string_div($percentage, '100'));
+                $calcOpen = ($open !== null) ? $open : Precise::string_div($openAddClose, $denominator);
+                $close = Precise::string_mul($calcOpen, Precise::string_add('1', Precise::string_div($percentage, '100')));
+            }
+            if ($open === null && $close !== null) {
+                $open = Precise::string_div($close, Precise::string_add('1', Precise::string_div($percentage, '100')));
+            }
+        }
+        // $change
+        if ($change === null) {
+            if ($close !== null && $open !== null) {
+                $change = Precise::string_sub($close, $open);
+            } elseif ($close !== null && $percentage !== null) {
+                $change = Precise::string_mul(Precise::string_div($percentage, '100'), Precise::string_div($close, '100'));
+            } elseif ($open !== null && $percentage !== null) {
+                $change = Precise::string_mul($open, Precise::string_div($percentage, '100'));
+            }
+        }
+        // calculate things according to "open" (similar can be done with "close")
+        if ($open !== null) {
+            // $percentage (using $change)
+            if ($percentage === null && $change !== null) {
+                $percentage = Precise::string_mul(Precise::string_div($change, $open), '100');
+            }
+            // $close (using $change)
+            if ($close === null && $change !== null) {
+                $close = Precise::string_add($open, $change);
+            }
+            // $close (using $average)
+            if ($close === null && $average !== null) {
+                $close = Precise::string_mul($average, '2');
+            }
+            // $average
+            if ($average === null && $close !== null) {
                 $precision = 18;
                 if ($market !== null && $this->is_tick_precision()) {
                     $marketPrecision = $this->safe_dict($market, 'precision');
@@ -2643,20 +2678,12 @@ class Exchange extends \ccxt\Exchange {
                         $precision = $this->precision_from_string($precisionPrice);
                     }
                 }
-                $average = Precise::string_div(Precise::string_add($last, $open), '2', $precision);
+                $average = Precise::string_div(Precise::string_add($open, $close), '2', $precision);
             }
-        }
-        if (($percentage === null) && ($change !== null) && ($open !== null) && Precise::string_gt($open, '0')) {
-            $percentage = Precise::string_mul(Precise::string_div($change, $open), '100');
-        }
-        if (($change === null) && ($percentage !== null) && ($open !== null)) {
-            $change = Precise::string_div(Precise::string_mul($percentage, $open), '100');
-        }
-        if (($open === null) && ($last !== null) && ($change !== null)) {
-            $open = Precise::string_sub($last, $change);
         }
         // timestamp and symbol operations don't belong in safeTicker
         // they should be done in the derived classes
+        $closeParsed = $this->parse_number($this->omit_zero($close));
         return $this->extend($ticker, array(
             'ask' => $this->parse_number($this->omit_zero($this->safe_string($ticker, 'ask'))),
             'askVolume' => $this->safe_number($ticker, 'askVolume'),
@@ -2665,10 +2692,10 @@ class Exchange extends \ccxt\Exchange {
             'bid' => $this->parse_number($this->omit_zero($this->safe_string($ticker, 'bid'))),
             'bidVolume' => $this->safe_number($ticker, 'bidVolume'),
             'change' => $this->parse_number($change),
-            'close' => $this->parse_number($this->omit_zero($close)),
+            'close' => $closeParsed,
             'high' => $this->parse_number($this->omit_zero($this->safe_string($ticker, 'high'))),
             'indexPrice' => $this->safe_number($ticker, 'indexPrice'),
-            'last' => $this->parse_number($this->omit_zero($last)),
+            'last' => $closeParsed,
             'low' => $this->parse_number($this->omit_zero($this->safe_string($ticker, 'low'))),
             'markPrice' => $this->safe_number($ticker, 'markPrice'),
             'open' => $this->parse_number($this->omit_zero($open)),
@@ -5116,11 +5143,19 @@ class Exchange extends \ccxt\Exchange {
         if ($precisionNumber === 0) {
             return '1';
         }
-        $parsedPrecision = '0.';
-        for ($i = 0; $i < $precisionNumber - 1; $i++) {
-            $parsedPrecision = $parsedPrecision . '0';
+        if ($precisionNumber > 0) {
+            $parsedPrecision = '0.';
+            for ($i = 0; $i < $precisionNumber - 1; $i++) {
+                $parsedPrecision = $parsedPrecision . '0';
+            }
+            return $parsedPrecision . '1';
+        } else {
+            $parsedPrecision = '1';
+            for ($i = 0; $i < $precisionNumber * -1 - 1; $i++) {
+                $parsedPrecision = $parsedPrecision . '0';
+            }
+            return $parsedPrecision . '0';
         }
-        return $parsedPrecision . '1';
     }
 
     public function integer_precision_to_amount(?string $precision) {

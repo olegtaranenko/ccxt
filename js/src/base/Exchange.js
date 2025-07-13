@@ -3564,8 +3564,7 @@ export default class Exchange {
     }
     safeTicker(ticker, market = undefined) {
         let open = this.omitZero(this.safeString(ticker, 'open'));
-        let close = this.omitZero(this.safeString(ticker, 'close'));
-        let last = this.omitZero(this.safeString(ticker, 'last'));
+        let close = this.omitZero(this.safeString2(ticker, 'close', 'last'));
         let change = this.omitZero(this.safeString(ticker, 'change'));
         let percentage = this.omitZero(this.safeString(ticker, 'percentage'));
         let average = this.omitZero(this.safeString(ticker, 'average'));
@@ -3575,17 +3574,55 @@ export default class Exchange {
         if (vwap === undefined) {
             vwap = Precise.stringDiv(this.omitZero(quoteVolume), baseVolume);
         }
-        if ((last !== undefined) && (close === undefined)) {
-            close = last;
-        }
-        else if ((last === undefined) && (close !== undefined)) {
-            last = close;
-        }
-        if ((last !== undefined) && (open !== undefined)) {
-            if (change === undefined) {
-                change = Precise.stringSub(last, open);
+        // calculate open
+        if (change !== undefined) {
+            if (close === undefined && average !== undefined) {
+                close = Precise.stringAdd(average, Precise.stringDiv(change, '2'));
             }
-            if (average === undefined) {
+            if (open === undefined && close !== undefined) {
+                open = Precise.stringSub(close, change);
+            }
+        }
+        else if (percentage !== undefined) {
+            if (close === undefined && average !== undefined) {
+                const openAddClose = Precise.stringMul(average, '2');
+                // openAddClose = open * (1 + (100 + percentage)/100)
+                const denominator = Precise.stringAdd('2', Precise.stringDiv(percentage, '100'));
+                const calcOpen = (open !== undefined) ? open : Precise.stringDiv(openAddClose, denominator);
+                close = Precise.stringMul(calcOpen, Precise.stringAdd('1', Precise.stringDiv(percentage, '100')));
+            }
+            if (open === undefined && close !== undefined) {
+                open = Precise.stringDiv(close, Precise.stringAdd('1', Precise.stringDiv(percentage, '100')));
+            }
+        }
+        // change
+        if (change === undefined) {
+            if (close !== undefined && open !== undefined) {
+                change = Precise.stringSub(close, open);
+            }
+            else if (close !== undefined && percentage !== undefined) {
+                change = Precise.stringMul(Precise.stringDiv(percentage, '100'), Precise.stringDiv(close, '100'));
+            }
+            else if (open !== undefined && percentage !== undefined) {
+                change = Precise.stringMul(open, Precise.stringDiv(percentage, '100'));
+            }
+        }
+        // calculate things according to "open" (similar can be done with "close")
+        if (open !== undefined) {
+            // percentage (using change)
+            if (percentage === undefined && change !== undefined) {
+                percentage = Precise.stringMul(Precise.stringDiv(change, open), '100');
+            }
+            // close (using change)
+            if (close === undefined && change !== undefined) {
+                close = Precise.stringAdd(open, change);
+            }
+            // close (using average)
+            if (close === undefined && average !== undefined) {
+                close = Precise.stringMul(average, '2');
+            }
+            // average
+            if (average === undefined && close !== undefined) {
                 let precision = 18;
                 if (market !== undefined && this.isTickPrecision()) {
                     const marketPrecision = this.safeDict(market, 'precision');
@@ -3594,20 +3631,12 @@ export default class Exchange {
                         precision = this.precisionFromString(precisionPrice);
                     }
                 }
-                average = Precise.stringDiv(Precise.stringAdd(last, open), '2', precision);
+                average = Precise.stringDiv(Precise.stringAdd(open, close), '2', precision);
             }
-        }
-        if ((percentage === undefined) && (change !== undefined) && (open !== undefined) && Precise.stringGt(open, '0')) {
-            percentage = Precise.stringMul(Precise.stringDiv(change, open), '100');
-        }
-        if ((change === undefined) && (percentage !== undefined) && (open !== undefined)) {
-            change = Precise.stringDiv(Precise.stringMul(percentage, open), '100');
-        }
-        if ((open === undefined) && (last !== undefined) && (change !== undefined)) {
-            open = Precise.stringSub(last, change);
         }
         // timestamp and symbol operations don't belong in safeTicker
         // they should be done in the derived classes
+        const closeParsed = this.parseNumber(this.omitZero(close));
         return this.extend(ticker, {
             'ask': this.parseNumber(this.omitZero(this.safeString(ticker, 'ask'))),
             'askVolume': this.safeNumber(ticker, 'askVolume'),
@@ -3616,10 +3645,10 @@ export default class Exchange {
             'bid': this.parseNumber(this.omitZero(this.safeString(ticker, 'bid'))),
             'bidVolume': this.safeNumber(ticker, 'bidVolume'),
             'change': this.parseNumber(change),
-            'close': this.parseNumber(this.omitZero(close)),
+            'close': closeParsed,
             'high': this.parseNumber(this.omitZero(this.safeString(ticker, 'high'))),
             'indexPrice': this.safeNumber(ticker, 'indexPrice'),
-            'last': this.parseNumber(this.omitZero(last)),
+            'last': closeParsed,
             'low': this.parseNumber(this.omitZero(this.safeString(ticker, 'low'))),
             'markPrice': this.safeNumber(ticker, 'markPrice'),
             'open': this.parseNumber(this.omitZero(open)),
@@ -5824,11 +5853,20 @@ export default class Exchange {
         if (precisionNumber === 0) {
             return '1';
         }
-        let parsedPrecision = '0.';
-        for (let i = 0; i < precisionNumber - 1; i++) {
-            parsedPrecision = parsedPrecision + '0';
+        if (precisionNumber > 0) {
+            let parsedPrecision = '0.';
+            for (let i = 0; i < precisionNumber - 1; i++) {
+                parsedPrecision = parsedPrecision + '0';
+            }
+            return parsedPrecision + '1';
         }
-        return parsedPrecision + '1';
+        else {
+            let parsedPrecision = '1';
+            for (let i = 0; i < precisionNumber * -1 - 1; i++) {
+                parsedPrecision = parsedPrecision + '0';
+            }
+            return parsedPrecision + '0';
+        }
     }
     integerPrecisionToAmount(precision) {
         /**
