@@ -1473,7 +1473,7 @@ class Exchange extends \ccxt\Exchange {
         // keep this in mind:
         // in JS => 1 == 1.0 is true;  1 === 1.0 is true
         // in Python => 1 == 1.0 is true
-        // in PHP 1 == 1.0 is true, but 1 === 1.0 is false
+        // in PHP 1 == 1.0 is true, but 1 === 1.0 is false.
         if (mb_strpos($stringVersion, '.') !== false) {
             return floatval($stringVersion);
         }
@@ -2578,7 +2578,7 @@ class Exchange extends \ccxt\Exchange {
         for ($i = 0; $i < count($fees); $i++) {
             $fee = $fees[$i];
             $code = $this->safe_string($fee, 'currency');
-            $feeCurrencyCode = $code !== null ? $code : (string) $i;
+            $feeCurrencyCode = ($code !== null) ? $code : (string) $i;
             if ($feeCurrencyCode !== null) {
                 $rate = $this->safe_string($fee, 'rate');
                 $cost = $this->safe_string($fee, 'cost');

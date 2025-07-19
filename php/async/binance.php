@@ -2327,6 +2327,7 @@ class binance extends Exchange {
                 'editOrder' => true,
                 'editOrders' => true,
                 'fetchAccounts' => null,
+                'fetchAllGreeks' => true,
                 'fetchBalance' => true,
                 'fetchBidsAsks' => true,
                 'fetchBorrowInterest' => true,
