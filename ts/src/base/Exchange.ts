@@ -344,6 +344,7 @@ export default class Exchange {
     headers: any = {};
     MAX_VALUE: Num = Number.MAX_VALUE;
     origin = '*'; // CORS origin
+    returnResponseHeaders: boolean = false;
     userAgents: any = {
         'chrome': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36',
         'chrome39': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Safari/537.36',
@@ -1114,6 +1115,9 @@ export default class Exchange {
             const skipFurtherErrorHandling = this.handleErrors (response.status, response.statusText, url, method, responseHeaders, responseBody, json, requestHeaders, requestBody);
             if (!skipFurtherErrorHandling) {
                 this.handleHttpStatusCode (response.status, response.statusText, url, method, responseBody);
+            }
+            if (json && !Array.isArray(json) && this.returnResponseHeaders) {
+                json['responseHeaders'] = responseHeaders;
             }
             return json || responseBody;
         });

@@ -52,6 +52,7 @@ export default class Exchange {
     headers: any;
     MAX_VALUE: Num;
     origin: string;
+    returnResponseHeaders: boolean;
     userAgents: any;
     agent: any;
     httpAgent: any;
