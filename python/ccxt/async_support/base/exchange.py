@@ -1081,6 +1081,15 @@ class Exchange(BaseExchange):
             raise ExchangeError(self.id + ' fetchIsolatedBorrowRate() could not find the borrow rate for market symbol ' + symbol)
         return rate
 
+    async def ping_server_impl(self, params: Any):
+        raise NotSupported(self.id + ' pingServer() method declared, but not implemented')
+
+    async def ping_server(self, params={}):
+        if self.has['pingServer']:
+            return self.ping_server_impl(params)
+        else:
+            raise NotSupported(self.id + ' pingServer() is not supported yet')
+
     async def fetch_ticker(self, symbol: str, params={}):
         if self.has['fetchTickers']:
             await self.load_markets()

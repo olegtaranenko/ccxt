@@ -704,6 +704,8 @@ export default class Exchange {
     findBroadlyMatchedKey(broad: any, string: any): string;
     handleErrors(statusCode: int, statusText: string, url: string, method: string, responseHeaders: Dict, responseBody: string, response: any, requestHeaders: any, requestBody: any): any;
     calculateRateLimiterCost(api: any, method: any, path: any, params: any, config?: {}): any;
+    pingServerImpl(params: any): Promise<void>;
+    pingServer(params?: {}): Promise<any>;
     fetchTicker(symbol: string, params?: {}): Promise<Ticker>;
     fetchMarkPrice(symbol: string, params?: {}): Promise<Ticker>;
     fetchTickerWs(symbol: string, params?: {}): Promise<Ticker>;

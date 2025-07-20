@@ -40,6 +40,7 @@ class binance extends binance$1 {
                 'fetchTradesWs': true,
                 'fetchTradingFeesWs': false,
                 'fetchWithdrawalsWs': false,
+                'pingServer': true,
                 'watchBalance': true,
                 'watchBidsAsks': true,
                 'watchLiquidations': true,
@@ -1632,6 +1633,14 @@ class binance extends binance$1 {
         stored.append(parsed);
         const resolveData = [symbol, unifiedTimeframe, stored];
         client.resolve(resolveData, messageHash);
+    }
+    /**
+     * @method
+     * @name binance#pingServer
+     * @param params
+     */
+    async pingServerImpl(params) {
+        throw new errors.NotSupported(this.id + ' pingServerImpl() method declared, but not implemented');
     }
     /**
      * @method

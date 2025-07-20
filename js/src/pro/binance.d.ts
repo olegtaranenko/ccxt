@@ -26,6 +26,7 @@ export default class binance extends binanceRest {
             fetchTradesWs: boolean;
             fetchTradingFeesWs: boolean;
             fetchWithdrawalsWs: boolean;
+            pingServer: boolean;
             watchBalance: boolean;
             watchBidsAsks: boolean;
             watchLiquidations: boolean;
@@ -412,6 +413,12 @@ export default class binance extends binanceRest {
      */
     unWatchOHLCV(symbol: string, timeframe?: string, params?: {}): Promise<any>;
     handleOHLCV(client: Client, message: any): void;
+    /**
+     * @method
+     * @name binance#pingServer
+     * @param params
+     */
+    pingServerImpl(params: any): Promise<void>;
     /**
      * @method
      * @name binance#fetchTickerWs

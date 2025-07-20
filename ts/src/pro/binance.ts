@@ -44,6 +44,7 @@ export default class binance extends binanceRest {
                 'fetchTradesWs': true,
                 'fetchTradingFeesWs': false,
                 'fetchWithdrawalsWs': false,
+                'pingServer': true,
                 'watchBalance': true,
                 'watchBidsAsks': true,
                 'watchLiquidations': true,
@@ -1659,6 +1660,15 @@ export default class binance extends binanceRest {
         stored.append (parsed);
         const resolveData = [ symbol, unifiedTimeframe, stored ];
         client.resolve (resolveData, messageHash);
+    }
+
+    /**
+     * @method
+     * @name binance#pingServer
+     * @param params
+     */
+    async pingServerImpl (params: any) {
+        throw new NotSupported (this.id + ' pingServerImpl() method declared, but not implemented');
     }
 
     /**

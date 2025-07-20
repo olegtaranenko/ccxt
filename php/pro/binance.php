@@ -45,6 +45,7 @@ class binance extends \ccxt\async\binance {
                 'fetchTradesWs' => true,
                 'fetchTradingFeesWs' => false,
                 'fetchWithdrawalsWs' => false,
+                'pingServer' => true,
                 'watchBalance' => true,
                 'watchBidsAsks' => true,
                 'watchLiquidations' => true,
@@ -1694,6 +1695,13 @@ class binance extends \ccxt\async\binance {
         $stored->append ($parsed);
         $resolveData = array( $symbol, $unifiedTimeframe, $stored );
         $client->resolve ($resolveData, $messageHash);
+    }
+
+    public function ping_server_impl(mixed $params) {
+        /**
+         * @param $params
+         */
+        throw new NotSupported($this->id . ' pingServerImpl() method declared, but not implemented');
     }
 
     public function fetch_ticker_ws(string $symbol, $params = array ()): PromiseInterface {
