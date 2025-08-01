@@ -372,6 +372,7 @@ export default class binance extends Exchange {
                             'byLimit': [ [ 99, 1 ], [ 499, 2 ], [ 1000, 5 ], [ 10000, 10 ] ],
                             'cost': 1,
                         },
+                        'insuranceBalance': 1,
                         'klines': { 'cost': 1, 'byLimit': [ [ 99, 1 ], [ 499, 2 ], [ 1000, 5 ], [ 10000, 10 ] ] },
                         'lvtKlines': 1,
                         'markPriceKlines': {
@@ -842,6 +843,7 @@ export default class binance extends Exchange {
                         'portfolio/balance': 2,
                         'portfolio/negative-balance-exchange-record': 2,
                         'portfolio/pmloan-history': 5,
+                        'portfolio/earn-asset-balance': 150, // Weight(IP): 1500 => cost = 0.1 * 1500 = 150
                         // staking
                         'lending/auto-invest/all/asset': 0.1,
                         'lending/auto-invest/history/list': 0.1,
@@ -1001,6 +1003,7 @@ export default class binance extends Exchange {
                         'portfolio/asset-collection': 6, // Weight(IP): 60 => cost = 0.1 * 60 = 6
                         'portfolio/auto-collection': 150, // Weight(IP): 1500 => cost = 0.1 * 1500 = 150
                         'portfolio/bnb-transfer': 150, // Weight(IP): 1500 => cost = 0.1 * 1500 = 150
+                        'portfolio/earn-asset-transfer': 150, // Weight(IP): 1500 => cost = 0.1 * 1500 = 150
                         'portfolio/mint': 20,
                         'portfolio/redeem': 20,
                         'portfolio/repay': 20.001,
@@ -2542,12 +2545,14 @@ export default class binance extends Exchange {
                 'defaultWithdrawPrecision': 0.00000001,
                 'fetchCurrencies': true, // this is a private call and it requires API keys
                 'fetchMargins': true,
-                'fetchMarkets': [
-                    'inverse', // allows CORS in browsers
-                    'linear', // allows CORS in browsers
-                    'spot', // allows CORS in browsers
-                    // 'option', // does not allow CORS, enable outside of the browser only
-                ],
+                'fetchMarkets': {
+                    'types': [
+                        'inverse', // allows CORS in browsers
+                        'linear', // allows CORS in browsers
+                        'spot', // allows CORS in browsers
+                        // 'option', // does not allow CORS, enable outside of the browser only
+],
+                },
                 'fetchPositions': 'positionRisk', // or 'account' or 'option'
                 // 'fetchTradesMethod': 'publicGetAggTrades', // publicGetTrades, publicGetHistoricalTrades, eapiPublicGetTrades
                 // not an error
@@ -3148,7 +3153,15 @@ export default class binance extends Exchange {
      */
     async fetchMarkets (params = {}): Promise<Market[]> {
         const promisesRaw = [];
-        const rawFetchMarkets = this.safeList (this.options, 'fetchMarkets', [ 'spot', 'linear', 'inverse' ]);
+        let rawFetchMarkets = undefined;
+        const defaultTypes = [ 'spot', 'linear', 'inverse' ];
+        const fetchMarketsOptions = this.safeDict (this.options, 'fetchMarkets');
+        if (fetchMarketsOptions !== undefined) {
+            rawFetchMarkets = this.safeList (fetchMarketsOptions, 'types', defaultTypes);
+        } else {
+            // for backward-compatibility
+            rawFetchMarkets = this.safeList (this.options, 'fetchMarkets', defaultTypes);
+        }
         // handle loadAllOptions option
         const loadAllOptions = this.safeBool (this.options, 'loadAllOptions', false);
         if (loadAllOptions) {
@@ -4114,29 +4127,52 @@ export default class binance extends Exchange {
         //         "time": 1597370495002
         //     }
         //
-        //     {
-        //         "askPrice": "0.03379000",
-        //         "askQty": "24.00000000",
-        //         "bidPrice": "0.03378900",
-        //         "bidQty": "7.16800000",
-        //         "closeTime": 1601556386932,
-        //         "count": 87544,
-        //         "firstId": 196098772,
-        //         "highPrice": "0.03388900",
-        //         "lastId": 196186315,
-        //         "lastPrice": "0.03378900",
-        //         "lastQty": "0.07700000",
-        //         "lowPrice": "0.03306900",
-        //         "openPrice": "0.03310200",
-        //         "openTime": 1601469986932,
-        //         "prevClosePrice": "0.03310300",
-        //         "priceChange": "0.00068700",
-        //         "priceChangePercent": "2.075",
-        //         "quoteVolume": "6868.48826294",
-        //         "symbol": "ETHBTC",
-        //         "volume": "205478.41000000",
-        //         "weightedAvgPrice": "0.03342681",
-        //     }
+        // spot - ticker
+        //
+        //    {
+        //        "askPrice": "118449.03000000",          // field absent in rolling ticker
+        //        "askQty": "0.09592000",                 // field absent in rolling ticker
+        //        "bidPrice": "118449.02000000",          // field absent in rolling ticker
+        //        "bidQty": "7.15931000",                 // field absent in rolling ticker
+        //        "closeTime": "1753787874013",
+        //        "count": "1933312"
+        //        "firstId": "5116031635",
+        //        "highPrice": "119273.36000000",
+        //        "lastId": "5117964946",
+        //        "lastPrice": "118449.03000000",
+        //        "lastQty": "0.00731000",                // field absent in rolling ticker
+        //        "lowPrice": "117427.50000000",
+        //        "openPrice": "118637.21000000",
+        //        "openTime": "1753701474013",
+        //        "prevClosePrice": "118637.22000000",    // field absent in rolling ticker
+        //        "priceChange": "-188.18000000",
+        //        "priceChangePercent": "-0.159",
+        //        "quoteVolume": "1744744445.80640740",
+        //        "symbol": "BTCUSDT",
+        //        "volume": "14741.41491000",
+        //        "weightedAvgPrice": "118356.64734074",
+        //    }
+        //
+        // usdm tickers
+        //
+        //    {
+        //        "closeTime": "1753788172414",
+        //        "count": "188700"
+        //        "firstId": "72234973",
+        //        "highPrice": "0.3411000",
+        //        "lastId": "72423677",
+        //        "lastPrice": "0.3150000",
+        //        "lastQty": "16",
+        //        "lowPrice": "0.3071000",
+        //        "openPrice": "0.3379000",
+        //        "openTime": "1753701720000",
+        //        "priceChange": "-0.0229000",
+        //        "priceChangePercent": "-6.777",
+        //        "quoteVolume": "38709237.2289000",
+        //        "symbol": "SUSDT",
+        //        "volume": "120588225",
+        //        "weightedAvgPrice": "0.3210035",
+        //    }
         //
         // coinm
         //
@@ -4502,17 +4538,41 @@ export default class binance extends Exchange {
         } else if (this.isInverse (type, subType)) {
             response = await this.dapiPublicGetTicker24hr (params);
         } else if (type === 'spot') {
-            const request: Dict = {};
-            if (symbols !== undefined) {
-                request['symbols'] = this.json (this.marketIds (symbols));
+            const rolling = this.safeBool (params, 'rolling', false);
+            params = this.omit (params, 'rolling');
+            if (rolling) {
+                symbols = this.marketSymbols (symbols);
+                const request: Dict = {
+                    'symbols': this.json (this.marketIds (symbols)),
+                };
+                response = await this.publicGetTicker (this.extend (request, params));
+                // parseTicker is not able to handle marketType for spot-rolling ticker fields, so we need custom parsing
+                return this.parseTickersForRolling (response, symbols);
+            } else {
+                const request: Dict = {};
+                if (symbols !== undefined) {
+                    request['symbols'] = this.json (this.marketIds (symbols));
+                }
+                response = await this.publicGetTicker24hr (this.extend (request, params));
             }
-            response = await this.publicGetTicker24hr (this.extend (request, params));
         } else if (type === 'option') {
             response = await this.eapiPublicGetTicker (params);
         } else {
             throw new NotSupported (this.id + ' fetchTickers() does not support ' + type + ' markets yet');
         }
         return this.parseTickers (response, symbols);
+    }
+
+    parseTickersForRolling (response, symbols) {
+        const results = [];
+        for (let i = 0; i < response.length; i++) {
+            const marketId = this.safeString (response[i], 'symbol');
+            const tickerMarket = this.safeMarket (marketId, undefined, undefined, 'spot');
+            const parsedTicker = this.parseTicker (response[i]);
+            parsedTicker['symbol'] = tickerMarket['symbol'];
+            results.push (parsedTicker);
+        }
+        return this.filterByArray (results, 'symbol', symbols);
     }
 
     /**
@@ -11548,6 +11608,7 @@ export default class binance extends Exchange {
         const request: Dict = {};
         if (symbol !== undefined) {
             request['symbol'] = market['id'];
+            symbol = market['symbol'];
         }
         if (since !== undefined) {
             request['startTime'] = since;
@@ -11578,7 +11639,7 @@ export default class binance extends Exchange {
         //
         const settlements = this.parseSettlements (response, market);
         const sorted = this.sortBy (settlements, 'timestamp');
-        return this.filterBySymbolSinceLimit (sorted, market['symbol'], since, limit);
+        return this.filterBySymbolSinceLimit (sorted, symbol, since, limit);
     }
 
     parseSettlement (settlement, market) {
