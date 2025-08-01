@@ -2017,6 +2017,7 @@ export default class Exchange {
                 'future': undefined,
                 'margin': undefined,
                 'option': undefined,
+                'pingServer': undefined,
                 'privateAPI': true,
                 'publicAPI': true,
                 'reduceMargin': undefined,
@@ -5537,6 +5538,18 @@ export default class Exchange {
 
     calculateRateLimiterCost (api, method, path, params, config = {}) {
         return this.safeValue (config, 'cost', 1);
+    }
+
+    async pingServerImpl (params: any) {
+        throw new NotSupported (this.id + ' pingServer() method declared, but not implemented');
+    }
+
+    async pingServer (params = {}): Promise<any> {
+        if (this.has['pingServer']) {
+            return this.pingServerImpl (params);
+        } else {
+            throw new NotSupported (this.id + ' pingServer() is not supported yet');
+        }
     }
 
     async fetchTicker (symbol: string, params = {}): Promise<Ticker> {
