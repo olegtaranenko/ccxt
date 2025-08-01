@@ -230,13 +230,13 @@ export default class Exchange {
         outputLen: number;
         blockLen: number;
         create(): import("../static_dependencies/noble-hashes/utils.js").Hash<import("../static_dependencies/noble-hashes/utils.js").Hash<any>>;
-    }, digest?: "hex" | "base64" | "binary") => any;
+    }, digest?: "binary" | "hex" | "base64") => any;
     hmac: (request: import("../static_dependencies/noble-hashes/utils.js").Input, secret: import("../static_dependencies/noble-hashes/utils.js").Input, hash: {
         (message: import("../static_dependencies/noble-hashes/utils.js").Input): Uint8Array;
         outputLen: number;
         blockLen: number;
         create(): import("../static_dependencies/noble-hashes/utils.js").Hash<import("../static_dependencies/noble-hashes/utils.js").Hash<any>>;
-    }, digest?: "hex" | "base64" | "binary") => any;
+    }, digest?: "binary" | "hex" | "base64") => any;
     implodeParams: (string: string, params: any[] | Dictionary<any>) => string;
     inArray: (needle: any, haystack: any[]) => boolean;
     indexBy: (x: Dictionary<any>, k: IndexType, out?: Dictionary<any>) => Dictionary<any>;
@@ -713,6 +713,8 @@ export default class Exchange {
     findBroadlyMatchedKey(broad: any, string: any): string;
     handleErrors(statusCode: int, statusText: string, url: string, method: string, responseHeaders: Dict, responseBody: string, response: any, requestHeaders: any, requestBody: any): any;
     calculateRateLimiterCost(api: any, method: any, path: any, params: any, config?: {}): any;
+    pingServerImpl(params: any): Promise<void>;
+    pingServer(params?: {}): Promise<any>;
     fetchTicker(symbol: string, params?: {}): Promise<Ticker>;
     fetchMarkPrice(symbol: string, params?: {}): Promise<Ticker>;
     fetchTickerWs(symbol: string, params?: {}): Promise<Ticker>;

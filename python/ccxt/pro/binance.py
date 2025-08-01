@@ -46,6 +46,7 @@ class binance(ccxt.async_support.binance):
                 'fetchTradesWs': True,
                 'fetchTradingFeesWs': False,
                 'fetchWithdrawalsWs': False,
+                'pingServer': True,
                 'watchBalance': True,
                 'watchBidsAsks': True,
                 'watchLiquidations': True,
@@ -1547,6 +1548,12 @@ class binance(ccxt.async_support.binance):
         stored.append(parsed)
         resolveData = [symbol, unifiedTimeframe, stored]
         client.resolve(resolveData, messageHash)
+
+    async def ping_server_impl(self, params: Any):
+        """
+ @param params
+        """
+        raise NotSupported(self.id + ' pingServerImpl() method declared, but not implemented')
 
     async def fetch_ticker_ws(self, symbol: str, params={}) -> Ticker:
         """

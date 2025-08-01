@@ -4,7 +4,7 @@
 
 # -----------------------------------------------------------------------------
 
-__version__ = '4.4.92'
+__version__ = '4.4.98'
 
 # -----------------------------------------------------------------------------
 
@@ -2041,6 +2041,7 @@ class Exchange(object):
                 'future': None,
                 'margin': None,
                 'option': None,
+                'pingServer': None,
                 'privateAPI': True,
                 'publicAPI': True,
                 'reduceMargin': None,
@@ -4901,6 +4902,15 @@ class Exchange(object):
 
     def calculate_rate_limiter_cost(self, api, method, path, params, config={}):
         return self.safe_value(config, 'cost', 1)
+
+    def ping_server_impl(self, params: Any):
+        raise NotSupported(self.id + ' pingServer() method declared, but not implemented')
+
+    def ping_server(self, params={}):
+        if self.has['pingServer']:
+            return self.ping_server_impl(params)
+        else:
+            raise NotSupported(self.id + ' pingServer() is not supported yet')
 
     def fetch_ticker(self, symbol: str, params={}):
         if self.has['fetchTickers']:

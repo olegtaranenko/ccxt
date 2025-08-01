@@ -2343,6 +2343,7 @@ class binance(Exchange, ImplicitAPI):
                 'editOrder': True,
                 'editOrders': True,
                 'fetchAccounts': None,
+                'fetchAllGreeks': True,
                 'fetchBalance': True,
                 'fetchBidsAsks': True,
                 'fetchBorrowInterest': True,

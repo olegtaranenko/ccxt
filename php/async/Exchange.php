@@ -43,11 +43,11 @@ use React\EventLoop\Loop;
 
 use Exception;
 
-$version = '4.4.92';
+$version = '4.4.98';
 
 class Exchange extends \ccxt\Exchange {
 
-    const VERSION = '4.4.92';
+    const VERSION = '4.4.98';
 
     public $browser;
     public $marketsLoading = null;
@@ -569,6 +569,7 @@ class Exchange extends \ccxt\Exchange {
                 'future' => null,
                 'margin' => null,
                 'option' => null,
+                'pingServer' => null,
                 'privateAPI' => true,
                 'publicAPI' => true,
                 'reduceMargin' => null,
@@ -4113,6 +4114,18 @@ class Exchange extends \ccxt\Exchange {
 
     public function calculate_rate_limiter_cost($api, $method, $path, $params, $config = array ()) {
         return $this->safe_value($config, 'cost', 1);
+    }
+
+    public function ping_server_impl(mixed $params) {
+        throw new NotSupported($this->id . ' pingServer() method declared, but not implemented');
+    }
+
+    public function ping_server($params = array ()) {
+        if ($this->has['pingServer']) {
+            return $this->ping_server_impl($params);
+        } else {
+            throw new NotSupported($this->id . ' pingServer() is not supported yet');
+        }
     }
 
     public function fetch_ticker(string $symbol, $params = array ()) {
