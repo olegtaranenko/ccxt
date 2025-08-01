@@ -3,11 +3,6 @@
 Object.defineProperty(exports, '__esModule', { value: true });
 
 require('./_virtual/_commonjsHelpers.js');
-require('./_virtual/formats.cjs2.js');
-require('./_virtual/index.cjs2.js');
-require('./_virtual/parse.cjs2.js');
-require('./_virtual/stringify.cjs2.js');
-require('./_virtual/utils.cjs2.js');
 require('./_virtual/formats.cjs.js');
 require('./_virtual/index.cjs.js');
 require('./_virtual/parse.cjs.js');
