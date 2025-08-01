@@ -279,7 +279,7 @@ export default class bybit extends bybitRest {
     unWatchTrades(symbol: string, params?: {}): Promise<any>;
     handleTrades(client: Client, message: any): void;
     parseWsTrade(trade: any, market?: any): Trade;
-    getPrivateType(url: any): "spot" | "usdc" | "unified";
+    getPrivateType(url: any): "spot" | "unified" | "usdc";
     /**
      * @method
      * @name bybit#watchMyTrades
@@ -320,6 +320,16 @@ export default class bybit extends bybitRest {
     setPositionsCache(client: Client, symbols?: Strings): void;
     loadPositionsSnapshot(client: any, messageHash: any): Promise<void>;
     handlePositions(client: any, message: any): void;
+    /**
+     * @method
+     * @name bybit#unWatchPositions
+     * @description unWatches all open positions
+     * @see https://bybit-exchange.github.io/docs/v5/websocket/private/position
+     * @param {string[]} [symbols] list of unified market symbols
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object} status of the unwatch request
+     */
+    unWatchPositions(symbols?: Strings, params?: {}): Promise<any>;
     /**
      * @method
      * @name bybit#watchLiquidations
@@ -372,7 +382,7 @@ export default class bybit extends bybitRest {
     handleBalance(client: Client, message: any): void;
     parseWsBalance(balance: any, accountType?: any): void;
     watchTopics(url: any, messageHashes: any, topics: any, params?: {}): Promise<any>;
-    unWatchTopics(url: string, topic: string, symbols: string[], messageHashes: string[], subMessageHashes: string[], topics: any, params?: {}, subExtension?: {}): Promise<any>;
+    unWatchTopics(url: string, topic: string, symbols: Strings, messageHashes: string[], subMessageHashes: string[], topics: any, params?: {}, subExtension?: {}): Promise<any>;
     authenticate(url: any, params?: {}): Promise<any>;
     handleErrorMessage(client: Client, message: any): boolean;
     handleMessage(client: Client, message: any): void;

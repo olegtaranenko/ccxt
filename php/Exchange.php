@@ -393,6 +393,7 @@ class Exchange {
         'ellipx',
         'exmo',
         'fmfwio',
+        'foxbit',
         'gate',
         'gateio',
         'gemini',
@@ -2502,6 +2503,17 @@ class Exchange {
                 'spot' => null,
                 'swap' => null,
                 'transfer' => null,
+                'unWatchMyTrades' => null,
+                'unWatchOHLCV' => null,
+                'unWatchOHLCVForSymbols' => null,
+                'unWatchOrderBook' => null,
+                'unWatchOrderBookForSymbols' => null,
+                'unWatchOrders' => null,
+                'unWatchPositions' => null,
+                'unWatchTicker' => null,
+                'unWatchTickers' => null,
+                'unWatchTrades' => null,
+                'unWatchTradesForSymbols' => null,
                 'watchBalance' => null,
                 'watchBidsAsks' => null,
                 'watchLiquidations' => null,
@@ -3092,6 +3104,10 @@ class Exchange {
         throw new NotSupported($this->id . ' unWatchOrderBookForSymbols() is not supported yet');
     }
 
+    public function un_watch_positions(?array $symbols = null, $params = array ()) {
+        throw new NotSupported($this->id . ' unWatchPositions() is not supported yet');
+    }
+
     public function fetch_deposit_addresses(?array $codes = null, $params = array ()) {
         throw new NotSupported($this->id . ' fetchDepositAddresses() is not supported yet');
     }
@@ -3382,7 +3398,7 @@ class Exchange {
         // keep this in mind:
         // in JS => 1 == 1.0 is true;  1 === 1.0 is true
         // in Python => 1 == 1.0 is true
-        // in PHP 1 == 1.0 is true, but 1 === 1.0 is false
+        // in PHP 1 == 1.0 is true, but 1 === 1.0 is false.
         if (mb_strpos($stringVersion, '.') !== false) {
             return floatval($stringVersion);
         }
@@ -4262,18 +4278,7 @@ class Exchange {
         return $this->filter_by_symbol_since_limit($results, $symbol, $since, $limit);
     }
 
-    public function calculate_fee(string $symbol, string $type, string $side, float $amount, float $price, $takerOrMaker = 'taker', $params = array ()) {
-        /**
-         * calculates the presumptive fee that would be charged for an order
-         * @param {string} $symbol unified $market $symbol
-         * @param {string} $type 'market' or 'limit'
-         * @param {string} $side 'buy' or 'sell'
-         * @param {float} $amount how much you want to trade, in units of the base currency on most exchanges, or number of contracts
-         * @param {float} $price the $price for the order to be filled at, in units of the quote currency
-         * @param {string} $takerOrMaker 'taker' or 'maker'
-         * @param {array} $params
-         * @return {array} contains the $rate, the percentage multiplied to the order $amount to obtain the fee $amount, and $cost, the total value of the fee in units of the quote currency, for the order
-         */
+    public function calculate_fee_with_rate(string $symbol, string $type, string $side, float $amount, float $price, $takerOrMaker = 'taker', ?float $feeRate = null, $params = array ()) {
         if ($type === 'market' && $takerOrMaker === 'maker') {
             throw new ArgumentsRequired($this->id . ' calculateFee() - you have provided incompatible arguments - "market" $type order can not be "maker". Change either the "type" or the "takerOrMaker" argument to calculate the fee.');
         }
@@ -4307,7 +4312,7 @@ class Exchange {
         if ($type === 'market') {
             $takerOrMaker = 'taker';
         }
-        $rate = $this->safe_string($market, $takerOrMaker);
+        $rate = ($feeRate !== null) ? $this->number_to_string($feeRate) : $this->safe_string($market, $takerOrMaker);
         $cost = Precise::string_mul($cost, $rate);
         return array(
             'cost' => $this->parse_number($cost),
@@ -4315,6 +4320,21 @@ class Exchange {
             'rate' => $this->parse_number($rate),
             'type' => $takerOrMaker,
         );
+    }
+
+    public function calculate_fee(string $symbol, string $type, string $side, float $amount, float $price, $takerOrMaker = 'taker', $params = array ()) {
+        /**
+         * calculates the presumptive fee that would be charged for an order
+         * @param {string} $symbol unified market $symbol
+         * @param {string} $type 'market' or 'limit'
+         * @param {string} $side 'buy' or 'sell'
+         * @param {float} $amount how much you want to trade, in units of the base currency on most exchanges, or number of contracts
+         * @param {float} $price the $price for the order to be filled at, in units of the quote currency
+         * @param {string} $takerOrMaker 'taker' or 'maker'
+         * @param {array} $params
+         * @return {array} contains the rate, the percentage multiplied to the order $amount to obtain the fee $amount, and cost, the total value of the fee in units of the quote currency, for the order
+         */
+        return $this->calculate_fee_with_rate($symbol, $type, $side, $amount, $price, $takerOrMaker, null, $params);
     }
 
     public function safe_liquidation(array $liquidation, ?array $market = null) {
@@ -4361,6 +4381,27 @@ class Exchange {
         $trade['cost'] = $this->parse_number($cost);
         $trade['price'] = $this->parse_number($price);
         return $trade;
+    }
+
+    public function create_ccxt_trade_id($timestamp = null, $side = null, $amount = null, $price = null, $takerOrMaker = null) {
+        // this approach is being used by multiple exchanges (mexc, woo, coinsbit, dydx, ...)
+        $id = null;
+        if ($timestamp !== null) {
+            $id = $this->number_to_string($timestamp);
+            if ($side !== null) {
+                $id .= '-' . $side;
+            }
+            if ($amount !== null) {
+                $id .= '-' . $this->number_to_string($amount);
+            }
+            if ($price !== null) {
+                $id .= '-' . $this->number_to_string($price);
+            }
+            if ($takerOrMaker !== null) {
+                $id .= '-' . $takerOrMaker;
+            }
+        }
+        return $id;
     }
 
     public function parsed_fee_and_fees(mixed $container) {
@@ -4487,7 +4528,7 @@ class Exchange {
         for ($i = 0; $i < count($fees); $i++) {
             $fee = $fees[$i];
             $code = $this->safe_string($fee, 'currency');
-            $feeCurrencyCode = $code !== null ? $code : (string) $i;
+            $feeCurrencyCode = ($code !== null) ? $code : (string) $i;
             if ($feeCurrencyCode !== null) {
                 $rate = $this->safe_string($fee, 'rate');
                 $cost = $this->safe_string($fee, 'cost');
@@ -4523,8 +4564,7 @@ class Exchange {
 
     public function safe_ticker(array $ticker, ?array $market = null) {
         $open = $this->omit_zero($this->safe_string($ticker, 'open'));
-        $close = $this->omit_zero($this->safe_string($ticker, 'close'));
-        $last = $this->omit_zero($this->safe_string($ticker, 'last'));
+        $close = $this->omit_zero($this->safe_string_2($ticker, 'close', 'last'));
         $change = $this->omit_zero($this->safe_string($ticker, 'change'));
         $percentage = $this->omit_zero($this->safe_string($ticker, 'percentage'));
         $average = $this->omit_zero($this->safe_string($ticker, 'average'));
@@ -4534,16 +4574,52 @@ class Exchange {
         if ($vwap === null) {
             $vwap = Precise::string_div($this->omit_zero($quoteVolume), $baseVolume);
         }
-        if (($last !== null) && ($close === null)) {
-            $close = $last;
-        } elseif (($last === null) && ($close !== null)) {
-            $last = $close;
-        }
-        if (($last !== null) && ($open !== null)) {
-            if ($change === null) {
-                $change = Precise::string_sub($last, $open);
+        // calculate $open
+        if ($change !== null) {
+            if ($close === null && $average !== null) {
+                $close = Precise::string_add($average, Precise::string_div($change, '2'));
             }
-            if ($average === null) {
+            if ($open === null && $close !== null) {
+                $open = Precise::string_sub($close, $change);
+            }
+        } elseif ($percentage !== null) {
+            if ($close === null && $average !== null) {
+                $openAddClose = Precise::string_mul($average, '2');
+                // $openAddClose = $open * (1 . (100 . $percentage)/100)
+                $denominator = Precise::string_add('2', Precise::string_div($percentage, '100'));
+                $calcOpen = ($open !== null) ? $open : Precise::string_div($openAddClose, $denominator);
+                $close = Precise::string_mul($calcOpen, Precise::string_add('1', Precise::string_div($percentage, '100')));
+            }
+            if ($open === null && $close !== null) {
+                $open = Precise::string_div($close, Precise::string_add('1', Precise::string_div($percentage, '100')));
+            }
+        }
+        // $change
+        if ($change === null) {
+            if ($close !== null && $open !== null) {
+                $change = Precise::string_sub($close, $open);
+            } elseif ($close !== null && $percentage !== null) {
+                $change = Precise::string_mul(Precise::string_div($percentage, '100'), Precise::string_div($close, '100'));
+            } elseif ($open !== null && $percentage !== null) {
+                $change = Precise::string_mul($open, Precise::string_div($percentage, '100'));
+            }
+        }
+        // calculate things according to "open" (similar can be done with "close")
+        if ($open !== null) {
+            // $percentage (using $change)
+            if ($percentage === null && $change !== null) {
+                $percentage = Precise::string_mul(Precise::string_div($change, $open), '100');
+            }
+            // $close (using $change)
+            if ($close === null && $change !== null) {
+                $close = Precise::string_add($open, $change);
+            }
+            // $close (using $average)
+            if ($close === null && $average !== null) {
+                $close = Precise::string_mul($average, '2');
+            }
+            // $average
+            if ($average === null && $close !== null) {
                 $precision = 18;
                 if ($market !== null && $this->is_tick_precision()) {
                     $marketPrecision = $this->safe_dict($market, 'precision');
@@ -4552,20 +4628,12 @@ class Exchange {
                         $precision = $this->precision_from_string($precisionPrice);
                     }
                 }
-                $average = Precise::string_div(Precise::string_add($last, $open), '2', $precision);
+                $average = Precise::string_div(Precise::string_add($open, $close), '2', $precision);
             }
-        }
-        if (($percentage === null) && ($change !== null) && ($open !== null) && Precise::string_gt($open, '0')) {
-            $percentage = Precise::string_mul(Precise::string_div($change, $open), '100');
-        }
-        if (($change === null) && ($percentage !== null) && ($open !== null)) {
-            $change = Precise::string_div(Precise::string_mul($percentage, $open), '100');
-        }
-        if (($open === null) && ($last !== null) && ($change !== null)) {
-            $open = Precise::string_sub($last, $change);
         }
         // timestamp and symbol operations don't belong in safeTicker
         // they should be done in the derived classes
+        $closeParsed = $this->parse_number($this->omit_zero($close));
         return $this->extend($ticker, array(
             'ask' => $this->parse_number($this->omit_zero($this->safe_string($ticker, 'ask'))),
             'askVolume' => $this->safe_number($ticker, 'askVolume'),
@@ -4574,10 +4642,10 @@ class Exchange {
             'bid' => $this->parse_number($this->omit_zero($this->safe_string($ticker, 'bid'))),
             'bidVolume' => $this->safe_number($ticker, 'bidVolume'),
             'change' => $this->parse_number($change),
-            'close' => $this->parse_number($this->omit_zero($close)),
+            'close' => $closeParsed,
             'high' => $this->parse_number($this->omit_zero($this->safe_string($ticker, 'high'))),
             'indexPrice' => $this->safe_number($ticker, 'indexPrice'),
-            'last' => $this->parse_number($this->omit_zero($last)),
+            'last' => $closeParsed,
             'low' => $this->parse_number($this->omit_zero($this->safe_string($ticker, 'low'))),
             'markPrice' => $this->safe_number($ticker, 'markPrice'),
             'open' => $this->parse_number($this->omit_zero($open)),
@@ -6590,11 +6658,11 @@ class Exchange {
         throw new NotSupported($this->id . ' fetchDepositsWithdrawals() is not supported yet');
     }
 
-    public function fetch_deposits(?string $symbol = null, ?int $since = null, ?int $limit = null, $params = array ()) {
+    public function fetch_deposits(?string $code = null, ?int $since = null, ?int $limit = null, $params = array ()) {
         throw new NotSupported($this->id . ' fetchDeposits() is not supported yet');
     }
 
-    public function fetch_withdrawals(?string $symbol = null, ?int $since = null, ?int $limit = null, $params = array ()) {
+    public function fetch_withdrawals(?string $code = null, ?int $since = null, ?int $limit = null, $params = array ()) {
         throw new NotSupported($this->id . ' fetchWithdrawals() is not supported yet');
     }
 
@@ -6909,11 +6977,19 @@ class Exchange {
         if ($precisionNumber === 0) {
             return '1';
         }
-        $parsedPrecision = '0.';
-        for ($i = 0; $i < $precisionNumber - 1; $i++) {
-            $parsedPrecision = $parsedPrecision . '0';
+        if ($precisionNumber > 0) {
+            $parsedPrecision = '0.';
+            for ($i = 0; $i < $precisionNumber - 1; $i++) {
+                $parsedPrecision = $parsedPrecision . '0';
+            }
+            return $parsedPrecision . '1';
+        } else {
+            $parsedPrecision = '1';
+            for ($i = 0; $i < $precisionNumber * -1 - 1; $i++) {
+                $parsedPrecision = $parsedPrecision . '0';
+            }
+            return $parsedPrecision . '0';
         }
-        return $parsedPrecision . '1';
     }
 
     public function integer_precision_to_amount(?string $precision) {
@@ -7740,7 +7816,7 @@ class Exchange {
         $calls = 0;
         $result = array();
         $errors = 0;
-        $until = $this->safe_integer_2($params, 'untill', 'till'); // do not omit it from $params here
+        $until = $this->safe_integer_n($params, array( 'until', 'untill', 'till' )); // do not omit it from $params here
         list($maxEntriesPerRequest, $params) = $this->handle_max_entries_per_request_and_params($method, $maxEntriesPerRequest, $params);
         if (($paginationDirection === 'forward')) {
             if ($since === null) {
@@ -8435,6 +8511,16 @@ class Exchange {
                 $this->myTrades = null;
             } elseif ($topic === 'orders' && ($this->orders !== null)) {
                 $this->orders = null;
+            } elseif ($topic === 'positions' && ($this->positions !== null)) {
+                $this->positions = null;
+                $clients = is_array($this->clients) ? array_values($this->clients) : array();
+                for ($i = 0; $i < count($clients); $i++) {
+                    $client = $clients[$i];
+                    $futures = $this->safe_dict($client, 'futures');
+                    if (($futures !== null) && (is_array($futures) && array_key_exists('fetchPositionsSnapshot', $futures))) {
+                        unset($futures['fetchPositionsSnapshot']);
+                    }
+                }
             } elseif ($topic === 'ticker' && ($this->tickers !== null)) {
                 $tickerSymbols = is_array($this->tickers) ? array_keys($this->tickers) : array();
                 for ($i = 0; $i < count($tickerSymbols); $i++) {

@@ -199,6 +199,7 @@ interface binance {
     fapiPublicGetHistoricalTrades(params?: {}): Promise<implicitReturnType>;
     fapiPublicGetIndexInfo(params?: {}): Promise<implicitReturnType>;
     fapiPublicGetIndexPriceKlines(params?: {}): Promise<implicitReturnType>;
+    fapiPublicGetInsuranceBalance(params?: {}): Promise<implicitReturnType>;
     fapiPublicGetKlines(params?: {}): Promise<implicitReturnType>;
     fapiPublicGetLvtKlines(params?: {}): Promise<implicitReturnType>;
     fapiPublicGetMarkPriceKlines(params?: {}): Promise<implicitReturnType>;
@@ -593,6 +594,7 @@ interface binance {
     sapiGetPortfolioBalance(params?: {}): Promise<implicitReturnType>;
     sapiGetPortfolioNegativeBalanceExchangeRecord(params?: {}): Promise<implicitReturnType>;
     sapiGetPortfolioPmloanHistory(params?: {}): Promise<implicitReturnType>;
+    sapiGetPortfolioEarnAssetBalance(params?: {}): Promise<implicitReturnType>;
     sapiGetLendingAutoInvestAllAsset(params?: {}): Promise<implicitReturnType>;
     sapiGetLendingAutoInvestHistoryList(params?: {}): Promise<implicitReturnType>;
     sapiGetLendingAutoInvestIndexInfo(params?: {}): Promise<implicitReturnType>;
@@ -767,6 +769,7 @@ interface binance {
     sapiPostPortfolioAssetCollection(params?: {}): Promise<implicitReturnType>;
     sapiPostPortfolioAutoCollection(params?: {}): Promise<implicitReturnType>;
     sapiPostPortfolioBnbTransfer(params?: {}): Promise<implicitReturnType>;
+    sapiPostPortfolioEarnAssetTransfer(params?: {}): Promise<implicitReturnType>;
     sapiPostPortfolioMint(params?: {}): Promise<implicitReturnType>;
     sapiPostPortfolioRedeem(params?: {}): Promise<implicitReturnType>;
     sapiPostPortfolioRepay(params?: {}): Promise<implicitReturnType>;

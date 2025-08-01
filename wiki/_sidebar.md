@@ -61,6 +61,7 @@
 	- [digifinex](exchanges/digifinex.md)
 	- [ellipx](exchanges/ellipx.md)
 	- [exmo](exchanges/exmo.md)
+	- [foxbit](exchanges/foxbit.md)
 	- [gate](exchanges/gate.md)
 	- [gemini](exchanges/gemini.md)
 	- [hashkey](exchanges/hashkey.md)

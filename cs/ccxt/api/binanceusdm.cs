@@ -1001,6 +1001,11 @@ public partial class binanceusdm : binance
         return await this.callAsync ("fapiPublicGetIndexPriceKlines",parameters);
     }
 
+    public async Task<object> fapiPublicGetInsuranceBalance (object parameters = null)
+    {
+        return await this.callAsync ("fapiPublicGetInsuranceBalance",parameters);
+    }
+
     public async Task<object> fapiPublicGetKlines (object parameters = null)
     {
         return await this.callAsync ("fapiPublicGetKlines",parameters);
@@ -2956,6 +2961,11 @@ public partial class binanceusdm : binance
         return await this.callAsync ("sapiGetPortfolioPmloanHistory",parameters);
     }
 
+    public async Task<object> sapiGetPortfolioEarnAssetBalance (object parameters = null)
+    {
+        return await this.callAsync ("sapiGetPortfolioEarnAssetBalance",parameters);
+    }
+
     public async Task<object> sapiGetLendingAutoInvestAllAsset (object parameters = null)
     {
         return await this.callAsync ("sapiGetLendingAutoInvestAllAsset",parameters);
@@ -3669,6 +3679,11 @@ public partial class binanceusdm : binance
     public async Task<object> sapiPostPortfolioBnbTransfer (object parameters = null)
     {
         return await this.callAsync ("sapiPostPortfolioBnbTransfer",parameters);
+    }
+
+    public async Task<object> sapiPostPortfolioEarnAssetTransfer (object parameters = null)
+    {
+        return await this.callAsync ("sapiPostPortfolioEarnAssetTransfer",parameters);
     }
 
     public async Task<object> sapiPostPortfolioMint (object parameters = null)

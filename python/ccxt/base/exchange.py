@@ -2055,6 +2055,17 @@ class Exchange(object):
                 'spot': None,
                 'swap': None,
                 'transfer': None,
+                'unWatchMyTrades': None,
+                'unWatchOHLCV': None,
+                'unWatchOHLCVForSymbols': None,
+                'unWatchOrderBook': None,
+                'unWatchOrderBookForSymbols': None,
+                'unWatchOrders': None,
+                'unWatchPositions': None,
+                'unWatchTicker': None,
+                'unWatchTickers': None,
+                'unWatchTrades': None,
+                'unWatchTradesForSymbols': None,
                 'watchBalance': None,
                 'watchBidsAsks': None,
                 'watchLiquidations': None,
@@ -2544,6 +2555,9 @@ class Exchange(object):
     def un_watch_order_book_for_symbols(self, symbols: List[str], params={}):
         raise NotSupported(self.id + ' unWatchOrderBookForSymbols() is not supported yet')
 
+    def un_watch_positions(self, symbols: Strings = None, params={}):
+        raise NotSupported(self.id + ' unWatchPositions() is not supported yet')
+
     def fetch_deposit_addresses(self, codes: Strings = None, params={}):
         raise NotSupported(self.id + ' fetchDepositAddresses() is not supported yet')
 
@@ -2767,7 +2781,7 @@ class Exchange(object):
         # keep self in mind:
         # in JS: 1 == 1.0 is True;  1 == 1.0 is True
         # in Python: 1 == 1.0 is True
-        # in PHP 1 == 1.0 is True, but 1 == 1.0 is False
+        # in PHP 1 == 1.0 is True, but 1 == 1.0 is False.
         if stringVersion.find('.') >= 0:
             return float(stringVersion)
         return int(stringVersion)
@@ -3512,18 +3526,7 @@ class Exchange(object):
         symbol = market['symbol'] if (market is not None) else None
         return self.filter_by_symbol_since_limit(results, symbol, since, limit)
 
-    def calculate_fee(self, symbol: str, type: str, side: str, amount: float, price: float, takerOrMaker='taker', params={}):
-        """
-        calculates the presumptive fee that would be charged for an order
-        :param str symbol: unified market symbol
-        :param str type: 'market' or 'limit'
-        :param str side: 'buy' or 'sell'
-        :param float amount: how much you want to trade, in units of the base currency on most exchanges, or number of contracts
-        :param float price: the price for the order to be filled at, in units of the quote currency
-        :param str takerOrMaker: 'taker' or 'maker'
-        :param dict params:
-        :returns dict: contains the rate, the percentage multiplied to the order amount to obtain the fee amount, and cost, the total value of the fee in units of the quote currency, for the order
-        """
+    def calculate_fee_with_rate(self, symbol: str, type: str, side: str, amount: float, price: float, takerOrMaker='taker', feeRate: Num = None, params={}):
         if type == 'market' and takerOrMaker == 'maker':
             raise ArgumentsRequired(self.id + ' calculateFee() - you have provided incompatible arguments - "market" type order can not be "maker". Change either the "type" or the "takerOrMaker" argument to calculate the fee.')
         market = self.markets[symbol]
@@ -3552,7 +3555,7 @@ class Exchange(object):
         # even if `takerOrMaker` argument was set to 'maker', for 'market' orders we should forcefully override it to 'taker'
         if type == 'market':
             takerOrMaker = 'taker'
-        rate = self.safe_string(market, takerOrMaker)
+        rate = self.number_to_string(feeRate) if (feeRate is not None) else self.safe_string(market, takerOrMaker)
         cost = Precise.string_mul(cost, rate)
         return {
             'cost': self.parse_number(cost),
@@ -3560,6 +3563,20 @@ class Exchange(object):
             'rate': self.parse_number(rate),
             'type': takerOrMaker,
         }
+
+    def calculate_fee(self, symbol: str, type: str, side: str, amount: float, price: float, takerOrMaker='taker', params={}):
+        """
+        calculates the presumptive fee that would be charged for an order
+        :param str symbol: unified market symbol
+        :param str type: 'market' or 'limit'
+        :param str side: 'buy' or 'sell'
+        :param float amount: how much you want to trade, in units of the base currency on most exchanges, or number of contracts
+        :param float price: the price for the order to be filled at, in units of the quote currency
+        :param str takerOrMaker: 'taker' or 'maker'
+        :param dict params:
+        :returns dict: contains the rate, the percentage multiplied to the order amount to obtain the fee amount, and cost, the total value of the fee in units of the quote currency, for the order
+        """
+        return self.calculate_fee_with_rate(symbol, type, side, amount, price, takerOrMaker, None, params)
 
     def safe_liquidation(self, liquidation: dict, market: Market = None):
         contracts = self.safe_string(liquidation, 'contracts')
@@ -3599,6 +3616,21 @@ class Exchange(object):
         trade['cost'] = self.parse_number(cost)
         trade['price'] = self.parse_number(price)
         return trade
+
+    def create_ccxt_trade_id(self, timestamp=None, side=None, amount=None, price=None, takerOrMaker=None):
+        # self approach is being used by multiple exchanges(mexc, woo, coinsbit, dydx, ...)
+        id = None
+        if timestamp is not None:
+            id = self.number_to_string(timestamp)
+            if side is not None:
+                id += '-' + side
+            if amount is not None:
+                id += '-' + self.number_to_string(amount)
+            if price is not None:
+                id += '-' + self.number_to_string(price)
+            if takerOrMaker is not None:
+                id += '-' + takerOrMaker
+        return id
 
     def parsed_fee_and_fees(self, container: Any):
         fee = self.safe_dict(container, 'fee')
@@ -3708,7 +3740,7 @@ class Exchange(object):
         for i in range(0, len(fees)):
             fee = fees[i]
             code = self.safe_string(fee, 'currency')
-            feeCurrencyCode = code is not code if None else str(i)
+            feeCurrencyCode = code if (code is not None) else str(i)
             if feeCurrencyCode is not None:
                 rate = self.safe_string(fee, 'rate')
                 cost = self.safe_string(fee, 'cost')
@@ -3736,8 +3768,7 @@ class Exchange(object):
 
     def safe_ticker(self, ticker: dict, market: Market = None):
         open = self.omit_zero(self.safe_string(ticker, 'open'))
-        close = self.omit_zero(self.safe_string(ticker, 'close'))
-        last = self.omit_zero(self.safe_string(ticker, 'last'))
+        close = self.omit_zero(self.safe_string_2(ticker, 'close', 'last'))
         change = self.omit_zero(self.safe_string(ticker, 'change'))
         percentage = self.omit_zero(self.safe_string(ticker, 'percentage'))
         average = self.omit_zero(self.safe_string(ticker, 'average'))
@@ -3746,29 +3777,52 @@ class Exchange(object):
         quoteVolume = self.safe_string(ticker, 'quoteVolume')
         if vwap is None:
             vwap = Precise.string_div(self.omit_zero(quoteVolume), baseVolume)
-        if (last is not None) and (close is None):
-            close = last
-        elif (last is None) and (close is not None):
-            last = close
-        if (last is not None) and (open is not None):
-            if change is None:
-                change = Precise.string_sub(last, open)
-            if average is None:
+        # calculate open
+        if change is not None:
+            if close is None and average is not None:
+                close = Precise.string_add(average, Precise.string_div(change, '2'))
+            if open is None and close is not None:
+                open = Precise.string_sub(close, change)
+        elif percentage is not None:
+            if close is None and average is not None:
+                openAddClose = Precise.string_mul(average, '2')
+                # openAddClose = open * (1 + (100 + percentage)/100)
+                denominator = Precise.string_add('2', Precise.string_div(percentage, '100'))
+                calcOpen = open if (open is not None) else Precise.string_div(openAddClose, denominator)
+                close = Precise.string_mul(calcOpen, Precise.string_add('1', Precise.string_div(percentage, '100')))
+            if open is None and close is not None:
+                open = Precise.string_div(close, Precise.string_add('1', Precise.string_div(percentage, '100')))
+        # change
+        if change is None:
+            if close is not None and open is not None:
+                change = Precise.string_sub(close, open)
+            elif close is not None and percentage is not None:
+                change = Precise.string_mul(Precise.string_div(percentage, '100'), Precise.string_div(close, '100'))
+            elif open is not None and percentage is not None:
+                change = Precise.string_mul(open, Precise.string_div(percentage, '100'))
+        # calculate things according to "open"(similar can be done with "close")
+        if open is not None:
+            # percentage(using change)
+            if percentage is None and change is not None:
+                percentage = Precise.string_mul(Precise.string_div(change, open), '100')
+            # close(using change)
+            if close is None and change is not None:
+                close = Precise.string_add(open, change)
+            # close(using average)
+            if close is None and average is not None:
+                close = Precise.string_mul(average, '2')
+            # average
+            if average is None and close is not None:
                 precision = 18
                 if market is not None and self.is_tick_precision():
                     marketPrecision = self.safe_dict(market, 'precision')
                     precisionPrice = self.safe_string(marketPrecision, 'price')
                     if precisionPrice is not None:
                         precision = self.precision_from_string(precisionPrice)
-                average = Precise.string_div(Precise.string_add(last, open), '2', precision)
-        if (percentage is None) and (change is not None) and (open is not None) and Precise.string_gt(open, '0'):
-            percentage = Precise.string_mul(Precise.string_div(change, open), '100')
-        if (change is None) and (percentage is not None) and (open is not None):
-            change = Precise.string_div(Precise.string_mul(percentage, open), '100')
-        if (open is None) and (last is not None) and (change is not None):
-            open = Precise.string_sub(last, change)
+                average = Precise.string_div(Precise.string_add(open, close), '2', precision)
         # timestamp and symbol operations don't belong in safeTicker
         # they should be done in the derived classes
+        closeParsed = self.parse_number(self.omit_zero(close))
         return self.extend(ticker, {
             'ask': self.parse_number(self.omit_zero(self.safe_string(ticker, 'ask'))),
             'askVolume': self.safe_number(ticker, 'askVolume'),
@@ -3777,10 +3831,10 @@ class Exchange(object):
             'bid': self.parse_number(self.omit_zero(self.safe_string(ticker, 'bid'))),
             'bidVolume': self.safe_number(ticker, 'bidVolume'),
             'change': self.parse_number(change),
-            'close': self.parse_number(self.omit_zero(close)),
+            'close': closeParsed,
             'high': self.parse_number(self.omit_zero(self.safe_string(ticker, 'high'))),
             'indexPrice': self.safe_number(ticker, 'indexPrice'),
-            'last': self.parse_number(self.omit_zero(last)),
+            'last': closeParsed,
             'low': self.parse_number(self.omit_zero(self.safe_string(ticker, 'low'))),
             'markPrice': self.safe_number(ticker, 'markPrice'),
             'open': self.parse_number(self.omit_zero(open)),
@@ -5401,10 +5455,10 @@ class Exchange(object):
         """
         raise NotSupported(self.id + ' fetchDepositsWithdrawals() is not supported yet')
 
-    def fetch_deposits(self, symbol: Str = None, since: Int = None, limit: Int = None, params={}):
+    def fetch_deposits(self, code: Str = None, since: Int = None, limit: Int = None, params={}):
         raise NotSupported(self.id + ' fetchDeposits() is not supported yet')
 
-    def fetch_withdrawals(self, symbol: Str = None, since: Int = None, limit: Int = None, params={}):
+    def fetch_withdrawals(self, code: Str = None, since: Int = None, limit: Int = None, params={}):
         raise NotSupported(self.id + ' fetchWithdrawals() is not supported yet')
 
     def fetch_deposits_ws(self, code: Str = None, since: Int = None, limit: Int = None, params={}):
@@ -5648,10 +5702,16 @@ class Exchange(object):
         precisionNumber = int(precision)
         if precisionNumber == 0:
             return '1'
-        parsedPrecision = '0.'
-        for i in range(0, precisionNumber - 1):
-            parsedPrecision = parsedPrecision + '0'
-        return parsedPrecision + '1'
+        if precisionNumber > 0:
+            parsedPrecision = '0.'
+            for i in range(0, precisionNumber - 1):
+                parsedPrecision = parsedPrecision + '0'
+            return parsedPrecision + '1'
+        else:
+            parsedPrecision = '1'
+            for i in range(0, precisionNumber * -1 - 1):
+                parsedPrecision = parsedPrecision + '0'
+            return parsedPrecision + '0'
 
     def integer_precision_to_amount(self, precision: Str):
         """
@@ -6340,7 +6400,7 @@ class Exchange(object):
         calls = 0
         result = []
         errors = 0
-        until = self.safe_integer_2(params, 'untill', 'till')  # do not omit it from params here
+        until = self.safe_integer_n(params, ['until', 'untill', 'till'])  # do not omit it from params here
         maxEntriesPerRequest, params = self.handle_max_entries_per_request_and_params(method, maxEntriesPerRequest, params)
         if (paginationDirection == 'forward'):
             if since is None:
@@ -6906,6 +6966,14 @@ class Exchange(object):
                 self.myTrades = None
             elif topic == 'orders' and (self.orders is not None):
                 self.orders = None
+            elif topic == 'positions' and (self.positions is not None):
+                self.positions = None
+                clients = list(self.clients.values())
+                for i in range(0, len(clients)):
+                    client = clients[i]
+                    futures = self.safe_dict(client, 'futures')
+                    if (futures is not None) and ('fetchPositionsSnapshot' in futures):
+                        del futures['fetchPositionsSnapshot']
             elif topic == 'ticker' and (self.tickers is not None):
                 tickerSymbols = list(self.tickers.keys())
                 for i in range(0, len(tickerSymbols)):

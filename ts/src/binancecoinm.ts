@@ -21,7 +21,11 @@ export default class binancecoinm extends binance {
             'name': 'Binance COIN-M',
             'options': {
                 'defaultSubType': 'inverse',
-                'fetchMarkets': [ 'inverse' ],
+                'fetchMarkets': {
+                    'types': [
+                        'inverse',
+                    ],
+                },
                 'leverageBrackets': undefined,
             },
             'urls': {

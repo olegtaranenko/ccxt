@@ -601,6 +601,9 @@ abstract class binanceus extends \ccxt\async\binance {
     public function fapipublic_get_indexpriceklines($params = array()) {
         return $this->request('indexPriceKlines', 'fapiPublic', 'GET', $params, null, null, array("byLimit" => [[99, 1], [499, 2], [1000, 5], [10000, 10]], "cost" => 1));
     }
+    public function fapipublic_get_insurancebalance($params = array()) {
+        return $this->request('insuranceBalance', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1));
+    }
     public function fapipublic_get_klines($params = array()) {
         return $this->request('klines', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1, "byLimit" => [[99, 1], [499, 2], [1000, 5], [10000, 10]]));
     }
@@ -1783,6 +1786,9 @@ abstract class binanceus extends \ccxt\async\binance {
     public function sapi_get_portfolio_pmloan_history($params = array()) {
         return $this->request('portfolio/pmloan-history', 'sapi', 'GET', $params, null, null, array("cost" => 5));
     }
+    public function sapi_get_portfolio_earn_asset_balance($params = array()) {
+        return $this->request('portfolio/earn-asset-balance', 'sapi', 'GET', $params, null, null, array("cost" => 150));
+    }
     public function sapi_get_lending_auto_invest_all_asset($params = array()) {
         return $this->request('lending/auto-invest/all/asset', 'sapi', 'GET', $params, null, null, array("cost" => 0.1));
     }
@@ -2304,6 +2310,9 @@ abstract class binanceus extends \ccxt\async\binance {
     }
     public function sapi_post_portfolio_bnb_transfer($params = array()) {
         return $this->request('portfolio/bnb-transfer', 'sapi', 'POST', $params, null, null, array("cost" => 150));
+    }
+    public function sapi_post_portfolio_earn_asset_transfer($params = array()) {
+        return $this->request('portfolio/earn-asset-transfer', 'sapi', 'POST', $params, null, null, array("cost" => 150));
     }
     public function sapi_post_portfolio_mint($params = array()) {
         return $this->request('portfolio/mint', 'sapi', 'POST', $params, null, null, array("cost" => 20));
@@ -3057,6 +3066,9 @@ abstract class binanceus extends \ccxt\async\binance {
     }
     public function fapiPublicGetIndexPriceKlines($params = array()) {
         return $this->request('indexPriceKlines', 'fapiPublic', 'GET', $params, null, null, array("byLimit" => [[99, 1], [499, 2], [1000, 5], [10000, 10]], "cost" => 1));
+    }
+    public function fapiPublicGetInsuranceBalance($params = array()) {
+        return $this->request('insuranceBalance', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1));
     }
     public function fapiPublicGetKlines($params = array()) {
         return $this->request('klines', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1, "byLimit" => [[99, 1], [499, 2], [1000, 5], [10000, 10]]));
@@ -4240,6 +4252,9 @@ abstract class binanceus extends \ccxt\async\binance {
     public function sapiGetPortfolioPmloanHistory($params = array()) {
         return $this->request('portfolio/pmloan-history', 'sapi', 'GET', $params, null, null, array("cost" => 5));
     }
+    public function sapiGetPortfolioEarnAssetBalance($params = array()) {
+        return $this->request('portfolio/earn-asset-balance', 'sapi', 'GET', $params, null, null, array("cost" => 150));
+    }
     public function sapiGetLendingAutoInvestAllAsset($params = array()) {
         return $this->request('lending/auto-invest/all/asset', 'sapi', 'GET', $params, null, null, array("cost" => 0.1));
     }
@@ -4761,6 +4776,9 @@ abstract class binanceus extends \ccxt\async\binance {
     }
     public function sapiPostPortfolioBnbTransfer($params = array()) {
         return $this->request('portfolio/bnb-transfer', 'sapi', 'POST', $params, null, null, array("cost" => 150));
+    }
+    public function sapiPostPortfolioEarnAssetTransfer($params = array()) {
+        return $this->request('portfolio/earn-asset-transfer', 'sapi', 'POST', $params, null, null, array("cost" => 150));
     }
     public function sapiPostPortfolioMint($params = array()) {
         return $this->request('portfolio/mint', 'sapi', 'POST', $params, null, null, array("cost" => 20));
