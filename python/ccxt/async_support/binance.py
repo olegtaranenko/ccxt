@@ -27,6 +27,7 @@ from ccxt.base.errors import OrderImmediatelyFillable
 from ccxt.base.errors import OrderNotFillable
 from ccxt.base.errors import NotSupported
 from ccxt.base.errors import OperationFailed
+from ccxt.base.errors import NetworkError
 from ccxt.base.errors import DDoSProtection
 from ccxt.base.errors import RateLimitExceeded
 from ccxt.base.errors import OnMaintenance
@@ -322,6 +323,7 @@ class binance(Exchange, ImplicitAPI):
                             'byLimit': [[99, 1], [499, 2], [1000, 5], [10000, 10]],
                             'cost': 1,
                         },
+                        'insuranceBalance': 1,
                         'klines': {'cost': 1, 'byLimit': [[99, 1], [499, 2], [1000, 5], [10000, 10]]},
                         'lvtKlines': 1,
                         'markPriceKlines': {
@@ -792,6 +794,7 @@ class binance(Exchange, ImplicitAPI):
                         'portfolio/balance': 2,
                         'portfolio/negative-balance-exchange-record': 2,
                         'portfolio/pmloan-history': 5,
+                        'portfolio/earn-asset-balance': 150,  # Weight(IP): 1500 => cost = 0.1 * 1500 = 150
                         # staking
                         'lending/auto-invest/all/asset': 0.1,
                         'lending/auto-invest/history/list': 0.1,
@@ -951,6 +954,7 @@ class binance(Exchange, ImplicitAPI):
                         'portfolio/asset-collection': 6,  # Weight(IP): 60 => cost = 0.1 * 60 = 6
                         'portfolio/auto-collection': 150,  # Weight(IP): 1500 => cost = 0.1 * 1500 = 150
                         'portfolio/bnb-transfer': 150,  # Weight(IP): 1500 => cost = 0.1 * 1500 = 150
+                        'portfolio/earn-asset-transfer': 150,  # Weight(IP): 1500 => cost = 0.1 * 1500 = 150
                         'portfolio/mint': 20,
                         'portfolio/redeem': 20,
                         'portfolio/repay': 20.001,
@@ -2492,12 +2496,14 @@ class binance(Exchange, ImplicitAPI):
                 'defaultWithdrawPrecision': 0.00000001,
                 'fetchCurrencies': True,  # self is a private call and it requires API keys
                 'fetchMargins': True,
-                'fetchMarkets': [
-                    'inverse',  # allows CORS in browsers
-                    'linear',  # allows CORS in browsers
-                    'spot',  # allows CORS in browsers
-                    # 'option',  # does not allow CORS, enable outside of the browser only
-                ],
+                'fetchMarkets': {
+                    'types': [
+                        'inverse',  # allows CORS in browsers
+                        'linear',  # allows CORS in browsers
+                        'spot',  # allows CORS in browsers
+                        # 'option',  # does not allow CORS, enable outside of the browser only
+                    ],
+                },
                 'fetchOHLCV': {
                     'defaultLimit': 500,
                     'maxLimit': 1500,
@@ -3062,7 +3068,14 @@ class binance(Exchange, ImplicitAPI):
         :returns dict[]: an array of objects representing market data
         """
         promisesRaw = []
-        rawFetchMarkets = self.safe_list(self.options, 'fetchMarkets', ['spot', 'linear', 'inverse'])
+        rawFetchMarkets = None
+        defaultTypes = ['spot', 'linear', 'inverse']
+        fetchMarketsOptions = self.safe_dict(self.options, 'fetchMarkets')
+        if fetchMarketsOptions is not None:
+            rawFetchMarkets = self.safe_list(fetchMarketsOptions, 'types', defaultTypes)
+        else:
+            # for backward-compatibility
+            rawFetchMarkets = self.safe_list(self.options, 'fetchMarkets', defaultTypes)
         # handle loadAllOptions option
         loadAllOptions = self.safe_bool(self.options, 'loadAllOptions', False)
         if loadAllOptions:
@@ -3981,29 +3994,52 @@ class binance(Exchange, ImplicitAPI):
         #         "time": 1597370495002
         #     }
         #
-        #     {
-        #         "askPrice": "0.03379000",
-        #         "askQty": "24.00000000",
-        #         "bidPrice": "0.03378900",
-        #         "bidQty": "7.16800000",
-        #         "closeTime": 1601556386932,
-        #         "count": 87544,
-        #         "firstId": 196098772,
-        #         "highPrice": "0.03388900",
-        #         "lastId": 196186315,
-        #         "lastPrice": "0.03378900",
-        #         "lastQty": "0.07700000",
-        #         "lowPrice": "0.03306900",
-        #         "openPrice": "0.03310200",
-        #         "openTime": 1601469986932,
-        #         "prevClosePrice": "0.03310300",
-        #         "priceChange": "0.00068700",
-        #         "priceChangePercent": "2.075",
-        #         "quoteVolume": "6868.48826294",
-        #         "symbol": "ETHBTC",
-        #         "volume": "205478.41000000",
-        #         "weightedAvgPrice": "0.03342681",
-        #     }
+        # spot - ticker
+        #
+        #    {
+        #        "askPrice": "118449.03000000",          # field absent in rolling ticker
+        #        "askQty": "0.09592000",                 # field absent in rolling ticker
+        #        "bidPrice": "118449.02000000",          # field absent in rolling ticker
+        #        "bidQty": "7.15931000",                 # field absent in rolling ticker
+        #        "closeTime": "1753787874013",
+        #        "count": "1933312"
+        #        "firstId": "5116031635",
+        #        "highPrice": "119273.36000000",
+        #        "lastId": "5117964946",
+        #        "lastPrice": "118449.03000000",
+        #        "lastQty": "0.00731000",                # field absent in rolling ticker
+        #        "lowPrice": "117427.50000000",
+        #        "openPrice": "118637.21000000",
+        #        "openTime": "1753701474013",
+        #        "prevClosePrice": "118637.22000000",    # field absent in rolling ticker
+        #        "priceChange": "-188.18000000",
+        #        "priceChangePercent": "-0.159",
+        #        "quoteVolume": "1744744445.80640740",
+        #        "symbol": "BTCUSDT",
+        #        "volume": "14741.41491000",
+        #        "weightedAvgPrice": "118356.64734074",
+        #    }
+        #
+        # usdm tickers
+        #
+        #    {
+        #        "closeTime": "1753788172414",
+        #        "count": "188700"
+        #        "firstId": "72234973",
+        #        "highPrice": "0.3411000",
+        #        "lastId": "72423677",
+        #        "lastPrice": "0.3150000",
+        #        "lastQty": "16",
+        #        "lowPrice": "0.3071000",
+        #        "openPrice": "0.3379000",
+        #        "openTime": "1753701720000",
+        #        "priceChange": "-0.0229000",
+        #        "priceChangePercent": "-6.777",
+        #        "quoteVolume": "38709237.2289000",
+        #        "symbol": "SUSDT",
+        #        "volume": "120588225",
+        #        "weightedAvgPrice": "0.3210035",
+        #    }
         #
         # coinm
         #
@@ -4354,15 +4390,36 @@ class binance(Exchange, ImplicitAPI):
         elif self.is_inverse(type, subType):
             response = await self.dapiPublicGetTicker24hr(params)
         elif type == 'spot':
-            request: dict = {}
-            if symbols is not None:
-                request['symbols'] = self.json(self.market_ids(symbols))
-            response = await self.publicGetTicker24hr(self.extend(request, params))
+            rolling = self.safe_bool(params, 'rolling', False)
+            params = self.omit(params, 'rolling')
+            if rolling:
+                symbols = self.market_symbols(symbols)
+                request: dict = {
+                    'symbols': self.json(self.market_ids(symbols)),
+                }
+                response = await self.publicGetTicker(self.extend(request, params))
+                # parseTicker is not able to handle marketType for spot-rolling ticker fields, so we need custom parsing
+                return self.parse_tickers_for_rolling(response, symbols)
+            else:
+                request: dict = {}
+                if symbols is not None:
+                    request['symbols'] = self.json(self.market_ids(symbols))
+                response = await self.publicGetTicker24hr(self.extend(request, params))
         elif type == 'option':
             response = await self.eapiPublicGetTicker(params)
         else:
             raise NotSupported(self.id + ' fetchTickers() does not support ' + type + ' markets yet')
         return self.parse_tickers(response, symbols)
+
+    def parse_tickers_for_rolling(self, response, symbols):
+        results = []
+        for i in range(0, len(response)):
+            marketId = self.safe_string(response[i], 'symbol')
+            tickerMarket = self.safe_market(marketId, None, None, 'spot')
+            parsedTicker = self.parse_ticker(response[i])
+            parsedTicker['symbol'] = tickerMarket['symbol']
+            results.append(parsedTicker)
+        return self.filter_by_array(results, 'symbol', symbols)
 
     async def fetch_mark_price(self, symbol: str, params={}) -> Ticker:
         """
@@ -9929,10 +9986,15 @@ class binance(Exchange, ImplicitAPI):
 
     async def load_leverage_brackets(self, reload=False, params={}):
         await self.load_markets()
+        leveragesFromOutside = self.safe_value(params, 'leveragesFromOutside', self.options['leveragesFromOutside'])
+        fetchLeveragesCallback = self.safe_value(params, 'fetchLeveragesCallback', self.options['fetchLeveragesCallback'])
+        outdated = not fetchLeveragesCallback or fetchLeveragesCallback()
+        if outdated and fetchLeveragesCallback is not None:
+            reload = True
         # by default cache the leverage bracket
         # it contains useful stuff like the maintenance margin and initial margin for positions
         leverageBrackets = self.safe_dict(self.options, 'leverageBrackets')
-        if (leverageBrackets is None) or (reload):
+        if (leverageBrackets is None or reload) and outdated:
             defaultType = self.safe_string(self.options, 'defaultType', 'future')
             type = self.safe_string(params, 'type', defaultType)
             query = self.omit(params, 'type')
@@ -9940,36 +10002,58 @@ class binance(Exchange, ImplicitAPI):
             subType, params = self.handle_sub_type_and_params('loadLeverageBrackets', None, params, 'linear')
             isPortfolioMargin = None
             isPortfolioMargin, params = self.handle_option_and_params_2(params, 'loadLeverageBrackets', 'papi', 'portfolioMargin', False)
+            catched = None
             response = None
-            leveragesFromOutside = self.safe_value(params, 'leveragesFromOutside', None)
-            if not leveragesFromOutside:
-                leveragesFromOutside = self.safe_value(self.options, 'leveragesFromOutside', None)
-            if not leveragesFromOutside or reload:
-                if self.is_linear(type, subType):
-                    if isPortfolioMargin:
+            catchedHandled
+            if self.is_linear(type, subType):
+                if isPortfolioMargin:
+                    try:
                         response = await self.papiGetUmLeverageBracket(query)
-                    else:
+                    except Exception as e:
+                        catched = e
+                        if isinstance(e, NetworkError) or isinstance(e, AuthenticationError):
+                            if leveragesFromOutside:
+                                response = leveragesFromOutside
+                                catchedHandled = True
+                else:
+                    try:
                         response = await self.fapiPrivateGetLeverageBracket(query)
-                elif self.is_inverse(type, subType):
-                    if isPortfolioMargin:
+                    except Exception as e:
+                        catched = e
+                        if isinstance(e, NetworkError) or isinstance(e, AuthenticationError):
+                            if leveragesFromOutside:
+                                response = leveragesFromOutside
+                                catchedHandled = True
+            elif self.is_inverse(type, subType):
+                if isPortfolioMargin:
+                    try:
                         response = await self.papiGetCmLeverageBracket(query)
-                    else:
+                    except Exception as e:
+                        catched = e
+                        if isinstance(e, NetworkError) or isinstance(e, AuthenticationError):
+                            if leveragesFromOutside:
+                                response = leveragesFromOutside
+                                catchedHandled = True
+                else:
+                    try:
                         response = await self.dapiPrivateV2GetLeverageBracket(query)
+                    except Exception as e:
+                        catched = e
+                        if isinstance(e, NetworkError) or isinstance(e, AuthenticationError):
+                            if leveragesFromOutside:
+                                response = leveragesFromOutside
+                                catchedHandled = True
+            if not response or catched:
+                self.bootstrapped = False
+                if catched:
+                    raise catched
                 else:
                     raise NotSupported(self.id + ' loadLeverageBrackets() supports linear and inverse contracts only')
-                fetchLeveragesCallback = self.safe_value(params, 'fetchLeveragesCallback', None)
-                if not fetchLeveragesCallback:
-                    fetchLeveragesCallback = self.safe_value(self.options, 'fetchLeveragesCallback', None)
-                if fetchLeveragesCallback:
-                    fetchLeveragesCallback(response)
-                    self.omit(params, 'fetchLeveragesCallback')
-                    self.omit(self.options, 'fetchLeveragesCallback')
-            else:
-                response = leveragesFromOutside
-                self.omit(params, 'leveragesFromOutside')
-                self.omit(self.options, 'leveragesFromOutside')
             self.options['leverageBrackets'] = self.create_safe_dictionary()
-            for i in range(0, len(response)):
+            length = 0
+            if isinstance(response, list):
+                length = len(response)
+            for i in range(0, length):
                 entry = response[i]
                 marketId = self.safe_string(entry, 'symbol')
                 symbol = self.safe_symbol(marketId, None, None, 'contract')
@@ -9981,6 +10065,18 @@ class binance(Exchange, ImplicitAPI):
                     maintenanceMarginPercentage = self.safe_string(bracket, 'maintMarginRatio')
                     result.append([floorValue, maintenanceMarginPercentage])
                 self.options['leverageBrackets'][symbol] = result
+            if fetchLeveragesCallback:
+                if not catched:
+                    fetchLeveragesCallback(self.options['leverageBrackets'])
+                self.omit(params, 'fetchLeveragesCallback')
+                self.options['fetchLeveragesCallback'] = fetchLeveragesCallback
+            self.omit(params, 'leveragesFromOutside')
+            self.omit(self.options, 'leveragesFromOutside')
+            if catched and not catchedHandled:
+                # self.bootstrapped = False
+                raise catched
+        elif not isEmpty(leveragesFromOutside):
+            return leveragesFromOutside
         return self.options['leverageBrackets']
 
     async def fetch_leverage_tiers(self, symbols: Strings = None, params={}) -> LeverageTiers:
@@ -10914,6 +11010,7 @@ class binance(Exchange, ImplicitAPI):
         request: dict = {}
         if symbol is not None:
             request['symbol'] = market['id']
+            symbol = market['symbol']
         if since is not None:
             request['startTime'] = since
         if limit is not None:
@@ -10941,7 +11038,7 @@ class binance(Exchange, ImplicitAPI):
         #
         settlements = self.parse_settlements(response, market)
         sorted = self.sort_by(settlements, 'timestamp')
-        return self.filter_by_symbol_since_limit(sorted, market['symbol'], since, limit)
+        return self.filter_by_symbol_since_limit(sorted, symbol, since, limit)
 
     def parse_settlement(self, settlement, market):
         #
@@ -11396,6 +11493,11 @@ class binance(Exchange, ImplicitAPI):
         if response is None:
             return None  # fallback to default error handler
         # response in format {'msg': 'The coin does not exist.', 'success': True/false}
+        if isNode:
+            if process.env['EMULATE_AUTHENTICATION_FAIL']:
+                response.code = '-2015'
+                response.msg = 'Invalid API-key, IP, or permissions for action.'
+                del response.success
         success = self.safe_bool(response, 'success', True)
         if not success:
             messageNew = self.safe_string(response, 'msg')

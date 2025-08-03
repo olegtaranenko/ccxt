@@ -8,6 +8,8 @@ var sha256 = require('./static_dependencies/noble-hashes/sha256.js');
 var rsa = require('./base/functions/rsa.js');
 var crypto = require('./base/functions/crypto.js');
 var ed25519 = require('./static_dependencies/noble-curves/ed25519.js');
+var platform = require('./base/functions/platform.js');
+var generic = require('./base/functions/generic.js');
 
 // ----------------------------------------------------------------------------
 //  ---------------------------------------------------------------------------
@@ -10651,10 +10653,16 @@ class binance extends binance$1 {
     }
     async loadLeverageBrackets(reload = false, params = {}) {
         await this.loadMarkets();
+        const leveragesFromOutside = this.safeValue(params, 'leveragesFromOutside', this.options['leveragesFromOutside']);
+        const fetchLeveragesCallback = this.safeValue(params, 'fetchLeveragesCallback', this.options['fetchLeveragesCallback']);
+        const outdated = !fetchLeveragesCallback || fetchLeveragesCallback();
+        if (outdated && fetchLeveragesCallback !== undefined) {
+            reload = true;
+        }
         // by default cache the leverage bracket
         // it contains useful stuff like the maintenance margin and initial margin for positions
         const leverageBrackets = this.safeDict(this.options, 'leverageBrackets');
-        if ((leverageBrackets === undefined) || (reload)) {
+        if ((leverageBrackets === undefined || reload) && outdated) {
             const defaultType = this.safeString(this.options, 'defaultType', 'future');
             const type = this.safeString(params, 'type', defaultType);
             const query = this.omit(params, 'type');
@@ -10662,48 +10670,84 @@ class binance extends binance$1 {
             [subType, params] = this.handleSubTypeAndParams('loadLeverageBrackets', undefined, params, 'linear');
             let isPortfolioMargin = undefined;
             [isPortfolioMargin, params] = this.handleOptionAndParams2(params, 'loadLeverageBrackets', 'papi', 'portfolioMargin', false);
+            let catched = undefined;
             let response = undefined;
-            let leveragesFromOutside = this.safeValue(params, 'leveragesFromOutside', undefined);
-            if (!leveragesFromOutside) {
-                leveragesFromOutside = this.safeValue(this.options, 'leveragesFromOutside', undefined);
-            }
-            if (!leveragesFromOutside || reload) {
-                if (this.isLinear(type, subType)) {
-                    if (isPortfolioMargin) {
+            let catchedHandled;
+            if (this.isLinear(type, subType)) {
+                if (isPortfolioMargin) {
+                    try {
                         response = await this.papiGetUmLeverageBracket(query);
                     }
-                    else {
-                        response = await this.fapiPrivateGetLeverageBracket(query);
+                    catch (e) {
+                        catched = e;
+                        if (e instanceof errors.NetworkError || e instanceof errors.AuthenticationError) {
+                            if (leveragesFromOutside) {
+                                response = leveragesFromOutside;
+                                catchedHandled = true;
+                            }
+                        }
                     }
                 }
-                else if (this.isInverse(type, subType)) {
-                    if (isPortfolioMargin) {
+                else {
+                    try {
+                        response = await this.fapiPrivateGetLeverageBracket(query);
+                    }
+                    catch (e) {
+                        catched = e;
+                        if (e instanceof errors.NetworkError || e instanceof errors.AuthenticationError) {
+                            if (leveragesFromOutside) {
+                                response = leveragesFromOutside;
+                                catchedHandled = true;
+                            }
+                        }
+                    }
+                }
+            }
+            else if (this.isInverse(type, subType)) {
+                if (isPortfolioMargin) {
+                    try {
                         response = await this.papiGetCmLeverageBracket(query);
                     }
-                    else {
+                    catch (e) {
+                        catched = e;
+                        if (e instanceof errors.NetworkError || e instanceof errors.AuthenticationError) {
+                            if (leveragesFromOutside) {
+                                response = leveragesFromOutside;
+                                catchedHandled = true;
+                            }
+                        }
+                    }
+                }
+                else {
+                    try {
                         response = await this.dapiPrivateV2GetLeverageBracket(query);
                     }
+                    catch (e) {
+                        catched = e;
+                        if (e instanceof errors.NetworkError || e instanceof errors.AuthenticationError) {
+                            if (leveragesFromOutside) {
+                                response = leveragesFromOutside;
+                                catchedHandled = true;
+                            }
+                        }
+                    }
+                }
+            }
+            if (!response || catched) {
+                this.bootstrapped = false;
+                if (catched) {
+                    throw catched;
                 }
                 else {
                     throw new errors.NotSupported(this.id + ' loadLeverageBrackets() supports linear and inverse contracts only');
                 }
-                let fetchLeveragesCallback = this.safeValue(params, 'fetchLeveragesCallback', undefined);
-                if (!fetchLeveragesCallback) {
-                    fetchLeveragesCallback = this.safeValue(this.options, 'fetchLeveragesCallback', undefined);
-                }
-                if (fetchLeveragesCallback) {
-                    fetchLeveragesCallback(response);
-                    this.omit(params, 'fetchLeveragesCallback');
-                    this.omit(this.options, 'fetchLeveragesCallback');
-                }
-            }
-            else {
-                response = leveragesFromOutside;
-                this.omit(params, 'leveragesFromOutside');
-                this.omit(this.options, 'leveragesFromOutside');
             }
             this.options['leverageBrackets'] = this.createSafeDictionary();
-            for (let i = 0; i < response.length; i++) {
+            let length = 0;
+            if (Array.isArray(response)) {
+                length = response.length;
+            }
+            for (let i = 0; i < length; i++) {
                 const entry = response[i];
                 const marketId = this.safeString(entry, 'symbol');
                 const symbol = this.safeSymbol(marketId, undefined, undefined, 'contract');
@@ -10717,6 +10761,22 @@ class binance extends binance$1 {
                 }
                 this.options['leverageBrackets'][symbol] = result;
             }
+            if (fetchLeveragesCallback) {
+                if (!catched) {
+                    fetchLeveragesCallback(this.options['leverageBrackets']);
+                }
+                this.omit(params, 'fetchLeveragesCallback');
+                this.options['fetchLeveragesCallback'] = fetchLeveragesCallback;
+            }
+            this.omit(params, 'leveragesFromOutside');
+            this.omit(this.options, 'leveragesFromOutside');
+            if (catched && !catchedHandled) {
+                // this.bootstrapped = false
+                throw catched;
+            }
+        }
+        else if (!generic.isEmpty(leveragesFromOutside)) {
+            return leveragesFromOutside;
         }
         return this.options['leverageBrackets'];
     }
@@ -12310,6 +12370,13 @@ class binance extends binance$1 {
             return undefined; // fallback to default error handler
         }
         // response in format {'msg': 'The coin does not exist.', 'success': true/false}
+        if (platform.isNode) {
+            if (process.env['EMULATE_AUTHENTICATION_FAIL']) {
+                response.code = '-2015';
+                response.msg = 'Invalid API-key, IP, or permissions for action.';
+                delete response.success;
+            }
+        }
         const success = this.safeBool(response, 'success', true);
         if (!success) {
             const messageNew = this.safeString(response, 'msg');

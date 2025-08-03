@@ -1831,6 +1831,8 @@ class Exchange(object):
         return {
             'alias': False,  # whether self exchange is an alias to another exchange
             'api': None,
+            'authenticated': True,
+            'bootstrapped': True,
             'certified': False,  # if certified by the CCXT dev team
             'commonCurrencies': {
                 'BCHSV': 'BSV',
@@ -2128,6 +2130,7 @@ class Exchange(object):
             'name': None,
             'paddingMode': NO_PADDING,
             'precisionMode': TICK_SIZE,
+            'offline': False,
             'pro': False,  # if it is integrated with CCXT Pro for WebSocket support
             'rateLimit': 2000,  # milliseconds = seconds * 1000
             'requiredCredentials': {

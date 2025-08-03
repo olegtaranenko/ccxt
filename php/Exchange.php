@@ -2279,6 +2279,8 @@ class Exchange {
         return array(
             'alias' => false, // whether this exchange is an alias to another exchange
             'api' => null,
+            'authenticated' => true,
+            'bootstrapped' => true,
             'certified' => false, // if certified by the CCXT dev team
             'commonCurrencies' => array(
                 'BCHSV' => 'BSV',
@@ -2576,6 +2578,7 @@ class Exchange {
             'name' => null,
             'paddingMode' => NO_PADDING,
             'precisionMode' => TICK_SIZE,
+            'offline' => false,
             'pro' => false, // if it is integrated with CCXT Pro for WebSocket support
             'rateLimit' => 2000, // milliseconds = seconds * 1000
             'requiredCredentials' => array(

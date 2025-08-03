@@ -20,6 +20,9 @@ export default class Exchange {
     pro: boolean;
     sleep: (ms: any) => Promise<unknown>;
     throttleProp: any;
+    authenticated: boolean;
+    bootstrapped: boolean;
+    offline: boolean;
     http_proxy: string;
     http_proxy_callback: any;
     httpProxy: string;

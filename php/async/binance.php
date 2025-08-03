@@ -15,6 +15,7 @@ use ccxt\BadSymbol;
 use ccxt\MarginModeAlreadySet;
 use ccxt\InvalidOrder;
 use ccxt\NotSupported;
+use ccxt\NetworkError;
 use ccxt\DDoSProtection;
 use ccxt\Precise;
 use \React\Async;
@@ -305,6 +306,7 @@ class binance extends Exchange {
                             'byLimit' => array( array( 99, 1 ), array( 499, 2 ), array( 1000, 5 ), array( 10000, 10 ) ),
                             'cost' => 1,
                         ),
+                        'insuranceBalance' => 1,
                         'klines' => array( 'cost' => 1, 'byLimit' => array( array( 99, 1 ), array( 499, 2 ), array( 1000, 5 ), array( 10000, 10 ) ) ),
                         'lvtKlines' => 1,
                         'markPriceKlines' => array(
@@ -775,6 +777,7 @@ class binance extends Exchange {
                         'portfolio/balance' => 2,
                         'portfolio/negative-balance-exchange-record' => 2,
                         'portfolio/pmloan-history' => 5,
+                        'portfolio/earn-asset-balance' => 150, // Weight(IP) => 1500 => cost = 0.1 * 1500 = 150
                         // staking
                         'lending/auto-invest/all/asset' => 0.1,
                         'lending/auto-invest/history/list' => 0.1,
@@ -934,6 +937,7 @@ class binance extends Exchange {
                         'portfolio/asset-collection' => 6, // Weight(IP) => 60 => cost = 0.1 * 60 = 6
                         'portfolio/auto-collection' => 150, // Weight(IP) => 1500 => cost = 0.1 * 1500 = 150
                         'portfolio/bnb-transfer' => 150, // Weight(IP) => 1500 => cost = 0.1 * 1500 = 150
+                        'portfolio/earn-asset-transfer' => 150, // Weight(IP) => 1500 => cost = 0.1 * 1500 = 150
                         'portfolio/mint' => 20,
                         'portfolio/redeem' => 20,
                         'portfolio/repay' => 20.001,
@@ -2476,10 +2480,12 @@ class binance extends Exchange {
                 'fetchCurrencies' => true, // this is a private call and it requires API keys
                 'fetchMargins' => true,
                 'fetchMarkets' => array(
-                    'inverse', // allows CORS in browsers
-                    'linear', // allows CORS in browsers
-                    'spot', // allows CORS in browsers
-                    // 'option', // does not allow CORS, enable outside of the browser only
+                    'types' => array(
+                        'inverse', // allows CORS in browsers
+                        'linear', // allows CORS in browsers
+                        'spot', // allows CORS in browsers
+                        // 'option', // does not allow CORS, enable outside of the browser only
+                    ),
                 ),
                 'fetchOHLCV' => array(
                     'defaultLimit' => 500,
@@ -3090,7 +3096,15 @@ class binance extends Exchange {
              * @return {array[]} an array of objects representing market data
              */
             $promisesRaw = array();
-            $rawFetchMarkets = $this->safe_list($this->options, 'fetchMarkets', array( 'spot', 'linear', 'inverse' ));
+            $rawFetchMarkets = null;
+            $defaultTypes = array( 'spot', 'linear', 'inverse' );
+            $fetchMarketsOptions = $this->safe_dict($this->options, 'fetchMarkets');
+            if ($fetchMarketsOptions !== null) {
+                $rawFetchMarkets = $this->safe_list($fetchMarketsOptions, 'types', $defaultTypes);
+            } else {
+                // for backward-compatibility
+                $rawFetchMarkets = $this->safe_list($this->options, 'fetchMarkets', $defaultTypes);
+            }
             // handle $loadAllOptions option
             $loadAllOptions = $this->safe_bool($this->options, 'loadAllOptions', false);
             if ($loadAllOptions) {
@@ -4063,29 +4077,52 @@ class binance extends Exchange {
         //         "time" => 1597370495002
         //     }
         //
-        //     {
-        //         "askPrice" => "0.03379000",
-        //         "askQty" => "24.00000000",
-        //         "bidPrice" => "0.03378900",
-        //         "bidQty" => "7.16800000",
-        //         "closeTime" => 1601556386932,
-        //         "count" => 87544,
-        //         "firstId" => 196098772,
-        //         "highPrice" => "0.03388900",
-        //         "lastId" => 196186315,
-        //         "lastPrice" => "0.03378900",
-        //         "lastQty" => "0.07700000",
-        //         "lowPrice" => "0.03306900",
-        //         "openPrice" => "0.03310200",
-        //         "openTime" => 1601469986932,
-        //         "prevClosePrice" => "0.03310300",
-        //         "priceChange" => "0.00068700",
-        //         "priceChangePercent" => "2.075",
-        //         "quoteVolume" => "6868.48826294",
-        //         "symbol" => "ETHBTC",
-        //         "volume" => "205478.41000000",
-        //         "weightedAvgPrice" => "0.03342681",
-        //     }
+        // spot - $ticker
+        //
+        //    {
+        //        "askPrice" => "118449.03000000",          // field absent in rolling $ticker
+        //        "askQty" => "0.09592000",                 // field absent in rolling $ticker
+        //        "bidPrice" => "118449.02000000",          // field absent in rolling $ticker
+        //        "bidQty" => "7.15931000",                 // field absent in rolling $ticker
+        //        "closeTime" => "1753787874013",
+        //        "count" => "1933312"
+        //        "firstId" => "5116031635",
+        //        "highPrice" => "119273.36000000",
+        //        "lastId" => "5117964946",
+        //        "lastPrice" => "118449.03000000",
+        //        "lastQty" => "0.00731000",                // field absent in rolling $ticker
+        //        "lowPrice" => "117427.50000000",
+        //        "openPrice" => "118637.21000000",
+        //        "openTime" => "1753701474013",
+        //        "prevClosePrice" => "118637.22000000",    // field absent in rolling $ticker
+        //        "priceChange" => "-188.18000000",
+        //        "priceChangePercent" => "-0.159",
+        //        "quoteVolume" => "1744744445.80640740",
+        //        "symbol" => "BTCUSDT",
+        //        "volume" => "14741.41491000",
+        //        "weightedAvgPrice" => "118356.64734074",
+        //    }
+        //
+        // usdm tickers
+        //
+        //    {
+        //        "closeTime" => "1753788172414",
+        //        "count" => "188700"
+        //        "firstId" => "72234973",
+        //        "highPrice" => "0.3411000",
+        //        "lastId" => "72423677",
+        //        "lastPrice" => "0.3150000",
+        //        "lastQty" => "16",
+        //        "lowPrice" => "0.3071000",
+        //        "openPrice" => "0.3379000",
+        //        "openTime" => "1753701720000",
+        //        "priceChange" => "-0.0229000",
+        //        "priceChangePercent" => "-6.777",
+        //        "quoteVolume" => "38709237.2289000",
+        //        "symbol" => "SUSDT",
+        //        "volume" => "120588225",
+        //        "weightedAvgPrice" => "0.3210035",
+        //    }
         //
         // coinm
         //
@@ -4460,11 +4497,23 @@ class binance extends Exchange {
             } elseif ($this->is_inverse($type, $subType)) {
                 $response = Async\await($this->dapiPublicGetTicker24hr ($params));
             } elseif ($type === 'spot') {
-                $request = array();
-                if ($symbols !== null) {
-                    $request['symbols'] = $this->json($this->market_ids($symbols));
+                $rolling = $this->safe_bool($params, 'rolling', false);
+                $params = $this->omit($params, 'rolling');
+                if ($rolling) {
+                    $symbols = $this->market_symbols($symbols);
+                    $request = array(
+                        'symbols' => $this->json($this->market_ids($symbols)),
+                    );
+                    $response = Async\await($this->publicGetTicker ($this->extend($request, $params)));
+                    // parseTicker is not able to handle marketType for spot-$rolling ticker fields, so we need custom parsing
+                    return $this->parse_tickers_for_rolling($response, $symbols);
+                } else {
+                    $request = array();
+                    if ($symbols !== null) {
+                        $request['symbols'] = $this->json($this->market_ids($symbols));
+                    }
+                    $response = Async\await($this->publicGetTicker24hr ($this->extend($request, $params)));
                 }
-                $response = Async\await($this->publicGetTicker24hr ($this->extend($request, $params)));
             } elseif ($type === 'option') {
                 $response = Async\await($this->eapiPublicGetTicker ($params));
             } else {
@@ -4472,6 +4521,18 @@ class binance extends Exchange {
             }
             return $this->parse_tickers($response, $symbols);
         }) ();
+    }
+
+    public function parse_tickers_for_rolling($response, $symbols) {
+        $results = array();
+        for ($i = 0; $i < count($response); $i++) {
+            $marketId = $this->safe_string($response[$i], 'symbol');
+            $tickerMarket = $this->safe_market($marketId, null, null, 'spot');
+            $parsedTicker = $this->parse_ticker($response[$i]);
+            $parsedTicker['symbol'] = $tickerMarket['symbol'];
+            $results[] = $parsedTicker;
+        }
+        return $this->filter_by_array($results, 'symbol', $symbols);
     }
 
     public function fetch_mark_price(string $symbol, $params = array ()): PromiseInterface {
@@ -10527,10 +10588,16 @@ class binance extends Exchange {
     public function load_leverage_brackets($reload = false, $params = array ()) {
         return Async\async(function () use ($reload, $params) {
             Async\await($this->load_markets());
+            $leveragesFromOutside = $this->safe_value($params, 'leveragesFromOutside', $this->options['leveragesFromOutside']);
+            $fetchLeveragesCallback = $this->safe_value($params, 'fetchLeveragesCallback', $this->options['fetchLeveragesCallback']);
+            $outdated = !$fetchLeveragesCallback || $fetchLeveragesCallback ();
+            if ($outdated && $fetchLeveragesCallback !== null) {
+                $reload = true;
+            }
             // by default cache the leverage $bracket
             // it contains useful stuff like the maintenance margin and initial margin for positions
             $leverageBrackets = $this->safe_dict($this->options, 'leverageBrackets');
-            if (($leverageBrackets === null) || ($reload)) {
+            if (($leverageBrackets === null || $reload) && $outdated) {
                 $defaultType = $this->safe_string($this->options, 'defaultType', 'future');
                 $type = $this->safe_string($params, 'type', $defaultType);
                 $query = $this->omit($params, 'type');
@@ -10538,43 +10605,76 @@ class binance extends Exchange {
                 list($subType, $params) = $this->handle_sub_type_and_params('loadLeverageBrackets', null, $params, 'linear');
                 $isPortfolioMargin = null;
                 list($isPortfolioMargin, $params) = $this->handle_option_and_params_2($params, 'loadLeverageBrackets', 'papi', 'portfolioMargin', false);
+                $catched = null;
                 $response = null;
-                $leveragesFromOutside = $this->safe_value($params, 'leveragesFromOutside', null);
-                if (!$leveragesFromOutside) {
-                    $leveragesFromOutside = $this->safe_value($this->options, 'leveragesFromOutside', null);
-                }
-                if (!$leveragesFromOutside || $reload) {
-                    if ($this->is_linear($type, $subType)) {
-                        if ($isPortfolioMargin) {
+                $catchedHandled;
+                if ($this->is_linear($type, $subType)) {
+                    if ($isPortfolioMargin) {
+                        try {
                             $response = Async\await($this->papiGetUmLeverageBracket ($query));
-                        } else {
+                        } catch (Exception $e) {
+                            $catched = $e;
+                            if ($e instanceof NetworkError || $e instanceof AuthenticationError) {
+                                if ($leveragesFromOutside) {
+                                    $response = $leveragesFromOutside;
+                                    $catchedHandled = true;
+                                }
+                            }
+                        }
+                    } else {
+                        try {
                             $response = Async\await($this->fapiPrivateGetLeverageBracket ($query));
+                        } catch (Exception $e) {
+                            $catched = $e;
+                            if ($e instanceof NetworkError || $e instanceof AuthenticationError) {
+                                if ($leveragesFromOutside) {
+                                    $response = $leveragesFromOutside;
+                                    $catchedHandled = true;
+                                }
+                            }
                         }
-                    } elseif ($this->is_inverse($type, $subType)) {
-                        if ($isPortfolioMargin) {
+                    }
+                } elseif ($this->is_inverse($type, $subType)) {
+                    if ($isPortfolioMargin) {
+                        try {
                             $response = Async\await($this->papiGetCmLeverageBracket ($query));
-                        } else {
-                            $response = Async\await($this->dapiPrivateV2GetLeverageBracket ($query));
+                        } catch (Exception $e) {
+                            $catched = $e;
+                            if ($e instanceof NetworkError || $e instanceof AuthenticationError) {
+                                if ($leveragesFromOutside) {
+                                    $response = $leveragesFromOutside;
+                                    $catchedHandled = true;
+                                }
+                            }
                         }
+                    } else {
+                        try {
+                            $response = Async\await($this->dapiPrivateV2GetLeverageBracket ($query));
+                        } catch (Exception $e) {
+                            $catched = $e;
+                            if ($e instanceof NetworkError || $e instanceof AuthenticationError) {
+                                if ($leveragesFromOutside) {
+                                    $response = $leveragesFromOutside;
+                                    $catchedHandled = true;
+                                }
+                            }
+                        }
+                    }
+                }
+                if (!$response || $catched) {
+                    $this->bootstrapped = false;
+                    if ($catched) {
+                        throw $catched;
                     } else {
                         throw new NotSupported($this->id . ' loadLeverageBrackets() supports linear and inverse contracts only');
                     }
-                    $fetchLeveragesCallback = $this->safe_value($params, 'fetchLeveragesCallback', null);
-                    if (!$fetchLeveragesCallback) {
-                        $fetchLeveragesCallback = $this->safe_value($this->options, 'fetchLeveragesCallback', null);
-                    }
-                    if ($fetchLeveragesCallback) {
-                        $fetchLeveragesCallback ($response);
-                        $this->omit($params, 'fetchLeveragesCallback');
-                        $this->omit($this->options, 'fetchLeveragesCallback');
-                    }
-                } else {
-                    $response = $leveragesFromOutside;
-                    $this->omit($params, 'leveragesFromOutside');
-                    $this->omit($this->options, 'leveragesFromOutside');
                 }
                 $this->options['leverageBrackets'] = $this->create_safe_dictionary();
-                for ($i = 0; $i < count($response); $i++) {
+                $length = 0;
+                if (gettype($response) === 'array' && array_keys($response) === array_keys(array_keys($response))) {
+                    $length = count($response);
+                }
+                for ($i = 0; $i < $length; $i++) {
                     $entry = $response[$i];
                     $marketId = $this->safe_string($entry, 'symbol');
                     $symbol = $this->safe_symbol($marketId, null, null, 'contract');
@@ -10588,6 +10688,21 @@ class binance extends Exchange {
                     }
                     $this->options['leverageBrackets'][$symbol] = $result;
                 }
+                if ($fetchLeveragesCallback) {
+                    if (!$catched) {
+                        $fetchLeveragesCallback ($this->options['leverageBrackets']);
+                    }
+                    $this->omit($params, 'fetchLeveragesCallback');
+                    $this->options['fetchLeveragesCallback'] = $fetchLeveragesCallback;
+                }
+                $this->omit($params, 'leveragesFromOutside');
+                $this->omit($this->options, 'leveragesFromOutside');
+                if ($catched && !$catchedHandled) {
+                    // $this->bootstrapped = false
+                    throw $catched;
+                }
+            } elseif (!isEmpty ($leveragesFromOutside)) {
+                return $leveragesFromOutside;
             }
             return $this->options['leverageBrackets'];
         }) ();
@@ -11626,6 +11741,7 @@ class binance extends Exchange {
             $request = array();
             if ($symbol !== null) {
                 $request['symbol'] = $market['id'];
+                $symbol = $market['symbol'];
             }
             if ($since !== null) {
                 $request['startTime'] = $since;
@@ -11656,7 +11772,7 @@ class binance extends Exchange {
             //
             $settlements = $this->parse_settlements($response, $market);
             $sorted = $this->sort_by($settlements, 'timestamp');
-            return $this->filter_by_symbol_since_limit($sorted, $market['symbol'], $since, $limit);
+            return $this->filter_by_symbol_since_limit($sorted, $symbol, $since, $limit);
         }) ();
     }
 
@@ -12174,6 +12290,13 @@ class binance extends Exchange {
             return null; // fallback to default $error handler
         }
         // $response in format array('msg' => 'The coin does not exist.', 'success' => true/false)
+        if (isNode) {
+            if (process.env['EMULATE_AUTHENTICATION_FAIL']) {
+                $response->code = '-2015';
+                $response->msg = 'Invalid API-key, IP, or permissions for action.';
+                unset($response->success);
+            }
+        }
         $success = $this->safe_bool($response, 'success', true);
         if (!$success) {
             $messageNew = $this->safe_string($response, 'msg');
