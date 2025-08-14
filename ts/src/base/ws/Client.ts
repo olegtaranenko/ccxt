@@ -1,15 +1,31 @@
-import { RequestTimeout, NetworkError, NotSupported, BaseError, ExchangeClosedByUser } from '../../base/errors.js';
-import { inflateSync, gunzipSync } from '../../static_dependencies/fflake/browser.js';
+import { BaseError, ExchangeClosedByUser, NetworkError, NotSupported, RequestTimeout } from '../../base/errors.js';
+import { gunzipSync, inflateSync } from '../../static_dependencies/fflake/browser.js';
 import { Future } from './Future.js';
 
-import {
-    isNode,
-    isJsonEncodedObject,
-    deepExtend,
-    milliseconds,
-} from '../../base/functions.js';
+import { deepExtend, isJsonEncodedObject, isNode, milliseconds, } from '../../base/functions.js';
 import { utf8 } from '../../static_dependencies/scure-base/index.js';
 import { Dictionary, Str } from '../types.js';
+
+const TRUNCATE_LENGTH = 8192;
+
+/**
+ * Truncates a string body for verbose logging purposes.
+ * @param body - The string body to be truncated.
+ * @param verboseTruncate - A flag indicating whether to truncate the body.
+ * @returns The truncated body if `verboseTruncate` is true and `body` is not empty.
+ *          If `verboseTruncate` is false or `body` is empty, the original `body` is returned.
+ *          If `body` is longer than `TRUNCATE_LENGTH`, it is truncated to half of `TRUNCATE_LENGTH`
+ *          on both sides, with an ellipsis in the middle.
+ */
+export function getBodyTruncated (body?: string, verboseTruncate?: boolean) {
+    if (verboseTruncate && body) {
+        const len = body.length + 8;
+        if (body.length >= TRUNCATE_LENGTH) {
+            return body.substring (0, TRUNCATE_LENGTH / 2) + '\n ... \n' + body.substring (len - TRUNCATE_LENGTH / 2);
+        }
+    }
+    return body;
+}
 
 export default class Client {
     connected: Promise<any>
@@ -29,8 +45,6 @@ export default class Client {
     connection: any
 
     connectionTimeout: any
-
-    verbose: boolean = false
 
     connectionTimer: any
 
@@ -68,6 +82,12 @@ export default class Client {
 
     throttle: any
 
+    verbose: boolean
+
+    verboseTruncate: boolean
+
+    verboseLogVeto: any
+
     decompressBinary = true
 
     constructor (url: string, onMessageCallback: Function | undefined, onErrorCallback: Function | undefined, onCloseCallback: Function | undefined, onConnectedCallback: Function | undefined, config = {}) {
@@ -78,6 +98,7 @@ export default class Client {
             onCloseCallback,
             onConnectedCallback,
             verbose: false, // verbose output
+            verboseTruncate: false, // do truncate verbose output
             protocols: undefined, // ws-specific protocols
             options: undefined, // ws-specific options
             futures: {},
@@ -120,7 +141,9 @@ export default class Client {
 
     resolve (result: any, messageHash: Str) {
         if (this.verbose && (messageHash === undefined)) {
-            this.log (new Date (), 'resolve received undefined messageHash');
+            if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto ('resolve', messageHash)) {
+                this.log (new Date (), 'resolve received undefined messageHash');
+            }
         }
         if ((messageHash !== undefined) && (messageHash in this.futures)) {
             const promise = this.futures[messageHash]
@@ -237,8 +260,10 @@ export default class Client {
     }
 
     onOpen () {
-        if (this.verbose) {
-            this.log (new Date (), 'onOpen')
+        if (this.verbose || this.verboseTruncate) {
+            if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto ('onOpen')) {
+                this.log (new Date (), 'onOpen')
+            }
         }
         this.connectionEstablished = milliseconds ()
         this.isConnected = true;
@@ -253,21 +278,27 @@ export default class Client {
     // respond to pings coming from the server with pongs automatically
     // however, some devs may want to track connection states in their app
     onPing () {
-        if (this.verbose) {
-            this.log (new Date (), 'onPing')
+        if (this.verbose || this.verboseTruncate) {
+            if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto ('onPing')) {
+                this.log (new Date (), 'onPing')
+            }
         }
     }
 
     onPong () {
         this.lastPong = milliseconds ()
-        if (this.verbose) {
-            this.log (new Date (), 'onPong')
+        if (this.verbose || this.verboseTruncate) {
+            if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto ('onPong')) {
+                this.log (new Date (), 'onPong')
+            }
         }
     }
 
     onError (error: any) {
-        if (this.verbose) {
-            this.log (new Date (), 'onError', error.message)
+        if (this.verbose || this.verboseTruncate) {
+            if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto ('onError', error)) {
+                this.log (new Date (), 'onError', error.message)
+            }
         }
         if (!(error instanceof BaseError)) {
             // in case of ErrorEvent from node_modules/ws/lib/event-target.js
@@ -280,8 +311,10 @@ export default class Client {
 
     /* eslint-disable no-shadow */
     onClose (event: any) {
-        if (this.verbose) {
-            this.log (new Date (), 'onClose', event)
+        if (this.verbose || this.verboseTruncate) {
+            if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto ('onClose', event)) {
+                this.log (new Date (), 'onClose', event)
+            }
         }
         if (!this.error) {
             // todo: exception types for server-side disconnects
@@ -299,14 +332,18 @@ export default class Client {
     // this method is not used at this time
     // but may be used to read protocol-level data like cookies, headers, etc
     onUpgrade (message: any) {
-        if (this.verbose) {
-            this.log (new Date (), 'onUpgrade')
+        if (this.verbose || this.verboseTruncate) {
+            if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto ('onUpdate')) {
+                this.log (new Date (), 'onUpgrade')
+            }
         }
     }
 
     async send (message: any) {
-        if (this.verbose) {
-            this.log (new Date (), 'sending', message)
+        if (this.verbose || this.verboseTruncate) {
+            if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto ('send', message)) {
+                this.log (new Date (), 'sending', message)
+            }
         }
         message = (typeof message === 'string') ? message : JSON.stringify (message)
         const future = Future ()
@@ -358,8 +395,13 @@ export default class Client {
                 message = message.toString ()
                 message = JSON.parse (message.replace (/:(\d{15,}),/g, ':"$1",'))
             }
-            if (this.verbose) {
-                this.log (new Date (), 'onMessage', message)
+            if (this.verbose || this.verboseTruncate) {
+                if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto ('onMessage', message)) {
+                    // this.log (new Date (), 'onMessage', message)
+                    const messageText = JSON.stringify (message);
+                    const truncated = getBodyTruncated (messageText, this.verboseTruncate)
+                    this.log (new Date (), 'onMessage', truncated)
+                }
                 // unlimited depth
                 // this.log (new Date (), 'onMessage', util.inspect (message, false, null, true))
                 // this.log (new Date (), 'onMessage', JSON.stringify (message, null, 4))

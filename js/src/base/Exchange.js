@@ -622,7 +622,7 @@ export default class Exchange {
         // set final headers
         headers = this.setHeaders(headers);
         // log
-        if (this.verbose) {
+        if (this.verbose || this.verboseTruncate) {
             this.log("fetch Request:\n", this.id, method, url, "\nRequestHeaders:\n", headers, "\nRequestBody:\n", body, "\n");
         }
         // end of proxies & headers
@@ -723,7 +723,7 @@ export default class Exchange {
             if (this.enableLastHttpResponse) {
                 this.last_http_response = responseBuffer;
             }
-            if (this.verbose) {
+            if (this.verbose || this.verboseTruncate) {
                 this.log("handleRestResponse:\n", this.id, method, url, response.status, response.statusText, "\nResponseHeaders:\n", responseHeaders, "ZIP redacted", "\n");
             }
             // no error handler needed, because it would not be a zip response in case of an error
@@ -741,7 +741,7 @@ export default class Exchange {
             if (this.enableLastJsonResponse) {
                 this.last_json_response = json;
             }
-            if (this.verbose) {
+            if (this.verbose || this.verboseTruncate) {
                 this.log("handleRestResponse:\n", this.id, method, url, response.status, response.statusText, "\nResponseHeaders:\n", responseHeaders, "\nResponseBody:\n", responseBody, "\n");
             }
             const skipFurtherErrorHandling = this.handleErrors(response.status, response.statusText, url, method, responseHeaders, responseBody, json, requestHeaders, requestBody);
@@ -6685,7 +6685,7 @@ export default class Exchange {
                     }
                     const response = await this[method](symbol, undefined, maxEntriesPerRequest, params);
                     const responseLength = response.length;
-                    if (this.verbose) {
+                    if (this.verbose || this.verboseTruncate) {
                         let backwardMessage = 'Dynamic pagination call ' + this.numberToString(calls) + ' method ' + method + ' response length ' + this.numberToString(responseLength);
                         if (paginationTimestamp !== undefined) {
                             backwardMessage += ' timestamp ' + this.numberToString(paginationTimestamp);
@@ -6707,7 +6707,7 @@ export default class Exchange {
                     // do it forwards, starting from the since
                     const response = await this[method](symbol, paginationTimestamp, maxEntriesPerRequest, params);
                     const responseLength = response.length;
-                    if (this.verbose) {
+                    if (this.verbose || this.verboseTruncate) {
                         let forwardMessage = 'Dynamic pagination call ' + this.numberToString(calls) + ' method ' + method + ' response length ' + this.numberToString(responseLength);
                         if (paginationTimestamp !== undefined) {
                             forwardMessage += ' timestamp ' + this.numberToString(paginationTimestamp);
@@ -6841,7 +6841,7 @@ export default class Exchange {
                 }
                 errors = 0;
                 const responseLength = response.length;
-                if (this.verbose) {
+                if (this.verbose || this.verboseTruncate) {
                     const cursorString = (cursorValue === undefined) ? '' : cursorValue;
                     const iteration = (i + 1);
                     const cursorMessage = 'Cursor pagination call ' + iteration.toString() + ' method ' + method + ' response length ' + responseLength.toString() + ' cursor ' + cursorString;
@@ -6899,7 +6899,7 @@ export default class Exchange {
                 const response = await this[method](symbol, since, maxEntriesPerRequest, params);
                 errors = 0;
                 const responseLength = response.length;
-                if (this.verbose) {
+                if (this.verbose || this.verboseTruncate) {
                     const iteration = (i + 1).toString();
                     const incrementalMessage = 'Incremental pagination call ' + iteration + ' method ' + method + ' response length ' + responseLength.toString();
                     this.log(incrementalMessage);

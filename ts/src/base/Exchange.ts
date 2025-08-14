@@ -132,7 +132,7 @@ import {SecureRandom} from "../static_dependencies/jsencrypt/lib/jsbn/rng.js";
 import {getStarkKey, ethSigToPrivate, sign as starknetCurveSign} from '../static_dependencies/scure-starknet/index.js';
 import init, * as zklink from '../static_dependencies/zklink/zklink-sdk-web.js';
 import * as Starknet from '../static_dependencies/starknet/index.js';
-import Client from './ws/Client.js'
+import Client, { getBodyTruncated } from './ws/Client.js'
 import { sha256 } from '../static_dependencies/noble-hashes/sha256.js'
 
 const {
@@ -391,6 +391,8 @@ export default class Exchange {
     timeout: Int = 10000; // milliseconds
     twofa = undefined; // two-factor authentication (2-FA)
     verbose: boolean = false;
+    verboseLogVeto: any;
+    verboseTruncate: boolean = false;
 
     accountId: string;
     apiKey: string;
@@ -657,8 +659,10 @@ export default class Exchange {
         this.validateServerSsl = true;
         // default property values
         this.timeout = 10000; // milliseconds
-        this.twofa = undefined; // two-factor authentication (2FA)
+        this.twofa = undefined; // two-factor authentication (2-FA)
         this.verbose = false;
+        this.verboseLogVeto  = undefined;
+        this.verboseTruncate = false;
         // default credentials
         this.apiKey = undefined;
         this.login = undefined;
@@ -1029,8 +1033,11 @@ export default class Exchange {
         // set final headers
         headers = this.setHeaders (headers);
         // log
-        if (this.verbose) {
-            this.log ("fetch Request:\n", this.id, method, url, "\nRequestHeaders:\n", headers, "\nRequestBody:\n", body, "\n");
+        if (this.verbose || this.verboseTruncate) {
+            if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto ('fetch', method, url, headers, body)) {
+                const truncated = getBodyTruncated(body, this.verboseTruncate);
+                this.log ("fetch Request:\n", this.id, method, url, "\nRequestHeaders:\n", headers, "\nRequestBody:\n", truncated, "\n");
+            }
         }
         // end of proxies & headers
 
@@ -1141,8 +1148,10 @@ export default class Exchange {
             if (this.enableLastHttpResponse) {
                 this.last_http_response = responseBuffer;
             }
-            if (this.verbose) {
-                this.log ("handleRestResponse:\n", this.id, method, url, response.status, response.statusText, "\nResponseHeaders:\n", responseHeaders, "ZIP redacted", "\n");
+            if (this.verbose || this.verboseTruncate) {
+                if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto ('handle', method, url, response)) {
+                    this.log ("handleRestResponse:\n", this.id, method, url, response.status, response.statusText, "\nResponseHeaders:\n", responseHeaders, "ZIP redacted", "\n");
+                }
             }
             // no error handler needed, because it would not be a zip response in case of an error
             return responseBuffer;
@@ -1159,8 +1168,11 @@ export default class Exchange {
             if (this.enableLastJsonResponse) {
                 this.last_json_response = json;
             }
-            if (this.verbose) {
-                this.log ("handleRestResponse:\n", this.id, method, url, response.status, response.statusText, "\nResponseHeaders:\n", responseHeaders, "\nResponseBody:\n", responseBody, "\n");
+            if (this.verbose || this.verboseTruncate) {
+                if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto ('response', method, url, response)) {
+                    const truncated = getBodyTruncated (bodyText, this.verboseTruncate);
+                    this.log ("handleRestResponse:\n", this.id, method, url, response.status, response.statusText, "\nResponseHeaders:\n", responseHeaders, "\nResponseBody:\n", truncated, "\n");
+                }
             }
             const skipFurtherErrorHandling = this.handleErrors (response.status, response.statusText, url, method, responseHeaders, responseBody, json, requestHeaders, requestBody);
             if (!skipFurtherErrorHandling) {
@@ -1477,6 +1489,8 @@ export default class Exchange {
                 'log': this.log ? this.log.bind (this) : this.log,
                 'ping': (this as any).ping ? (this as any).ping.bind (this) : (this as any).ping,
                 'verbose': this.verbose,
+                'verboseTruncate': this.verboseTruncate,
+                'verboseLogVeto': this.verboseLogVeto,
                 'throttler': new Throttler (this.tokenBucket),
                 // add support for proxies
                 'options': {
@@ -7604,12 +7618,14 @@ export default class Exchange {
                     }
                     const response = await this[method] (symbol, undefined, maxEntriesPerRequest, params);
                     const responseLength = response.length;
-                    if (this.verbose) {
-                        let backwardMessage = 'Dynamic pagination call ' + this.numberToString (calls) + ' method ' + method + ' response length ' + this.numberToString (responseLength);
-                        if (paginationTimestamp !== undefined) {
-                            backwardMessage += ' timestamp ' + this.numberToString (paginationTimestamp);
+                    if (this.verbose || this.verboseTruncate) {
+                        if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto ('pagination', method, undefined, response)) {
+                            let backwardMessage = 'Dynamic pagination call ' + this.numberToString (calls) + ' method ' + method + ' response length ' + this.numberToString (responseLength);
+                            if (paginationTimestamp !== undefined) {
+                                backwardMessage += ' timestamp ' + this.numberToString (paginationTimestamp);
+                            }
+                            this.log (backwardMessage);
                         }
-                        this.log (backwardMessage);
                     }
                     if (responseLength === 0) {
                         break;
@@ -7625,12 +7641,14 @@ export default class Exchange {
                     // do it forwards, starting from the since
                     const response = await this[method] (symbol, paginationTimestamp, maxEntriesPerRequest, params);
                     const responseLength = response.length;
-                    if (this.verbose) {
-                        let forwardMessage = 'Dynamic pagination call ' + this.numberToString (calls) + ' method ' + method + ' response length ' + this.numberToString (responseLength);
-                        if (paginationTimestamp !== undefined) {
-                            forwardMessage += ' timestamp ' + this.numberToString (paginationTimestamp);
+                    if (this.verbose || this.verboseTruncate) {
+                        if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto ('pagination', method, undefined, response)) {
+                            let forwardMessage = 'Dynamic pagination call ' + this.numberToString (calls) + ' method ' + method + ' response length ' + this.numberToString (responseLength);
+                            if (paginationTimestamp !== undefined) {
+                                forwardMessage += ' timestamp ' + this.numberToString (paginationTimestamp);
+                            }
+                            this.log (forwardMessage);
                         }
-                        this.log (forwardMessage);
                     }
                     if (responseLength === 0) {
                         break;
@@ -7755,11 +7773,13 @@ export default class Exchange {
                 }
                 errors = 0;
                 const responseLength = response.length;
-                if (this.verbose) {
-                    const cursorString = (cursorValue === undefined) ? '' : cursorValue;
-                    const iteration = (i + 1);
-                    const cursorMessage = 'Cursor pagination call ' + iteration.toString () + ' method ' + method + ' response length ' + responseLength.toString () + ' cursor ' + cursorString;
-                    this.log (cursorMessage);
+                if (this.verbose || this.verboseTruncate) {
+                    if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto ('pagination', method, undefined, response)) {
+                        const cursorString = (cursorValue === undefined) ? '' : cursorValue;
+                        const iteration = (i + 1);
+                        const cursorMessage = 'Cursor pagination call ' + iteration.toString () + ' method ' + method + ' response length ' + responseLength.toString () + ' cursor ' + cursorString;
+                        this.log (cursorMessage);
+                    }
                 }
                 if (responseLength === 0) {
                     break;
@@ -7813,10 +7833,12 @@ export default class Exchange {
                 const response = await this[method] (symbol, since, maxEntriesPerRequest, params);
                 errors = 0;
                 const responseLength = response.length;
-                if (this.verbose) {
-                    const iteration = (i + 1).toString ();
-                    const incrementalMessage = 'Incremental pagination call ' + iteration + ' method ' + method + ' response length ' + responseLength.toString ();
-                    this.log (incrementalMessage);
+                if (this.verbose || this.verboseTruncate) {
+                    if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto ('pagination', method, undefined, response)) {
+                        const iteration = (i + 1).toString ();
+                        const incrementalMessage = 'Incremental pagination call ' + iteration + ' method ' + method + ' response length ' + responseLength.toString ();
+                        this.log (incrementalMessage);
+                    }
                 }
                 if (responseLength === 0) {
                     break;

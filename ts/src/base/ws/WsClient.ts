@@ -24,8 +24,10 @@ export default class WsClient extends Client {
     startedConnecting: boolean = false;
 
     createConnection () {
-        if (this.verbose) {
-            this.log (new Date (), 'connecting to', this.url)
+        if (this.verbose || this.verboseTruncate) {
+            if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto ('createConnection', this.url)) {
+                this.log (new Date (), 'connecting to', this.url)
+            }
         }
         this.connectionStarted = milliseconds ()
         this.setConnectionTimeout ()

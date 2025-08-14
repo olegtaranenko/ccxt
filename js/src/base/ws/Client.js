@@ -170,7 +170,7 @@ export default class Client {
         }
     }
     onOpen() {
-        if (this.verbose) {
+        if (this.verbose || this.verboseTruncate) {
             this.log(new Date(), 'onOpen');
         }
         this.connectionEstablished = milliseconds();
@@ -185,18 +185,18 @@ export default class Client {
     // respond to pings coming from the server with pongs automatically
     // however, some devs may want to track connection states in their app
     onPing() {
-        if (this.verbose) {
+        if (this.verbose || this.verboseTruncate) {
             this.log(new Date(), 'onPing');
         }
     }
     onPong() {
         this.lastPong = milliseconds();
-        if (this.verbose) {
+        if (this.verbose || this.verboseTruncate) {
             this.log(new Date(), 'onPong');
         }
     }
     onError(error) {
-        if (this.verbose) {
+        if (this.verbose || this.verboseTruncate) {
             this.log(new Date(), 'onError', error.message);
         }
         if (!(error instanceof BaseError)) {
@@ -209,7 +209,7 @@ export default class Client {
     }
     /* eslint-disable no-shadow */
     onClose(event) {
-        if (this.verbose) {
+        if (this.verbose || this.verboseTruncate) {
             this.log(new Date(), 'onClose', event);
         }
         if (!this.error) {
@@ -227,12 +227,12 @@ export default class Client {
     // this method is not used at this time
     // but may be used to read protocol-level data like cookies, headers, etc
     onUpgrade(message) {
-        if (this.verbose) {
+        if (this.verbose || this.verboseTruncate) {
             this.log(new Date(), 'onUpgrade');
         }
     }
     async send(message) {
-        if (this.verbose) {
+        if (this.verbose || this.verboseTruncate) {
             this.log(new Date(), 'sending', message);
         }
         message = (typeof message === 'string') ? message : JSON.stringify(message);
@@ -286,7 +286,7 @@ export default class Client {
                 message = message.toString();
                 message = JSON.parse(message.replace(/:(\d{15,}),/g, ':"$1",'));
             }
-            if (this.verbose) {
+            if (this.verbose || this.verboseTruncate) {
                 this.log(new Date(), 'onMessage', message);
                 // unlimited depth
                 // this.log (new Date (), 'onMessage', util.inspect (message, false, null, true))
