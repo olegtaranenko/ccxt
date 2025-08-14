@@ -464,7 +464,7 @@ class ascendex extends \ccxt\async\ascendex {
         //
         // {
         //     "m" => "balance",
-        //     "accountId" => "cshQtyfq8XLAA9kcf19h8bXHbAwwoqDo",
+        //     "accountId" => "cshQtyfq8XLAA9kcf19h8bXHbAwwoqEo",
         //     "ac" => "CASH",
         //     "data" => {
         //         "a" : "USDT",
@@ -763,7 +763,7 @@ class ascendex extends \ccxt\async\ascendex {
         ), $market);
     }
 
-    public function handle_error_message(Client $client, $message) {
+    public function handle_error_message(Client $client, $message): Bool {
         //
         // {
         //     "m" => "disconnected",

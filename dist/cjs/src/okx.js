@@ -1,18 +1,20 @@
 'use strict';
 
+Object.defineProperty(exports, '__esModule', { value: true });
+
 var okx$1 = require('./abstract/okx.js');
 var errors = require('./base/errors.js');
 var Precise = require('./base/Precise.js');
 var number = require('./base/functions/number.js');
 var sha256 = require('./static_dependencies/noble-hashes/sha256.js');
 
-//  ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //  ---------------------------------------------------------------------------
 /**
  * @class okx
  * @augments Exchange
  */
-class okx extends okx$1 {
+class okx extends okx$1["default"] {
     describe() {
         return this.deepExtend(super.describe(), {
             'id': 'okx',
@@ -55,6 +57,7 @@ class okx extends okx$1 {
                 'createTriggerOrder': true,
                 'editOrder': true,
                 'fetchAccounts': true,
+                'fetchAllGreeks': true,
                 'fetchBalance': true,
                 'fetchBidsAsks': undefined,
                 'fetchBorrowInterest': true,
@@ -83,7 +86,7 @@ class okx extends okx$1 {
                 'fetchFundingIntervals': false,
                 'fetchFundingRate': true,
                 'fetchFundingRateHistory': true,
-                'fetchFundingRates': false,
+                'fetchFundingRates': true,
                 'fetchGreeks': true,
                 'fetchIndexOHLCV': true,
                 'fetchIsolatedBorrowRate': false,
@@ -106,6 +109,7 @@ class okx extends okx$1 {
                 'fetchOHLCV': true,
                 'fetchOpenInterest': true,
                 'fetchOpenInterestHistory': true,
+                'fetchOpenInterests': true,
                 'fetchOpenOrder': undefined,
                 'fetchOpenOrders': true,
                 'fetchOption': true,
@@ -307,7 +311,9 @@ class okx extends okx$1 {
                         'trade/easy-convert-currency-list': 20,
                         'trade/easy-convert-history': 20,
                         'trade/one-click-repay-currency-list': 20,
+                        'trade/one-click-repay-currency-list-v2': 20,
                         'trade/one-click-repay-history': 20,
+                        'trade/one-click-repay-history-v2': 20,
                         'trade/account-rate-limit': 1,
                         // asset
                         'asset/currencies': 5 / 3,
@@ -361,6 +367,7 @@ class okx extends okx$1 {
                         'account/spot-manual-borrow-repay': 10,
                         'account/set-auto-repay': 4,
                         'account/spot-borrow-repay-history': 4,
+                        'account/move-positions-history': 10,
                         // subaccount
                         'users/subaccount/list': 10,
                         'account/subaccount/balances': 10 / 3,
@@ -370,6 +377,7 @@ class okx extends okx$1 {
                         'asset/subaccount/managed-subaccount-bills': 5 / 3,
                         'users/entrust-subaccount-list': 10,
                         'account/subaccount/interest-limits': 4,
+                        'users/subaccount/apikey': 10,
                         // grid trading
                         'tradingBot/grid/orders-algo-pending': 1,
                         'tradingBot/grid/orders-algo-history': 1,
@@ -464,6 +472,7 @@ class okx extends okx$1 {
                         'trade/cancel-advance-algos': 1,
                         'trade/easy-convert': 20,
                         'trade/one-click-repay': 20,
+                        'trade/one-click-repay-v2': 20,
                         'trade/mass-cancel': 4,
                         'trade/cancel-all-after': 10,
                         // asset
@@ -496,11 +505,15 @@ class okx extends okx$1 {
                         'account/fixed-loan/manual-reborrow': 5,
                         'account/fixed-loan/repay-borrowing-order': 5,
                         'account/bills-history-archive': 72000,
+                        'account/move-positions': 10,
                         // subaccount
                         'users/subaccount/modify-apikey': 10,
                         'asset/subaccount/transfer': 10,
                         'users/subaccount/set-transfer-out': 10,
                         'account/subaccount/set-loan-allocation': 4,
+                        'users/subaccount/create-subaccount': 10,
+                        'users/subaccount/subaccount-apikey': 10,
+                        'users/subaccount/delete-apikey': 10,
                         // grid trading
                         'tradingBot/grid/order-algo': 1,
                         'tradingBot/grid/amend-order-algo': 1,
@@ -725,6 +738,7 @@ class okx extends okx$1 {
                     '51137': errors.InvalidOrder,
                     '51138': errors.InvalidOrder,
                     '51139': errors.InvalidOrder,
+                    '51155': errors.RestrictedLocation,
                     '51156': errors.BadRequest,
                     '51159': errors.BadRequest,
                     '51162': errors.InvalidOrder,
@@ -911,6 +925,11 @@ class okx extends okx$1 {
                     '59506': errors.ExchangeError,
                     '59507': errors.ExchangeError,
                     '59508': errors.AccountSuspended,
+                    '59515': errors.ExchangeError,
+                    '59516': errors.ExchangeError,
+                    '59517': errors.ExchangeError,
+                    '59518': errors.ExchangeError,
+                    '59519': errors.ExchangeError,
                     '59642': errors.BadRequest,
                     '59643': errors.ExchangeError,
                     // WebSocket error Codes from 60000-63999
@@ -954,6 +973,13 @@ class okx extends okx$1 {
                     '70010': errors.BadRequest,
                     '70013': errors.BadRequest,
                     '70016': errors.BadRequest,
+                    '70060': errors.BadRequest,
+                    '70061': errors.BadRequest,
+                    '70062': errors.BadRequest,
+                    '70064': errors.BadRequest,
+                    '70065': errors.BadRequest,
+                    '70066': errors.BadRequest,
+                    '70067': errors.BadRequest,
                     '1009': errors.BadRequest,
                     '4001': errors.AuthenticationError,
                     '4002': errors.BadRequest,
@@ -984,71 +1010,64 @@ class okx extends okx$1 {
                 'networks': {
                     'BTC': 'Bitcoin',
                     'BTCLN': 'Lightning',
+                    'BTCLIGHTNING': 'Lightning',
                     'BEP20': 'BSC',
+                    'BRC20': 'BRC20',
                     'ERC20': 'ERC20',
                     'TRC20': 'TRC20',
                     'CRC20': 'Crypto',
-                    // sorted
                     'ACA': 'Acala',
                     'ALGO': 'Algorand',
-                    'BHP': 'BHP',
                     'APT': 'Aptos',
+                    'SCROLL': 'Scroll',
                     'ARBONE': 'Arbitrum One',
                     'AVAXC': 'Avalanche C-Chain',
                     'AVAXX': 'Avalanche X-Chain',
-                    'ARK': 'ARK',
+                    'BASE': 'Base',
+                    'SUI': 'SUI',
+                    'ZKSYNCERA': 'zkSync Era',
+                    'LINEA': 'Linea',
                     'AR': 'Arweave',
                     'ASTR': 'Astar',
                     'BCH': 'BitcoinCash',
                     'BSV': 'Bitcoin SV',
-                    'BTM': 'Bytom',
                     'ADA': 'Cardano',
                     'CSPR': 'Casper',
                     'CELO': 'CELO',
                     'XCH': 'Chia',
-                    'CHZ': 'Chiliz',
+                    // 'CHZ': 'Chiliz', TBD: Chiliz 2.0 Chain vs Chiliz Chain
                     'ATOM': 'Cosmos',
-                    'TRUE': 'TrueChain',
-                    'DCR': 'Decred',
                     'DGB': 'Digibyte',
                     'DOGE': 'Dogecoin',
-                    'XEC': 'XEC',
                     'EGLD': 'Elrond',
+                    'CFX': 'Conflux',
                     'EOS': 'EOS',
+                    'CORE': 'CORE',
                     'ETC': 'Ethereum Classic',
                     'ETHW': 'EthereumPow',
-                    'FTM': 'Fantom',
+                    // 'FTM': 'Fantom', 'Sonic' TBD
                     'FIL': 'Filecoin',
-                    'FLOW': 'FLOW',
-                    'FSN': 'Fusion',
                     'ONE': 'Harmony',
                     'HBAR': 'Hedera',
-                    'HNT': 'Helium',
-                    'ZEN': 'Horizen',
                     'ICX': 'ICON',
                     'ICP': 'Dfinity',
                     'IOST': 'IOST',
                     'IOTA': 'MIOTA',
-                    'KDA': 'Kadena',
-                    'KAR': 'KAR',
                     'KLAY': 'Klaytn',
                     'KSM': 'Kusama',
                     'LSK': 'Lisk',
                     'LTC': 'Litecoin',
                     'METIS': 'Metis',
                     'MINA': 'Mina',
-                    'XMR': 'Monero',
                     'GLRM': 'Moonbeam',
                     'MOVR': 'Moonriver',
                     'NANO': 'Nano',
                     'NEAR': 'NEAR',
-                    'NAS': 'Nebulas',
-                    'NEM': 'New Economy Movement',
                     'NULS': 'NULS',
                     'OASYS': 'OASYS',
-                    'OKC': 'OKC',
                     'ONT': 'Ontology',
                     'OPTIMISM': 'Optimism',
+                    // 'OP': 'Optimism', or Optimism (V2), TBD
                     'LAT': 'PlatON',
                     'DOT': 'Polkadot',
                     'MATIC': 'Polygon',
@@ -1061,35 +1080,54 @@ class okx extends okx$1 {
                     'XTZ': 'Tezos',
                     'TON': 'TON',
                     'THETA': 'Theta',
-                    'VSYS': 'VSYSTEMS',
-                    'WAVES': 'WAVES',
                     'WAX': 'Wax',
-                    'ZEC': 'Zcash',
                     'ZIL': 'Zilliqa',
-                    'ZKSYNC': 'ZKSYNC',
-                    'OMNI': 'Omni',
-                    // 'NEON3': 'N3', // tbd
-                    // undetermined : "CELO-TOKEN", "Digital Cash", Khala
-                    // todo: uncomment below after consensus
-                    // 'AELF': 'AELF',
-                    // 'BITCOINDIAMOND': 'Bitcoin Diamond',
-                    // 'BITCOINGOLD': 'BitcoinGold',
-                    // 'YOYOW': 'YOYOW',
-                    // 'QTUM': 'Quantum',
-                    // 'INTCHAIN': 'INTCHAIN',
-                    // 'YOUCHAIN': 'YOUCHAIN',
-                    // 'RONIN': 'Ronin',
-                    // 'OEC': 'OEC',
-                    // 'WAYIKICHAIN': 'WGRT',
-                    // 'MDNA': 'DNA',
-                    // 'STEP': 'Step Network',
-                    // 'EMINER': 'Eminer',
-                    // 'CYBERMILES': 'CyberMiles',
-                    // 'HYPERCASH': 'HyperCash',
-                    // 'CONFLUX': 'Conflux',
-                    // 'CORTEX': 'Cortex',
-                    // 'TERRA': 'Terra',
-                    // 'TERRACLASSIC': 'Terra Classic',
+                    // non-supported known network: CRP. KAVA, TAIKO, BOB, GNO, BLAST, RSK, SEI, MANTLE, HYPE, RUNE, OSMO, XIN, WEMIX, HT, FSN, NEO, TLOS, CANTO, SCRT, AURORA, XMR
+                    // others:
+                    // "OKTC",
+                    // "X Layer",
+                    // "Polygon (Bridged)",
+                    // "BTCK-OKTC",
+                    // "ETHK-OKTC",
+                    // "Starknet",
+                    // "LTCK-OKTC",
+                    // "XRPK-OKTC",
+                    // "BCHK-OKTC",
+                    // "ETCK-OKTC",
+                    // "Endurance Smart Chain",
+                    // "Berachain",
+                    // "CELO-TOKEN",
+                    // "CFX_EVM",
+                    // "Cortex",
+                    // "DAIK-OKTC",
+                    // "Dora Vota Mainnet",
+                    // "DOTK-OKTC",
+                    // "DYDX",
+                    // "AELF",
+                    // "Enjin Relay Chain",
+                    // "FEVM",
+                    // "FILK-OKTC",
+                    // "Flare",
+                    // "Gravity Alpha Mainnet",
+                    // "INJ",
+                    // "Story",
+                    // "LINKK-OKTC",
+                    // "Terra",
+                    // "Terra Classic",
+                    // "Terra Classic (USTC)",
+                    // "MERLIN Network",
+                    // "Layer 3",
+                    // "PI",
+                    // "Ronin",
+                    // "Quantum",
+                    // "SHIBK-OKTC",
+                    // "SUSHIK-OKTC",
+                    // "Celestia",
+                    // "TRXK-OKTC",
+                    // "UNIK-OKTC",
+                    // "Venom",
+                    // "WBTCK-OKTC",
+                    // "ZetaChain",
                 },
                 'fetchOpenInterestHistory': {
                     'timeframes': {
@@ -1112,7 +1150,9 @@ class okx extends okx$1 {
                 },
                 'createOrder': 'privatePostTradeBatchOrders',
                 'createMarketBuyOrderRequiresPrice': false,
-                'fetchMarkets': ['spot', 'future', 'swap', 'option'],
+                'fetchMarkets': {
+                    'types': ['spot', 'future', 'swap', 'option'], // spot, future, swap, option
+                },
                 'timeDifference': 0,
                 'adjustForTimeDifference': false,
                 'defaultType': 'spot',
@@ -1253,6 +1293,7 @@ class okx extends okx$1 {
                     },
                     'fetchOHLCV': {
                         'limit': 300,
+                        'historical': 100,
                     },
                 },
                 'spot': {
@@ -1508,7 +1549,14 @@ class okx extends okx$1 {
         if (this.options['adjustForTimeDifference']) {
             await this.loadTimeDifference();
         }
-        const types = this.safeList(this.options, 'fetchMarkets', []);
+        let types = ['spot', 'future', 'swap', 'option'];
+        const fetchMarketsOption = this.safeDict(this.options, 'fetchMarkets');
+        if (fetchMarketsOption !== undefined) {
+            types = this.safeList(fetchMarketsOption, 'types', types);
+        }
+        else {
+            types = this.safeList(this.options, 'fetchMarkets', types); // backward-support
+        }
         let promises = [];
         let result = [];
         for (let i = 0; i < types.length; i++) {
@@ -1559,6 +1607,7 @@ class okx extends okx$1 {
         //         "instType": "OPTION",
         //         "lever": "",
         //         "listTime": "1631262612280",
+        //         "contTdSwTime": "1631262812280",
         //         "lotSz": "1",
         //         "minSz": "1",
         //         "optType": "P",
@@ -1580,8 +1629,8 @@ class okx extends okx$1 {
         const swap = (type === 'swap');
         const option = (type === 'option');
         const contract = swap || future || option;
-        let baseId = this.safeString(market, 'baseCcy');
-        let quoteId = this.safeString(market, 'quoteCcy');
+        let baseId = this.safeString(market, 'baseCcy', ''); // defaulting to '' because some weird preopen markets have empty baseId
+        let quoteId = this.safeString(market, 'quoteCcy', '');
         const settleId = this.safeString(market, 'settleCcy');
         const settle = this.safeCurrencyCode(settleId);
         const underlying = this.safeString(market, 'uly');
@@ -1597,21 +1646,27 @@ class okx extends okx$1 {
         let strikePrice = undefined;
         let optionType = undefined;
         if (contract) {
-            symbol = symbol + ':' + settle;
-            expiry = this.safeInteger(market, 'expTime');
+            if (settle !== undefined) {
+                symbol = symbol + ':' + settle;
+            }
             if (future) {
-                const ymd = this.yymmdd(expiry);
-                symbol = symbol + '-' + ymd;
+                expiry = this.safeInteger(market, 'expTime');
+                if (expiry !== undefined) {
+                    const ymd = this.yymmdd(expiry);
+                    symbol = symbol + '-' + ymd;
+                }
             }
             else if (option) {
+                expiry = this.safeInteger(market, 'expTime');
                 strikePrice = this.safeString(market, 'stk');
                 optionType = this.safeString(market, 'optType');
-                const ymd = this.yymmdd(expiry);
-                symbol = symbol + '-' + ymd + '-' + strikePrice + '-' + optionType;
-                optionType = (optionType === 'P') ? 'put' : 'call';
+                if (expiry !== undefined) {
+                    const ymd = this.yymmdd(expiry);
+                    symbol = symbol + '-' + ymd + '-' + strikePrice + '-' + optionType;
+                    optionType = (optionType === 'P') ? 'put' : 'call';
+                }
             }
         }
-        const tickSize = this.safeString(market, 'tickSz');
         const fees = this.safeDict2(this.fees, type, 'trading', {});
         let maxLeverage = this.safeString(market, 'lever', '1');
         maxLeverage = Precise["default"].stringMax(maxLeverage, '1');
@@ -1640,10 +1695,10 @@ class okx extends okx$1 {
             'expiryDatetime': this.iso8601(expiry),
             'strike': this.parseNumber(strikePrice),
             'optionType': optionType,
-            'created': this.safeInteger(market, 'listTime'),
+            'created': this.safeInteger2(market, 'contTdSwTime', 'listTime'),
             'precision': {
                 'amount': this.safeNumber(market, 'lotSz'),
-                'price': this.parseNumber(tickSize),
+                'price': this.safeNumber(market, 'tickSz'),
             },
             'limits': {
                 'leverage': {
@@ -1800,69 +1855,57 @@ class okx extends okx$1 {
             const code = currency['code'];
             const chains = dataByCurrencyId[currencyId];
             const networks = {};
-            let currencyActive = false;
-            let depositEnabled = false;
-            let withdrawEnabled = false;
-            let maxPrecision = undefined;
-            for (let j = 0; j < chains.length; j++) {
+            let type = 'crypto';
+            const chainsLength = chains.length;
+            for (let j = 0; j < chainsLength; j++) {
                 const chain = chains[j];
-                const canDeposit = this.safeBool(chain, 'canDep');
-                depositEnabled = (canDeposit) ? canDeposit : depositEnabled;
-                const canWithdraw = this.safeBool(chain, 'canWd');
-                withdrawEnabled = (canWithdraw) ? canWithdraw : withdrawEnabled;
-                const canInternal = this.safeBool(chain, 'canInternal');
-                const active = (canDeposit && canWithdraw && canInternal) ? true : false;
-                currencyActive = (active) ? active : currencyActive;
-                const networkId = this.safeString(chain, 'chain');
-                if ((networkId !== undefined) && (networkId.indexOf('-') >= 0)) {
-                    const idParts = networkId.split('-');
-                    const parts = this.arraySlice(idParts, 1);
-                    const chainPart = parts.join('-');
-                    const networkCode = this.networkIdToCode(chainPart, currency['code']);
-                    const precision = this.parsePrecision(this.safeString(chain, 'wdTickSz'));
-                    if (maxPrecision === undefined) {
-                        maxPrecision = precision;
-                    }
-                    else {
-                        maxPrecision = Precise["default"].stringMin(maxPrecision, precision);
-                    }
-                    networks[networkCode] = {
-                        'id': networkId,
-                        'network': networkCode,
-                        'active': active,
-                        'deposit': canDeposit,
-                        'withdraw': canWithdraw,
-                        'fee': this.safeNumber(chain, 'fee'),
-                        'precision': this.parseNumber(precision),
-                        'limits': {
-                            'withdraw': {
-                                'min': this.safeNumber(chain, 'minWd'),
-                                'max': this.safeNumber(chain, 'maxWd'),
-                            },
-                        },
-                        'info': chain,
-                    };
+                // allow empty string for rare fiat-currencies, e.g. TRY
+                const networkId = this.safeString(chain, 'chain', ''); // USDT-BEP20, USDT-Avalance-C, etc
+                if (networkId === '') {
+                    // only happens for fiat 'TRY' currency
+                    type = 'fiat';
                 }
+                const idParts = networkId.split('-');
+                const parts = this.arraySlice(idParts, 1);
+                const chainPart = parts.join('-');
+                const networkCode = this.networkIdToCode(chainPart, currency['code']);
+                networks[networkCode] = {
+                    'id': networkId,
+                    'network': networkCode,
+                    'active': undefined,
+                    'deposit': this.safeBool(chain, 'canDep'),
+                    'withdraw': this.safeBool(chain, 'canWd'),
+                    'fee': this.safeNumber(chain, 'fee'),
+                    'precision': this.parseNumber(this.parsePrecision(this.safeString(chain, 'wdTickSz'))),
+                    'limits': {
+                        'withdraw': {
+                            'min': this.safeNumber(chain, 'minWd'),
+                            'max': this.safeNumber(chain, 'maxWd'),
+                        },
+                    },
+                    'info': chain,
+                };
             }
             const firstChain = this.safeDict(chains, 0, {});
-            result[code] = {
+            result[code] = this.safeCurrencyStructure({
                 'info': chains,
                 'code': code,
                 'id': currencyId,
                 'name': this.safeString(firstChain, 'name'),
-                'active': currencyActive,
-                'deposit': depositEnabled,
-                'withdraw': withdrawEnabled,
+                'active': undefined,
+                'deposit': undefined,
+                'withdraw': undefined,
                 'fee': undefined,
-                'precision': this.parseNumber(maxPrecision),
+                'precision': undefined,
                 'limits': {
                     'amount': {
                         'min': undefined,
                         'max': undefined,
                     },
                 },
+                'type': type,
                 'networks': networks,
-            };
+            });
         }
         return result;
     }
@@ -2401,6 +2444,9 @@ class okx extends okx$1 {
         if (limit === undefined) {
             limit = 100; // default 100, max 100
         }
+        else {
+            limit = Math.min(limit, 300); // max 100
+        }
         const duration = this.parseTimeframe(timeframe);
         let bar = this.safeString(this.timeframes, timeframe, timeframe);
         if ((timezone === 'UTC') && (duration >= 21600)) { // if utc and timeframe >= 6h
@@ -2419,6 +2465,7 @@ class okx extends okx$1 {
             const historyBorder = now - ((1440 - 1) * durationInMilliseconds);
             if (since < historyBorder) {
                 defaultType = 'HistoryCandles';
+                limit = Math.min(limit, 100); // max 100 for historical endpoint
             }
             const startTime = Math.max(since - 1, 0);
             request['before'] = startTime;
@@ -2566,12 +2613,12 @@ class okx extends okx$1 {
             // it may be incorrect to use total, free and used for swap accounts
             const eq = this.safeString(balance, 'eq');
             const availEq = this.safeString(balance, 'availEq');
-            if ((eq === undefined) || (availEq === undefined)) {
+            account['total'] = eq;
+            if (availEq === undefined) {
                 account['free'] = this.safeString(balance, 'availBal');
                 account['used'] = this.safeString(balance, 'frozenBal');
             }
             else {
-                account['total'] = eq;
                 account['free'] = availEq;
             }
             result[code] = account;
@@ -2843,7 +2890,7 @@ class okx extends okx$1 {
     }
     createOrderRequest(symbol, type, side, amount, price = undefined, params = {}) {
         const market = this.market(symbol);
-        const request = {
+        let request = {
             'instId': market['id'],
             // 'ccy': currency['id'], // only applicable to cross MARGIN orders in single-currency margin
             // 'clOrdId': clientOrderId, // up to 32 characters, must be unique
@@ -3008,7 +3055,8 @@ class okx extends okx$1 {
                 if (stopLossTriggerPrice === undefined) {
                     throw new errors.InvalidOrder(this.id + ' createOrder() requires a trigger price in params["stopLoss"]["triggerPrice"], or params["stopLoss"]["stopPrice"], or params["stopLoss"]["slTriggerPx"] for a stop loss order');
                 }
-                request['slTriggerPx'] = this.priceToPrecision(symbol, stopLossTriggerPrice);
+                const slTriggerPx = this.priceToPrecision(symbol, stopLossTriggerPrice);
+                request['slTriggerPx'] = slTriggerPx;
                 const stopLossLimitPrice = this.safeValueN(stopLoss, ['price', 'stopLossPrice', 'slOrdPx']);
                 const stopLossOrderType = this.safeString(stopLoss, 'type');
                 if (stopLossOrderType !== undefined) {
@@ -3100,6 +3148,14 @@ class okx extends okx$1 {
             if (twoWayCondition) {
                 request['ordType'] = 'oco';
             }
+            if (side === 'sell') {
+                request = this.omit(request, 'tgtCcy');
+            }
+            if (this.safeString(request, 'tdMode') === 'cash') {
+                // for some reason tdMode = cash throws
+                // {"code":"1","data":[{"algoClOrdId":"","algoId":"","clOrdId":"","sCode":"51000","sMsg":"Parameter tdMode error ","tag":""}],"msg":""}
+                request['tdMode'] = marginMode;
+            }
             if (takeProfitPrice !== undefined) {
                 request['tpTriggerPx'] = this.priceToPrecision(symbol, takeProfitPrice);
                 let tpOrdPxReq = '-1';
@@ -3159,6 +3215,7 @@ class okx extends okx$1 {
      * @param {string} [params.trailingPercent] the percent to trail away from the current market price
      * @param {string} [params.tpOrdKind] 'condition' or 'limit', the default is 'condition'
      * @param {bool} [params.hedged] *swap and future only* true for hedged mode, false for one way mode
+     * @param {string} [params.marginMode] 'cross' or 'isolated', the default is 'cross'
      * @returns {object} an [order structure]{@link https://docs.ccxt.com/#/?id=order-structure}
      */
     async createOrder(symbol, type, side, amount, price = undefined, params = {}) {
@@ -3432,7 +3489,7 @@ class okx extends okx$1 {
         const trailing = this.safeBool(params, 'trailing', false);
         if (trigger || trailing) {
             const orderInner = await this.cancelOrders([id], symbol, params);
-            return this.safeValue(orderInner, 0);
+            return this.safeDict(orderInner, 0);
         }
         await this.loadMarkets();
         const market = this.market(symbol);
@@ -3753,6 +3810,84 @@ class okx extends okx$1 {
         //         "tradeId": "",
         //         "uTime": "1621910749815"
         //     }
+        //
+        // watchOrders & fetchClosedOrders
+        //
+        //    {
+        //        "algoClOrdId": "",
+        //        "algoId": "",
+        //        "attachAlgoClOrdId": "",
+        //        "attachAlgoOrds": [],
+        //        "cancelSource": "",
+        //        "cancelSourceReason": "", // not present in WS, but present in fetchClosedOrders
+        //        "category": "normal",
+        //        "ccy": "", // empty in WS, but eg. `USDT` in fetchClosedOrders
+        //        "clOrdId": "",
+        //        "cTime": "1751705801423",
+        //        "feeCcy": "USDT",
+        //        "instId": "LINK-USDT-SWAP",
+        //        "instType": "SWAP",
+        //        "isTpLimit": "false",
+        //        "lever": "3",
+        //        "linkedAlgoOrd": { "algoId": "" },
+        //        "ordId": "2657625147249614848",
+        //        "ordType": "limit",
+        //        "posSide": "net",
+        //        "px": "13.142",
+        //        "pxType": "",
+        //        "pxUsd": "",
+        //        "pxVol": "",
+        //        "quickMgnType": "",
+        //        "rebate": "0",
+        //        "rebateCcy": "USDT",
+        //        "reduceOnly": "true",
+        //        "side": "sell",
+        //        "slOrdPx": "",
+        //        "slTriggerPx": "",
+        //        "slTriggerPxType": "",
+        //        "source": "",
+        //        "stpId": "",
+        //        "stpMode": "cancel_maker",
+        //        "sz": "0.1",
+        //        "tag": "",
+        //        "tdMode": "isolated",
+        //        "tgtCcy": "",
+        //        "tpOrdPx": "",
+        //        "tpTriggerPx": "",
+        //        "tpTriggerPxType": "",
+        //        "uTime": "1751705807467",
+        //        "reqId": "",                      // field present only in WS
+        //        "msg": "",                        // field present only in WS
+        //        "amendResult": "",                // field present only in WS
+        //        "amendSource": "",                // field present only in WS
+        //        "code": "0",                      // field present only in WS
+        //        "fillFwdPx": "",                  // field present only in WS
+        //        "fillMarkVol": "",                // field present only in WS
+        //        "fillPxUsd": "",                  // field present only in WS
+        //        "fillPxVol": "",                  // field present only in WS
+        //        "lastPx": "13.142",               // field present only in WS
+        //        "notionalUsd": "1.314515408",     // field present only in WS
+        //
+        //     #### these below fields are empty on first omit from websocket, because of "creation" event. however, if order is executed, it also immediately sends another update with these fields filled  ###
+        //
+        //        "pnl": "-0.0001",
+        //        "accFillSz": "0.1",
+        //        "avgPx": "13.142",
+        //        "state": "filled",
+        //        "fee": "-0.00026284",
+        //        "fillPx": "13.142",
+        //        "tradeId": "293429690",
+        //        "fillSz": "0.1",
+        //        "fillTime": "1751705807467",
+        //        "fillNotionalUsd": "1.314515408", // field present only in WS
+        //        "fillPnl": "-0.0001",             // field present only in WS
+        //        "fillFee": "-0.00026284",         // field present only in WS
+        //        "fillFeeCcy": "USDT",             // field present only in WS
+        //        "execType": "M",                  // field present only in WS
+        //        "fillMarkPx": "13.141",           // field present only in WS
+        //        "fillIdxPx": "13.147"             // field present only in WS
+        //    }
+        //
         //
         // Algo Order fetchOpenOrders, fetchCanceledOrders, fetchClosedOrders
         //
@@ -5050,7 +5185,7 @@ class okx extends okx$1 {
      */
     async fetchDepositAddress(code, params = {}) {
         await this.loadMarkets();
-        const rawNetwork = this.safeStringUpper(params, 'network');
+        const rawNetwork = this.safeString(params, 'network'); // some networks are like "Dora Vota Mainnet"
         params = this.omit(params, 'network');
         code = this.safeCurrencyCode(code);
         const network = this.networkIdToCode(rawNetwork, code);
@@ -5107,7 +5242,7 @@ class okx extends okx$1 {
         let fee = this.safeString(params, 'fee');
         if (fee === undefined) {
             const currencies = await this.fetchCurrencies();
-            this.currencies = this.deepExtend(this.currencies, currencies);
+            this.currencies = this.mapToSafeMap(this.deepExtend(this.currencies, currencies));
             const targetNetwork = this.safeDict(currency['networks'], this.networkIdToCode(network), {});
             fee = this.safeString(targetNetwork, 'fee');
             if (fee === undefined) {
@@ -6264,7 +6399,7 @@ class okx extends okx$1 {
         const nextFundingRate = this.safeNumber(contract, 'nextFundingRate');
         const fundingTime = this.safeInteger(contract, 'fundingTime');
         const fundingTimeString = this.safeString(contract, 'fundingTime');
-        const nextFundingTimeString = this.safeString(contract, 'nextFundingRate');
+        const nextFundingTimeString = this.safeString(contract, 'nextFundingTime');
         const millisecondsInterval = Precise["default"].stringSub(nextFundingTimeString, fundingTimeString);
         // https://www.okx.com/support/hc/en-us/articles/360053909272-Ⅸ-Introduction-to-perpetual-swap-funding-fee
         // > The current interest is 0.
@@ -6349,6 +6484,39 @@ class okx extends okx$1 {
         const data = this.safeList(response, 'data', []);
         const entry = this.safeDict(data, 0, {});
         return this.parseFundingRate(entry, market);
+    }
+    /**
+     * @method
+     * @name okx#fetchFundingRates
+     * @description fetches the current funding rates for multiple symbols
+     * @see https://www.okx.com/docs-v5/en/#public-data-rest-api-get-funding-rate
+     * @param {string[]} symbols unified market symbols
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object} a dictionary of [funding rates structure]{@link https://docs.ccxt.com/#/?id=funding-rates-structure}
+     */
+    async fetchFundingRates(symbols = undefined, params = {}) {
+        await this.loadMarkets();
+        symbols = this.marketSymbols(symbols, 'swap', true);
+        const request = { 'instId': 'ANY' };
+        const response = await this.publicGetPublicFundingRate(this.extend(request, params));
+        //
+        //    {
+        //        "code": "0",
+        //        "data": [
+        //            {
+        //                "fundingRate": "0.00027815",
+        //                "fundingTime": "1634256000000",
+        //                "instId": "BTC-USD-SWAP",
+        //                "instType": "SWAP",
+        //                "nextFundingRate": "0.00017",
+        //                "nextFundingTime": "1634284800000"
+        //            }
+        //        ],
+        //        "msg": ""
+        //    }
+        //
+        const data = this.safeList(response, 'data', []);
+        return this.parseFundingRates(data, symbols);
     }
     /**
      * @method
@@ -7129,7 +7297,7 @@ class okx extends okx$1 {
     /**
      * @method
      * @name okx#fetchBorrowInterest
-     * @description fetch the interest owed by the user for borrowing currency for margin trading
+     * @description fetch the interest owed b the user for borrowing currency for margin trading
      * @see https://www.okx.com/docs-v5/en/#rest-api-account-get-interest-accrued-data
      * @param {string} code the unified currency code for the currency of the interest
      * @param {string} symbol the market symbol of an isolated margin market, if undefined, the interest for cross margin markets is returned
@@ -7353,6 +7521,65 @@ class okx extends okx$1 {
         //
         const data = this.safeList(response, 'data', []);
         return this.parseOpenInterest(data[0], market);
+    }
+    /**
+     * @method
+     * @name okx#fetchOpenInterests
+     * @description Retrieves the open interests of some currencies
+     * @see https://www.okx.com/docs-v5/en/#rest-api-public-data-get-open-interest
+     * @param {string[]} symbols Unified CCXT market symbols
+     * @param {object} [params] exchange specific parameters
+     * @param {string} params.instType Instrument type, options: 'SWAP', 'FUTURES', 'OPTION', default to 'SWAP'
+     * @param {string} params.uly Underlying, Applicable to FUTURES/SWAP/OPTION, if instType is 'OPTION', either uly or instFamily is required
+     * @param {string} params.instFamily Instrument family, Applicable to FUTURES/SWAP/OPTION, if instType is 'OPTION', either uly or instFamily is required
+     * @returns {object} an dictionary of [open interest structures]{@link https://docs.ccxt.com/#/?id=open-interest-structure}
+     */
+    async fetchOpenInterests(symbols = undefined, params = {}) {
+        await this.loadMarkets();
+        symbols = this.marketSymbols(symbols, undefined, true, true);
+        let market = undefined;
+        if (symbols !== undefined) {
+            market = this.market(symbols[0]);
+        }
+        let marketType = undefined;
+        [marketType, params] = this.handleSubTypeAndParams('fetchOpenInterests', market, params, 'swap');
+        let instType = 'SWAP';
+        if (marketType === 'future') {
+            instType = 'FUTURES';
+        }
+        else if (instType === 'option') {
+            instType = 'OPTION';
+        }
+        const request = { 'instType': instType };
+        const uly = this.safeString(params, 'uly');
+        if (uly !== undefined) {
+            request['uly'] = uly;
+        }
+        const instFamily = this.safeString(params, 'instFamily');
+        if (instFamily !== undefined) {
+            request['instFamily'] = instFamily;
+        }
+        if (instType === 'OPTION' && uly === undefined && instFamily === undefined) {
+            throw new errors.BadRequest(this.id + ' fetchOpenInterests() requires either uly or instFamily parameter for OPTION markets');
+        }
+        const response = await this.publicGetPublicOpenInterest(this.extend(request, params));
+        //
+        //     {
+        //         "code": "0",
+        //         "data": [
+        //             {
+        //                 "instId": "BTC-USDT-SWAP",
+        //                 "instType": "SWAP",
+        //                 "oi": "2125419",
+        //                 "oiCcy": "21254.19",
+        //                 "ts": "1664005108969"
+        //             }
+        //         ],
+        //         "msg": ""
+        //     }
+        //
+        const data = this.safeList(response, 'data', []);
+        return this.parseOpenInterests(data, symbols);
     }
     /**
      * @method
@@ -7815,6 +8042,83 @@ class okx extends okx$1 {
             }
         }
         return undefined;
+    }
+    /**
+     * @method
+     * @name okx#fetchAllGreeks
+     * @description fetches all option contracts greeks, financial metrics used to measure the factors that affect the price of an options contract
+     * @see https://www.okx.com/docs-v5/en/#public-data-rest-api-get-option-market-data
+     * @param {string[]} [symbols] unified symbols of the markets to fetch greeks for, all markets are returned if not assigned
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {string} params.uly Underlying, either uly or instFamily is required
+     * @param {string} params.instFamily Instrument family, either uly or instFamily is required
+     * @returns {object} a [greeks structure]{@link https://docs.ccxt.com/#/?id=greeks-structure}
+     */
+    async fetchAllGreeks(symbols = undefined, params = {}) {
+        await this.loadMarkets();
+        const request = {};
+        symbols = this.marketSymbols(symbols, undefined, true, true, true);
+        let symbolsLength = undefined;
+        if (symbols !== undefined) {
+            symbolsLength = symbols.length;
+        }
+        if ((symbols === undefined) || (symbolsLength !== 1)) {
+            const uly = this.safeString(params, 'uly');
+            if (uly !== undefined) {
+                request['uly'] = uly;
+            }
+            const instFamily = this.safeString(params, 'instFamily');
+            if (instFamily !== undefined) {
+                request['instFamily'] = instFamily;
+            }
+            if ((uly === undefined) && (instFamily === undefined)) {
+                throw new errors.BadRequest(this.id + ' fetchAllGreeks() requires either a uly or instFamily parameter');
+            }
+        }
+        let market = undefined;
+        if (symbols !== undefined) {
+            if (symbolsLength === 1) {
+                market = this.market(symbols[0]);
+                const marketId = market['id'];
+                const optionParts = marketId.split('-');
+                request['uly'] = market['info']['uly'];
+                request['instFamily'] = market['info']['instFamily'];
+                request['expTime'] = this.safeString(optionParts, 2);
+            }
+        }
+        params = this.omit(params, ['uly', 'instFamily']);
+        const response = await this.publicGetPublicOptSummary(this.extend(request, params));
+        //
+        //     {
+        //         "code": "0",
+        //         "data": [
+        //             {
+        //                 "askVol": "0",
+        //                 "bidVol": "0",
+        //                 "delta": "0.5105464486882039",
+        //                 "deltaBS": "0.7325502184143025",
+        //                 "fwdPx": "37675.80158694987186",
+        //                 "gamma": "-0.13183515090501083",
+        //                 "gammaBS": "0.000024139685826358558",
+        //                 "instId": "BTC-USD-240329-32000-C",
+        //                 "instType": "OPTION",
+        //                 "lever": "4.504428015946619",
+        //                 "markVol": "0.5916253554539876",
+        //                 "realVol": "0",
+        //                 "theta": "-0.0004202992014012855",
+        //                 "thetaBS": "-18.52354631567909",
+        //                 "ts": "1699586421976",
+        //                 "uly": "BTC-USD",
+        //                 "vega": "0.0020207455080045846",
+        //                 "vegaBS": "74.44022302387287",
+        //                 "volLv": "0.5948549730405797"
+        //             },
+        //         ],
+        //         "msg": ""
+        //     }
+        //
+        const data = this.safeList(response, 'data', []);
+        return this.parseAllGreeks(data, symbols);
     }
     parseGreeks(greeks, market = undefined) {
         //
@@ -8703,4 +9007,4 @@ class okx extends okx$1 {
     }
 }
 
-module.exports = okx;
+exports["default"] = okx;

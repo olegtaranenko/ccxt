@@ -7,7 +7,7 @@ from ccxt.async_support.base.exchange import Exchange
 from ccxt.abstract.okx import ImplicitAPI
 import asyncio
 import hashlib
-from ccxt.base.types import Account, Any, Balances, BorrowInterest, Conversion, CrossBorrowRate, CrossBorrowRates, Currencies, Currency, DepositAddress, Greeks, Int, LedgerEntry, Leverage, LeverageTier, LongShortRatio, MarginModification, Market, Num, Option, OptionChain, Order, OrderBook, OrderRequest, CancellationRequest, OrderSide, OrderType, Position, Str, Strings, Ticker, Tickers, FundingRate, Trade, TradingFeeInterface, Transaction, MarketInterface, TransferEntry
+from ccxt.base.types import Account, Any, Balances, BorrowInterest, Conversion, CrossBorrowRate, CrossBorrowRates, Currencies, Currency, DepositAddress, Greeks, Int, LedgerEntry, Leverage, LeverageTier, LongShortRatio, MarginModification, Market, Num, Option, OptionChain, Order, OrderBook, OrderRequest, CancellationRequest, OrderSide, OrderType, Position, Str, Strings, Ticker, Tickers, FundingRate, FundingRates, OpenInterests, Trade, TradingFeeInterface, Transaction, MarketInterface, TransferEntry
 from typing import List
 from ccxt.base.errors import ExchangeError
 from ccxt.base.errors import AuthenticationError
@@ -19,6 +19,7 @@ from ccxt.base.errors import BadRequest
 from ccxt.base.errors import BadSymbol
 from ccxt.base.errors import OperationRejected
 from ccxt.base.errors import ManualInteractionNeeded
+from ccxt.base.errors import RestrictedLocation
 from ccxt.base.errors import InsufficientFunds
 from ccxt.base.errors import InvalidAddress
 from ccxt.base.errors import InvalidOrder
@@ -81,6 +82,7 @@ class okx(Exchange, ImplicitAPI):
                 'createTriggerOrder': True,
                 'editOrder': True,
                 'fetchAccounts': True,
+                'fetchAllGreeks': True,
                 'fetchBalance': True,
                 'fetchBidsAsks': None,
                 'fetchBorrowInterest': True,
@@ -109,7 +111,7 @@ class okx(Exchange, ImplicitAPI):
                 'fetchFundingIntervals': False,
                 'fetchFundingRate': True,
                 'fetchFundingRateHistory': True,
-                'fetchFundingRates': False,
+                'fetchFundingRates': True,
                 'fetchGreeks': True,
                 'fetchIndexOHLCV': True,
                 'fetchIsolatedBorrowRate': False,
@@ -132,6 +134,7 @@ class okx(Exchange, ImplicitAPI):
                 'fetchOHLCV': True,
                 'fetchOpenInterest': True,
                 'fetchOpenInterestHistory': True,
+                'fetchOpenInterests': True,
                 'fetchOpenOrder': None,
                 'fetchOpenOrders': True,
                 'fetchOption': True,
@@ -333,7 +336,9 @@ class okx(Exchange, ImplicitAPI):
                         'trade/easy-convert-currency-list': 20,
                         'trade/easy-convert-history': 20,
                         'trade/one-click-repay-currency-list': 20,
+                        'trade/one-click-repay-currency-list-v2': 20,
                         'trade/one-click-repay-history': 20,
+                        'trade/one-click-repay-history-v2': 20,
                         'trade/account-rate-limit': 1,
                         # asset
                         'asset/currencies': 5 / 3,
@@ -387,6 +392,7 @@ class okx(Exchange, ImplicitAPI):
                         'account/spot-manual-borrow-repay': 10,
                         'account/set-auto-repay': 4,
                         'account/spot-borrow-repay-history': 4,
+                        'account/move-positions-history': 10,
                         # subaccount
                         'users/subaccount/list': 10,
                         'account/subaccount/balances': 10 / 3,
@@ -396,6 +402,7 @@ class okx(Exchange, ImplicitAPI):
                         'asset/subaccount/managed-subaccount-bills': 5 / 3,
                         'users/entrust-subaccount-list': 10,
                         'account/subaccount/interest-limits': 4,
+                        'users/subaccount/apikey': 10,
                         # grid trading
                         'tradingBot/grid/orders-algo-pending': 1,
                         'tradingBot/grid/orders-algo-history': 1,
@@ -490,6 +497,7 @@ class okx(Exchange, ImplicitAPI):
                         'trade/cancel-advance-algos': 1,
                         'trade/easy-convert': 20,
                         'trade/one-click-repay': 20,
+                        'trade/one-click-repay-v2': 20,
                         'trade/mass-cancel': 4,
                         'trade/cancel-all-after': 10,
                         # asset
@@ -522,11 +530,15 @@ class okx(Exchange, ImplicitAPI):
                         'account/fixed-loan/manual-reborrow': 5,
                         'account/fixed-loan/repay-borrowing-order': 5,
                         'account/bills-history-archive': 72000,  # 12 req/day
+                        'account/move-positions': 10,
                         # subaccount
                         'users/subaccount/modify-apikey': 10,
                         'asset/subaccount/transfer': 10,
                         'users/subaccount/set-transfer-out': 10,
                         'account/subaccount/set-loan-allocation': 4,
+                        'users/subaccount/create-subaccount': 10,
+                        'users/subaccount/subaccount-apikey': 10,
+                        'users/subaccount/delete-apikey': 10,
                         # grid trading
                         'tradingBot/grid/order-algo': 1,
                         'tradingBot/grid/amend-order-algo': 1,
@@ -751,6 +763,7 @@ class okx(Exchange, ImplicitAPI):
                     '51137': InvalidOrder,  # Your opening price has triggered the limit price, and the max buy price is {0}
                     '51138': InvalidOrder,  # Your opening price has triggered the limit price, and the min sell price is {0}
                     '51139': InvalidOrder,  # Reduce-only feature is unavailable for the spot transactions by simple account
+                    '51155': RestrictedLocation,  # {"code":"1","data":[{"clOrdId":"e847xxx","ordId":"","sCode":"51155","sMsg":"You can't trade self pair or borrow self crypto due to local compliance restrictions. ","tag":"e847xxx","ts":"1753979177157"}],"inTime":"1753979177157408","msg":"All operations failed","outTime":"1753979177157874"}
                     '51156': BadRequest,  # You're leading trades in long/short mode and can't use self API endpoint to close positions
                     '51159': BadRequest,  # You're leading trades in buy/sell mode. If you want to place orders using self API endpoint, the orders must be in the same direction existing positions and open orders.
                     '51162': InvalidOrder,  # You have {instrument} open orders. Cancel these orders and try again
@@ -937,6 +950,11 @@ class okx(Exchange, ImplicitAPI):
                     '59506': ExchangeError,  # APIKey does not exist
                     '59507': ExchangeError,  # The two accounts involved in a transfer must be two different sub accounts under the same parent account
                     '59508': AccountSuspended,  # The sub account of {0} is suspended
+                    '59515': ExchangeError,  # You are currently not on the custody whitelist. Please contact customer service for assistance.
+                    '59516': ExchangeError,  # Please create the Copper custody funding account first.
+                    '59517': ExchangeError,  # Please create the Komainu custody funding account first.
+                    '59518': ExchangeError,  # You can’t create a sub-account using the API; please use the app or web.
+                    '59519': ExchangeError,  # You can’t use self function/feature while it's frozen, due to: {freezereason}
                     '59642': BadRequest,  # Lead and copy traders can only use margin-free or single-currency margin account modes
                     '59643': ExchangeError,  # Couldn’t switch account modes’re currently copying spot trades
                     # WebSocket error Codes from 60000-63999
@@ -980,6 +998,13 @@ class okx(Exchange, ImplicitAPI):
                     '70010': BadRequest,  # Timestamp parameters need to be in Unix timestamp format in milliseconds.
                     '70013': BadRequest,  # endTs needs to be bigger than or equal to beginTs.
                     '70016': BadRequest,  # Please specify your instrument settings for at least one instType.
+                    '70060': BadRequest,  # The account doesn’t exist or the position side is incorrect. To and from accounts must be under the same main account.
+                    '70061': BadRequest,  # To move position, please enter a position that’s opposite to your current side and is smaller than or equal to your current size.
+                    '70062': BadRequest,  # account has reached the maximum number of position transfers allowed per day.
+                    '70064': BadRequest,  # Position does not exist.
+                    '70065': BadRequest,  # Couldn’t move position. Execution price cannot be determined
+                    '70066': BadRequest,  # Moving positions isn't supported in spot mode. Switch to any other account mode and try again.
+                    '70067': BadRequest,  # Moving positions isn't supported in margin trading.
                     '1009': BadRequest,  # Request message exceeds the maximum frame length
                     '4001': AuthenticationError,  # Login Failed
                     '4002': BadRequest,  # Invalid Request
@@ -1010,71 +1035,64 @@ class okx(Exchange, ImplicitAPI):
                 'networks': {
                     'BTC': 'Bitcoin',
                     'BTCLN': 'Lightning',
+                    'BTCLIGHTNING': 'Lightning',
                     'BEP20': 'BSC',
+                    'BRC20': 'BRC20',
                     'ERC20': 'ERC20',
                     'TRC20': 'TRC20',
                     'CRC20': 'Crypto',
-                    # sorted
                     'ACA': 'Acala',
                     'ALGO': 'Algorand',
-                    'BHP': 'BHP',
                     'APT': 'Aptos',
+                    'SCROLL': 'Scroll',
                     'ARBONE': 'Arbitrum One',
                     'AVAXC': 'Avalanche C-Chain',
                     'AVAXX': 'Avalanche X-Chain',
-                    'ARK': 'ARK',
+                    'BASE': 'Base',
+                    'SUI': 'SUI',
+                    'ZKSYNCERA': 'zkSync Era',
+                    'LINEA': 'Linea',
                     'AR': 'Arweave',
                     'ASTR': 'Astar',
                     'BCH': 'BitcoinCash',
                     'BSV': 'Bitcoin SV',
-                    'BTM': 'Bytom',
                     'ADA': 'Cardano',
                     'CSPR': 'Casper',
                     'CELO': 'CELO',
                     'XCH': 'Chia',
-                    'CHZ': 'Chiliz',
+                    # 'CHZ': 'Chiliz', TBD: Chiliz 2.0 Chain vs Chiliz Chain
                     'ATOM': 'Cosmos',
-                    'TRUE': 'TrueChain',
-                    'DCR': 'Decred',
                     'DGB': 'Digibyte',
                     'DOGE': 'Dogecoin',
-                    'XEC': 'XEC',
                     'EGLD': 'Elrond',
+                    'CFX': 'Conflux',  # CFX_EVM is different
                     'EOS': 'EOS',
+                    'CORE': 'CORE',
                     'ETC': 'Ethereum Classic',
                     'ETHW': 'EthereumPow',
-                    'FTM': 'Fantom',
+                    # 'FTM': 'Fantom', 'Sonic' TBD
                     'FIL': 'Filecoin',
-                    'FLOW': 'FLOW',
-                    'FSN': 'Fusion',
                     'ONE': 'Harmony',
                     'HBAR': 'Hedera',
-                    'HNT': 'Helium',
-                    'ZEN': 'Horizen',
                     'ICX': 'ICON',
                     'ICP': 'Dfinity',
                     'IOST': 'IOST',
                     'IOTA': 'MIOTA',
-                    'KDA': 'Kadena',
-                    'KAR': 'KAR',
                     'KLAY': 'Klaytn',
                     'KSM': 'Kusama',
                     'LSK': 'Lisk',
                     'LTC': 'Litecoin',
                     'METIS': 'Metis',
                     'MINA': 'Mina',
-                    'XMR': 'Monero',
                     'GLRM': 'Moonbeam',
                     'MOVR': 'Moonriver',
                     'NANO': 'Nano',
                     'NEAR': 'NEAR',
-                    'NAS': 'Nebulas',
-                    'NEM': 'New Economy Movement',
                     'NULS': 'NULS',
                     'OASYS': 'OASYS',
-                    'OKC': 'OKC',
                     'ONT': 'Ontology',
                     'OPTIMISM': 'Optimism',
+                    # 'OP': 'Optimism', or Optimism(V2), TBD
                     'LAT': 'PlatON',
                     'DOT': 'Polkadot',
                     'MATIC': 'Polygon',
@@ -1087,35 +1105,54 @@ class okx(Exchange, ImplicitAPI):
                     'XTZ': 'Tezos',
                     'TON': 'TON',
                     'THETA': 'Theta',
-                    'VSYS': 'VSYSTEMS',
-                    'WAVES': 'WAVES',
                     'WAX': 'Wax',
-                    'ZEC': 'Zcash',
                     'ZIL': 'Zilliqa',
-                    'ZKSYNC': 'ZKSYNC',
-                    'OMNI': 'Omni',
-                    # 'NEON3': 'N3',  # tbd
-                    # undetermined : "CELO-TOKEN", "Digital Cash", Khala
-                    # todo: uncomment below after consensus
-                    # 'AELF': 'AELF',
-                    # 'BITCOINDIAMOND': 'Bitcoin Diamond',
-                    # 'BITCOINGOLD': 'BitcoinGold',
-                    # 'YOYOW': 'YOYOW',
-                    # 'QTUM': 'Quantum',
-                    # 'INTCHAIN': 'INTCHAIN',
-                    # 'YOUCHAIN': 'YOUCHAIN',
-                    # 'RONIN': 'Ronin',
-                    # 'OEC': 'OEC',
-                    # 'WAYIKICHAIN': 'WGRT',
-                    # 'MDNA': 'DNA',
-                    # 'STEP': 'Step Network',
-                    # 'EMINER': 'Eminer',
-                    # 'CYBERMILES': 'CyberMiles',
-                    # 'HYPERCASH': 'HyperCash',
-                    # 'CONFLUX': 'Conflux',
-                    # 'CORTEX': 'Cortex',
-                    # 'TERRA': 'Terra',
-                    # 'TERRACLASSIC': 'Terra Classic',
+                    # non-supported known network: CRP. KAVA, TAIKO, BOB, GNO, BLAST, RSK, SEI, MANTLE, HYPE, RUNE, OSMO, XIN, WEMIX, HT, FSN, NEO, TLOS, CANTO, SCRT, AURORA, XMR
+                    # others:
+                    # "OKTC",
+                    # "X Layer",
+                    # "Polygon(Bridged)",
+                    # "BTCK-OKTC",
+                    # "ETHK-OKTC",
+                    # "Starknet",
+                    # "LTCK-OKTC",
+                    # "XRPK-OKTC",
+                    # "BCHK-OKTC",
+                    # "ETCK-OKTC",
+                    # "Endurance Smart Chain",
+                    # "Berachain",
+                    # "CELO-TOKEN",
+                    # "CFX_EVM",
+                    # "Cortex",
+                    # "DAIK-OKTC",
+                    # "Dora Vota Mainnet",
+                    # "DOTK-OKTC",
+                    # "DYDX",
+                    # "AELF",
+                    # "Enjin Relay Chain",
+                    # "FEVM",
+                    # "FILK-OKTC",
+                    # "Flare",
+                    # "Gravity Alpha Mainnet",
+                    # "INJ",
+                    # "Story",
+                    # "LINKK-OKTC",
+                    # "Terra",
+                    # "Terra Classic",
+                    # "Terra Classic(USTC)",
+                    # "MERLIN Network",
+                    # "Layer 3",
+                    # "PI",
+                    # "Ronin",
+                    # "Quantum",
+                    # "SHIBK-OKTC",
+                    # "SUSHIK-OKTC",
+                    # "Celestia",
+                    # "TRXK-OKTC",
+                    # "UNIK-OKTC",
+                    # "Venom",
+                    # "WBTCK-OKTC",
+                    # "ZetaChain",
                 },
                 'fetchOpenInterestHistory': {
                     'timeframes': {
@@ -1138,7 +1175,9 @@ class okx(Exchange, ImplicitAPI):
                 },
                 'createOrder': 'privatePostTradeBatchOrders',  # or 'privatePostTradeOrder' or 'privatePostTradeOrderAlgo'
                 'createMarketBuyOrderRequiresPrice': False,
-                'fetchMarkets': ['spot', 'future', 'swap', 'option'],  # spot, future, swap, option
+                'fetchMarkets': {
+                    'types': ['spot', 'future', 'swap', 'option'],  # spot, future, swap, option
+                },
                 'timeDifference': 0,  # the difference between system clock and exchange server clock
                 'adjustForTimeDifference': False,  # controls the adjustment logic upon instantiation
                 'defaultType': 'spot',  # 'funding', 'spot', 'margin', 'future', 'swap', 'option'
@@ -1279,6 +1318,7 @@ class okx(Exchange, ImplicitAPI):
                     },
                     'fetchOHLCV': {
                         'limit': 300,
+                        'historical': 100,
                     },
                 },
                 'spot': {
@@ -1523,7 +1563,12 @@ class okx(Exchange, ImplicitAPI):
         """
         if self.options['adjustForTimeDifference']:
             await self.load_time_difference()
-        types = self.safe_list(self.options, 'fetchMarkets', [])
+        types = ['spot', 'future', 'swap', 'option']
+        fetchMarketsOption = self.safe_dict(self.options, 'fetchMarkets')
+        if fetchMarketsOption is not None:
+            types = self.safe_list(fetchMarketsOption, 'types', types)
+        else:
+            types = self.safe_list(self.options, 'fetchMarkets', types)  # backward-support
         promises = []
         result = []
         for i in range(0, len(types)):
@@ -1572,6 +1617,7 @@ class okx(Exchange, ImplicitAPI):
         #         "instType": "OPTION",
         #         "lever": "",
         #         "listTime": "1631262612280",
+        #         "contTdSwTime": "1631262812280",
         #         "lotSz": "1",
         #         "minSz": "1",
         #         "optType": "P",
@@ -1592,8 +1638,8 @@ class okx(Exchange, ImplicitAPI):
         swap = (type == 'swap')
         option = (type == 'option')
         contract = swap or future or option
-        baseId = self.safe_string(market, 'baseCcy')
-        quoteId = self.safe_string(market, 'quoteCcy')
+        baseId = self.safe_string(market, 'baseCcy', '')  # defaulting to '' because some weird preopen markets have empty baseId
+        quoteId = self.safe_string(market, 'quoteCcy', '')
         settleId = self.safe_string(market, 'settleCcy')
         settle = self.safe_currency_code(settleId)
         underlying = self.safe_string(market, 'uly')
@@ -1608,18 +1654,21 @@ class okx(Exchange, ImplicitAPI):
         strikePrice = None
         optionType = None
         if contract:
-            symbol = symbol + ':' + settle
-            expiry = self.safe_integer(market, 'expTime')
+            if settle is not None:
+                symbol = symbol + ':' + settle
             if future:
-                ymd = self.yymmdd(expiry)
-                symbol = symbol + '-' + ymd
+                expiry = self.safe_integer(market, 'expTime')
+                if expiry is not None:
+                    ymd = self.yymmdd(expiry)
+                    symbol = symbol + '-' + ymd
             elif option:
+                expiry = self.safe_integer(market, 'expTime')
                 strikePrice = self.safe_string(market, 'stk')
                 optionType = self.safe_string(market, 'optType')
-                ymd = self.yymmdd(expiry)
-                symbol = symbol + '-' + ymd + '-' + strikePrice + '-' + optionType
-                optionType = 'put' if (optionType == 'P') else 'call'
-        tickSize = self.safe_string(market, 'tickSz')
+                if expiry is not None:
+                    ymd = self.yymmdd(expiry)
+                    symbol = symbol + '-' + ymd + '-' + strikePrice + '-' + optionType
+                    optionType = 'put' if (optionType == 'P') else 'call'
         fees = self.safe_dict_2(self.fees, type, 'trading', {})
         maxLeverage = self.safe_string(market, 'lever', '1')
         maxLeverage = Precise.string_max(maxLeverage, '1')
@@ -1648,10 +1697,10 @@ class okx(Exchange, ImplicitAPI):
             'expiryDatetime': self.iso8601(expiry),
             'strike': self.parse_number(strikePrice),
             'optionType': optionType,
-            'created': self.safe_integer(market, 'listTime'),
+            'created': self.safe_integer_2(market, 'contTdSwTime', 'listTime'),  # contTdSwTime is public trading start time, while listTime considers pre-trading too
             'precision': {
                 'amount': self.safe_number(market, 'lotSz'),
-                'price': self.parse_number(tickSize),
+                'price': self.safe_number(market, 'tickSz'),
             },
             'limits': {
                 'leverage': {
@@ -1804,65 +1853,55 @@ class okx(Exchange, ImplicitAPI):
             code = currency['code']
             chains = dataByCurrencyId[currencyId]
             networks: dict = {}
-            currencyActive = False
-            depositEnabled = False
-            withdrawEnabled = False
-            maxPrecision = None
-            for j in range(0, len(chains)):
+            type = 'crypto'
+            chainsLength = len(chains)
+            for j in range(0, chainsLength):
                 chain = chains[j]
-                canDeposit = self.safe_bool(chain, 'canDep')
-                depositEnabled = canDeposit if (canDeposit) else depositEnabled
-                canWithdraw = self.safe_bool(chain, 'canWd')
-                withdrawEnabled = canWithdraw if (canWithdraw) else withdrawEnabled
-                canInternal = self.safe_bool(chain, 'canInternal')
-                active = True if (canDeposit and canWithdraw and canInternal) else False
-                currencyActive = active if (active) else currencyActive
-                networkId = self.safe_string(chain, 'chain')
-                if (networkId is not None) and (networkId.find('-') >= 0):
-                    idParts = networkId.split('-')
-                    parts = self.array_slice(idParts, 1)
-                    chainPart = '-'.join(parts)
-                    networkCode = self.network_id_to_code(chainPart, currency['code'])
-                    precision = self.parse_precision(self.safe_string(chain, 'wdTickSz'))
-                    if maxPrecision is None:
-                        maxPrecision = precision
-                    else:
-                        maxPrecision = Precise.string_min(maxPrecision, precision)
-                    networks[networkCode] = {
-                        'id': networkId,
-                        'network': networkCode,
-                        'active': active,
-                        'deposit': canDeposit,
-                        'withdraw': canWithdraw,
-                        'fee': self.safe_number(chain, 'fee'),
-                        'precision': self.parse_number(precision),
-                        'limits': {
-                            'withdraw': {
-                                'min': self.safe_number(chain, 'minWd'),
-                                'max': self.safe_number(chain, 'maxWd'),
-                            },
+                # allow empty string for rare fiat-currencies, e.g. TRY
+                networkId = self.safe_string(chain, 'chain', '')  # USDT-BEP20, USDT-Avalance-C, etc
+                if networkId == '':
+                    # only happens for fiat 'TRY' currency
+                    type = 'fiat'
+                idParts = networkId.split('-')
+                parts = self.array_slice(idParts, 1)
+                chainPart = '-'.join(parts)
+                networkCode = self.network_id_to_code(chainPart, currency['code'])
+                networks[networkCode] = {
+                    'id': networkId,
+                    'network': networkCode,
+                    'active': None,
+                    'deposit': self.safe_bool(chain, 'canDep'),
+                    'withdraw': self.safe_bool(chain, 'canWd'),
+                    'fee': self.safe_number(chain, 'fee'),
+                    'precision': self.parse_number(self.parse_precision(self.safe_string(chain, 'wdTickSz'))),
+                    'limits': {
+                        'withdraw': {
+                            'min': self.safe_number(chain, 'minWd'),
+                            'max': self.safe_number(chain, 'maxWd'),
                         },
-                        'info': chain,
-                    }
+                    },
+                    'info': chain,
+                }
             firstChain = self.safe_dict(chains, 0, {})
-            result[code] = {
+            result[code] = self.safe_currency_structure({
                 'info': chains,
                 'code': code,
                 'id': currencyId,
                 'name': self.safe_string(firstChain, 'name'),
-                'active': currencyActive,
-                'deposit': depositEnabled,
-                'withdraw': withdrawEnabled,
+                'active': None,
+                'deposit': None,
+                'withdraw': None,
                 'fee': None,
-                'precision': self.parse_number(maxPrecision),
+                'precision': None,
                 'limits': {
                     'amount': {
                         'min': None,
                         'max': None,
                     },
                 },
+                'type': type,
                 'networks': networks,
-            }
+            })
         return result
 
     async def fetch_order_book(self, symbol: str, limit: Int = None, params={}) -> OrderBook:
@@ -2379,6 +2418,8 @@ class okx(Exchange, ImplicitAPI):
         timezone = self.safe_string(options, 'timezone', 'UTC')
         if limit is None:
             limit = 100  # default 100, max 100
+        else:
+            limit = min(limit, 300)  # max 100
         duration = self.parse_timeframe(timeframe)
         bar = self.safe_string(self.timeframes, timeframe, timeframe)
         if (timezone == 'UTC') and (duration >= 21600):  # if utc and timeframe >= 6h
@@ -2396,6 +2437,7 @@ class okx(Exchange, ImplicitAPI):
             historyBorder = now - ((1440 - 1) * durationInMilliseconds)
             if since < historyBorder:
                 defaultType = 'HistoryCandles'
+                limit = min(limit, 100)  # max 100 for historical endpoint
             startTime = max(since - 1, 0)
             request['before'] = startTime
             request['after'] = self.sum(since, durationInMilliseconds * limit)
@@ -2524,11 +2566,11 @@ class okx(Exchange, ImplicitAPI):
             # it may be incorrect to use total, free and used for swap accounts
             eq = self.safe_string(balance, 'eq')
             availEq = self.safe_string(balance, 'availEq')
-            if (eq is None) or (availEq is None):
+            account['total'] = eq
+            if availEq is None:
                 account['free'] = self.safe_string(balance, 'availBal')
                 account['used'] = self.safe_string(balance, 'frozenBal')
             else:
-                account['total'] = eq
                 account['free'] = availEq
             result[code] = account
         result['timestamp'] = timestamp
@@ -2926,7 +2968,8 @@ class okx(Exchange, ImplicitAPI):
                 stopLossTriggerPrice = self.safe_value_n(stopLoss, ['triggerPrice', 'stopPrice', 'slTriggerPx'])
                 if stopLossTriggerPrice is None:
                     raise InvalidOrder(self.id + ' createOrder() requires a trigger price in params["stopLoss"]["triggerPrice"], or params["stopLoss"]["stopPrice"], or params["stopLoss"]["slTriggerPx"] for a stop loss order')
-                request['slTriggerPx'] = self.price_to_precision(symbol, stopLossTriggerPrice)
+                slTriggerPx = self.price_to_precision(symbol, stopLossTriggerPrice)
+                request['slTriggerPx'] = slTriggerPx
                 stopLossLimitPrice = self.safe_value_n(stopLoss, ['price', 'stopLossPrice', 'slOrdPx'])
                 stopLossOrderType = self.safe_string(stopLoss, 'type')
                 if stopLossOrderType is not None:
@@ -2992,6 +3035,12 @@ class okx(Exchange, ImplicitAPI):
             # tpOrdKind is 'condition' which is the default
             if twoWayCondition:
                 request['ordType'] = 'oco'
+            if side == 'sell':
+                request = self.omit(request, 'tgtCcy')
+            if self.safe_string(request, 'tdMode') == 'cash':
+                # for some reason tdMode = cash throws
+                # {"code":"1","data":[{"algoClOrdId":"","algoId":"","clOrdId":"","sCode":"51000","sMsg":"Parameter tdMode error ","tag":""}],"msg":""}
+                request['tdMode'] = marginMode
             if takeProfitPrice is not None:
                 request['tpTriggerPx'] = self.price_to_precision(symbol, takeProfitPrice)
                 tpOrdPxReq = '-1'
@@ -3044,6 +3093,7 @@ class okx(Exchange, ImplicitAPI):
         :param str [params.trailingPercent]: the percent to trail away from the current market price
         :param str [params.tpOrdKind]: 'condition' or 'limit', the default is 'condition'
         :param bool [params.hedged]: *swap and future only* True for hedged mode, False for one way mode
+        :param str [params.marginMode]: 'cross' or 'isolated', the default is 'cross'
         :returns dict: an `order structure <https://docs.ccxt.com/#/?id=order-structure>`
         """
         await self.load_markets()
@@ -3284,7 +3334,7 @@ class okx(Exchange, ImplicitAPI):
         trailing = self.safe_bool(params, 'trailing', False)
         if trigger or trailing:
             orderInner = await self.cancel_orders([id], symbol, params)
-            return self.safe_value(orderInner, 0)
+            return self.safe_dict(orderInner, 0)
         await self.load_markets()
         market = self.market(symbol)
         request: dict = {
@@ -3580,6 +3630,84 @@ class okx(Exchange, ImplicitAPI):
         #         "tradeId": "",
         #         "uTime": "1621910749815"
         #     }
+        #
+        # watchOrders & fetchClosedOrders
+        #
+        #    {
+        #        "algoClOrdId": "",
+        #        "algoId": "",
+        #        "attachAlgoClOrdId": "",
+        #        "attachAlgoOrds": [],
+        #        "cancelSource": "",
+        #        "cancelSourceReason": "",  # not present in WS, but present in fetchClosedOrders
+        #        "category": "normal",
+        #        "ccy": "",  # empty in WS, but eg. `USDT` in fetchClosedOrders
+        #        "clOrdId": "",
+        #        "cTime": "1751705801423",
+        #        "feeCcy": "USDT",
+        #        "instId": "LINK-USDT-SWAP",
+        #        "instType": "SWAP",
+        #        "isTpLimit": "false",
+        #        "lever": "3",
+        #        "linkedAlgoOrd": {"algoId": ""},
+        #        "ordId": "2657625147249614848",
+        #        "ordType": "limit",
+        #        "posSide": "net",
+        #        "px": "13.142",
+        #        "pxType": "",
+        #        "pxUsd": "",
+        #        "pxVol": "",
+        #        "quickMgnType": "",
+        #        "rebate": "0",
+        #        "rebateCcy": "USDT",
+        #        "reduceOnly": "true",
+        #        "side": "sell",
+        #        "slOrdPx": "",
+        #        "slTriggerPx": "",
+        #        "slTriggerPxType": "",
+        #        "source": "",
+        #        "stpId": "",
+        #        "stpMode": "cancel_maker",
+        #        "sz": "0.1",
+        #        "tag": "",
+        #        "tdMode": "isolated",
+        #        "tgtCcy": "",
+        #        "tpOrdPx": "",
+        #        "tpTriggerPx": "",
+        #        "tpTriggerPxType": "",
+        #        "uTime": "1751705807467",
+        #        "reqId": "",                      # field present only in WS
+        #        "msg": "",                        # field present only in WS
+        #        "amendResult": "",                # field present only in WS
+        #        "amendSource": "",                # field present only in WS
+        #        "code": "0",                      # field present only in WS
+        #        "fillFwdPx": "",                  # field present only in WS
+        #        "fillMarkVol": "",                # field present only in WS
+        #        "fillPxUsd": "",                  # field present only in WS
+        #        "fillPxVol": "",                  # field present only in WS
+        #        "lastPx": "13.142",               # field present only in WS
+        #        "notionalUsd": "1.314515408",     # field present only in WS
+        #
+        #     #### these below fields are empty on first omit from websocket, because of "creation" event. however, if order is executed, it also immediately sends another update with these fields filled  ###
+        #
+        #        "pnl": "-0.0001",
+        #        "accFillSz": "0.1",
+        #        "avgPx": "13.142",
+        #        "state": "filled",
+        #        "fee": "-0.00026284",
+        #        "fillPx": "13.142",
+        #        "tradeId": "293429690",
+        #        "fillSz": "0.1",
+        #        "fillTime": "1751705807467",
+        #        "fillNotionalUsd": "1.314515408",  # field present only in WS
+        #        "fillPnl": "-0.0001",             # field present only in WS
+        #        "fillFee": "-0.00026284",         # field present only in WS
+        #        "fillFeeCcy": "USDT",             # field present only in WS
+        #        "execType": "M",                  # field present only in WS
+        #        "fillMarkPx": "13.141",           # field present only in WS
+        #        "fillIdxPx": "13.147"             # field present only in WS
+        #    }
+        #
         #
         # Algo Order fetchOpenOrders, fetchCanceledOrders, fetchClosedOrders
         #
@@ -4809,7 +4937,7 @@ class okx(Exchange, ImplicitAPI):
         :returns dict: an `address structure <https://docs.ccxt.com/#/?id=address-structure>`
         """
         await self.load_markets()
-        rawNetwork = self.safe_string_upper(params, 'network')
+        rawNetwork = self.safe_string(params, 'network')  # some networks are like "Dora Vota Mainnet"
         params = self.omit(params, 'network')
         code = self.safe_currency_code(code)
         network = self.network_id_to_code(rawNetwork, code)
@@ -4827,7 +4955,7 @@ class okx(Exchange, ImplicitAPI):
         first = self.safe_string(keys, 0)
         return self.safe_dict(response, first)
 
-    async def withdraw(self, code: str, amount: float, address: str, tag=None, params={}) -> Transaction:
+    async def withdraw(self, code: str, amount: float, address: str, tag: Str = None, params={}) -> Transaction:
         """
         make a withdrawal
 
@@ -4861,7 +4989,7 @@ class okx(Exchange, ImplicitAPI):
         fee = self.safe_string(params, 'fee')
         if fee is None:
             currencies = await self.fetch_currencies()
-            self.currencies = self.deep_extend(self.currencies, currencies)
+            self.currencies = self.map_to_safe_map(self.deep_extend(self.currencies, currencies))
             targetNetwork = self.safe_dict(currency['networks'], self.network_id_to_code(network), {})
             fee = self.safe_string(targetNetwork, 'fee')
             if fee is None:
@@ -5379,7 +5507,7 @@ class okx(Exchange, ImplicitAPI):
             return None
         return self.parse_position(position, market)
 
-    async def fetch_positions(self, symbols: Strings = None, params={}):
+    async def fetch_positions(self, symbols: Strings = None, params={}) -> List[Position]:
         """
 
         https://www.okx.com/docs-v5/en/#rest-api-account-get-positions
@@ -5954,7 +6082,7 @@ class okx(Exchange, ImplicitAPI):
         nextFundingRate = self.safe_number(contract, 'nextFundingRate')
         fundingTime = self.safe_integer(contract, 'fundingTime')
         fundingTimeString = self.safe_string(contract, 'fundingTime')
-        nextFundingTimeString = self.safe_string(contract, 'nextFundingRate')
+        nextFundingTimeString = self.safe_string(contract, 'nextFundingTime')
         millisecondsInterval = Precise.string_sub(nextFundingTimeString, fundingTimeString)
         # https://www.okx.com/support/hc/en-us/articles/360053909272-Ⅸ-Introduction-to-perpetual-swap-funding-fee
         # > The current interest is 0.
@@ -6038,6 +6166,39 @@ class okx(Exchange, ImplicitAPI):
         data = self.safe_list(response, 'data', [])
         entry = self.safe_dict(data, 0, {})
         return self.parse_funding_rate(entry, market)
+
+    async def fetch_funding_rates(self, symbols: Strings = None, params={}) -> FundingRates:
+        """
+        fetches the current funding rates for multiple symbols
+
+        https://www.okx.com/docs-v5/en/#public-data-rest-api-get-funding-rate
+
+        :param str[] symbols: unified market symbols
+        :param dict [params]: extra parameters specific to the exchange API endpoint
+        :returns dict: a dictionary of `funding rates structure <https://docs.ccxt.com/#/?id=funding-rates-structure>`
+        """
+        await self.load_markets()
+        symbols = self.market_symbols(symbols, 'swap', True)
+        request: dict = {'instId': 'ANY'}
+        response = await self.publicGetPublicFundingRate(self.extend(request, params))
+        #
+        #    {
+        #        "code": "0",
+        #        "data": [
+        #            {
+        #                "fundingRate": "0.00027815",
+        #                "fundingTime": "1634256000000",
+        #                "instId": "BTC-USD-SWAP",
+        #                "instType": "SWAP",
+        #                "nextFundingRate": "0.00017",
+        #                "nextFundingTime": "1634284800000"
+        #            }
+        #        ],
+        #        "msg": ""
+        #    }
+        #
+        data = self.safe_list(response, 'data', [])
+        return self.parse_funding_rates(data, symbols)
 
     async def fetch_funding_history(self, symbol: Str = None, since: Int = None, limit: Int = None, params={}):
         """
@@ -6191,7 +6352,7 @@ class okx(Exchange, ImplicitAPI):
         sorted = self.sort_by(result, 'timestamp')
         return self.filter_by_symbol_since_limit(sorted, symbol, since, limit)
 
-    async def set_leverage(self, leverage: Int, symbol: Str = None, params={}):
+    async def set_leverage(self, leverage: int, symbol: Str = None, params={}):
         """
         set the level of leverage for a market
 
@@ -6778,7 +6939,7 @@ class okx(Exchange, ImplicitAPI):
 
     async def fetch_borrow_interest(self, code: Str = None, symbol: Str = None, since: Int = None, limit: Int = None, params={}) -> List[BorrowInterest]:
         """
-        fetch the interest owed by the user for borrowing currency for margin trading
+        fetch the interest owed b the user for borrowing currency for margin trading
 
         https://www.okx.com/docs-v5/en/#rest-api-account-get-interest-accrued-data
 
@@ -6995,6 +7156,59 @@ class okx(Exchange, ImplicitAPI):
         #
         data = self.safe_list(response, 'data', [])
         return self.parse_open_interest(data[0], market)
+
+    async def fetch_open_interests(self, symbols: Strings = None, params={}) -> OpenInterests:
+        """
+        Retrieves the open interests of some currencies
+
+        https://www.okx.com/docs-v5/en/#rest-api-public-data-get-open-interest
+
+        :param str[] symbols: Unified CCXT market symbols
+        :param dict [params]: exchange specific parameters
+        :param str params['instType']: Instrument type, options: 'SWAP', 'FUTURES', 'OPTION', default to 'SWAP'
+        :param str params['uly']: Underlying, Applicable to FUTURES/SWAP/OPTION, if instType is 'OPTION', either uly or instFamily is required
+        :param str params['instFamily']: Instrument family, Applicable to FUTURES/SWAP/OPTION, if instType is 'OPTION', either uly or instFamily is required
+        :returns dict: an dictionary of `open interest structures <https://docs.ccxt.com/#/?id=open-interest-structure>`
+        """
+        await self.load_markets()
+        symbols = self.market_symbols(symbols, None, True, True)
+        market = None
+        if symbols is not None:
+            market = self.market(symbols[0])
+        marketType = None
+        marketType, params = self.handle_sub_type_and_params('fetchOpenInterests', market, params, 'swap')
+        instType = 'SWAP'
+        if marketType == 'future':
+            instType = 'FUTURES'
+        elif instType == 'option':
+            instType = 'OPTION'
+        request: dict = {'instType': instType}
+        uly = self.safe_string(params, 'uly')
+        if uly is not None:
+            request['uly'] = uly
+        instFamily = self.safe_string(params, 'instFamily')
+        if instFamily is not None:
+            request['instFamily'] = instFamily
+        if instType == 'OPTION' and uly is None and instFamily is None:
+            raise BadRequest(self.id + ' fetchOpenInterests() requires either uly or instFamily parameter for OPTION markets')
+        response = await self.publicGetPublicOpenInterest(self.extend(request, params))
+        #
+        #     {
+        #         "code": "0",
+        #         "data": [
+        #             {
+        #                 "instId": "BTC-USDT-SWAP",
+        #                 "instType": "SWAP",
+        #                 "oi": "2125419",
+        #                 "oiCcy": "21254.19",
+        #                 "ts": "1664005108969"
+        #             }
+        #         ],
+        #         "msg": ""
+        #     }
+        #
+        data = self.safe_list(response, 'data', [])
+        return self.parse_open_interests(data, symbols)
 
     async def fetch_open_interest_history(self, symbol: str, timeframe='1d', since: Int = None, limit: Int = None, params={}):
         """
@@ -7428,6 +7642,76 @@ class okx(Exchange, ImplicitAPI):
             if entryMarketId == marketId:
                 return self.parse_greeks(entry, market)
         return None
+
+    async def fetch_all_greeks(self, symbols: Strings = None, params={}) -> List[Greeks]:
+        """
+        fetches all option contracts greeks, financial metrics used to measure the factors that affect the price of an options contract
+
+        https://www.okx.com/docs-v5/en/#public-data-rest-api-get-option-market-data
+
+        :param str[] [symbols]: unified symbols of the markets to fetch greeks for, all markets are returned if not assigned
+        :param dict [params]: extra parameters specific to the exchange API endpoint
+        :param str params['uly']: Underlying, either uly or instFamily is required
+        :param str params['instFamily']: Instrument family, either uly or instFamily is required
+        :returns dict: a `greeks structure <https://docs.ccxt.com/#/?id=greeks-structure>`
+        """
+        await self.load_markets()
+        request: dict = {}
+        symbols = self.market_symbols(symbols, None, True, True, True)
+        symbolsLength = None
+        if symbols is not None:
+            symbolsLength = len(symbols)
+        if (symbols is None) or (symbolsLength != 1):
+            uly = self.safe_string(params, 'uly')
+            if uly is not None:
+                request['uly'] = uly
+            instFamily = self.safe_string(params, 'instFamily')
+            if instFamily is not None:
+                request['instFamily'] = instFamily
+            if (uly is None) and (instFamily is None):
+                raise BadRequest(self.id + ' fetchAllGreeks() requires either a uly or instFamily parameter')
+        market = None
+        if symbols is not None:
+            if symbolsLength == 1:
+                market = self.market(symbols[0])
+                marketId = market['id']
+                optionParts = marketId.split('-')
+                request['uly'] = market['info']['uly']
+                request['instFamily'] = market['info']['instFamily']
+                request['expTime'] = self.safe_string(optionParts, 2)
+        params = self.omit(params, ['uly', 'instFamily'])
+        response = await self.publicGetPublicOptSummary(self.extend(request, params))
+        #
+        #     {
+        #         "code": "0",
+        #         "data": [
+        #             {
+        #                 "askVol": "0",
+        #                 "bidVol": "0",
+        #                 "delta": "0.5105464486882039",
+        #                 "deltaBS": "0.7325502184143025",
+        #                 "fwdPx": "37675.80158694987186",
+        #                 "gamma": "-0.13183515090501083",
+        #                 "gammaBS": "0.000024139685826358558",
+        #                 "instId": "BTC-USD-240329-32000-C",
+        #                 "instType": "OPTION",
+        #                 "lever": "4.504428015946619",
+        #                 "markVol": "0.5916253554539876",
+        #                 "realVol": "0",
+        #                 "theta": "-0.0004202992014012855",
+        #                 "thetaBS": "-18.52354631567909",
+        #                 "ts": "1699586421976",
+        #                 "uly": "BTC-USD",
+        #                 "vega": "0.0020207455080045846",
+        #                 "vegaBS": "74.44022302387287",
+        #                 "volLv": "0.5948549730405797"
+        #             },
+        #         ],
+        #         "msg": ""
+        #     }
+        #
+        data = self.safe_list(response, 'data', [])
+        return self.parse_all_greeks(data, symbols)
 
     def parse_greeks(self, greeks: dict, market: Market = None) -> Greeks:
         #

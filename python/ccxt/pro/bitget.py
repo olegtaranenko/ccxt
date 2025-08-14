@@ -6,7 +6,7 @@
 import ccxt.async_support
 from ccxt.async_support.base.ws.cache import ArrayCache, ArrayCacheBySymbolById, ArrayCacheBySymbolBySide, ArrayCacheByTimestamp
 import hashlib
-from ccxt.base.types import Any, Balances, Int, Order, OrderBook, Position, Str, Strings, Ticker, Tickers, Trade
+from ccxt.base.types import Any, Balances, Bool, Int, Order, OrderBook, Position, Str, Strings, Ticker, Tickers, Trade
 from ccxt.async_support.base.ws.client import Client
 from typing import List
 from ccxt.base.errors import ExchangeError
@@ -52,6 +52,10 @@ class bitget(ccxt.async_support.bitget):
                         'public': 'wss://ws.bitget.com/v2/ws/public',
                         'private': 'wss://ws.bitget.com/v2/ws/private',
                     },
+                    'demo': {
+                        'public': 'wss://wspap.bitget.com/v2/ws/public',
+                        'private': 'wss://wspap.bitget.com/v2/ws/private',
+                    },
                 },
             },
             'options': {
@@ -72,6 +76,9 @@ class bitget(ccxt.async_support.bitget):
                 },
                 'watchOrderBook': {
                     'checksum': True,
+                },
+                'watchTrades': {
+                    'ignoreDuplicates': True,
                 },
             },
             'streaming': {
@@ -763,7 +770,12 @@ class bitget(ccxt.async_support.bitget):
             first = self.safe_value(trades, 0)
             tradeSymbol = self.safe_string(first, 'symbol')
             limit = trades.getLimit(tradeSymbol, limit)
-        return self.filter_by_since_limit(trades, since, limit, 'timestamp', True)
+        result = self.filter_by_since_limit(trades, since, limit, 'timestamp', True)
+        if self.handle_option('watchTrades', 'ignoreDuplicates', True):
+            filtered = self.remove_repeated_trades_from_array(result)
+            filtered = self.sort_by(filtered, 'timestamp')
+            return filtered
+        return result
 
     async def un_watch_trades(self, symbol: str, params={}) -> Any:
         """
@@ -1125,7 +1137,7 @@ class bitget(ccxt.async_support.bitget):
             instType = 'SPOT'
         else:
             instType, params = self.get_inst_type(market, params)
-        if type == 'spot':
+        if type == 'spot' and (symbol is not None):
             subscriptionHash = subscriptionHash + ':' + symbol
         if isTrigger:
             subscriptionHash = subscriptionHash + ':stop'  # we don't want to re-use the same subscription hash for stop orders
@@ -1473,7 +1485,7 @@ class bitget(ccxt.async_support.bitget):
         type, params = self.handle_market_type_and_params('watchMyTrades', market, params)
         instType = None
         if market is None and type == 'spot':
-            instType = 'SPOT'
+            instType = 'spot'
         else:
             instType, params = self.get_inst_type(market, params)
         subscriptionHash = 'fill:' + instType
@@ -1697,6 +1709,11 @@ class bitget(ccxt.async_support.bitget):
 
     async def watch_public(self, messageHash, args, params={}):
         url = self.urls['api']['ws']['public']
+        sandboxMode = self.safe_bool_2(self.options, 'sandboxMode', 'sandbox', False)
+        if sandboxMode:
+            instType = self.safe_string(args, 'instType')
+            if (instType != 'SCOIN-FUTURES') and (instType != 'SUSDT-FUTURES') and (instType != 'SUSDC-FUTURES'):
+                url = self.urls['api']['demo']['public']
         request: dict = {
             'op': 'subscribe',
             'args': [args],
@@ -1706,6 +1723,11 @@ class bitget(ccxt.async_support.bitget):
 
     async def un_watch_public(self, messageHash, args, params={}):
         url = self.urls['api']['ws']['public']
+        sandboxMode = self.safe_bool_2(self.options, 'sandboxMode', 'sandbox', False)
+        if sandboxMode:
+            instType = self.safe_string(args, 'instType')
+            if (instType != 'SCOIN-FUTURES') and (instType != 'SUSDT-FUTURES') and (instType != 'SUSDC-FUTURES'):
+                url = self.urls['api']['demo']['public']
         request: dict = {
             'op': 'unsubscribe',
             'args': [args],
@@ -1715,6 +1737,12 @@ class bitget(ccxt.async_support.bitget):
 
     async def watch_public_multiple(self, messageHashes, argsArray, params={}):
         url = self.urls['api']['ws']['public']
+        sandboxMode = self.safe_bool_2(self.options, 'sandboxMode', 'sandbox', False)
+        if sandboxMode:
+            argsArrayFirst = self.safe_dict(argsArray, 0, {})
+            instType = self.safe_string(argsArrayFirst, 'instType')
+            if (instType != 'SCOIN-FUTURES') and (instType != 'SUSDT-FUTURES') and (instType != 'SUSDC-FUTURES'):
+                url = self.urls['api']['demo']['public']
         request: dict = {
             'op': 'subscribe',
             'args': argsArray,
@@ -1724,7 +1752,7 @@ class bitget(ccxt.async_support.bitget):
 
     async def authenticate(self, params={}):
         self.check_required_credentials()
-        url = self.urls['api']['ws']['private']
+        url = self.safe_string(params, 'url')
         client = self.client(url)
         messageHash = 'authenticated'
         future = client.future(messageHash)
@@ -1750,8 +1778,13 @@ class bitget(ccxt.async_support.bitget):
         return await future
 
     async def watch_private(self, messageHash, subscriptionHash, args, params={}):
-        await self.authenticate()
         url = self.urls['api']['ws']['private']
+        sandboxMode = self.safe_bool_2(self.options, 'sandboxMode', 'sandbox', False)
+        if sandboxMode:
+            instType = self.safe_string(args, 'instType')
+            if (instType != 'SCOIN-FUTURES') and (instType != 'SUSDT-FUTURES') and (instType != 'SUSDC-FUTURES'):
+                url = self.urls['api']['demo']['private']
+        await self.authenticate({'url': url})
         request: dict = {
             'op': 'subscribe',
             'args': [args],
@@ -1767,7 +1800,7 @@ class bitget(ccxt.async_support.bitget):
         future = self.safe_value(client.futures, messageHash)
         future.resolve(True)
 
-    def handle_error_message(self, client: Client, message):
+    def handle_error_message(self, client: Client, message) -> Bool:
         #
         #    {event: "error", code: 30015, msg: "Invalid sign"}
         #

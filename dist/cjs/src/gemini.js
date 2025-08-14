@@ -1,18 +1,20 @@
 'use strict';
 
+Object.defineProperty(exports, '__esModule', { value: true });
+
 var gemini$1 = require('./abstract/gemini.js');
 var errors = require('./base/errors.js');
 var Precise = require('./base/Precise.js');
 var number = require('./base/functions/number.js');
 var sha512 = require('./static_dependencies/noble-hashes/sha512.js');
 
-//  ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //  ---------------------------------------------------------------------------
 /**
  * @class gemini
  * @augments Exchange
  */
-class gemini extends gemini$1 {
+class gemini extends gemini$1["default"] {
     describe() {
         return this.deepExtend(super.describe(), {
             'id': 'gemini',
@@ -261,7 +263,7 @@ class gemini extends gemini$1 {
                 'fetchMarketFromWebRetries': 10,
                 'fetchMarketsFromAPI': {
                     'fetchDetailsForAllSymbols': false,
-                    'quoteCurrencies': ['USDT', 'GUSD', 'USD', 'DAI', 'EUR', 'GBP', 'SGD', 'BTC', 'ETH', 'LTC', 'BCH'],
+                    'quoteCurrencies': ['USDT', 'GUSD', 'USD', 'DAI', 'EUR', 'GBP', 'SGD', 'BTC', 'ETH', 'LTC', 'BCH', 'SOL'],
                 },
                 'fetchMarkets': {
                     'webApiEnable': true,
@@ -421,8 +423,6 @@ class gemini extends gemini$1 {
             let networkCode = undefined;
             if (networkId !== undefined) {
                 networkCode = this.networkIdToCode(networkId);
-            }
-            if (networkCode !== undefined) {
                 networks[networkCode] = {
                     'info': currency,
                     'id': networkId,
@@ -444,7 +444,7 @@ class gemini extends gemini$1 {
                     },
                 };
             }
-            result[code] = {
+            result[code] = this.safeCurrencyStructure({
                 'info': currency,
                 'id': id,
                 'code': code,
@@ -466,7 +466,7 @@ class gemini extends gemini$1 {
                     },
                 },
                 'networks': networks,
-            };
+            });
         }
         return result;
     }
@@ -1968,6 +1968,7 @@ class gemini extends gemini$1 {
             'currency': code,
             'address': address,
             'tag': undefined,
+            'network': undefined,
             'info': response,
         };
     }
@@ -2003,4 +2004,4 @@ class gemini extends gemini$1 {
     }
 }
 
-module.exports = gemini;
+exports["default"] = gemini;
