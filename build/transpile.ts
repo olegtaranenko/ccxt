@@ -12,7 +12,6 @@ import {unCamelCase, precisionConstants, safeString, unique} from "../ts/src/bas
 import Exchange from '../ts/src/base/Exchange.js'
 import { basename, join, resolve } from 'path'
 import { createFolderRecursively, replaceInFile, overwriteFile, writeFile, checkCreateFolder } from './fsLocal.js'
-import { pathToFileURL } from 'url'
 import errorHierarchy from '../ts/src/base/errorHierarchy.js'
 import { platform } from 'process'
 import os from 'os'
@@ -41,6 +40,9 @@ const exchangeIds = exchanges.ids;
 const exchangesWsIds = exchanges.ws;
 
 let shouldTranspileTests = true
+
+// let buildPython = true;
+// let buildPHP = true;
 
 const metaFileUrl = import.meta.url;
 let __dirname = new URL('.', metaFileUrl).pathname;
@@ -794,7 +796,7 @@ class Transpiler {
             'BalanceAccount': /-> BalanceAccount:/,
             'Balances': /-> Balances:/,
             'BorrowInterest': /-> BorrowInterest:/,
-            'Bool': /: (?:List\[)?Bool =/,
+            'Bool': /(: (?:List\[)?Bool =)|(-> Bool:)/,
             'Conversion': /-> Conversion:/,
             'CrossBorrowRate': /-> CrossBorrowRate:/,
             'CrossBorrowRates': /-> CrossBorrowRates:/,
@@ -850,7 +852,7 @@ class Transpiler {
             'MarketInterface': /-> (?:List\[)?MarketInterface/,
             'TransferEntry': /-> TransferEntry:/,
         }
-        const matches = []
+        const matches: string[] = []
         let match
         for (const [ object, regex ] of Object.entries (matchObject)) {
             if (bodyAsString.match (regex)) {
@@ -870,7 +872,7 @@ class Transpiler {
             libraries.push ('from typing import List')
         }
 
-        const errorImports = []
+        const errorImports: string[] = []
 
         for (let error in errors) {
             const regex = new RegExp ("[^\\'\"]" + error + "[^\\'\"]")
@@ -879,7 +881,7 @@ class Transpiler {
             }
         }
 
-        const precisionImports = []
+        const precisionImports: string[] = []
 
         for (let constant in precisionConstants) {
             if (bodyAsString.indexOf (constant) >= 0) {
@@ -889,7 +891,7 @@ class Transpiler {
         if (bodyAsString.match (/[\s(]Precise/)) {
             precisionImports.push ('from ccxt.base.precise import Precise')
         }
-        const asyncioImports = []
+        const asyncioImports: string[] = []
         if (bodyAsString.match (/asyncio/)) {
             asyncioImports.push ('import asyncio')
         }
@@ -975,7 +977,7 @@ class Transpiler {
 
         let header = this.createPHPClassHeader (className, baseClass, bodyAsString, async ? 'ccxt\\async' : 'ccxt')
 
-        const errorImports = []
+        const errorImports: string[] = []
 
         if (async) {
             for (let error in errors) {
@@ -986,8 +988,8 @@ class Transpiler {
             }
         }
 
-        const precisionImports = []
-        const libraryImports = []
+        const precisionImports: string[] = []
+        const libraryImports: string[] = []
 
         if (async) {
             if (bodyAsString.match (/[\s(]Precise/)) {
@@ -1062,7 +1064,7 @@ class Transpiler {
 
         // special case for Python OrderedDicts
         let orderedDictRegex = /\.ordered\s+\(\{([^}]+)}\)/g
-        let orderedDictMatches = undefined
+        let orderedDictMatches: RegExpExecArray | null | undefined = undefined
         while (orderedDictMatches = orderedDictRegex.exec (python3Body)) {
             let replaced = orderedDictMatches[1].replace (/^(\s+)([^:]+):\s*([^,]+),$/gm, '$1($2, $3),')
             python3Body = python3Body.replace (orderedDictRegex, '\.ordered([' + replaced + '])')
@@ -1487,7 +1489,7 @@ class Transpiler {
             return method;
         }
 
-        const newLines = [];
+        const newLines: string[] = [];
         const methodSplit = method.split('\n');
 
         // move jsdoc inside the method
@@ -1524,11 +1526,11 @@ class Transpiler {
 
     transpileMethodsToAllLanguages (className: string, methods: any) {
 
-        let python2 = []
-        let python3 = []
-        let php = []
-        let phpAsync = []
-        let methodNames = []
+        let python2: string[] = []
+        let python3: string[] = []
+        let php: string[] = []
+        let phpAsync: string[] = []
+        let methodNames: string[] = []
 
         for (let i = 0; i < methods.length; i++) {
             // parse the method signature
@@ -2120,7 +2122,7 @@ class Transpiler {
         baseTests = baseTests.filter (filename => filename !== 'test.throttle');
         this.createBaseInitFile(baseFolders.pyBase, baseTests);
 
-        const tests = [];
+        const tests: any[] = [];
         for (const testName of baseTests) {
             const unCamelCasedFileName = this.uncamelcaseName(testName);
             const test = {
@@ -2158,7 +2160,7 @@ class Transpiler {
 
         let baseFunctionTests = fs.readdirSync (baseFolders.ts).filter(filename => filename.endsWith('.ts')).map(filename => filename.replace('.ts', ''));
 
-        const tests = [];
+        const tests: { base: boolean; name: string; tsFile: string; pyFileSync: string; phpFileSync: string }[] = [];
 
         for (const testName of baseFunctionTests) {
             const unCamelCasedFileName = this.uncamelcaseName(testName);
@@ -2351,7 +2353,7 @@ class Transpiler {
         });
 
         const chunkSize = 10;
-        const promises = [];
+        const promises: Promise<any>[] = [];
         const now = Date.now();
         for (let i = 0; i < workerConfigArray.length; i += chunkSize) {
             const chunk = workerConfigArray.slice(i, i + chunkSize);
@@ -2369,7 +2371,7 @@ class Transpiler {
         const parser = {
             'LINES_BETWEEN_FILE_MEMBERS': 2
         }
-        let fileConfig = [
+        let fileConfig: { language: string; async: boolean }[] = [
             // {
             //     language: "php",
             //     async: true
@@ -2512,7 +2514,7 @@ class Transpiler {
             let importedExceptionTypes = imports.filter(x => Object.keys(errors).includes(x.name)).map(x => x.name); // returns 'OnMaintenance,ExchangeNotAvailable', etc...
 
             const getDirLevelForPath = (langFolder: string, filePath: string, defaultDirs: number) => {
-                let directoriesToPythonFile = undefined;
+                let directoriesToPythonFile: number | undefined = undefined;
                 if(filePath && filePath.includes('/' + langFolder + '/')) {
                     directoriesToPythonFile = (filePath.split('/' + langFolder + '/')[1]?.match(/\//g)?.length || defaultDirs) + 1;
                 }
@@ -2533,10 +2535,10 @@ class Transpiler {
             let phpPreamble = this.getPHPPreamble (includePath, phpDirsAmount, addProNs);
 
 
-            let pythonHeaderSync = []
-            let pythonHeaderAsync = []
-            let phpHeaderSync = []
-            let phpHeaderAsync = []
+            let pythonHeaderSync: string[] = []
+            let pythonHeaderAsync: string[] = []
+            let phpHeaderSync: string[] = []
+            let phpHeaderAsync: string[] = []
 
             phpHeaderAsync.push ('use React\\Async;');
             phpHeaderAsync.push ('use React\\Promise;');
@@ -2678,7 +2680,7 @@ class Transpiler {
         const parser = {
             'LINES_BETWEEN_FILE_MEMBERS': 2
         }
-        const fileConfig = [
+        const fileConfig: { language: string; async: boolean }[] = [
             {
                 language: "php",
                 async: true
@@ -3066,7 +3068,7 @@ function parallelizeTranspiling (exchanges: string[], processes = undefined, for
     const processesNum = Math.min(processes || os.cpus ().length, exchanges.length)
     log.bright.green ('starting ' + processesNum + ' new processes...')
     let isFirst = true
-    const args = [];
+    const args: string[] = [];
     if (force) {
         args.push ('--force')
     }

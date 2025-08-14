@@ -34,6 +34,7 @@ function getBodyTruncated(body, verboseTruncate) {
 }
 class Client {
     constructor(url, onMessageCallback, onErrorCallback, onCloseCallback, onConnectedCallback, config = {}) {
+        this.decompressBinary = true;
         const defaults = {
             url,
             onMessageCallback,
@@ -314,11 +315,14 @@ class Client {
                 message = index.utf8.encode(arrayBuffer);
             }
             else {
-                message = message.toString();
+                if (this.decompressBinary) {
+                    message = message.toString();
+                }
             }
         }
         try {
             if (encode.isJsonEncodedObject(message)) {
+                message = message.toString();
                 message = JSON.parse(message.replace(/:(\d{15,}),/g, ':"$1",'));
             }
             if (this.verbose || this.verboseTruncate) {

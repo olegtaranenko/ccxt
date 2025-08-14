@@ -1,5 +1,7 @@
 'use strict';
 
+Object.defineProperty(exports, '__esModule', { value: true });
+
 var WebSocket = require('ws');
 var Client = require('./Client.js');
 var platform = require('../functions/platform.js');
@@ -75,4 +77,4 @@ class WsClient extends Client["default"] {
     }
 }
 
-module.exports = WsClient;
+exports["default"] = WsClient;

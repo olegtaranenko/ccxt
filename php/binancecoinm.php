@@ -25,7 +25,11 @@ class binancecoinm extends binance {
             'name' => 'Binance COIN-M',
             'options' => array(
                 'defaultSubType' => 'inverse',
-                'fetchMarkets' => array( 'inverse' ),
+                'fetchMarkets' => array(
+                    'types' => array(
+                        'inverse',
+                    ),
+                ),
                 'leverageBrackets' => null,
             ),
             'urls' => array(

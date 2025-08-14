@@ -4,7 +4,7 @@ export declare type Int = number | undefined;
 export declare type int = number;
 export declare type MarketType = 'future' | 'margin' | 'option' | 'spot' | 'swap' | 'delivery' | 'index';
 export declare type Num = number | undefined;
-export declare type OrderSide = 'buy' | 'sell' | string;
+export declare type OrderSide = 'buy' | 'sell' | string | undefined;
 export declare type OrderType = 'limit' | 'market' | string;
 export declare type Str = string | undefined;
 export declare type Strings = string[] | undefined;
@@ -396,6 +396,7 @@ export interface Liquidation {
     info: any;
     price: number;
     quoteValue?: number;
+    side?: OrderSide;
     symbol: string;
     timestamp?: number;
 }

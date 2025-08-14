@@ -188,9 +188,11 @@ class binanceus extends binance {
             'id' => 'binanceus',
             'name' => 'Binance US',
             'options' => array(
-                'fetchMargins' => false,
-                'fetchMarkets' => array( 'spot' ),
                 'defaultType' => 'spot',
+                'fetchMarkets' => array(
+                    'types' => array( 'spot' ),
+                ),
+                'fetchMargins' => false,
                 'quoteOrderQty' => false,
             ),
             'pro' => true, // 1200 req per min

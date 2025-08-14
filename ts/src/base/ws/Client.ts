@@ -88,6 +88,8 @@ export default class Client {
 
     verboseLogVeto: any
 
+    decompressBinary = true
+
     constructor (url: string, onMessageCallback: Function | undefined, onErrorCallback: Function | undefined, onCloseCallback: Function | undefined, onConnectedCallback: Function | undefined, config = {}) {
         const defaults = {
             url,
@@ -383,11 +385,14 @@ export default class Client {
                 }
                 message = utf8.encode (arrayBuffer)
             } else {
-                message = message.toString ()
+                if (this.decompressBinary) {
+                    message = message.toString ()
+                }
             }
         }
         try {
             if (isJsonEncodedObject (message)) {
+                message = message.toString ()
                 message = JSON.parse (message.replace (/:(\d{15,}),/g, ':"$1",'))
             }
             if (this.verbose || this.verboseTruncate) {

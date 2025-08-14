@@ -25,7 +25,11 @@ class binancecoinm(binance, ImplicitAPI):
             'name': 'Binance COIN-M',
             'options': {
                 'defaultSubType': 'inverse',
-                'fetchMarkets': ['inverse'],
+                'fetchMarkets': {
+                    'types': [
+                        'inverse',
+                    ],
+                },
                 'leverageBrackets': None,
             },
             'urls': {

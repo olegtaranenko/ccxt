@@ -35,7 +35,9 @@ class binanceusdm(binance, ImplicitAPI):
             'name': 'Binance USDⓈ-M',
             'options': {
                 'defaultSubType': 'linear',
-                'fetchMarkets': ['linear'],
+                'fetchMarkets': {
+                    'types': ['linear'],
+                },
                 # https://www.binance.com/en/support/faq/360033162192
                 # tier amount, maintenance margin, initial margin,
                 'leverageBrackets': None,
