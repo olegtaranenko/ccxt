@@ -914,7 +914,6 @@ class mexc extends \ccxt\async\mexc {
             $timestamp = $this->safe_integer_n($message, array( 't', 'ts', 'sendTime' ));
             $storedOrderBook['timestamp'] = $timestamp;
             $storedOrderBook['datetime'] = $this->iso8601($timestamp);
-            $storedOrderBook['nonce'] = $this->safe_integer($data, 'fromVersion');
         } catch (Exception $e) {
             unset($client->subscriptions[$messageHash]);
             $client->reject ($e, $messageHash);
@@ -1465,7 +1464,7 @@ class mexc extends \ccxt\async\mexc {
         }
         return $this->safe_order(array(
             'id' => $this->safe_string($order, 'id'),
-            'clientOrderId' => $this->safe_string($order, 'clientOrderId'),
+            'clientOrderId' => $this->safe_string($order, 'clientId'),
             'timestamp' => $timestamp,
             'datetime' => $this->iso8601($timestamp),
             'lastTradeTimestamp' => null,

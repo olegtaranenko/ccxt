@@ -9,6 +9,7 @@ import {
     vwap as vwapFunc
 } from './functions.js';
 // import exceptions from "./errors.js"
+
 import {
     ArgumentsRequired,
     AuthenticationError,
@@ -1703,8 +1704,14 @@ export default class Exchange {
     }
 
     async close () {
+        // test by running ts/src/pro/test/base/test.close.ts
         const clients = Object.values (this.clients || {});
         const closedClients = [];
+        for (let i = 0; i < clients.length; i++) {
+            const client = clients[i] as WsClient;
+            client.error = new ExchangeClosedByUser (this.id + ' closedByUser');
+            closedClients.push(client.close ());
+        }
         for (let i = 0; i < clients.length; i++) {
             const client = clients[i] as WsClient;
             delete this.clients[client.url];
@@ -2447,6 +2454,14 @@ export default class Exchange {
     getCacheIndex (orderbook, deltas) {
         // return the first index of the cache that can be applied to the orderbook or -1 if not possible
         return -1;
+    }
+
+    arraysConcat (arraysOfArrays: any[]) {
+        let result = [];
+        for (let i = 0; i < arraysOfArrays.length; i++) {
+            result = this.arrayConcat (result, arraysOfArrays[i]);
+        }
+        return result;
     }
 
     findTimeframe (timeframe, timeframes = undefined) {

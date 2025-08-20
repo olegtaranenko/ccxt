@@ -855,7 +855,6 @@ class mexc(ccxt.async_support.mexc):
             timestamp = self.safe_integer_n(message, ['t', 'ts', 'sendTime'])
             storedOrderBook['timestamp'] = timestamp
             storedOrderBook['datetime'] = self.iso8601(timestamp)
-            storedOrderBook['nonce'] = self.safe_integer(data, 'fromVersion')
         except Exception as e:
             del client.subscriptions[messageHash]
             client.reject(e, messageHash)
@@ -1369,7 +1368,7 @@ class mexc(ccxt.async_support.mexc):
             }
         return self.safe_order({
             'id': self.safe_string(order, 'id'),
-            'clientOrderId': self.safe_string(order, 'clientOrderId'),
+            'clientOrderId': self.safe_string(order, 'clientId'),
             'timestamp': timestamp,
             'datetime': self.iso8601(timestamp),
             'lastTradeTimestamp': None,
