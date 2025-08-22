@@ -39,6 +39,10 @@ class krakenfutures extends Exchange {
                 'cancelOrders' => true,
                 'createMarketOrder' => false,
                 'createOrder' => true,
+                'createPostOnlyOrder' => true,
+                'createReduceOnlyOrder' => true,
+                'createStopLimitOrder' => true,
+                'createStopMarketOrder' => true,
                 'createStopOrder' => true,
                 'createTriggerOrder' => true,
                 'editOrder' => true,
@@ -230,6 +234,7 @@ class krakenfutures extends Exchange {
                             'executions' => 'private',
                             'triggers' => 'private',
                             'accountlogcsv' => 'private',
+                            'account-log' => 'private',
                         ),
                     ),
                 ),
@@ -530,7 +535,7 @@ class krakenfutures extends Exchange {
                     'precision' => null,
                 );
             }
-            $this->currencies = $this->deep_extend($currencies, $this->currencies);
+            $this->currencies = $this->map_to_safe_map($this->deep_extend($currencies, $this->currencies));
             return $result;
         }) ();
     }
@@ -2434,7 +2439,7 @@ class krakenfutures extends Exchange {
         }) ();
     }
 
-    public function fetch_positions(?array $symbols = null, $params = array ()) {
+    public function fetch_positions(?array $symbols = null, $params = array ()): PromiseInterface {
         return Async\async(function () use ($symbols, $params) {
             /**
              *
@@ -2780,7 +2785,7 @@ class krakenfutures extends Exchange {
         }) ();
     }
 
-    public function set_leverage(?int $leverage, ?string $symbol = null, $params = array ()) {
+    public function set_leverage(int $leverage, ?string $symbol = null, $params = array ()) {
         return Async\async(function () use ($leverage, $symbol, $params) {
             /**
              * set the level of $leverage for a market

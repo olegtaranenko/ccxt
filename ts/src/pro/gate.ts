@@ -5,7 +5,7 @@ import gateRest from '../gate.js';
 import { AuthenticationError, BadRequest, ArgumentsRequired, ChecksumError, ExchangeError, NotSupported } from '../base/errors.js';
 import { ArrayCache, ArrayCacheByTimestamp, ArrayCacheBySymbolById, ArrayCacheBySymbolBySide } from '../base/ws/Cache.js';
 import { sha512 } from '../static_dependencies/noble-hashes/sha512.js';
-import type { Int, Str, Strings, OrderBook, Order, Trade, Ticker, Tickers, OHLCV, Position, Balances, Dict, Liquidation, OrderType, OrderSide, Num, Market, MarketType, OrderRequest } from '../base/types.js';
+import type { Int, Str, Strings, OrderBook, Order, Trade, Ticker, Tickers, OHLCV, Position, Balances, Dict, Liquidation, OrderType, OrderSide, Num, Market, MarketType, OrderRequest, Bool } from '../base/types.js';
 import Client from '../base/ws/Client.js';
 import Precise from '../base/Precise.js';
 
@@ -38,6 +38,7 @@ export default class gate extends gateRest {
                 'fetchOpenOrdersWs': true,
                 'fetchClosedOrdersWs': true,
                 'watchOrderBook': true,
+                'watchBidsAsks': true,
                 'watchTicker': true,
                 'watchTickers': true,
                 'watchTrades': true,
@@ -1223,7 +1224,10 @@ export default class gate extends gateRest {
         const cache = this.positions[type];
         for (let i = 0; i < positions.length; i++) {
             const position = positions[i];
-            cache.append (position);
+            const contracts = this.safeNumber (position, 'contracts', 0);
+            if (contracts > 0) {
+                cache.append (position);
+            }
         }
         // don't remove the future from the .futures cache
         const future = client.futures[messageHash];
@@ -1269,8 +1273,32 @@ export default class gate extends gateRest {
         for (let i = 0; i < data.length; i++) {
             const rawPosition = data[i];
             const position = this.parsePosition (rawPosition);
-            newPositions.push (position);
-            cache.append (position);
+            const symbol = this.safeString (position, 'symbol');
+            const side = this.safeString (position, 'side');
+            // Control when position is closed no side is returned
+            if (side === undefined) {
+                const prevLongPosition = this.safeDict (cache, symbol + 'long');
+                if (prevLongPosition !== undefined) {
+                    position['side'] = prevLongPosition['side'];
+                    newPositions.push (position);
+                    cache.append (position);
+                }
+                const prevShortPosition = this.safeDict (cache, symbol + 'short');
+                if (prevShortPosition !== undefined) {
+                    position['side'] = prevShortPosition['side'];
+                    newPositions.push (position);
+                    cache.append (position);
+                }
+                // if no prev position is found, default to long
+                if (prevLongPosition === undefined && prevShortPosition === undefined) {
+                    position['side'] = 'long';
+                    newPositions.push (position);
+                    cache.append (position);
+                }
+            } else {
+                newPositions.push (position);
+                cache.append (position);
+            }
         }
         const messageHashes = this.findMessageHashes (client, type + ':positions::');
         for (let i = 0; i < messageHashes.length; i++) {
@@ -1436,7 +1464,7 @@ export default class gate extends gateRest {
      * @param {object} [params] exchange specific parameters for the gate api endpoint
      * @returns {object} an array of [liquidation structures]{@link https://github.com/ccxt/ccxt/wiki/Manual#liquidation-structure}
      */
-    async watchMyLiquidationsForSymbols (symbols: string[] = undefined, since: Int = undefined, limit: Int = undefined, params = {}): Promise<Liquidation[]> {
+    async watchMyLiquidationsForSymbols (symbols: string[], since: Int = undefined, limit: Int = undefined, params = {}): Promise<Liquidation[]> {
         await this.loadMarkets ();
         symbols = this.marketSymbols (symbols, undefined, true, true);
         const market = this.getMarketFromSymbols (symbols);
@@ -1586,7 +1614,7 @@ export default class gate extends gateRest {
         });
     }
 
-    handleErrorMessage (client: Client, message) {
+    handleErrorMessage (client: Client, message): Bool {
         //
         //    {
         //        "time": 1647274664,
@@ -2067,6 +2095,11 @@ export default class gate extends gateRest {
             'signature': signature,
             'req_param': reqParams,
         };
+        if ((channel === 'spot.order_place') || (channel === 'futures.order_place')) {
+            payload['req_header'] = {
+                'X-Gate-Channel-Id': 'ccxt',
+            };
+        }
         const request: Dict = {
             'id': requestId,
             'time': time,

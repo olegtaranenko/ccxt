@@ -1217,7 +1217,7 @@ class yobit(Exchange, ImplicitAPI):
             result.append(trade)
         return self.filter_by_symbol_since_limit(result, market['symbol'], since, limit)
 
-    async def create_deposit_address(self, code: str, params={}):
+    async def create_deposit_address(self, code: str, params={}) -> DepositAddress:
         """
 
         https://yobit.net/en/api
@@ -1237,6 +1237,7 @@ class yobit(Exchange, ImplicitAPI):
             'currency': code,
             'address': address,
             'tag': None,
+            'network': None,
             'info': response['info'],
         }
 
@@ -1275,7 +1276,7 @@ class yobit(Exchange, ImplicitAPI):
             'tag': None,
         }
 
-    async def withdraw(self, code: str, amount: float, address: str, tag=None, params={}) -> Transaction:
+    async def withdraw(self, code: str, amount: float, address: str, tag: Str = None, params={}) -> Transaction:
         """
 
         https://yobit.net/en/api

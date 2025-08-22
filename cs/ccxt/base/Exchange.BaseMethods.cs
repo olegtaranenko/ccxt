@@ -224,6 +224,7 @@ public partial class Exchange
                 { "watchOHLCV", null },
                 { "watchOHLCVForSymbols", null },
                 { "watchOrderBook", null },
+                { "watchBidsAsks", null },
                 { "watchOrderBookForSymbols", null },
                 { "watchOrders", null },
                 { "watchOrdersForSymbols", null },
@@ -237,6 +238,17 @@ public partial class Exchange
                 { "watchLiquidations", null },
                 { "watchLiquidationsForSymbols", null },
                 { "watchMyLiquidations", null },
+                { "unWatchOrders", null },
+                { "unWatchTrades", null },
+                { "unWatchTradesForSymbols", null },
+                { "unWatchOHLCVForSymbols", null },
+                { "unWatchOrderBookForSymbols", null },
+                { "unWatchPositions", null },
+                { "unWatchOrderBook", null },
+                { "unWatchTickers", null },
+                { "unWatchMyTrades", null },
+                { "unWatchTicker", null },
+                { "unWatchOHLCV", null },
                 { "watchMyLiquidationsForSymbols", null },
                 { "withdraw", null },
                 { "ws", null },
@@ -314,7 +326,6 @@ public partial class Exchange
             } },
             { "commonCurrencies", new Dictionary<string, object>() {
                 { "XBT", "BTC" },
-                { "BCC", "BCH" },
                 { "BCHSV", "BSV" },
             } },
             { "precisionMode", TICK_SIZE },
@@ -557,6 +568,14 @@ public partial class Exchange
             throw new InvalidProxySettings ((string)add(add(add(this.id, " you have multiple conflicting proxy settings ("), joinedProxyNames), "), please use only one from : proxyUrl, proxy_url, proxyUrlCallback, proxy_url_callback")) ;
         }
         return proxyUrl;
+    }
+
+    public virtual object urlEncoderForProxyUrl(object targetUrl)
+    {
+        // to be overriden
+        object includesQuery = isGreaterThanOrEqual(getIndexOf(targetUrl, "?"), 0);
+        object finalUrl = ((bool) isTrue(includesQuery)) ? this.encodeURIComponent(targetUrl) : targetUrl;
+        return finalUrl;
     }
 
     public virtual object checkProxySettings(object url = null, object method = null, object headers = null, object body = null)
@@ -918,6 +937,12 @@ public partial class Exchange
         throw new NotSupported ((string)add(this.id, " watchTrades() is not supported yet")) ;
     }
 
+    public async virtual Task<object> unWatchOrders(object symbol = null, object parameters = null)
+    {
+        parameters ??= new Dictionary<string, object>();
+        throw new NotSupported ((string)add(this.id, " unWatchOrders() is not supported yet")) ;
+    }
+
     public async virtual Task<object> unWatchTrades(object symbol, object parameters = null)
     {
         parameters ??= new Dictionary<string, object>();
@@ -970,6 +995,12 @@ public partial class Exchange
     {
         parameters ??= new Dictionary<string, object>();
         throw new NotSupported ((string)add(this.id, " unWatchOrderBookForSymbols() is not supported yet")) ;
+    }
+
+    public async virtual Task<object> unWatchPositions(object symbols = null, object parameters = null)
+    {
+        parameters ??= new Dictionary<string, object>();
+        throw new NotSupported ((string)add(this.id, " unWatchPositions() is not supported yet")) ;
     }
 
     public async virtual Task<object> fetchDepositAddresses(object codes = null, object parameters = null)
@@ -1363,7 +1394,7 @@ public partial class Exchange
         // keep this in mind:
         // in JS: 1 == 1.0 is true;  1 === 1.0 is true
         // in Python: 1 == 1.0 is true
-        // in PHP 1 == 1.0 is true, but 1 === 1.0 is false
+        // in PHP 1 == 1.0 is true, but 1 === 1.0 is false.
         if (isTrue(isGreaterThanOrEqual(getIndexOf(stringVersion, "."), 0)))
         {
             return parseFloat(stringVersion);
@@ -1640,9 +1671,6 @@ public partial class Exchange
     public virtual object safeCurrencyStructure(object currency)
     {
         // derive data from networks: deposit, withdraw, active, fee, limits, precision
-        object currencyDeposit = this.safeBool(currency, "deposit");
-        object currencyWithdraw = this.safeBool(currency, "withdraw");
-        object currencyActive = this.safeBool(currency, "active");
         object networks = this.safeDict(currency, "networks", new Dictionary<string, object>() {});
         object keys = new List<object>(((IDictionary<string,object>)networks).Keys);
         object length = getArrayLength(keys);
@@ -1650,18 +1678,34 @@ public partial class Exchange
         {
             for (object i = 0; isLessThan(i, length); postFixIncrement(ref i))
             {
-                object network = getValue(networks, getValue(keys, i));
+                object key = getValue(keys, i);
+                object network = getValue(networks, key);
                 object deposit = this.safeBool(network, "deposit");
+                object currencyDeposit = this.safeBool(currency, "deposit");
                 if (isTrue(isTrue(isEqual(currencyDeposit, null)) || isTrue(deposit)))
                 {
                     ((IDictionary<string,object>)currency)["deposit"] = deposit;
                 }
                 object withdraw = this.safeBool(network, "withdraw");
+                object currencyWithdraw = this.safeBool(currency, "withdraw");
                 if (isTrue(isTrue(isEqual(currencyWithdraw, null)) || isTrue(withdraw)))
                 {
                     ((IDictionary<string,object>)currency)["withdraw"] = withdraw;
                 }
+                // set network 'active' to false if D or W is disabled
                 object active = this.safeBool(network, "active");
+                if (isTrue(isEqual(active, null)))
+                {
+                    if (isTrue(isTrue(deposit) && isTrue(withdraw)))
+                    {
+                        ((IDictionary<string,object>)getValue(getValue(currency, "networks"), key))["active"] = true;
+                    } else if (isTrue(isTrue(!isEqual(deposit, null)) && isTrue(!isEqual(withdraw, null))))
+                    {
+                        ((IDictionary<string,object>)getValue(getValue(currency, "networks"), key))["active"] = false;
+                    }
+                }
+                active = this.safeBool(getValue(getValue(currency, "networks"), key), "active"); // dict might have been updated on above lines, so access directly instead of `network` variable
+                object currencyActive = this.safeBool(currency, "active");
                 if (isTrue(isTrue(isEqual(currencyActive, null)) || isTrue(active)))
                 {
                     ((IDictionary<string,object>)currency)["active"] = active;
@@ -1676,7 +1720,7 @@ public partial class Exchange
                 // find lowest precision (which is more desired)
                 object precision = this.safeString(network, "precision");
                 object precisionMain = this.safeString(currency, "precision");
-                if (isTrue(isTrue(isEqual(precisionMain, null)) || isTrue(Precise.stringLt(precision, precisionMain))))
+                if (isTrue(isTrue(isEqual(precisionMain, null)) || isTrue(Precise.stringGt(precision, precisionMain))))
                 {
                     ((IDictionary<string,object>)currency)["precision"] = this.parseNumber(precision);
                 }
@@ -1856,7 +1900,7 @@ public partial class Exchange
     public virtual object setMarkets(object markets, object currencies = null)
     {
         object values = new List<object>() {};
-        this.markets_by_id = new Dictionary<string, object>() {};
+        this.markets_by_id = this.createSafeDictionary();
         // handle marketId conflicts
         // we insert spot markets first
         object marketValues = this.sortBy(this.toArray(markets), "spot", true, true);
@@ -1888,7 +1932,7 @@ public partial class Exchange
             }
             ((IList<object>)values).Add(market);
         }
-        this.markets = ((object)this.indexBy(values, "symbol"));
+        this.markets = this.mapToSafeMap(((object)this.indexBy(values, "symbol")));
         object marketsSortedBySymbol = this.keysort(this.markets);
         object marketsSortedById = this.keysort(this.markets_by_id);
         this.symbols = new List<object>(((IDictionary<string,object>)marketsSortedBySymbol).Keys);
@@ -1896,7 +1940,7 @@ public partial class Exchange
         if (isTrue(!isEqual(currencies, null)))
         {
             // currencies is always undefined when called in constructor but not when called from loadMarkets
-            this.currencies = this.deepExtend(this.currencies, currencies);
+            this.currencies = this.mapToSafeMap(this.deepExtend(this.currencies, currencies));
         } else
         {
             object baseCurrencies = new List<object>() {};
@@ -1929,8 +1973,8 @@ public partial class Exchange
             }
             baseCurrencies = this.sortBy(baseCurrencies, "code", false, "");
             quoteCurrencies = this.sortBy(quoteCurrencies, "code", false, "");
-            this.baseCurrencies = this.indexBy(baseCurrencies, "code");
-            this.quoteCurrencies = this.indexBy(quoteCurrencies, "code");
+            this.baseCurrencies = this.mapToSafeMap(this.indexBy(baseCurrencies, "code"));
+            this.quoteCurrencies = this.mapToSafeMap(this.indexBy(quoteCurrencies, "code"));
             object allCurrencies = this.arrayConcat(baseCurrencies, quoteCurrencies);
             object groupedCurrencies = this.groupBy(allCurrencies, "code");
             object codes = new List<object>(((IDictionary<string,object>)groupedCurrencies).Keys);
@@ -1954,9 +1998,9 @@ public partial class Exchange
                 ((IList<object>)resultingCurrencies).Add(highestPrecisionCurrency);
             }
             object sortedCurrencies = this.sortBy(resultingCurrencies, "code");
-            this.currencies = this.deepExtend(this.currencies, this.indexBy(sortedCurrencies, "code"));
+            this.currencies = this.mapToSafeMap(this.deepExtend(this.currencies, this.indexBy(sortedCurrencies, "code")));
         }
-        this.currencies_by_id = this.indexBy(this.currencies, "id");
+        this.currencies_by_id = this.indexBySafe(this.currencies, "id");
         object currenciesSortedByCode = this.keysort(this.currencies);
         this.codes = new List<object>(((IDictionary<string,object>)currenciesSortedByCode).Keys);
         return this.markets;
@@ -2395,20 +2439,8 @@ public partial class Exchange
         return this.filterBySymbolSinceLimit(results, symbol, since, limit);
     }
 
-    public virtual object calculateFee(object symbol, object type, object side, object amount, object price, object takerOrMaker = null, object parameters = null)
+    public virtual object calculateFeeWithRate(object symbol, object type, object side, object amount, object price, object takerOrMaker = null, object feeRate = null, object parameters = null)
     {
-        /**
-        * @method
-        * @description calculates the presumptive fee that would be charged for an order
-        * @param {string} symbol unified market symbol
-        * @param {string} type 'market' or 'limit'
-        * @param {string} side 'buy' or 'sell'
-        * @param {float} amount how much you want to trade, in units of the base currency on most exchanges, or number of contracts
-        * @param {float} price the price for the order to be filled at, in units of the quote currency
-        * @param {string} takerOrMaker 'taker' or 'maker'
-        * @param {object} params
-        * @returns {object} contains the rate, the percentage multiplied to the order amount to obtain the fee amount, and cost, the total value of the fee in units of the quote currency, for the order
-        */
         takerOrMaker ??= "taker";
         parameters ??= new Dictionary<string, object>();
         if (isTrue(isTrue(isEqual(type, "market")) && isTrue(isEqual(takerOrMaker, "maker"))))
@@ -2452,7 +2484,7 @@ public partial class Exchange
         {
             takerOrMaker = "taker";
         }
-        object rate = this.safeString(market, takerOrMaker);
+        object rate = ((bool) isTrue((!isEqual(feeRate, null)))) ? this.numberToString(feeRate) : this.safeString(market, takerOrMaker);
         cost = Precise.stringMul(cost, rate);
         return new Dictionary<string, object>() {
             { "type", takerOrMaker },
@@ -2460,6 +2492,25 @@ public partial class Exchange
             { "rate", this.parseNumber(rate) },
             { "cost", this.parseNumber(cost) },
         };
+    }
+
+    public virtual object calculateFee(object symbol, object type, object side, object amount, object price, object takerOrMaker = null, object parameters = null)
+    {
+        /**
+        * @method
+        * @description calculates the presumptive fee that would be charged for an order
+        * @param {string} symbol unified market symbol
+        * @param {string} type 'market' or 'limit'
+        * @param {string} side 'buy' or 'sell'
+        * @param {float} amount how much you want to trade, in units of the base currency on most exchanges, or number of contracts
+        * @param {float} price the price for the order to be filled at, in units of the quote currency
+        * @param {string} takerOrMaker 'taker' or 'maker'
+        * @param {object} params
+        * @returns {object} contains the rate, the percentage multiplied to the order amount to obtain the fee amount, and cost, the total value of the fee in units of the quote currency, for the order
+        */
+        takerOrMaker ??= "taker";
+        parameters ??= new Dictionary<string, object>();
+        return this.calculateFeeWithRate(symbol, type, side, amount, price, takerOrMaker, null, parameters);
     }
 
     public virtual object safeLiquidation(object liquidation, object market = null)
@@ -2515,6 +2566,33 @@ public partial class Exchange
         ((IDictionary<string,object>)trade)["price"] = this.parseNumber(price);
         ((IDictionary<string,object>)trade)["cost"] = this.parseNumber(cost);
         return trade;
+    }
+
+    public virtual object createCcxtTradeId(object timestamp = null, object side = null, object amount = null, object price = null, object takerOrMaker = null)
+    {
+        // this approach is being used by multiple exchanges (mexc, woo, coinsbit, dydx, ...)
+        object id = null;
+        if (isTrue(!isEqual(timestamp, null)))
+        {
+            id = this.numberToString(timestamp);
+            if (isTrue(!isEqual(side, null)))
+            {
+                id = add(id, add("-", side));
+            }
+            if (isTrue(!isEqual(amount, null)))
+            {
+                id = add(id, add("-", this.numberToString(amount)));
+            }
+            if (isTrue(!isEqual(price, null)))
+            {
+                id = add(id, add("-", this.numberToString(price)));
+            }
+            if (isTrue(!isEqual(takerOrMaker, null)))
+            {
+                id = add(id, add("-", takerOrMaker));
+            }
+        }
+        return id;
     }
 
     public virtual object parsedFeeAndFees(object container)
@@ -2660,7 +2738,7 @@ public partial class Exchange
         {
             object fee = getValue(fees, i);
             object code = this.safeString(fee, "currency");
-            object feeCurrencyCode = ((bool) isTrue(!isEqual(code, null))) ? code : ((object)i).ToString();
+            object feeCurrencyCode = ((bool) isTrue((!isEqual(code, null)))) ? code : ((object)i).ToString();
             if (isTrue(!isEqual(feeCurrencyCode, null)))
             {
                 object rate = this.safeString(fee, "rate");
@@ -2703,8 +2781,7 @@ public partial class Exchange
     public virtual object safeTicker(object ticker, object market = null)
     {
         object open = this.omitZero(this.safeString(ticker, "open"));
-        object close = this.omitZero(this.safeString(ticker, "close"));
-        object last = this.omitZero(this.safeString(ticker, "last"));
+        object close = this.omitZero(this.safeString2(ticker, "close", "last"));
         object change = this.omitZero(this.safeString(ticker, "change"));
         object percentage = this.omitZero(this.safeString(ticker, "percentage"));
         object average = this.omitZero(this.safeString(ticker, "average"));
@@ -2715,20 +2792,66 @@ public partial class Exchange
         {
             vwap = Precise.stringDiv(this.omitZero(quoteVolume), baseVolume);
         }
-        if (isTrue(isTrue((!isEqual(last, null))) && isTrue((isEqual(close, null)))))
+        // calculate open
+        if (isTrue(!isEqual(change, null)))
         {
-            close = last;
-        } else if (isTrue(isTrue((isEqual(last, null))) && isTrue((!isEqual(close, null)))))
-        {
-            last = close;
-        }
-        if (isTrue(isTrue((!isEqual(last, null))) && isTrue((!isEqual(open, null)))))
-        {
-            if (isTrue(isEqual(change, null)))
+            if (isTrue(isTrue(isEqual(close, null)) && isTrue(!isEqual(average, null))))
             {
-                change = Precise.stringSub(last, open);
+                close = Precise.stringAdd(average, Precise.stringDiv(change, "2"));
             }
-            if (isTrue(isEqual(average, null)))
+            if (isTrue(isTrue(isEqual(open, null)) && isTrue(!isEqual(close, null))))
+            {
+                open = Precise.stringSub(close, change);
+            }
+        } else if (isTrue(!isEqual(percentage, null)))
+        {
+            if (isTrue(isTrue(isEqual(close, null)) && isTrue(!isEqual(average, null))))
+            {
+                object openAddClose = Precise.stringMul(average, "2");
+                // openAddClose = open * (1 + (100 + percentage)/100)
+                object denominator = Precise.stringAdd("2", Precise.stringDiv(percentage, "100"));
+                object calcOpen = ((bool) isTrue((!isEqual(open, null)))) ? open : Precise.stringDiv(openAddClose, denominator);
+                close = Precise.stringMul(calcOpen, Precise.stringAdd("1", Precise.stringDiv(percentage, "100")));
+            }
+            if (isTrue(isTrue(isEqual(open, null)) && isTrue(!isEqual(close, null))))
+            {
+                open = Precise.stringDiv(close, Precise.stringAdd("1", Precise.stringDiv(percentage, "100")));
+            }
+        }
+        // change
+        if (isTrue(isEqual(change, null)))
+        {
+            if (isTrue(isTrue(!isEqual(close, null)) && isTrue(!isEqual(open, null))))
+            {
+                change = Precise.stringSub(close, open);
+            } else if (isTrue(isTrue(!isEqual(close, null)) && isTrue(!isEqual(percentage, null))))
+            {
+                change = Precise.stringMul(Precise.stringDiv(percentage, "100"), Precise.stringDiv(close, "100"));
+            } else if (isTrue(isTrue(!isEqual(open, null)) && isTrue(!isEqual(percentage, null))))
+            {
+                change = Precise.stringMul(open, Precise.stringDiv(percentage, "100"));
+            }
+        }
+        // calculate things according to "open" (similar can be done with "close")
+        if (isTrue(!isEqual(open, null)))
+        {
+            // percentage (using change)
+            if (isTrue(isTrue(isEqual(percentage, null)) && isTrue(!isEqual(change, null))))
+            {
+                percentage = Precise.stringMul(Precise.stringDiv(change, open), "100");
+            }
+            // close (using change)
+            if (isTrue(isTrue(isEqual(close, null)) && isTrue(!isEqual(change, null))))
+            {
+                close = Precise.stringAdd(open, change);
+            }
+            // close (using average)
+            if (isTrue(isTrue(isEqual(close, null)) && isTrue(!isEqual(average, null))))
+            {
+                close = Precise.stringMul(average, "2");
+            }
+            // average
+            if (isTrue(isTrue(isEqual(average, null)) && isTrue(!isEqual(close, null))))
             {
                 object precision = 18;
                 if (isTrue(isTrue(!isEqual(market, null)) && isTrue(this.isTickPrecision())))
@@ -2740,23 +2863,12 @@ public partial class Exchange
                         precision = this.precisionFromString(precisionPrice);
                     }
                 }
-                average = Precise.stringDiv(Precise.stringAdd(last, open), "2", precision);
+                average = Precise.stringDiv(Precise.stringAdd(open, close), "2", precision);
             }
-        }
-        if (isTrue(isTrue(isTrue(isTrue((isEqual(percentage, null))) && isTrue((!isEqual(change, null)))) && isTrue((!isEqual(open, null)))) && isTrue(Precise.stringGt(open, "0"))))
-        {
-            percentage = Precise.stringMul(Precise.stringDiv(change, open), "100");
-        }
-        if (isTrue(isTrue(isTrue((isEqual(change, null))) && isTrue((!isEqual(percentage, null)))) && isTrue((!isEqual(open, null)))))
-        {
-            change = Precise.stringDiv(Precise.stringMul(percentage, open), "100");
-        }
-        if (isTrue(isTrue(isTrue((isEqual(open, null))) && isTrue((!isEqual(last, null)))) && isTrue((!isEqual(change, null)))))
-        {
-            open = Precise.stringSub(last, change);
         }
         // timestamp and symbol operations don't belong in safeTicker
         // they should be done in the derived classes
+        object closeParsed = this.parseNumber(this.omitZero(close));
         return this.extend(ticker, new Dictionary<string, object>() {
             { "bid", this.parseNumber(this.omitZero(this.safeString(ticker, "bid"))) },
             { "bidVolume", this.safeNumber(ticker, "bidVolume") },
@@ -2765,8 +2877,8 @@ public partial class Exchange
             { "high", this.parseNumber(this.omitZero(this.safeString(ticker, "high"))) },
             { "low", this.parseNumber(this.omitZero(this.safeString(ticker, "low"))) },
             { "open", this.parseNumber(this.omitZero(open)) },
-            { "close", this.parseNumber(this.omitZero(close)) },
-            { "last", this.parseNumber(this.omitZero(last)) },
+            { "close", closeParsed },
+            { "last", closeParsed },
             { "change", this.parseNumber(change) },
             { "percentage", this.parseNumber(percentage) },
             { "average", this.parseNumber(average) },
@@ -3306,13 +3418,13 @@ public partial class Exchange
             } else
             {
                 // if networkCode was provided by user, we should check it after response, as the referenced exchange doesn't support network-code during request
-                object networkId = ((bool) isTrue(isIndexedByUnifiedNetworkCode)) ? networkCode : this.networkCodeToId(networkCode, currencyCode);
-                if (isTrue(inOp(indexedNetworkEntries, networkId)))
+                object networkIdOrCode = ((bool) isTrue(isIndexedByUnifiedNetworkCode)) ? networkCode : this.networkCodeToId(networkCode, currencyCode);
+                if (isTrue(inOp(indexedNetworkEntries, networkIdOrCode)))
                 {
-                    chosenNetworkId = networkId;
+                    chosenNetworkId = networkIdOrCode;
                 } else
                 {
-                    throw new NotSupported ((string)add(add(add(add(add(add(this.id, " - "), networkId), " network was not found for "), currencyCode), ", use one of "), String.Join(", ", ((IList<object>)availableNetworkIds).ToArray()))) ;
+                    throw new NotSupported ((string)add(add(add(add(add(add(this.id, " - "), networkIdOrCode), " network was not found for "), currencyCode), ", use one of "), String.Join(", ", ((IList<object>)availableNetworkIds).ToArray()))) ;
                 }
             }
         } else
@@ -3375,7 +3487,7 @@ public partial class Exchange
 
     public virtual object parseLeverageTiers(object response, object symbols = null, object marketIdKey = null)
     {
-        // marketIdKey should only be undefined when response is a dictionary
+        // marketIdKey should only be undefined when response is a dictionary.
         symbols = this.marketSymbols(symbols);
         object tiers = new Dictionary<string, object>() {};
         object symbolsLength = 0;
@@ -3664,6 +3776,31 @@ public partial class Exchange
         return new List<object>() {value, parameters};
     }
 
+    /**
+     * @param {object} params - extra parameters
+     * @param {object} request - existing dictionary of request
+     * @param {string} exchangeSpecificKey - the key for chain id to be set in request
+     * @param {object} currencyCode - (optional) existing dictionary of request
+     * @param {boolean} isRequired - (optional) whether that param is required to be present
+     * @returns {object[]} - returns [request, params] where request is the modified request object and params is the modified params object
+     */
+    public virtual object handleRequestNetwork(object parameters, object request, object exchangeSpecificKey, object currencyCode = null, object isRequired = null)
+    {
+        isRequired ??= false;
+        object networkCode = null;
+        var networkCodeparametersVariable = this.handleNetworkCodeAndParams(parameters);
+        networkCode = ((IList<object>)networkCodeparametersVariable)[0];
+        parameters = ((IList<object>)networkCodeparametersVariable)[1];
+        if (isTrue(!isEqual(networkCode, null)))
+        {
+            ((IDictionary<string,object>)request)[(string)exchangeSpecificKey] = this.networkCodeToId(networkCode, currencyCode);
+        } else if (isTrue(isRequired))
+        {
+            throw new ArgumentsRequired ((string)add(this.id, " - \"network\" param is required for this request")) ;
+        }
+        return new List<object>() {request, parameters};
+    }
+
     public virtual object resolvePath(object path, object parameters)
     {
         return new List<object> {this.implodeParams(path, parameters), this.omit(parameters, this.extractParams(path))};
@@ -3754,11 +3891,6 @@ public partial class Exchange
             object cost = this.calculateRateLimiterCost(api, method, path, parameters, config);
             await this.throttle(cost);
         }
-        this.lastRestRequestTimestamp = this.milliseconds();
-        object request = this.sign(path, api, method, parameters, headers, body);
-        this.last_request_headers = getValue(request, "headers");
-        this.last_request_body = getValue(request, "body");
-        this.last_request_url = getValue(request, "url");
         object retries = null;
         var retriesparametersVariable = this.handleOptionAndParams(parameters, path, "maxRetriesOnFailure", 0);
         retries = ((IList<object>)retriesparametersVariable)[0];
@@ -3767,6 +3899,11 @@ public partial class Exchange
         var retryDelayparametersVariable = this.handleOptionAndParams(parameters, path, "maxRetriesOnFailureDelay", 0);
         retryDelay = ((IList<object>)retryDelayparametersVariable)[0];
         parameters = ((IList<object>)retryDelayparametersVariable)[1];
+        this.lastRestRequestTimestamp = this.milliseconds();
+        object request = this.sign(path, api, method, parameters, headers, body);
+        this.last_request_headers = getValue(request, "headers");
+        this.last_request_body = getValue(request, "body");
+        this.last_request_url = getValue(request, "url");
         for (object i = 0; isLessThan(i, add(retries, 1)); postFixIncrement(ref i))
         {
             try
@@ -3774,7 +3911,7 @@ public partial class Exchange
                 return await this.fetch(getValue(request, "url"), getValue(request, "method"), getValue(request, "headers"), getValue(request, "body"));
             } catch(Exception e)
             {
-                if (isTrue(e is NetworkError))
+                if (isTrue(e is OperationFailed))
                 {
                     if (isTrue(isLessThan(i, retries)))
                     {
@@ -3786,9 +3923,11 @@ public partial class Exchange
                         {
                             await this.sleep(retryDelay);
                         }
+                    } else
+                    {
+                        throw e;
                     }
-                }
-                if (isTrue(isGreaterThanOrEqual(i, retries)))
+                } else
                 {
                     throw e;
                 }
@@ -5339,6 +5478,12 @@ public partial class Exchange
         throw new NotSupported ((string)add(this.id, " fetchGreeks() is not supported yet")) ;
     }
 
+    public async virtual Task<object> fetchAllGreeks(object symbols = null, object parameters = null)
+    {
+        parameters ??= new Dictionary<string, object>();
+        throw new NotSupported ((string)add(this.id, " fetchAllGreeks() is not supported yet")) ;
+    }
+
     public async virtual Task<object> fetchOptionChain(object code, object parameters = null)
     {
         parameters ??= new Dictionary<string, object>();
@@ -5363,13 +5508,13 @@ public partial class Exchange
         throw new NotSupported ((string)add(this.id, " fetchDepositsWithdrawals() is not supported yet")) ;
     }
 
-    public async virtual Task<object> fetchDeposits(object symbol = null, object since = null, object limit = null, object parameters = null)
+    public async virtual Task<object> fetchDeposits(object code = null, object since = null, object limit = null, object parameters = null)
     {
         parameters ??= new Dictionary<string, object>();
         throw new NotSupported ((string)add(this.id, " fetchDeposits() is not supported yet")) ;
     }
 
-    public async virtual Task<object> fetchWithdrawals(object symbol = null, object since = null, object limit = null, object parameters = null)
+    public async virtual Task<object> fetchWithdrawals(object code = null, object since = null, object limit = null, object parameters = null)
     {
         parameters ??= new Dictionary<string, object>();
         throw new NotSupported ((string)add(this.id, " fetchWithdrawals() is not supported yet")) ;
@@ -5525,6 +5670,32 @@ public partial class Exchange
     public virtual object createExpiredOptionMarket(object symbol)
     {
         throw new NotSupported ((string)add(this.id, " createExpiredOptionMarket () is not supported yet")) ;
+    }
+
+    public virtual object isLeveragedCurrency(object currencyCode, object checkBaseCoin = null, object existingCurrencies = null)
+    {
+        checkBaseCoin ??= false;
+        object leverageSuffixes = new List<object>() {"2L", "2S", "3L", "3S", "4L", "4S", "5L", "5S", "UP", "DOWN", "BULL", "BEAR"};
+        for (object i = 0; isLessThan(i, getArrayLength(leverageSuffixes)); postFixIncrement(ref i))
+        {
+            object leverageSuffix = getValue(leverageSuffixes, i);
+            if (isTrue(((string)currencyCode).EndsWith(((string)leverageSuffix))))
+            {
+                if (!isTrue(checkBaseCoin))
+                {
+                    return true;
+                } else
+                {
+                    // check if base currency is inside dict
+                    object baseCurrencyCode = ((string)currencyCode).Replace((string)leverageSuffix, (string)"");
+                    if (isTrue(inOp(existingCurrencies, baseCurrencyCode)))
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     public virtual object handleWithdrawTagAndParams(object tag, object parameters)
@@ -5740,12 +5911,23 @@ public partial class Exchange
         {
             return "1";
         }
-        object parsedPrecision = "0.";
-        for (object i = 0; isLessThan(i, subtract(precisionNumber, 1)); postFixIncrement(ref i))
+        if (isTrue(isGreaterThan(precisionNumber, 0)))
         {
-            parsedPrecision = add(parsedPrecision, "0");
+            object parsedPrecision = "0.";
+            for (object i = 0; isLessThan(i, subtract(precisionNumber, 1)); postFixIncrement(ref i))
+            {
+                parsedPrecision = add(parsedPrecision, "0");
+            }
+            return add(parsedPrecision, "1");
+        } else
+        {
+            object parsedPrecision = "1";
+            for (object i = 0; isLessThan(i, subtract(multiply(precisionNumber, -1), 1)); postFixIncrement(ref i))
+            {
+                parsedPrecision = add(parsedPrecision, "0");
+            }
+            return add(parsedPrecision, "0");
         }
-        return add(parsedPrecision, "1");
     }
 
     public virtual object integerPrecisionToAmount(object precision)
@@ -6828,7 +7010,7 @@ public partial class Exchange
         object calls = 0;
         object result = new List<object>() {};
         object errors = 0;
-        object until = this.safeInteger2(parameters, "untill", "till"); // do not omit it from params here
+        object until = this.safeIntegerN(parameters, new List<object>() {"until", "untill", "till"}); // do not omit it from params here
         var maxEntriesPerRequestparametersVariable = this.handleMaxEntriesPerRequestAndParams(method, maxEntriesPerRequest, parameters);
         maxEntriesPerRequest = ((IList<object>)maxEntriesPerRequestparametersVariable)[0];
         parameters = ((IList<object>)maxEntriesPerRequestparametersVariable)[1];
@@ -7178,38 +7360,52 @@ public partial class Exchange
         return result;
     }
 
-    public virtual object removeRepeatedElementsFromArray(object input)
+    public virtual object removeRepeatedElementsFromArray(object input, object fallbackToTimestamp = null)
+    {
+        fallbackToTimestamp ??= true;
+        object uniqueDic = new Dictionary<string, object>() {};
+        object uniqueResult = new List<object>() {};
+        for (object i = 0; isLessThan(i, getArrayLength(input)); postFixIncrement(ref i))
+        {
+            object entry = getValue(input, i);
+            object uniqValue = ((bool) isTrue(fallbackToTimestamp)) ? this.safeStringN(entry, new List<object>() {"id", "timestamp", 0}) : this.safeString(entry, "id");
+            if (isTrue(isTrue(!isEqual(uniqValue, null)) && !isTrue((inOp(uniqueDic, uniqValue)))))
+            {
+                ((IDictionary<string,object>)uniqueDic)[(string)uniqValue] = 1;
+                ((IList<object>)uniqueResult).Add(entry);
+            }
+        }
+        object valuesLength = getArrayLength(uniqueResult);
+        if (isTrue(isGreaterThan(valuesLength, 0)))
+        {
+            return ((object)uniqueResult);
+        }
+        return input;
+    }
+
+    public virtual object removeRepeatedTradesFromArray(object input)
     {
         object uniqueResult = new Dictionary<string, object>() {};
         for (object i = 0; isLessThan(i, getArrayLength(input)); postFixIncrement(ref i))
         {
             object entry = getValue(input, i);
             object id = this.safeString(entry, "id");
-            if (isTrue(!isEqual(id, null)))
+            if (isTrue(isEqual(id, null)))
             {
-                if (isTrue(isEqual(this.safeString(uniqueResult, id), null)))
-                {
-                    ((IDictionary<string,object>)uniqueResult)[(string)id] = entry;
-                }
-            } else
+                object price = this.safeString(entry, "price");
+                object amount = this.safeString(entry, "amount");
+                object timestamp = this.safeString(entry, "timestamp");
+                object side = this.safeString(entry, "side");
+                // unique trade identifier
+                id = add(add(add(add(add(add(add("t_", ((object)timestamp).ToString()), "_"), side), "_"), price), "_"), amount);
+            }
+            if (isTrue(isTrue(!isEqual(id, null)) && !isTrue((inOp(uniqueResult, id)))))
             {
-                object timestamp = this.safeInteger2(entry, "timestamp", 0);
-                if (isTrue(!isEqual(timestamp, null)))
-                {
-                    if (isTrue(isEqual(this.safeString(uniqueResult, timestamp), null)))
-                    {
-                        ((List<object>)uniqueResult)[Convert.ToInt32(timestamp)] = entry;
-                    }
-                }
+                ((IDictionary<string,object>)uniqueResult)[(string)id] = entry;
             }
         }
         object values = new List<object>(((IDictionary<string,object>)uniqueResult).Values);
-        object valuesLength = getArrayLength(values);
-        if (isTrue(isGreaterThan(valuesLength, 0)))
-        {
-            return ((object)values);
-        }
-        return input;
+        return ((object)values);
     }
 
     public virtual object handleUntilOption(object key, object request, object parameters, object multiplier = null)
@@ -7275,6 +7471,37 @@ public partial class Exchange
     public virtual object parseGreeks(object greeks, object market = null)
     {
         throw new NotSupported ((string)add(this.id, " parseGreeks () is not supported yet")) ;
+    }
+
+    public virtual object parseAllGreeks(object greeks, object symbols = null, object parameters = null)
+    {
+        //
+        // the value of greeks is either a dict or a list
+        //
+        parameters ??= new Dictionary<string, object>();
+        object results = new List<object>() {};
+        if (isTrue(((greeks is IList<object>) || (greeks.GetType().IsGenericType && greeks.GetType().GetGenericTypeDefinition().IsAssignableFrom(typeof(List<>))))))
+        {
+            for (object i = 0; isLessThan(i, getArrayLength(greeks)); postFixIncrement(ref i))
+            {
+                object parsedTicker = this.parseGreeks(getValue(greeks, i));
+                object greek = this.extend(parsedTicker, parameters);
+                ((IList<object>)results).Add(greek);
+            }
+        } else
+        {
+            object marketIds = new List<object>(((IDictionary<string,object>)greeks).Keys);
+            for (object i = 0; isLessThan(i, getArrayLength(marketIds)); postFixIncrement(ref i))
+            {
+                object marketId = getValue(marketIds, i);
+                object market = this.safeMarket(marketId);
+                object parsed = this.parseGreeks(getValue(greeks, marketId), market);
+                object greek = this.extend(parsed, parameters);
+                ((IList<object>)results).Add(greek);
+            }
+        }
+        symbols = this.marketSymbols(symbols);
+        return this.filterByArray(results, "symbol", symbols);
     }
 
     public virtual object parseOption(object chain, object currency = null, object market = null)
@@ -7452,7 +7679,7 @@ public partial class Exchange
 
     public virtual object convertMarketIdExpireDate(object date)
     {
-        // parse 03JAN24 to 240103
+        // parse 03JAN24 to 240103.
         object monthMappping = new Dictionary<string, object>() {
             { "JAN", "01" },
             { "FEB", "02" },
@@ -7542,20 +7769,45 @@ public partial class Exchange
         throw new NotSupported ((string)add(this.id, " fetchTransfers () is not supported yet")) ;
     }
 
-    public virtual void cleanUnsubscription(WebSocketClient client, object subHash, object unsubHash)
+    public virtual void cleanUnsubscription(WebSocketClient client, object subHash, object unsubHash, object subHashIsPrefix = null)
     {
+        subHashIsPrefix ??= false;
         if (isTrue(inOp(client.subscriptions, unsubHash)))
         {
             ((IDictionary<string,object>)client.subscriptions).Remove((string)unsubHash);
         }
-        if (isTrue(inOp(client.subscriptions, subHash)))
+        if (!isTrue(subHashIsPrefix))
         {
-            ((IDictionary<string,object>)client.subscriptions).Remove((string)subHash);
-        }
-        if (isTrue(inOp(client.futures, subHash)))
+            if (isTrue(inOp(client.subscriptions, subHash)))
+            {
+                ((IDictionary<string,object>)client.subscriptions).Remove((string)subHash);
+            }
+            if (isTrue(inOp(client.futures, subHash)))
+            {
+                var error = new UnsubscribeError(add(add(this.id, " "), subHash));
+                client.reject(error, subHash);
+            }
+        } else
         {
-            var error = new UnsubscribeError(add(add(this.id, " "), subHash));
-            client.reject(error, subHash);
+            object clientSubscriptions = new List<object>(((IDictionary<string,object>)client.subscriptions).Keys);
+            for (object i = 0; isLessThan(i, getArrayLength(clientSubscriptions)); postFixIncrement(ref i))
+            {
+                object sub = getValue(clientSubscriptions, i);
+                if (isTrue(((string)sub).StartsWith(((string)subHash))))
+                {
+                    ((IDictionary<string,object>)client.subscriptions).Remove((string)sub);
+                }
+            }
+            object clientFutures = new List<object>(((IDictionary<string, ccxt.Exchange.Future>)client.futures).Keys);
+            for (object i = 0; isLessThan(i, getArrayLength(clientFutures)); postFixIncrement(ref i))
+            {
+                object future = getValue(clientFutures, i);
+                if (isTrue(((string)future).StartsWith(((string)subHash))))
+                {
+                    var error = new UnsubscribeError(add(add(this.id, " "), future));
+                    client.reject(error, future);
+                }
+            }
         }
         // client.resolve(true, unsubHash);
     }
@@ -7573,7 +7825,7 @@ public partial class Exchange
                 object symbolAndTimeFrame = getValue(symbolsAndTimeFrames, i);
                 object symbol = this.safeString(symbolAndTimeFrame, 0);
                 object timeframe = this.safeString(symbolAndTimeFrame, 1);
-                if (isTrue(inOp(this.ohlcvs, symbol)))
+                if (isTrue(isTrue((!isEqual(this.ohlcvs, null))) && isTrue((inOp(this.ohlcvs, symbol)))))
                 {
                     if (isTrue(inOp(getValue(this.ohlcvs, symbol), timeframe)))
                     {
@@ -7608,31 +7860,26 @@ public partial class Exchange
             }
         } else
         {
-            if (isTrue(isEqual(topic, "myTrades")))
+            if (isTrue(isTrue(isEqual(topic, "myTrades")) && isTrue((!isEqual(this.myTrades, null)))))
             {
-                // don't reset this.myTrades directly here
-                // because in c# we need to use a different object (thread-safe dict)
-                object keys = new List<object>(((IDictionary<string,object>)this.myTrades).Keys);
-                for (object i = 0; isLessThan(i, getArrayLength(keys)); postFixIncrement(ref i))
+                this.myTrades = null;
+            } else if (isTrue(isTrue(isEqual(topic, "orders")) && isTrue((!isEqual(this.orders, null)))))
+            {
+                this.orders = null;
+            } else if (isTrue(isTrue(isEqual(topic, "positions")) && isTrue((!isEqual(this.positions, null)))))
+            {
+                this.positions = null;
+                object clients = new List<object>(((IDictionary<string,object>)this.clients).Values);
+                for (object i = 0; isLessThan(i, getArrayLength(clients)); postFixIncrement(ref i))
                 {
-                    object key = getValue(keys, i);
-                    if (isTrue(inOp(this.myTrades, key)))
+                    object client = getValue(clients, i);
+                    object futures = this.safeDict(client, "futures");
+                    if (isTrue(isTrue((!isEqual(futures, null))) && isTrue((inOp(futures, "fetchPositionsSnapshot")))))
                     {
-                        ((IDictionary<string,object>)this.myTrades).Remove((string)key);
+                        ((IDictionary<string,object>)futures).Remove((string)"fetchPositionsSnapshot");
                     }
                 }
-            } else if (isTrue(isEqual(topic, "orders")))
-            {
-                object orderSymbols = new List<object>(((IDictionary<string,object>)this.orders).Keys);
-                for (object i = 0; isLessThan(i, getArrayLength(orderSymbols)); postFixIncrement(ref i))
-                {
-                    object orderSymbol = getValue(orderSymbols, i);
-                    if (isTrue(inOp(this.orders, orderSymbol)))
-                    {
-                        ((IDictionary<string,object>)this.orders).Remove((string)orderSymbol);
-                    }
-                }
-            } else if (isTrue(isEqual(topic, "ticker")))
+            } else if (isTrue(isTrue(isEqual(topic, "ticker")) && isTrue((!isEqual(this.tickers, null)))))
             {
                 object tickerSymbols = new List<object>(((IDictionary<string,object>)this.tickers).Keys);
                 for (object i = 0; isLessThan(i, getArrayLength(tickerSymbols)); postFixIncrement(ref i))

@@ -782,7 +782,7 @@ class coinbaseinternational extends Exchange {
         return $this->safe_string($statuses, $status, $status);
     }
 
-    public function create_deposit_address(string $code, $params = array ()) {
+    public function create_deposit_address(string $code, $params = array ()): PromiseInterface {
         return Async\async(function () use ($code, $params) {
             /**
              * create a $currency deposit $address
@@ -831,6 +831,7 @@ class coinbaseinternational extends Exchange {
                 'currency' => $code,
                 'tag' => $tag,
                 'address' => $address,
+                'network' => null,
                 'info' => $response,
             );
         }) ();
@@ -2294,7 +2295,7 @@ class coinbaseinternational extends Exchange {
         }) ();
     }
 
-    public function withdraw(string $code, float $amount, string $address, $tag = null, $params = array ()): PromiseInterface {
+    public function withdraw(string $code, float $amount, string $address, ?string $tag = null, $params = array ()): PromiseInterface {
         return Async\async(function () use ($code, $amount, $address, $tag, $params) {
             /**
              * make a withdrawal
