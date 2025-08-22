@@ -1369,6 +1369,10 @@ export default class Exchange {
         return new Promise ((resolve, reject) => resolve (Object.values (this.markets)))
     }
 
+    fetchMarketsFromOutside (markets: {}) {
+        return markets;
+    }
+
     checkRequiredDependencies () {
         return;
     }
