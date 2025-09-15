@@ -663,7 +663,7 @@ export default class Exchange {
         this.timeout = 10000; // milliseconds
         this.twofa = undefined; // two-factor authentication (2-FA)
         this.verbose = false;
-        this.verboseLogVeto  = undefined;
+        this.verboseLogVeto = undefined;
         this.verboseTruncate = false;
         // default credentials
         this.apiKey = undefined;
@@ -1036,8 +1036,8 @@ export default class Exchange {
         // log
         if (this.verbose || this.verboseTruncate) {
             if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto ('fetch', method, url, headers, body)) {
-                const truncated = getBodyTruncated(body, this.verboseTruncate);
-                this.log ("fetch Request:\n", this.id, method, url, "\nRequestHeaders:\n", headers, "\nRequestBody:\n", truncated, "\n");
+                const truncated = getBodyTruncated (body, this.verboseTruncate);
+                this.log ('fetch Request:\n', this.id, method, url, '\nRequestHeaders:\n', headers, '\nRequestBody:\n', truncated, '\n');
             }
         }
         // end of proxies & headers
@@ -1150,7 +1150,7 @@ export default class Exchange {
             }
             if (this.verbose || this.verboseTruncate) {
                 if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto ('handle', method, url, response)) {
-                    this.log ("handleRestResponse:\n", this.id, method, url, response.status, response.statusText, "\nResponseHeaders:\n", responseHeaders, "ZIP redacted", "\n");
+                    this.log ('handleRestResponse:\n', this.id, method, url, response.status, response.statusText, '\nResponseHeaders:\n', responseHeaders, 'ZIP redacted', '\n');
                 }
             }
             // no error handler needed, because it would not be a zip response in case of an error
@@ -1171,7 +1171,7 @@ export default class Exchange {
             if (this.verbose || this.verboseTruncate) {
                 if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto ('response', method, url, response)) {
                     const truncated = getBodyTruncated (bodyText, this.verboseTruncate);
-                    this.log ("handleRestResponse:\n", this.id, method, url, response.status, response.statusText, "\nResponseHeaders:\n", responseHeaders, "\nResponseBody:\n", truncated, "\n");
+                    this.log ('handleRestResponse:\n', this.id, method, url, response.status, response.statusText, '\nResponseHeaders:\n', responseHeaders, '\nResponseBody:\n', truncated, '\n');
                 }
             }
             const skipFurtherErrorHandling = this.handleErrors (response.status, response.statusText, url, method, responseHeaders, responseBody, parsedBody, requestHeaders, requestBody);
@@ -1196,6 +1196,7 @@ export default class Exchange {
     async loadMarketsHelper (reload = false, params = {}) {
         const loadedMarketCallback = this.safeValue (params, 'loadedMarketCallback', undefined);
         let loadMarketsOutdated;
+        // eslint-disable-next-line prefer-const
         loadMarketsOutdated = !loadedMarketCallback || await loadedMarketCallback ();
         if (loadMarketsOutdated && loadedMarketCallback !== undefined) {
             reload = true;
@@ -1297,12 +1298,10 @@ export default class Exchange {
             this.options['loadedMarketCallback'] = loadedMarketCallback;
             this.omit (params, 'loadedMarketCallback');
         }
-
         if (postponeExceptionThrow && !catchedHandled) {
             // this.bootstrapped = false;
             throw postponeExceptionThrow;
         }
-
         if ('cachedCurrencies' in this.options) {
             delete this.options['cachedCurrencies'];
         }
