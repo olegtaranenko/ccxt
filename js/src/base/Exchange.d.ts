@@ -1,9 +1,8 @@
 import * as functions from './functions.js';
 import WsClient from './ws/WsClient.js';
-import { CountedOrderBook, IndexedOrderBook, OrderBook as WsOrderBook } from './ws/OrderBook.js';
+import { CountedOrderBook, IndexedOrderBook, OrderBook as Ob } from './ws/OrderBook.js';
 import type { Account, Balance, BalanceAccount, Balances, Bool, BorrowInterest, CancellationRequest, ConstructorArgs, Conversion, CrossBorrowRate, CrossBorrowRates, Currencies, Currency, CurrencyInterface, DepositAddress, DepositWithdrawFee, Dict, Dictionary, FundingHistory, FundingRate, FundingRateHistory, FundingRates, Greeks, IndexType, int, Int, IsolatedBorrowRate, IsolatedBorrowRates, LastPrice, LastPrices, LedgerEntry, Leverage, Leverages, LeverageTier, LeverageTiers, Liquidation, LongShortRatio, MarginMode, MarginModes, MarginModification, Market, MarketInterface, MarketType, MinMax, Num, OHLCV, OHLCVC, OpenInterest, OpenInterests, Option, OptionChain, Order, OrderBook, OrderBooks, OrderRequest, OrderSide, OrderType, Position, Str, Strings, Ticker, Tickers, Trade, TradingFeeInterface, TradingFees, Transaction, TransferEntry } from './types.js';
 import { ArrayCache, ArrayCacheByTimestamp } from './ws/Cache.js';
-import { OrderBook as Ob } from './ws/OrderBook.js';
 import Client from './ws/Client.js';
 export type { Account, Balance, BalanceAccount, Balances, Bool, BorrowInterest, Conversion, CrossBorrowRate, Currency, CurrencyInterface, DepositAddress, Dictionary, Fee, FundingHistory, FundingRateHistory, Greeks, IndexType, Int, LastPrice, LastPrices, LedgerEntry, Leverage, Leverages, LeverageTier, Liquidation, LongShortRatio, MarginMode, MarginModes, Market, MarketInterface, MarketType, MinMax, Num, OHLCV, OHLCVC, OpenInterest, Option, OptionChain, Order, OrderBook, OrderRequest, OrderSide, OrderType, Position, Str, Strings, Ticker, Tickers, Trade, Transaction, TransferEntry, } from './types.js';
 /**
@@ -375,7 +374,7 @@ export default class Exchange {
     safeMapToMap(dict: any): any;
     spawn(method: any, ...args: any[]): import("./ws/Future.js").FutureInterface;
     delay(timeout: any, method: any, ...args: any[]): void;
-    orderBook(snapshot?: {}, depth?: number): WsOrderBook;
+    orderBook(snapshot?: {}, depth?: number): Ob;
     indexedOrderBook(snapshot?: {}, depth?: number): IndexedOrderBook;
     countedOrderBook(snapshot?: {}, depth?: number): CountedOrderBook;
     handleMessage(client: any, message: any): void;
@@ -404,7 +403,7 @@ export default class Exchange {
         address: string;
     };
     starknetEncodeStructuredData(domain: any, messageTypes: any, messageData: any, address: any): string;
-    starknetSign(hash: any, pri: any): string;
+    starknetSign(msgHash: any, pri: any): string;
     getZKContractSignatureObj(seed: any, params?: {}): Promise<any>;
     getZKTransferSignatureObj(seed: any, params?: {}): Promise<any>;
     intToBase16(elem: any): string;
