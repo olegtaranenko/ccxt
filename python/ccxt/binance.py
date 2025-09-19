@@ -2489,6 +2489,7 @@ class binance(Exchange, ImplicitAPI):
                     'spot': 'x-TKT5PX2F',
                     'swap': 'x-cvBPrNm9',
                 },
+                'currencyToPrecisionRoundingMode': TRUNCATE,
                 'defaultSubType': None,  # 'linear', 'inverse'
                 'defaultTimeInForce': 'GTC',  # 'GTC' = Good To Cancel(default), 'IOC' = Immediate Or Cancel
                 'defaultType': 'spot',  # 'spot', 'future', 'margin', 'delivery', 'option'
@@ -2771,12 +2772,13 @@ class binance(Exchange, ImplicitAPI):
                         return market
                 return markets[0]
             elif (symbol.find('/') > -1) and (symbol.find(':') < 0):
-                # support legacy symbols
-                base, quote = symbol.split('/')
-                settle = base if (quote == 'USD') else quote
-                futuresSymbol = symbol + ':' + settle
-                if futuresSymbol in self.markets:
-                    return self.markets[futuresSymbol]
+                if (defaultType is not None) and (defaultType != 'spot'):
+                    # support legacy symbols
+                    base, quote = symbol.split('/')
+                    settle = base if (quote == 'USD') else quote
+                    futuresSymbol = symbol + ':' + settle
+                    if futuresSymbol in self.markets:
+                        return self.markets[futuresSymbol]
             elif (symbol.find('-C') > -1) or (symbol.find('-P') > -1):  # both exchange-id and unified symbols are supported self way regardless of the defaultType
                 return self.create_expired_option_market(symbol)
         if not allowNonMarketSymbol:
@@ -2791,13 +2793,6 @@ class binance(Exchange, ImplicitAPI):
 
     def cost_to_precision(self, symbol, cost):
         return self.decimal_to_precision(cost, TRUNCATE, self.markets[symbol]['precision']['quote'], self.precisionMode, self.paddingMode)
-
-    def currency_to_precision(self, code, fee, networkCode=None):
-        # info is available in currencies only if the user has configured his api keys
-        if self.safe_value(self.currencies[code], 'precision') is not None:
-            return self.decimal_to_precision(fee, TRUNCATE, self.currencies[code]['precision'], self.precisionMode, self.paddingMode)
-        else:
-            return self.number_to_string(fee)
 
     def nonce(self):
         return self.milliseconds() - self.options['timeDifference']
@@ -8960,7 +8955,7 @@ class binance(Exchange, ImplicitAPI):
             }
         return result
 
-    def withdraw(self, code: str, amount: float, address: str, tag=None, params={}) -> Transaction:
+    def withdraw(self, code: str, amount: float, address: str, tag: Str = None, params={}) -> Transaction:
         """
         make a withdrawal
 
@@ -8980,7 +8975,6 @@ class binance(Exchange, ImplicitAPI):
         request: dict = {
             'coin': currency['id'],
             'address': address,
-            'amount': self.currency_to_precision(code, amount),
             # issue sapiGetCapitalConfigGetall() to get networks for withdrawing USDT ERC20 vs USDT Omni
             # 'network': 'ETH',  # 'BTC', 'TRX', etc, optional
         }
@@ -8992,6 +8986,7 @@ class binance(Exchange, ImplicitAPI):
         if network is not None:
             request['network'] = network
             params = self.omit(params, 'network')
+        request['amount'] = self.currency_to_precision(code, amount, network)
         response = self.sapiPostCapitalWithdrawApply(self.extend(request, params))
         #     {id: '9a67628b16ba4988ae20d329333f16bc'}
         return self.parse_transaction(response, currency)
@@ -10728,7 +10723,7 @@ class binance(Exchange, ImplicitAPI):
             raise NotSupported(self.id + ' fetchFundingHistory() supports linear and inverse contracts only')
         return self.parse_incomes(response, market, since, limit)
 
-    def set_leverage(self, leverage: Int, symbol: Str = None, params={}):
+    def set_leverage(self, leverage: int, symbol: Str = None, params={}):
         """
         set the level of leverage for a market
 
@@ -12627,6 +12622,7 @@ class binance(Exchange, ImplicitAPI):
             'info': liquidation,
             'price': self.safe_number(liquidation, 'avgPrice'),
             'quoteValue': self.safe_number(liquidation, 'cumQuote'),
+            'side': self.safe_string_lower(liquidation, 'side'),
             'symbol': self.safe_symbol(marketId, market),
             'timestamp': timestamp,
         })

@@ -2835,6 +2835,14 @@ class binance extends binance$1["default"] {
         //         "i": "SfsR",                      // Account Alias
         //         "T": 1564745798938 ,              // Transaction
         //     }
+        // externalLockUpdate
+        //    {
+        //        "e": "externalLockUpdate",  // Event Type
+        //        "E": 1581557507324,         // Event Time
+        //        "a": "NEO",                 // Asset
+        //        "d": "10.00000000",         // Delta
+        //        "T": 1581557507268          // Transaction Time
+        //    }
         //
         const wallet = this.safeString(this.options, 'wallet', 'wb'); // cw for cross wallet
         // each account is connected to a different endpoint
@@ -4346,20 +4354,22 @@ class binance extends binance$1["default"] {
             '4hTicker': this.handleTickers,
             '4hTicker@arr': this.handleTickers,
             'ACCOUNT_UPDATE': this.handlePositions,
+            'ORDER_TRADE_UPDATE': this.handleOrderUpdate,
             'aggTrade': this.handleTrade,
             'balanceUpdate': this.handleBalance,
             'bookTicker': this.handleBidsAsks,
             'depthUpdate': this.handleOrderBook,
             'executionReport': this.handleOrderUpdate,
+            'externalLockUpdate': this.handleBalance,
             'forceOrder': this.handleLiquidation,
             'indexPrice_kline': this.handleOHLCV,
             'kline': this.handleOHLCV,
-            'markPrice_kline': this.handleOHLCV,
             'markPriceUpdate': this.handleTickers,
             'markPriceUpdate@arr': this.handleTickers,
-            'ORDER_TRADE_UPDATE': this.handleOrderUpdate,
+            'markPrice_kline': this.handleOHLCV,
             'outboundAccountPosition': this.handleBalance,
             'trade': this.handleTrade,
+            // 'ACCOUNT_UPDATE': this.handleAcountUpdate,
         };
         let event = this.safeString(message, 'e');
         if (Array.isArray(message)) {

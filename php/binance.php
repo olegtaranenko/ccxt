@@ -2459,6 +2459,7 @@ class binance extends Exchange {
                     'spot' => 'x-TKT5PX2F',
                     'swap' => 'x-cvBPrNm9',
                 ),
+                'currencyToPrecisionRoundingMode' => TRUNCATE,
                 'defaultSubType' => null, // 'linear', 'inverse'
                 'defaultTimeInForce' => 'GTC', // 'GTC' = Good To Cancel (default), 'IOC' = Immediate Or Cancel
                 'defaultType' => 'spot', // 'spot', 'future', 'margin', 'delivery', 'option'
@@ -2756,12 +2757,14 @@ class binance extends Exchange {
                 }
                 return $markets[0];
             } elseif ((mb_strpos($symbol, '/') > -1) && (mb_strpos($symbol, ':') === false)) {
-                // support legacy symbols
-                list($base, $quote) = explode('/', $symbol);
-                $settle = ($quote === 'USD') ? $base : $quote;
-                $futuresSymbol = $symbol . ':' . $settle;
-                if (is_array($this->markets) && array_key_exists($futuresSymbol, $this->markets)) {
-                    return $this->markets[$futuresSymbol];
+                if (($defaultType !== null) && ($defaultType !== 'spot')) {
+                    // support legacy symbols
+                    list($base, $quote) = explode('/', $symbol);
+                    $settle = ($quote === 'USD') ? $base : $quote;
+                    $futuresSymbol = $symbol . ':' . $settle;
+                    if (is_array($this->markets) && array_key_exists($futuresSymbol, $this->markets)) {
+                        return $this->markets[$futuresSymbol];
+                    }
                 }
             } elseif ((mb_strpos($symbol, '-C') > -1) || (mb_strpos($symbol, '-P') > -1)) { // both exchange-id and unified symbols are supported this way regardless of the $defaultType
                 return $this->create_expired_option_market($symbol);
@@ -2783,15 +2786,6 @@ class binance extends Exchange {
 
     public function cost_to_precision($symbol, $cost) {
         return $this->decimal_to_precision($cost, TRUNCATE, $this->markets[$symbol]['precision']['quote'], $this->precisionMode, $this->paddingMode);
-    }
-
-    public function currency_to_precision($code, $fee, $networkCode = null) {
-        // info is available in currencies only if the user has configured his api keys
-        if ($this->safe_value($this->currencies[$code], 'precision') !== null) {
-            return $this->decimal_to_precision($fee, TRUNCATE, $this->currencies[$code]['precision'], $this->precisionMode, $this->paddingMode);
-        } else {
-            return $this->number_to_string($fee);
-        }
     }
 
     public function nonce() {
@@ -9377,7 +9371,7 @@ class binance extends Exchange {
         return $result;
     }
 
-    public function withdraw(string $code, float $amount, string $address, $tag = null, $params = array ()): array {
+    public function withdraw(string $code, float $amount, string $address, ?string $tag = null, $params = array ()): array {
         /**
          * make a withdrawal
          *
@@ -9397,7 +9391,6 @@ class binance extends Exchange {
         $request = array(
             'coin' => $currency['id'],
             'address' => $address,
-            'amount' => $this->currency_to_precision($code, $amount),
             // issue sapiGetCapitalConfigGetall () to get $networks for withdrawing USDT ERC20 vs USDT Omni
             // 'network' => 'ETH', // 'BTC', 'TRX', etc, optional
         );
@@ -9411,6 +9404,7 @@ class binance extends Exchange {
             $request['network'] = $network;
             $params = $this->omit($params, 'network');
         }
+        $request['amount'] = $this->currency_to_precision($code, $amount, $network);
         $response = $this->sapiPostCapitalWithdrawApply ($this->extend($request, $params));
         //     array( id => '9a67628b16ba4988ae20d329333f16bc' )
         return $this->parse_transaction($response, $currency);
@@ -11285,7 +11279,7 @@ class binance extends Exchange {
         return $this->parse_incomes($response, $market, $since, $limit);
     }
 
-    public function set_leverage(?int $leverage, ?string $symbol = null, $params = array ()) {
+    public function set_leverage(int $leverage, ?string $symbol = null, $params = array ()) {
         /**
          * set the level of $leverage for a $market
          *
@@ -13367,6 +13361,7 @@ class binance extends Exchange {
             'info' => $liquidation,
             'price' => $this->safe_number($liquidation, 'avgPrice'),
             'quoteValue' => $this->safe_number($liquidation, 'cumQuote'),
+            'side' => $this->safe_string_lower($liquidation, 'side'),
             'symbol' => $this->safe_symbol($marketId, $market),
             'timestamp' => $timestamp,
         ));
