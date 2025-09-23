@@ -311,8 +311,7 @@ class Exchange(object):
     bidsasks = None
     base_currencies = None
     quote_currencies = None
-    currencies = None
-
+    currencies = {}
     options = None  # Python does not allow to define properties in run-time with setattr
     isSandboxModeEnabled = False
     accounts = None
@@ -1916,7 +1915,7 @@ class Exchange(object):
     # ########################################################################
     # ########################################################################
 
-    # METHODS BELOW THIS LINE ARE TRANSPILED FROM JAVASCRIPT TO PYTHON AND PHP
+    # METHODS BELOW THIS LINE ARE TRANSPILED FROM TYPESCRIPT
 
     def describe(self) -> Any:
         return {
@@ -3279,7 +3278,11 @@ class Exchange(object):
         marketsSortedById = self.keysort(self.markets_by_id)
         self.symbols = list(marketsSortedBySymbol.keys())
         self.ids = list(marketsSortedById.keys())
+        numCurrencies = 0
         if currencies is not None:
+            keys = list(currencies.keys())
+            numCurrencies = len(keys)
+        if numCurrencies > 0:
             # currencies is always None when called in constructor but not when called from loadMarkets
             self.currencies = self.map_to_safe_map(self.deep_extend(self.currencies, currencies))
         else:
@@ -5672,7 +5675,9 @@ class Exchange(object):
         return self.safe_string(self.commonCurrencies, code, code)
 
     def currency(self, code: str):
-        if self.currencies is None:
+        keys = list(self.currencies.keys())
+        numCurrencies = len(keys)
+        if numCurrencies == 0:
             raise ExchangeError(self.id + ' currencies not loaded')
         if isinstance(code, str):
             if code in self.currencies:
