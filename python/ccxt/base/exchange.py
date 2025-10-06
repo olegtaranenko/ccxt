@@ -4,7 +4,7 @@
 
 # -----------------------------------------------------------------------------
 
-__version__ = '4.5.6'
+__version__ = '4.5.7'
 
 # -----------------------------------------------------------------------------
 
@@ -7217,9 +7217,9 @@ class Exchange(object):
         symbols = self.safe_list(subscription, 'symbols', [])
         symbolsLength = len(symbols)
         if topic == 'ohlcv':
-            symbolsAndTimeFrames = self.safe_list(subscription, 'symbolsAndTimeframes', [])
-            for i in range(0, len(symbolsAndTimeFrames)):
-                symbolAndTimeFrame = symbolsAndTimeFrames[i]
+            symbolsAndTimeframes = self.safe_list(subscription, 'symbolsAndTimeframes', [])
+            for i in range(0, len(symbolsAndTimeframes)):
+                symbolAndTimeFrame = symbolsAndTimeframes[i]
                 symbol = self.safe_string(symbolAndTimeFrame, 0)
                 timeframe = self.safe_string(symbolAndTimeFrame, 1)
                 if (self.ohlcvs is not None) and (symbol in self.ohlcvs):
@@ -7237,6 +7237,9 @@ class Exchange(object):
                 elif topic == 'ticker':
                     if symbol in self.tickers:
                         del self.tickers[symbol]
+                elif topic == 'bidsasks':
+                    if symbol in self.bidsasks:
+                        del self.bidsasks[symbol]
         else:
             if topic == 'myTrades' and (self.myTrades is not None):
                 self.myTrades = None
@@ -7256,3 +7259,9 @@ class Exchange(object):
                     tickerSymbol = tickerSymbols[i]
                     if tickerSymbol in self.tickers:
                         del self.tickers[tickerSymbol]
+            elif topic == 'bidsasks' and (self.bidsasks is not None):
+                bidsaskSymbols = list(self.bidsasks.keys())
+                for i in range(0, len(bidsaskSymbols)):
+                    bidsaskSymbol = bidsaskSymbols[i]
+                    if bidsaskSymbol in self.bidsasks:
+                        del self.bidsasks[bidsaskSymbol]

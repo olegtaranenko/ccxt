@@ -44,11 +44,11 @@ use React\EventLoop\Loop;
 
 use Exception;
 
-$version = '4.5.6';
+$version = '4.5.7';
 
 class Exchange extends \ccxt\Exchange {
 
-    const VERSION = '4.5.6';
+    const VERSION = '4.5.7';
 
     public $browser;
     public $marketsLoading = null;
@@ -6994,9 +6994,9 @@ class Exchange extends \ccxt\Exchange {
         $symbols = $this->safe_list($subscription, 'symbols', array());
         $symbolsLength = count($symbols);
         if ($topic === 'ohlcv') {
-            $symbolsAndTimeFrames = $this->safe_list($subscription, 'symbolsAndTimeframes', array());
-            for ($i = 0; $i < count($symbolsAndTimeFrames); $i++) {
-                $symbolAndTimeFrame = $symbolsAndTimeFrames[$i];
+            $symbolsAndTimeframes = $this->safe_list($subscription, 'symbolsAndTimeframes', array());
+            for ($i = 0; $i < count($symbolsAndTimeframes); $i++) {
+                $symbolAndTimeFrame = $symbolsAndTimeframes[$i];
                 $symbol = $this->safe_string($symbolAndTimeFrame, 0);
                 $timeframe = $this->safe_string($symbolAndTimeFrame, 1);
                 if (($this->ohlcvs !== null) && (is_array($this->ohlcvs) && array_key_exists($symbol, $this->ohlcvs))) {
@@ -7019,6 +7019,10 @@ class Exchange extends \ccxt\Exchange {
                 } elseif ($topic === 'ticker') {
                     if (is_array($this->tickers) && array_key_exists($symbol, $this->tickers)) {
                         unset($this->tickers[$symbol]);
+                    }
+                } elseif ($topic === 'bidsasks') {
+                    if (is_array($this->bidsasks) && array_key_exists($symbol, $this->bidsasks)) {
+                        unset($this->bidsasks[$symbol]);
                     }
                 }
             }
@@ -7043,6 +7047,14 @@ class Exchange extends \ccxt\Exchange {
                     $tickerSymbol = $tickerSymbols[$i];
                     if (is_array($this->tickers) && array_key_exists($tickerSymbol, $this->tickers)) {
                         unset($this->tickers[$tickerSymbol]);
+                    }
+                }
+            } elseif ($topic === 'bidsasks' && ($this->bidsasks !== null)) {
+                $bidsaskSymbols = is_array($this->bidsasks) ? array_keys($this->bidsasks) : array();
+                for ($i = 0; $i < count($bidsaskSymbols); $i++) {
+                    $bidsaskSymbol = $bidsaskSymbols[$i];
+                    if (is_array($this->bidsasks) && array_key_exists($bidsaskSymbol, $this->bidsasks)) {
+                        unset($this->bidsasks[$bidsaskSymbol]);
                     }
                 }
             }

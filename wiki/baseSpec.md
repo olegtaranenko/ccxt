@@ -1457,6 +1457,7 @@ fetch all the accounts associated with a profile
 * [novadax](/exchanges/novadax.md#novadaxfetchaccounts)
 * [okx](/exchanges/okx.md#okxfetchaccounts)
 * [oxfun](/exchanges/oxfun.md#oxfunfetchaccounts)
+* [whitebit](/exchanges/whitebit.md#whitebitfetchaccounts)
 * [woo](/exchanges/woo.md#woofetchaccounts)
 
 ---
@@ -2117,7 +2118,6 @@ fetches all available currencies on an exchange
 * [gate](/exchanges/gate.md#gatefetchcurrencies)
 * [gemini](/exchanges/gemini.md#geminifetchcurrencies)
 * [hashkey](/exchanges/hashkey.md#hashkeyfetchcurrencies)
-* [hibachi](/exchanges/hibachi.md#hibachifetchcurrencies)
 * [hitbtc](/exchanges/hitbtc.md#hitbtcfetchcurrencies)
 * [hollaex](/exchanges/hollaex.md#hollaexfetchcurrencies)
 * [htx](/exchanges/htx.md#htxfetchcurrencies)
@@ -2687,6 +2687,25 @@ fetch the funding rate interval for multiple markets
 
 ##### Supported exchanges
 * [binance](/exchanges/binance.md#binancefetchfundingintervals)
+
+---
+
+<a name="fetchFundingLimits" id="fetchfundinglimits"></a>
+
+## fetchFundingLimits
+fetch the deposit and withdrawal limits for a currency
+
+**Kind**: instance   
+**Returns**: <code>object</code> - a [funding limits structure](https://docs.ccxt.com/#/?id=funding-limits-structure)
+
+
+| Param | Type | Required | Description |
+| --- | --- | --- | --- |
+| codes | <code>Array&lt;string&gt;</code>, <code>undefined</code> | Yes | unified currency codes |
+| params | <code>object</code> | No | extra parameters specific to the exchange API endpoint |
+
+##### Supported exchanges
+* [whitebit](/exchanges/whitebit.md#whitebitfetchfundinglimits)
 
 ---
 
@@ -4194,6 +4213,7 @@ fetches information on an order made by the user
 * [toobit](/exchanges/toobit.md#toobitfetchorder)
 * [upbit](/exchanges/upbit.md#upbitfetchorder)
 * [wavesexchange](/exchanges/wavesexchange.md#wavesexchangefetchorder)
+* [whitebit](/exchanges/whitebit.md#whitebitfetchorder)
 * [woo](/exchanges/woo.md#woofetchorder)
 * [woofipro](/exchanges/woofipro.md#woofiprofetchorder)
 * [xt](/exchanges/xt.md#xtfetchorder)
@@ -4517,6 +4537,7 @@ fetches information on multiple orders made by the user
 * [tokocrypto](/exchanges/tokocrypto.md#tokocryptofetchorders)
 * [toobit](/exchanges/toobit.md#toobitfetchorders)
 * [wavesexchange](/exchanges/wavesexchange.md#wavesexchangefetchorders)
+* [whitebit](/exchanges/whitebit.md#whitebitfetchorders)
 * [woo](/exchanges/woo.md#woofetchorders)
 * [woofipro](/exchanges/woofipro.md#woofiprofetchorders)
 * [xt](/exchanges/xt.md#xtfetchorders)
@@ -5522,6 +5543,25 @@ fetch the trading fees for multiple markets
 
 ---
 
+<a name="fetchTradingLimits" id="fetchtradinglimits"></a>
+
+## fetchTradingLimits
+fetch the trading limits for a market
+
+**Kind**: instance   
+**Returns**: <code>object</code> - a [trading limits structure](https://docs.ccxt.com/#/?id=trading-limits-structure)
+
+
+| Param | Type | Required | Description |
+| --- | --- | --- | --- |
+| symbols | <code>Array&lt;string&gt;</code>, <code>undefined</code> | Yes | unified market symbol |
+| params | <code>object</code> | No | extra parameters specific to the exchange API endpoint |
+
+##### Supported exchanges
+* [whitebit](/exchanges/whitebit.md#whitebitfetchtradinglimits)
+
+---
+
 <a name="fetchTransactionFee" id="fetchtransactionfee"></a>
 
 ## fetchTransactionFee
@@ -5589,6 +5629,7 @@ Fetch all transactions (deposits and withdrawals) made from an account.
 ##### Supported exchanges
 * [foxbit](/exchanges/foxbit.md#foxbitfetchtransactions)
 * [latoken](/exchanges/latoken.md#latokenfetchtransactions)
+* [whitebit](/exchanges/whitebit.md#whitebitfetchtransactions)
 
 ---
 
@@ -5795,6 +5836,7 @@ fetch all withdrawals made from an account
 * [tokocrypto](/exchanges/tokocrypto.md#tokocryptofetchwithdrawals)
 * [toobit](/exchanges/toobit.md#toobitfetchwithdrawals)
 * [upbit](/exchanges/upbit.md#upbitfetchwithdrawals)
+* [whitebit](/exchanges/whitebit.md#whitebitfetchwithdrawals)
 * [woo](/exchanges/woo.md#woofetchwithdrawals)
 * [woofipro](/exchanges/woofipro.md#woofiprofetchwithdrawals)
 * [xt](/exchanges/xt.md#xtfetchwithdrawals)
@@ -6323,6 +6365,7 @@ unWatches best bid & ask for symbols
 ##### Supported exchanges
 * [backpack](/exchanges/backpack.md#backpackunwatchbidsasks)
 * [mexc](/exchanges/mexc.md#mexcunwatchbidsasks)
+* [woo](/exchanges/woo.md#woounwatchbidsasks)
 
 ---
 
@@ -6364,16 +6407,19 @@ watches historical candlestick data containing the open, high, low, and close pr
 
 ##### Supported exchanges
 * [backpack](/exchanges/backpack.md#backpackunwatchohlcv)
+* [bingx](/exchanges/bingx.md#bingxunwatchohlcv)
 * [bitfinex](/exchanges/bitfinex.md#bitfinexunwatchohlcv)
 * [bitget](/exchanges/bitget.md#bitgetunwatchohlcv)
 * [bybit](/exchanges/bybit.md#bybitunwatchohlcv)
 * [coincatch](/exchanges/coincatch.md#coincatchunwatchohlcv)
 * [cryptocom](/exchanges/cryptocom.md#cryptocomunwatchohlcv)
 * [defx](/exchanges/defx.md#defxunwatchohlcv)
+* [htx](/exchanges/htx.md#htxunwatchohlcv)
 * [hyperliquid](/exchanges/hyperliquid.md#hyperliquidunwatchohlcv)
 * [kucoin](/exchanges/kucoin.md#kucoinunwatchohlcv)
 * [mexc](/exchanges/mexc.md#mexcunwatchohlcv)
 * [okx](/exchanges/okx.md#okxunwatchohlcv)
+* [woo](/exchanges/woo.md#woounwatchohlcv)
 
 ---
 
@@ -6415,6 +6461,7 @@ unWatches information on open orders with bid (buy) and ask (sell) prices, volum
 
 ##### Supported exchanges
 * [backpack](/exchanges/backpack.md#backpackunwatchorderbook)
+* [bingx](/exchanges/bingx.md#bingxunwatchorderbook)
 * [bitget](/exchanges/bitget.md#bitgetunwatchorderbook)
 * [bybit](/exchanges/bybit.md#bybitunwatchorderbook)
 * [coincatch](/exchanges/coincatch.md#coincatchunwatchorderbook)
@@ -6422,11 +6469,13 @@ unWatches information on open orders with bid (buy) and ask (sell) prices, volum
 * [defx](/exchanges/defx.md#defxunwatchorderbook)
 * [derive](/exchanges/derive.md#deriveunwatchorderbook)
 * [gate](/exchanges/gate.md#gateunwatchorderbook)
+* [htx](/exchanges/htx.md#htxunwatchorderbook)
 * [hyperliquid](/exchanges/hyperliquid.md#hyperliquidunwatchorderbook)
 * [kucoin](/exchanges/kucoin.md#kucoinunwatchorderbook)
 * [kucoinfutures](/exchanges/kucoinfutures.md#kucoinfuturesunwatchorderbook)
 * [mexc](/exchanges/mexc.md#mexcunwatchorderbook)
 * [okx](/exchanges/okx.md#okxunwatchorderbook)
+* [woo](/exchanges/woo.md#woounwatchorderbook)
 
 ---
 
@@ -6512,15 +6561,18 @@ unWatches a price ticker, a statistical calculation with the information calcula
 
 ##### Supported exchanges
 * [backpack](/exchanges/backpack.md#backpackunwatchticker)
+* [bingx](/exchanges/bingx.md#bingxunwatchticker)
 * [bitfinex](/exchanges/bitfinex.md#bitfinexunwatchticker)
 * [bitget](/exchanges/bitget.md#bitgetunwatchticker)
 * [bybit](/exchanges/bybit.md#bybitunwatchticker)
 * [coincatch](/exchanges/coincatch.md#coincatchunwatchticker)
 * [cryptocom](/exchanges/cryptocom.md#cryptocomunwatchticker)
 * [defx](/exchanges/defx.md#defxunwatchticker)
+* [htx](/exchanges/htx.md#htxunwatchticker)
 * [kucoin](/exchanges/kucoin.md#kucoinunwatchticker)
 * [mexc](/exchanges/mexc.md#mexcunwatchticker)
 * [okx](/exchanges/okx.md#okxunwatchticker)
+* [woo](/exchanges/woo.md#woounwatchticker)
 
 ---
 
@@ -6546,6 +6598,7 @@ watches a price ticker, a statistical calculation with the information calculate
 * [hyperliquid](/exchanges/hyperliquid.md#hyperliquidunwatchtickers)
 * [mexc](/exchanges/mexc.md#mexcunwatchtickers)
 * [okx](/exchanges/okx.md#okxunwatchtickers)
+* [woo](/exchanges/woo.md#woounwatchtickers)
 
 ---
 
@@ -6565,6 +6618,7 @@ unWatches from the stream channel
 
 ##### Supported exchanges
 * [backpack](/exchanges/backpack.md#backpackunwatchtrades)
+* [bingx](/exchanges/bingx.md#bingxunwatchtrades)
 * [bitfinex](/exchanges/bitfinex.md#bitfinexunwatchtrades)
 * [bitget](/exchanges/bitget.md#bitgetunwatchtrades)
 * [bybit](/exchanges/bybit.md#bybitunwatchtrades)
@@ -6573,11 +6627,13 @@ unWatches from the stream channel
 * [defx](/exchanges/defx.md#defxunwatchtrades)
 * [derive](/exchanges/derive.md#deriveunwatchtrades)
 * [gate](/exchanges/gate.md#gateunwatchtrades)
+* [htx](/exchanges/htx.md#htxunwatchtrades)
 * [hyperliquid](/exchanges/hyperliquid.md#hyperliquidunwatchtrades)
 * [kucoin](/exchanges/kucoin.md#kucoinunwatchtrades)
 * [kucoinfutures](/exchanges/kucoinfutures.md#kucoinfuturesunwatchtrades)
 * [mexc](/exchanges/mexc.md#mexcunwatchtrades)
 * [okx](/exchanges/okx.md#okxunwatchtrades)
+* [woo](/exchanges/woo.md#woounwatchtrades)
 
 ---
 
@@ -7057,7 +7113,6 @@ watches historical candlestick data containing the open, high, low, and close pr
 ##### Supported exchanges
 * [apex](/exchanges/apex.md#apexwatchohlcvforsymbols)
 * [backpack](/exchanges/backpack.md#backpackwatchohlcvforsymbols)
-* [bingx](/exchanges/bingx.md#bingxwatchohlcvforsymbols)
 * [blofin](/exchanges/blofin.md#blofinwatchohlcvforsymbols)
 * [bybit](/exchanges/bybit.md#bybitwatchohlcvforsymbols)
 * [defx](/exchanges/defx.md#defxwatchohlcvforsymbols)
@@ -7158,7 +7213,6 @@ watches information on open orders with bid (buy) and ask (sell) prices, volumes
 ##### Supported exchanges
 * [apex](/exchanges/apex.md#apexwatchorderbookforsymbols)
 * [backpack](/exchanges/backpack.md#backpackwatchorderbookforsymbols)
-* [bingx](/exchanges/bingx.md#bingxwatchorderbookforsymbols)
 * [bitget](/exchanges/bitget.md#bitgetwatchorderbookforsymbols)
 * [bitmart](/exchanges/bitmart.md#bitmartwatchorderbookforsymbols)
 * [bitmex](/exchanges/bitmex.md#bitmexwatchorderbookforsymbols)
@@ -7404,7 +7458,6 @@ watches a price ticker, a statistical calculation with the information calculate
 ##### Supported exchanges
 * [apex](/exchanges/apex.md#apexwatchtickers)
 * [backpack](/exchanges/backpack.md#backpackwatchtickers)
-* [bingx](/exchanges/bingx.md#bingxwatchtickers)
 * [bitget](/exchanges/bitget.md#bitgetwatchtickers)
 * [bithumb](/exchanges/bithumb.md#bithumbwatchtickers)
 * [bitmart](/exchanges/bitmart.md#bitmartwatchtickers)

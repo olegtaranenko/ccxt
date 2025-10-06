@@ -5785,7 +5785,7 @@ func (this *mexc) FetchTransfer(id interface{}, optionalArgs ...interface{}) <-c
 				"transact_id": id,
 			}
 
-			response := (<-this.callDynamically("spotPrivateGetAssetInternalTransferRecord", this.Extend(request, query)))
+			response := (<-this.SpotPrivateGetAssetInternalTransferRecord(this.Extend(request, query)))
 			PanicOnError(response)
 			//
 			//     {

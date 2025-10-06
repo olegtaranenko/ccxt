@@ -304,6 +304,7 @@ export default class Exchange {
         this.walletAddress = undefined; // a wallet address "0x"-prefixed hexstring
         // placeholders for cached data
         this.balance = {};
+        this.bidsasks = {};
         this.liquidations = {};
         this.myLiquidations = {};
         this.myTrades = undefined;
@@ -7756,9 +7757,9 @@ export default class Exchange {
         const symbols = this.safeList(subscription, 'symbols', []);
         const symbolsLength = symbols.length;
         if (topic === 'ohlcv') {
-            const symbolsAndTimeFrames = this.safeList(subscription, 'symbolsAndTimeframes', []);
-            for (let i = 0; i < symbolsAndTimeFrames.length; i++) {
-                const symbolAndTimeFrame = symbolsAndTimeFrames[i];
+            const symbolsAndTimeframes = this.safeList(subscription, 'symbolsAndTimeframes', []);
+            for (let i = 0; i < symbolsAndTimeframes.length; i++) {
+                const symbolAndTimeFrame = symbolsAndTimeframes[i];
                 const symbol = this.safeString(symbolAndTimeFrame, 0);
                 const timeframe = this.safeString(symbolAndTimeFrame, 1);
                 if ((this.ohlcvs !== undefined) && (symbol in this.ohlcvs)) {
@@ -7784,6 +7785,11 @@ export default class Exchange {
                 else if (topic === 'ticker') {
                     if (symbol in this.tickers) {
                         delete this.tickers[symbol];
+                    }
+                }
+                else if (topic === 'bidsasks') {
+                    if (symbol in this.bidsasks) {
+                        delete this.bidsasks[symbol];
                     }
                 }
             }
@@ -7812,6 +7818,15 @@ export default class Exchange {
                     const tickerSymbol = tickerSymbols[i];
                     if (tickerSymbol in this.tickers) {
                         delete this.tickers[tickerSymbol];
+                    }
+                }
+            }
+            else if (topic === 'bidsasks' && (this.bidsasks !== undefined)) {
+                const bidsaskSymbols = Object.keys(this.bidsasks);
+                for (let i = 0; i < bidsaskSymbols.length; i++) {
+                    const bidsaskSymbol = bidsaskSymbols[i];
+                    if (bidsaskSymbol in this.bidsasks) {
+                        delete this.bidsasks[bidsaskSymbol];
                     }
                 }
             }
