@@ -31,7 +31,9 @@ class binanceus extends \ccxt\pro\binance {
             'options' => array(
                 'defaultType' => 'spot',
                 'fetchCurrencies' => false,
-                'fetchMarkets' => array( 'spot' ),
+                'fetchMarkets' => array(
+                    'types' => array( 'spot' ),
+                ),
                 'quoteOrderQty' => false,
             ),
             'urls' => array(

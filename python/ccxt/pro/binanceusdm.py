@@ -25,7 +25,9 @@ class binanceusdm(binance):
             'name': 'Binance USDⓈ-M',
             'options': {
                 'defaultSubType': 'linear',
-                'fetchMarkets': ['linear'],
+                'fetchMarkets': {
+                    'types': ['linear'],
+                },
             },
             'urls': {
                 'doc': 'https://developers.binance.com/en',

@@ -24,7 +24,9 @@ class binanceusdm extends \ccxt\pro\binance {
             'name' => 'Binance USDⓈ-M',
             'options' => array(
                 'defaultSubType' => 'linear',
-                'fetchMarkets' => array( 'linear' ),
+                'fetchMarkets' => array(
+                    'types' => array( 'linear' ),
+                ),
             ),
             'urls' => array(
                 'doc' => 'https://developers.binance.com/en',

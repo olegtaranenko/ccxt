@@ -33,7 +33,9 @@ class binanceus(binance):
             'options': {
                 'defaultType': 'spot',
                 'fetchCurrencies': False,
-                'fetchMarkets': ['spot'],
+                'fetchMarkets': {
+                    'types': ['spot'],
+                },
                 'quoteOrderQty': False,
             },
             'urls': {

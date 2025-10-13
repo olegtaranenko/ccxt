@@ -127,6 +127,11 @@ export default class Client {
         this.connected = Future ()
     }
 
+    reusableFuture (messageHash: string) {
+        // only used in go
+        return this.future (messageHash)
+    }
+
     future (messageHash: string) {
         if (!(messageHash in this.futures)) {
             this.futures[messageHash] = Future ()
