@@ -167,7 +167,7 @@
     "test-base-ws-py": "npm run ti-py  -- --baseTests --ws",
     "test-base-ws-ts": "npm run ti-ts  -- --baseTests --ws",
     "test-freshness": "tsx ./utils/test-freshness.ts",
-    "test-go": "npm run test-types-go && npm run response-go && npm run request-go && npm run test-base-rest-go && npm run test-base-ws-go"
+    "test-go": "npm run test-types-go && npm run response-go && npm run request-go && npm run test-base-rest-go && npm run test-base-ws-go",
     "test-types-go": "go run -C go ./tests/types/types.go",
     "ti-cs": "dotnet run --project cs/tests/tests.csproj",
     "ti-go": "go run -C go ./tests/main.go",
