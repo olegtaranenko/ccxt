@@ -435,7 +435,7 @@ export default class binance extends binanceRest {
         //    }
         //
         const marketId = this.safeString (liquidation, 's');
-        market = this.safeMarket (marketId, market);
+        market = this.safeMarket (marketId, market, undefined, 'swap');
         const timestamp = this.safeInteger (liquidation, 'T');
         return this.safeLiquidation ({
             'info': liquidation,
@@ -559,8 +559,8 @@ export default class binance extends binanceRest {
             return;
         }
         const marketId = this.safeString (message, 's');
-        const market = this.safeMarket (marketId);
-        const symbol = this.safeSymbol (marketId);
+        const market = this.safeMarket (marketId, undefined, undefined, 'swap');
+        const symbol = this.safeSymbol (marketId, market);
         const liquidation = this.parseWsLiquidation (message, market);
         let myLiquidations = this.safeValue (this.myLiquidations, symbol);
         if (myLiquidations === undefined) {
@@ -943,7 +943,7 @@ export default class binance extends binanceRest {
         //     }
         //
         const isSpot = this.isSpotUrl (client);
-        const marketType = (isSpot) ? 'spot' : 'contract';
+        const marketType = (isSpot) ? 'spot' : 'swap';
         const marketId = this.safeString (message, 's');
         const market = this.safeMarket (marketId, undefined, undefined, marketType);
         const symbol = market['symbol'];
@@ -4104,7 +4104,7 @@ export default class binance extends binanceRest {
             'notional': undefined,
             'percentage': undefined,
             'side': positionSide,
-            'symbol': this.safeSymbol (marketId, undefined, undefined, 'contract'),
+            'symbol': this.safeSymbol (marketId, undefined, undefined, 'swap'),
             'timestamp': undefined,
             'unrealizedPnl': this.safeNumber (position, 'up'),
         });

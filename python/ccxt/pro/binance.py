@@ -421,7 +421,7 @@ class binance(ccxt.async_support.binance):
         #    }
         #
         marketId = self.safe_string(liquidation, 's')
-        market = self.safe_market(marketId, market)
+        market = self.safe_market(marketId, market, None, 'swap')
         timestamp = self.safe_integer(liquidation, 'T')
         return self.safe_liquidation({
             'info': liquidation,
@@ -537,8 +537,8 @@ class binance(ccxt.async_support.binance):
         if orderType != 'LIQUIDATION':
             return
         marketId = self.safe_string(message, 's')
-        market = self.safe_market(marketId)
-        symbol = self.safe_symbol(marketId)
+        market = self.safe_market(marketId, None, None, 'swap')
+        symbol = self.safe_symbol(marketId, market)
         liquidation = self.parse_ws_liquidation(message, market)
         myLiquidations = self.safe_value(self.myLiquidations, symbol)
         if myLiquidations is None:
@@ -891,7 +891,7 @@ class binance(ccxt.async_support.binance):
         #     }
         #
         isSpot = self.is_spot_url(client)
-        marketType = 'spot' if (isSpot) else 'contract'
+        marketType = 'spot' if (isSpot) else 'swap'
         marketId = self.safe_string(message, 's')
         market = self.safe_market(marketId, None, None, marketType)
         symbol = market['symbol']
@@ -3779,7 +3779,15 @@ class binance(ccxt.async_support.binance):
                 else:
                     positionSide = 'long'
         return self.safe_position({
-            'collateral': None,
+            'info': position,
+            'id': None,
+            'symbol': self.safe_symbol(marketId, None, None, 'swap'),
+            'notional': None,
+            'marginMode': self.safe_string(position, 'mt'),
+            'liquidationPrice': None,
+            'entryPrice': self.safe_number(position, 'ep'),
+            'unrealizedPnl': self.safe_number(position, 'up'),
+            'percentage': None,
             'contracts': self.parse_number(contractsAbs),
             'contractSize': None,
             'datetime': None,

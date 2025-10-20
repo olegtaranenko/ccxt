@@ -440,7 +440,7 @@ class binance extends \ccxt\async\binance {
         //    }
         //
         $marketId = $this->safe_string($liquidation, 's');
-        $market = $this->safe_market($marketId, $market);
+        $market = $this->safe_market($marketId, $market, null, 'swap');
         $timestamp = $this->safe_integer($liquidation, 'T');
         return $this->safe_liquidation(array(
             'info' => $liquidation,
@@ -566,8 +566,8 @@ class binance extends \ccxt\async\binance {
             return;
         }
         $marketId = $this->safe_string($message, 's');
-        $market = $this->safe_market($marketId);
-        $symbol = $this->safe_symbol($marketId);
+        $market = $this->safe_market($marketId, null, null, 'swap');
+        $symbol = $this->safe_symbol($marketId, $market);
         $liquidation = $this->parse_ws_liquidation($message, $market);
         $myLiquidations = $this->safe_value($this->myLiquidations, $symbol);
         if ($myLiquidations === null) {
@@ -962,7 +962,7 @@ class binance extends \ccxt\async\binance {
         //     }
         //
         $isSpot = $this->is_spot_url($client);
-        $marketType = ($isSpot) ? 'spot' : 'contract';
+        $marketType = ($isSpot) ? 'spot' : 'swap';
         $marketId = $this->safe_string($message, 's');
         $market = $this->safe_market($marketId, null, null, $marketType);
         $symbol = $market['symbol'];
@@ -4171,7 +4171,15 @@ class binance extends \ccxt\async\binance {
             }
         }
         return $this->safe_position(array(
-            'collateral' => null,
+            'info' => $position,
+            'id' => null,
+            'symbol' => $this->safe_symbol($marketId, null, null, 'swap'),
+            'notional' => null,
+            'marginMode' => $this->safe_string($position, 'mt'),
+            'liquidationPrice' => null,
+            'entryPrice' => $this->safe_number($position, 'ep'),
+            'unrealizedPnl' => $this->safe_number($position, 'up'),
+            'percentage' => null,
             'contracts' => $this->parse_number($contractsAbs),
             'contractSize' => null,
             'datetime' => null,

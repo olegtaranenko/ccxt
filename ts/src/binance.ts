@@ -2706,7 +2706,7 @@ export default class binance extends Exchange {
                 'logo': 'https://github.com/user-attachments/assets/e9419b93-ccb0-46aa-9bff-c883f096274b',
                 'referral': {
                     'discount': 0.1,
-                    'url': 'https://accounts.binance.com/en/register?ref=D7YA7CLY',
+                    'url': 'https://accounts.binance.com/register?ref=CCXTCOM',
                 },
                 'test': {
                     'dapiPrivate': 'https://testnet.binancefuture.com/dapi/v1',
