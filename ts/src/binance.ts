@@ -2555,7 +2555,7 @@ export default class binance extends Exchange {
                         'linear', // allows CORS in browsers
                         'spot', // allows CORS in browsers
                         // 'option', // does not allow CORS, enable outside of the browser only
-],
+                    ],
                 },
                 'fetchPositions': 'positionRisk', // or 'account' or 'option'
                 // 'fetchTradesMethod': 'publicGetAggTrades', // publicGetTrades, publicGetHistoricalTrades, eapiPublicGetTrades
@@ -2669,6 +2669,7 @@ export default class binance extends Exchange {
                     'fapiPublicV2': 'https://fapi.binance.com/fapi/v2',
                     'fapiPublicV3': 'https://fapi.binance.com/fapi/v3',
                     'papi': 'https://papi.binance.com/papi/v1',
+                    'papiV2': 'https://papi.binance.com/papi/v2',
                     'private': 'https://api.binance.com/api/v3',
                     'public': 'https://api.binance.com/api/v3',
                     'sapi': 'https://api.binance.com/sapi/v1',
@@ -11014,7 +11015,7 @@ export default class binance extends Exchange {
         let response = undefined;
         if (this.isLinear (type, subType)) {
             if (isPortfolioMargin) {
-                response = await this.papiGetUmAccount (params);
+                response = await this.papiV2GetUmAccount (params);
             } else {
                 let useV2 = undefined;
                 [ useV2, params ] = this.handleOptionAndParams (params, 'fetchAccountPositions', 'useV2', false);
@@ -12068,7 +12069,7 @@ export default class binance extends Exchange {
             } else {
                 throw new AuthenticationError (this.id + ' userDataStream endpoint requires `apiKey` credential');
             }
-        } else if ((api === 'private') || (api === 'eapiPrivate') || (api === 'sapi' && path !== 'system/status') || (api === 'sapiV2') || (api === 'sapiV3') || (api === 'sapiV4') || (api === 'dapiPrivate') || (api === 'dapiPrivateV2') || (api === 'fapiPrivate') || (api === 'fapiPrivateV2') || (api === 'fapiPrivateV3') || (api === 'papi' && path !== 'ping')) {
+        } else if ((api === 'private') || (api === 'eapiPrivate') || (api === 'sapi' && path !== 'system/status') || (api === 'sapiV2') || (api === 'sapiV3') || (api === 'sapiV4') || (api === 'dapiPrivate') || (api === 'dapiPrivateV2') || (api === 'fapiPrivate') || (api === 'fapiPrivateV2') || (api === 'fapiPrivateV3') || (api === 'papiV2' || api === 'papi' && path !== 'ping')) {
             this.checkRequiredCredentials ();
             if ((url.indexOf ('testnet.binancefuture.com') > -1) && this.isSandboxModeEnabled && (!this.safeBool (this.options, 'disableFuturesSandboxWarning'))) {
                 throw new NotSupported (this.id + ' testnet/sandbox mode is not supported for futures anymore, please check the deprecation announcement https://t.me/ccxt_announcements/92 and consider using the demo trading instead.');
