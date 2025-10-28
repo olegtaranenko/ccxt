@@ -9,9 +9,7 @@ export type { Account, Balance, BalanceAccount, Balances, Bool, BorrowInterest, 
  * @class Exchange
  */
 export default class Exchange {
-    options: {
-        [key: string]: any;
-    };
+    options: Dict;
     api: any;
     certified: boolean;
     countries: Str[];
@@ -52,7 +50,7 @@ export default class Exchange {
     wsSocksProxy: string;
     wssProxy: string;
     headers: any;
-    MAX_VALUE: Num;
+    MAX_VALUE: number;
     origin: string;
     returnResponseHeaders: boolean;
     userAgents: any;
@@ -90,7 +88,7 @@ export default class Exchange {
     balance: {};
     baseCurrencies: any;
     bidsasks: Dictionary<Ticker>;
-    codes: any;
+    codes: Strings;
     commonCurrencies: Dictionary<string>;
     currencies: Currencies;
     currencies_by_id: any;
@@ -119,7 +117,7 @@ export default class Exchange {
     hostname: Str;
     httpExceptions: any;
     id: string;
-    ids: string[];
+    ids: Strings;
     last_http_response: any;
     last_json_response: any;
     last_request_body: any;
@@ -127,7 +125,7 @@ export default class Exchange {
     last_request_path: any;
     last_request_url: any;
     last_response_headers: any;
-    lastRestRequestTimestamp: number;
+    lastRestRequestTimestamp: int;
     limits: {
         amount?: MinMax;
         cost?: MinMax;
@@ -145,7 +143,7 @@ export default class Exchange {
     ohlcvs: Dictionary<Dictionary<ArrayCacheByTimestamp>>;
     orderbooks: Dictionary<Ob>;
     orders: ArrayCache;
-    paddingMode: Num;
+    paddingMode: Int;
     positions: any;
     precision: {
         amount: Num;
@@ -154,10 +152,10 @@ export default class Exchange {
         price: Num;
         quote?: Num;
     };
-    precisionMode: Num;
+    precisionMode: Int;
     quoteCurrencies: any;
     rateLimit: Num;
-    reloadingMarkets: boolean;
+    reloadingMarkets: Bool;
     requiredCredentials: {
         apiKey: Bool;
         login: Bool;
@@ -179,7 +177,7 @@ export default class Exchange {
         updated: Num;
         url: Str;
     };
-    symbols: string[];
+    symbols: Strings;
     targetAccount: any;
     throttler: any;
     tickers: Dictionary<Ticker>;
@@ -232,13 +230,13 @@ export default class Exchange {
         outputLen: number;
         blockLen: number;
         create(): import("../static_dependencies/noble-hashes/utils.js").Hash<import("../static_dependencies/noble-hashes/utils.js").Hash<any>>;
-    }, digest?: "binary" | "hex" | "base64") => any;
+    }, digest?: "hex" | "base64" | "binary") => any;
     hmac: (request: import("../static_dependencies/noble-hashes/utils.js").Input, secret: import("../static_dependencies/noble-hashes/utils.js").Input, hash: {
         (message: import("../static_dependencies/noble-hashes/utils.js").Input): Uint8Array;
         outputLen: number;
         blockLen: number;
         create(): import("../static_dependencies/noble-hashes/utils.js").Hash<import("../static_dependencies/noble-hashes/utils.js").Hash<any>>;
-    }, digest?: "binary" | "hex" | "base64") => any;
+    }, digest?: "hex" | "base64" | "binary") => any;
     implodeParams: (string: string, params: any[] | Dictionary<any>) => string;
     inArray: (needle: any, haystack: any[]) => boolean;
     indexBy: (x: Dictionary<any>, k: IndexType, out?: Dictionary<any>) => Dictionary<any>;

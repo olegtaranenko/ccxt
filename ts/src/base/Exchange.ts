@@ -306,9 +306,7 @@ let protobufMexc = undefined;
  * @class Exchange
  */
 export default class Exchange {
-    options: {
-        [key: string]: any;
-    };
+    options: Dict;
 
     api = undefined;
     certified: boolean = false;
@@ -351,7 +349,7 @@ export default class Exchange {
     wssProxy: string;
     //
     headers: any = {};
-    MAX_VALUE: Num = Number.MAX_VALUE;
+    MAX_VALUE: number = Number.MAX_VALUE;
     origin = '*'; // CORS origin
     returnResponseHeaders: boolean = false;
     userAgents: any = {
@@ -405,7 +403,7 @@ export default class Exchange {
     balance = {};
     baseCurrencies = undefined;
     bidsasks: Dictionary<Ticker> = {};
-    codes = undefined;
+    codes: Strings = undefined;
     commonCurrencies: Dictionary<string> = undefined;
     currencies: Currencies = {};
     currencies_by_id = undefined;
@@ -435,7 +433,7 @@ export default class Exchange {
     hostname: Str = undefined;
     httpExceptions = undefined;
     id: string = 'Exchange';
-    ids: string[] = undefined;
+    ids: Strings = undefined;
     last_http_response = undefined;
     last_json_response = undefined;
     last_request_body = undefined;
@@ -443,7 +441,7 @@ export default class Exchange {
     last_request_path = undefined;
     last_request_url = undefined;
     last_response_headers = undefined;
-    lastRestRequestTimestamp: number;
+    lastRestRequestTimestamp: int;
     limits: {
         amount?: MinMax,
         cost?: MinMax,
@@ -462,7 +460,7 @@ export default class Exchange {
     ohlcvs: Dictionary<Dictionary<ArrayCacheByTimestamp>>;
     orderbooks: Dictionary<Ob> = {};
     orders: ArrayCache = undefined;
-    paddingMode: Num = undefined;
+    paddingMode: Int = undefined;
     positions: any;
     precision: {
         amount: Num,
@@ -472,10 +470,10 @@ export default class Exchange {
         quote?: Num,
     } = undefined;
 
-    precisionMode: Num = undefined;
+    precisionMode: Int = undefined;
     quoteCurrencies = undefined;
     rateLimit: Num = undefined; // milliseconds
-    reloadingMarkets: boolean = undefined;
+    reloadingMarkets: Bool = undefined;
     requiredCredentials: {
         apiKey: Bool,
         login: Bool,
@@ -499,7 +497,7 @@ export default class Exchange {
         url: Str,
     } = undefined;
 
-    symbols: string[] = undefined;
+    symbols: Strings = undefined;
     targetAccount = undefined;
     throttler = undefined;
     tickers: Dictionary<Ticker> = {};
