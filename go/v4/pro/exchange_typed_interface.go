@@ -22,6 +22,9 @@ func CreateExchange(exchangeId string, options map[string]interface{}) ccxt.IExc
     case "apex":
         itf := NewApex(options)
         return itf
+    case "arkham":
+        itf := NewArkham(options)
+        return itf
     case "ascendex":
         itf := NewAscendex(options)
         return itf
@@ -186,9 +189,6 @@ func CreateExchange(exchangeId string, options map[string]interface{}) ccxt.IExc
         return itf
     case "ndax":
         itf := NewNdax(options)
-        return itf
-    case "okcoin":
-        itf := NewOkcoin(options)
         return itf
     case "okx":
         itf := NewOkx(options)
