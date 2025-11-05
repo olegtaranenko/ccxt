@@ -430,6 +430,8 @@ export interface Liquidation {
     info: any;
     price: number;
     quoteValue?: number;
+    contracts?: number;
+    contractSize?: number;
     side?: OrderSide;
     symbol: string;
     timestamp?: number;
