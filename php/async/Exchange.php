@@ -384,26 +384,35 @@ class Exchange extends \ccxt\Exchange {
 
     public function describe(): mixed {
         return array(
-            'id' => null,
-            'name' => null,
-            'countries' => null,
-            'enableRateLimit' => true,
-            'rateLimit' => 2000, // milliseconds = seconds * 1000
-            'timeout' => $this->timeout, // milliseconds = seconds * 1000
-            'certified' => false, // if certified by the CCXT dev team
-            'pro' => false, // if it is integrated with CCXT Pro for WebSocket support
             'alias' => false, // whether this exchange is an alias to another exchange
+            'api' => null,
+            'authenticated' => true,
+            'bootstrapped' => true,
+            'certified' => false, // if certified by the CCXT dev team
+            'commonCurrencies' => array(
+                'BCHSV' => 'BSV',
+                'XBT' => 'BTC',
+            ),
+            'countries' => null,
+            'currencies' => array(), // to be filled manually or by fetchMarkets
             'dex' => false,
+            'enableRateLimit' => true,
+            'exceptions' => null,
+            'fees' => array(
+                'funding' => array(
+                    'deposit' => array(),
+                    'percentage' => null,
+                    'tierBased' => null,
+                    'withdraw' => array(),
+                ),
+                'trading' => array(
+                    'maker' => null,
+                    'percentage' => null,
+                    'taker' => null,
+                    'tierBased' => null,
+                ),
+            ),
             'has' => array(
-                'publicAPI' => true,
-                'privateAPI' => true,
-                'CORS' => null,
-                'sandbox' => null,
-                'spot' => null,
-                'margin' => null,
-                'swap' => null,
-                'future' => null,
-                'option' => null,
                 'addMargin' => null,
                 'borrowCrossMargin' => null,
                 'borrowIsolatedMargin' => null,
@@ -418,6 +427,7 @@ class Exchange extends \ccxt\Exchange {
                 'cancelOrdersWs' => null,
                 'closeAllPositions' => null,
                 'closePosition' => null,
+                'CORS' => null,
                 'createDepositAddress' => null,
                 'createLimitBuyOrder' => null,
                 'createLimitBuyOrderWs' => null,
@@ -426,22 +436,22 @@ class Exchange extends \ccxt\Exchange {
                 'createLimitSellOrder' => null,
                 'createLimitSellOrderWs' => null,
                 'createMarketBuyOrder' => null,
-                'createMarketBuyOrderWs' => null,
                 'createMarketBuyOrderWithCost' => null,
                 'createMarketBuyOrderWithCostWs' => null,
+                'createMarketBuyOrderWs' => null,
                 'createMarketOrder' => true,
-                'createMarketOrderWs' => true,
                 'createMarketOrderWithCost' => null,
                 'createMarketOrderWithCostWs' => null,
+                'createMarketOrderWs' => true,
                 'createMarketSellOrder' => null,
-                'createMarketSellOrderWs' => null,
                 'createMarketSellOrderWithCost' => null,
                 'createMarketSellOrderWithCostWs' => null,
+                'createMarketSellOrderWs' => null,
                 'createOrder' => true,
-                'createOrderWs' => null,
                 'createOrders' => null,
                 'createOrderWithTakeProfitAndStopLoss' => null,
                 'createOrderWithTakeProfitAndStopLossWs' => null,
+                'createOrderWs' => null,
                 'createPostOnlyOrder' => null,
                 'createPostOnlyOrderWs' => null,
                 'createReduceOnlyOrder' => null,
@@ -500,16 +510,15 @@ class Exchange extends \ccxt\Exchange {
                 'fetchDepositWithdrawFee' => null,
                 'fetchDepositWithdrawFees' => null,
                 'fetchFundingHistory' => null,
-                'fetchFundingRate' => null,
-                'fetchFundingRateHistory' => null,
                 'fetchFundingInterval' => null,
                 'fetchFundingIntervals' => null,
+                'fetchFundingRate' => null,
+                'fetchFundingRateHistory' => null,
                 'fetchFundingRates' => null,
                 'fetchGreeks' => null,
                 'fetchIndexOHLCV' => null,
                 'fetchIsolatedBorrowRate' => null,
                 'fetchIsolatedBorrowRates' => null,
-                'fetchMarginAdjustmentHistory' => null,
                 'fetchIsolatedPositions' => null,
                 'fetchL2OrderBook' => true,
                 'fetchL3OrderBook' => null,
@@ -522,12 +531,14 @@ class Exchange extends \ccxt\Exchange {
                 'fetchLiquidations' => null,
                 'fetchLongShortRatio' => null,
                 'fetchLongShortRatioHistory' => null,
+                'fetchMarginAdjustmentHistory' => null,
                 'fetchMarginMode' => null,
                 'fetchMarginModes' => null,
                 'fetchMarketLeverageTiers' => null,
                 'fetchMarkets' => true,
                 'fetchMarketsWs' => null,
                 'fetchMarkOHLCV' => null,
+                'fetchMarkPrices' => null,
                 'fetchMyLiquidations' => null,
                 'fetchMySettlementHistory' => null,
                 'fetchMyTrades' => null,
@@ -535,8 +546,8 @@ class Exchange extends \ccxt\Exchange {
                 'fetchOHLCV' => null,
                 'fetchOHLCVWs' => null,
                 'fetchOpenInterest' => null,
-                'fetchOpenInterests' => null,
                 'fetchOpenInterestHistory' => null,
+                'fetchOpenInterests' => null,
                 'fetchOpenOrder' => null,
                 'fetchOpenOrders' => null,
                 'fetchOpenOrdersWs' => null,
@@ -554,22 +565,21 @@ class Exchange extends \ccxt\Exchange {
                 'fetchOrderWs' => null,
                 'fetchPosition' => null,
                 'fetchPositionHistory' => null,
-                'fetchPositionsHistory' => null,
-                'fetchPositionWs' => null,
                 'fetchPositionMode' => null,
                 'fetchPositions' => null,
-                'fetchPositionsWs' => null,
                 'fetchPositionsForSymbol' => null,
                 'fetchPositionsForSymbolWs' => null,
+                'fetchPositionsHistory' => null,
                 'fetchPositionsRisk' => null,
+                'fetchPositionsWs' => null,
+                'fetchPositionWs' => null,
                 'fetchPremiumIndexOHLCV' => null,
                 'fetchSettlementHistory' => null,
                 'fetchStatus' => null,
                 'fetchTicker' => true,
-                'fetchTickerWs' => null,
                 'fetchTickers' => null,
-                'fetchMarkPrices' => null,
                 'fetchTickersWs' => null,
+                'fetchTickerWs' => null,
                 'fetchTime' => null,
                 'fetchTrades' => true,
                 'fetchTradesWs' => null,
@@ -589,21 +599,45 @@ class Exchange extends \ccxt\Exchange {
                 'fetchWithdrawals' => null,
                 'fetchWithdrawalsWs' => null,
                 'fetchWithdrawalWhitelist' => null,
+                'future' => null,
+                'margin' => null,
+                'option' => null,
+                'pingServer' => null,
+                'privateAPI' => true,
+                'publicAPI' => true,
                 'reduceMargin' => null,
                 'repayCrossMargin' => null,
                 'repayIsolatedMargin' => null,
+                'sandbox' => null,
                 'setLeverage' => null,
                 'setMargin' => null,
                 'setMarginMode' => null,
                 'setPositionMode' => null,
                 'signIn' => null,
+                'spot' => null,
+                'swap' => null,
                 'transfer' => null,
+                'unWatchMyTrades' => null,
+                'unWatchOHLCV' => null,
+                'unWatchOHLCVForSymbols' => null,
+                'unWatchOrderBook' => null,
+                'unWatchOrderBookForSymbols' => null,
+                'unWatchOrders' => null,
+                'unWatchPositions' => null,
+                'unWatchTicker' => null,
+                'unWatchTickers' => null,
+                'unWatchTrades' => null,
+                'unWatchTradesForSymbols' => null,
                 'watchBalance' => null,
+                'watchBidsAsks' => null,
+                'watchLiquidations' => null,
+                'watchLiquidationsForSymbols' => null,
+                'watchMyLiquidations' => null,
+                'watchMyLiquidationsForSymbols' => null,
                 'watchMyTrades' => null,
                 'watchOHLCV' => null,
                 'watchOHLCVForSymbols' => null,
                 'watchOrderBook' => null,
-                'watchBidsAsks' => null,
                 'watchOrderBookForSymbols' => null,
                 'watchOrders' => null,
                 'watchOrdersForSymbols' => null,
@@ -614,106 +648,76 @@ class Exchange extends \ccxt\Exchange {
                 'watchTickers' => null,
                 'watchTrades' => null,
                 'watchTradesForSymbols' => null,
-                'watchLiquidations' => null,
-                'watchLiquidationsForSymbols' => null,
-                'watchMyLiquidations' => null,
-                'unWatchOrders' => null,
-                'unWatchTrades' => null,
-                'unWatchTradesForSymbols' => null,
-                'unWatchOHLCVForSymbols' => null,
-                'unWatchOrderBookForSymbols' => null,
-                'unWatchPositions' => null,
-                'unWatchOrderBook' => null,
-                'unWatchTickers' => null,
-                'unWatchMyTrades' => null,
-                'unWatchTicker' => null,
-                'unWatchOHLCV' => null,
-                'watchMyLiquidationsForSymbols' => null,
                 'withdraw' => null,
                 'ws' => null,
             ),
-            'urls' => array(
-                'logo' => null,
-                'api' => null,
-                'www' => null,
-                'doc' => null,
-                'fees' => null,
-            ),
-            'api' => null,
-            'requiredCredentials' => array(
-                'apiKey' => true,
-                'secret' => true,
-                'uid' => false,
-                'accountId' => false,
-                'login' => false,
-                'password' => false,
-                'twofa' => false, // 2-factor authentication (one-time password key)
-                'privateKey' => false, // a "0x"-prefixed hexstring private key for a wallet
-                'walletAddress' => false, // the wallet address "0x"-prefixed hexstring
-                'token' => false, // reserved for HTTP auth in some cases
-            ),
-            'markets' => null, // to be filled manually or by fetchMarkets
-            'currencies' => array(), // to be filled manually or by fetchMarkets
-            'timeframes' => null, // redefine if the exchange has.fetchOHLCV
-            'fees' => array(
-                'trading' => array(
-                    'tierBased' => null,
-                    'percentage' => null,
-                    'taker' => null,
-                    'maker' => null,
-                ),
-                'funding' => array(
-                    'tierBased' => null,
-                    'percentage' => null,
-                    'withdraw' => array(),
-                    'deposit' => array(),
-                ),
-            ),
-            'status' => array(
-                'status' => 'ok',
-                'updated' => null,
-                'eta' => null,
-                'url' => null,
-            ),
-            'exceptions' => null,
             'httpExceptions' => array(
-                '422' => '\\ccxt\\ExchangeError',
-                '418' => '\\ccxt\\DDoSProtection',
-                '429' => '\\ccxt\\RateLimitExceeded',
+                '400' => '\\ccxt\\ExchangeNotAvailable',
+                '401' => '\\ccxt\\AuthenticationError',
+                '403' => '\\ccxt\\ExchangeNotAvailable',
                 '404' => '\\ccxt\\ExchangeNotAvailable',
+                '405' => '\\ccxt\\ExchangeNotAvailable',
+                '407' => '\\ccxt\\AuthenticationError',
+                '408' => '\\ccxt\\RequestTimeout',
                 '409' => '\\ccxt\\ExchangeNotAvailable',
                 '410' => '\\ccxt\\ExchangeNotAvailable',
+                '418' => '\\ccxt\\DDoSProtection',
+                '422' => '\\ccxt\\ExchangeError',
+                '429' => '\\ccxt\\RateLimitExceeded',
                 '451' => '\\ccxt\\ExchangeNotAvailable',
                 '500' => '\\ccxt\\ExchangeNotAvailable',
                 '501' => '\\ccxt\\ExchangeNotAvailable',
                 '502' => '\\ccxt\\ExchangeNotAvailable',
+                '503' => '\\ccxt\\ExchangeNotAvailable',
+                '504' => '\\ccxt\\RequestTimeout',
+                '511' => '\\ccxt\\AuthenticationError',
                 '520' => '\\ccxt\\ExchangeNotAvailable',
                 '521' => '\\ccxt\\ExchangeNotAvailable',
                 '522' => '\\ccxt\\ExchangeNotAvailable',
                 '525' => '\\ccxt\\ExchangeNotAvailable',
                 '526' => '\\ccxt\\ExchangeNotAvailable',
-                '400' => '\\ccxt\\ExchangeNotAvailable',
-                '403' => '\\ccxt\\ExchangeNotAvailable',
-                '405' => '\\ccxt\\ExchangeNotAvailable',
-                '503' => '\\ccxt\\ExchangeNotAvailable',
                 '530' => '\\ccxt\\ExchangeNotAvailable',
-                '408' => '\\ccxt\\RequestTimeout',
-                '504' => '\\ccxt\\RequestTimeout',
-                '401' => '\\ccxt\\AuthenticationError',
-                '407' => '\\ccxt\\AuthenticationError',
-                '511' => '\\ccxt\\AuthenticationError',
             ),
-            'commonCurrencies' => array(
-                'XBT' => 'BTC',
-                'BCHSV' => 'BSV',
-            ),
-            'precisionMode' => TICK_SIZE,
-            'paddingMode' => NO_PADDING,
+            'id' => null,
             'limits' => array(
-                'leverage' => array( 'min' => null, 'max' => null ),
                 'amount' => array( 'min' => null, 'max' => null ),
-                'price' => array( 'min' => null, 'max' => null ),
                 'cost' => array( 'min' => null, 'max' => null ),
+                'leverage' => array( 'min' => null, 'max' => null ),
+                'price' => array( 'min' => null, 'max' => null ),
+            ),
+            'markets' => null, // to be filled manually or by fetchMarkets
+            'name' => null,
+            'paddingMode' => NO_PADDING,
+            'precisionMode' => TICK_SIZE,
+            'offline' => false,
+            'pro' => false, // if it is integrated with CCXT Pro for WebSocket support
+            'rateLimit' => 2000, // milliseconds = seconds * 1000
+            'requiredCredentials' => array(
+                'accountId' => false,
+                'apiKey' => true,
+                'login' => false,
+                'password' => false,
+                'privateKey' => false, // a "0x"-prefixed hexstring private key for a wallet
+                'secret' => true,
+                'token' => false, // reserved for HTTP auth in some cases
+                'twofa' => false, // 2-factor authentication (one-time password key)
+                'uid' => false,
+                'walletAddress' => false, // the wallet address "0x"-prefixed hexstring
+            ),
+            'status' => array(
+                'eta' => null,
+                'status' => 'ok',
+                'updated' => null,
+                'url' => null,
+            ),
+            'timeframes' => null, // redefine if the exchange has.fetchOHLCV
+            'timeout' => $this->timeout, // milliseconds = seconds * 1000
+            'urls' => array(
+                'api' => null,
+                'doc' => null,
+                'fees' => null,
+                'logo' => null,
+                'www' => null,
             ),
         );
     }
@@ -1065,7 +1069,7 @@ class Exchange extends \ccxt\Exchange {
         $parsedArray = $this->to_array($array);
         $result = $parsedArray;
         if ($sinceIsDefined) {
-            $result = [ ];
+            $result = $array();
             for ($i = 0; $i < count($parsedArray); $i++) {
                 $entry = $parsedArray[$i];
                 $value = $this->safe_value($entry, $key);
@@ -1090,7 +1094,7 @@ class Exchange extends \ccxt\Exchange {
         $result = $parsedArray;
         // single-pass filter for both symbol and $since
         if ($valueIsDefined || $sinceIsDefined) {
-            $result = [ ];
+            $result = $array();
             for ($i = 0; $i < count($parsedArray); $i++) {
                 $entry = $parsedArray[$i];
                 $entryFiledEqualValue = $entry[$field] === $value;
@@ -1818,10 +1822,10 @@ class Exchange extends \ccxt\Exchange {
     public function get_default_options() {
         return array(
             'defaultNetworkCodeReplacements' => array(
+                'BRC20' => array( 'BRC20' => 'BTC' ),
+                'CRO' => array( 'CRC20' => 'CRONOS' ),
                 'ETH' => array( 'ERC20' => 'ETH' ),
                 'TRX' => array( 'TRC20' => 'TRX' ),
-                'CRO' => array( 'CRC20' => 'CRONOS' ),
-                'BRC20' => array( 'BRC20' => 'BTC' ),
             ),
         );
     }
@@ -1856,21 +1860,21 @@ class Exchange extends \ccxt\Exchange {
         $timestamp = $this->safe_integer($entry, 'timestamp');
         $info = $this->safe_dict($entry, 'info', array());
         return array(
-            'id' => $this->safe_string($entry, 'id'),
-            'timestamp' => $timestamp,
-            'datetime' => $this->iso8601($timestamp),
-            'direction' => $direction,
             'account' => $this->safe_string($entry, 'account'),
-            'referenceId' => $this->safe_string($entry, 'referenceId'),
-            'referenceAccount' => $this->safe_string($entry, 'referenceAccount'),
-            'type' => $this->safe_string($entry, 'type'),
-            'currency' => $currency['code'],
+            'after' => $this->parse_number($after),
             'amount' => $this->parse_number($amount),
             'before' => $this->parse_number($before),
-            'after' => $this->parse_number($after),
-            'status' => $this->safe_string($entry, 'status'),
+            'currency' => $currency['code'],
+            'datetime' => $this->iso8601($timestamp),
+            'direction' => $direction,
             'fee' => $fee,
+            'id' => $this->safe_string($entry, 'id'),
             'info' => $info,
+            'referenceAccount' => $this->safe_string($entry, 'referenceAccount'),
+            'referenceId' => $this->safe_string($entry, 'referenceId'),
+            'status' => $this->safe_string($entry, 'status'),
+            'timestamp' => $timestamp,
+            'type' => $this->safe_string($entry, 'type'),
         );
     }
 
@@ -1964,93 +1968,93 @@ class Exchange extends \ccxt\Exchange {
             }
         }
         return $this->extend(array(
-            'info' => null,
-            'id' => null,
-            'numericId' => null,
-            'code' => null,
-            'precision' => null,
-            'type' => null,
-            'name' => null,
             'active' => null,
+            'code' => null,
             'deposit' => null,
-            'withdraw' => null,
             'fee' => null,
             'fees' => array(),
-            'networks' => array(),
+            'id' => null,
+            'info' => null,
             'limits' => array(
                 'deposit' => array(
-                    'min' => null,
                     'max' => null,
+                    'min' => null,
                 ),
                 'withdraw' => array(
-                    'min' => null,
                     'max' => null,
+                    'min' => null,
                 ),
             ),
+            'name' => null,
+            'networks' => array(),
+            'numericId' => null,
+            'precision' => null,
+            'type' => null,
+            'withdraw' => null,
         ), $currency);
     }
 
     public function safe_market_structure(?array $market = null) {
         $cleanStructure = array(
-            'id' => null,
-            'lowercaseId' => null,
-            'symbol' => null,
-            'base' => null,
-            'quote' => null,
-            'settle' => null,
-            'baseId' => null,
-            'quoteId' => null,
-            'settleId' => null,
-            'type' => null,
-            'spot' => null,
-            'margin' => null,
-            'swap' => null,
-            'future' => null,
-            'option' => null,
-            'index' => null,
             'active' => null,
+            'base' => null,
+            'baseId' => null,
             'contract' => null,
-            'linear' => null,
-            'inverse' => null,
-            'subType' => null,
-            'taker' => null,
-            'maker' => null,
             'contractSize' => null,
+            'created' => null,
             'expiry' => null,
             'expiryDatetime' => null,
-            'strike' => null,
-            'optionType' => null,
-            'precision' => array(
-                'amount' => null,
-                'price' => null,
-                'cost' => null,
-                'base' => null,
-                'quote' => null,
-            ),
+            'future' => null,
+            'id' => null,
+            'index' => null,
+            'info' => null,
+            'inverse' => null,
             'limits' => array(
-                'leverage' => array(
-                    'min' => null,
-                    'max' => null,
-                ),
                 'amount' => array(
-                    'min' => null,
                     'max' => null,
-                ),
-                'price' => array(
                     'min' => null,
-                    'max' => null,
                 ),
                 'cost' => array(
-                    'min' => null,
                     'max' => null,
+                    'min' => null,
+                ),
+                'leverage' => array(
+                    'max' => null,
+                    'min' => null,
+                ),
+                'price' => array(
+                    'max' => null,
+                    'min' => null,
                 ),
             ),
+            'linear' => null,
+            'lowercaseId' => null,
+            'maker' => null,
+            'margin' => null,
             'marginModes' => array(
                 'cross' => null,
                 'isolated' => null,
             ),
-            'created' => null,
-            'info' => null,
+            'option' => null,
+            'optionType' => null,
+            'precision' => array(
+                'amount' => null,
+                'base' => null,
+                'cost' => null,
+                'price' => null,
+                'quote' => null,
+            ),
+            'quote' => null,
+            'quoteId' => null,
+            'settle' => null,
+            'settleId' => null,
+            'spot' => null,
+            'strike' => null,
+            'subType' => null,
+            'swap' => null,
+            'symbol' => null,
+            'taker' => null,
+            'type' => null,
         );
         if ($market !== null) {
             $result = $this->extend($cleanStructure, $market);
@@ -2491,31 +2495,31 @@ class Exchange extends \ccxt\Exchange {
         $takeProfitPrice = $this->parse_number($this->safe_string($order, 'takeProfitPrice'));
         $stopLossPrice = $this->parse_number($this->safe_string($order, 'stopLossPrice'));
         return $this->extend($order, array(
-            'id' => $this->safe_string($order, 'id'),
+            'amount' => $this->parse_number($amount),
+            'average' => $this->parse_number($average),
             'clientOrderId' => $this->safe_string($order, 'clientOrderId'),
-            'timestamp' => $timestamp,
+            'cost' => $this->parse_number($cost),
             'datetime' => $datetime,
-            'symbol' => $symbol,
-            'type' => $this->safe_string($order, 'type'),
-            'side' => $side,
+            'fee' => $this->safe_value($order, 'fee'),
+            'filled' => $this->parse_number($filled),
+            'id' => $this->safe_string($order, 'id'),
             'lastTradeTimestamp' => $lastTradeTimeTimestamp,
             'lastUpdateTimestamp' => $lastUpdateTimestamp,
-            'price' => $this->parse_number($price),
-            'amount' => $this->parse_number($amount),
-            'cost' => $this->parse_number($cost),
-            'average' => $this->parse_number($average),
-            'filled' => $this->parse_number($filled),
-            'remaining' => $this->parse_number($remaining),
-            'timeInForce' => $timeInForce,
             'postOnly' => $postOnly,
-            'trades' => $trades,
+            'price' => $this->parse_number($price),
             'reduceOnly' => $this->safe_value($order, 'reduceOnly'),
-            'stopPrice' => $triggerPrice,  // ! deprecated, use $triggerPrice instead
-            'triggerPrice' => $triggerPrice,
-            'takeProfitPrice' => $takeProfitPrice,
-            'stopLossPrice' => $stopLossPrice,
+            'remaining' => $this->parse_number($remaining),
+            'side' => $side,
             'status' => $status,
-            'fee' => $this->safe_value($order, 'fee'),
+            'stopLossPrice' => $stopLossPrice,
+            'stopPrice' => $triggerPrice, // ! deprecated, use $triggerPrice instead
+            'symbol' => $symbol,
+            'takeProfitPrice' => $takeProfitPrice,
+            'timeInForce' => $timeInForce,
+            'timestamp' => $timestamp,
+            'trades' => $trades,
+            'triggerPrice' => $triggerPrice,
+            'type' => $this->safe_string($order, 'type'),
         ));
     }
 
@@ -2600,10 +2604,10 @@ class Exchange extends \ccxt\Exchange {
         $rate = ($feeRate !== null) ? $this->number_to_string($feeRate) : $this->safe_string($market, $takerOrMaker);
         $cost = Precise::string_mul($cost, $rate);
         return array(
-            'type' => $takerOrMaker,
+            'cost' => $this->parse_number($cost),
             'currency' => $market[$key],
             'rate' => $this->parse_number($rate),
-            'cost' => $this->parse_number($cost),
+            'type' => $takerOrMaker,
         );
     }
 
@@ -2663,8 +2667,8 @@ class Exchange extends \ccxt\Exchange {
         $trade['fee'] = $resultFee;
         $trade['fees'] = $resultFees;
         $trade['amount'] = $this->parse_number($amount);
-        $trade['price'] = $this->parse_number($price);
         $trade['cost'] = $this->parse_number($cost);
+        $trade['price'] = $this->parse_number($price);
         return $trade;
     }
 
@@ -2829,8 +2833,8 @@ class Exchange extends \ccxt\Exchange {
                     $reduced[$feeCurrencyCode][$rateKey]['cost'] = Precise::string_add($reduced[$feeCurrencyCode][$rateKey]['cost'], $cost);
                 } else {
                     $reduced[$feeCurrencyCode][$rateKey] = array(
-                        'currency' => $code,
                         'cost' => $cost,
+                        'currency' => $code,
                     );
                     if ($rate !== null) {
                         $reduced[$feeCurrencyCode][$rateKey]['rate'] = $rate;
@@ -2920,24 +2924,24 @@ class Exchange extends \ccxt\Exchange {
         // they should be done in the derived classes
         $closeParsed = $this->parse_number($this->omit_zero($close));
         return $this->extend($ticker, array(
-            'bid' => $this->parse_number($this->omit_zero($this->safe_string($ticker, 'bid'))),
-            'bidVolume' => $this->safe_number($ticker, 'bidVolume'),
             'ask' => $this->parse_number($this->omit_zero($this->safe_string($ticker, 'ask'))),
             'askVolume' => $this->safe_number($ticker, 'askVolume'),
-            'high' => $this->parse_number($this->omit_zero($this->safe_string($ticker, 'high'))),
-            'low' => $this->parse_number($this->omit_zero($this->safe_string($ticker, 'low'))),
-            'open' => $this->parse_number($this->omit_zero($open)),
-            'close' => $closeParsed,
-            'last' => $closeParsed,
-            'change' => $this->parse_number($change),
-            'percentage' => $this->parse_number($percentage),
             'average' => $this->parse_number($average),
-            'vwap' => $this->parse_number($vwap),
             'baseVolume' => $this->parse_number($baseVolume),
-            'quoteVolume' => $this->parse_number($quoteVolume),
-            'previousClose' => $this->safe_number($ticker, 'previousClose'),
+            'bid' => $this->parse_number($this->omit_zero($this->safe_string($ticker, 'bid'))),
+            'bidVolume' => $this->safe_number($ticker, 'bidVolume'),
+            'change' => $this->parse_number($change),
+            'close' => $closeParsed,
+            'high' => $this->parse_number($this->omit_zero($this->safe_string($ticker, 'high'))),
             'indexPrice' => $this->safe_number($ticker, 'indexPrice'),
+            'last' => $closeParsed,
+            'low' => $this->parse_number($this->omit_zero($this->safe_string($ticker, 'low'))),
             'markPrice' => $this->safe_number($ticker, 'markPrice'),
+            'open' => $this->parse_number($this->omit_zero($open)),
+            'percentage' => $this->parse_number($percentage),
+            'previousClose' => $this->safe_number($ticker, 'previousClose'),
+            'quoteVolume' => $this->parse_number($quoteVolume),
+            'vwap' => $this->parse_number($vwap),
         ));
     }
 
@@ -3012,11 +3016,11 @@ class Exchange extends \ccxt\Exchange {
 
     public function convert_ohlcv_to_trading_view(array $ohlcvs, $timestamp = 't', $open = 'o', $high = 'h', $low = 'l', $close = 'c', $volume = 'v', $ms = false) {
         $result = array();
-        $result[$timestamp] = array();
-        $result[$open] = array();
+        $result[$close] = array();
         $result[$high] = array();
         $result[$low] = array();
-        $result[$close] = array();
+        $result[$open] = array();
+        $result[$timestamp] = array();
         $result[$volume] = array();
         for ($i = 0; $i < count($ohlcvs); $i++) {
             $ts = $ms ? $ohlcvs[$i][0] : $this->parse_to_int($ohlcvs[$i][0] / 1000);
@@ -3385,12 +3389,12 @@ class Exchange extends \ccxt\Exchange {
         $bids = $this->parse_bids_asks($this->safe_value($orderbook, $bidsKey, array()), $priceKey, $amountKey, $countOrIdKey);
         $asks = $this->parse_bids_asks($this->safe_value($orderbook, $asksKey, array()), $priceKey, $amountKey, $countOrIdKey);
         return array(
-            'symbol' => $symbol,
-            'bids' => $this->sort_by($bids, 0, true),
             'asks' => $this->sort_by($asks, 0),
-            'timestamp' => $timestamp,
+            'bids' => $this->sort_by($bids, 0, true),
             'datetime' => $this->iso8601($timestamp),
             'nonce' => null,
+            'symbol' => $symbol,
+            'timestamp' => $timestamp,
         );
     }
 
@@ -4269,7 +4273,7 @@ class Exchange extends \ccxt\Exchange {
         return array( $defaultType, $params );
     }
 
-    public function handle_sub_type_and_params(string $methodName, $market = null, $params = array (), $defaultValue = null) {
+    public function handle_sub_type_and_params(string $methodName, ?array $market = null, $params = array (), $defaultValue = null) {
         $subType = null;
         // if set in $params, it takes precedence
         $subTypeInParams = $this->safe_string_2($params, 'subType', 'defaultSubType');
@@ -4342,6 +4346,18 @@ class Exchange extends \ccxt\Exchange {
 
     public function calculate_rate_limiter_cost($api, $method, $path, $params, $config = array ()) {
         return $this->safe_value($config, 'cost', 1);
+    }
+
+    public function ping_server_impl(mixed $params) {
+        throw new NotSupported($this->id . ' pingServer() method declared, but not implemented');
+    }
+
+    public function ping_server($params = array ()) {
+        if ($this->has['pingServer']) {
+            return $this->ping_server_impl($params);
+        } else {
+            throw new NotSupported($this->id . ' pingServer() is not supported yet');
+        }
     }
 
     public function fetch_ticker(string $symbol, $params = array ()) {
@@ -5211,9 +5227,22 @@ class Exchange extends \ccxt\Exchange {
         throw new ExchangeError($this->id . ' does not have currency $code ' . $code);
     }
 
-    public function market(string $symbol) {
+    public function market(string $symbol, $silentBadSymbol = null) {
+        /**
+         * Retrieves a $market by its $symbol->
+         * @param {string} $symbol - The $symbol of the $market to retrieve.
+         * @param {boolean} [$silentBadSymbol] - Whether to throw an error if the $market $symbol is not found.
+         * @return {MarketInterface} - The $market object corresponding to the $symbol->
+         * @throws {ExchangeError} - If the $markets have not been loaded.
+         * @throws {BadSymbol} - If the $market $symbol is not found and `$silentBadSymbol` is false. Additional to the
+         * $silentBadSymbol argument the method use the $this->options.allowNonMarketSymbol option to prevent throwing
+         * an error, if the $market $symbol is not found.
+         */
         if ($this->markets === null) {
             throw new ExchangeError($this->id . ' $markets not loaded');
+        }
+        if ($silentBadSymbol === null) {
+            $silentBadSymbol = $this->safe_bool($this->options, 'allowNonMarketSymbol', false);
         }
         if (is_array($this->markets) && array_key_exists($symbol, $this->markets)) {
             return $this->markets[$symbol];
@@ -5230,7 +5259,10 @@ class Exchange extends \ccxt\Exchange {
         } elseif ((str_ends_with($symbol, '-C')) || (str_ends_with($symbol, '-P')) || (str_starts_with($symbol, 'C-')) || (str_starts_with($symbol, 'P-'))) {
             return $this->create_expired_option_market($symbol);
         }
-        throw new BadSymbol($this->id . ' does not have $market $symbol ' . $symbol);
+        if (!$silentBadSymbol) {
+            throw new BadSymbol($this->id . ' does not have $market $symbol ' . $symbol);
+        }
+        return null;
     }
 
     public function create_expired_option_market(string $symbol) {
@@ -6203,16 +6235,16 @@ class Exchange extends \ccxt\Exchange {
 
     public function deposit_withdraw_fee($info) {
         return array(
-            'info' => $info,
-            'withdraw' => array(
-                'fee' => null,
-                'percentage' => null,
-            ),
             'deposit' => array(
                 'fee' => null,
                 'percentage' => null,
             ),
+            'info' => $info,
             'networks' => array(),
+            'withdraw' => array(
+                'fee' => null,
+                'percentage' => null,
+            ),
         );
     }
 
@@ -6235,8 +6267,8 @@ class Exchange extends \ccxt\Exchange {
         for ($i = 0; $i < $numNetworks; $i++) {
             $network = $networkKeys[$i];
             if ($network === $currencyCode) {
-                $fee['withdraw'] = $fee['networks'][$networkKeys[$i]]['withdraw'];
                 $fee['deposit'] = $fee['networks'][$networkKeys[$i]]['deposit'];
+                $fee['withdraw'] = $fee['networks'][$networkKeys[$i]]['withdraw'];
             }
         }
         return $fee;
@@ -6371,12 +6403,14 @@ class Exchange extends \ccxt\Exchange {
                         }
                         $response = Async\await($this->$method ($symbol, null, $maxEntriesPerRequest, $params));
                         $responseLength = count($response);
-                        if ($this->verbose) {
-                            $backwardMessage = 'Dynamic pagination call ' . $this->number_to_string($calls) . ' $method ' . $method . ' $response length ' . $this->number_to_string($responseLength);
-                            if ($paginationTimestamp !== null) {
-                                $backwardMessage .= ' timestamp ' . $this->number_to_string($paginationTimestamp);
+                        if ($this->verbose || $this->verboseTruncate) {
+                            if (!is_callable($this->verboseLogVeto) || !$this->verboseLogVeto ('pagination', $method, null, $response)) {
+                                $backwardMessage = 'Dynamic pagination call ' . $this->number_to_string($calls) . ' $method ' . $method . ' $response length ' . $this->number_to_string($responseLength);
+                                if ($paginationTimestamp !== null) {
+                                    $backwardMessage .= ' timestamp ' . $this->number_to_string($paginationTimestamp);
+                                }
+                                $this->log($backwardMessage);
                             }
-                            $this->log($backwardMessage);
                         }
                         if ($responseLength === 0) {
                             break;
@@ -6392,12 +6426,14 @@ class Exchange extends \ccxt\Exchange {
                         // do it forwards, starting from the $since
                         $response = Async\await($this->$method ($symbol, $paginationTimestamp, $maxEntriesPerRequest, $params));
                         $responseLength = count($response);
-                        if ($this->verbose) {
-                            $forwardMessage = 'Dynamic pagination call ' . $this->number_to_string($calls) . ' $method ' . $method . ' $response length ' . $this->number_to_string($responseLength);
-                            if ($paginationTimestamp !== null) {
-                                $forwardMessage .= ' timestamp ' . $this->number_to_string($paginationTimestamp);
+                        if ($this->verbose || $this->verboseTruncate) {
+                            if (!is_callable($this->verboseLogVeto) || !$this->verboseLogVeto ('pagination', $method, null, $response)) {
+                                $forwardMessage = 'Dynamic pagination call ' . $this->number_to_string($calls) . ' $method ' . $method . ' $response length ' . $this->number_to_string($responseLength);
+                                if ($paginationTimestamp !== null) {
+                                    $forwardMessage .= ' timestamp ' . $this->number_to_string($paginationTimestamp);
+                                }
+                                $this->log($forwardMessage);
                             }
-                            $this->log($forwardMessage);
                         }
                         if ($responseLength === 0) {
                             break;
@@ -6528,11 +6564,13 @@ class Exchange extends \ccxt\Exchange {
                     }
                     $errors = 0;
                     $responseLength = count($response);
-                    if ($this->verbose) {
-                        $cursorString = ($cursorValue === null) ? '' : $cursorValue;
-                        $iteration = ($i + 1);
-                        $cursorMessage = 'Cursor pagination call ' . (string) $iteration . ' $method ' . $method . ' $response length ' . (string) $responseLength . ' $cursor ' . $cursorString;
-                        $this->log($cursorMessage);
+                    if ($this->verbose || $this->verboseTruncate) {
+                        if (!is_callable($this->verboseLogVeto) || !$this->verboseLogVeto ('pagination', $method, null, $response)) {
+                            $cursorString = ($cursorValue === null) ? '' : $cursorValue;
+                            $iteration = ($i + 1);
+                            $cursorMessage = 'Cursor pagination call ' . (string) $iteration . ' $method ' . $method . ' $response length ' . (string) $responseLength . ' $cursor ' . $cursorString;
+                            $this->log($cursorMessage);
+                        }
                     }
                     if ($responseLength === 0) {
                         break;
@@ -6588,10 +6626,12 @@ class Exchange extends \ccxt\Exchange {
                     $response = Async\await($this->$method ($symbol, $since, $maxEntriesPerRequest, $params));
                     $errors = 0;
                     $responseLength = count($response);
-                    if ($this->verbose) {
-                        $iteration = ($i . (string) 1);
-                        $incrementalMessage = 'Incremental pagination call ' . $iteration . ' $method ' . $method . ' $response length ' . (string) $responseLength;
-                        $this->log($incrementalMessage);
+                    if ($this->verbose || $this->verboseTruncate) {
+                        if (!is_callable($this->verboseLogVeto) || !$this->verboseLogVeto ('pagination', $method, null, $response)) {
+                            $iteration = ($i . (string) 1);
+                            $incrementalMessage = 'Incremental pagination call ' . $iteration . ' $method ' . $method . ' $response length ' . (string) $responseLength;
+                            $this->log($incrementalMessage);
+                        }
                     }
                     if ($responseLength === 0) {
                         break;
@@ -6690,14 +6730,14 @@ class Exchange extends \ccxt\Exchange {
             $symbol = $this->safe_string($market, 'symbol');
         }
         return $this->extend($interest, array(
-            'symbol' => $symbol,
             'baseVolume' => $this->safe_number($interest, 'baseVolume'), // deprecated
-            'quoteVolume' => $this->safe_number($interest, 'quoteVolume'), // deprecated
-            'openInterestAmount' => $this->safe_number($interest, 'openInterestAmount'),
-            'openInterestValue' => $this->safe_number($interest, 'openInterestValue'),
-            'timestamp' => $this->safe_integer($interest, 'timestamp'),
             'datetime' => $this->safe_string($interest, 'datetime'),
             'info' => $this->safe_value($interest, 'info'),
+            'openInterestAmount' => $this->safe_number($interest, 'openInterestAmount'),
+            'openInterestValue' => $this->safe_number($interest, 'openInterestValue'),
+            'quoteVolume' => $this->safe_number($interest, 'quoteVolume'), // deprecated
+            'symbol' => $symbol,
+            'timestamp' => $this->safe_integer($interest, 'timestamp'),
         ));
     }
 

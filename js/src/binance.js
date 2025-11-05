@@ -1000,176 +1000,11 @@ export default class binance extends Exchange {
             },
             'countries': [],
             'currencies': {
-                'BNFCR': this.safeCurrencyStructure({ 'id': 'BNFCR', 'code': 'BNFCR', 'precision': this.parseNumber('0.001') }),
-            },
-            'features': {
-                'spot': {
-                    'sandbox': true,
-                    'fetchCurrencies': {
-                        'private': true,
-                    },
-                    'createOrder': {
-                        'marginMode': true,
-                        'triggerPrice': true,
-                        'triggerPriceType': undefined,
-                        'triggerDirection': false,
-                        'stopLossPrice': true,
-                        'takeProfitPrice': true,
-                        'attachedStopLossTakeProfit': undefined,
-                        'timeInForce': {
-                            'IOC': true,
-                            'FOK': true,
-                            'PO': true,
-                            'GTD': false,
-                        },
-                        'hedged': true,
-                        'leverage': false,
-                        'marketBuyByCost': true,
-                        'marketBuyRequiresPrice': false,
-                        'selfTradePrevention': {
-                            'EXPIRE_MAKER': true,
-                            'EXPIRE_TAKER': true,
-                            'EXPIRE_BOTH': true,
-                            'NONE': true,
-                        },
-                        'trailing': false,
-                        'icebergAmount': true,
-                    },
-                    'createOrders': undefined,
-                    'fetchMyTrades': {
-                        'marginMode': false,
-                        'limit': 1000,
-                        'daysBack': undefined,
-                        'untilDays': 1,
-                        'symbolRequired': true,
-                    },
-                    'fetchOrder': {
-                        'marginMode': true,
-                        'trigger': false,
-                        'trailing': false,
-                        'symbolRequired': true,
-                    },
-                    'fetchOpenOrders': {
-                        'marginMode': true,
-                        'limit': undefined,
-                        'trigger': false,
-                        'trailing': false,
-                        'symbolRequired': false,
-                    },
-                    'fetchOrders': {
-                        'marginMode': true,
-                        'limit': 1000,
-                        'daysBack': undefined,
-                        'untilDays': 10000,
-                        'trigger': false,
-                        'trailing': false,
-                        'symbolRequired': true,
-                    },
-                    'fetchClosedOrders': {
-                        'marginMode': true,
-                        'limit': 1000,
-                        'daysBack': undefined,
-                        'daysBackCanceled': undefined,
-                        'untilDays': 10000,
-                        'trigger': false,
-                        'trailing': false,
-                        'symbolRequired': true,
-                    },
-                    'fetchOHLCV': {
-                        'limit': 1000,
-                    },
-                },
-                'forDerivatives': {
-                    'sandbox': true,
-                    'createOrder': {
-                        'marginMode': false,
-                        'triggerPrice': true,
-                        'triggerPriceType': {
-                            'mark': true,
-                            'last': true,
-                            'index': false,
-                        },
-                        'stopLossPrice': true,
-                        'takeProfitPrice': true,
-                        'attachedStopLossTakeProfit': undefined,
-                        'timeInForce': {
-                            'IOC': true,
-                            'FOK': true,
-                            'PO': true,
-                            'GTD': true,
-                            // 'GTX': true,
-                        },
-                        'hedged': true,
-                        // exchange-supported features
-                        'selfTradePrevention': true,
-                        'trailing': true,
-                        'iceberg': false,
-                        'leverage': false,
-                        'marketBuyRequiresPrice': false,
-                        'marketBuyByCost': true,
-                    },
-                    'createOrders': {
-                        'max': 5,
-                    },
-                    'fetchMyTrades': {
-                        'marginMode': false,
-                        'daysBack': undefined,
-                        'limit': 1000,
-                        'untilDays': 7,
-                        'symbolRequired': true,
-                    },
-                    'fetchOrder': {
-                        'marginMode': false,
-                        'trigger': false,
-                        'trailing': false,
-                        'symbolRequired': true,
-                    },
-                    'fetchOpenOrders': {
-                        'marginMode': true,
-                        'limit': 500,
-                        'trigger': false,
-                        'trailing': false,
-                        'symbolRequired': false,
-                    },
-                    'fetchOrders': {
-                        'marginMode': true,
-                        'limit': 1000,
-                        'daysBack': 90,
-                        'untilDays': 7,
-                        'trigger': false,
-                        'trailing': false,
-                        'symbolRequired': true,
-                    },
-                    'fetchClosedOrders': {
-                        'marginMode': true,
-                        'limit': 1000,
-                        'daysBack': 90,
-                        'daysBackCanceled': 3,
-                        'untilDays': 7,
-                        'trigger': false,
-                        'trailing': false,
-                        'symbolRequired': true,
-                    },
-                    'fetchOHLCV': {
-                        'limit': 1500,
-                    },
-                },
-                'swap': {
-                    'linear': {
-                        'extends': 'forDerivatives',
-                    },
-                    'inverse': {
-                        'extends': 'forDerivatives',
-                    },
-                },
-                'future': {
-                    'linear': {
-                        'extends': 'forDerivatives',
-                    },
-                    'inverse': {
-                        'extends': 'forDerivatives',
-                    },
-                },
+                'BNFCR': this.safeCurrencyStructure({
+                    'code': 'BNFCR',
+                    'id': 'BNFCR',
+                    'precision': this.parseNumber('0.001'),
+                }),
             },
             'exceptions': {
                 'broad': {
@@ -2211,6 +2046,175 @@ export default class binance extends Exchange {
                     },
                 },
             },
+            'features': {
+                'spot': {
+                    'sandbox': true,
+                    'fetchCurrencies': {
+                        'private': true,
+                    },
+                    'createOrder': {
+                        'marginMode': true,
+                        'triggerPrice': true,
+                        'triggerPriceType': undefined,
+                        'triggerDirection': false,
+                        'stopLossPrice': true,
+                        'takeProfitPrice': true,
+                        'attachedStopLossTakeProfit': undefined,
+                        'timeInForce': {
+                            'IOC': true,
+                            'FOK': true,
+                            'PO': true,
+                            'GTD': false,
+                        },
+                        'hedged': true,
+                        'leverage': false,
+                        'marketBuyByCost': true,
+                        'marketBuyRequiresPrice': false,
+                        'selfTradePrevention': {
+                            'EXPIRE_MAKER': true,
+                            'EXPIRE_TAKER': true,
+                            'EXPIRE_BOTH': true,
+                            'NONE': true,
+                        },
+                        'trailing': false,
+                        'icebergAmount': true,
+                    },
+                    'createOrders': undefined,
+                    'fetchMyTrades': {
+                        'marginMode': false,
+                        'limit': 1000,
+                        'daysBack': undefined,
+                        'untilDays': 1,
+                        'symbolRequired': true,
+                    },
+                    'fetchOrder': {
+                        'marginMode': true,
+                        'trigger': false,
+                        'trailing': false,
+                        'symbolRequired': true,
+                    },
+                    'fetchOpenOrders': {
+                        'marginMode': true,
+                        'limit': undefined,
+                        'trigger': false,
+                        'trailing': false,
+                        'symbolRequired': false,
+                    },
+                    'fetchOrders': {
+                        'marginMode': true,
+                        'limit': 1000,
+                        'daysBack': undefined,
+                        'untilDays': 10000,
+                        'trigger': false,
+                        'trailing': false,
+                        'symbolRequired': true,
+                    },
+                    'fetchClosedOrders': {
+                        'marginMode': true,
+                        'limit': 1000,
+                        'daysBack': undefined,
+                        'daysBackCanceled': undefined,
+                        'untilDays': 10000,
+                        'trigger': false,
+                        'trailing': false,
+                        'symbolRequired': true,
+                    },
+                    'fetchOHLCV': {
+                        'limit': 1000,
+                    },
+                },
+                'forDerivatives': {
+                    'sandbox': true,
+                    'createOrder': {
+                        'marginMode': false,
+                        'triggerPrice': true,
+                        'triggerPriceType': {
+                            'mark': true,
+                            'last': true,
+                            'index': false,
+                        },
+                        'stopLossPrice': true,
+                        'takeProfitPrice': true,
+                        'attachedStopLossTakeProfit': undefined,
+                        'timeInForce': {
+                            'IOC': true,
+                            'FOK': true,
+                            'PO': true,
+                            'GTD': true,
+                            // 'GTX': true,
+                        },
+                        'hedged': true,
+                        // exchange-supported features
+                        'selfTradePrevention': true,
+                        'trailing': true,
+                        'iceberg': false,
+                        'leverage': false,
+                        'marketBuyRequiresPrice': false,
+                        'marketBuyByCost': true,
+                    },
+                    'createOrders': {
+                        'max': 5,
+                    },
+                    'fetchMyTrades': {
+                        'marginMode': false,
+                        'daysBack': undefined,
+                        'limit': 1000,
+                        'untilDays': 7,
+                        'symbolRequired': true,
+                    },
+                    'fetchOrder': {
+                        'marginMode': false,
+                        'trigger': false,
+                        'trailing': false,
+                        'symbolRequired': true,
+                    },
+                    'fetchOpenOrders': {
+                        'marginMode': true,
+                        'limit': 500,
+                        'trigger': false,
+                        'trailing': false,
+                        'symbolRequired': false,
+                    },
+                    'fetchOrders': {
+                        'marginMode': true,
+                        'limit': 1000,
+                        'daysBack': 90,
+                        'untilDays': 7,
+                        'trigger': false,
+                        'trailing': false,
+                        'symbolRequired': true,
+                    },
+                    'fetchClosedOrders': {
+                        'marginMode': true,
+                        'limit': 1000,
+                        'daysBack': 90,
+                        'daysBackCanceled': 3,
+                        'untilDays': 7,
+                        'trigger': false,
+                        'trailing': false,
+                        'symbolRequired': true,
+                    },
+                    'fetchOHLCV': {
+                        'limit': 1500,
+                    },
+                },
+                'swap': {
+                    'linear': {
+                        'extends': 'forDerivatives',
+                    },
+                    'inverse': {
+                        'extends': 'forDerivatives',
+                    },
+                },
+                'future': {
+                    'linear': {
+                        'extends': 'forDerivatives',
+                    },
+                    'inverse': {
+                        'extends': 'forDerivatives',
+                    },
+                },
+            },
             'fees': {
                 'inverse': {
                     'trading': {
@@ -2293,12 +2297,6 @@ export default class binance extends Exchange {
             },
             // new metainfo2 interface
             'has': {
-                'CORS': undefined,
-                'spot': true,
-                'margin': true,
-                'swap': true,
-                'future': true,
-                'option': true,
                 'addMargin': true,
                 'borrowCrossMargin': true,
                 'borrowIsolatedMargin': true,
@@ -2307,6 +2305,7 @@ export default class binance extends Exchange {
                 'cancelOrders': true,
                 'closeAllPositions': false,
                 'closePosition': false,
+                'CORS': undefined,
                 'createConvertTrade': true,
                 'createDepositAddress': false,
                 'createLimitBuyOrder': true,
@@ -2426,6 +2425,9 @@ export default class binance extends Exchange {
                 'fetchWithdrawal': false,
                 'fetchWithdrawals': true,
                 'fetchWithdrawalWhitelist': false,
+                'future': true,
+                'margin': true,
+                'option': true,
                 'reduceMargin': true,
                 'repayCrossMargin': true,
                 'repayIsolatedMargin': true,
@@ -2435,6 +2437,8 @@ export default class binance extends Exchange {
                 'setMarginMode': true,
                 'setPositionMode': true,
                 'signIn': false,
+                'spot': true,
+                'swap': true,
                 'transfer': true,
                 'withdraw': true,
             },
@@ -2487,10 +2491,6 @@ export default class binance extends Exchange {
                         'spot', // allows CORS in browsers
                         // 'option', // does not allow CORS, enable outside of the browser only
                     ],
-                },
-                'fetchOHLCV': {
-                    'defaultLimit': 500,
-                    'maxLimit': 1500,
                 },
                 'fetchPositions': 'positionRisk',
                 // 'fetchTradesMethod': 'publicGetAggTrades', // publicGetTrades, publicGetHistoricalTrades, eapiPublicGetTrades
@@ -4107,6 +4107,11 @@ export default class binance extends Exchange {
         //             ["111.4","19.52"],
         //             ["119.9","17.6"],
         //             ["141.2","31"]
+        //         ],
+        //         "bids": [
+        //             ["108.7","16.08"],
+        //             ["106","21.29"],
+        //             ["82.4","0.02"]
         //         ],
         //         "bids": [
         //             ["108.7","16.08"],
