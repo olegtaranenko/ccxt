@@ -2426,10 +2426,6 @@ class binance extends \ccxt\async\binance {
 
     public function sign_params($params = array ()) {
         $this->check_required_credentials();
-        $extendedParams = $this->extend(array(
-            'timestamp' => $this->nonce(),
-            'apiKey' => $this->apiKey,
-        ), $params);
         $defaultRecvWindow = $this->safe_integer($this->options, 'recvWindow');
         if ($defaultRecvWindow !== null) {
             $params['recvWindow'] = $defaultRecvWindow;
@@ -2438,8 +2434,12 @@ class binance extends \ccxt\async\binance {
         if ($recvWindow !== null) {
             $params['recvWindow'] = $recvWindow;
         }
+        $extendedParams = $this->extend(array(
+            'timestamp' => $this->nonce(),
+            'apiKey' => $this->apiKey,
+        ), $params);
         $extendedParams = $this->keysort($extendedParams);
-        $query = $this->urlencode($extendedParams);
+        $query = $this->rawencode($extendedParams);
         $signature = null;
         if (mb_strpos($this->secret, 'PRIVATE KEY') > -1) {
             if (strlen($this->secret) > 120) {
@@ -3692,7 +3692,7 @@ class binance extends \ccxt\async\binance {
             } elseif ($this->isInverse ($type, $subType)) {
                 $type = 'delivery';
             }
-            $params = $this->extend($params, array( 'type' => $type, 'symbol' => $symbol )); // needed inside authenticate for isolated margin
+            $params = $this->extend($params, array( 'type' => $type, 'symbol' => $symbol, 'subType' => $subType )); // needed inside authenticate for isolated margin
             Async\await($this->authenticate($params));
             $marginMode = null;
             list($marginMode, $params) = $this->handle_margin_mode_and_params('watchOrders', $params);
@@ -4392,7 +4392,7 @@ class binance extends \ccxt\async\binance {
                 $messageHash .= ':' . $symbol;
                 $params = $this->extend($params, array( 'type' => $market['type'], 'symbol' => $symbol ));
             }
-            Async\await($this->authenticate($params));
+            Async\await($this->authenticate($this->extend(array( 'type' => $type, 'subType' => $subType ), $params)));
             $urlType = $type; // we don't change $type because the listening key is different
             if ($type === 'margin') {
                 $urlType = 'spot'; // spot-margin shares the same stream spot
