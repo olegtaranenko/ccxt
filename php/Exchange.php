@@ -43,7 +43,7 @@ use BN\BN;
 use Sop\ASN1\Type\UnspecifiedType;
 use Exception;
 
-$version = '4.5.15';
+$version = '4.5.17';
 
 // rounding mode
 const TRUNCATE = 0;
@@ -62,7 +62,7 @@ const PAD_WITH_ZERO = 6;
 
 class Exchange {
 
-    const VERSION = '4.5.15';
+    const VERSION = '4.5.17';
 
     private static $base58_alphabet = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
     private static $base58_encoder = null;
@@ -2467,10 +2467,10 @@ class Exchange {
                 'createMarketSellOrderWithCostWs' => null,
                 'createMarketSellOrderWs' => null,
                 'createOrder' => true,
-                'createOrders' => null,
                 'createOrderWithTakeProfitAndStopLoss' => null,
                 'createOrderWithTakeProfitAndStopLossWs' => null,
                 'createOrderWs' => null,
+                'createOrders' => null,
                 'createPostOnlyOrder' => null,
                 'createPostOnlyOrderWs' => null,
                 'createReduceOnlyOrder' => null,
@@ -2494,8 +2494,8 @@ class Exchange {
                 'deposit' => null,
                 'editOrder' => 'emulated',
                 'editOrderWithClientOrderId' => null,
-                'editOrders' => null,
                 'editOrderWs' => null,
+                'editOrders' => null,
                 'fetchAccounts' => null,
                 'fetchBalance' => true,
                 'fetchBalanceWs' => null,
@@ -2523,11 +2523,11 @@ class Exchange {
                 'fetchDepositAddress' => null,
                 'fetchDepositAddresses' => null,
                 'fetchDepositAddressesByNetwork' => null,
+                'fetchDepositWithdrawFee' => null,
+                'fetchDepositWithdrawFees' => null,
                 'fetchDeposits' => null,
                 'fetchDepositsWithdrawals' => null,
                 'fetchDepositsWs' => null,
-                'fetchDepositWithdrawFee' => null,
-                'fetchDepositWithdrawFees' => null,
                 'fetchFundingHistory' => null,
                 'fetchFundingInterval' => null,
                 'fetchFundingIntervals' => null,
@@ -2545,19 +2545,19 @@ class Exchange {
                 'fetchLedger' => null,
                 'fetchLedgerEntry' => null,
                 'fetchLeverage' => null,
-                'fetchLeverages' => null,
                 'fetchLeverageTiers' => null,
+                'fetchLeverages' => null,
                 'fetchLiquidations' => null,
                 'fetchLongShortRatio' => null,
                 'fetchLongShortRatioHistory' => null,
                 'fetchMarginAdjustmentHistory' => null,
                 'fetchMarginMode' => null,
                 'fetchMarginModes' => null,
+                'fetchMarkOHLCV' => null,
+                'fetchMarkPrices' => null,
                 'fetchMarketLeverageTiers' => null,
                 'fetchMarkets' => true,
                 'fetchMarketsWs' => null,
-                'fetchMarkOHLCV' => null,
-                'fetchMarkPrices' => null,
                 'fetchMyLiquidations' => null,
                 'fetchMySettlementHistory' => null,
                 'fetchMyTrades' => null,
@@ -2573,32 +2573,32 @@ class Exchange {
                 'fetchOption' => null,
                 'fetchOptionChain' => null,
                 'fetchOrder' => null,
-                'fetchOrderWithClientOrderId' => null,
                 'fetchOrderBook' => true,
-                'fetchOrderBooks' => null,
                 'fetchOrderBookWs' => null,
+                'fetchOrderBooks' => null,
+                'fetchOrderTrades' => null,
+                'fetchOrderWithClientOrderId' => null,
+                'fetchOrderWs' => null,
                 'fetchOrders' => null,
                 'fetchOrdersByStatus' => null,
                 'fetchOrdersWs' => null,
-                'fetchOrderTrades' => null,
-                'fetchOrderWs' => null,
                 'fetchPosition' => null,
                 'fetchPositionHistory' => null,
                 'fetchPositionMode' => null,
+                'fetchPositionWs' => null,
                 'fetchPositions' => null,
                 'fetchPositionsForSymbol' => null,
                 'fetchPositionsForSymbolWs' => null,
                 'fetchPositionsHistory' => null,
                 'fetchPositionsRisk' => null,
                 'fetchPositionsWs' => null,
-                'fetchPositionWs' => null,
                 'fetchPremiumIndexOHLCV' => null,
                 'fetchSettlementHistory' => null,
                 'fetchStatus' => null,
                 'fetchTicker' => true,
+                'fetchTickerWs' => null,
                 'fetchTickers' => null,
                 'fetchTickersWs' => null,
-                'fetchTickerWs' => null,
                 'fetchTime' => null,
                 'fetchTrades' => true,
                 'fetchTradesWs' => null,
@@ -2615,9 +2615,9 @@ class Exchange {
                 'fetchVolatilityHistory' => null,
                 'fetchWithdrawAddresses' => null,
                 'fetchWithdrawal' => null,
+                'fetchWithdrawalWhitelist' => null,
                 'fetchWithdrawals' => null,
                 'fetchWithdrawalsWs' => null,
-                'fetchWithdrawalWhitelist' => null,
                 'future' => null,
                 'margin' => null,
                 'option' => null,
@@ -2706,9 +2706,9 @@ class Exchange {
             ),
             'markets' => null, // to be filled manually or by fetchMarkets
             'name' => null,
+            'offline' => false,
             'paddingMode' => NO_PADDING,
             'precisionMode' => TICK_SIZE,
-            'offline' => false,
             'pro' => false, // if it is integrated with CCXT Pro for WebSocket support
             'rateLimit' => 2000, // milliseconds = seconds * 1000
             'requiredCredentials' => array(

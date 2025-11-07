@@ -3779,15 +3779,7 @@ class binance(ccxt.async_support.binance):
                 else:
                     positionSide = 'long'
         return self.safe_position({
-            'info': position,
-            'id': None,
-            'symbol': self.safe_symbol(marketId, None, None, 'swap'),
-            'notional': None,
-            'marginMode': self.safe_string(position, 'mt'),
-            'liquidationPrice': None,
-            'entryPrice': self.safe_number(position, 'ep'),
-            'unrealizedPnl': self.safe_number(position, 'up'),
-            'percentage': None,
+            'collateral': None,
             'contracts': self.parse_number(contractsAbs),
             'contractSize': None,
             'datetime': None,
@@ -3807,7 +3799,7 @@ class binance(ccxt.async_support.binance):
             'notional': None,
             'percentage': None,
             'side': positionSide,
-            'symbol': self.safe_symbol(marketId, None, None, 'contract'),
+            'symbol': self.safe_symbol(marketId, None, None, 'swap'),
             'timestamp': None,
             'unrealizedPnl': self.safe_number(position, 'up'),
         })

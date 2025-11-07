@@ -4171,15 +4171,7 @@ class binance extends \ccxt\async\binance {
             }
         }
         return $this->safe_position(array(
-            'info' => $position,
-            'id' => null,
-            'symbol' => $this->safe_symbol($marketId, null, null, 'swap'),
-            'notional' => null,
-            'marginMode' => $this->safe_string($position, 'mt'),
-            'liquidationPrice' => null,
-            'entryPrice' => $this->safe_number($position, 'ep'),
-            'unrealizedPnl' => $this->safe_number($position, 'up'),
-            'percentage' => null,
+            'collateral' => null,
             'contracts' => $this->parse_number($contractsAbs),
             'contractSize' => null,
             'datetime' => null,
@@ -4199,7 +4191,7 @@ class binance extends \ccxt\async\binance {
             'notional' => null,
             'percentage' => null,
             'side' => $positionSide,
-            'symbol' => $this->safe_symbol($marketId, null, null, 'contract'),
+            'symbol' => $this->safe_symbol($marketId, null, null, 'swap'),
             'timestamp' => null,
             'unrealizedPnl' => $this->safe_number($position, 'up'),
         ));
