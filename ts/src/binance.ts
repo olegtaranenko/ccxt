@@ -83,8 +83,8 @@ import { sha256 } from './static_dependencies/noble-hashes/sha256.js';
 import { rsa } from './base/functions/rsa.js';
 import { eddsa } from './base/functions/crypto.js';
 import { ed25519 } from './static_dependencies/noble-curves/ed25519.js';
-import { isNode } from './base/functions/platform';
-import { isEmpty } from './base/functions/generic';
+import { isNode } from './base/functions/platform.js';
+import { isEmpty } from './base/functions/generic.js';
 
 //  ---------------------------------------------------------------------------
 
