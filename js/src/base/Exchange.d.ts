@@ -70,7 +70,7 @@ export default class Exchange {
     validateClientSsl: boolean;
     validateServerSsl: boolean;
     timeout: Int;
-    twofa: any;
+    twofa: string;
     verbose: boolean;
     verboseLogVeto: any;
     verboseTruncate: boolean;

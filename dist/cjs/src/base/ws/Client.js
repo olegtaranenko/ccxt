@@ -178,6 +178,7 @@ class Client {
                 if (this.ping) {
                     message = this.ping(this);
                 }
+                this.log(new Date(), 'OnPingInterval', this.url);
                 if (message) {
                     this.send(message).catch((error) => {
                         this.onError(error);
@@ -201,7 +202,7 @@ class Client {
     onOpen() {
         if (this.verbose || this.verboseTruncate) {
             if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto('onOpen')) {
-                this.log(new Date(), 'onOpen');
+                this.log(new Date(), 'onOpen', '|', this.url);
             }
         }
         this.connectionEstablished = time.milliseconds();
@@ -218,7 +219,7 @@ class Client {
     onPing() {
         if (this.verbose || this.verboseTruncate) {
             if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto('onPing')) {
-                this.log(new Date(), 'onPing');
+                this.log(new Date(), 'onPing', '|', this.url);
             }
         }
     }
@@ -226,14 +227,14 @@ class Client {
         this.lastPong = time.milliseconds();
         if (this.verbose || this.verboseTruncate) {
             if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto('onPong')) {
-                this.log(new Date(), 'onPong');
+                this.log(new Date(), 'onPong', '|', this.url);
             }
         }
     }
     onError(error) {
         if (this.verbose || this.verboseTruncate) {
             if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto('onError', error)) {
-                this.log(new Date(), 'onError', error.message);
+                this.log(new Date(), 'onError', error.message, '|', this.url);
             }
         }
         if (!(error instanceof errors.BaseError)) {
@@ -248,7 +249,7 @@ class Client {
     onClose(event) {
         if (this.verbose || this.verboseTruncate) {
             if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto('onClose', event)) {
-                this.log(new Date(), 'onClose', event);
+                this.log(new Date(), 'onClose', event, '|', this.url);
             }
         }
         if (!this.error) {
@@ -268,7 +269,7 @@ class Client {
     onUpgrade(message) {
         if (this.verbose || this.verboseTruncate) {
             if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto('onUpdate')) {
-                this.log(new Date(), 'onUpgrade');
+                this.log(new Date(), 'onUpgrade', '|', this.url);
             }
         }
     }
@@ -342,7 +343,7 @@ class Client {
             }
         }
         catch (e) {
-            this.log(new Date(), 'onMessage JSON.parse', e);
+            this.log(new Date(), 'onMessage JSON.parse', e, '|', this.url);
             // reset with a json encoding error ?
         }
         try {

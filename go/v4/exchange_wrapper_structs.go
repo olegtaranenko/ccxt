@@ -6229,6 +6229,19 @@ func WithFetchCanceledAndClosedSwapOrdersParams(params map[string]interface{}) F
 }
 
 
+type FetchMarketsByTypeOptionsStruct struct {
+    Params *map[string]interface{}
+}
+
+type FetchMarketsByTypeOptions func(opts *FetchMarketsByTypeOptionsStruct)
+
+func WithFetchMarketsByTypeParams(params map[string]interface{}) FetchMarketsByTypeOptions {
+    return func(opts *FetchMarketsByTypeOptionsStruct) {
+        opts.Params = &params
+    }
+}
+
+
 type FetchOrdersWithMethodOptionsStruct struct {
     Symbol *string
     Since *int64
@@ -6887,19 +6900,6 @@ func WithFetchLedgerByEntriesLimit(limit interface{}) FetchLedgerByEntriesOption
 
 func WithFetchLedgerByEntriesParams(params map[string]interface{}) FetchLedgerByEntriesOptions {
     return func(opts *FetchLedgerByEntriesOptionsStruct) {
-        opts.Params = &params
-    }
-}
-
-
-type FetchMarketsByTypeOptionsStruct struct {
-    Params *map[string]interface{}
-}
-
-type FetchMarketsByTypeOptions func(opts *FetchMarketsByTypeOptionsStruct)
-
-func WithFetchMarketsByTypeParams(params map[string]interface{}) FetchMarketsByTypeOptions {
-    return func(opts *FetchMarketsByTypeOptionsStruct) {
         opts.Params = &params
     }
 }

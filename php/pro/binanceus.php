@@ -16,44 +16,55 @@ class binanceus extends \ccxt\pro\binance {
         $parentWsDescribe = parent::describe_data();
         $extended = $this->deep_extend($restDescribe, $parentWsDescribe);
         return $this->deep_extend($extended, array(
-            'certified' => false,
-            'countries' => array( 'US' ),
-            'fees' => array(
-                'trading' => array(
-                    'maker' => 0.0, // 0.1% trading fee, zero fees for all trading pairs before November 1
-                    'percentage' => true,
-                    'taker' => 0.0, // 0.1% trading fee, zero fees for all trading pairs before November 1
-                    'tierBased' => false,
-                ),
-            ), // US
             'id' => 'binanceus',
             'name' => 'Binance US',
-            'options' => array(
-                'defaultType' => 'spot',
-                'fetchCurrencies' => false,
-                'fetchMarkets' => array(
-                    'types' => array( 'spot' ),
-                ),
-                'quoteOrderQty' => false,
-            ),
+            'countries' => array( 'US' ), // US
+            'certified' => false,
             'urls' => array(
+                'logo' => 'https://user-images.githubusercontent.com/1294454/65177307-217b7c80-da5f-11e9-876e-0b748ba0a358.jpg',
                 'api' => array(
-                    'private' => 'https://api.binance.us/api/v3',
-                    'public' => 'https://api.binance.us/api/v3',
-                    'sapi' => 'https://api.binance.us/sapi/v1',
-                    'v1' => 'https://api.binance.us/api/v1',
-                    'v3' => 'https://api.binance.us/api/v3',
-                    'wapi' => 'https://api.binance.us/wapi/v3',
-                    'web' => 'https://www.binance.us',
                     'ws' => array(
                         'spot' => 'wss://stream.binance.us:9443/ws',
                     ),
+                    'web' => 'https://www.binance.us',
+                    'sapi' => 'https://api.binance.us/sapi/v1',
+                    'wapi' => 'https://api.binance.us/wapi/v3',
+                    'public' => 'https://api.binance.us/api/v3',
+                    'private' => 'https://api.binance.us/api/v3',
+                    'v3' => 'https://api.binance.us/api/v3',
+                    'v1' => 'https://api.binance.us/api/v1',
                 ),
+                'www' => 'https://www.binance.us',
+                'referral' => 'https://www.binance.us/?ref=35005074',
                 'doc' => 'https://github.com/binance-us/binance-official-api-docs',
                 'fees' => 'https://www.binance.us/en/fee/schedule',
-                'logo' => 'https://user-images.githubusercontent.com/1294454/65177307-217b7c80-da5f-11e9-876e-0b748ba0a358.jpg',
-                'referral' => 'https://www.binance.us/?ref=35005074',
-                'www' => 'https://www.binance.us',
+            ),
+            'has' => array(
+                'createOrderWithTakeProfitAndStopLossWs' => false,
+                'createReduceOnlyOrderWs' => false,
+                'createStopLossOrderWs' => false,
+                'createTakeProfitOrderWs' => false,
+                'fetchPositionForSymbolWs' => false,
+                'fetchPositionsForSymbolWs' => false,
+                'fetchPositionsWs' => false,
+                'fetchPositionWs' => false,
+                'unWatchPositions' => false,
+                'watchLiquidations' => false,
+                'watchLiquidationsForSymbols' => false,
+                'watchMarkPrice' => false,
+                'watchMarkPrices' => false,
+                'watchMyLiquidations' => false,
+                'watchMyLiquidationsForSymbols' => false,
+                'watchPosition' => false,
+                'watchPositions' => false,
+            ),
+            'options' => array(
+                'fetchCurrencies' => false,
+                'quoteOrderQty' => false,
+                'defaultType' => 'spot',
+                'fetchMarkets' => array(
+                    'types' => array( 'spot' ),
+                ),
             ),
         ));
     }
