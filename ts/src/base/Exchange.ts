@@ -377,7 +377,7 @@ export default class Exchange {
     validateServerSsl: boolean = true;
 
     timeout: Int = 10000; // milliseconds
-    twofa = undefined; // two-factor authentication (2-FA)
+    twofa: string = undefined; // two-factor authentication (2-FA)
     verbose: boolean = false;
     verboseLogVeto: any;
     verboseTruncate: boolean = false;
@@ -1029,7 +1029,7 @@ export default class Exchange {
         // log
         if (this.verbose || this.verboseTruncate) {
             if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto ('fetch', method, url, headers, body)) {
-                const truncated = getBodyTruncated (body, this.verboseTruncate);
+                const truncated = getBodyTruncated(body, this.verboseTruncate);
                 this.log ('fetch Request:\n', this.id, method, url, '\nRequestHeaders:\n', headers, '\nRequestBody:\n', truncated, '\n');
             }
         }
@@ -2464,7 +2464,7 @@ export default class Exchange {
     }
 
     getCacheIndex (orderbook, deltas) {
-        // return the first index of the cache that can be applied to the orderbook or -1 if not possible
+        // return the first index of the cache that can be applied to the orderbook or -1 if not possible.
         return -1;
     }
 
@@ -4329,7 +4329,7 @@ export default class Exchange {
                 fee = this.parseFeeNumeric (fee);
             }
             if (!feesDefined) {
-                // just set it directly, no further processing needed
+                // just set it directly, no further processing needed.
                 fees = [ fee ];
             }
             // 'fees' were set, so reparse them
@@ -8734,7 +8734,7 @@ export default class Exchange {
                         delete futures['fetchPositionsSnapshot'];
                     }
                 }
-            } else if (topic === 'ticker' && (this.tickers !== undefined)) {
+            } else if ((topic === 'ticker' || topic === 'markPrice') && (this.tickers !== undefined)) {
                 const tickerSymbols = Object.keys (this.tickers);
                 for (let i = 0; i < tickerSymbols.length; i++) {
                     const tickerSymbol = tickerSymbols[i];
