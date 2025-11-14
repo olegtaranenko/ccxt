@@ -6,8 +6,8 @@ export default class binance extends binanceRest {
     describeData(): {
         has: {
             cancelAllOrdersWs: boolean;
-            cancelOrdersWs: boolean;
             cancelOrderWs: boolean;
+            cancelOrdersWs: boolean;
             createOrderWs: boolean;
             editOrderWs: boolean;
             fetchBalanceWs: boolean;
@@ -17,33 +17,35 @@ export default class binance extends binanceRest {
             fetchOHLCVWs: boolean;
             fetchOpenOrdersWs: boolean;
             fetchOrderBookWs: boolean;
-            fetchOrdersWs: boolean;
             fetchOrderWs: boolean;
+            fetchOrdersWs: boolean;
             fetchPositionForSymbolWs: boolean;
-            fetchPositionsWs: boolean;
             fetchPositionWs: boolean;
+            fetchPositionsWs: boolean;
             fetchTickerWs: boolean;
             fetchTradesWs: boolean;
             fetchTradingFeesWs: boolean;
             fetchWithdrawalsWs: boolean;
             pingServer: boolean;
-            unWatchTicker: boolean;
-            unWatchTickers: boolean;
+            unWatchMarkPrice: boolean;
+            unWatchMarkPrices: boolean;
+            unWatchMyTrades: boolean;
             unWatchOHLCV: boolean;
             unWatchOHLCVForSymbols: boolean;
             unWatchOrderBook: boolean;
             unWatchOrderBookForSymbols: boolean;
-            unWatchTrades: boolean;
-            unWatchTradesForSymbols: boolean;
-            unWatchMyTrades: boolean;
             unWatchOrders: boolean;
             unWatchPositions: boolean;
-            unWatchMarkPrices: boolean;
-            unWatchMarkPrice: boolean;
+            unWatchTicker: boolean;
+            unWatchTickers: boolean;
+            unWatchTrades: boolean;
+            unWatchTradesForSymbols: boolean;
             watchBalance: boolean;
             watchBidsAsks: boolean;
             watchLiquidations: boolean;
             watchLiquidationsForSymbols: boolean;
+            watchMarkPrice: boolean;
+            watchMarkPrices: boolean;
             watchMyLiquidations: boolean;
             watchMyLiquidationsForSymbols: boolean;
             watchMyTrades: boolean;
@@ -56,8 +58,6 @@ export default class binance extends binanceRest {
             watchPositions: boolean;
             watchTicker: boolean;
             watchTickers: boolean;
-            watchMarkPrices: boolean;
-            watchMarkPrice: boolean;
             watchTrades: boolean;
             watchTradesForSymbols: boolean;
             ws: boolean;
@@ -590,13 +590,13 @@ export default class binance extends binanceRest {
      * @returns {object} a [ticker structure]{@link https://docs.ccxt.com/#/?id=ticker-structure}
      */
     watchBidsAsks(symbols?: Strings, params?: {}): Promise<Tickers>;
-    watchMultiTickerHelper(methodName: any, channelName: string, symbols?: Strings, params?: {}): Promise<any>;
+    watchMultiTickerHelper(methodName: any, channelName: string, symbols?: Strings, params?: {}, isUnsubscribe?: boolean): Promise<any>;
     parseWsTicker(message: any, marketType: any): Ticker;
     handleTickerWs(client: Client, message: any): void;
     handleBidsAsks(client: Client, message: any): void;
     handleTickers(client: Client, message: any): void;
+    handleMarkPrices(client: Client, message: any): void;
     handleTickersAndBidsAsks(client: Client, message: any, methodType: any): void;
-    getMessageHash(channelName: string, symbol: Str, isBidAsk: boolean): string;
     signParams(params?: {}): any;
     /**
      * @name binance#ensureUserDataStreamWsSubscribeSignature
