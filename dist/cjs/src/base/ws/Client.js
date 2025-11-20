@@ -12,6 +12,7 @@ require('../functions/crypto.js');
 var time = require('../functions/time.js');
 var index = require('../../static_dependencies/scure-base/index.js');
 
+// ----------------------------------------------------------------------------
 const TRUNCATE_LENGTH = 8192;
 /**
  * Truncates a string body for verbose logging purposes.
@@ -177,7 +178,9 @@ class Client {
                 if (this.ping) {
                     message = this.ping(this);
                 }
-                this.log(new Date(), 'OnPingInterval', this.url);
+                if (this.verbose) {
+                    this.log(new Date(), 'onPingInterval', '|', this.url);
+                }
                 if (message) {
                     this.send(message).catch((error) => {
                         this.onError(error);

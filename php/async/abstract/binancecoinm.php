@@ -367,6 +367,12 @@ abstract class binancecoinm extends \ccxt\async\binance {
     public function fapidata_get_toplongshortpositionratio($params = array()) {
         return $this->request('topLongShortPositionRatio', 'fapiData', 'GET', $params, null, null, array("cost" => 1));
     }
+    public function fapiprivate_delete_algoopenorders($params = array()) {
+        return $this->request('algoOpenOrders', 'fapiPrivate', 'DELETE', $params, null, null, array("cost" => 1));
+    }
+    public function fapiprivate_delete_algoorder($params = array()) {
+        return $this->request('algoOrder', 'fapiPrivate', 'DELETE', $params, null, null, array("cost" => 1));
+    }
     public function fapiprivate_delete_allopenorders($params = array()) {
         return $this->request('allOpenOrders', 'fapiPrivate', 'DELETE', $params, null, null, array("cost" => 1));
     }
@@ -388,8 +394,14 @@ abstract class binancecoinm extends \ccxt\async\binance {
     public function fapiprivate_get_adlquantile($params = array()) {
         return $this->request('adlQuantile', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 5));
     }
+    public function fapiprivate_get_algoorder($params = array()) {
+        return $this->request('algoOrder', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
+    }
     public function fapiprivate_get_allorders($params = array()) {
         return $this->request('allOrders', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 5));
+    }
+    public function fapiprivate_get_allalgoorders($params = array()) {
+        return $this->request('allAlgoOrders', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 5));
     }
     public function fapiprivate_get_apireferral_customization($params = array()) {
         return $this->request('apiReferral/customization', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
@@ -403,14 +415,14 @@ abstract class binancecoinm extends \ccxt\async\binance {
     public function fapiprivate_get_apireferral_rebatevol($params = array()) {
         return $this->request('apiReferral/rebateVol', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
     }
+    public function fapiprivate_get_apireferral_tradevol($params = array()) {
+        return $this->request('apiReferral/tradeVol', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
+    }
     public function fapiprivate_get_apireferral_tradernum($params = array()) {
         return $this->request('apiReferral/traderNum', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
     }
     public function fapiprivate_get_apireferral_tradersummary($params = array()) {
         return $this->request('apiReferral/traderSummary', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function fapiprivate_get_apireferral_tradevol($params = array()) {
-        return $this->request('apiReferral/tradeVol', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
     }
     public function fapiprivate_get_apireferral_usercustomization($params = array()) {
         return $this->request('apiReferral/userCustomization', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
@@ -447,6 +459,9 @@ abstract class binancecoinm extends \ccxt\async\binance {
     }
     public function fapiprivate_get_multiassetsmargin($params = array()) {
         return $this->request('multiAssetsMargin', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 30));
+    }
+    public function fapiprivate_get_openalgoorders($params = array()) {
+        return $this->request('openAlgoOrders', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
     }
     public function fapiprivate_get_openorder($params = array()) {
         return $this->request('openOrder', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
@@ -493,6 +508,9 @@ abstract class binancecoinm extends \ccxt\async\binance {
     public function fapiprivate_get_usertrades($params = array()) {
         return $this->request('userTrades', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 5));
     }
+    public function fapiprivate_post_algoorder($params = array()) {
+        return $this->request('algoOrder', 'fapiPrivate', 'POST', $params, null, null, array("cost" => 1));
+    }
     public function fapiprivate_post_apireferral_customization($params = array()) {
         return $this->request('apiReferral/customization', 'fapiPrivate', 'POST', $params, null, null, array("cost" => 1));
     }
@@ -528,6 +546,9 @@ abstract class binancecoinm extends \ccxt\async\binance {
     }
     public function fapiprivate_post_order($params = array()) {
         return $this->request('order', 'fapiPrivate', 'POST', $params, null, null, array("cost" => 4));
+    }
+    public function fapiprivate_post_order_test($params = array()) {
+        return $this->request('order/test', 'fapiPrivate', 'POST', $params, null, null, array("cost" => 1));
     }
     public function fapiprivate_post_positionmargin($params = array()) {
         return $this->request('positionMargin', 'fapiPrivate', 'POST', $params, null, null, array("cost" => 1));
@@ -2677,6 +2698,12 @@ abstract class binancecoinm extends \ccxt\async\binance {
     public function fapiDataGetTopLongShortPositionRatio($params = array()) {
         return $this->request('topLongShortPositionRatio', 'fapiData', 'GET', $params, null, null, array("cost" => 1));
     }
+    public function fapiPrivateDeleteAlgoOpenOrders($params = array()) {
+        return $this->request('algoOpenOrders', 'fapiPrivate', 'DELETE', $params, null, null, array("cost" => 1));
+    }
+    public function fapiPrivateDeleteAlgoOrder($params = array()) {
+        return $this->request('algoOrder', 'fapiPrivate', 'DELETE', $params, null, null, array("cost" => 1));
+    }
     public function fapiPrivateDeleteAllOpenOrders($params = array()) {
         return $this->request('allOpenOrders', 'fapiPrivate', 'DELETE', $params, null, null, array("cost" => 1));
     }
@@ -2698,8 +2725,14 @@ abstract class binancecoinm extends \ccxt\async\binance {
     public function fapiPrivateGetAdlQuantile($params = array()) {
         return $this->request('adlQuantile', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 5));
     }
+    public function fapiPrivateGetAlgoOrder($params = array()) {
+        return $this->request('algoOrder', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
+    }
     public function fapiPrivateGetAllOrders($params = array()) {
         return $this->request('allOrders', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 5));
+    }
+    public function fapiPrivateGetAllAlgoOrders($params = array()) {
+        return $this->request('allAlgoOrders', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 5));
     }
     public function fapiPrivateGetApiReferralCustomization($params = array()) {
         return $this->request('apiReferral/customization', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
@@ -2713,14 +2746,14 @@ abstract class binancecoinm extends \ccxt\async\binance {
     public function fapiPrivateGetApiReferralRebateVol($params = array()) {
         return $this->request('apiReferral/rebateVol', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
     }
+    public function fapiPrivateGetApiReferralTradeVol($params = array()) {
+        return $this->request('apiReferral/tradeVol', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
+    }
     public function fapiPrivateGetApiReferralTraderNum($params = array()) {
         return $this->request('apiReferral/traderNum', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
     }
     public function fapiPrivateGetApiReferralTraderSummary($params = array()) {
         return $this->request('apiReferral/traderSummary', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
-    }
-    public function fapiPrivateGetApiReferralTradeVol($params = array()) {
-        return $this->request('apiReferral/tradeVol', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
     }
     public function fapiPrivateGetApiReferralUserCustomization($params = array()) {
         return $this->request('apiReferral/userCustomization', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
@@ -2757,6 +2790,9 @@ abstract class binancecoinm extends \ccxt\async\binance {
     }
     public function fapiPrivateGetMultiAssetsMargin($params = array()) {
         return $this->request('multiAssetsMargin', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 30));
+    }
+    public function fapiPrivateGetOpenAlgoOrders($params = array()) {
+        return $this->request('openAlgoOrders', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
     }
     public function fapiPrivateGetOpenOrder($params = array()) {
         return $this->request('openOrder', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
@@ -2803,6 +2839,9 @@ abstract class binancecoinm extends \ccxt\async\binance {
     public function fapiPrivateGetUserTrades($params = array()) {
         return $this->request('userTrades', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 5));
     }
+    public function fapiPrivatePostAlgoOrder($params = array()) {
+        return $this->request('algoOrder', 'fapiPrivate', 'POST', $params, null, null, array("cost" => 1));
+    }
     public function fapiPrivatePostApiReferralCustomization($params = array()) {
         return $this->request('apiReferral/customization', 'fapiPrivate', 'POST', $params, null, null, array("cost" => 1));
     }
@@ -2838,6 +2877,9 @@ abstract class binancecoinm extends \ccxt\async\binance {
     }
     public function fapiPrivatePostOrder($params = array()) {
         return $this->request('order', 'fapiPrivate', 'POST', $params, null, null, array("cost" => 4));
+    }
+    public function fapiPrivatePostOrderTest($params = array()) {
+        return $this->request('order/test', 'fapiPrivate', 'POST', $params, null, null, array("cost" => 1));
     }
     public function fapiPrivatePostPositionMargin($params = array()) {
         return $this->request('positionMargin', 'fapiPrivate', 'POST', $params, null, null, array("cost" => 1));

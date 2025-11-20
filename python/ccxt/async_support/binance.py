@@ -219,6 +219,8 @@ class binance(Exchange, ImplicitAPI):
                 },
                 'fapiPrivate': {
                     'delete': {
+                        'algoOpenOrders': 1,
+                        'algoOrder': 1,
                         'allOpenOrders': 1,
                         'batchOrders': 1,
                         'listenKey': 1,
@@ -228,15 +230,17 @@ class binance(Exchange, ImplicitAPI):
                         'account': 5,
                         'accountConfig': 5,
                         'adlQuantile': 5,
+                        'algoOrder': 1,
                         'allOrders': 5,
                         # broker endpoints
+                        'allAlgoOrders': 5,
                         'apiReferral/customization': 1,
                         'apiReferral/ifNewUser': 1,
                         'apiReferral/overview': 1,
                         'apiReferral/rebateVol': 1,
+                        'apiReferral/tradeVol': 1,
                         'apiReferral/traderNum': 1,
                         'apiReferral/traderSummary': 1,
-                        'apiReferral/tradeVol': 1,
                         'apiReferral/userCustomization': 1,
                         'apiTradingStatus': 1,
                         'balance': 5,
@@ -249,6 +253,7 @@ class binance(Exchange, ImplicitAPI):
                         'income/asyn/id': 10,
                         'leverageBracket': 1,
                         'multiAssetsMargin': 30,
+                        'openAlgoOrders': 1,
                         'openOrder': 1,
                         'openOrders': {'cost': 1, 'noSymbol': 40},
                         'order': 1,
@@ -266,6 +271,7 @@ class binance(Exchange, ImplicitAPI):
                         'userTrades': 5,
                     },
                     'post': {
+                        'algoOrder': 1,
                         # broker endpoints
                         'apiReferral/customization': 1,
                         'apiReferral/userCustomization': 1,
@@ -279,6 +285,7 @@ class binance(Exchange, ImplicitAPI):
                         'marginType': 1,
                         'multiAssetsMargin': 1,
                         'order': 4,
+                        'order/test': 1,
                         'positionMargin': 1,
                         'positionSide/dual': 1,
                     },
@@ -4028,7 +4035,7 @@ class binance(Exchange, ImplicitAPI):
         #
         #     {
         #         "symbol": "BTCUSDT",
-        #         "markPrice": "11793.63104561",  # mark price
+        #         "markPrice": "11793.63104562",  # mark price
         #         "indexPrice": "11781.80495970",  # index price
         #         "estimatedSettlePrice": "11781.16138815",  # Estimated Settle Price, only useful in the last hour before the settlement starts
         #         "lastFundingRate": "0.00038246",  # This is the lastest estimated funding rate

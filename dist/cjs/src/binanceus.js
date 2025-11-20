@@ -4,7 +4,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 var binance = require('./binance.js');
 
-//  ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //  ---------------------------------------------------------------------------
 class binanceus extends binance["default"] {
     describe() {
@@ -145,6 +145,11 @@ class binanceus extends binance["default"] {
             },
             'has': {
                 'CORS': undefined,
+                'spot': true,
+                'margin': false,
+                'swap': false,
+                'future': false,
+                'option': false,
                 'addMargin': false,
                 'borrowCrossMargin': false,
                 'borrowIsolatedMargin': false,
@@ -178,10 +183,10 @@ class binanceus extends binance["default"] {
                 'fetchLeverageTiers': false,
                 'fetchLongShortRatio': false,
                 'fetchLongShortRatioHistory': false,
+                'fetchMarketLeverageTiers': false,
                 'fetchMarkOHLCV': false,
                 'fetchMarkPrice': false,
                 'fetchMarkPrices': false,
-                'fetchMarketLeverageTiers': false,
                 'fetchMySettlementHistory': false,
                 'fetchOpenInterestHistory': false,
                 'fetchOpenInterests': false,
@@ -198,9 +203,6 @@ class binanceus extends binance["default"] {
                 'fetchSettlementHistory': false,
                 'fetchUnderlyingAssets': false,
                 'fetchVolatilityHistory': false,
-                'future': false,
-                'margin': false,
-                'option': false,
                 'reduceMargin': false,
                 'repayCrossMargin': false,
                 'repayIsolatedMargin': false,
@@ -208,8 +210,6 @@ class binanceus extends binance["default"] {
                 'setMargin': false,
                 'setMarginMode': false,
                 'setPositionMode': false,
-                'spot': true,
-                'swap': false,
             },
             'hostname': 'binance.us',
             'id': 'binanceus',

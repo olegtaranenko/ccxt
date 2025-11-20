@@ -13,7 +13,7 @@ var ed25519 = require('./static_dependencies/noble-curves/ed25519.js');
 var platform = require('./base/functions/platform.js');
 var generic = require('./base/functions/generic.js');
 
-//  ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //  ---------------------------------------------------------------------------
 /**
  * @class binance
@@ -198,6 +198,8 @@ class binance extends binance$1["default"] {
                 },
                 'fapiPrivate': {
                     'delete': {
+                        'algoOpenOrders': 1,
+                        'algoOrder': 1,
                         'allOpenOrders': 1,
                         'batchOrders': 1,
                         'listenKey': 1,
@@ -207,15 +209,17 @@ class binance extends binance$1["default"] {
                         'account': 5,
                         'accountConfig': 5,
                         'adlQuantile': 5,
+                        'algoOrder': 1,
                         'allOrders': 5,
                         // broker endpoints
+                        'allAlgoOrders': 5,
                         'apiReferral/customization': 1,
                         'apiReferral/ifNewUser': 1,
                         'apiReferral/overview': 1,
                         'apiReferral/rebateVol': 1,
+                        'apiReferral/tradeVol': 1,
                         'apiReferral/traderNum': 1,
                         'apiReferral/traderSummary': 1,
-                        'apiReferral/tradeVol': 1,
                         'apiReferral/userCustomization': 1,
                         'apiTradingStatus': 1,
                         'balance': 5,
@@ -228,6 +232,7 @@ class binance extends binance$1["default"] {
                         'income/asyn/id': 10,
                         'leverageBracket': 1,
                         'multiAssetsMargin': 30,
+                        'openAlgoOrders': 1,
                         'openOrder': 1,
                         'openOrders': { 'cost': 1, 'noSymbol': 40 },
                         'order': 1,
@@ -245,6 +250,7 @@ class binance extends binance$1["default"] {
                         'userTrades': 5,
                     },
                     'post': {
+                        'algoOrder': 1,
                         // broker endpoints
                         'apiReferral/customization': 1,
                         'apiReferral/userCustomization': 1,
@@ -258,6 +264,7 @@ class binance extends binance$1["default"] {
                         'marginType': 1,
                         'multiAssetsMargin': 1,
                         'order': 4,
+                        'order/test': 1,
                         'positionMargin': 1,
                         'positionSide/dual': 1,
                     },
@@ -2297,6 +2304,11 @@ class binance extends binance$1["default"] {
             // new metainfo2 interface
             'has': {
                 'CORS': undefined,
+                'spot': true,
+                'margin': true,
+                'swap': true,
+                'future': true,
+                'option': true,
                 'addMargin': true,
                 'borrowCrossMargin': true,
                 'borrowIsolatedMargin': true,
@@ -2315,8 +2327,8 @@ class binance extends binance$1["default"] {
                 'createMarketSellOrder': true,
                 'createMarketSellOrderWithCost': true,
                 'createOrder': true,
-                'createOrderWithTakeProfitAndStopLoss': false,
                 'createOrders': true,
+                'createOrderWithTakeProfitAndStopLoss': false,
                 'createPostOnlyOrder': true,
                 'createReduceOnlyOrder': true,
                 'createStopLimitOrder': true,
@@ -2350,10 +2362,10 @@ class binance extends binance$1["default"] {
                 'fetchDepositAddress': true,
                 'fetchDepositAddresses': false,
                 'fetchDepositAddressesByNetwork': false,
-                'fetchDepositWithdrawFee': 'emulated',
-                'fetchDepositWithdrawFees': true,
                 'fetchDeposits': true,
                 'fetchDepositsWithdrawals': false,
+                'fetchDepositWithdrawFee': 'emulated',
+                'fetchDepositWithdrawFees': true,
                 'fetchFundingHistory': true,
                 'fetchFundingInterval': 'emulated',
                 'fetchFundingIntervals': true,
@@ -2369,19 +2381,19 @@ class binance extends binance$1["default"] {
                 'fetchLedger': true,
                 'fetchLedgerEntry': true,
                 'fetchLeverage': 'emulated',
-                'fetchLeverageTiers': true,
                 'fetchLeverages': true,
+                'fetchLeverageTiers': true,
                 'fetchLiquidations': false,
                 'fetchLongShortRatio': false,
                 'fetchLongShortRatioHistory': true,
                 'fetchMarginAdjustmentHistory': true,
                 'fetchMarginMode': true,
                 'fetchMarginModes': true,
+                'fetchMarketLeverageTiers': 'emulated',
+                'fetchMarkets': true,
                 'fetchMarkOHLCV': true,
                 'fetchMarkPrice': true,
                 'fetchMarkPrices': true,
-                'fetchMarketLeverageTiers': 'emulated',
-                'fetchMarkets': true,
                 'fetchMyLiquidations': true,
                 'fetchMySettlementHistory': true,
                 'fetchMyTrades': true,
@@ -2395,8 +2407,8 @@ class binance extends binance$1["default"] {
                 'fetchOrder': true,
                 'fetchOrderBook': true,
                 'fetchOrderBooks': false,
-                'fetchOrderTrades': true,
                 'fetchOrders': true,
+                'fetchOrderTrades': true,
                 'fetchPosition': true,
                 'fetchPositionHistory': false,
                 'fetchPositionMode': true,
@@ -2422,11 +2434,8 @@ class binance extends binance$1["default"] {
                 'fetchVolatilityHistory': false,
                 'fetchWithdrawAddresses': false,
                 'fetchWithdrawal': false,
-                'fetchWithdrawalWhitelist': false,
                 'fetchWithdrawals': true,
-                'future': true,
-                'margin': true,
-                'option': true,
+                'fetchWithdrawalWhitelist': false,
                 'reduceMargin': true,
                 'repayCrossMargin': true,
                 'repayIsolatedMargin': true,
@@ -2436,8 +2445,6 @@ class binance extends binance$1["default"] {
                 'setMarginMode': true,
                 'setPositionMode': true,
                 'signIn': false,
-                'spot': true,
-                'swap': true,
                 'transfer': true,
                 'withdraw': true,
             },
@@ -4131,7 +4138,7 @@ class binance extends binance$1["default"] {
         //
         //     {
         //         "symbol": "BTCUSDT",
-        //         "markPrice": "11793.63104561", // mark price
+        //         "markPrice": "11793.63104562", // mark price
         //         "indexPrice": "11781.80495970", // index price
         //         "estimatedSettlePrice": "11781.16138815", // Estimated Settle Price, only useful in the last hour before the settlement starts
         //         "lastFundingRate": "0.00038246",  // This is the lastest estimated funding rate

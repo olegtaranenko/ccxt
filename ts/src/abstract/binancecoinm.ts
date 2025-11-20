@@ -129,6 +129,8 @@ interface binance {
     fapiDataGetTakerlongshortRatio (params?: {}): Promise<implicitReturnType>;
     fapiDataGetTopLongShortAccountRatio (params?: {}): Promise<implicitReturnType>;
     fapiDataGetTopLongShortPositionRatio (params?: {}): Promise<implicitReturnType>;
+    fapiPrivateDeleteAlgoOpenOrders (params?: {}): Promise<implicitReturnType>;
+    fapiPrivateDeleteAlgoOrder (params?: {}): Promise<implicitReturnType>;
     fapiPrivateDeleteAllOpenOrders (params?: {}): Promise<implicitReturnType>;
     fapiPrivateDeleteBatchOrders (params?: {}): Promise<implicitReturnType>;
     fapiPrivateDeleteListenKey (params?: {}): Promise<implicitReturnType>;
@@ -136,14 +138,16 @@ interface binance {
     fapiPrivateGetAccount (params?: {}): Promise<implicitReturnType>;
     fapiPrivateGetAccountConfig (params?: {}): Promise<implicitReturnType>;
     fapiPrivateGetAdlQuantile (params?: {}): Promise<implicitReturnType>;
+    fapiPrivateGetAlgoOrder (params?: {}): Promise<implicitReturnType>;
     fapiPrivateGetAllOrders (params?: {}): Promise<implicitReturnType>;
+    fapiPrivateGetAllAlgoOrders (params?: {}): Promise<implicitReturnType>;
     fapiPrivateGetApiReferralCustomization (params?: {}): Promise<implicitReturnType>;
     fapiPrivateGetApiReferralIfNewUser (params?: {}): Promise<implicitReturnType>;
     fapiPrivateGetApiReferralOverview (params?: {}): Promise<implicitReturnType>;
     fapiPrivateGetApiReferralRebateVol (params?: {}): Promise<implicitReturnType>;
+    fapiPrivateGetApiReferralTradeVol (params?: {}): Promise<implicitReturnType>;
     fapiPrivateGetApiReferralTraderNum (params?: {}): Promise<implicitReturnType>;
     fapiPrivateGetApiReferralTraderSummary (params?: {}): Promise<implicitReturnType>;
-    fapiPrivateGetApiReferralTradeVol (params?: {}): Promise<implicitReturnType>;
     fapiPrivateGetApiReferralUserCustomization (params?: {}): Promise<implicitReturnType>;
     fapiPrivateGetApiTradingStatus (params?: {}): Promise<implicitReturnType>;
     fapiPrivateGetBalance (params?: {}): Promise<implicitReturnType>;
@@ -156,6 +160,7 @@ interface binance {
     fapiPrivateGetIncomeAsynId (params?: {}): Promise<implicitReturnType>;
     fapiPrivateGetLeverageBracket (params?: {}): Promise<implicitReturnType>;
     fapiPrivateGetMultiAssetsMargin (params?: {}): Promise<implicitReturnType>;
+    fapiPrivateGetOpenAlgoOrders (params?: {}): Promise<implicitReturnType>;
     fapiPrivateGetOpenOrder (params?: {}): Promise<implicitReturnType>;
     fapiPrivateGetOpenOrders (params?: {}): Promise<implicitReturnType>;
     fapiPrivateGetOrder (params?: {}): Promise<implicitReturnType>;
@@ -171,6 +176,7 @@ interface binance {
     fapiPrivateGetTradeAsyn (params?: {}): Promise<implicitReturnType>;
     fapiPrivateGetTradeAsynId (params?: {}): Promise<implicitReturnType>;
     fapiPrivateGetUserTrades (params?: {}): Promise<implicitReturnType>;
+    fapiPrivatePostAlgoOrder (params?: {}): Promise<implicitReturnType>;
     fapiPrivatePostApiReferralCustomization (params?: {}): Promise<implicitReturnType>;
     fapiPrivatePostApiReferralUserCustomization (params?: {}): Promise<implicitReturnType>;
     fapiPrivatePostBatchOrders (params?: {}): Promise<implicitReturnType>;
@@ -183,6 +189,7 @@ interface binance {
     fapiPrivatePostMarginType (params?: {}): Promise<implicitReturnType>;
     fapiPrivatePostMultiAssetsMargin (params?: {}): Promise<implicitReturnType>;
     fapiPrivatePostOrder (params?: {}): Promise<implicitReturnType>;
+    fapiPrivatePostOrderTest (params?: {}): Promise<implicitReturnType>;
     fapiPrivatePostPositionMargin (params?: {}): Promise<implicitReturnType>;
     fapiPrivatePostPositionSideDual (params?: {}): Promise<implicitReturnType>;
     fapiPrivatePutBatchOrders (params?: {}): Promise<implicitReturnType>;

@@ -611,6 +611,16 @@ public partial class binance : Exchange
         return await this.callAsync ("fapiDataGetTopLongShortPositionRatio",parameters);
     }
 
+    public async Task<object> fapiPrivateDeleteAlgoOpenOrders (object parameters = null)
+    {
+        return await this.callAsync ("fapiPrivateDeleteAlgoOpenOrders",parameters);
+    }
+
+    public async Task<object> fapiPrivateDeleteAlgoOrder (object parameters = null)
+    {
+        return await this.callAsync ("fapiPrivateDeleteAlgoOrder",parameters);
+    }
+
     public async Task<object> fapiPrivateDeleteAllOpenOrders (object parameters = null)
     {
         return await this.callAsync ("fapiPrivateDeleteAllOpenOrders",parameters);
@@ -646,9 +656,19 @@ public partial class binance : Exchange
         return await this.callAsync ("fapiPrivateGetAdlQuantile",parameters);
     }
 
+    public async Task<object> fapiPrivateGetAlgoOrder (object parameters = null)
+    {
+        return await this.callAsync ("fapiPrivateGetAlgoOrder",parameters);
+    }
+
     public async Task<object> fapiPrivateGetAllOrders (object parameters = null)
     {
         return await this.callAsync ("fapiPrivateGetAllOrders",parameters);
+    }
+
+    public async Task<object> fapiPrivateGetAllAlgoOrders (object parameters = null)
+    {
+        return await this.callAsync ("fapiPrivateGetAllAlgoOrders",parameters);
     }
 
     public async Task<object> fapiPrivateGetApiReferralCustomization (object parameters = null)
@@ -671,6 +691,11 @@ public partial class binance : Exchange
         return await this.callAsync ("fapiPrivateGetApiReferralRebateVol",parameters);
     }
 
+    public async Task<object> fapiPrivateGetApiReferralTradeVol (object parameters = null)
+    {
+        return await this.callAsync ("fapiPrivateGetApiReferralTradeVol",parameters);
+    }
+
     public async Task<object> fapiPrivateGetApiReferralTraderNum (object parameters = null)
     {
         return await this.callAsync ("fapiPrivateGetApiReferralTraderNum",parameters);
@@ -679,11 +704,6 @@ public partial class binance : Exchange
     public async Task<object> fapiPrivateGetApiReferralTraderSummary (object parameters = null)
     {
         return await this.callAsync ("fapiPrivateGetApiReferralTraderSummary",parameters);
-    }
-
-    public async Task<object> fapiPrivateGetApiReferralTradeVol (object parameters = null)
-    {
-        return await this.callAsync ("fapiPrivateGetApiReferralTradeVol",parameters);
     }
 
     public async Task<object> fapiPrivateGetApiReferralUserCustomization (object parameters = null)
@@ -744,6 +764,11 @@ public partial class binance : Exchange
     public async Task<object> fapiPrivateGetMultiAssetsMargin (object parameters = null)
     {
         return await this.callAsync ("fapiPrivateGetMultiAssetsMargin",parameters);
+    }
+
+    public async Task<object> fapiPrivateGetOpenAlgoOrders (object parameters = null)
+    {
+        return await this.callAsync ("fapiPrivateGetOpenAlgoOrders",parameters);
     }
 
     public async Task<object> fapiPrivateGetOpenOrder (object parameters = null)
@@ -821,6 +846,11 @@ public partial class binance : Exchange
         return await this.callAsync ("fapiPrivateGetUserTrades",parameters);
     }
 
+    public async Task<object> fapiPrivatePostAlgoOrder (object parameters = null)
+    {
+        return await this.callAsync ("fapiPrivatePostAlgoOrder",parameters);
+    }
+
     public async Task<object> fapiPrivatePostApiReferralCustomization (object parameters = null)
     {
         return await this.callAsync ("fapiPrivatePostApiReferralCustomization",parameters);
@@ -879,6 +909,11 @@ public partial class binance : Exchange
     public async Task<object> fapiPrivatePostOrder (object parameters = null)
     {
         return await this.callAsync ("fapiPrivatePostOrder",parameters);
+    }
+
+    public async Task<object> fapiPrivatePostOrderTest (object parameters = null)
+    {
+        return await this.callAsync ("fapiPrivatePostOrderTest",parameters);
     }
 
     public async Task<object> fapiPrivatePostPositionMargin (object parameters = null)

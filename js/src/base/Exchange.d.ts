@@ -230,13 +230,13 @@ export default class Exchange {
         outputLen: number;
         blockLen: number;
         create(): import("../static_dependencies/noble-hashes/utils.js").Hash<import("../static_dependencies/noble-hashes/utils.js").Hash<any>>;
-    }, digest?: "binary" | "hex" | "base64") => any;
+    }, digest?: "hex" | "base64" | "binary") => any;
     hmac: (request: import("../static_dependencies/noble-hashes/utils.js").Input, secret: import("../static_dependencies/noble-hashes/utils.js").Input, hash: {
         (message: import("../static_dependencies/noble-hashes/utils.js").Input): Uint8Array;
         outputLen: number;
         blockLen: number;
         create(): import("../static_dependencies/noble-hashes/utils.js").Hash<import("../static_dependencies/noble-hashes/utils.js").Hash<any>>;
-    }, digest?: "binary" | "hex" | "base64") => any;
+    }, digest?: "hex" | "base64" | "binary") => any;
     implodeParams: (string: string, params: any[] | Dictionary<any>) => string;
     inArray: (needle: any, haystack: any[]) => boolean;
     indexBy: (x: Dictionary<any>, k: IndexType, out?: Dictionary<any>) => Dictionary<any>;
@@ -317,6 +317,7 @@ export default class Exchange {
     yymmdd: (timestamp: any, infix?: string) => string;
     yyyymmdd: (timestamp: any, infix?: string) => string;
     constructor(userConfig?: ConstructorArgs);
+    uuid5(namespace: string, name: string): string;
     encodeURIComponent(...args: any[]): string;
     checkRequiredVersion(requiredVersion: any, error?: boolean): boolean;
     throttle(cost?: any): any;
@@ -404,6 +405,12 @@ export default class Exchange {
     starknetSign(msgHash: any, pri: any): string;
     getZKContractSignatureObj(seed: any, params?: {}): Promise<any>;
     getZKTransferSignatureObj(seed: any, params?: {}): Promise<any>;
+    loadDydxProtos(): Promise<void>;
+    toDydxLong(numStr: string): object;
+    retrieveDydxCredentials(entropy: string): object;
+    encodeDydxTxForSimulation(message: any, memo: any, sequence: any, publicKey: any): string;
+    encodeDydxTxForSigning(message: any, memo: any, chainId: any, account: any, authenticators: any, fee?: any): [string, Dict];
+    encodeDydxTxRaw(signDoc: Dict, signature: string): string;
     intToBase16(elem: any): string;
     extendExchangeOptions(newOptions: Dict): void;
     createSafeDictionary(): {};
@@ -411,6 +418,8 @@ export default class Exchange {
     randomBytes(length: number): string;
     randNumber(size: number): number;
     binaryLength(binary: Uint8Array): number;
+    lockId(): any;
+    unlockId(): any;
     describe(): any;
     safeBoolN(dictionaryOrList: any, keys: IndexType[], defaultValue?: boolean): boolean | undefined;
     safeBool2(dictionary: any, key1: IndexType, key2: IndexType, defaultValue?: boolean): boolean | undefined;

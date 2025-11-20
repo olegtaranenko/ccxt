@@ -487,6 +487,14 @@ func (this *BinanceusdmCore) FapiDataGetTopLongShortPositionRatio (args ...inter
    return this.callEndpointAsync("fapiDataGetTopLongShortPositionRatio", args...)
 }
 
+func (this *BinanceusdmCore) FapiPrivateDeleteAlgoOpenOrders (args ...interface{}) <-chan interface{} {
+   return this.callEndpointAsync("fapiPrivateDeleteAlgoOpenOrders", args...)
+}
+
+func (this *BinanceusdmCore) FapiPrivateDeleteAlgoOrder (args ...interface{}) <-chan interface{} {
+   return this.callEndpointAsync("fapiPrivateDeleteAlgoOrder", args...)
+}
+
 func (this *BinanceusdmCore) FapiPrivateDeleteAllOpenOrders (args ...interface{}) <-chan interface{} {
    return this.callEndpointAsync("fapiPrivateDeleteAllOpenOrders", args...)
 }
@@ -515,8 +523,16 @@ func (this *BinanceusdmCore) FapiPrivateGetAdlQuantile (args ...interface{}) <-c
    return this.callEndpointAsync("fapiPrivateGetAdlQuantile", args...)
 }
 
+func (this *BinanceusdmCore) FapiPrivateGetAlgoOrder (args ...interface{}) <-chan interface{} {
+   return this.callEndpointAsync("fapiPrivateGetAlgoOrder", args...)
+}
+
 func (this *BinanceusdmCore) FapiPrivateGetAllOrders (args ...interface{}) <-chan interface{} {
    return this.callEndpointAsync("fapiPrivateGetAllOrders", args...)
+}
+
+func (this *BinanceusdmCore) FapiPrivateGetAllAlgoOrders (args ...interface{}) <-chan interface{} {
+   return this.callEndpointAsync("fapiPrivateGetAllAlgoOrders", args...)
 }
 
 func (this *BinanceusdmCore) FapiPrivateGetApiReferralCustomization (args ...interface{}) <-chan interface{} {
@@ -535,16 +551,16 @@ func (this *BinanceusdmCore) FapiPrivateGetApiReferralRebateVol (args ...interfa
    return this.callEndpointAsync("fapiPrivateGetApiReferralRebateVol", args...)
 }
 
+func (this *BinanceusdmCore) FapiPrivateGetApiReferralTradeVol (args ...interface{}) <-chan interface{} {
+   return this.callEndpointAsync("fapiPrivateGetApiReferralTradeVol", args...)
+}
+
 func (this *BinanceusdmCore) FapiPrivateGetApiReferralTraderNum (args ...interface{}) <-chan interface{} {
    return this.callEndpointAsync("fapiPrivateGetApiReferralTraderNum", args...)
 }
 
 func (this *BinanceusdmCore) FapiPrivateGetApiReferralTraderSummary (args ...interface{}) <-chan interface{} {
    return this.callEndpointAsync("fapiPrivateGetApiReferralTraderSummary", args...)
-}
-
-func (this *BinanceusdmCore) FapiPrivateGetApiReferralTradeVol (args ...interface{}) <-chan interface{} {
-   return this.callEndpointAsync("fapiPrivateGetApiReferralTradeVol", args...)
 }
 
 func (this *BinanceusdmCore) FapiPrivateGetApiReferralUserCustomization (args ...interface{}) <-chan interface{} {
@@ -593,6 +609,10 @@ func (this *BinanceusdmCore) FapiPrivateGetLeverageBracket (args ...interface{})
 
 func (this *BinanceusdmCore) FapiPrivateGetMultiAssetsMargin (args ...interface{}) <-chan interface{} {
    return this.callEndpointAsync("fapiPrivateGetMultiAssetsMargin", args...)
+}
+
+func (this *BinanceusdmCore) FapiPrivateGetOpenAlgoOrders (args ...interface{}) <-chan interface{} {
+   return this.callEndpointAsync("fapiPrivateGetOpenAlgoOrders", args...)
 }
 
 func (this *BinanceusdmCore) FapiPrivateGetOpenOrder (args ...interface{}) <-chan interface{} {
@@ -655,6 +675,10 @@ func (this *BinanceusdmCore) FapiPrivateGetUserTrades (args ...interface{}) <-ch
    return this.callEndpointAsync("fapiPrivateGetUserTrades", args...)
 }
 
+func (this *BinanceusdmCore) FapiPrivatePostAlgoOrder (args ...interface{}) <-chan interface{} {
+   return this.callEndpointAsync("fapiPrivatePostAlgoOrder", args...)
+}
+
 func (this *BinanceusdmCore) FapiPrivatePostApiReferralCustomization (args ...interface{}) <-chan interface{} {
    return this.callEndpointAsync("fapiPrivatePostApiReferralCustomization", args...)
 }
@@ -701,6 +725,10 @@ func (this *BinanceusdmCore) FapiPrivatePostMultiAssetsMargin (args ...interface
 
 func (this *BinanceusdmCore) FapiPrivatePostOrder (args ...interface{}) <-chan interface{} {
    return this.callEndpointAsync("fapiPrivatePostOrder", args...)
+}
+
+func (this *BinanceusdmCore) FapiPrivatePostOrderTest (args ...interface{}) <-chan interface{} {
+   return this.callEndpointAsync("fapiPrivatePostOrderTest", args...)
 }
 
 func (this *BinanceusdmCore) FapiPrivatePostPositionMargin (args ...interface{}) <-chan interface{} {
