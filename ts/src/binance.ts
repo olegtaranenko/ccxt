@@ -314,6 +314,7 @@ export default class binance extends Exchange {
                         'positionRisk': 5,
                         'positionSide/dual': 30,
                         'rateLimit/order': 1,
+                        'symbolAdlRisk': 1,
                         'symbolConfig': 5,
                         'trade/asyn': 1000,
                         'trade/asyn/id': 10,
