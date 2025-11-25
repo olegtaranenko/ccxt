@@ -826,6 +826,11 @@ public partial class binance : Exchange
         return await this.callAsync ("fapiPrivateGetRateLimitOrder",parameters);
     }
 
+    public async Task<object> fapiPrivateGetSymbolAdlRisk (object parameters = null)
+    {
+        return await this.callAsync ("fapiPrivateGetSymbolAdlRisk",parameters);
+    }
+
     public async Task<object> fapiPrivateGetSymbolConfig (object parameters = null)
     {
         return await this.callAsync ("fapiPrivateGetSymbolConfig",parameters);

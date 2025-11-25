@@ -496,6 +496,9 @@ abstract class binance extends \ccxt\async\Exchange {
     public function fapiprivate_get_ratelimit_order($params = array()) {
         return $this->request('rateLimit/order', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
     }
+    public function fapiprivate_get_symboladlrisk($params = array()) {
+        return $this->request('symbolAdlRisk', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
+    }
     public function fapiprivate_get_symbolconfig($params = array()) {
         return $this->request('symbolConfig', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 5));
     }
@@ -2826,6 +2829,9 @@ abstract class binance extends \ccxt\async\Exchange {
     }
     public function fapiPrivateGetRateLimitOrder($params = array()) {
         return $this->request('rateLimit/order', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
+    }
+    public function fapiPrivateGetSymbolAdlRisk($params = array()) {
+        return $this->request('symbolAdlRisk', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
     }
     public function fapiPrivateGetSymbolConfig($params = array()) {
         return $this->request('symbolConfig', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 5));

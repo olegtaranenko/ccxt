@@ -165,6 +165,7 @@ class ImplicitAPI:
     fapiprivate_get_positionrisk = fapiPrivateGetPositionRisk = Entry('positionRisk', 'fapiPrivate', 'GET', {'cost': 5})
     fapiprivate_get_positionside_dual = fapiPrivateGetPositionSideDual = Entry('positionSide/dual', 'fapiPrivate', 'GET', {'cost': 30})
     fapiprivate_get_ratelimit_order = fapiPrivateGetRateLimitOrder = Entry('rateLimit/order', 'fapiPrivate', 'GET', {'cost': 1})
+    fapiprivate_get_symboladlrisk = fapiPrivateGetSymbolAdlRisk = Entry('symbolAdlRisk', 'fapiPrivate', 'GET', {'cost': 1})
     fapiprivate_get_symbolconfig = fapiPrivateGetSymbolConfig = Entry('symbolConfig', 'fapiPrivate', 'GET', {'cost': 5})
     fapiprivate_get_trade_asyn = fapiPrivateGetTradeAsyn = Entry('trade/asyn', 'fapiPrivate', 'GET', {'cost': 1000})
     fapiprivate_get_trade_asyn_id = fapiPrivateGetTradeAsynId = Entry('trade/asyn/id', 'fapiPrivate', 'GET', {'cost': 10})

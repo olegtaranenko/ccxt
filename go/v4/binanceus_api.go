@@ -659,6 +659,10 @@ func (this *BinanceusCore) FapiPrivateGetRateLimitOrder (args ...interface{}) <-
    return this.callEndpointAsync("fapiPrivateGetRateLimitOrder", args...)
 }
 
+func (this *BinanceusCore) FapiPrivateGetSymbolAdlRisk (args ...interface{}) <-chan interface{} {
+   return this.callEndpointAsync("fapiPrivateGetSymbolAdlRisk", args...)
+}
+
 func (this *BinanceusCore) FapiPrivateGetSymbolConfig (args ...interface{}) <-chan interface{} {
    return this.callEndpointAsync("fapiPrivateGetSymbolConfig", args...)
 }

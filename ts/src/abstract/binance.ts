@@ -172,6 +172,7 @@ interface Exchange {
     fapiPrivateGetPositionRisk (params?: {}): Promise<implicitReturnType>;
     fapiPrivateGetPositionSideDual (params?: {}): Promise<implicitReturnType>;
     fapiPrivateGetRateLimitOrder (params?: {}): Promise<implicitReturnType>;
+    fapiPrivateGetSymbolAdlRisk (params?: {}): Promise<implicitReturnType>;
     fapiPrivateGetSymbolConfig (params?: {}): Promise<implicitReturnType>;
     fapiPrivateGetTradeAsyn (params?: {}): Promise<implicitReturnType>;
     fapiPrivateGetTradeAsynId (params?: {}): Promise<implicitReturnType>;
