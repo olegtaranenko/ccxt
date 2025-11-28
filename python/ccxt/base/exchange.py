@@ -4,7 +4,7 @@
 
 # -----------------------------------------------------------------------------
 
-__version__ = '4.5.21'
+__version__ = '4.5.22'
 
 # -----------------------------------------------------------------------------
 
@@ -2133,10 +2133,10 @@ class Exchange(object):
         )
         return '0x' + self.binary_to_base16(tx.SerializeToString())
 
-    def lock_id():
+    def lock_id(self):
         return None
 
-    def unlock_id():
+    def unlock_id(self):
         return None
 
     # ########################################################################
@@ -4977,7 +4977,8 @@ class Exchange(object):
                 if isinstance(e, OperationFailed):
                     if i < retries:
                         if self.verbose:
-                            self.log('Request failed with the error: ' + str(e) + ', retrying ' + (i + str(1)) + ' of ' + str(retries) + '...')
+                            index = i + 1
+                            self.log('Request failed with the error: ' + str(e) + ', retrying ' + str(index) + ' of ' + str(retries) + '...')
                         if (retryDelay is not None) and (retryDelay != 0):
                             self.sleep(retryDelay)
                     else:
