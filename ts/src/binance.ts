@@ -271,6 +271,8 @@ export default class binance extends Exchange {
                 },
                 'fapiPrivate': {
                     'delete': {
+                        'algoOpenOrders': 1,
+                        'algoOrder': 1,
                         'allOpenOrders': 1,
                         'batchOrders': 1,
                         'listenKey': 1,
@@ -280,15 +282,17 @@ export default class binance extends Exchange {
                         'account': 5,
                         'accountConfig': 5,
                         'adlQuantile': 5,
+                        'algoOrder': 1,
                         'allOrders': 5,
                         // broker endpoints
+                        'allAlgoOrders': 5,
                         'apiReferral/customization': 1,
                         'apiReferral/ifNewUser': 1,
                         'apiReferral/overview': 1,
                         'apiReferral/rebateVol': 1,
+                        'apiReferral/tradeVol': 1,
                         'apiReferral/traderNum': 1,
                         'apiReferral/traderSummary': 1,
-                        'apiReferral/tradeVol': 1,
                         'apiReferral/userCustomization': 1,
                         'apiTradingStatus': 1,
                         'balance': 5,
@@ -301,6 +305,7 @@ export default class binance extends Exchange {
                         'income/asyn/id': 10,
                         'leverageBracket': 1,
                         'multiAssetsMargin': 30,
+                        'openAlgoOrders': 1,
                         'openOrder': 1,
                         'openOrders': { 'cost': 1, 'noSymbol': 40 },
                         'order': 1,
@@ -312,12 +317,14 @@ export default class binance extends Exchange {
                         'positionRisk': 5,
                         'positionSide/dual': 30,
                         'rateLimit/order': 1,
+                        'symbolAdlRisk': 1,
                         'symbolConfig': 5,
                         'trade/asyn': 1000,
                         'trade/asyn/id': 10,
                         'userTrades': 5,
                     },
                     'post': {
+                        'algoOrder': 1,
                         // broker endpoints
                         'apiReferral/customization': 1,
                         'apiReferral/userCustomization': 1,
@@ -331,6 +338,7 @@ export default class binance extends Exchange {
                         'marginType': 1,
                         'multiAssetsMargin': 1,
                         'order': 4,
+                        'order/test': 1,
                         'positionMargin': 1,
                         'positionSide/dual': 1,
                     },
@@ -389,6 +397,7 @@ export default class binance extends Exchange {
                             'cost': 1,
                             'byLimit': [ [ 99, 1 ], [ 499, 2 ], [ 1000, 5 ], [ 10000, 10 ] ],
                         },
+                        'rpiDepth': 20,
                         'ticker/24hr': { 'cost': 1, 'noSymbol': 40 },
                         'ticker/bookTicker': { 'cost': 1, 'noSymbol': 2 },
                         'ticker/price': { 'cost': 1, 'noSymbol': 2 },
@@ -4093,13 +4102,15 @@ export default class binance extends Exchange {
      * @method
      * @name binance#fetchOrderBook
      * @description fetches information on open orders with bid (buy) and ask (sell) prices, volumes and other data
-     * @see https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints#order-book     // spot
-     * @see https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Order-Book   // swap
-     * @see https://developers.binance.com/docs/derivatives/coin-margined-futures/market-data/rest-api/Order-Book   // future
-     * @see https://developers.binance.com/docs/derivatives/option/market-data/Order-Book                           // option
+     * @see https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints#order-book       // spot
+     * @see https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Order-Book     // swap
+     * @see https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Order-Book-RPI // swap rpi
+     * @see https://developers.binance.com/docs/derivatives/coin-margined-futures/market-data/rest-api/Order-Book     // future
+     * @see https://developers.binance.com/docs/derivatives/option/market-data/Order-Book                             // option
      * @param {string} symbol unified symbol of the market to fetch the order book for
      * @param {int} [limit] the maximum amount of order book entries to return
      * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {boolean} [params.rpi] *swap only* set to true to use the RPI endpoint
      * @returns {object} A dictionary of [order book structures]{@link https://docs.ccxt.com/#/?id=order-book-structure} indexed by market symbols
      */
     async fetchOrderBook (symbol: string, limit: Int = undefined, params = {}): Promise<OrderBook> {
@@ -4115,7 +4126,13 @@ export default class binance extends Exchange {
         if (market['option']) {
             response = await this.eapiPublicGetDepth (this.extend (request, params));
         } else if (market['linear']) {
-            response = await this.fapiPublicGetDepth (this.extend (request, params));
+            const rpi = this.safeValue (params, 'rpi', false);
+            params = this.omit (params, 'rpi');
+            if (rpi) {
+                response = await this.fapiPublicGetRpiDepth (this.extend (request, params));
+            } else {
+                response = await this.fapiPublicGetDepth (this.extend (request, params));
+            }
         } else if (market['inverse']) {
             response = await this.dapiPublicGetDepth (this.extend (request, params));
         } else {
@@ -4173,7 +4190,7 @@ export default class binance extends Exchange {
         //
         //     {
         //         "symbol": "BTCUSDT",
-        //         "markPrice": "11793.63104561", // mark price
+        //         "markPrice": "11793.63104562", // mark price
         //         "indexPrice": "11781.80495970", // index price
         //         "estimatedSettlePrice": "11781.16138815", // Estimated Settle Price, only useful in the last hour before the settlement starts
         //         "lastFundingRate": "0.00038246",  // This is the lastest estimated funding rate
