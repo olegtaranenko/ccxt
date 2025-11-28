@@ -133,7 +133,6 @@ class ImplicitAPI:
     fapiprivate_get_adlquantile = fapiPrivateGetAdlQuantile = Entry('adlQuantile', 'fapiPrivate', 'GET', {'cost': 5})
     fapiprivate_get_algoorder = fapiPrivateGetAlgoOrder = Entry('algoOrder', 'fapiPrivate', 'GET', {'cost': 1})
     fapiprivate_get_allorders = fapiPrivateGetAllOrders = Entry('allOrders', 'fapiPrivate', 'GET', {'cost': 5})
-    fapiprivate_get_allalgoorders = fapiPrivateGetAllAlgoOrders = Entry('allAlgoOrders', 'fapiPrivate', 'GET', {'cost': 5})
     fapiprivate_get_apireferral_customization = fapiPrivateGetApiReferralCustomization = Entry('apiReferral/customization', 'fapiPrivate', 'GET', {'cost': 1})
     fapiprivate_get_apireferral_ifnewuser = fapiPrivateGetApiReferralIfNewUser = Entry('apiReferral/ifNewUser', 'fapiPrivate', 'GET', {'cost': 1})
     fapiprivate_get_apireferral_overview = fapiPrivateGetApiReferralOverview = Entry('apiReferral/overview', 'fapiPrivate', 'GET', {'cost': 1})

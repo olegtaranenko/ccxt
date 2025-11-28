@@ -95,6 +95,10 @@ func (this *UpbitCore) PublicGetOrderbookInstruments (args ...interface{}) <-cha
    return this.callEndpointAsync("publicGetOrderbookInstruments", args...)
 }
 
+func (this *UpbitCore) PublicGetOrderbookSupportedLevels (args ...interface{}) <-chan interface{} {
+   return this.callEndpointAsync("publicGetOrderbookSupportedLevels", args...)
+}
+
 func (this *UpbitCore) PrivateGetAccounts (args ...interface{}) <-chan interface{} {
    return this.callEndpointAsync("privateGetAccounts", args...)
 }
@@ -171,10 +175,6 @@ func (this *UpbitCore) PrivatePostOrders (args ...interface{}) <-chan interface{
    return this.callEndpointAsync("privatePostOrders", args...)
 }
 
-func (this *UpbitCore) PrivatePostOrdersTest (args ...interface{}) <-chan interface{} {
-   return this.callEndpointAsync("privatePostOrdersTest", args...)
-}
-
 func (this *UpbitCore) PrivatePostOrdersCancelAndNew (args ...interface{}) <-chan interface{} {
    return this.callEndpointAsync("privatePostOrdersCancelAndNew", args...)
 }
@@ -213,8 +213,4 @@ func (this *UpbitCore) PrivateDeleteOrdersOpen (args ...interface{}) <-chan inte
 
 func (this *UpbitCore) PrivateDeleteOrdersUuids (args ...interface{}) <-chan interface{} {
    return this.callEndpointAsync("privateDeleteOrdersUuids", args...)
-}
-
-func (this *UpbitCore) PrivateDeleteWithdrawsCoin (args ...interface{}) <-chan interface{} {
-   return this.callEndpointAsync("privateDeleteWithdrawsCoin", args...)
 }

@@ -215,6 +215,7 @@ class bingx extends bingx$1["default"] {
                             'get': {
                                 'market/depth': 1,
                                 'market/kline': 1,
+                                'ticker/price': 1,
                             },
                         },
                     },

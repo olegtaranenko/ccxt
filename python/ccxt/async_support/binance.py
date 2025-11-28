@@ -272,7 +272,6 @@ class binance(Exchange, ImplicitAPI):
                         'userTrades': 5,
                     },
                     'post': {
-                        'algoOrder': 1,
                         # broker endpoints
                         'apiReferral/customization': 1,
                         'apiReferral/userCustomization': 1,
@@ -4036,7 +4035,7 @@ class binance(Exchange, ImplicitAPI):
         #
         #     {
         #         "symbol": "BTCUSDT",
-        #         "markPrice": "11793.63104562",  # mark price
+        #         "markPrice": "11793.63104561",  # mark price
         #         "indexPrice": "11781.80495970",  # index price
         #         "estimatedSettlePrice": "11781.16138815",  # Estimated Settle Price, only useful in the last hour before the settlement starts
         #         "lastFundingRate": "0.00038246",  # This is the lastest estimated funding rate

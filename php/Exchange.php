@@ -43,7 +43,7 @@ use BN\BN;
 use Sop\ASN1\Type\UnspecifiedType;
 use Exception;
 
-$version = '4.5.21';
+$version = '4.5.22';
 
 // rounding mode
 const TRUNCATE = 0;
@@ -62,7 +62,7 @@ const PAD_WITH_ZERO = 6;
 
 class Exchange {
 
-    const VERSION = '4.5.21';
+    const VERSION = '4.5.22';
 
     private static $base58_alphabet = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
     private static $base58_encoder = null;
@@ -2834,7 +2834,7 @@ class Exchange {
             return $defaultValue;
         }
         if ((gettype($value) === 'array')) {
-            if (gettype($value) !== 'array' || array_keys($value) !== array_keys(array_keys($value))) {
+            if ((gettype($value) !== 'array' || array_keys($value) !== array_keys(array_keys($value)))) {
                 return $value;
             }
         }
@@ -2869,7 +2869,7 @@ class Exchange {
         if ($value === null) {
             return $defaultValue;
         }
-        if (gettype($value) === 'array' && array_keys($value) === array_keys(array_keys($value))) {
+        if ((gettype($value) === 'array' && array_keys($value) === array_keys(array_keys($value)))) {
             return $value;
         }
         return $defaultValue;
@@ -4357,7 +4357,7 @@ class Exchange {
             }
             // $this->number = $oldNumber; why parse $trades if you read the value using `safeString` ?
             $tradesLength = 0;
-            $isArray = gettype($trades) === 'array' && array_keys($trades) === array_keys(array_keys($trades));
+            $isArray = (gettype($trades) === 'array' && array_keys($trades) === array_keys(array_keys($trades)));
             if ($isArray) {
                 $tradesLength = count($trades);
             }
@@ -4607,7 +4607,7 @@ class Exchange {
         //     )
         //
         $results = array();
-        if (gettype($orders) === 'array' && array_keys($orders) === array_keys(array_keys($orders))) {
+        if ((gettype($orders) === 'array' && array_keys($orders) === array_keys(array_keys($orders)))) {
             for ($i = 0; $i < count($orders); $i++) {
                 $parsed = $this->parse_order($orders[$i], $market); // don't inline this call
                 $order = $this->extend($parsed, $params);
@@ -5276,7 +5276,7 @@ class Exchange {
     }
 
     public function parse_ohlcv($ohlcv, ?array $market = null): array {
-        if (gettype($ohlcv) === 'array' && array_keys($ohlcv) === array_keys(array_keys($ohlcv))) {
+        if ((gettype($ohlcv) === 'array' && array_keys($ohlcv) === array_keys(array_keys($ohlcv)))) {
             return array(
                 $this->safe_integer($ohlcv, 0), // timestamp
                 $this->safe_number($ohlcv, 1), // open
@@ -5473,7 +5473,7 @@ class Exchange {
             $symbolsLength = count($symbols);
         }
         $noSymbols = ($symbols === null) || ($symbolsLength === 0);
-        if (gettype($response) === 'array' && array_keys($response) === array_keys(array_keys($response))) {
+        if ((gettype($response) === 'array' && array_keys($response) === array_keys(array_keys($response)))) {
             for ($i = 0; $i < count($response); $i++) {
                 $item = $response[$i];
                 $id = $this->safe_string($item, $marketIdKey);
@@ -5617,7 +5617,7 @@ class Exchange {
         $arrayData = $this->to_array($data);
         for ($i = 0; $i < count($arrayData); $i++) {
             $itemOrItems = $this->parse_ledger_entry($arrayData[$i], $currency);
-            if (gettype($itemOrItems) === 'array' && array_keys($itemOrItems) === array_keys(array_keys($itemOrItems))) {
+            if ((gettype($itemOrItems) === 'array' && array_keys($itemOrItems) === array_keys(array_keys($itemOrItems)))) {
                 for ($j = 0; $j < count($itemOrItems); $j++) {
                     $result[] = $this->extend($itemOrItems[$j], $params);
                 }
@@ -5738,7 +5738,7 @@ class Exchange {
 
     public function get_list_from_object_values($objects, int|string $key) {
         $newArray = $objects;
-        if (gettype($objects) !== 'array' || array_keys($objects) !== array_keys(array_keys($objects))) {
+        if ((gettype($objects) !== 'array' || array_keys($objects) !== array_keys(array_keys($objects)))) {
             $newArray = $this->to_array($objects);
         }
         $results = array();
@@ -5813,7 +5813,8 @@ class Exchange {
                 if ($e instanceof OperationFailed) {
                     if ($i < $retries) {
                         if ($this->verbose) {
-                            $this->log('Request failed with the error => ' . (string) $e . ', retrying ' . ($i . (string) 1) . ' of ' . (string) $retries . '...');
+                            $index = $i + 1;
+                            $this->log('Request failed with the error => ' . (string) $e . ', retrying ' . (string) $index . ' of ' . (string) $retries . '...');
                         }
                         if (($retryDelay !== null) && ($retryDelay !== 0)) {
                             $this->sleep($retryDelay);
@@ -7598,7 +7599,7 @@ class Exchange {
         //     )
         //
         $results = array();
-        if (gettype($pricesData) === 'array' && array_keys($pricesData) === array_keys(array_keys($pricesData))) {
+        if ((gettype($pricesData) === 'array' && array_keys($pricesData) === array_keys(array_keys($pricesData)))) {
             for ($i = 0; $i < count($pricesData); $i++) {
                 $priceData = $this->extend($this->parse_last_price($pricesData[$i]), $params);
                 $results[] = $priceData;
@@ -7640,7 +7641,7 @@ class Exchange {
         //     )
         //
         $results = array();
-        if (gettype($tickers) === 'array' && array_keys($tickers) === array_keys(array_keys($tickers))) {
+        if ((gettype($tickers) === 'array' && array_keys($tickers) === array_keys(array_keys($tickers)))) {
             for ($i = 0; $i < count($tickers); $i++) {
                 $parsedTicker = $this->parse_ticker($tickers[$i]);
                 $ticker = $this->extend($parsedTicker, $params);
@@ -8110,7 +8111,7 @@ class Exchange {
          * @return {array} objects with withdraw and deposit fees, indexed by $currency $codes
          */
         $depositWithdrawFees = array();
-        $isArray = gettype($response) === 'array' && array_keys($response) === array_keys(array_keys($response));
+        $isArray = (gettype($response) === 'array' && array_keys($response) === array_keys(array_keys($response)));
         $responseKeys = $response;
         if (!$isArray) {
             $responseKeys = is_array($response) ? array_keys($response) : array();
@@ -8662,7 +8663,7 @@ class Exchange {
         // the value of $greeks is either a dict or a list
         //
         $results = array();
-        if (gettype($greeks) === 'array' && array_keys($greeks) === array_keys(array_keys($greeks))) {
+        if ((gettype($greeks) === 'array' && array_keys($greeks) === array_keys(array_keys($greeks)))) {
             for ($i = 0; $i < count($greeks); $i++) {
                 $parsedTicker = $this->parse_greeks($greeks[$i]);
                 $greek = $this->extend($parsedTicker, $params);

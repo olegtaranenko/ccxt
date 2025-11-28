@@ -132,7 +132,6 @@ interface Exchange {
     fapiPrivateGetAdlQuantile(params?: {}): Promise<implicitReturnType>;
     fapiPrivateGetAlgoOrder(params?: {}): Promise<implicitReturnType>;
     fapiPrivateGetAllOrders(params?: {}): Promise<implicitReturnType>;
-    fapiPrivateGetAllAlgoOrders(params?: {}): Promise<implicitReturnType>;
     fapiPrivateGetApiReferralCustomization(params?: {}): Promise<implicitReturnType>;
     fapiPrivateGetApiReferralIfNewUser(params?: {}): Promise<implicitReturnType>;
     fapiPrivateGetApiReferralOverview(params?: {}): Promise<implicitReturnType>;
