@@ -140,6 +140,7 @@ interface binance {
     fapiPrivateGetAdlQuantile (params?: {}): Promise<implicitReturnType>;
     fapiPrivateGetAlgoOrder (params?: {}): Promise<implicitReturnType>;
     fapiPrivateGetAllOrders (params?: {}): Promise<implicitReturnType>;
+    fapiPrivateGetAllAlgoOrders (params?: {}): Promise<implicitReturnType>;
     fapiPrivateGetApiReferralCustomization (params?: {}): Promise<implicitReturnType>;
     fapiPrivateGetApiReferralIfNewUser (params?: {}): Promise<implicitReturnType>;
     fapiPrivateGetApiReferralOverview (params?: {}): Promise<implicitReturnType>;
@@ -222,6 +223,7 @@ interface binance {
     fapiPublicGetPing (params?: {}): Promise<implicitReturnType>;
     fapiPublicGetPremiumIndex (params?: {}): Promise<implicitReturnType>;
     fapiPublicGetPremiumIndexKlines (params?: {}): Promise<implicitReturnType>;
+    fapiPublicGetRpiDepth (params?: {}): Promise<implicitReturnType>;
     fapiPublicGetTicker24hr (params?: {}): Promise<implicitReturnType>;
     fapiPublicGetTickerBookTicker (params?: {}): Promise<implicitReturnType>;
     fapiPublicGetTickerPrice (params?: {}): Promise<implicitReturnType>;

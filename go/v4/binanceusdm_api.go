@@ -863,6 +863,10 @@ func (this *BinanceusdmCore) FapiPublicGetPremiumIndexKlines (args ...interface{
    return this.callEndpointAsync("fapiPublicGetPremiumIndexKlines", args...)
 }
 
+func (this *BinanceusdmCore) FapiPublicGetRpiDepth (args ...interface{}) <-chan interface{} {
+   return this.callEndpointAsync("fapiPublicGetRpiDepth", args...)
+}
+
 func (this *BinanceusdmCore) FapiPublicGetTicker24hr (args ...interface{}) <-chan interface{} {
    return this.callEndpointAsync("fapiPublicGetTicker24hr", args...)
 }

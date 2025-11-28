@@ -2,6 +2,8 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
+require('./_virtual/_commonjsHelpers.js');
+require('./_virtual/index.cjs.js');
 var Exchange = require('./src/base/Exchange.js');
 var Precise = require('./src/base/Precise.js');
 var functions = require('./src/base/functions.js');
@@ -62,6 +64,7 @@ var delta = require('./src/delta.js');
 var deribit = require('./src/deribit.js');
 var derive = require('./src/derive.js');
 var digifinex = require('./src/digifinex.js');
+var dydx = require('./src/dydx.js');
 var exmo = require('./src/exmo.js');
 var fmfwio = require('./src/fmfwio.js');
 var foxbit = require('./src/foxbit.js');
@@ -151,6 +154,7 @@ var deepcoin$1 = require('./src/pro/deepcoin.js');
 var defx$1 = require('./src/pro/defx.js');
 var deribit$1 = require('./src/pro/deribit.js');
 var derive$1 = require('./src/pro/derive.js');
+var dydx$1 = require('./src/pro/dydx.js');
 var exmo$1 = require('./src/pro/exmo.js');
 var gate$1 = require('./src/pro/gate.js');
 var gateio$1 = require('./src/pro/gateio.js');
@@ -188,34 +192,9 @@ var woo$1 = require('./src/pro/woo.js');
 var woofipro$1 = require('./src/pro/woofipro.js');
 var xt$1 = require('./src/pro/xt.js');
 
-/*
-
-MIT License
-
-Copyright (c) 2017 Igor Kroitor
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-*/
 //-----------------------------------------------------------------------------
 // this is updated by vss.js when building
-const version = '4.5.18';
+const version = '4.5.22';
 Exchange["default"].ccxtVersion = version;
 const exchanges = {
     'alpaca': alpaca["default"],
@@ -274,6 +253,7 @@ const exchanges = {
     'deribit': deribit["default"],
     'derive': derive["default"],
     'digifinex': digifinex["default"],
+    'dydx': dydx["default"],
     'exmo': exmo["default"],
     'fmfwio': fmfwio["default"],
     'foxbit': foxbit["default"],
@@ -365,6 +345,7 @@ const pro = {
     'defx': defx$1["default"],
     'deribit': deribit$1["default"],
     'derive': derive$1["default"],
+    'dydx': dydx$1["default"],
     'exmo': exmo$1["default"],
     'gate': gate$1["default"],
     'gateio': gateio$1["default"],
@@ -509,6 +490,7 @@ exports.delta = delta["default"];
 exports.deribit = deribit["default"];
 exports.derive = derive["default"];
 exports.digifinex = digifinex["default"];
+exports.dydx = dydx["default"];
 exports.exmo = exmo["default"];
 exports.fmfwio = fmfwio["default"];
 exports.foxbit = foxbit["default"];

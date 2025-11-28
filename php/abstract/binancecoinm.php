@@ -649,6 +649,9 @@ abstract class binancecoinm extends \ccxt\binance {
     public function fapipublic_get_premiumindexklines($params = array()) {
         return $this->request('premiumIndexKlines', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1, "byLimit" => [[99, 1], [499, 2], [1000, 5], [10000, 10]]));
     }
+    public function fapipublic_get_rpidepth($params = array()) {
+        return $this->request('rpiDepth', 'fapiPublic', 'GET', $params, null, null, array("cost" => 20));
+    }
     public function fapipublic_get_ticker_24hr($params = array()) {
         return $this->request('ticker/24hr', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1, "noSymbol" => 40));
     }
@@ -2982,6 +2985,9 @@ abstract class binancecoinm extends \ccxt\binance {
     }
     public function fapiPublicGetPremiumIndexKlines($params = array()) {
         return $this->request('premiumIndexKlines', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1, "byLimit" => [[99, 1], [499, 2], [1000, 5], [10000, 10]]));
+    }
+    public function fapiPublicGetRpiDepth($params = array()) {
+        return $this->request('rpiDepth', 'fapiPublic', 'GET', $params, null, null, array("cost" => 20));
     }
     public function fapiPublicGetTicker24hr($params = array()) {
         return $this->request('ticker/24hr', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1, "noSymbol" => 40));

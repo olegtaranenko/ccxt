@@ -1081,6 +1081,11 @@ public partial class binanceusdm : binance
         return await this.callAsync ("fapiPublicGetPremiumIndexKlines",parameters);
     }
 
+    public async Task<object> fapiPublicGetRpiDepth (object parameters = null)
+    {
+        return await this.callAsync ("fapiPublicGetRpiDepth",parameters);
+    }
+
     public async Task<object> fapiPublicGetTicker24hr (object parameters = null)
     {
         return await this.callAsync ("fapiPublicGetTicker24hr",parameters);
