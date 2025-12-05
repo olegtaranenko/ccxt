@@ -271,6 +271,7 @@ class binance(Exchange, ImplicitAPI):
                         'userTrades': 5,
                     },
                     'post': {
+                        'algoOrder': 1,
                         # broker endpoints
                         'apiReferral/customization': 1,
                         'apiReferral/userCustomization': 1,
@@ -343,6 +344,7 @@ class binance(Exchange, ImplicitAPI):
                             'cost': 1,
                             'byLimit': [[99, 1], [499, 2], [1000, 5], [10000, 10]],
                         },
+                        'rpiDepth': 20,
                         'ticker/24hr': {'cost': 1, 'noSymbol': 40},
                         'ticker/bookTicker': {'cost': 1, 'noSymbol': 2},
                         'ticker/price': {'cost': 1, 'noSymbol': 2},
@@ -3957,14 +3959,16 @@ class binance(Exchange, ImplicitAPI):
         """
         fetches information on open orders with bid(buy) and ask(sell) prices, volumes and other data
 
-        https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints#order-book     # spot
-        https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Order-Book   # swap
-        https://developers.binance.com/docs/derivatives/coin-margined-futures/market-data/rest-api/Order-Book   # future
-        https://developers.binance.com/docs/derivatives/option/market-data/Order-Book                           # option
+        https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints#order-book       # spot
+        https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Order-Book     # swap
+        https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Order-Book-RPI  # swap rpi
+        https://developers.binance.com/docs/derivatives/coin-margined-futures/market-data/rest-api/Order-Book     # future
+        https://developers.binance.com/docs/derivatives/option/market-data/Order-Book                             # option
 
         :param str symbol: unified symbol of the market to fetch the order book for
         :param int [limit]: the maximum amount of order book entries to return
         :param dict [params]: extra parameters specific to the exchange API endpoint
+        :param boolean [params.rpi]: *future only* set to True to use the RPI endpoint
         :returns dict: A dictionary of `order book structures <https://docs.ccxt.com/#/?id=order-book-structure>` indexed by market symbols
         """
         self.load_markets()
@@ -3978,7 +3982,14 @@ class binance(Exchange, ImplicitAPI):
         if market['option']:
             response = self.eapiPublicGetDepth(self.extend(request, params))
         elif market['linear']:
-            response = self.fapiPublicGetDepth(self.extend(request, params))
+            rpi = self.safe_value(params, 'rpi', False)
+            params = self.omit(params, 'rpi')
+            if rpi:
+                # rpi limit only supports 1000
+                request['limit'] = 1000
+                response = self.fapiPublicGetRpiDepth(self.extend(request, params))
+            else:
+                response = self.fapiPublicGetDepth(self.extend(request, params))
         elif market['inverse']:
             response = self.dapiPublicGetDepth(self.extend(request, params))
         else:
@@ -4034,7 +4045,7 @@ class binance(Exchange, ImplicitAPI):
         #
         #     {
         #         "symbol": "BTCUSDT",
-        #         "markPrice": "11793.63104561",  # mark price
+        #         "markPrice": "11793.63104562",  # mark price
         #         "indexPrice": "11781.80495970",  # index price
         #         "estimatedSettlePrice": "11781.16138815",  # Estimated Settle Price, only useful in the last hour before the settlement starts
         #         "lastFundingRate": "0.00038246",  # This is the lastest estimated funding rate
