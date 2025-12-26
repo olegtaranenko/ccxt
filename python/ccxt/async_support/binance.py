@@ -219,9 +219,8 @@ class binance(Exchange, ImplicitAPI):
                 },
                 'fapiPrivate': {
                     'delete': {
-                        # conditional orders
-                        'algoOrder': 1,
                         'algoOpenOrders': 1,
+                        'algoOrder': 1,
                         'allOpenOrders': 1,
                         'batchOrders': 1,
                         'listenKey': 1,
@@ -231,12 +230,10 @@ class binance(Exchange, ImplicitAPI):
                         'account': 5,
                         'accountConfig': 5,
                         'adlQuantile': 5,
-                        # conditional orders
                         'algoOrder': 1,
                         'allOrders': 5,
-                        # conditional orders
-                        'allAlgoOrders': 5,
                         # broker endpoints
+                        'allAlgoOrders': 5,
                         'apiReferral/customization': 1,
                         'apiReferral/ifNewUser': 1,
                         'apiReferral/overview': 1,
@@ -256,8 +253,7 @@ class binance(Exchange, ImplicitAPI):
                         'income/asyn/id': 10,
                         'leverageBracket': 1,
                         'multiAssetsMargin': 30,
-                        # conditional orders
-                        'openAlgoOrders': {'cost': 1, 'noSymbol': 40},
+                        'openAlgoOrders': 1,
                         'openOrder': 1,
                         'openOrders': {'cost': 1, 'noSymbol': 40},
                         'order': 1,
@@ -276,7 +272,6 @@ class binance(Exchange, ImplicitAPI):
                         'userTrades': 5,
                     },
                     'post': {
-                        # conditional orders
                         'algoOrder': 1,
                         # broker endpoints
                         'apiReferral/customization': 1,
@@ -5540,13 +5535,10 @@ class binance(Exchange, ImplicitAPI):
             'EXPIRED': 'expired',
             'EXPIRED_IN_MATCH': 'expired',
             'FILLED': 'closed',
-            'FINISHED': 'closed',
             'NEW': 'open',
             'PARTIALLY_FILLED': 'open',
             'PENDING_CANCEL': 'canceling',  # currently unused
             'REJECTED': 'rejected',
-            'TRIGGERED': 'closed',
-            'TRIGGERING': 'open',
         }
         return self.safe_string(statuses, status, status)
 
@@ -6033,50 +6025,11 @@ class binance(Exchange, ImplicitAPI):
         #         "workingType": "CONTRACT_PRICE",
         #     }
         #
-        # createOrder, fetchOrder, fetchOpenOrders, fetchOrders, cancelOrderWs, createOrderWs: linear swap conditional order
-        #
-        #     {
-        #         "algoId": 3358,
-        #         "clientAlgoId": "yT58zmV3DSzMBQxc5tAJXU",
-        #         "algoType": "CONDITIONAL",
-        #         "orderType": "STOP",
-        #         "symbol": "BTCUSDT",
-        #         "side": "BUY",
-        #         "positionSide": "BOTH",
-        #         "timeInForce": "GTC",
-        #         "quantity": "0.002",
-        #         "algoStatus": "NEW",
-        #         "triggerPrice": "100000.00",
-        #         "price": "102000.00",
-        #         "icebergQuantity": null,
-        #         "selfTradePreventionMode": "EXPIRE_MAKER",
-        #         "workingType": "CONTRACT_PRICE",
-        #         "priceMatch": "NONE",
-        #         "closePosition": False,
-        #         "priceProtect": False,
-        #         "reduceOnly": False,
-        #         "createTime": 1763458576201,
-        #         "updateTime": 1763458576201,
-        #         "triggerTime": 0,
-        #         "goodTillDate": 0
-        #     }
-        #
-        # cancelOrder: linear swap conditional
-        #
-        #     {
-        #         "algoId": 3358,
-        #         "clientAlgoId": "yT58zmV3DSzMBQxc5tAJXU",
-        #         "code": "200",
-        #         "msg": "success"
-        #     }
-        #
         code = self.safe_string(order, 'code')
         if code is not None:
             # cancelOrders/createOrders might have a partial success
-            msg = self.safe_string(order, 'msg')
-            if (code != '200') and not ((msg == 'success') or (msg == 'The operation of cancel all open order is done.')):
-                return self.safe_order({'info': order, 'status': 'rejected'}, market)
-        status = self.parse_order_status(self.safe_string_n(order, ['status', 'strategyStatus', 'algoStatus']))
+            return self.safe_order({'info': order, 'status': 'rejected'}, market)
+        status = self.parse_order_status(self.safe_string_2(order, 'status', 'strategyStatus'))
         marketId = self.safe_string(order, 'symbol')
         isContract = ('positionSide' in order) or ('cumQuote' in order)
         marketType = 'contract' if isContract else 'spot'
@@ -6110,7 +6063,7 @@ class binance(Exchange, ImplicitAPI):
         postOnly = (type == 'limit_maker') or (timeInForce == 'PO')
         if type == 'limit_maker':
             type = 'limit'
-        stopPriceString = self.safe_string_2(order, 'stopPrice', 'triggerPrice')
+        stopPriceString = self.safe_string(order, 'stopPrice')
         triggerPrice = self.parse_number(self.omit_zero(stopPriceString))
         feeCost = self.safe_number(order, 'fee')
         fee = None
@@ -6123,12 +6076,12 @@ class binance(Exchange, ImplicitAPI):
         return self.safe_order({
             'amount': amount,
             'average': average,
-            'clientOrderId': self.safe_string_n(order, ['clientOrderId', 'newClientStrategyId', 'clientAlgoId']),
+            'clientOrderId': self.safe_string_2(order, 'clientOrderId', 'newClientStrategyId'),
             'cost': cost,
             'datetime': self.iso8601(timestamp),
             'fee': fee,
             'filled': filled,
-            'id': self.safe_string_n(order, ['strategyId', 'orderId', 'algoId']),
+            'id': self.safe_string_2(order, 'strategyId', 'orderId'),
             'info': order,
             'lastTradeTimestamp': lastTradeTimestamp,
             'lastUpdateTimestamp': lastUpdateTimestamp,
@@ -6239,7 +6192,6 @@ class binance(Exchange, ImplicitAPI):
         https://developers.binance.com/docs/derivatives/portfolio-margin/trade/New-Margin-Order
         https://developers.binance.com/docs/derivatives/portfolio-margin/trade/New-UM-Conditional-Order
         https://developers.binance.com/docs/derivatives/portfolio-margin/trade/New-CM-Conditional-Order
-        https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/New-Algo-Order
 
         :param str symbol: unified symbol of the market to create an order in
         :param str type: 'market' or 'limit' or 'STOP_LOSS' or 'STOP_LOSS_LIMIT' or 'TAKE_PROFIT' or 'TAKE_PROFIT_LIMIT' or 'STOP'
@@ -6301,11 +6253,7 @@ class binance(Exchange, ImplicitAPI):
                 else:
                     response = await self.papiPostUmOrder(request)
             else:
-                if isConditional:
-                    request['algoType'] = 'CONDITIONAL'
-                    response = await self.fapiPrivatePostAlgoOrder(request)
-                else:
-                    response = await self.fapiPrivatePostOrder(request)
+                response = await self.fapiPrivatePostOrder(request)
         elif market['inverse']:
             if isPortfolioMargin:
                 if isConditional:
@@ -6340,7 +6288,7 @@ class binance(Exchange, ImplicitAPI):
         """
         market = self.market(symbol)
         marketType = self.safe_string(params, 'type', market['type'])
-        clientOrderId = self.safe_string_n(params, ['clientAlgoId', 'newClientOrderId', 'clientOrderId'])
+        clientOrderId = self.safe_string_2(params, 'newClientOrderId', 'clientOrderId')
         initialUppercaseType = type.upper()
         isMarketOrder = initialUppercaseType == 'MARKET'
         isLimitOrder = initialUppercaseType == 'LIMIT'
@@ -6427,8 +6375,6 @@ class binance(Exchange, ImplicitAPI):
                 else:
                     raise InvalidOrder(self.id + ' ' + type + ' is not a valid order type for the ' + symbol + ' market')
         clientOrderIdRequest = 'newClientStrategyId' if isPortfolioMarginConditional else 'newClientOrderId'
-        if market['linear'] and market['swap'] and isConditional and not isPortfolioMargin:
-            clientOrderIdRequest = 'clientAlgoId'
         if clientOrderId is None:
             broker = self.safe_dict(self.options, 'broker', {})
             defaultId = 'x-xcKtGhcu' if (market['contract']) else 'x-TKT5PX2F'
@@ -6563,10 +6509,7 @@ class binance(Exchange, ImplicitAPI):
                 if trailingDelta is None and stopPrice is None and trailingPercent is None:
                     raise InvalidOrder(self.id + ' createOrder() requires a triggerPrice, trailingDelta or trailingPercent param for a ' + type + ' order')
             if stopPrice is not None:
-                if market['linear'] and market['swap'] and not isPortfolioMargin:
-                    request['triggerPrice'] = self.price_to_precision(symbol, stopPrice)
-                else:
-                    request['stopPrice'] = self.price_to_precision(symbol, stopPrice)
+                request['stopPrice'] = self.price_to_precision(symbol, stopPrice)
         if timeInForceIsRequired and (self.safe_string(params, 'timeInForce') is None) and (self.safe_string(request, 'timeInForce') is None):
             request['timeInForce'] = self.safe_string(self.options, 'defaultTimeInForce')  # 'GTC' = Good To Cancel(default), 'IOC' = Immediate Or Cancel
         if not isPortfolioMargin and market['contract'] and postOnly:
@@ -6664,14 +6607,12 @@ class binance(Exchange, ImplicitAPI):
         https://developers.binance.com/docs/margin_trading/trade/Query-Margin-Account-Order
         https://developers.binance.com/docs/derivatives/portfolio-margin/trade/Query-UM-Order
         https://developers.binance.com/docs/derivatives/portfolio-margin/trade/Query-CM-Order
-        https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Query-Algo-Order
 
         :param str id: the order id
         :param str symbol: unified symbol of the market the order was made in
         :param dict [params]: extra parameters specific to the exchange API endpoint
         :param str [params.marginMode]: 'cross' or 'isolated', for spot margin trading
         :param boolean [params.portfolioMargin]: set to True if you would like to fetch an order in a portfolio margin account
-        :param boolean [params.trigger]: set to True if you would like to fetch a trigger or conditional order
         :returns dict: An `order structure <https://docs.ccxt.com/#/?id=order-structure>`
         """
         if symbol is None:
@@ -6687,20 +6628,15 @@ class binance(Exchange, ImplicitAPI):
         request: dict = {
             'symbol': market['id'],
         }
-        isConditional = self.safe_bool_n(params, ['stop', 'trigger', 'conditional'])
-        clientOrderId = self.safe_string_n(params, ['origClientOrderId', 'clientOrderId', 'clientAlgoId'])
+        clientOrderId = self.safe_string_2(params, 'origClientOrderId', 'clientOrderId')
         if clientOrderId is not None:
             if market['option']:
                 request['clientOrderId'] = clientOrderId
-            elif market['linear'] and market['swap'] and isConditional and not isPortfolioMargin:
-                request['clientAlgoId'] = clientOrderId
             else:
                 request['origClientOrderId'] = clientOrderId
-        elif market['linear'] and market['swap'] and isConditional and not isPortfolioMargin:
-            request['algoId'] = id
         else:
             request['orderId'] = id
-        params = self.omit(params, ['type', 'clientOrderId', 'origClientOrderId', 'stop', 'trigger', 'conditional', 'clientAlgoId'])
+        params = self.omit(params, ['type', 'clientOrderId', 'origClientOrderId'])
         response = None
         if market['option']:
             response = await self.eapiPrivateGetOrder(self.extend(request, params))
@@ -6708,10 +6644,7 @@ class binance(Exchange, ImplicitAPI):
             if isPortfolioMargin:
                 response = await self.papiGetUmOrder(self.extend(request, params))
             else:
-                if isConditional:
-                    response = await self.fapiPrivateGetAlgoOrder(self.extend(request, params))
-                else:
-                    response = await self.fapiPrivateGetOrder(self.extend(request, params))
+                response = await self.fapiPrivateGetOrder(self.extend(request, params))
         elif market['inverse']:
             if isPortfolioMargin:
                 response = await self.papiGetCmOrder(self.extend(request, params))
@@ -6741,7 +6674,6 @@ class binance(Exchange, ImplicitAPI):
         https://developers.binance.com/docs/derivatives/portfolio-margin/trade/Query-All-CM-Orders
         https://developers.binance.com/docs/derivatives/portfolio-margin/trade/Query-All-UM-Conditional-Orders
         https://developers.binance.com/docs/derivatives/portfolio-margin/trade/Query-All-CM-Conditional-Orders
-        https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Query-All-Algo-Orders
 
         :param str symbol: unified market symbol of the market orders were made in
         :param int [since]: the earliest time in ms to fetch orders for
@@ -6788,10 +6720,7 @@ class binance(Exchange, ImplicitAPI):
                 else:
                     response = await self.papiGetUmAllOrders(self.extend(request, params))
             else:
-                if isConditional:
-                    response = await self.fapiPrivateGetAllAlgoOrders(self.extend(request, params))
-                else:
-                    response = await self.fapiPrivateGetAllOrders(self.extend(request, params))
+                response = await self.fapiPrivateGetAllOrders(self.extend(request, params))
         elif market['inverse']:
             if isPortfolioMargin:
                 if isConditional:
@@ -7004,7 +6933,6 @@ class binance(Exchange, ImplicitAPI):
         https://developers.binance.com/docs/derivatives/portfolio-margin/trade/Query-All-Current-UM-Open-Conditional-Orders
         https://developers.binance.com/docs/derivatives/portfolio-margin/trade/Query-All-Current-CM-Open-Orders
         https://developers.binance.com/docs/derivatives/portfolio-margin/trade/Query-All-Current-CM-Open-Conditional-Orders
-        https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Current-All-Algo-Open-Orders
 
         :param str symbol: unified market symbol
         :param int [since]: the earliest time in ms to fetch open orders for
@@ -7053,10 +6981,7 @@ class binance(Exchange, ImplicitAPI):
                 else:
                     response = await self.papiGetUmOpenOrders(self.extend(request, params))
             else:
-                if isConditional:
-                    response = await self.fapiPrivateGetOpenAlgoOrders(self.extend(request, params))
-                else:
-                    response = await self.fapiPrivateGetOpenOrders(self.extend(request, params))
+                response = await self.fapiPrivateGetOpenOrders(self.extend(request, params))
         elif self.is_inverse(type, subType):
             if isPortfolioMargin:
                 if isConditional:
@@ -7386,7 +7311,6 @@ class binance(Exchange, ImplicitAPI):
         https://developers.binance.com/docs/derivatives/portfolio-margin/trade/Cancel-UM-Conditional-Order
         https://developers.binance.com/docs/derivatives/portfolio-margin/trade/Cancel-CM-Conditional-Order
         https://developers.binance.com/docs/derivatives/portfolio-margin/trade/Cancel-Margin-Account-Order
-        https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Cancel-Algo-Order
 
         :param str id: order id
         :param str symbol: unified symbol of the market the order was made in
@@ -7409,12 +7333,10 @@ class binance(Exchange, ImplicitAPI):
         request: dict = {
             'symbol': market['id'],
         }
-        clientOrderId = self.safe_string_n(params, ['origClientOrderId', 'clientOrderId', 'newClientStrategyId', 'clientAlgoId'])
+        clientOrderId = self.safe_string_n(params, ['origClientOrderId', 'clientOrderId', 'newClientStrategyId'])
         if clientOrderId is not None:
             if market['option']:
                 request['clientOrderId'] = clientOrderId
-            elif market['linear'] and market['swap'] and isConditional and not isPortfolioMargin:
-                request['clientAlgoId'] = clientOrderId
             else:
                 if isPortfolioMargin and isConditional:
                     request['newClientStrategyId'] = clientOrderId
@@ -7423,11 +7345,9 @@ class binance(Exchange, ImplicitAPI):
         else:
             if isPortfolioMargin and isConditional:
                 request['strategyId'] = id
-            elif market['linear'] and market['swap'] and isConditional and not isPortfolioMargin:
-                request['algoId'] = id
             else:
                 request['orderId'] = id
-        params = self.omit(params, ['type', 'origClientOrderId', 'clientOrderId', 'newClientStrategyId', 'stop', 'trigger', 'conditional', 'clientAlgoId'])
+        params = self.omit(params, ['type', 'origClientOrderId', 'clientOrderId', 'newClientStrategyId', 'stop', 'trigger', 'conditional'])
         response = None
         if market['option']:
             response = await self.eapiPrivateDeleteOrder(self.extend(request, params))
@@ -7438,10 +7358,7 @@ class binance(Exchange, ImplicitAPI):
                 else:
                     response = await self.papiDeleteUmOrder(self.extend(request, params))
             else:
-                if isConditional:
-                    response = await self.fapiPrivateDeleteAlgoOrder(self.extend(request, params))
-                else:
-                    response = await self.fapiPrivateDeleteOrder(self.extend(request, params))
+                response = await self.fapiPrivateDeleteOrder(self.extend(request, params))
         elif market['inverse']:
             if isPortfolioMargin:
                 if isConditional:
@@ -7475,7 +7392,6 @@ class binance(Exchange, ImplicitAPI):
         https://developers.binance.com/docs/derivatives/portfolio-margin/trade/Cancel-All-CM-Open-Orders
         https://developers.binance.com/docs/derivatives/portfolio-margin/trade/Cancel-All-CM-Open-Conditional-Orders
         https://developers.binance.com/docs/derivatives/portfolio-margin/trade/Cancel-Margin-Account-All-Open-Orders-on-a-Symbol
-        https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Cancel-All-Algo-Open-Orders
 
         :param str symbol: unified market symbol of the market to cancel orders in
         :param dict [params]: extra parameters specific to the exchange API endpoint
@@ -7526,22 +7442,13 @@ class binance(Exchange, ImplicitAPI):
                     #    }
                     #
             else:
-                if isConditional:
-                    response = await self.fapiPrivateDeleteAlgoOpenOrders(self.extend(request, params))
-                    #
-                    #     {
-                    #         "code": 200,
-                    #         "msg": "The operation of cancel all open order is done."
-                    #     }
-                    #
-                else:
-                    response = await self.fapiPrivateDeleteAllOpenOrders(self.extend(request, params))
-                    #
-                    #    {
-                    #        "code": 200,
-                    #        "msg": "The operation of cancel all open order is done."
-                    #    }
-                    #
+                response = await self.fapiPrivateDeleteAllOpenOrders(self.extend(request, params))
+                #
+                #    {
+                #        "code": 200,
+                #        "msg": "The operation of cancel all open order is done."
+                #    }
+                #
         elif market['inverse']:
             if isPortfolioMargin:
                 if isConditional:
@@ -10121,7 +10028,7 @@ class binance(Exchange, ImplicitAPI):
             percentage = self.parse_number(Precise.string_mul(Precise.string_div(unrealizedPnlString, initialMarginString, 4), '100'))
         positionSide = self.safe_string(position, 'positionSide')
         hedged = positionSide != 'BOTH'
-        return self.safe_position({
+        return {
             'collateral': collateral,
             'contractSize': contractSize,
             'contracts': contracts,
@@ -10148,7 +10055,7 @@ class binance(Exchange, ImplicitAPI):
             'takeProfitPrice': None,
             'timestamp': timestamp,
             'unrealizedPnl': unrealizedPnl,
-        })
+        }
 
     async def load_leverage_brackets(self, reload=False, params={}):
         await self.load_markets()
@@ -10401,7 +10308,7 @@ class binance(Exchange, ImplicitAPI):
         #         }
         #     ]
         #
-        return self.parse_option_position(response[0], market)
+        return self.parse_position(response[0], market)
 
     async def fetch_option_positions(self, symbols: Strings = None, params={}):
         """
@@ -10454,10 +10361,10 @@ class binance(Exchange, ImplicitAPI):
         #
         result = []
         for i in range(0, len(response)):
-            result.append(self.parse_option_position(response[i], market))
+            result.append(self.parse_position(response[i], market))
         return self.filter_by_array_positions(result, 'symbol', symbols, False)
 
-    def parse_option_position(self, position: dict, market: Market = None):
+    def parse_position(self, position: dict, market: Market = None):
         #
         #     {
         #         "entryPrice": "27.70000000",
@@ -11638,11 +11545,11 @@ class binance(Exchange, ImplicitAPI):
     def get_exceptions_by_url(self, url: str, exactOrBroad: str):
         marketType = None
         hostname = self.hostname if (self.hostname is not None) else 'binance.com'
-        if url.startswith('https://api.' + hostname + '/') or url.startswith('https://demo-api') or url.startswith('https://testnet.binance.vision'):
+        if url.startswith('https://api.' + hostname + '/') or url.startswith('https://testnet.binance.vision'):
             marketType = 'spot'
-        elif url.startswith('https://dapi.' + hostname + '/') or url.startswith('https://demo-dapi') or url.startswith('https://testnet.binancefuture.com/dapi'):
+        elif url.startswith('https://dapi.' + hostname + '/') or url.startswith('https://testnet.binancefuture.com/dapi'):
             marketType = 'inverse'
-        elif url.startswith('https://fapi.' + hostname + '/') or url.startswith('https://demo-fapi') or url.startswith('https://testnet.binancefuture.com/fapi'):
+        elif url.startswith('https://fapi.' + hostname + '/') or url.startswith('https://testnet.binancefuture.com/fapi'):
             marketType = 'linear'
         elif url.startswith('https://eapi.' + hostname + '/'):
             marketType = 'option'
