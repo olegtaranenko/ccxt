@@ -172,6 +172,7 @@ interface Exchange {
     fapiPrivateGetPositionRisk (params?: {}): Promise<implicitReturnType>;
     fapiPrivateGetPositionSideDual (params?: {}): Promise<implicitReturnType>;
     fapiPrivateGetRateLimitOrder (params?: {}): Promise<implicitReturnType>;
+    fapiPrivateGetStockContract (params?: {}): Promise<implicitReturnType>;
     fapiPrivateGetSymbolAdlRisk (params?: {}): Promise<implicitReturnType>;
     fapiPrivateGetSymbolConfig (params?: {}): Promise<implicitReturnType>;
     fapiPrivateGetTradeAsyn (params?: {}): Promise<implicitReturnType>;
@@ -224,11 +225,13 @@ interface Exchange {
     fapiPublicGetPremiumIndex (params?: {}): Promise<implicitReturnType>;
     fapiPublicGetPremiumIndexKlines (params?: {}): Promise<implicitReturnType>;
     fapiPublicGetRpiDepth (params?: {}): Promise<implicitReturnType>;
+    fapiPublicGetSymbolAdlRisk (params?: {}): Promise<implicitReturnType>;
     fapiPublicGetTicker24hr (params?: {}): Promise<implicitReturnType>;
     fapiPublicGetTickerBookTicker (params?: {}): Promise<implicitReturnType>;
     fapiPublicGetTickerPrice (params?: {}): Promise<implicitReturnType>;
     fapiPublicGetTime (params?: {}): Promise<implicitReturnType>;
     fapiPublicGetTrades (params?: {}): Promise<implicitReturnType>;
+    fapiPublicGetTradingSchedule (params?: {}): Promise<implicitReturnType>;
     fapiPublicV2GetTickerPrice (params?: {}): Promise<implicitReturnType>;
     papiDeleteCmAllOpenOrders (params?: {}): Promise<implicitReturnType>;
     papiDeleteCmConditionalAllOpenOrders (params?: {}): Promise<implicitReturnType>;

@@ -826,6 +826,11 @@ public partial class binance : Exchange
         return await this.callAsync ("fapiPrivateGetRateLimitOrder",parameters);
     }
 
+    public async Task<object> fapiPrivateGetStockContract (object parameters = null)
+    {
+        return await this.callAsync ("fapiPrivateGetStockContract",parameters);
+    }
+
     public async Task<object> fapiPrivateGetSymbolAdlRisk (object parameters = null)
     {
         return await this.callAsync ("fapiPrivateGetSymbolAdlRisk",parameters);
@@ -1086,6 +1091,11 @@ public partial class binance : Exchange
         return await this.callAsync ("fapiPublicGetRpiDepth",parameters);
     }
 
+    public async Task<object> fapiPublicGetSymbolAdlRisk (object parameters = null)
+    {
+        return await this.callAsync ("fapiPublicGetSymbolAdlRisk",parameters);
+    }
+
     public async Task<object> fapiPublicGetTicker24hr (object parameters = null)
     {
         return await this.callAsync ("fapiPublicGetTicker24hr",parameters);
@@ -1109,6 +1119,11 @@ public partial class binance : Exchange
     public async Task<object> fapiPublicGetTrades (object parameters = null)
     {
         return await this.callAsync ("fapiPublicGetTrades",parameters);
+    }
+
+    public async Task<object> fapiPublicGetTradingSchedule (object parameters = null)
+    {
+        return await this.callAsync ("fapiPublicGetTradingSchedule",parameters);
     }
 
     public async Task<object> fapiPublicV2GetTickerPrice (object parameters = null)

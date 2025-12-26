@@ -659,6 +659,10 @@ func (this *BinancecoinmCore) FapiPrivateGetRateLimitOrder (args ...interface{})
    return this.callEndpointAsync("fapiPrivateGetRateLimitOrder", args...)
 }
 
+func (this *BinancecoinmCore) FapiPrivateGetStockContract (args ...interface{}) <-chan interface{} {
+   return this.callEndpointAsync("fapiPrivateGetStockContract", args...)
+}
+
 func (this *BinancecoinmCore) FapiPrivateGetSymbolAdlRisk (args ...interface{}) <-chan interface{} {
    return this.callEndpointAsync("fapiPrivateGetSymbolAdlRisk", args...)
 }
@@ -867,6 +871,10 @@ func (this *BinancecoinmCore) FapiPublicGetRpiDepth (args ...interface{}) <-chan
    return this.callEndpointAsync("fapiPublicGetRpiDepth", args...)
 }
 
+func (this *BinancecoinmCore) FapiPublicGetSymbolAdlRisk (args ...interface{}) <-chan interface{} {
+   return this.callEndpointAsync("fapiPublicGetSymbolAdlRisk", args...)
+}
+
 func (this *BinancecoinmCore) FapiPublicGetTicker24hr (args ...interface{}) <-chan interface{} {
    return this.callEndpointAsync("fapiPublicGetTicker24hr", args...)
 }
@@ -885,6 +893,10 @@ func (this *BinancecoinmCore) FapiPublicGetTime (args ...interface{}) <-chan int
 
 func (this *BinancecoinmCore) FapiPublicGetTrades (args ...interface{}) <-chan interface{} {
    return this.callEndpointAsync("fapiPublicGetTrades", args...)
+}
+
+func (this *BinancecoinmCore) FapiPublicGetTradingSchedule (args ...interface{}) <-chan interface{} {
+   return this.callEndpointAsync("fapiPublicGetTradingSchedule", args...)
 }
 
 func (this *BinancecoinmCore) FapiPublicV2GetTickerPrice (args ...interface{}) <-chan interface{} {

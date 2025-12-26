@@ -496,6 +496,9 @@ abstract class binanceusdm extends \ccxt\async\binance {
     public function fapiprivate_get_ratelimit_order($params = array()) {
         return $this->request('rateLimit/order', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
     }
+    public function fapiprivate_get_stock_contract($params = array()) {
+        return $this->request('stock/contract', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 50));
+    }
     public function fapiprivate_get_symboladlrisk($params = array()) {
         return $this->request('symbolAdlRisk', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
     }
@@ -652,6 +655,9 @@ abstract class binanceusdm extends \ccxt\async\binance {
     public function fapipublic_get_rpidepth($params = array()) {
         return $this->request('rpiDepth', 'fapiPublic', 'GET', $params, null, null, array("cost" => 20));
     }
+    public function fapipublic_get_symboladlrisk($params = array()) {
+        return $this->request('symbolAdlRisk', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1));
+    }
     public function fapipublic_get_ticker_24hr($params = array()) {
         return $this->request('ticker/24hr', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1, "noSymbol" => 40));
     }
@@ -666,6 +672,9 @@ abstract class binanceusdm extends \ccxt\async\binance {
     }
     public function fapipublic_get_trades($params = array()) {
         return $this->request('trades', 'fapiPublic', 'GET', $params, null, null, array("cost" => 5));
+    }
+    public function fapipublic_get_tradingschedule($params = array()) {
+        return $this->request('tradingSchedule', 'fapiPublic', 'GET', $params, null, null, array("cost" => 5));
     }
     public function fapipublicv2_get_ticker_price($params = array()) {
         return $this->request('ticker/price', 'fapiPublicV2', 'GET', $params, null, null, array("cost" => 0));
@@ -2833,6 +2842,9 @@ abstract class binanceusdm extends \ccxt\async\binance {
     public function fapiPrivateGetRateLimitOrder($params = array()) {
         return $this->request('rateLimit/order', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
     }
+    public function fapiPrivateGetStockContract($params = array()) {
+        return $this->request('stock/contract', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 50));
+    }
     public function fapiPrivateGetSymbolAdlRisk($params = array()) {
         return $this->request('symbolAdlRisk', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
     }
@@ -2989,6 +3001,9 @@ abstract class binanceusdm extends \ccxt\async\binance {
     public function fapiPublicGetRpiDepth($params = array()) {
         return $this->request('rpiDepth', 'fapiPublic', 'GET', $params, null, null, array("cost" => 20));
     }
+    public function fapiPublicGetSymbolAdlRisk($params = array()) {
+        return $this->request('symbolAdlRisk', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1));
+    }
     public function fapiPublicGetTicker24hr($params = array()) {
         return $this->request('ticker/24hr', 'fapiPublic', 'GET', $params, null, null, array("cost" => 1, "noSymbol" => 40));
     }
@@ -3003,6 +3018,9 @@ abstract class binanceusdm extends \ccxt\async\binance {
     }
     public function fapiPublicGetTrades($params = array()) {
         return $this->request('trades', 'fapiPublic', 'GET', $params, null, null, array("cost" => 5));
+    }
+    public function fapiPublicGetTradingSchedule($params = array()) {
+        return $this->request('tradingSchedule', 'fapiPublic', 'GET', $params, null, null, array("cost" => 5));
     }
     public function fapiPublicV2GetTickerPrice($params = array()) {
         return $this->request('ticker/price', 'fapiPublicV2', 'GET', $params, null, null, array("cost" => 0));
