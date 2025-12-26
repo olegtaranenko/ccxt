@@ -270,6 +270,7 @@ export default class binance extends Exchange {
                     'delete': {
                         // conditional orders
                         'algoOrder': 1,
+                        'algoOpenOrders': 1,
                         'allOpenOrders': 1,
                         'batchOrders': 1,
                         'listenKey': 1,
