@@ -2096,10 +2096,8 @@ export default class Exchange {
         if (value === undefined) {
             return defaultValue;
         }
-        if ((typeof value === 'object')) {
-            if (!Array.isArray(value)) {
-                return value;
-            }
+        if ((typeof value === 'object') && !Array.isArray(value)) {
+            return value;
         }
         return defaultValue;
     }
@@ -5205,7 +5203,7 @@ export default class Exchange {
         }
         return this.safeMarketStructure({ 'symbol': marketId, 'marketId': marketId });
     }
-    marketOrNull(symbol) {
+    marketOrNull(symbol = undefined) {
         if (symbol === undefined) {
             return undefined;
         }

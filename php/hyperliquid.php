@@ -95,9 +95,10 @@ class hyperliquid extends Exchange {
                 'fetchPositions' => true,
                 'fetchPositionsRisk' => false,
                 'fetchPremiumIndexOHLCV' => false,
+                'fetchStatus' => true,
                 'fetchTicker' => 'emulated',
                 'fetchTickers' => true,
-                'fetchTime' => false,
+                'fetchTime' => true,
                 'fetchTrades' => true,
                 'fetchTradingFee' => true,
                 'fetchTradingFees' => false,
@@ -406,6 +407,47 @@ class hyperliquid extends Exchange {
         return parent::safe_market($marketId, $market, $delimiter, $marketType);
     }
 
+    public function fetch_status($params = array ()) {
+        /**
+         * the latest known information on the availability of the exchange API
+         * @param {array} [$params] extra parameters specific to the exchange API endpoint
+         * @return {array} a ~@link https://docs.ccxt.com/#/?id=exchange-$status-structure $status structure~
+         */
+        $request = array(
+            'type' => 'exchangeStatus',
+        );
+        $response = $this->publicPostInfo ($this->extend($request, $params));
+        //
+        //     {
+        //         "status" => "ok"
+        //     }
+        //
+        $status = $this->safe_string($response, 'specialStatuses');
+        return array(
+            'status' => ($status === null) ? 'ok' : 'maintenance',
+            'updated' => $this->safe_integer($response, 'time'),
+            'eta' => null,
+            'url' => null,
+            'info' => $response,
+        );
+    }
+
+    public function fetch_time($params = array ()) {
+        /**
+         * fetches the current integer timestamp in milliseconds from the exchange server
+         * @param {array} [$params] extra parameters specific to the exchange API endpoint
+         * @return {int} the current integer timestamp in milliseconds from the exchange server
+         */
+        $request = array(
+            'type' => 'exchangeStatus',
+        );
+        $response = $this->publicPostInfo ($this->extend($request, $params));
+        //
+        // array( specialStatuses => null, time => '1764617438643' )
+        //
+        return $this->safe_integer($response, 'time');
+    }
+
     public function fetch_currencies($params = array ()): ?array {
         /**
          * fetches all available currencies on an exchange
@@ -548,9 +590,9 @@ class hyperliquid extends Exchange {
         $fetchDexesList = array();
         $options = $this->safe_dict($this->options, 'fetchMarkets', array());
         $hip3 = $this->safe_dict($options, 'hip3', array());
-        $defaultLimit = $this->safe_integer($hip3, 'limit', 5);
+        $defaultLimit = $this->safe_integer($hip3, 'limit', 10);
         $dexesLength = count($fetchDexes);
-        if ($dexesLength >= $defaultLimit) { // first element is null
+        if ($dexesLength > $defaultLimit) { // first element is null
             $defaultDexes = $this->safe_list($hip3, 'dex', array());
             if (strlen($defaultDexes) === 0) {
                 throw new ArgumentsRequired($this->id . ' fetchHip3Markets() Too many DEXes found. Please specify a list of DEXes in the exchange.options["fetchMarkets"]["hip3"]["dex"] parameter to fetch $markets from those DEXes only. The limit is set to ' . (string) $defaultLimit . ' DEXes by default.');
@@ -593,7 +635,9 @@ class hyperliquid extends Exchange {
                 );
                 $data['baseId'] = $j . $offset;
                 $data['collateralToken'] = $collateralToken;
-                $cachedCurrencies = $this->safe_dict($this->options, 'c', array());
+                $data['hip3'] = true;
+                $data['dex'] = $dexName;
+                $cachedCurrencies = $this->safe_dict($this->options, 'cachedCurrenciesById', array());
                 // injecting collateral token $name for further usage in parseMarket, already converted from like '0' to 'USDC', etc
                 if (is_array($cachedCurrencies) && array_key_exists($collateralToken, $cachedCurrencies)) {
                     $name = $this->safe_string($data, 'name');
@@ -641,8 +685,6 @@ class hyperliquid extends Exchange {
         //     )
         //
         //
-        // reset currency cache not needed anymore
-        $this->options['cachedCurrenciesById'] = array();
         return $markets;
     }
 
@@ -1188,6 +1230,7 @@ class hyperliquid extends Exchange {
          * @param {string[]} [$symbols] unified $symbols of the markets to fetch the $ticker for, all $market tickers are returned if not assigned
          * @param {array} [$params] extra parameters specific to the exchange API endpoint
          * @param {string} [$params->type] 'spot' or 'swap', by default fetches both
+         * @param {boolean} [$params->hip3] set to true to fetch $hip3 markets only
          * @return {array} a dictionary of ~@link https://docs.ccxt.com/#/?id=$ticker-structure $ticker structures~
          */
         $this->load_markets();
@@ -1196,7 +1239,20 @@ class hyperliquid extends Exchange {
         $response = array();
         $type = $this->safe_string($params, 'type');
         $params = $this->omit($params, 'type');
-        if ($type === 'spot') {
+        $hip3 = false;
+        list($hip3, $params) = $this->handle_option_and_params($params, 'fetchTickers', 'hip3', false);
+        if ($symbols !== null) {
+            // infer from first $symbol
+            $firstSymbol = $this->safe_string($symbols, 0);
+            $market = $this->market($firstSymbol);
+            if ($this->safe_bool($this->safe_dict($market, 'info'), 'hip3')) {
+                $hip3 = true;
+            }
+        }
+        if ($hip3) {
+            $params = $this->omit($params, 'hip3');
+            $response = $this->fetch_hip3_markets($params);
+        } elseif ($type === 'spot') {
             $response = $this->fetch_spot_markets($params);
         } elseif ($type === 'swap') {
             $response = $this->fetch_swap_markets($params);
@@ -1340,6 +1396,9 @@ class hyperliquid extends Exchange {
         //         "circulatingSupply" => "998949190.03400207", // only in spot
         //     ),
         //
+        $name = $this->safe_string($ticker, 'name');
+        $marketId = $this->coin_to_market_id($name);
+        $market = $this->safe_market($marketId, $market);
         $bidAsk = $this->safe_list($ticker, 'impactPxs');
         return $this->safe_ticker(array(
             'symbol' => $market['symbol'],
@@ -4288,8 +4347,12 @@ class hyperliquid extends Exchange {
 
     public function coin_to_market_id(?string $coin) {
         // handle also hip3 tokens like flx:CRCL
-        if ($this->safe_dict($this->options['hip3TokensByName'], $coin)) {
-            $hip3Dict = $this->options['hip3TokensByName'][$coin];
+        if ($coin === null) {
+            return null;
+        }
+        $hi3TokensByname = $this->safe_dict($this->options, 'hip3TokensByName', array());
+        if ($this->safe_dict($hi3TokensByname, $coin)) {
+            $hip3Dict = $this->safe_dict($hi3TokensByname, $coin);
             $quote = $this->safe_string($hip3Dict, 'quote', 'USDC');
             $code = $this->safe_string($hip3Dict, 'code', $coin);
             return $code . '/' . $quote . ':' . $quote;
