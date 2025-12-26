@@ -91,9 +91,10 @@ public partial class hyperliquid : Exchange
                 { "fetchPositions", true },
                 { "fetchPositionsRisk", false },
                 { "fetchPremiumIndexOHLCV", false },
+                { "fetchStatus", true },
                 { "fetchTicker", "emulated" },
                 { "fetchTickers", true },
-                { "fetchTime", false },
+                { "fetchTime", true },
                 { "fetchTrades", true },
                 { "fetchTradingFee", true },
                 { "fetchTradingFees", false },
@@ -413,6 +414,55 @@ public partial class hyperliquid : Exchange
 
     /**
      * @method
+     * @name hyperliquid#fetchStatus
+     * @description the latest known information on the availability of the exchange API
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object} a [status structure]{@link https://docs.ccxt.com/#/?id=exchange-status-structure}
+     */
+    public async override Task<object> fetchStatus(object parameters = null)
+    {
+        parameters ??= new Dictionary<string, object>();
+        object request = new Dictionary<string, object>() {
+            { "type", "exchangeStatus" },
+        };
+        object response = await this.publicPostInfo(this.extend(request, parameters));
+        //
+        //     {
+        //         "status": "ok"
+        //     }
+        //
+        object status = this.safeString(response, "specialStatuses");
+        return new Dictionary<string, object>() {
+            { "status", ((bool) isTrue((isEqual(status, null)))) ? "ok" : "maintenance" },
+            { "updated", this.safeInteger(response, "time") },
+            { "eta", null },
+            { "url", null },
+            { "info", response },
+        };
+    }
+
+    /**
+     * @method
+     * @name hyperliquid#fetchTime
+     * @description fetches the current integer timestamp in milliseconds from the exchange server
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {int} the current integer timestamp in milliseconds from the exchange server
+     */
+    public async override Task<object> fetchTime(object parameters = null)
+    {
+        parameters ??= new Dictionary<string, object>();
+        object request = new Dictionary<string, object>() {
+            { "type", "exchangeStatus" },
+        };
+        object response = await this.publicPostInfo(this.extend(request, parameters));
+        //
+        // { specialStatuses: null, time: '1764617438643' }
+        //
+        return this.safeInteger(response, "time");
+    }
+
+    /**
+     * @method
      * @name hyperliquid#fetchCurrencies
      * @description fetches all available currencies on an exchange
      * @see https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint/perpetuals#retrieve-perpetuals-metadata
@@ -566,9 +616,9 @@ public partial class hyperliquid : Exchange
         object fetchDexesList = new List<object>() {};
         object options = this.safeDict(this.options, "fetchMarkets", new Dictionary<string, object>() {});
         object hip3 = this.safeDict(options, "hip3", new Dictionary<string, object>() {});
-        object defaultLimit = this.safeInteger(hip3, "limit", 5);
+        object defaultLimit = this.safeInteger(hip3, "limit", 10);
         object dexesLength = getArrayLength(fetchDexes);
-        if (isTrue(isGreaterThanOrEqual(dexesLength, defaultLimit)))
+        if (isTrue(isGreaterThan(dexesLength, defaultLimit)))
         {
             object defaultDexes = this.safeList(hip3, "dex", new List<object>() {});
             if (isTrue(isEqual(getArrayLength(defaultDexes), 0)))
@@ -616,7 +666,9 @@ public partial class hyperliquid : Exchange
                 object data = this.extend(this.safeDict(universe, j, new Dictionary<string, object>() {}), this.safeDict(assetCtxs, j, new Dictionary<string, object>() {}));
                 ((IDictionary<string,object>)data)["baseId"] = add(j, offset);
                 ((IDictionary<string,object>)data)["collateralToken"] = collateralToken;
-                object cachedCurrencies = this.safeDict(this.options, "c", new Dictionary<string, object>() {});
+                ((IDictionary<string,object>)data)["hip3"] = true;
+                ((IDictionary<string,object>)data)["dex"] = dexName;
+                object cachedCurrencies = this.safeDict(this.options, "cachedCurrenciesById", new Dictionary<string, object>() {});
                 // injecting collateral token name for further usage in parseMarket, already converted from like '0' to 'USDC', etc
                 if (isTrue(inOp(cachedCurrencies, collateralToken)))
                 {
@@ -665,8 +717,6 @@ public partial class hyperliquid : Exchange
         //     ]
         //
         //
-        // reset currency cache not needed anymore
-        ((IDictionary<string,object>)this.options)["cachedCurrenciesById"] = new Dictionary<string, object>() {};
         return markets;
     }
 
@@ -1245,6 +1295,7 @@ public partial class hyperliquid : Exchange
      * @param {string[]} [symbols] unified symbols of the markets to fetch the ticker for, all market tickers are returned if not assigned
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @param {string} [params.type] 'spot' or 'swap', by default fetches both
+     * @param {boolean} [params.hip3] set to true to fetch hip3 markets only
      * @returns {object} a dictionary of [ticker structures]{@link https://docs.ccxt.com/#/?id=ticker-structure}
      */
     public async override Task<object> fetchTickers(object symbols = null, object parameters = null)
@@ -1256,7 +1307,25 @@ public partial class hyperliquid : Exchange
         object response = new List<object>() {};
         object type = this.safeString(parameters, "type");
         parameters = this.omit(parameters, "type");
-        if (isTrue(isEqual(type, "spot")))
+        object hip3 = false;
+        var hip3parametersVariable = this.handleOptionAndParams(parameters, "fetchTickers", "hip3", false);
+        hip3 = ((IList<object>)hip3parametersVariable)[0];
+        parameters = ((IList<object>)hip3parametersVariable)[1];
+        if (isTrue(!isEqual(symbols, null)))
+        {
+            // infer from first symbol
+            object firstSymbol = this.safeString(symbols, 0);
+            object market = this.market(firstSymbol);
+            if (isTrue(this.safeBool(this.safeDict(market, "info"), "hip3")))
+            {
+                hip3 = true;
+            }
+        }
+        if (isTrue(hip3))
+        {
+            parameters = this.omit(parameters, "hip3");
+            response = await this.fetchHip3Markets(parameters);
+        } else if (isTrue(isEqual(type, "spot")))
         {
             response = await this.fetchSpotMarkets(parameters);
         } else if (isTrue(isEqual(type, "swap")))
@@ -1406,6 +1475,9 @@ public partial class hyperliquid : Exchange
         //         "circulatingSupply": "998949190.03400207", // only in spot
         //     },
         //
+        object name = this.safeString(ticker, "name");
+        object marketId = this.coinToMarketId(name);
+        market = this.safeMarket(marketId, market);
         object bidAsk = this.safeList(ticker, "impactPxs");
         return this.safeTicker(new Dictionary<string, object>() {
             { "symbol", getValue(market, "symbol") },
@@ -4754,9 +4826,14 @@ public partial class hyperliquid : Exchange
     public virtual object coinToMarketId(object coin)
     {
         // handle also hip3 tokens like flx:CRCL
-        if (isTrue(this.safeDict(getValue(this.options, "hip3TokensByName"), coin)))
+        if (isTrue(isEqual(coin, null)))
         {
-            object hip3Dict = getValue(getValue(this.options, "hip3TokensByName"), coin);
+            return null;
+        }
+        object hi3TokensByname = this.safeDict(this.options, "hip3TokensByName", new Dictionary<string, object>() {});
+        if (isTrue(this.safeDict(hi3TokensByname, coin)))
+        {
+            object hip3Dict = this.safeDict(hi3TokensByname, coin);
             object quote = this.safeString(hip3Dict, "quote", "USDC");
             object code = this.safeString(hip3Dict, "code", coin);
             return add(add(add(add(code, "/"), quote), ":"), quote);

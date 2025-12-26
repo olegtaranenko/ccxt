@@ -129,8 +129,8 @@ interface Exchange {
     fapiDataGetTakerlongshortRatio (params?: {}): Promise<implicitReturnType>;
     fapiDataGetTopLongShortAccountRatio (params?: {}): Promise<implicitReturnType>;
     fapiDataGetTopLongShortPositionRatio (params?: {}): Promise<implicitReturnType>;
-    fapiPrivateDeleteAlgoOpenOrders (params?: {}): Promise<implicitReturnType>;
     fapiPrivateDeleteAlgoOrder (params?: {}): Promise<implicitReturnType>;
+    fapiPrivateDeleteAlgoOpenOrders (params?: {}): Promise<implicitReturnType>;
     fapiPrivateDeleteAllOpenOrders (params?: {}): Promise<implicitReturnType>;
     fapiPrivateDeleteBatchOrders (params?: {}): Promise<implicitReturnType>;
     fapiPrivateDeleteListenKey (params?: {}): Promise<implicitReturnType>;

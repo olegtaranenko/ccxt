@@ -487,12 +487,12 @@ func (this *BinanceusdmCore) FapiDataGetTopLongShortPositionRatio (args ...inter
    return this.callEndpointAsync("fapiDataGetTopLongShortPositionRatio", args...)
 }
 
-func (this *BinanceusdmCore) FapiPrivateDeleteAlgoOpenOrders (args ...interface{}) <-chan interface{} {
-   return this.callEndpointAsync("fapiPrivateDeleteAlgoOpenOrders", args...)
-}
-
 func (this *BinanceusdmCore) FapiPrivateDeleteAlgoOrder (args ...interface{}) <-chan interface{} {
    return this.callEndpointAsync("fapiPrivateDeleteAlgoOrder", args...)
+}
+
+func (this *BinanceusdmCore) FapiPrivateDeleteAlgoOpenOrders (args ...interface{}) <-chan interface{} {
+   return this.callEndpointAsync("fapiPrivateDeleteAlgoOpenOrders", args...)
 }
 
 func (this *BinanceusdmCore) FapiPrivateDeleteAllOpenOrders (args ...interface{}) <-chan interface{} {

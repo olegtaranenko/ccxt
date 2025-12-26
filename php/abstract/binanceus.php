@@ -367,11 +367,11 @@ abstract class binanceus extends \ccxt\binance {
     public function fapidata_get_toplongshortpositionratio($params = array()) {
         return $this->request('topLongShortPositionRatio', 'fapiData', 'GET', $params, null, null, array("cost" => 1));
     }
-    public function fapiprivate_delete_algoopenorders($params = array()) {
-        return $this->request('algoOpenOrders', 'fapiPrivate', 'DELETE', $params, null, null, array("cost" => 1));
-    }
     public function fapiprivate_delete_algoorder($params = array()) {
         return $this->request('algoOrder', 'fapiPrivate', 'DELETE', $params, null, null, array("cost" => 1));
+    }
+    public function fapiprivate_delete_algoopenorders($params = array()) {
+        return $this->request('algoOpenOrders', 'fapiPrivate', 'DELETE', $params, null, null, array("cost" => 1));
     }
     public function fapiprivate_delete_allopenorders($params = array()) {
         return $this->request('allOpenOrders', 'fapiPrivate', 'DELETE', $params, null, null, array("cost" => 1));
@@ -461,7 +461,7 @@ abstract class binanceus extends \ccxt\binance {
         return $this->request('multiAssetsMargin', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 30));
     }
     public function fapiprivate_get_openalgoorders($params = array()) {
-        return $this->request('openAlgoOrders', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
+        return $this->request('openAlgoOrders', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1, "noSymbol" => 40));
     }
     public function fapiprivate_get_openorder($params = array()) {
         return $this->request('openOrder', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
@@ -2860,11 +2860,11 @@ abstract class binanceus extends \ccxt\binance {
     public function fapiDataGetTopLongShortPositionRatio($params = array()) {
         return $this->request('topLongShortPositionRatio', 'fapiData', 'GET', $params, null, null, array("cost" => 1));
     }
-    public function fapiPrivateDeleteAlgoOpenOrders($params = array()) {
-        return $this->request('algoOpenOrders', 'fapiPrivate', 'DELETE', $params, null, null, array("cost" => 1));
-    }
     public function fapiPrivateDeleteAlgoOrder($params = array()) {
         return $this->request('algoOrder', 'fapiPrivate', 'DELETE', $params, null, null, array("cost" => 1));
+    }
+    public function fapiPrivateDeleteAlgoOpenOrders($params = array()) {
+        return $this->request('algoOpenOrders', 'fapiPrivate', 'DELETE', $params, null, null, array("cost" => 1));
     }
     public function fapiPrivateDeleteAllOpenOrders($params = array()) {
         return $this->request('allOpenOrders', 'fapiPrivate', 'DELETE', $params, null, null, array("cost" => 1));
@@ -2954,7 +2954,7 @@ abstract class binanceus extends \ccxt\binance {
         return $this->request('multiAssetsMargin', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 30));
     }
     public function fapiPrivateGetOpenAlgoOrders($params = array()) {
-        return $this->request('openAlgoOrders', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));
+        return $this->request('openAlgoOrders', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1, "noSymbol" => 40));
     }
     public function fapiPrivateGetOpenOrder($params = array()) {
         return $this->request('openOrder', 'fapiPrivate', 'GET', $params, null, null, array("cost" => 1));

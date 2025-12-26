@@ -1,9 +1,9 @@
 import * as functions from './functions.js';
 import WsClient from './ws/WsClient.js';
+import type Client from './ws/Client.js';
 import { CountedOrderBook, IndexedOrderBook, OrderBook as Ob } from './ws/OrderBook.js';
 import type { Account, Balance, BalanceAccount, Balances, Bool, BorrowInterest, CancellationRequest, ConstructorArgs, Conversion, CrossBorrowRate, CrossBorrowRates, Currencies, Currency, CurrencyInterface, DepositAddress, DepositWithdrawFee, Dict, Dictionary, FundingHistory, FundingRate, FundingRateHistory, FundingRates, Greeks, IndexType, int, Int, IsolatedBorrowRate, IsolatedBorrowRates, LastPrice, LastPrices, LedgerEntry, Leverage, Leverages, LeverageTier, LeverageTiers, Liquidation, LongShortRatio, MarginMode, MarginModes, MarginModification, Market, MarketInterface, MarketType, MinMax, Num, OHLCV, OHLCVC, OpenInterest, OpenInterests, Option, OptionChain, Order, OrderBook, OrderBooks, OrderRequest, OrderSide, OrderType, Position, Str, Strings, Ticker, Tickers, Trade, TradingFeeInterface, TradingFees, Transaction, TransferEntry } from './types.js';
 import { ArrayCache, ArrayCacheByTimestamp } from './ws/Cache.js';
-import Client from './ws/Client.js';
 export type { Account, Balance, BalanceAccount, Balances, Bool, BorrowInterest, Conversion, CrossBorrowRate, Currency, CurrencyInterface, DepositAddress, Dictionary, Fee, FundingHistory, FundingRateHistory, Greeks, IndexType, Int, LastPrice, LastPrices, LedgerEntry, Leverage, Leverages, LeverageTier, Liquidation, LongShortRatio, MarginMode, MarginModes, Market, MarketInterface, MarketType, MinMax, Num, OHLCV, OHLCVC, OpenInterest, Option, OptionChain, Order, OrderBook, OrderRequest, OrderSide, OrderType, Position, Str, Strings, Ticker, Tickers, Trade, Transaction, TransferEntry, } from './types.js';
 /**
  * @class Exchange
@@ -712,7 +712,7 @@ export default class Exchange {
     parseBidAsk(bidask: any, priceKey?: IndexType, amountKey?: IndexType, countOrIdKey?: IndexType): number[];
     safeCurrency(currencyId: Str, currency?: Currency): CurrencyInterface;
     safeMarket(marketId?: Str, market?: Market, delimiter?: Str, marketType?: Str): MarketInterface;
-    marketOrNull(symbol: string): MarketInterface;
+    marketOrNull(symbol?: Str): MarketInterface;
     checkRequiredCredentials(error?: boolean): boolean;
     oath(): string;
     fetchBalance(params?: {}): Promise<Balances>;

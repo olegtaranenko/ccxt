@@ -101,9 +101,10 @@ export default class hyperliquid extends Exchange {
                 'fetchPositions': true,
                 'fetchPositionsRisk': false,
                 'fetchPremiumIndexOHLCV': false,
+                'fetchStatus': true,
                 'fetchTicker': 'emulated',
                 'fetchTickers': true,
-                'fetchTime': false,
+                'fetchTime': true,
                 'fetchTrades': true,
                 'fetchTradingFee': true,
                 'fetchTradingFees': false,
@@ -414,6 +415,51 @@ export default class hyperliquid extends Exchange {
 
     /**
      * @method
+     * @name hyperliquid#fetchStatus
+     * @description the latest known information on the availability of the exchange API
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object} a [status structure]{@link https://docs.ccxt.com/#/?id=exchange-status-structure}
+     */
+    async fetchStatus (params = {}) {
+        const request: Dict = {
+            'type': 'exchangeStatus',
+        };
+        const response = await this.publicPostInfo (this.extend (request, params));
+        //
+        //     {
+        //         "status": "ok"
+        //     }
+        //
+        const status = this.safeString (response, 'specialStatuses');
+        return {
+            'status': (status === undefined) ? 'ok' : 'maintenance',
+            'updated': this.safeInteger (response, 'time'),
+            'eta': undefined,
+            'url': undefined,
+            'info': response,
+        };
+    }
+
+    /**
+     * @method
+     * @name hyperliquid#fetchTime
+     * @description fetches the current integer timestamp in milliseconds from the exchange server
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {int} the current integer timestamp in milliseconds from the exchange server
+     */
+    async fetchTime (params = {}) {
+        const request: Dict = {
+            'type': 'exchangeStatus',
+        };
+        const response = await this.publicPostInfo (this.extend (request, params));
+        //
+        // { specialStatuses: null, time: '1764617438643' }
+        //
+        return this.safeInteger (response, 'time');
+    }
+
+    /**
+     * @method
      * @name hyperliquid#fetchCurrencies
      * @description fetches all available currencies on an exchange
      * @see https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint/perpetuals#retrieve-perpetuals-metadata
@@ -554,9 +600,9 @@ export default class hyperliquid extends Exchange {
         let fetchDexesList = [];
         const options = this.safeDict (this.options, 'fetchMarkets', {});
         const hip3 = this.safeDict (options, 'hip3', {});
-        const defaultLimit = this.safeInteger (hip3, 'limit', 5);
+        const defaultLimit = this.safeInteger (hip3, 'limit', 10);
         const dexesLength = fetchDexes.length;
-        if (dexesLength >= defaultLimit) { // first element is null
+        if (dexesLength > defaultLimit) { // first element is null
             const defaultDexes = this.safeList (hip3, 'dex', []);
             if (defaultDexes.length === 0) {
                 throw new ArgumentsRequired (this.id + ' fetchHip3Markets() Too many DEXes found. Please specify a list of DEXes in the exchange.options["fetchMarkets"]["hip3"]["dex"] parameter to fetch markets from those DEXes only. The limit is set to ' + defaultLimit.toString () + ' DEXes by default.');
@@ -599,7 +645,9 @@ export default class hyperliquid extends Exchange {
                 );
                 data['baseId'] = j + offset;
                 data['collateralToken'] = collateralToken;
-                const cachedCurrencies = this.safeDict (this.options, 'c', {});
+                data['hip3'] = true;
+                data['dex'] = dexName;
+                const cachedCurrencies = this.safeDict (this.options, 'cachedCurrenciesById', {});
                 // injecting collateral token name for further usage in parseMarket, already converted from like '0' to 'USDC', etc
                 if (collateralToken in cachedCurrencies) {
                     const name = this.safeString (data, 'name');
@@ -647,8 +695,6 @@ export default class hyperliquid extends Exchange {
         //     ]
         //
         //
-        // reset currency cache not needed anymore
-        this.options['cachedCurrenciesById'] = {};
         return markets;
     }
 
@@ -1195,6 +1241,7 @@ export default class hyperliquid extends Exchange {
      * @param {string[]} [symbols] unified symbols of the markets to fetch the ticker for, all market tickers are returned if not assigned
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @param {string} [params.type] 'spot' or 'swap', by default fetches both
+     * @param {boolean} [params.hip3] set to true to fetch hip3 markets only
      * @returns {object} a dictionary of [ticker structures]{@link https://docs.ccxt.com/#/?id=ticker-structure}
      */
     async fetchTickers (symbols: Strings = undefined, params = {}): Promise<Tickers> {
@@ -1204,7 +1251,20 @@ export default class hyperliquid extends Exchange {
         let response = [];
         const type = this.safeString (params, 'type');
         params = this.omit (params, 'type');
-        if (type === 'spot') {
+        let hip3 = false;
+        [ hip3, params ] = this.handleOptionAndParams (params, 'fetchTickers', 'hip3', false);
+        if (symbols !== undefined) {
+            // infer from first symbol
+            const firstSymbol = this.safeString (symbols, 0);
+            const market = this.market (firstSymbol);
+            if (this.safeBool (this.safeDict (market, 'info'), 'hip3')) {
+                hip3 = true;
+            }
+        }
+        if (hip3) {
+            params = this.omit (params, 'hip3');
+            response = await this.fetchHip3Markets (params);
+        } else if (type === 'spot') {
             response = await this.fetchSpotMarkets (params);
         } else if (type === 'swap') {
             response = await this.fetchSwapMarkets (params);
@@ -1348,6 +1408,9 @@ export default class hyperliquid extends Exchange {
         //         "circulatingSupply": "998949190.03400207", // only in spot
         //     },
         //
+        const name = this.safeString (ticker, 'name');
+        const marketId = this.coinToMarketId (name);
+        market = this.safeMarket (marketId, market);
         const bidAsk = this.safeList (ticker, 'impactPxs');
         return this.safeTicker ({
             'symbol': market['symbol'],
@@ -4332,8 +4395,12 @@ export default class hyperliquid extends Exchange {
 
     coinToMarketId (coin: Str) {
         // handle also hip3 tokens like flx:CRCL
-        if (this.safeDict (this.options['hip3TokensByName'], coin)) {
-            const hip3Dict = this.options['hip3TokensByName'][coin];
+        if (coin === undefined) {
+            return undefined;
+        }
+        const hi3TokensByname = this.safeDict (this.options, 'hip3TokensByName', {});
+        if (this.safeDict (hi3TokensByname, coin)) {
+            const hip3Dict = this.safeDict (hi3TokensByname, coin);
             const quote = this.safeString (hip3Dict, 'quote', 'USDC');
             const code = this.safeString (hip3Dict, 'code', coin);
             return code + '/' + quote + ':' + quote;

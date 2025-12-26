@@ -611,14 +611,14 @@ public partial class binanceus : binance
         return await this.callAsync ("fapiDataGetTopLongShortPositionRatio",parameters);
     }
 
-    public async Task<object> fapiPrivateDeleteAlgoOpenOrders (object parameters = null)
-    {
-        return await this.callAsync ("fapiPrivateDeleteAlgoOpenOrders",parameters);
-    }
-
     public async Task<object> fapiPrivateDeleteAlgoOrder (object parameters = null)
     {
         return await this.callAsync ("fapiPrivateDeleteAlgoOrder",parameters);
+    }
+
+    public async Task<object> fapiPrivateDeleteAlgoOpenOrders (object parameters = null)
+    {
+        return await this.callAsync ("fapiPrivateDeleteAlgoOpenOrders",parameters);
     }
 
     public async Task<object> fapiPrivateDeleteAllOpenOrders (object parameters = null)
