@@ -323,6 +323,10 @@ func (this *BinanceusdmCore) EapiPrivateGetBlockTrades (args ...interface{}) <-c
    return this.callEndpointAsync("eapiPrivateGetBlockTrades", args...)
 }
 
+func (this *BinanceusdmCore) EapiPrivateGetComission (args ...interface{}) <-chan interface{} {
+   return this.callEndpointAsync("eapiPrivateGetComission", args...)
+}
+
 func (this *BinanceusdmCore) EapiPrivateGetCountdownCancelAll (args ...interface{}) <-chan interface{} {
    return this.callEndpointAsync("eapiPrivateGetCountdownCancelAll", args...)
 }
@@ -1393,6 +1397,14 @@ func (this *BinanceusdmCore) PrivatePostOrderTest (args ...interface{}) <-chan i
 
 func (this *BinanceusdmCore) PrivatePostOrderListOco (args ...interface{}) <-chan interface{} {
    return this.callEndpointAsync("privatePostOrderListOco", args...)
+}
+
+func (this *BinanceusdmCore) PrivatePostOrderListOpo (args ...interface{}) <-chan interface{} {
+   return this.callEndpointAsync("privatePostOrderListOpo", args...)
+}
+
+func (this *BinanceusdmCore) PrivatePostOrderListOpoco (args ...interface{}) <-chan interface{} {
+   return this.callEndpointAsync("privatePostOrderListOpoco", args...)
 }
 
 func (this *BinanceusdmCore) PrivatePostOrderListOto (args ...interface{}) <-chan interface{} {

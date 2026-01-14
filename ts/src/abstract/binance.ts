@@ -88,6 +88,7 @@ interface Exchange {
     eapiPrivateGetBlockOrderOrders (params?: {}): Promise<implicitReturnType>;
     eapiPrivateGetBlockUserTrades (params?: {}): Promise<implicitReturnType>;
     eapiPrivateGetBlockTrades (params?: {}): Promise<implicitReturnType>;
+    eapiPrivateGetComission (params?: {}): Promise<implicitReturnType>;
     eapiPrivateGetCountdownCancelAll (params?: {}): Promise<implicitReturnType>;
     eapiPrivateGetExerciseRecord (params?: {}): Promise<implicitReturnType>;
     eapiPrivateGetHistoryOrders (params?: {}): Promise<implicitReturnType>;
@@ -356,6 +357,8 @@ interface Exchange {
     privatePostOrderOco (params?: {}): Promise<implicitReturnType>;
     privatePostOrderTest (params?: {}): Promise<implicitReturnType>;
     privatePostOrderListOco (params?: {}): Promise<implicitReturnType>;
+    privatePostOrderListOpo (params?: {}): Promise<implicitReturnType>;
+    privatePostOrderListOpoco (params?: {}): Promise<implicitReturnType>;
     privatePostOrderListOto (params?: {}): Promise<implicitReturnType>;
     privatePostOrderListOtoco (params?: {}): Promise<implicitReturnType>;
     privatePostSorOrder (params?: {}): Promise<implicitReturnType>;

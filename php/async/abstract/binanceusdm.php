@@ -244,6 +244,9 @@ abstract class binanceusdm extends \ccxt\async\binance {
     public function eapiprivate_get_blocktrades($params = array()) {
         return $this->request('blockTrades', 'eapiPrivate', 'GET', $params, null, null, array("cost" => 5));
     }
+    public function eapiprivate_get_comission($params = array()) {
+        return $this->request('comission', 'eapiPrivate', 'GET', $params, null, null, array("cost" => 5));
+    }
     public function eapiprivate_get_countdowncancelall($params = array()) {
         return $this->request('countdownCancelAll', 'eapiPrivate', 'GET', $params, null, null, array("cost" => 1));
     }
@@ -1047,6 +1050,12 @@ abstract class binanceusdm extends \ccxt\async\binance {
     }
     public function private_post_orderlist_oco($params = array()) {
         return $this->request('orderList/oco', 'private', 'POST', $params, null, null, array("cost" => 0.2));
+    }
+    public function private_post_orderlist_opo($params = array()) {
+        return $this->request('orderList/opo', 'private', 'POST', $params, null, null, array("cost" => 0.2));
+    }
+    public function private_post_orderlist_opoco($params = array()) {
+        return $this->request('orderList/opoco', 'private', 'POST', $params, null, null, array("cost" => 0.2));
     }
     public function private_post_orderlist_oto($params = array()) {
         return $this->request('orderList/oto', 'private', 'POST', $params, null, null, array("cost" => 0.2));
@@ -2590,6 +2599,9 @@ abstract class binanceusdm extends \ccxt\async\binance {
     public function eapiPrivateGetBlockTrades($params = array()) {
         return $this->request('blockTrades', 'eapiPrivate', 'GET', $params, null, null, array("cost" => 5));
     }
+    public function eapiPrivateGetComission($params = array()) {
+        return $this->request('comission', 'eapiPrivate', 'GET', $params, null, null, array("cost" => 5));
+    }
     public function eapiPrivateGetCountdownCancelAll($params = array()) {
         return $this->request('countdownCancelAll', 'eapiPrivate', 'GET', $params, null, null, array("cost" => 1));
     }
@@ -3393,6 +3405,12 @@ abstract class binanceusdm extends \ccxt\async\binance {
     }
     public function privatePostOrderListOco($params = array()) {
         return $this->request('orderList/oco', 'private', 'POST', $params, null, null, array("cost" => 0.2));
+    }
+    public function privatePostOrderListOpo($params = array()) {
+        return $this->request('orderList/opo', 'private', 'POST', $params, null, null, array("cost" => 0.2));
+    }
+    public function privatePostOrderListOpoco($params = array()) {
+        return $this->request('orderList/opoco', 'private', 'POST', $params, null, null, array("cost" => 0.2));
     }
     public function privatePostOrderListOto($params = array()) {
         return $this->request('orderList/oto', 'private', 'POST', $params, null, null, array("cost" => 0.2));

@@ -345,13 +345,80 @@ class binance extends Exchange {
                 ),
                 'fapiPublicV2' => array(
                     'get' => array(
-                        'ticker/price' => 0,
+                        'account' => 3,
+                        'position' => 5,
+                        'openOrders' => array( 'cost' => 1, 'noSymbol' => 40 ),
+                        'historyOrders' => 3,
+                        'userTrades' => 5,
+                        'exerciseRecord' => 5,
+                        'bill' => 1,
+                        'income/asyn' => 5,
+                        'income/asyn/id' => 5,
+                        'marginAccount' => 3,
+                        'mmp' => 1,
+                        'countdownCancelAll' => 1,
+                        'order' => 1,
+                        'block/order/orders' => 5,
+                        'block/order/execute' => 5,
+                        'block/user-trades' => 5,
+                        'blockTrades' => 5,
+                        'comission' => 5,
+                    ),
+                    'post' => array(
+                        'order' => 1,
+                        'batchOrders' => 5,
+                        'listenKey' => 1,
+                        'mmpSet' => 1,
+                        'mmpReset' => 1,
+                        'countdownCancelAll' => 1,
+                        'countdownCancelAllHeartBeat' => 10,
+                        'block/order/create' => 5,
+                        'block/order/execute' => 5,
+                    ),
+                    'put' => array(
+                        'listenKey' => 1,
+                        'block/order/create' => 5,
+                    ),
+                    'delete' => array(
+                        'order' => 1,
+                        'batchOrders' => 1,
+                        'allOpenOrders' => 1,
+                        'allOpenOrdersByUnderlying' => 1,
+                        'listenKey' => 1,
+                        'block/order/create' => 5,
                     ),
                 ),
                 'fapiPublicV3' => array(
                     'get' => array(),
                 ),
-                'papi' => array(
+                'private' => array(
+                    'get' => array(
+                        'allOrderList' => 4, // oco Weight(IP) => 20 => cost = 0.2 * 20 = 4
+                        'openOrderList' => 1.2, // oco Weight(IP) => 6 => cost = 0.2 * 6 = 1.2
+                        'orderList' => 0.8, // oco
+                        'order' => 0.8,
+                        'openOrders' => array( 'cost' => 1.2, 'noSymbol' => 16 ),
+                        'allOrders' => 4,
+                        'account' => 4,
+                        'myTrades' => 4,
+                        'rateLimit/order' => 8, // Weight(IP) => 40 => cost = 0.2 * 40 = 8
+                        'myPreventedMatches' => 4, // Weight(IP) => 20 => cost = 0.2 * 20 = 4
+                        'myAllocations' => 4,
+                        'account/commission' => 4,
+                    ),
+                    'post' => array(
+                        'order/oco' => 0.2,
+                        'orderList/oco' => 0.2,
+                        'orderList/oto' => 0.2,
+                        'orderList/otoco' => 0.2,
+                        'orderList/opo' => 0.2,
+                        'orderList/opoco' => 0.2,
+                        'sor/order' => 0.2,
+                        'sor/order/test' => 0.2,
+                        'order' => 0.2,
+                        'order/cancelReplace' => 0.2,
+                        'order/test' => 0.2,
+                    ),
                     'delete' => array(
                         'cm/allOpenOrders' => 1,
                         'cm/conditional/allOpenOrders' => 1,
