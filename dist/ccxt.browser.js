@@ -1,6 +1,2813 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
+/***/ 8045:
+/***/ ((module) => {
+
+"use strict";
+
+module.exports = asPromise;
+
+/**
+ * Callback as used by {@link util.asPromise}.
+ * @typedef asPromiseCallback
+ * @type {function}
+ * @param {Error|null} error Error, if any
+ * @param {...*} params Additional arguments
+ * @returns {undefined}
+ */
+
+/**
+ * Returns a promise from a node-style callback function.
+ * @memberof util
+ * @param {asPromiseCallback} fn Function to call
+ * @param {*} ctx Function context
+ * @param {...*} params Function arguments
+ * @returns {Promise<*>} Promisified function
+ */
+function asPromise(fn, ctx/*, varargs */) {
+    var params  = new Array(arguments.length - 1),
+        offset  = 0,
+        index   = 2,
+        pending = true;
+    while (index < arguments.length)
+        params[offset++] = arguments[index++];
+    return new Promise(function executor(resolve, reject) {
+        params[offset] = function callback(err/*, varargs */) {
+            if (pending) {
+                pending = false;
+                if (err)
+                    reject(err);
+                else {
+                    var params = new Array(arguments.length - 1),
+                        offset = 0;
+                    while (offset < params.length)
+                        params[offset++] = arguments[offset];
+                    resolve.apply(null, params);
+                }
+            }
+        };
+        try {
+            fn.apply(ctx || null, params);
+        } catch (err) {
+            if (pending) {
+                pending = false;
+                reject(err);
+            }
+        }
+    });
+}
+
+
+/***/ }),
+
+/***/ 8839:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+
+/**
+ * A minimal base64 implementation for number arrays.
+ * @memberof util
+ * @namespace
+ */
+var base64 = exports;
+
+/**
+ * Calculates the byte length of a base64 encoded string.
+ * @param {string} string Base64 encoded string
+ * @returns {number} Byte length
+ */
+base64.length = function length(string) {
+    var p = string.length;
+    if (!p)
+        return 0;
+    var n = 0;
+    while (--p % 4 > 1 && string.charAt(p) === "=")
+        ++n;
+    return Math.ceil(string.length * 3) / 4 - n;
+};
+
+// Base64 encoding table
+var b64 = new Array(64);
+
+// Base64 decoding table
+var s64 = new Array(123);
+
+// 65..90, 97..122, 48..57, 43, 47
+for (var i = 0; i < 64;)
+    s64[b64[i] = i < 26 ? i + 65 : i < 52 ? i + 71 : i < 62 ? i - 4 : i - 59 | 43] = i++;
+
+/**
+ * Encodes a buffer to a base64 encoded string.
+ * @param {Uint8Array} buffer Source buffer
+ * @param {number} start Source start
+ * @param {number} end Source end
+ * @returns {string} Base64 encoded string
+ */
+base64.encode = function encode(buffer, start, end) {
+    var parts = null,
+        chunk = [];
+    var i = 0, // output index
+        j = 0, // goto index
+        t;     // temporary
+    while (start < end) {
+        var b = buffer[start++];
+        switch (j) {
+            case 0:
+                chunk[i++] = b64[b >> 2];
+                t = (b & 3) << 4;
+                j = 1;
+                break;
+            case 1:
+                chunk[i++] = b64[t | b >> 4];
+                t = (b & 15) << 2;
+                j = 2;
+                break;
+            case 2:
+                chunk[i++] = b64[t | b >> 6];
+                chunk[i++] = b64[b & 63];
+                j = 0;
+                break;
+        }
+        if (i > 8191) {
+            (parts || (parts = [])).push(String.fromCharCode.apply(String, chunk));
+            i = 0;
+        }
+    }
+    if (j) {
+        chunk[i++] = b64[t];
+        chunk[i++] = 61;
+        if (j === 1)
+            chunk[i++] = 61;
+    }
+    if (parts) {
+        if (i)
+            parts.push(String.fromCharCode.apply(String, chunk.slice(0, i)));
+        return parts.join("");
+    }
+    return String.fromCharCode.apply(String, chunk.slice(0, i));
+};
+
+var invalidEncoding = "invalid encoding";
+
+/**
+ * Decodes a base64 encoded string to a buffer.
+ * @param {string} string Source string
+ * @param {Uint8Array} buffer Destination buffer
+ * @param {number} offset Destination offset
+ * @returns {number} Number of bytes written
+ * @throws {Error} If encoding is invalid
+ */
+base64.decode = function decode(string, buffer, offset) {
+    var start = offset;
+    var j = 0, // goto index
+        t;     // temporary
+    for (var i = 0; i < string.length;) {
+        var c = string.charCodeAt(i++);
+        if (c === 61 && j > 1)
+            break;
+        if ((c = s64[c]) === undefined)
+            throw Error(invalidEncoding);
+        switch (j) {
+            case 0:
+                t = c;
+                j = 1;
+                break;
+            case 1:
+                buffer[offset++] = t << 2 | (c & 48) >> 4;
+                t = c;
+                j = 2;
+                break;
+            case 2:
+                buffer[offset++] = (t & 15) << 4 | (c & 60) >> 2;
+                t = c;
+                j = 3;
+                break;
+            case 3:
+                buffer[offset++] = (t & 3) << 6 | c;
+                j = 0;
+                break;
+        }
+    }
+    if (j === 1)
+        throw Error(invalidEncoding);
+    return offset - start;
+};
+
+/**
+ * Tests if the specified string appears to be base64 encoded.
+ * @param {string} string String to test
+ * @returns {boolean} `true` if probably base64 encoded, otherwise false
+ */
+base64.test = function test(string) {
+    return /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(string);
+};
+
+
+/***/ }),
+
+/***/ 4358:
+/***/ ((module) => {
+
+"use strict";
+
+module.exports = EventEmitter;
+
+/**
+ * Constructs a new event emitter instance.
+ * @classdesc A minimal event emitter.
+ * @memberof util
+ * @constructor
+ */
+function EventEmitter() {
+
+    /**
+     * Registered listeners.
+     * @type {Object.<string,*>}
+     * @private
+     */
+    this._listeners = {};
+}
+
+/**
+ * Registers an event listener.
+ * @param {string} evt Event name
+ * @param {function} fn Listener
+ * @param {*} [ctx] Listener context
+ * @returns {util.EventEmitter} `this`
+ */
+EventEmitter.prototype.on = function on(evt, fn, ctx) {
+    (this._listeners[evt] || (this._listeners[evt] = [])).push({
+        fn  : fn,
+        ctx : ctx || this
+    });
+    return this;
+};
+
+/**
+ * Removes an event listener or any matching listeners if arguments are omitted.
+ * @param {string} [evt] Event name. Removes all listeners if omitted.
+ * @param {function} [fn] Listener to remove. Removes all listeners of `evt` if omitted.
+ * @returns {util.EventEmitter} `this`
+ */
+EventEmitter.prototype.off = function off(evt, fn) {
+    if (evt === undefined)
+        this._listeners = {};
+    else {
+        if (fn === undefined)
+            this._listeners[evt] = [];
+        else {
+            var listeners = this._listeners[evt];
+            for (var i = 0; i < listeners.length;)
+                if (listeners[i].fn === fn)
+                    listeners.splice(i, 1);
+                else
+                    ++i;
+        }
+    }
+    return this;
+};
+
+/**
+ * Emits an event by calling its listeners with the specified arguments.
+ * @param {string} evt Event name
+ * @param {...*} args Arguments
+ * @returns {util.EventEmitter} `this`
+ */
+EventEmitter.prototype.emit = function emit(evt) {
+    var listeners = this._listeners[evt];
+    if (listeners) {
+        var args = [],
+            i = 1;
+        for (; i < arguments.length;)
+            args.push(arguments[i++]);
+        for (i = 0; i < listeners.length;)
+            listeners[i].fn.apply(listeners[i++].ctx, args);
+    }
+    return this;
+};
+
+
+/***/ }),
+
+/***/ 9410:
+/***/ ((module) => {
+
+"use strict";
+
+
+module.exports = factory(factory);
+
+/**
+ * Reads / writes floats / doubles from / to buffers.
+ * @name util.float
+ * @namespace
+ */
+
+/**
+ * Writes a 32 bit float to a buffer using little endian byte order.
+ * @name util.float.writeFloatLE
+ * @function
+ * @param {number} val Value to write
+ * @param {Uint8Array} buf Target buffer
+ * @param {number} pos Target buffer offset
+ * @returns {undefined}
+ */
+
+/**
+ * Writes a 32 bit float to a buffer using big endian byte order.
+ * @name util.float.writeFloatBE
+ * @function
+ * @param {number} val Value to write
+ * @param {Uint8Array} buf Target buffer
+ * @param {number} pos Target buffer offset
+ * @returns {undefined}
+ */
+
+/**
+ * Reads a 32 bit float from a buffer using little endian byte order.
+ * @name util.float.readFloatLE
+ * @function
+ * @param {Uint8Array} buf Source buffer
+ * @param {number} pos Source buffer offset
+ * @returns {number} Value read
+ */
+
+/**
+ * Reads a 32 bit float from a buffer using big endian byte order.
+ * @name util.float.readFloatBE
+ * @function
+ * @param {Uint8Array} buf Source buffer
+ * @param {number} pos Source buffer offset
+ * @returns {number} Value read
+ */
+
+/**
+ * Writes a 64 bit double to a buffer using little endian byte order.
+ * @name util.float.writeDoubleLE
+ * @function
+ * @param {number} val Value to write
+ * @param {Uint8Array} buf Target buffer
+ * @param {number} pos Target buffer offset
+ * @returns {undefined}
+ */
+
+/**
+ * Writes a 64 bit double to a buffer using big endian byte order.
+ * @name util.float.writeDoubleBE
+ * @function
+ * @param {number} val Value to write
+ * @param {Uint8Array} buf Target buffer
+ * @param {number} pos Target buffer offset
+ * @returns {undefined}
+ */
+
+/**
+ * Reads a 64 bit double from a buffer using little endian byte order.
+ * @name util.float.readDoubleLE
+ * @function
+ * @param {Uint8Array} buf Source buffer
+ * @param {number} pos Source buffer offset
+ * @returns {number} Value read
+ */
+
+/**
+ * Reads a 64 bit double from a buffer using big endian byte order.
+ * @name util.float.readDoubleBE
+ * @function
+ * @param {Uint8Array} buf Source buffer
+ * @param {number} pos Source buffer offset
+ * @returns {number} Value read
+ */
+
+// Factory function for the purpose of node-based testing in modified global environments
+function factory(exports) {
+
+    // float: typed array
+    if (typeof Float32Array !== "undefined") (function() {
+
+        var f32 = new Float32Array([ -0 ]),
+            f8b = new Uint8Array(f32.buffer),
+            le  = f8b[3] === 128;
+
+        function writeFloat_f32_cpy(val, buf, pos) {
+            f32[0] = val;
+            buf[pos    ] = f8b[0];
+            buf[pos + 1] = f8b[1];
+            buf[pos + 2] = f8b[2];
+            buf[pos + 3] = f8b[3];
+        }
+
+        function writeFloat_f32_rev(val, buf, pos) {
+            f32[0] = val;
+            buf[pos    ] = f8b[3];
+            buf[pos + 1] = f8b[2];
+            buf[pos + 2] = f8b[1];
+            buf[pos + 3] = f8b[0];
+        }
+
+        /* istanbul ignore next */
+        exports.writeFloatLE = le ? writeFloat_f32_cpy : writeFloat_f32_rev;
+        /* istanbul ignore next */
+        exports.writeFloatBE = le ? writeFloat_f32_rev : writeFloat_f32_cpy;
+
+        function readFloat_f32_cpy(buf, pos) {
+            f8b[0] = buf[pos    ];
+            f8b[1] = buf[pos + 1];
+            f8b[2] = buf[pos + 2];
+            f8b[3] = buf[pos + 3];
+            return f32[0];
+        }
+
+        function readFloat_f32_rev(buf, pos) {
+            f8b[3] = buf[pos    ];
+            f8b[2] = buf[pos + 1];
+            f8b[1] = buf[pos + 2];
+            f8b[0] = buf[pos + 3];
+            return f32[0];
+        }
+
+        /* istanbul ignore next */
+        exports.readFloatLE = le ? readFloat_f32_cpy : readFloat_f32_rev;
+        /* istanbul ignore next */
+        exports.readFloatBE = le ? readFloat_f32_rev : readFloat_f32_cpy;
+
+    // float: ieee754
+    })(); else (function() {
+
+        function writeFloat_ieee754(writeUint, val, buf, pos) {
+            var sign = val < 0 ? 1 : 0;
+            if (sign)
+                val = -val;
+            if (val === 0)
+                writeUint(1 / val > 0 ? /* positive */ 0 : /* negative 0 */ 2147483648, buf, pos);
+            else if (isNaN(val))
+                writeUint(2143289344, buf, pos);
+            else if (val > 3.4028234663852886e+38) // +-Infinity
+                writeUint((sign << 31 | 2139095040) >>> 0, buf, pos);
+            else if (val < 1.1754943508222875e-38) // denormal
+                writeUint((sign << 31 | Math.round(val / 1.401298464324817e-45)) >>> 0, buf, pos);
+            else {
+                var exponent = Math.floor(Math.log(val) / Math.LN2),
+                    mantissa = Math.round(val * Math.pow(2, -exponent) * 8388608) & 8388607;
+                writeUint((sign << 31 | exponent + 127 << 23 | mantissa) >>> 0, buf, pos);
+            }
+        }
+
+        exports.writeFloatLE = writeFloat_ieee754.bind(null, writeUintLE);
+        exports.writeFloatBE = writeFloat_ieee754.bind(null, writeUintBE);
+
+        function readFloat_ieee754(readUint, buf, pos) {
+            var uint = readUint(buf, pos),
+                sign = (uint >> 31) * 2 + 1,
+                exponent = uint >>> 23 & 255,
+                mantissa = uint & 8388607;
+            return exponent === 255
+                ? mantissa
+                ? NaN
+                : sign * Infinity
+                : exponent === 0 // denormal
+                ? sign * 1.401298464324817e-45 * mantissa
+                : sign * Math.pow(2, exponent - 150) * (mantissa + 8388608);
+        }
+
+        exports.readFloatLE = readFloat_ieee754.bind(null, readUintLE);
+        exports.readFloatBE = readFloat_ieee754.bind(null, readUintBE);
+
+    })();
+
+    // double: typed array
+    if (typeof Float64Array !== "undefined") (function() {
+
+        var f64 = new Float64Array([-0]),
+            f8b = new Uint8Array(f64.buffer),
+            le  = f8b[7] === 128;
+
+        function writeDouble_f64_cpy(val, buf, pos) {
+            f64[0] = val;
+            buf[pos    ] = f8b[0];
+            buf[pos + 1] = f8b[1];
+            buf[pos + 2] = f8b[2];
+            buf[pos + 3] = f8b[3];
+            buf[pos + 4] = f8b[4];
+            buf[pos + 5] = f8b[5];
+            buf[pos + 6] = f8b[6];
+            buf[pos + 7] = f8b[7];
+        }
+
+        function writeDouble_f64_rev(val, buf, pos) {
+            f64[0] = val;
+            buf[pos    ] = f8b[7];
+            buf[pos + 1] = f8b[6];
+            buf[pos + 2] = f8b[5];
+            buf[pos + 3] = f8b[4];
+            buf[pos + 4] = f8b[3];
+            buf[pos + 5] = f8b[2];
+            buf[pos + 6] = f8b[1];
+            buf[pos + 7] = f8b[0];
+        }
+
+        /* istanbul ignore next */
+        exports.writeDoubleLE = le ? writeDouble_f64_cpy : writeDouble_f64_rev;
+        /* istanbul ignore next */
+        exports.writeDoubleBE = le ? writeDouble_f64_rev : writeDouble_f64_cpy;
+
+        function readDouble_f64_cpy(buf, pos) {
+            f8b[0] = buf[pos    ];
+            f8b[1] = buf[pos + 1];
+            f8b[2] = buf[pos + 2];
+            f8b[3] = buf[pos + 3];
+            f8b[4] = buf[pos + 4];
+            f8b[5] = buf[pos + 5];
+            f8b[6] = buf[pos + 6];
+            f8b[7] = buf[pos + 7];
+            return f64[0];
+        }
+
+        function readDouble_f64_rev(buf, pos) {
+            f8b[7] = buf[pos    ];
+            f8b[6] = buf[pos + 1];
+            f8b[5] = buf[pos + 2];
+            f8b[4] = buf[pos + 3];
+            f8b[3] = buf[pos + 4];
+            f8b[2] = buf[pos + 5];
+            f8b[1] = buf[pos + 6];
+            f8b[0] = buf[pos + 7];
+            return f64[0];
+        }
+
+        /* istanbul ignore next */
+        exports.readDoubleLE = le ? readDouble_f64_cpy : readDouble_f64_rev;
+        /* istanbul ignore next */
+        exports.readDoubleBE = le ? readDouble_f64_rev : readDouble_f64_cpy;
+
+    // double: ieee754
+    })(); else (function() {
+
+        function writeDouble_ieee754(writeUint, off0, off1, val, buf, pos) {
+            var sign = val < 0 ? 1 : 0;
+            if (sign)
+                val = -val;
+            if (val === 0) {
+                writeUint(0, buf, pos + off0);
+                writeUint(1 / val > 0 ? /* positive */ 0 : /* negative 0 */ 2147483648, buf, pos + off1);
+            } else if (isNaN(val)) {
+                writeUint(0, buf, pos + off0);
+                writeUint(2146959360, buf, pos + off1);
+            } else if (val > 1.7976931348623157e+308) { // +-Infinity
+                writeUint(0, buf, pos + off0);
+                writeUint((sign << 31 | 2146435072) >>> 0, buf, pos + off1);
+            } else {
+                var mantissa;
+                if (val < 2.2250738585072014e-308) { // denormal
+                    mantissa = val / 5e-324;
+                    writeUint(mantissa >>> 0, buf, pos + off0);
+                    writeUint((sign << 31 | mantissa / 4294967296) >>> 0, buf, pos + off1);
+                } else {
+                    var exponent = Math.floor(Math.log(val) / Math.LN2);
+                    if (exponent === 1024)
+                        exponent = 1023;
+                    mantissa = val * Math.pow(2, -exponent);
+                    writeUint(mantissa * 4503599627370496 >>> 0, buf, pos + off0);
+                    writeUint((sign << 31 | exponent + 1023 << 20 | mantissa * 1048576 & 1048575) >>> 0, buf, pos + off1);
+                }
+            }
+        }
+
+        exports.writeDoubleLE = writeDouble_ieee754.bind(null, writeUintLE, 0, 4);
+        exports.writeDoubleBE = writeDouble_ieee754.bind(null, writeUintBE, 4, 0);
+
+        function readDouble_ieee754(readUint, off0, off1, buf, pos) {
+            var lo = readUint(buf, pos + off0),
+                hi = readUint(buf, pos + off1);
+            var sign = (hi >> 31) * 2 + 1,
+                exponent = hi >>> 20 & 2047,
+                mantissa = 4294967296 * (hi & 1048575) + lo;
+            return exponent === 2047
+                ? mantissa
+                ? NaN
+                : sign * Infinity
+                : exponent === 0 // denormal
+                ? sign * 5e-324 * mantissa
+                : sign * Math.pow(2, exponent - 1075) * (mantissa + 4503599627370496);
+        }
+
+        exports.readDoubleLE = readDouble_ieee754.bind(null, readUintLE, 0, 4);
+        exports.readDoubleBE = readDouble_ieee754.bind(null, readUintBE, 4, 0);
+
+    })();
+
+    return exports;
+}
+
+// uint helpers
+
+function writeUintLE(val, buf, pos) {
+    buf[pos    ] =  val        & 255;
+    buf[pos + 1] =  val >>> 8  & 255;
+    buf[pos + 2] =  val >>> 16 & 255;
+    buf[pos + 3] =  val >>> 24;
+}
+
+function writeUintBE(val, buf, pos) {
+    buf[pos    ] =  val >>> 24;
+    buf[pos + 1] =  val >>> 16 & 255;
+    buf[pos + 2] =  val >>> 8  & 255;
+    buf[pos + 3] =  val        & 255;
+}
+
+function readUintLE(buf, pos) {
+    return (buf[pos    ]
+          | buf[pos + 1] << 8
+          | buf[pos + 2] << 16
+          | buf[pos + 3] << 24) >>> 0;
+}
+
+function readUintBE(buf, pos) {
+    return (buf[pos    ] << 24
+          | buf[pos + 1] << 16
+          | buf[pos + 2] << 8
+          | buf[pos + 3]) >>> 0;
+}
+
+
+/***/ }),
+
+/***/ 4153:
+/***/ ((module) => {
+
+"use strict";
+
+module.exports = inquire;
+
+/**
+ * Requires a module only if available.
+ * @memberof util
+ * @param {string} moduleName Module to require
+ * @returns {?Object} Required module if available and not empty, otherwise `null`
+ */
+function inquire(moduleName) {
+    try {
+        var mod = eval("quire".replace(/^/,"re"))(moduleName); // eslint-disable-line no-eval
+        if (mod && (mod.length || Object.keys(mod).length))
+            return mod;
+    } catch (e) {} // eslint-disable-line no-empty
+    return null;
+}
+
+
+/***/ }),
+
+/***/ 9390:
+/***/ ((module) => {
+
+"use strict";
+
+module.exports = pool;
+
+/**
+ * An allocator as used by {@link util.pool}.
+ * @typedef PoolAllocator
+ * @type {function}
+ * @param {number} size Buffer size
+ * @returns {Uint8Array} Buffer
+ */
+
+/**
+ * A slicer as used by {@link util.pool}.
+ * @typedef PoolSlicer
+ * @type {function}
+ * @param {number} start Start offset
+ * @param {number} end End offset
+ * @returns {Uint8Array} Buffer slice
+ * @this {Uint8Array}
+ */
+
+/**
+ * A general purpose buffer pool.
+ * @memberof util
+ * @function
+ * @param {PoolAllocator} alloc Allocator
+ * @param {PoolSlicer} slice Slicer
+ * @param {number} [size=8192] Slab size
+ * @returns {PoolAllocator} Pooled allocator
+ */
+function pool(alloc, slice, size) {
+    var SIZE   = size || 8192;
+    var MAX    = SIZE >>> 1;
+    var slab   = null;
+    var offset = SIZE;
+    return function pool_alloc(size) {
+        if (size < 1 || size > MAX)
+            return alloc(size);
+        if (offset + size > SIZE) {
+            slab = alloc(SIZE);
+            offset = 0;
+        }
+        var buf = slice.call(slab, offset, offset += size);
+        if (offset & 7) // align to 32 bit
+            offset = (offset | 7) + 1;
+        return buf;
+    };
+}
+
+
+/***/ }),
+
+/***/ 1447:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+
+/**
+ * A minimal UTF8 implementation for number arrays.
+ * @memberof util
+ * @namespace
+ */
+var utf8 = exports;
+
+/**
+ * Calculates the UTF8 byte length of a string.
+ * @param {string} string String
+ * @returns {number} Byte length
+ */
+utf8.length = function utf8_length(string) {
+    var len = 0,
+        c = 0;
+    for (var i = 0; i < string.length; ++i) {
+        c = string.charCodeAt(i);
+        if (c < 128)
+            len += 1;
+        else if (c < 2048)
+            len += 2;
+        else if ((c & 0xFC00) === 0xD800 && (string.charCodeAt(i + 1) & 0xFC00) === 0xDC00) {
+            ++i;
+            len += 4;
+        } else
+            len += 3;
+    }
+    return len;
+};
+
+/**
+ * Reads UTF8 bytes as a string.
+ * @param {Uint8Array} buffer Source buffer
+ * @param {number} start Source start
+ * @param {number} end Source end
+ * @returns {string} String read
+ */
+utf8.read = function utf8_read(buffer, start, end) {
+    var len = end - start;
+    if (len < 1)
+        return "";
+    var parts = null,
+        chunk = [],
+        i = 0, // char offset
+        t;     // temporary
+    while (start < end) {
+        t = buffer[start++];
+        if (t < 128)
+            chunk[i++] = t;
+        else if (t > 191 && t < 224)
+            chunk[i++] = (t & 31) << 6 | buffer[start++] & 63;
+        else if (t > 239 && t < 365) {
+            t = ((t & 7) << 18 | (buffer[start++] & 63) << 12 | (buffer[start++] & 63) << 6 | buffer[start++] & 63) - 0x10000;
+            chunk[i++] = 0xD800 + (t >> 10);
+            chunk[i++] = 0xDC00 + (t & 1023);
+        } else
+            chunk[i++] = (t & 15) << 12 | (buffer[start++] & 63) << 6 | buffer[start++] & 63;
+        if (i > 8191) {
+            (parts || (parts = [])).push(String.fromCharCode.apply(String, chunk));
+            i = 0;
+        }
+    }
+    if (parts) {
+        if (i)
+            parts.push(String.fromCharCode.apply(String, chunk.slice(0, i)));
+        return parts.join("");
+    }
+    return String.fromCharCode.apply(String, chunk.slice(0, i));
+};
+
+/**
+ * Writes a string as UTF8 bytes.
+ * @param {string} string Source string
+ * @param {Uint8Array} buffer Destination buffer
+ * @param {number} offset Destination offset
+ * @returns {number} Bytes written
+ */
+utf8.write = function utf8_write(string, buffer, offset) {
+    var start = offset,
+        c1, // character 1
+        c2; // character 2
+    for (var i = 0; i < string.length; ++i) {
+        c1 = string.charCodeAt(i);
+        if (c1 < 128) {
+            buffer[offset++] = c1;
+        } else if (c1 < 2048) {
+            buffer[offset++] = c1 >> 6       | 192;
+            buffer[offset++] = c1       & 63 | 128;
+        } else if ((c1 & 0xFC00) === 0xD800 && ((c2 = string.charCodeAt(i + 1)) & 0xFC00) === 0xDC00) {
+            c1 = 0x10000 + ((c1 & 0x03FF) << 10) + (c2 & 0x03FF);
+            ++i;
+            buffer[offset++] = c1 >> 18      | 240;
+            buffer[offset++] = c1 >> 12 & 63 | 128;
+            buffer[offset++] = c1 >> 6  & 63 | 128;
+            buffer[offset++] = c1       & 63 | 128;
+        } else {
+            buffer[offset++] = c1 >> 12      | 224;
+            buffer[offset++] = c1 >> 6  & 63 | 128;
+            buffer[offset++] = c1       & 63 | 128;
+        }
+    }
+    return offset - start;
+};
+
+
+/***/ }),
+
+/***/ 6946:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+// minimal library entry point.
+
+
+module.exports = __webpack_require__(4394);
+
+
+/***/ }),
+
+/***/ 4394:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+var protobuf = exports;
+
+/**
+ * Build type, one of `"full"`, `"light"` or `"minimal"`.
+ * @name build
+ * @type {string}
+ * @const
+ */
+protobuf.build = "minimal";
+
+// Serialization
+protobuf.Writer       = __webpack_require__(3449);
+protobuf.BufferWriter = __webpack_require__(818);
+protobuf.Reader       = __webpack_require__(6237);
+protobuf.BufferReader = __webpack_require__(3158);
+
+// Utility
+protobuf.util         = __webpack_require__(3610);
+protobuf.rpc          = __webpack_require__(5047);
+protobuf.roots        = __webpack_require__(4529);
+protobuf.configure    = configure;
+
+/* istanbul ignore next */
+/**
+ * Reconfigures the library according to the environment.
+ * @returns {undefined}
+ */
+function configure() {
+    protobuf.util._configure();
+    protobuf.Writer._configure(protobuf.BufferWriter);
+    protobuf.Reader._configure(protobuf.BufferReader);
+}
+
+// Set up buffer utility according to the environment
+configure();
+
+
+/***/ }),
+
+/***/ 6237:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+module.exports = Reader;
+
+var util      = __webpack_require__(3610);
+
+var BufferReader; // cyclic
+
+var LongBits  = util.LongBits,
+    utf8      = util.utf8;
+
+/* istanbul ignore next */
+function indexOutOfRange(reader, writeLength) {
+    return RangeError("index out of range: " + reader.pos + " + " + (writeLength || 1) + " > " + reader.len);
+}
+
+/**
+ * Constructs a new reader instance using the specified buffer.
+ * @classdesc Wire format reader using `Uint8Array` if available, otherwise `Array`.
+ * @constructor
+ * @param {Uint8Array} buffer Buffer to read from
+ */
+function Reader(buffer) {
+
+    /**
+     * Read buffer.
+     * @type {Uint8Array}
+     */
+    this.buf = buffer;
+
+    /**
+     * Read buffer position.
+     * @type {number}
+     */
+    this.pos = 0;
+
+    /**
+     * Read buffer length.
+     * @type {number}
+     */
+    this.len = buffer.length;
+}
+
+var create_array = typeof Uint8Array !== "undefined"
+    ? function create_typed_array(buffer) {
+        if (buffer instanceof Uint8Array || Array.isArray(buffer))
+            return new Reader(buffer);
+        throw Error("illegal buffer");
+    }
+    /* istanbul ignore next */
+    : function create_array(buffer) {
+        if (Array.isArray(buffer))
+            return new Reader(buffer);
+        throw Error("illegal buffer");
+    };
+
+var create = function create() {
+    return util.Buffer
+        ? function create_buffer_setup(buffer) {
+            return (Reader.create = function create_buffer(buffer) {
+                return util.Buffer.isBuffer(buffer)
+                    ? new BufferReader(buffer)
+                    /* istanbul ignore next */
+                    : create_array(buffer);
+            })(buffer);
+        }
+        /* istanbul ignore next */
+        : create_array;
+};
+
+/**
+ * Creates a new reader using the specified buffer.
+ * @function
+ * @param {Uint8Array|Buffer} buffer Buffer to read from
+ * @returns {Reader|BufferReader} A {@link BufferReader} if `buffer` is a Buffer, otherwise a {@link Reader}
+ * @throws {Error} If `buffer` is not a valid buffer
+ */
+Reader.create = create();
+
+Reader.prototype._slice = util.Array.prototype.subarray || /* istanbul ignore next */ util.Array.prototype.slice;
+
+/**
+ * Reads a varint as an unsigned 32 bit value.
+ * @function
+ * @returns {number} Value read
+ */
+Reader.prototype.uint32 = (function read_uint32_setup() {
+    var value = 4294967295; // optimizer type-hint, tends to deopt otherwise (?!)
+    return function read_uint32() {
+        value = (         this.buf[this.pos] & 127       ) >>> 0; if (this.buf[this.pos++] < 128) return value;
+        value = (value | (this.buf[this.pos] & 127) <<  7) >>> 0; if (this.buf[this.pos++] < 128) return value;
+        value = (value | (this.buf[this.pos] & 127) << 14) >>> 0; if (this.buf[this.pos++] < 128) return value;
+        value = (value | (this.buf[this.pos] & 127) << 21) >>> 0; if (this.buf[this.pos++] < 128) return value;
+        value = (value | (this.buf[this.pos] &  15) << 28) >>> 0; if (this.buf[this.pos++] < 128) return value;
+
+        /* istanbul ignore if */
+        if ((this.pos += 5) > this.len) {
+            this.pos = this.len;
+            throw indexOutOfRange(this, 10);
+        }
+        return value;
+    };
+})();
+
+/**
+ * Reads a varint as a signed 32 bit value.
+ * @returns {number} Value read
+ */
+Reader.prototype.int32 = function read_int32() {
+    return this.uint32() | 0;
+};
+
+/**
+ * Reads a zig-zag encoded varint as a signed 32 bit value.
+ * @returns {number} Value read
+ */
+Reader.prototype.sint32 = function read_sint32() {
+    var value = this.uint32();
+    return value >>> 1 ^ -(value & 1) | 0;
+};
+
+/* eslint-disable no-invalid-this */
+
+function readLongVarint() {
+    // tends to deopt with local vars for octet etc.
+    var bits = new LongBits(0, 0);
+    var i = 0;
+    if (this.len - this.pos > 4) { // fast route (lo)
+        for (; i < 4; ++i) {
+            // 1st..4th
+            bits.lo = (bits.lo | (this.buf[this.pos] & 127) << i * 7) >>> 0;
+            if (this.buf[this.pos++] < 128)
+                return bits;
+        }
+        // 5th
+        bits.lo = (bits.lo | (this.buf[this.pos] & 127) << 28) >>> 0;
+        bits.hi = (bits.hi | (this.buf[this.pos] & 127) >>  4) >>> 0;
+        if (this.buf[this.pos++] < 128)
+            return bits;
+        i = 0;
+    } else {
+        for (; i < 3; ++i) {
+            /* istanbul ignore if */
+            if (this.pos >= this.len)
+                throw indexOutOfRange(this);
+            // 1st..3th
+            bits.lo = (bits.lo | (this.buf[this.pos] & 127) << i * 7) >>> 0;
+            if (this.buf[this.pos++] < 128)
+                return bits;
+        }
+        // 4th
+        bits.lo = (bits.lo | (this.buf[this.pos++] & 127) << i * 7) >>> 0;
+        return bits;
+    }
+    if (this.len - this.pos > 4) { // fast route (hi)
+        for (; i < 5; ++i) {
+            // 6th..10th
+            bits.hi = (bits.hi | (this.buf[this.pos] & 127) << i * 7 + 3) >>> 0;
+            if (this.buf[this.pos++] < 128)
+                return bits;
+        }
+    } else {
+        for (; i < 5; ++i) {
+            /* istanbul ignore if */
+            if (this.pos >= this.len)
+                throw indexOutOfRange(this);
+            // 6th..10th
+            bits.hi = (bits.hi | (this.buf[this.pos] & 127) << i * 7 + 3) >>> 0;
+            if (this.buf[this.pos++] < 128)
+                return bits;
+        }
+    }
+    /* istanbul ignore next */
+    throw Error("invalid varint encoding");
+}
+
+/* eslint-enable no-invalid-this */
+
+/**
+ * Reads a varint as a signed 64 bit value.
+ * @name Reader#int64
+ * @function
+ * @returns {Long} Value read
+ */
+
+/**
+ * Reads a varint as an unsigned 64 bit value.
+ * @name Reader#uint64
+ * @function
+ * @returns {Long} Value read
+ */
+
+/**
+ * Reads a zig-zag encoded varint as a signed 64 bit value.
+ * @name Reader#sint64
+ * @function
+ * @returns {Long} Value read
+ */
+
+/**
+ * Reads a varint as a boolean.
+ * @returns {boolean} Value read
+ */
+Reader.prototype.bool = function read_bool() {
+    return this.uint32() !== 0;
+};
+
+function readFixed32_end(buf, end) { // note that this uses `end`, not `pos`
+    return (buf[end - 4]
+          | buf[end - 3] << 8
+          | buf[end - 2] << 16
+          | buf[end - 1] << 24) >>> 0;
+}
+
+/**
+ * Reads fixed 32 bits as an unsigned 32 bit integer.
+ * @returns {number} Value read
+ */
+Reader.prototype.fixed32 = function read_fixed32() {
+
+    /* istanbul ignore if */
+    if (this.pos + 4 > this.len)
+        throw indexOutOfRange(this, 4);
+
+    return readFixed32_end(this.buf, this.pos += 4);
+};
+
+/**
+ * Reads fixed 32 bits as a signed 32 bit integer.
+ * @returns {number} Value read
+ */
+Reader.prototype.sfixed32 = function read_sfixed32() {
+
+    /* istanbul ignore if */
+    if (this.pos + 4 > this.len)
+        throw indexOutOfRange(this, 4);
+
+    return readFixed32_end(this.buf, this.pos += 4) | 0;
+};
+
+/* eslint-disable no-invalid-this */
+
+function readFixed64(/* this: Reader */) {
+
+    /* istanbul ignore if */
+    if (this.pos + 8 > this.len)
+        throw indexOutOfRange(this, 8);
+
+    return new LongBits(readFixed32_end(this.buf, this.pos += 4), readFixed32_end(this.buf, this.pos += 4));
+}
+
+/* eslint-enable no-invalid-this */
+
+/**
+ * Reads fixed 64 bits.
+ * @name Reader#fixed64
+ * @function
+ * @returns {Long} Value read
+ */
+
+/**
+ * Reads zig-zag encoded fixed 64 bits.
+ * @name Reader#sfixed64
+ * @function
+ * @returns {Long} Value read
+ */
+
+/**
+ * Reads a float (32 bit) as a number.
+ * @function
+ * @returns {number} Value read
+ */
+Reader.prototype.float = function read_float() {
+
+    /* istanbul ignore if */
+    if (this.pos + 4 > this.len)
+        throw indexOutOfRange(this, 4);
+
+    var value = util.float.readFloatLE(this.buf, this.pos);
+    this.pos += 4;
+    return value;
+};
+
+/**
+ * Reads a double (64 bit float) as a number.
+ * @function
+ * @returns {number} Value read
+ */
+Reader.prototype.double = function read_double() {
+
+    /* istanbul ignore if */
+    if (this.pos + 8 > this.len)
+        throw indexOutOfRange(this, 4);
+
+    var value = util.float.readDoubleLE(this.buf, this.pos);
+    this.pos += 8;
+    return value;
+};
+
+/**
+ * Reads a sequence of bytes preceeded by its length as a varint.
+ * @returns {Uint8Array} Value read
+ */
+Reader.prototype.bytes = function read_bytes() {
+    var length = this.uint32(),
+        start  = this.pos,
+        end    = this.pos + length;
+
+    /* istanbul ignore if */
+    if (end > this.len)
+        throw indexOutOfRange(this, length);
+
+    this.pos += length;
+    if (Array.isArray(this.buf)) // plain array
+        return this.buf.slice(start, end);
+
+    if (start === end) { // fix for IE 10/Win8 and others' subarray returning array of size 1
+        var nativeBuffer = util.Buffer;
+        return nativeBuffer
+            ? nativeBuffer.alloc(0)
+            : new this.buf.constructor(0);
+    }
+    return this._slice.call(this.buf, start, end);
+};
+
+/**
+ * Reads a string preceeded by its byte length as a varint.
+ * @returns {string} Value read
+ */
+Reader.prototype.string = function read_string() {
+    var bytes = this.bytes();
+    return utf8.read(bytes, 0, bytes.length);
+};
+
+/**
+ * Skips the specified number of bytes if specified, otherwise skips a varint.
+ * @param {number} [length] Length if known, otherwise a varint is assumed
+ * @returns {Reader} `this`
+ */
+Reader.prototype.skip = function skip(length) {
+    if (typeof length === "number") {
+        /* istanbul ignore if */
+        if (this.pos + length > this.len)
+            throw indexOutOfRange(this, length);
+        this.pos += length;
+    } else {
+        do {
+            /* istanbul ignore if */
+            if (this.pos >= this.len)
+                throw indexOutOfRange(this);
+        } while (this.buf[this.pos++] & 128);
+    }
+    return this;
+};
+
+/**
+ * Skips the next element of the specified wire type.
+ * @param {number} wireType Wire type received
+ * @returns {Reader} `this`
+ */
+Reader.prototype.skipType = function(wireType) {
+    switch (wireType) {
+        case 0:
+            this.skip();
+            break;
+        case 1:
+            this.skip(8);
+            break;
+        case 2:
+            this.skip(this.uint32());
+            break;
+        case 3:
+            while ((wireType = this.uint32() & 7) !== 4) {
+                this.skipType(wireType);
+            }
+            break;
+        case 5:
+            this.skip(4);
+            break;
+
+        /* istanbul ignore next */
+        default:
+            throw Error("invalid wire type " + wireType + " at offset " + this.pos);
+    }
+    return this;
+};
+
+Reader._configure = function(BufferReader_) {
+    BufferReader = BufferReader_;
+    Reader.create = create();
+    BufferReader._configure();
+
+    var fn = util.Long ? "toLong" : /* istanbul ignore next */ "toNumber";
+    util.merge(Reader.prototype, {
+
+        int64: function read_int64() {
+            return readLongVarint.call(this)[fn](false);
+        },
+
+        uint64: function read_uint64() {
+            return readLongVarint.call(this)[fn](true);
+        },
+
+        sint64: function read_sint64() {
+            return readLongVarint.call(this).zzDecode()[fn](false);
+        },
+
+        fixed64: function read_fixed64() {
+            return readFixed64.call(this)[fn](true);
+        },
+
+        sfixed64: function read_sfixed64() {
+            return readFixed64.call(this)[fn](false);
+        }
+
+    });
+};
+
+
+/***/ }),
+
+/***/ 3158:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+module.exports = BufferReader;
+
+// extends Reader
+var Reader = __webpack_require__(6237);
+(BufferReader.prototype = Object.create(Reader.prototype)).constructor = BufferReader;
+
+var util = __webpack_require__(3610);
+
+/**
+ * Constructs a new buffer reader instance.
+ * @classdesc Wire format reader using node buffers.
+ * @extends Reader
+ * @constructor
+ * @param {Buffer} buffer Buffer to read from
+ */
+function BufferReader(buffer) {
+    Reader.call(this, buffer);
+
+    /**
+     * Read buffer.
+     * @name BufferReader#buf
+     * @type {Buffer}
+     */
+}
+
+BufferReader._configure = function () {
+    /* istanbul ignore else */
+    if (util.Buffer)
+        BufferReader.prototype._slice = util.Buffer.prototype.slice;
+};
+
+
+/**
+ * @override
+ */
+BufferReader.prototype.string = function read_string_buffer() {
+    var len = this.uint32(); // modifies pos
+    return this.buf.utf8Slice
+        ? this.buf.utf8Slice(this.pos, this.pos = Math.min(this.pos + len, this.len))
+        : this.buf.toString("utf-8", this.pos, this.pos = Math.min(this.pos + len, this.len));
+};
+
+/**
+ * Reads a sequence of bytes preceeded by its length as a varint.
+ * @name BufferReader#bytes
+ * @function
+ * @returns {Buffer} Value read
+ */
+
+BufferReader._configure();
+
+
+/***/ }),
+
+/***/ 4529:
+/***/ ((module) => {
+
+"use strict";
+
+module.exports = {};
+
+/**
+ * Named roots.
+ * This is where pbjs stores generated structures (the option `-r, --root` specifies a name).
+ * Can also be used manually to make roots available across modules.
+ * @name roots
+ * @type {Object.<string,Root>}
+ * @example
+ * // pbjs -r myroot -o compiled.js ...
+ *
+ * // in another module:
+ * require("./compiled.js");
+ *
+ * // in any subsequent module:
+ * var root = protobuf.roots["myroot"];
+ */
+
+
+/***/ }),
+
+/***/ 5047:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+
+/**
+ * Streaming RPC helpers.
+ * @namespace
+ */
+var rpc = exports;
+
+/**
+ * RPC implementation passed to {@link Service#create} performing a service request on network level, i.e. by utilizing http requests or websockets.
+ * @typedef RPCImpl
+ * @type {function}
+ * @param {Method|rpc.ServiceMethod<Message<{}>,Message<{}>>} method Reflected or static method being called
+ * @param {Uint8Array} requestData Request data
+ * @param {RPCImplCallback} callback Callback function
+ * @returns {undefined}
+ * @example
+ * function rpcImpl(method, requestData, callback) {
+ *     if (protobuf.util.lcFirst(method.name) !== "myMethod") // compatible with static code
+ *         throw Error("no such method");
+ *     asynchronouslyObtainAResponse(requestData, function(err, responseData) {
+ *         callback(err, responseData);
+ *     });
+ * }
+ */
+
+/**
+ * Node-style callback as used by {@link RPCImpl}.
+ * @typedef RPCImplCallback
+ * @type {function}
+ * @param {Error|null} error Error, if any, otherwise `null`
+ * @param {Uint8Array|null} [response] Response data or `null` to signal end of stream, if there hasn't been an error
+ * @returns {undefined}
+ */
+
+rpc.Service = __webpack_require__(7595);
+
+
+/***/ }),
+
+/***/ 7595:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+module.exports = Service;
+
+var util = __webpack_require__(3610);
+
+// Extends EventEmitter
+(Service.prototype = Object.create(util.EventEmitter.prototype)).constructor = Service;
+
+/**
+ * A service method callback as used by {@link rpc.ServiceMethod|ServiceMethod}.
+ *
+ * Differs from {@link RPCImplCallback} in that it is an actual callback of a service method which may not return `response = null`.
+ * @typedef rpc.ServiceMethodCallback
+ * @template TRes extends Message<TRes>
+ * @type {function}
+ * @param {Error|null} error Error, if any
+ * @param {TRes} [response] Response message
+ * @returns {undefined}
+ */
+
+/**
+ * A service method part of a {@link rpc.Service} as created by {@link Service.create}.
+ * @typedef rpc.ServiceMethod
+ * @template TReq extends Message<TReq>
+ * @template TRes extends Message<TRes>
+ * @type {function}
+ * @param {TReq|Properties<TReq>} request Request message or plain object
+ * @param {rpc.ServiceMethodCallback<TRes>} [callback] Node-style callback called with the error, if any, and the response message
+ * @returns {Promise<Message<TRes>>} Promise if `callback` has been omitted, otherwise `undefined`
+ */
+
+/**
+ * Constructs a new RPC service instance.
+ * @classdesc An RPC service as returned by {@link Service#create}.
+ * @exports rpc.Service
+ * @extends util.EventEmitter
+ * @constructor
+ * @param {RPCImpl} rpcImpl RPC implementation
+ * @param {boolean} [requestDelimited=false] Whether requests are length-delimited
+ * @param {boolean} [responseDelimited=false] Whether responses are length-delimited
+ */
+function Service(rpcImpl, requestDelimited, responseDelimited) {
+
+    if (typeof rpcImpl !== "function")
+        throw TypeError("rpcImpl must be a function");
+
+    util.EventEmitter.call(this);
+
+    /**
+     * RPC implementation. Becomes `null` once the service is ended.
+     * @type {RPCImpl|null}
+     */
+    this.rpcImpl = rpcImpl;
+
+    /**
+     * Whether requests are length-delimited.
+     * @type {boolean}
+     */
+    this.requestDelimited = Boolean(requestDelimited);
+
+    /**
+     * Whether responses are length-delimited.
+     * @type {boolean}
+     */
+    this.responseDelimited = Boolean(responseDelimited);
+}
+
+/**
+ * Calls a service method through {@link rpc.Service#rpcImpl|rpcImpl}.
+ * @param {Method|rpc.ServiceMethod<TReq,TRes>} method Reflected or static method
+ * @param {Constructor<TReq>} requestCtor Request constructor
+ * @param {Constructor<TRes>} responseCtor Response constructor
+ * @param {TReq|Properties<TReq>} request Request message or plain object
+ * @param {rpc.ServiceMethodCallback<TRes>} callback Service callback
+ * @returns {undefined}
+ * @template TReq extends Message<TReq>
+ * @template TRes extends Message<TRes>
+ */
+Service.prototype.rpcCall = function rpcCall(method, requestCtor, responseCtor, request, callback) {
+
+    if (!request)
+        throw TypeError("request must be specified");
+
+    var self = this;
+    if (!callback)
+        return util.asPromise(rpcCall, self, method, requestCtor, responseCtor, request);
+
+    if (!self.rpcImpl) {
+        setTimeout(function() { callback(Error("already ended")); }, 0);
+        return undefined;
+    }
+
+    try {
+        return self.rpcImpl(
+            method,
+            requestCtor[self.requestDelimited ? "encodeDelimited" : "encode"](request).finish(),
+            function rpcCallback(err, response) {
+
+                if (err) {
+                    self.emit("error", err, method);
+                    return callback(err);
+                }
+
+                if (response === null) {
+                    self.end(/* endedByRPC */ true);
+                    return undefined;
+                }
+
+                if (!(response instanceof responseCtor)) {
+                    try {
+                        response = responseCtor[self.responseDelimited ? "decodeDelimited" : "decode"](response);
+                    } catch (err) {
+                        self.emit("error", err, method);
+                        return callback(err);
+                    }
+                }
+
+                self.emit("data", response, method);
+                return callback(null, response);
+            }
+        );
+    } catch (err) {
+        self.emit("error", err, method);
+        setTimeout(function() { callback(err); }, 0);
+        return undefined;
+    }
+};
+
+/**
+ * Ends this service and emits the `end` event.
+ * @param {boolean} [endedByRPC=false] Whether the service has been ended by the RPC implementation.
+ * @returns {rpc.Service} `this`
+ */
+Service.prototype.end = function end(endedByRPC) {
+    if (this.rpcImpl) {
+        if (!endedByRPC) // signal end to rpcImpl
+            this.rpcImpl(null, null, null);
+        this.rpcImpl = null;
+        this.emit("end").off();
+    }
+    return this;
+};
+
+
+/***/ }),
+
+/***/ 2239:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+module.exports = LongBits;
+
+var util = __webpack_require__(3610);
+
+/**
+ * Constructs new long bits.
+ * @classdesc Helper class for working with the low and high bits of a 64 bit value.
+ * @memberof util
+ * @constructor
+ * @param {number} lo Low 32 bits, unsigned
+ * @param {number} hi High 32 bits, unsigned
+ */
+function LongBits(lo, hi) {
+
+    // note that the casts below are theoretically unnecessary as of today, but older statically
+    // generated converter code might still call the ctor with signed 32bits. kept for compat.
+
+    /**
+     * Low bits.
+     * @type {number}
+     */
+    this.lo = lo >>> 0;
+
+    /**
+     * High bits.
+     * @type {number}
+     */
+    this.hi = hi >>> 0;
+}
+
+/**
+ * Zero bits.
+ * @memberof util.LongBits
+ * @type {util.LongBits}
+ */
+var zero = LongBits.zero = new LongBits(0, 0);
+
+zero.toNumber = function() { return 0; };
+zero.zzEncode = zero.zzDecode = function() { return this; };
+zero.length = function() { return 1; };
+
+/**
+ * Zero hash.
+ * @memberof util.LongBits
+ * @type {string}
+ */
+var zeroHash = LongBits.zeroHash = "\0\0\0\0\0\0\0\0";
+
+/**
+ * Constructs new long bits from the specified number.
+ * @param {number} value Value
+ * @returns {util.LongBits} Instance
+ */
+LongBits.fromNumber = function fromNumber(value) {
+    if (value === 0)
+        return zero;
+    var sign = value < 0;
+    if (sign)
+        value = -value;
+    var lo = value >>> 0,
+        hi = (value - lo) / 4294967296 >>> 0;
+    if (sign) {
+        hi = ~hi >>> 0;
+        lo = ~lo >>> 0;
+        if (++lo > 4294967295) {
+            lo = 0;
+            if (++hi > 4294967295)
+                hi = 0;
+        }
+    }
+    return new LongBits(lo, hi);
+};
+
+/**
+ * Constructs new long bits from a number, long or string.
+ * @param {Long|number|string} value Value
+ * @returns {util.LongBits} Instance
+ */
+LongBits.from = function from(value) {
+    if (typeof value === "number")
+        return LongBits.fromNumber(value);
+    if (util.isString(value)) {
+        /* istanbul ignore else */
+        if (util.Long)
+            value = util.Long.fromString(value);
+        else
+            return LongBits.fromNumber(parseInt(value, 10));
+    }
+    return value.low || value.high ? new LongBits(value.low >>> 0, value.high >>> 0) : zero;
+};
+
+/**
+ * Converts this long bits to a possibly unsafe JavaScript number.
+ * @param {boolean} [unsigned=false] Whether unsigned or not
+ * @returns {number} Possibly unsafe number
+ */
+LongBits.prototype.toNumber = function toNumber(unsigned) {
+    if (!unsigned && this.hi >>> 31) {
+        var lo = ~this.lo + 1 >>> 0,
+            hi = ~this.hi     >>> 0;
+        if (!lo)
+            hi = hi + 1 >>> 0;
+        return -(lo + hi * 4294967296);
+    }
+    return this.lo + this.hi * 4294967296;
+};
+
+/**
+ * Converts this long bits to a long.
+ * @param {boolean} [unsigned=false] Whether unsigned or not
+ * @returns {Long} Long
+ */
+LongBits.prototype.toLong = function toLong(unsigned) {
+    return util.Long
+        ? new util.Long(this.lo | 0, this.hi | 0, Boolean(unsigned))
+        /* istanbul ignore next */
+        : { low: this.lo | 0, high: this.hi | 0, unsigned: Boolean(unsigned) };
+};
+
+var charCodeAt = String.prototype.charCodeAt;
+
+/**
+ * Constructs new long bits from the specified 8 characters long hash.
+ * @param {string} hash Hash
+ * @returns {util.LongBits} Bits
+ */
+LongBits.fromHash = function fromHash(hash) {
+    if (hash === zeroHash)
+        return zero;
+    return new LongBits(
+        ( charCodeAt.call(hash, 0)
+        | charCodeAt.call(hash, 1) << 8
+        | charCodeAt.call(hash, 2) << 16
+        | charCodeAt.call(hash, 3) << 24) >>> 0
+    ,
+        ( charCodeAt.call(hash, 4)
+        | charCodeAt.call(hash, 5) << 8
+        | charCodeAt.call(hash, 6) << 16
+        | charCodeAt.call(hash, 7) << 24) >>> 0
+    );
+};
+
+/**
+ * Converts this long bits to a 8 characters long hash.
+ * @returns {string} Hash
+ */
+LongBits.prototype.toHash = function toHash() {
+    return String.fromCharCode(
+        this.lo        & 255,
+        this.lo >>> 8  & 255,
+        this.lo >>> 16 & 255,
+        this.lo >>> 24      ,
+        this.hi        & 255,
+        this.hi >>> 8  & 255,
+        this.hi >>> 16 & 255,
+        this.hi >>> 24
+    );
+};
+
+/**
+ * Zig-zag encodes this long bits.
+ * @returns {util.LongBits} `this`
+ */
+LongBits.prototype.zzEncode = function zzEncode() {
+    var mask =   this.hi >> 31;
+    this.hi  = ((this.hi << 1 | this.lo >>> 31) ^ mask) >>> 0;
+    this.lo  = ( this.lo << 1                   ^ mask) >>> 0;
+    return this;
+};
+
+/**
+ * Zig-zag decodes this long bits.
+ * @returns {util.LongBits} `this`
+ */
+LongBits.prototype.zzDecode = function zzDecode() {
+    var mask = -(this.lo & 1);
+    this.lo  = ((this.lo >>> 1 | this.hi << 31) ^ mask) >>> 0;
+    this.hi  = ( this.hi >>> 1                  ^ mask) >>> 0;
+    return this;
+};
+
+/**
+ * Calculates the length of this longbits when encoded as a varint.
+ * @returns {number} Length
+ */
+LongBits.prototype.length = function length() {
+    var part0 =  this.lo,
+        part1 = (this.lo >>> 28 | this.hi << 4) >>> 0,
+        part2 =  this.hi >>> 24;
+    return part2 === 0
+         ? part1 === 0
+           ? part0 < 16384
+             ? part0 < 128 ? 1 : 2
+             : part0 < 2097152 ? 3 : 4
+           : part1 < 16384
+             ? part1 < 128 ? 5 : 6
+             : part1 < 2097152 ? 7 : 8
+         : part2 < 128 ? 9 : 10;
+};
+
+
+/***/ }),
+
+/***/ 3610:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var util = exports;
+
+// used to return a Promise where callback is omitted
+util.asPromise = __webpack_require__(8045);
+
+// converts to / from base64 encoded strings
+util.base64 = __webpack_require__(8839);
+
+// base class of rpc.Service
+util.EventEmitter = __webpack_require__(4358);
+
+// float handling accross browsers
+util.float = __webpack_require__(9410);
+
+// requires modules optionally and hides the call from bundlers
+util.inquire = __webpack_require__(4153);
+
+// converts to / from utf8 encoded strings
+util.utf8 = __webpack_require__(1447);
+
+// provides a node-like buffer pool in the browser
+util.pool = __webpack_require__(9390);
+
+// utility to work with the low and high bits of a 64 bit value
+util.LongBits = __webpack_require__(2239);
+
+/**
+ * Whether running within node or not.
+ * @memberof util
+ * @type {boolean}
+ */
+util.isNode = Boolean(typeof __webpack_require__.g !== "undefined"
+                   && __webpack_require__.g
+                   && __webpack_require__.g.process
+                   && __webpack_require__.g.process.versions
+                   && __webpack_require__.g.process.versions.node);
+
+/**
+ * Global object reference.
+ * @memberof util
+ * @type {Object}
+ */
+util.global = util.isNode && __webpack_require__.g
+           || typeof window !== "undefined" && window
+           || typeof self   !== "undefined" && self
+           || this; // eslint-disable-line no-invalid-this
+
+/**
+ * An immuable empty array.
+ * @memberof util
+ * @type {Array.<*>}
+ * @const
+ */
+util.emptyArray = Object.freeze ? Object.freeze([]) : /* istanbul ignore next */ []; // used on prototypes
+
+/**
+ * An immutable empty object.
+ * @type {Object}
+ * @const
+ */
+util.emptyObject = Object.freeze ? Object.freeze({}) : /* istanbul ignore next */ {}; // used on prototypes
+
+/**
+ * Tests if the specified value is an integer.
+ * @function
+ * @param {*} value Value to test
+ * @returns {boolean} `true` if the value is an integer
+ */
+util.isInteger = Number.isInteger || /* istanbul ignore next */ function isInteger(value) {
+    return typeof value === "number" && isFinite(value) && Math.floor(value) === value;
+};
+
+/**
+ * Tests if the specified value is a string.
+ * @param {*} value Value to test
+ * @returns {boolean} `true` if the value is a string
+ */
+util.isString = function isString(value) {
+    return typeof value === "string" || value instanceof String;
+};
+
+/**
+ * Tests if the specified value is a non-null object.
+ * @param {*} value Value to test
+ * @returns {boolean} `true` if the value is a non-null object
+ */
+util.isObject = function isObject(value) {
+    return value && typeof value === "object";
+};
+
+/**
+ * Checks if a property on a message is considered to be present.
+ * This is an alias of {@link util.isSet}.
+ * @function
+ * @param {Object} obj Plain object or message instance
+ * @param {string} prop Property name
+ * @returns {boolean} `true` if considered to be present, otherwise `false`
+ */
+util.isset =
+
+/**
+ * Checks if a property on a message is considered to be present.
+ * @param {Object} obj Plain object or message instance
+ * @param {string} prop Property name
+ * @returns {boolean} `true` if considered to be present, otherwise `false`
+ */
+util.isSet = function isSet(obj, prop) {
+    var value = obj[prop];
+    if (value != null && obj.hasOwnProperty(prop)) // eslint-disable-line eqeqeq, no-prototype-builtins
+        return typeof value !== "object" || (Array.isArray(value) ? value.length : Object.keys(value).length) > 0;
+    return false;
+};
+
+/**
+ * Any compatible Buffer instance.
+ * This is a minimal stand-alone definition of a Buffer instance. The actual type is that exported by node's typings.
+ * @interface Buffer
+ * @extends Uint8Array
+ */
+
+/**
+ * Node's Buffer class if available.
+ * @type {Constructor<Buffer>}
+ */
+util.Buffer = (function() {
+    try {
+        var Buffer = util.inquire("buffer").Buffer;
+        // refuse to use non-node buffers if not explicitly assigned (perf reasons):
+        return Buffer.prototype.utf8Write ? Buffer : /* istanbul ignore next */ null;
+    } catch (e) {
+        /* istanbul ignore next */
+        return null;
+    }
+})();
+
+// Internal alias of or polyfull for Buffer.from.
+util._Buffer_from = null;
+
+// Internal alias of or polyfill for Buffer.allocUnsafe.
+util._Buffer_allocUnsafe = null;
+
+/**
+ * Creates a new buffer of whatever type supported by the environment.
+ * @param {number|number[]} [sizeOrArray=0] Buffer size or number array
+ * @returns {Uint8Array|Buffer} Buffer
+ */
+util.newBuffer = function newBuffer(sizeOrArray) {
+    /* istanbul ignore next */
+    return typeof sizeOrArray === "number"
+        ? util.Buffer
+            ? util._Buffer_allocUnsafe(sizeOrArray)
+            : new util.Array(sizeOrArray)
+        : util.Buffer
+            ? util._Buffer_from(sizeOrArray)
+            : typeof Uint8Array === "undefined"
+                ? sizeOrArray
+                : new Uint8Array(sizeOrArray);
+};
+
+/**
+ * Array implementation used in the browser. `Uint8Array` if supported, otherwise `Array`.
+ * @type {Constructor<Uint8Array>}
+ */
+util.Array = typeof Uint8Array !== "undefined" ? Uint8Array /* istanbul ignore next */ : Array;
+
+/**
+ * Any compatible Long instance.
+ * This is a minimal stand-alone definition of a Long instance. The actual type is that exported by long.js.
+ * @interface Long
+ * @property {number} low Low bits
+ * @property {number} high High bits
+ * @property {boolean} unsigned Whether unsigned or not
+ */
+
+/**
+ * Long.js's Long class if available.
+ * @type {Constructor<Long>}
+ */
+util.Long = /* istanbul ignore next */ util.global.dcodeIO && /* istanbul ignore next */ util.global.dcodeIO.Long
+         || /* istanbul ignore next */ util.global.Long
+         || util.inquire("long");
+
+/**
+ * Regular expression used to verify 2 bit (`bool`) map keys.
+ * @type {RegExp}
+ * @const
+ */
+util.key2Re = /^true|false|0|1$/;
+
+/**
+ * Regular expression used to verify 32 bit (`int32` etc.) map keys.
+ * @type {RegExp}
+ * @const
+ */
+util.key32Re = /^-?(?:0|[1-9][0-9]*)$/;
+
+/**
+ * Regular expression used to verify 64 bit (`int64` etc.) map keys.
+ * @type {RegExp}
+ * @const
+ */
+util.key64Re = /^(?:[\\x00-\\xff]{8}|-?(?:0|[1-9][0-9]*))$/;
+
+/**
+ * Converts a number or long to an 8 characters long hash string.
+ * @param {Long|number} value Value to convert
+ * @returns {string} Hash
+ */
+util.longToHash = function longToHash(value) {
+    return value
+        ? util.LongBits.from(value).toHash()
+        : util.LongBits.zeroHash;
+};
+
+/**
+ * Converts an 8 characters long hash string to a long or number.
+ * @param {string} hash Hash
+ * @param {boolean} [unsigned=false] Whether unsigned or not
+ * @returns {Long|number} Original value
+ */
+util.longFromHash = function longFromHash(hash, unsigned) {
+    var bits = util.LongBits.fromHash(hash);
+    if (util.Long)
+        return util.Long.fromBits(bits.lo, bits.hi, unsigned);
+    return bits.toNumber(Boolean(unsigned));
+};
+
+/**
+ * Merges the properties of the source object into the destination object.
+ * @memberof util
+ * @param {Object.<string,*>} dst Destination object
+ * @param {Object.<string,*>} src Source object
+ * @param {boolean} [ifNotSet=false] Merges only if the key is not already set
+ * @returns {Object.<string,*>} Destination object
+ */
+function merge(dst, src, ifNotSet) { // used by converters
+    for (var keys = Object.keys(src), i = 0; i < keys.length; ++i)
+        if (dst[keys[i]] === undefined || !ifNotSet)
+            dst[keys[i]] = src[keys[i]];
+    return dst;
+}
+
+util.merge = merge;
+
+/**
+ * Converts the first character of a string to lower case.
+ * @param {string} str String to convert
+ * @returns {string} Converted string
+ */
+util.lcFirst = function lcFirst(str) {
+    return str.charAt(0).toLowerCase() + str.substring(1);
+};
+
+/**
+ * Creates a custom error constructor.
+ * @memberof util
+ * @param {string} name Error name
+ * @returns {Constructor<Error>} Custom error constructor
+ */
+function newError(name) {
+
+    function CustomError(message, properties) {
+
+        if (!(this instanceof CustomError))
+            return new CustomError(message, properties);
+
+        // Error.call(this, message);
+        // ^ just returns a new error instance because the ctor can be called as a function
+
+        Object.defineProperty(this, "message", { get: function() { return message; } });
+
+        /* istanbul ignore next */
+        if (Error.captureStackTrace) // node
+            Error.captureStackTrace(this, CustomError);
+        else
+            Object.defineProperty(this, "stack", { value: new Error().stack || "" });
+
+        if (properties)
+            merge(this, properties);
+    }
+
+    CustomError.prototype = Object.create(Error.prototype, {
+        constructor: {
+            value: CustomError,
+            writable: true,
+            enumerable: false,
+            configurable: true,
+        },
+        name: {
+            get: function get() { return name; },
+            set: undefined,
+            enumerable: false,
+            // configurable: false would accurately preserve the behavior of
+            // the original, but I'm guessing that was not intentional.
+            // For an actual error subclass, this property would
+            // be configurable.
+            configurable: true,
+        },
+        toString: {
+            value: function value() { return this.name + ": " + this.message; },
+            writable: true,
+            enumerable: false,
+            configurable: true,
+        },
+    });
+
+    return CustomError;
+}
+
+util.newError = newError;
+
+/**
+ * Constructs a new protocol error.
+ * @classdesc Error subclass indicating a protocol specifc error.
+ * @memberof util
+ * @extends Error
+ * @template T extends Message<T>
+ * @constructor
+ * @param {string} message Error message
+ * @param {Object.<string,*>} [properties] Additional properties
+ * @example
+ * try {
+ *     MyMessage.decode(someBuffer); // throws if required fields are missing
+ * } catch (e) {
+ *     if (e instanceof ProtocolError && e.instance)
+ *         console.log("decoded so far: " + JSON.stringify(e.instance));
+ * }
+ */
+util.ProtocolError = newError("ProtocolError");
+
+/**
+ * So far decoded message instance.
+ * @name util.ProtocolError#instance
+ * @type {Message<T>}
+ */
+
+/**
+ * A OneOf getter as returned by {@link util.oneOfGetter}.
+ * @typedef OneOfGetter
+ * @type {function}
+ * @returns {string|undefined} Set field name, if any
+ */
+
+/**
+ * Builds a getter for a oneof's present field name.
+ * @param {string[]} fieldNames Field names
+ * @returns {OneOfGetter} Unbound getter
+ */
+util.oneOfGetter = function getOneOf(fieldNames) {
+    var fieldMap = {};
+    for (var i = 0; i < fieldNames.length; ++i)
+        fieldMap[fieldNames[i]] = 1;
+
+    /**
+     * @returns {string|undefined} Set field name, if any
+     * @this Object
+     * @ignore
+     */
+    return function() { // eslint-disable-line consistent-return
+        for (var keys = Object.keys(this), i = keys.length - 1; i > -1; --i)
+            if (fieldMap[keys[i]] === 1 && this[keys[i]] !== undefined && this[keys[i]] !== null)
+                return keys[i];
+    };
+};
+
+/**
+ * A OneOf setter as returned by {@link util.oneOfSetter}.
+ * @typedef OneOfSetter
+ * @type {function}
+ * @param {string|undefined} value Field name
+ * @returns {undefined}
+ */
+
+/**
+ * Builds a setter for a oneof's present field name.
+ * @param {string[]} fieldNames Field names
+ * @returns {OneOfSetter} Unbound setter
+ */
+util.oneOfSetter = function setOneOf(fieldNames) {
+
+    /**
+     * @param {string} name Field name
+     * @returns {undefined}
+     * @this Object
+     * @ignore
+     */
+    return function(name) {
+        for (var i = 0; i < fieldNames.length; ++i)
+            if (fieldNames[i] !== name)
+                delete this[fieldNames[i]];
+    };
+};
+
+/**
+ * Default conversion options used for {@link Message#toJSON} implementations.
+ *
+ * These options are close to proto3's JSON mapping with the exception that internal types like Any are handled just like messages. More precisely:
+ *
+ * - Longs become strings
+ * - Enums become string keys
+ * - Bytes become base64 encoded strings
+ * - (Sub-)Messages become plain objects
+ * - Maps become plain objects with all string keys
+ * - Repeated fields become arrays
+ * - NaN and Infinity for float and double fields become strings
+ *
+ * @type {IConversionOptions}
+ * @see https://developers.google.com/protocol-buffers/docs/proto3?hl=en#json
+ */
+util.toJSONOptions = {
+    longs: String,
+    enums: String,
+    bytes: String,
+    json: true
+};
+
+// Sets up buffer utility according to the environment (called in index-minimal)
+util._configure = function() {
+    var Buffer = util.Buffer;
+    /* istanbul ignore if */
+    if (!Buffer) {
+        util._Buffer_from = util._Buffer_allocUnsafe = null;
+        return;
+    }
+    // because node 4.x buffers are incompatible & immutable
+    // see: https://github.com/dcodeIO/protobuf.js/pull/665
+    util._Buffer_from = Buffer.from !== Uint8Array.from && Buffer.from ||
+        /* istanbul ignore next */
+        function Buffer_from(value, encoding) {
+            return new Buffer(value, encoding);
+        };
+    util._Buffer_allocUnsafe = Buffer.allocUnsafe ||
+        /* istanbul ignore next */
+        function Buffer_allocUnsafe(size) {
+            return new Buffer(size);
+        };
+};
+
+
+/***/ }),
+
+/***/ 3449:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+module.exports = Writer;
+
+var util      = __webpack_require__(3610);
+
+var BufferWriter; // cyclic
+
+var LongBits  = util.LongBits,
+    base64    = util.base64,
+    utf8      = util.utf8;
+
+/**
+ * Constructs a new writer operation instance.
+ * @classdesc Scheduled writer operation.
+ * @constructor
+ * @param {function(*, Uint8Array, number)} fn Function to call
+ * @param {number} len Value byte length
+ * @param {*} val Value to write
+ * @ignore
+ */
+function Op(fn, len, val) {
+
+    /**
+     * Function to call.
+     * @type {function(Uint8Array, number, *)}
+     */
+    this.fn = fn;
+
+    /**
+     * Value byte length.
+     * @type {number}
+     */
+    this.len = len;
+
+    /**
+     * Next operation.
+     * @type {Writer.Op|undefined}
+     */
+    this.next = undefined;
+
+    /**
+     * Value to write.
+     * @type {*}
+     */
+    this.val = val; // type varies
+}
+
+/* istanbul ignore next */
+function noop() {} // eslint-disable-line no-empty-function
+
+/**
+ * Constructs a new writer state instance.
+ * @classdesc Copied writer state.
+ * @memberof Writer
+ * @constructor
+ * @param {Writer} writer Writer to copy state from
+ * @ignore
+ */
+function State(writer) {
+
+    /**
+     * Current head.
+     * @type {Writer.Op}
+     */
+    this.head = writer.head;
+
+    /**
+     * Current tail.
+     * @type {Writer.Op}
+     */
+    this.tail = writer.tail;
+
+    /**
+     * Current buffer length.
+     * @type {number}
+     */
+    this.len = writer.len;
+
+    /**
+     * Next state.
+     * @type {State|null}
+     */
+    this.next = writer.states;
+}
+
+/**
+ * Constructs a new writer instance.
+ * @classdesc Wire format writer using `Uint8Array` if available, otherwise `Array`.
+ * @constructor
+ */
+function Writer() {
+
+    /**
+     * Current length.
+     * @type {number}
+     */
+    this.len = 0;
+
+    /**
+     * Operations head.
+     * @type {Object}
+     */
+    this.head = new Op(noop, 0, 0);
+
+    /**
+     * Operations tail
+     * @type {Object}
+     */
+    this.tail = this.head;
+
+    /**
+     * Linked forked states.
+     * @type {Object|null}
+     */
+    this.states = null;
+
+    // When a value is written, the writer calculates its byte length and puts it into a linked
+    // list of operations to perform when finish() is called. This both allows us to allocate
+    // buffers of the exact required size and reduces the amount of work we have to do compared
+    // to first calculating over objects and then encoding over objects. In our case, the encoding
+    // part is just a linked list walk calling operations with already prepared values.
+}
+
+var create = function create() {
+    return util.Buffer
+        ? function create_buffer_setup() {
+            return (Writer.create = function create_buffer() {
+                return new BufferWriter();
+            })();
+        }
+        /* istanbul ignore next */
+        : function create_array() {
+            return new Writer();
+        };
+};
+
+/**
+ * Creates a new writer.
+ * @function
+ * @returns {BufferWriter|Writer} A {@link BufferWriter} when Buffers are supported, otherwise a {@link Writer}
+ */
+Writer.create = create();
+
+/**
+ * Allocates a buffer of the specified size.
+ * @param {number} size Buffer size
+ * @returns {Uint8Array} Buffer
+ */
+Writer.alloc = function alloc(size) {
+    return new util.Array(size);
+};
+
+// Use Uint8Array buffer pool in the browser, just like node does with buffers
+/* istanbul ignore else */
+if (util.Array !== Array)
+    Writer.alloc = util.pool(Writer.alloc, util.Array.prototype.subarray);
+
+/**
+ * Pushes a new operation to the queue.
+ * @param {function(Uint8Array, number, *)} fn Function to call
+ * @param {number} len Value byte length
+ * @param {number} val Value to write
+ * @returns {Writer} `this`
+ * @private
+ */
+Writer.prototype._push = function push(fn, len, val) {
+    this.tail = this.tail.next = new Op(fn, len, val);
+    this.len += len;
+    return this;
+};
+
+function writeByte(val, buf, pos) {
+    buf[pos] = val & 255;
+}
+
+function writeVarint32(val, buf, pos) {
+    while (val > 127) {
+        buf[pos++] = val & 127 | 128;
+        val >>>= 7;
+    }
+    buf[pos] = val;
+}
+
+/**
+ * Constructs a new varint writer operation instance.
+ * @classdesc Scheduled varint writer operation.
+ * @extends Op
+ * @constructor
+ * @param {number} len Value byte length
+ * @param {number} val Value to write
+ * @ignore
+ */
+function VarintOp(len, val) {
+    this.len = len;
+    this.next = undefined;
+    this.val = val;
+}
+
+VarintOp.prototype = Object.create(Op.prototype);
+VarintOp.prototype.fn = writeVarint32;
+
+/**
+ * Writes an unsigned 32 bit value as a varint.
+ * @param {number} value Value to write
+ * @returns {Writer} `this`
+ */
+Writer.prototype.uint32 = function write_uint32(value) {
+    // here, the call to this.push has been inlined and a varint specific Op subclass is used.
+    // uint32 is by far the most frequently used operation and benefits significantly from this.
+    this.len += (this.tail = this.tail.next = new VarintOp(
+        (value = value >>> 0)
+                < 128       ? 1
+        : value < 16384     ? 2
+        : value < 2097152   ? 3
+        : value < 268435456 ? 4
+        :                     5,
+    value)).len;
+    return this;
+};
+
+/**
+ * Writes a signed 32 bit value as a varint.
+ * @function
+ * @param {number} value Value to write
+ * @returns {Writer} `this`
+ */
+Writer.prototype.int32 = function write_int32(value) {
+    return value < 0
+        ? this._push(writeVarint64, 10, LongBits.fromNumber(value)) // 10 bytes per spec
+        : this.uint32(value);
+};
+
+/**
+ * Writes a 32 bit value as a varint, zig-zag encoded.
+ * @param {number} value Value to write
+ * @returns {Writer} `this`
+ */
+Writer.prototype.sint32 = function write_sint32(value) {
+    return this.uint32((value << 1 ^ value >> 31) >>> 0);
+};
+
+function writeVarint64(val, buf, pos) {
+    while (val.hi) {
+        buf[pos++] = val.lo & 127 | 128;
+        val.lo = (val.lo >>> 7 | val.hi << 25) >>> 0;
+        val.hi >>>= 7;
+    }
+    while (val.lo > 127) {
+        buf[pos++] = val.lo & 127 | 128;
+        val.lo = val.lo >>> 7;
+    }
+    buf[pos++] = val.lo;
+}
+
+/**
+ * Writes an unsigned 64 bit value as a varint.
+ * @param {Long|number|string} value Value to write
+ * @returns {Writer} `this`
+ * @throws {TypeError} If `value` is a string and no long library is present.
+ */
+Writer.prototype.uint64 = function write_uint64(value) {
+    var bits = LongBits.from(value);
+    return this._push(writeVarint64, bits.length(), bits);
+};
+
+/**
+ * Writes a signed 64 bit value as a varint.
+ * @function
+ * @param {Long|number|string} value Value to write
+ * @returns {Writer} `this`
+ * @throws {TypeError} If `value` is a string and no long library is present.
+ */
+Writer.prototype.int64 = Writer.prototype.uint64;
+
+/**
+ * Writes a signed 64 bit value as a varint, zig-zag encoded.
+ * @param {Long|number|string} value Value to write
+ * @returns {Writer} `this`
+ * @throws {TypeError} If `value` is a string and no long library is present.
+ */
+Writer.prototype.sint64 = function write_sint64(value) {
+    var bits = LongBits.from(value).zzEncode();
+    return this._push(writeVarint64, bits.length(), bits);
+};
+
+/**
+ * Writes a boolish value as a varint.
+ * @param {boolean} value Value to write
+ * @returns {Writer} `this`
+ */
+Writer.prototype.bool = function write_bool(value) {
+    return this._push(writeByte, 1, value ? 1 : 0);
+};
+
+function writeFixed32(val, buf, pos) {
+    buf[pos    ] =  val         & 255;
+    buf[pos + 1] =  val >>> 8   & 255;
+    buf[pos + 2] =  val >>> 16  & 255;
+    buf[pos + 3] =  val >>> 24;
+}
+
+/**
+ * Writes an unsigned 32 bit value as fixed 32 bits.
+ * @param {number} value Value to write
+ * @returns {Writer} `this`
+ */
+Writer.prototype.fixed32 = function write_fixed32(value) {
+    return this._push(writeFixed32, 4, value >>> 0);
+};
+
+/**
+ * Writes a signed 32 bit value as fixed 32 bits.
+ * @function
+ * @param {number} value Value to write
+ * @returns {Writer} `this`
+ */
+Writer.prototype.sfixed32 = Writer.prototype.fixed32;
+
+/**
+ * Writes an unsigned 64 bit value as fixed 64 bits.
+ * @param {Long|number|string} value Value to write
+ * @returns {Writer} `this`
+ * @throws {TypeError} If `value` is a string and no long library is present.
+ */
+Writer.prototype.fixed64 = function write_fixed64(value) {
+    var bits = LongBits.from(value);
+    return this._push(writeFixed32, 4, bits.lo)._push(writeFixed32, 4, bits.hi);
+};
+
+/**
+ * Writes a signed 64 bit value as fixed 64 bits.
+ * @function
+ * @param {Long|number|string} value Value to write
+ * @returns {Writer} `this`
+ * @throws {TypeError} If `value` is a string and no long library is present.
+ */
+Writer.prototype.sfixed64 = Writer.prototype.fixed64;
+
+/**
+ * Writes a float (32 bit).
+ * @function
+ * @param {number} value Value to write
+ * @returns {Writer} `this`
+ */
+Writer.prototype.float = function write_float(value) {
+    return this._push(util.float.writeFloatLE, 4, value);
+};
+
+/**
+ * Writes a double (64 bit float).
+ * @function
+ * @param {number} value Value to write
+ * @returns {Writer} `this`
+ */
+Writer.prototype.double = function write_double(value) {
+    return this._push(util.float.writeDoubleLE, 8, value);
+};
+
+var writeBytes = util.Array.prototype.set
+    ? function writeBytes_set(val, buf, pos) {
+        buf.set(val, pos); // also works for plain array values
+    }
+    /* istanbul ignore next */
+    : function writeBytes_for(val, buf, pos) {
+        for (var i = 0; i < val.length; ++i)
+            buf[pos + i] = val[i];
+    };
+
+/**
+ * Writes a sequence of bytes.
+ * @param {Uint8Array|string} value Buffer or base64 encoded string to write
+ * @returns {Writer} `this`
+ */
+Writer.prototype.bytes = function write_bytes(value) {
+    var len = value.length >>> 0;
+    if (!len)
+        return this._push(writeByte, 1, 0);
+    if (util.isString(value)) {
+        var buf = Writer.alloc(len = base64.length(value));
+        base64.decode(value, buf, 0);
+        value = buf;
+    }
+    return this.uint32(len)._push(writeBytes, len, value);
+};
+
+/**
+ * Writes a string.
+ * @param {string} value Value to write
+ * @returns {Writer} `this`
+ */
+Writer.prototype.string = function write_string(value) {
+    var len = utf8.length(value);
+    return len
+        ? this.uint32(len)._push(utf8.write, len, value)
+        : this._push(writeByte, 1, 0);
+};
+
+/**
+ * Forks this writer's state by pushing it to a stack.
+ * Calling {@link Writer#reset|reset} or {@link Writer#ldelim|ldelim} resets the writer to the previous state.
+ * @returns {Writer} `this`
+ */
+Writer.prototype.fork = function fork() {
+    this.states = new State(this);
+    this.head = this.tail = new Op(noop, 0, 0);
+    this.len = 0;
+    return this;
+};
+
+/**
+ * Resets this instance to the last state.
+ * @returns {Writer} `this`
+ */
+Writer.prototype.reset = function reset() {
+    if (this.states) {
+        this.head   = this.states.head;
+        this.tail   = this.states.tail;
+        this.len    = this.states.len;
+        this.states = this.states.next;
+    } else {
+        this.head = this.tail = new Op(noop, 0, 0);
+        this.len  = 0;
+    }
+    return this;
+};
+
+/**
+ * Resets to the last state and appends the fork state's current write length as a varint followed by its operations.
+ * @returns {Writer} `this`
+ */
+Writer.prototype.ldelim = function ldelim() {
+    var head = this.head,
+        tail = this.tail,
+        len  = this.len;
+    this.reset().uint32(len);
+    if (len) {
+        this.tail.next = head.next; // skip noop
+        this.tail = tail;
+        this.len += len;
+    }
+    return this;
+};
+
+/**
+ * Finishes the write operation.
+ * @returns {Uint8Array} Finished buffer
+ */
+Writer.prototype.finish = function finish() {
+    var head = this.head.next, // skip noop
+        buf  = this.constructor.alloc(this.len),
+        pos  = 0;
+    while (head) {
+        head.fn(head.val, buf, pos);
+        pos += head.len;
+        head = head.next;
+    }
+    // this.head = this.tail = null;
+    return buf;
+};
+
+Writer._configure = function(BufferWriter_) {
+    BufferWriter = BufferWriter_;
+    Writer.create = create();
+    BufferWriter._configure();
+};
+
+
+/***/ }),
+
+/***/ 818:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+module.exports = BufferWriter;
+
+// extends Writer
+var Writer = __webpack_require__(3449);
+(BufferWriter.prototype = Object.create(Writer.prototype)).constructor = BufferWriter;
+
+var util = __webpack_require__(3610);
+
+/**
+ * Constructs a new buffer writer instance.
+ * @classdesc Wire format writer using node buffers.
+ * @extends Writer
+ * @constructor
+ */
+function BufferWriter() {
+    Writer.call(this);
+}
+
+BufferWriter._configure = function () {
+    /**
+     * Allocates a buffer of the specified size.
+     * @function
+     * @param {number} size Buffer size
+     * @returns {Buffer} Buffer
+     */
+    BufferWriter.alloc = util._Buffer_allocUnsafe;
+
+    BufferWriter.writeBytesBuffer = util.Buffer && util.Buffer.prototype instanceof Uint8Array && util.Buffer.prototype.set.name === "set"
+        ? function writeBytesBuffer_set(val, buf, pos) {
+          buf.set(val, pos); // faster than copy (requires node >= 4 where Buffers extend Uint8Array and set is properly inherited)
+          // also works for plain array values
+        }
+        /* istanbul ignore next */
+        : function writeBytesBuffer_copy(val, buf, pos) {
+          if (val.copy) // Buffer values
+            val.copy(buf, pos, 0, val.length);
+          else for (var i = 0; i < val.length;) // plain array values
+            buf[pos++] = val[i++];
+        };
+};
+
+
+/**
+ * @override
+ */
+BufferWriter.prototype.bytes = function write_bytes_buffer(value) {
+    if (util.isString(value))
+        value = util._Buffer_from(value, "base64");
+    var len = value.length >>> 0;
+    this.uint32(len);
+    if (len)
+        this._push(BufferWriter.writeBytesBuffer, len, value);
+    return this;
+};
+
+function writeStringBuffer(val, buf, pos) {
+    if (val.length < 40) // plain js is faster for short strings (probably due to redundant assertions)
+        util.utf8.write(val, buf, pos);
+    else if (buf.utf8Write)
+        buf.utf8Write(val, pos);
+    else
+        buf.write(val, pos);
+}
+
+/**
+ * @override
+ */
+BufferWriter.prototype.string = function write_string_buffer(value) {
+    var len = util.Buffer.byteLength(value);
+    this.uint32(len);
+    if (len)
+        this._push(writeStringBuffer, len, value);
+    return this;
+};
+
+
+/**
+ * Finishes the write operation.
+ * @name BufferWriter#finish
+ * @function
+ * @returns {Buffer} Finished buffer
+ */
+
+BufferWriter._configure();
+
+
+/***/ }),
+
 /***/ 4523:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -53,6 +2860,23 @@ class Exchange extends _base_Exchange_js__WEBPACK_IMPORTED_MODULE_0__/* .Exchang
 /***/ }),
 
 /***/ 566:
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   A: () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _base_Exchange_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2961);
+// -------------------------------------------------------------------------------
+
+class Exchange extends _base_Exchange_js__WEBPACK_IMPORTED_MODULE_0__/* .Exchange */ .k {
+}
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Exchange);
+
+
+/***/ }),
+
+/***/ 6510:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -529,6 +3353,23 @@ class Exchange extends _base_Exchange_js__WEBPACK_IMPORTED_MODULE_0__/* .Exchang
 /***/ }),
 
 /***/ 1293:
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   A: () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _base_Exchange_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2961);
+// -------------------------------------------------------------------------------
+
+class Exchange extends _base_Exchange_js__WEBPACK_IMPORTED_MODULE_0__/* .Exchange */ .k {
+}
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Exchange);
+
+
+/***/ }),
+
+/***/ 5439:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -1294,23 +4135,6 @@ class Exchange extends _base_Exchange_js__WEBPACK_IMPORTED_MODULE_0__/* .Exchang
 /***/ }),
 
 /***/ 1426:
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   A: () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _base_Exchange_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2961);
-// -------------------------------------------------------------------------------
-
-class Exchange extends _base_Exchange_js__WEBPACK_IMPORTED_MODULE_0__/* .Exchange */ .k {
-}
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Exchange);
-
-
-/***/ }),
-
-/***/ 7774:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -11805,6 +14629,3821 @@ class ascendex extends _abstract_ascendex_js__WEBPACK_IMPORTED_MODULE_0__/* ["de
 
 /***/ }),
 
+/***/ 4521:
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   A: () => (/* binding */ aster)
+/* harmony export */ });
+/* harmony import */ var _abstract_aster_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6510);
+/* harmony import */ var _base_errors_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(2079);
+/* harmony import */ var _base_functions_number_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1579);
+/* harmony import */ var _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(5147);
+/* harmony import */ var _static_dependencies_noble_hashes_sha256_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(4852);
+/* harmony import */ var _base_functions_crypto_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(8283);
+/* harmony import */ var _static_dependencies_noble_hashes_sha3_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(8432);
+/* harmony import */ var _static_dependencies_noble_curves_secp256k1_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(987);
+//  ---------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+//  ---------------------------------------------------------------------------xs
+/**
+ * @class aster
+ * @augments Exchange
+ */
+class aster extends _abstract_aster_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A {
+    describe() {
+        return this.deepExtend(super.describe(), {
+            'id': 'aster',
+            'name': 'Aster',
+            'countries': ['US'],
+            // 3 req/s for free
+            // 150 req/s for subscribers: https://aster.markets/data
+            // for brokers: https://aster.markets/docs/api-references/broker-api/#authentication-and-rate-limit
+            'rateLimit': 333,
+            'hostname': 'aster.markets',
+            'certified': false,
+            'pro': true,
+            'dex': true,
+            'urls': {
+                'logo': 'https://github.com/user-attachments/assets/4982201b-73cd-4d7a-8907-e69e239e9609',
+                'www': 'https://www.asterdex.com/en',
+                'api': {
+                    'fapiPublic': 'https://fapi.asterdex.com/fapi',
+                    'fapiPrivate': 'https://fapi.asterdex.com/fapi',
+                    'sapiPublic': 'https://sapi.asterdex.com/api',
+                    'sapiPrivate': 'https://sapi.asterdex.com/api',
+                },
+                'doc': 'https://github.com/asterdex/api-docs',
+                'fees': 'https://docs.asterdex.com/product/asterex-simple/fees-and-slippage',
+                'referral': {
+                    'url': 'https://www.asterdex.com/en/referral/aA1c2B',
+                    'discount': 0.1,
+                },
+            },
+            'has': {
+                'CORS': undefined,
+                'spot': false,
+                'margin': false,
+                'swap': false,
+                'future': false,
+                'option': false,
+                'addMargin': true,
+                'borrowCrossMargin': false,
+                'borrowIsolatedMargin': false,
+                'cancelAllOrders': true,
+                'cancelOrder': true,
+                'cancelOrders': true,
+                'closeAllPositions': false,
+                'closePosition': false,
+                'createConvertTrade': false,
+                'createDepositAddress': false,
+                'createLimitBuyOrder': false,
+                'createLimitSellOrder': false,
+                'createMarketBuyOrder': false,
+                'createMarketBuyOrderWithCost': false,
+                'createMarketOrderWithCost': false,
+                'createMarketSellOrder': false,
+                'createMarketSellOrderWithCost': false,
+                'createOrder': true,
+                'createOrders': false,
+                'createOrderWithTakeProfitAndStopLoss': false,
+                'createPostOnlyOrder': false,
+                'createReduceOnlyOrder': false,
+                'createStopLimitOrder': false,
+                'createStopLossOrder': false,
+                'createStopMarketOrder': false,
+                'createStopOrder': false,
+                'createTakeProfitOrder': false,
+                'createTrailingPercentOrder': false,
+                'createTriggerOrder': false,
+                'editOrder': false,
+                'editOrders': false,
+                'fetchAccounts': undefined,
+                'fetchBalance': true,
+                'fetchBidsAsks': false,
+                'fetchBorrowInterest': false,
+                'fetchBorrowRateHistories': false,
+                'fetchBorrowRateHistory': false,
+                'fetchCanceledAndClosedOrders': 'emulated',
+                'fetchCanceledOrders': 'emulated',
+                'fetchClosedOrder': false,
+                'fetchClosedOrders': 'emulated',
+                'fetchConvertCurrencies': false,
+                'fetchConvertQuote': false,
+                'fetchConvertTrade': false,
+                'fetchConvertTradeHistory': false,
+                'fetchCrossBorrowRate': false,
+                'fetchCrossBorrowRates': false,
+                'fetchCurrencies': true,
+                'fetchDeposit': false,
+                'fetchDepositAddress': false,
+                'fetchDepositAddresses': false,
+                'fetchDepositAddressesByNetwork': false,
+                'fetchDeposits': false,
+                'fetchDepositsWithdrawals': false,
+                'fetchDepositWithdrawFee': 'emulated',
+                'fetchDepositWithdrawFees': false,
+                'fetchFundingHistory': true,
+                'fetchFundingInterval': 'emulated',
+                'fetchFundingIntervals': true,
+                'fetchFundingRate': true,
+                'fetchFundingRateHistory': true,
+                'fetchFundingRates': true,
+                'fetchGreeks': false,
+                'fetchIndexOHLCV': false,
+                'fetchIsolatedBorrowRate': 'emulated',
+                'fetchIsolatedBorrowRates': false,
+                'fetchL3OrderBook': false,
+                'fetchLastPrices': false,
+                'fetchLedger': true,
+                'fetchLedgerEntry': false,
+                'fetchLeverage': 'emulated',
+                'fetchLeverages': true,
+                'fetchLeverageTiers': false,
+                'fetchLiquidations': false,
+                'fetchLongShortRatio': false,
+                'fetchLongShortRatioHistory': false,
+                'fetchMarginAdjustmentHistory': true,
+                'fetchMarginMode': 'emulated',
+                'fetchMarginModes': true,
+                'fetchMarketLeverageTiers': 'emulated',
+                'fetchMarkets': true,
+                'fetchMarkOHLCV': false,
+                'fetchMarkPrice': false,
+                'fetchMarkPrices': false,
+                'fetchMyLiquidations': false,
+                'fetchMySettlementHistory': false,
+                'fetchMyTrades': true,
+                'fetchOHLCV': true,
+                'fetchOpenInterest': false,
+                'fetchOpenInterestHistory': false,
+                'fetchOpenOrder': true,
+                'fetchOpenOrders': true,
+                'fetchOption': false,
+                'fetchOptionChain': false,
+                'fetchOrder': true,
+                'fetchOrderBook': true,
+                'fetchOrderBooks': false,
+                'fetchOrders': true,
+                'fetchOrderTrades': false,
+                'fetchPosition': false,
+                'fetchPositionHistory': false,
+                'fetchPositionMode': true,
+                'fetchPositions': true,
+                'fetchPositionsHistory': false,
+                'fetchPositionsRisk': true,
+                'fetchPremiumIndexOHLCV': false,
+                'fetchSettlementHistory': false,
+                'fetchStatus': false,
+                'fetchTicker': true,
+                'fetchTickers': true,
+                'fetchTime': true,
+                'fetchTrades': true,
+                'fetchTradingFee': true,
+                'fetchTradingFees': false,
+                'fetchTradingLimits': 'emulated',
+                'fetchTransactionFee': 'emulated',
+                'fetchTransactionFees': false,
+                'fetchTransactions': false,
+                'fetchTransfer': false,
+                'fetchTransfers': false,
+                'fetchUnderlyingAssets': false,
+                'fetchVolatilityHistory': false,
+                'fetchWithdrawAddresses': false,
+                'fetchWithdrawal': false,
+                'fetchWithdrawals': false,
+                'fetchWithdrawalWhitelist': false,
+                'reduceMargin': true,
+                'repayCrossMargin': false,
+                'repayIsolatedMargin': false,
+                'sandbox': false,
+                'setLeverage': true,
+                'setMargin': false,
+                'setMarginMode': true,
+                'setPositionMode': true,
+                'signIn': false,
+                'transfer': true,
+                'withdraw': true,
+            },
+            'api': {
+                'fapiPublic': {
+                    'get': [
+                        'v1/ping',
+                        'v1/time',
+                        'v1/exchangeInfo',
+                        'v1/depth',
+                        'v1/trades',
+                        'v1/historicalTrades',
+                        'v1/aggTrades',
+                        'v1/klines',
+                        'v1/indexPriceKlines',
+                        'v1/markPriceKlines',
+                        'v1/premiumIndex',
+                        'v1/fundingRate',
+                        'v1/fundingInfo',
+                        'v1/ticker/24hr',
+                        'v1/ticker/price',
+                        'v1/ticker/bookTicker',
+                        'v1/adlQuantile',
+                        'v1/forceOrders',
+                    ],
+                    'post': [
+                        'v1/listenKey',
+                    ],
+                    'put': [
+                        'v1/listenKey',
+                    ],
+                    'delete': [
+                        'v1/listenKey',
+                    ],
+                },
+                'fapiPrivate': {
+                    'get': [
+                        'v1/positionSide/dual',
+                        'v1/multiAssetsMargin',
+                        'v1/order',
+                        'v1/openOrder',
+                        'v1/openOrders',
+                        'v1/allOrders',
+                        'v2/balance',
+                        'v3/balance',
+                        'v3/account',
+                        'v4/account',
+                        'v1/positionMargin/history',
+                        'v2/positionRisk',
+                        'v3/positionRisk',
+                        'v1/userTrades',
+                        'v1/income',
+                        'v1/leverageBracket',
+                        'v1/commissionRate',
+                    ],
+                    'post': [
+                        'v1/positionSide/dual',
+                        'v1/multiAssetsMargin',
+                        'v1/order',
+                        'v1/order/test',
+                        'v1/batchOrders',
+                        'v1/asset/wallet/transfer',
+                        'v1/countdownCancelAll',
+                        'v1/leverage',
+                        'v1/marginType',
+                        'v1/positionMargin',
+                    ],
+                    'delete': [
+                        'v1/order',
+                        'v1/allOpenOrders',
+                        'v1/batchOrders',
+                    ],
+                },
+                'sapiPublic': {
+                    'get': [
+                        'v1/ping',
+                        'v1/time',
+                        'v1/exchangeInfo',
+                        'v1/depth',
+                        'v1/trades',
+                        'v1/historicalTrades',
+                        'v1/aggTrades',
+                        'v1/klines',
+                        'v1/ticker/24hr',
+                        'v1/ticker/price',
+                        'v1/ticker/bookTicker',
+                        'v1/aster/withdraw/estimateFee',
+                    ],
+                    'post': [
+                        'v1/getNonce',
+                        'v1/createApiKey',
+                        'v1/listenKey',
+                    ],
+                    'put': [
+                        'v1/listenKey',
+                    ],
+                    'delete': [
+                        'v1/listenKey',
+                    ],
+                },
+                'sapiPrivate': {
+                    'get': [
+                        'v1/commissionRate',
+                        'v1/order',
+                        'v1/openOrders',
+                        'v1/allOrders',
+                        'v1/transactionHistory',
+                        'v1/account',
+                        'v1/userTrades',
+                    ],
+                    'post': [
+                        'v1/order',
+                        'v1/asset/wallet/transfer',
+                        'v1/asset/sendToAddress',
+                        'v1/aster/user-withdraw',
+                    ],
+                    'delete': [
+                        'v1/order',
+                        'v1/allOpenOrders',
+                    ],
+                },
+            },
+            'timeframes': {
+                '1m': '1m',
+                '3m': '3m',
+                '5m': '5m',
+                '15m': '15m',
+                '30m': '30m',
+                '1h': '1h',
+                '2h': '2h',
+                '4h': '4h',
+                '6h': '6h',
+                '8h': '8h',
+                '12h': '12h',
+                '1d': '1d',
+                '3d': '3d',
+                '1w': '1w',
+                '1M': '1M',
+            },
+            'precisionMode': _base_functions_number_js__WEBPACK_IMPORTED_MODULE_1__/* .TICK_SIZE */ .kb,
+            'requiredCredentials': {
+                'apiKey': true,
+                'secret': true,
+            },
+            'fees': {
+                'trading': {
+                    'tierBased': true,
+                    'percentage': true,
+                    'maker': this.parseNumber('0.0001'),
+                    'taker': this.parseNumber('0.00035'),
+                },
+            },
+            'options': {
+                'recvWindow': 10 * 1000,
+                'defaultTimeInForce': 'GTC',
+                'zeroAddress': '0x0000000000000000000000000000000000000000',
+                'quoteOrderQty': true,
+                'accountsByType': {
+                    'spot': 'SPOT',
+                    'future': 'FUTURE',
+                    'linear': 'FUTURE',
+                    'swap': 'FUTURE',
+                },
+                'networks': {
+                    'ERC20': 'ETH',
+                    'BEP20': 'BSC',
+                    'ARB': 'Arbitrum',
+                },
+                'networksToChainId': {
+                    'ETH': 1,
+                    'BSC': 56,
+                    'Arbitrum': 42161,
+                },
+            },
+            'exceptions': {
+                'exact': {
+                    // 10xx - General Server or Network issues
+                    '-1000': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.OperationFailed,
+                    '-1001': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.NetworkError,
+                    '-1002': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.AuthenticationError,
+                    '-1003': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.RateLimitExceeded,
+                    '-1004': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.DuplicateOrderId,
+                    '-1005': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest,
+                    '-1006': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.BadResponse,
+                    '-1007': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.RequestTimeout,
+                    '-1010': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.OperationFailed,
+                    '-1011': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.PermissionDenied,
+                    '-1013': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest,
+                    '-1014': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.OrderNotFillable,
+                    '-1015': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.RateLimitExceeded,
+                    '-1016': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.ExchangeClosedByUser,
+                    '-1020': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported,
+                    '-1021': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidNonce,
+                    '-1022': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.AuthenticationError,
+                    '-1023': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest,
+                    // 11xx - Request issues
+                    '-1100': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest,
+                    '-1101': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest,
+                    '-1102': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired,
+                    '-1103': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest,
+                    '-1104': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest,
+                    '-1105': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired,
+                    '-1106': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest,
+                    '-1108': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest,
+                    '-1109': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest,
+                    '-1110': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.BadSymbol,
+                    '-1111': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest,
+                    '-1112': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest,
+                    '-1113': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest,
+                    '-1114': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest,
+                    '-1115': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidOrder,
+                    '-1116': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidOrder,
+                    '-1117': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidOrder,
+                    '-1118': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidOrder,
+                    '-1119': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidOrder,
+                    '-1120': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest,
+                    '-1121': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.BadSymbol,
+                    '-1125': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.AuthenticationError,
+                    '-1127': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest,
+                    '-1128': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest,
+                    '-1130': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest,
+                    '-1136': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidOrder,
+                    // 20xx - Processing Issues
+                    '-2010': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidOrder,
+                    '-2011': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.OrderNotFound,
+                    '-2013': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.OrderNotFound,
+                    '-2014': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.AuthenticationError,
+                    '-2015': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.AuthenticationError,
+                    '-2016': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.MarketClosed,
+                    '-2018': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InsufficientFunds,
+                    '-2019': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InsufficientFunds,
+                    '-2020': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.OrderNotFillable,
+                    '-2021': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.OrderImmediatelyFillable,
+                    '-2022': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.OperationRejected,
+                    '-2023': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.AccountSuspended,
+                    '-2024': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InsufficientFunds,
+                    '-2025': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.RateLimitExceeded,
+                    '-2026': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported,
+                    '-2027': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest,
+                    '-2028': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest,
+                    // 40xx - Filters and other Issues
+                    '-4000': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidOrder,
+                    '-4001': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidOrder,
+                    '-4002': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidOrder,
+                    '-4003': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidOrder,
+                    '-4004': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidOrder,
+                    '-4005': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidOrder,
+                    '-4006': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidOrder,
+                    '-4007': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidOrder,
+                    '-4008': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidOrder,
+                    '-4009': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidOrder,
+                    '-4010': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidOrder,
+                    '-4011': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidOrder,
+                    '-4012': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.RateLimitExceeded,
+                    '-4013': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidOrder,
+                    '-4014': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidOrder,
+                    '-4015': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidOrder,
+                    '-4016': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidOrder,
+                    '-4017': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidOrder,
+                    '-4018': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidOrder,
+                    '-4019': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest,
+                    '-4020': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest,
+                    '-4021': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest,
+                    '-4022': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.MarketClosed,
+                    '-4023': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidOrder,
+                    '-4024': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidOrder,
+                    '-4025': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest,
+                    '-4026': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest,
+                    '-4027': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest,
+                    '-4028': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest,
+                    '-4029': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest,
+                    '-4030': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest,
+                    '-4031': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest,
+                    '-4032': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.RateLimitExceeded,
+                    '-4033': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.AccountNotEnabled,
+                    '-4044': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest,
+                    '-4045': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.RateLimitExceeded,
+                    '-4046': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.NoChange,
+                    '-4047': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.OperationRejected,
+                    '-4048': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.OperationRejected,
+                    '-4049': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.OperationRejected,
+                    '-4050': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InsufficientFunds,
+                    '-4051': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InsufficientFunds,
+                    '-4052': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.NoChange,
+                    '-4053': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.OperationRejected,
+                    '-4054': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.OperationRejected,
+                    '-4055': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired,
+                    '-4056': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.AuthenticationError,
+                    '-4057': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.AuthenticationError,
+                    '-4058': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidOrder,
+                    '-4059': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.NoChange,
+                    '-4060': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidOrder,
+                    '-4061': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidOrder,
+                    '-4062': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.OperationRejected,
+                    '-4063': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest,
+                    '-4064': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest,
+                    '-4065': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest,
+                    '-4066': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest,
+                    '-4067': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.OperationRejected,
+                    '-4068': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.OperationRejected,
+                    '-4069': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest,
+                    '-4070': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidOrder,
+                    '-4071': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidOrder,
+                    '-4072': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.NoChange,
+                    '-4073': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest,
+                    '-4074': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidOrder,
+                    '-4075': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.OperationRejected,
+                    '-4076': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.OperationRejected,
+                    '-4077': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.RateLimitExceeded,
+                    '-4078': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest,
+                    '-4079': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest,
+                    '-4080': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest,
+                    '-4081': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest,
+                    '-4082': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.RateLimitExceeded,
+                    '-4083': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.OperationFailed,
+                    '-4084': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported,
+                    '-4085': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest,
+                    '-4086': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest,
+                    '-4087': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.PermissionDenied,
+                    '-4088': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.PermissionDenied,
+                    '-4104': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.BadSymbol,
+                    '-4114': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidOrder,
+                    '-4115': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.DuplicateOrderId,
+                    '-4118': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InsufficientFunds,
+                    '-4131': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidOrder,
+                    '-4135': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidOrder,
+                    '-4137': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidOrder,
+                    '-4138': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.OperationRejected,
+                    '-4139': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidOrder,
+                    '-4140': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.OperationRejected,
+                    '-4141': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.MarketClosed,
+                    '-4142': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidOrder,
+                    '-4144': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.BadSymbol,
+                    '-4161': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.OperationRejected,
+                    '-4164': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidOrder,
+                    '-4165': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest,
+                    '-4183': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidOrder,
+                    '-4184': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidOrder,
+                    '-5060': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.OperationRejected,
+                    '-5076': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.OperationRejected, // {"code":-5076,"msg":"Total order value should be more than 5 USDT"}
+                },
+                'broad': {},
+            },
+        });
+    }
+    isInverse(type, subType = undefined) {
+        if (subType === undefined) {
+            return (type === 'delivery');
+        }
+        else {
+            return subType === 'inverse';
+        }
+    }
+    isLinear(type, subType = undefined) {
+        if (subType === undefined) {
+            return (type === 'future') || (type === 'swap');
+        }
+        else {
+            return subType === 'linear';
+        }
+    }
+    /**
+     * @method
+     * @name aster#fetchCurrencies
+     * @description fetches all available currencies on an exchange
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-spot-api.md#trading-specification-information
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-futures-api.md#exchange-information
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object} an associative dictionary of currencies
+     */
+    async fetchCurrencies(params = {}) {
+        const promises = [
+            this.sapiPublicGetV1ExchangeInfo(params),
+            this.fapiPublicGetV1ExchangeInfo(params),
+        ];
+        const results = await Promise.all(promises);
+        const sapiResult = this.safeDict(results, 0, {});
+        const sapiRows = this.safeList(sapiResult, 'assets', []);
+        const fapiResult = this.safeDict(results, 1, {});
+        const fapiRows = this.safeList(fapiResult, 'assets', []);
+        const rows = this.arrayConcat(sapiRows, fapiRows);
+        //
+        //     [
+        //         {
+        //             "asset": "USDT",
+        //             "marginAvailable": true,
+        //             "autoAssetExchange": "-10000"
+        //         }
+        //     ]
+        //
+        const result = {};
+        for (let i = 0; i < rows.length; i++) {
+            const currency = rows[i];
+            const currencyId = this.safeString(currency, 'asset');
+            const code = this.safeCurrencyCode(currencyId);
+            result[code] = this.safeCurrencyStructure({
+                'info': currency,
+                'code': code,
+                'id': currencyId,
+                'name': code,
+                'active': undefined,
+                'deposit': undefined,
+                'withdraw': undefined,
+                'fee': undefined,
+                'precision': undefined,
+                'limits': {
+                    'amount': {
+                        'min': undefined,
+                        'max': undefined,
+                    },
+                    'withdraw': {
+                        'min': undefined,
+                        'max': undefined,
+                    },
+                    'deposit': {
+                        'min': undefined,
+                        'max': undefined,
+                    },
+                },
+                'networks': undefined,
+                'type': 'crypto', // atm exchange api provides only cryptos
+            });
+        }
+        return result;
+    }
+    /**
+     * @method
+     * @name aster#fetchMarkets
+     * @description retrieves data on all markets for bigone
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-spot-api.md#trading-specification-information
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-futures-api.md#exchange-information
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object[]} an array of objects representing market data
+     */
+    async fetchMarkets(params = {}) {
+        const promises = [
+            this.sapiPublicGetV1ExchangeInfo(params),
+            this.fapiPublicGetV1ExchangeInfo(params),
+        ];
+        const results = await Promise.all(promises);
+        const sapiResult = this.safeDict(results, 0, {});
+        const sapiRows = this.safeList(sapiResult, 'symbols', []);
+        const fapiResult = this.safeDict(results, 1, {});
+        const fapiRows = this.safeList(fapiResult, 'symbols', []);
+        const rows = this.arrayConcat(sapiRows, fapiRows);
+        //
+        //     [
+        //         {
+        //             "symbol": "BTCUSDT",
+        //             "pair": "BTCUSDT",
+        //             "contractType": "PERPETUAL",
+        //             "deliveryDate": 4133404800000,
+        //             "onboardDate": 1627628400000,
+        //             "status": "TRADING",
+        //             "maintMarginPercent": "2.5000",
+        //             "requiredMarginPercent": "5.0000",
+        //             "baseAsset": "BTC",
+        //             "quoteAsset": "USDT",
+        //             "marginAsset": "USDT",
+        //             "pricePrecision": 1,
+        //             "quantityPrecision": 3,
+        //             "baseAssetPrecision": 8,
+        //             "quotePrecision": 8,
+        //             "underlyingType": "COIN",
+        //             "underlyingSubType": [],
+        //             "settlePlan": 0,
+        //             "triggerProtect": "0.0200",
+        //             "liquidationFee": "0.025000",
+        //             "marketTakeBound": "0.02",
+        //             "filters": [
+        //                 {
+        //                     "minPrice": "1",
+        //                     "maxPrice": "1000000",
+        //                     "filterType": "PRICE_FILTER",
+        //                     "tickSize": "0.1"
+        //                 },
+        //                 {
+        //                     "stepSize": "0.001",
+        //                     "filterType": "LOT_SIZE",
+        //                     "maxQty": "100",
+        //                     "minQty": "0.001"
+        //                 },
+        //                 {
+        //                     "stepSize": "0.001",
+        //                     "filterType": "MARKET_LOT_SIZE",
+        //                     "maxQty": "10",
+        //                     "minQty": "0.001"
+        //                 },
+        //                 {
+        //                     "limit": 200,
+        //                     "filterType": "MAX_NUM_ORDERS"
+        //                 },
+        //                 {
+        //                     "limit": 10,
+        //                     "filterType": "MAX_NUM_ALGO_ORDERS"
+        //                 },
+        //                 {
+        //                     "notional": "5",
+        //                     "filterType": "MIN_NOTIONAL"
+        //                 },
+        //                 {
+        //                     "multiplierDown": "0.9800",
+        //                     "multiplierUp": "1.0200",
+        //                     "multiplierDecimal": "4",
+        //                     "filterType": "PERCENT_PRICE"
+        //                 }
+        //             ],
+        //             "orderTypes": [
+        //                 "LIMIT",
+        //                 "MARKET",
+        //                 "STOP",
+        //                 "STOP_MARKET",
+        //                 "TAKE_PROFIT",
+        //                 "TAKE_PROFIT_MARKET",
+        //                 "TRAILING_STOP_MARKET"
+        //             ],
+        //             "timeInForce": [
+        //                 "GTC",
+        //                 "IOC",
+        //                 "FOK",
+        //                 "GTX",
+        //                 "RPI"
+        //             ]
+        //         }
+        //     ]
+        //
+        const fees = this.fees;
+        const result = [];
+        for (let i = 0; i < rows.length; i++) {
+            let swap = false;
+            const market = rows[i];
+            const id = this.safeString(market, 'symbol');
+            const baseId = this.safeString(market, 'baseAsset');
+            const quoteId = this.safeString(market, 'quoteAsset');
+            const base = this.safeCurrencyCode(baseId);
+            const quote = this.safeCurrencyCode(quoteId);
+            const contractType = this.safeString(market, 'contractType');
+            const contract = contractType !== undefined;
+            let spot = true;
+            if (contractType === 'PERPETUAL') {
+                swap = true;
+                spot = false;
+            }
+            let contractSize = undefined;
+            let linear = undefined;
+            let inverse = undefined;
+            let symbol = base + '/' + quote;
+            let settle = undefined;
+            let settleId = undefined;
+            if (contract) {
+                settleId = this.safeString(market, 'marginAsset');
+                settle = this.safeCurrencyCode(settleId);
+                if (swap) {
+                    symbol = symbol + ':' + settle;
+                }
+                linear = settle === quote;
+                inverse = settle === base;
+                contractSize = this.safeNumber2(market, 'contractSize', 'unit', this.parseNumber('1'));
+            }
+            let unifiedType = undefined;
+            if (spot) {
+                unifiedType = 'spot';
+            }
+            else if (swap) {
+                unifiedType = 'swap';
+            }
+            const status = this.safeString(market, 'status');
+            const active = status === 'TRADING';
+            const filters = this.safeList(market, 'filters', []);
+            const filtersByType = this.indexBy(filters, 'filterType');
+            const entry = this.safeMarketStructure({
+                'id': id,
+                'symbol': symbol,
+                'base': base,
+                'quote': quote,
+                'settle': settle,
+                'baseId': baseId,
+                'quoteId': quoteId,
+                'settleId': settleId,
+                'type': unifiedType,
+                'spot': spot,
+                'margin': false,
+                'swap': swap,
+                'future': false,
+                'option': false,
+                'active': active,
+                'contract': contract,
+                'linear': linear,
+                'inverse': inverse,
+                'taker': fees['trading']['taker'],
+                'maker': fees['trading']['maker'],
+                'contractSize': contractSize,
+                'expiry': undefined,
+                'expiryDatetime': undefined,
+                'strike': undefined,
+                'optionType': undefined,
+                'precision': {
+                    'amount': this.parseNumber(this.parsePrecision(this.safeString(market, 'quantityPrecision'))),
+                    'price': this.parseNumber(this.parsePrecision(this.safeString(market, 'pricePrecision'))),
+                    'base': this.parseNumber(this.parsePrecision(this.safeString(market, 'baseAssetPrecision'))),
+                    'quote': this.parseNumber(this.parsePrecision(this.safeString(market, 'quotePrecision'))),
+                },
+                'limits': {
+                    'leverage': {
+                        'min': undefined,
+                        'max': undefined,
+                    },
+                    'amount': {
+                        'min': undefined,
+                        'max': undefined,
+                    },
+                    'price': {
+                        'min': undefined,
+                        'max': undefined,
+                    },
+                    'cost': {
+                        'min': undefined,
+                        'max': undefined,
+                    },
+                },
+                'created': this.safeInteger(market, 'onboardDate'),
+                'info': market,
+            });
+            if ('PRICE_FILTER' in filtersByType) {
+                const filter = this.safeDict(filtersByType, 'PRICE_FILTER', {});
+                entry['limits']['price'] = {
+                    'min': this.safeNumber(filter, 'minPrice'),
+                    'max': this.safeNumber(filter, 'maxPrice'),
+                };
+                entry['precision']['price'] = this.safeNumber(filter, 'tickSize');
+            }
+            if ('LOT_SIZE' in filtersByType) {
+                const filter = this.safeDict(filtersByType, 'LOT_SIZE', {});
+                entry['precision']['amount'] = this.safeNumber(filter, 'stepSize');
+                entry['limits']['amount'] = {
+                    'min': this.safeNumber(filter, 'minQty'),
+                    'max': this.safeNumber(filter, 'maxQty'),
+                };
+            }
+            if ('MARKET_LOT_SIZE' in filtersByType) {
+                const filter = this.safeDict(filtersByType, 'MARKET_LOT_SIZE', {});
+                entry['limits']['market'] = {
+                    'min': this.safeNumber(filter, 'minQty'),
+                    'max': this.safeNumber(filter, 'maxQty'),
+                };
+            }
+            if (('MIN_NOTIONAL' in filtersByType) || ('NOTIONAL' in filtersByType)) {
+                const filter = this.safeDict2(filtersByType, 'MIN_NOTIONAL', 'NOTIONAL', {});
+                entry['limits']['cost']['min'] = this.safeNumber(filter, 'notional');
+            }
+            result.push(entry);
+        }
+        return result;
+    }
+    /**
+     * @method
+     * @name aster#fetchTime
+     * @description fetches the current integer timestamp in milliseconds from the exchange server
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-futures-api.md#check-server-time
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {int} the current integer timestamp in milliseconds from the exchange server
+     */
+    async fetchTime(params = {}) {
+        const response = await this.fapiPublicGetV1Time(params);
+        //
+        //     {
+        //         "serverTime": 1499827319559
+        //     }
+        //
+        return this.safeInteger(response, 'serverTime');
+    }
+    parseOHLCV(ohlcv, market = undefined) {
+        //
+        //     [
+        //         1631158560000,
+        //         "208.1850",
+        //         "208.1850",
+        //         "208.1850",
+        //         "208.1850",
+        //         "11.84",
+        //         1631158619999,
+        //         "2464.910400",
+        //         1,
+        //         "11.84",
+        //         "2464.910400",
+        //         "0"
+        //     ]
+        //
+        return [
+            this.safeInteger(ohlcv, 0),
+            this.safeNumber(ohlcv, 1),
+            this.safeNumber(ohlcv, 2),
+            this.safeNumber(ohlcv, 3),
+            this.safeNumber(ohlcv, 4),
+            this.safeNumber(ohlcv, 5),
+        ];
+    }
+    /**
+     * @method
+     * @name aster#fetchOHLCV
+     * @description fetches historical candlestick data containing the open, high, low, and close price, and the volume of a market
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-spot-api.md#k-line-data
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-futures-api.md#klinecandlestick-data
+     * @param {string} symbol unified symbol of the market to fetch OHLCV data for
+     * @param {string} timeframe the length of time each candle represents
+     * @param {int} [since] timestamp in ms of the earliest candle to fetch
+     * @param {int} [limit] the maximum amount of candles to fetch
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {string} [params.price] "mark" or "index" for mark price and index price candles
+     * @param {int} [params.until] the latest time in ms to fetch orders for
+     * @returns {int[][]} A list of candles ordered as timestamp, open, high, low, close, volume
+     */
+    async fetchOHLCV(symbol, timeframe = '1m', since = undefined, limit = undefined, params = {}) {
+        if (symbol === undefined) {
+            throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired(this.id + ' fetchOHLCV() requires a symbol argument');
+        }
+        await this.loadMarkets();
+        const market = this.market(symbol);
+        let request = {};
+        if (since !== undefined) {
+            request['startTime'] = since;
+        }
+        if (limit !== undefined) {
+            if (limit > 1500) {
+                limit = 1500; // Default 500; max 1500.
+            }
+            request['limit'] = limit;
+        }
+        [request, params] = this.handleUntilOption('endTime', request, params);
+        request['interval'] = this.safeString(this.timeframes, timeframe, timeframe);
+        const price = this.safeString(params, 'price');
+        const isMark = (price === 'mark');
+        const isIndex = (price === 'index');
+        params = this.omit(params, 'price');
+        let response = undefined;
+        if (isMark) {
+            request['symbol'] = market['id'];
+            response = await this.fapiPublicGetV1MarkPriceKlines(this.extend(request, params));
+        }
+        else if (isIndex) {
+            request['pair'] = market['id'];
+            response = await this.fapiPublicGetV1IndexPriceKlines(this.extend(request, params));
+        }
+        else {
+            request['symbol'] = market['id'];
+            if (market['linear']) {
+                response = await this.fapiPublicGetV1Klines(this.extend(request, params));
+            }
+            else {
+                response = await this.sapiPublicGetV1Klines(this.extend(request, params));
+            }
+        }
+        //
+        //     [
+        //         [
+        //             1631158560000,
+        //             "208.1850",
+        //             "208.1850",
+        //             "208.1850",
+        //             "208.1850",
+        //             "11.84",
+        //             1631158619999,
+        //             "2464.910400",
+        //             1,
+        //             "11.84",
+        //             "2464.910400",
+        //             "0"
+        //         ]
+        //     ]
+        //
+        return this.parseOHLCVs(response, market, timeframe, since, limit);
+    }
+    parseTrade(trade, market = undefined) {
+        //
+        // fetchTrades
+        //
+        //     {
+        //         "id": 3913206,
+        //         "price": "644.100",
+        //         "qty": "0.08",
+        //         "quoteQty": "51.528",
+        //         "time": 1749784506633,
+        //         "isBuyerMaker": true
+        //     }
+        //
+        //     {
+        //         "id": 657,
+        //         "price": "1.01000000",
+        //         "qty": "5.00000000",
+        //         "baseQty": "4.95049505",
+        //         "time": 1755156533943,
+        //         "isBuyerMaker": false
+        //     }
+        //
+        // fetchMyTrades
+        //
+        //     {
+        //         "buyer": false,
+        //         "commission": "-0.07819010",
+        //         "commissionAsset": "USDT",
+        //         "id": 698759,
+        //         "maker": false,
+        //         "orderId": 25851813,
+        //         "price": "7819.01",
+        //         "qty": "0.002",
+        //         "quoteQty": "15.63802",
+        //         "realizedPnl": "-0.91539999",
+        //         "side": "SELL",
+        //         "positionSide": "SHORT",
+        //         "symbol": "BTCUSDT",
+        //         "time": 1569514978020
+        //     }
+        //
+        const id = this.safeString(trade, 'id');
+        const symbol = market['symbol'];
+        const currencyId = this.safeString(trade, 'commissionAsset');
+        const currencyCode = this.safeCurrencyCode(currencyId);
+        const amountString = this.safeString(trade, 'qty');
+        const priceString = this.safeString(trade, 'price');
+        const costString = this.safeString2(trade, 'quoteQty', 'baseQty');
+        const timestamp = this.safeInteger(trade, 'time');
+        let side = this.safeStringLower(trade, 'side');
+        const isMaker = this.safeBool(trade, 'maker');
+        let takerOrMaker = undefined;
+        if (isMaker !== undefined) {
+            takerOrMaker = isMaker ? 'maker' : 'taker';
+        }
+        const isBuyerMaker = this.safeBool(trade, 'isBuyerMaker');
+        if (isBuyerMaker !== undefined) {
+            side = isBuyerMaker ? 'sell' : 'buy';
+        }
+        return this.safeTrade({
+            'id': id,
+            'info': trade,
+            'timestamp': timestamp,
+            'datetime': this.iso8601(timestamp),
+            'symbol': symbol,
+            'order': this.safeString(trade, 'orderId'),
+            'type': undefined,
+            'side': side,
+            'takerOrMaker': takerOrMaker,
+            'price': priceString,
+            'amount': amountString,
+            'cost': costString,
+            'fee': {
+                'cost': this.parseNumber(_base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringAbs(this.safeString(trade, 'commission'))),
+                'currency': currencyCode,
+            },
+        }, market);
+    }
+    /**
+     * @method
+     * @name aster#fetchTrades
+     * @description get the list of most recent trades for a particular symbol
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-spot-api.md#recent-trades-list
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-futures-api.md#recent-trades-list
+     * @param {string} symbol unified symbol of the market to fetch trades for
+     * @param {int} [since] timestamp in ms of the earliest trade to fetch
+     * @param {int} [limit] the maximum amount of trades to fetch
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {Trade[]} a list of [trade structures]{@link https://docs.ccxt.com/#/?id=public-trades}
+     */
+    async fetchTrades(symbol, since = undefined, limit = undefined, params = {}) {
+        if (symbol === undefined) {
+            throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired(this.id + ' fetchTrades() requires a symbol argument');
+        }
+        await this.loadMarkets();
+        const market = this.market(symbol);
+        const request = {
+            'symbol': market['id'],
+        };
+        if (limit !== undefined) {
+            if (limit > 1000) {
+                limit = 1000; // Default 500; max 1000.
+            }
+            request['limit'] = limit;
+        }
+        let response = undefined;
+        if (market['swap']) {
+            response = await this.fapiPublicGetV1Trades(this.extend(request, params));
+            //
+            //     [
+            //         {
+            //             "id": 3913206,
+            //             "price": "644.100",
+            //             "qty": "0.08",
+            //             "quoteQty": "51.528",
+            //             "time": 1749784506633,
+            //             "isBuyerMaker": true
+            //         }
+            //     ]
+            //
+        }
+        else {
+            response = await this.sapiPublicGetV1Trades(this.extend(request, params));
+            //     [
+            //         {
+            //             "id": 657,
+            //             "price": "1.01000000",
+            //             "qty": "5.00000000",
+            //             "baseQty": "4.95049505",
+            //             "time": 1755156533943,
+            //             "isBuyerMaker": false
+            //         }
+            //     ]
+        }
+        return this.parseTrades(response, market, since, limit);
+    }
+    /**
+     * @method
+     * @name aster#fetchMyTrades
+     * @description fetch all trades made by the user
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-spot-api.md#account-trade-history-user_data
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-futures-api.md#account-trade-list-user_data
+     * @param {string} [symbol] unified market symbol
+     * @param {int} [since] the earliest time in ms to fetch trades for
+     * @param {int} [limit] the maximum number of trades structures to retrieve
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {int} [params.until] timestamp in ms for the ending date filter, default is undefined
+     * @returns {object[]} a list of [trade structures]{@link https://docs.ccxt.com/#/?id=trade-structure}
+     */
+    async fetchMyTrades(symbol = undefined, since = undefined, limit = undefined, params = {}) {
+        if (symbol === undefined) {
+            throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired(this.id + ' fetchMyTrades() requires a symbol argument');
+        }
+        await this.loadMarkets();
+        const market = this.market(symbol);
+        let request = {
+            'symbol': market['id'],
+        };
+        if (since !== undefined) {
+            request['startTime'] = since;
+        }
+        if (limit !== undefined) {
+            if (limit > 1000) {
+                limit = 1000; // Default 500; max 1000.
+            }
+            request['limit'] = limit;
+        }
+        [request, params] = this.handleUntilOption('endTime', request, params);
+        let response = undefined;
+        if (market['swap']) {
+            response = await this.fapiPrivateGetV1UserTrades(this.extend(request, params));
+        }
+        else {
+            response = await this.sapiPrivateGetV1UserTrades(this.extend(request, params));
+        }
+        //
+        //     [
+        //         {
+        //             "buyer": false,
+        //             "commission": "-0.07819010",
+        //             "commissionAsset": "USDT",
+        //             "id": 698759,
+        //             "maker": false,
+        //             "orderId": 25851813,
+        //             "price": "7819.01",
+        //             "qty": "0.002",
+        //             "quoteQty": "15.63802",
+        //             "realizedPnl": "-0.91539999",
+        //             "side": "SELL",
+        //             "positionSide": "SHORT",
+        //             "symbol": "BTCUSDT",
+        //             "time": 1569514978020
+        //         }
+        //     ]
+        //
+        return this.parseTrades(response, market, since, limit, params);
+    }
+    /**
+     * @method
+     * @name aster#fetchOrderBook
+     * @description fetches information on open orders with bid (buy) and ask (sell) prices, volumes and other data
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-spot-api.md#depth-information
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-futures-api.md#order-book
+     * @param {string} symbol unified symbol of the market to fetch the order book for
+     * @param {int} [limit] the maximum amount of order book entries to return
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object} A dictionary of [order book structures]{@link https://docs.ccxt.com/#/?id=order-book-structure} indexed by market symbols
+     */
+    async fetchOrderBook(symbol, limit = undefined, params = {}) {
+        if (symbol === undefined) {
+            throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired(this.id + ' fetchOrderBook() requires a symbol argument');
+        }
+        await this.loadMarkets();
+        const market = this.market(symbol);
+        const request = {
+            'symbol': market['id'],
+        };
+        if (limit !== undefined) {
+            // limit: [5, 10, 20, 50, 100, 500, 1000]. Default: 500
+            if (limit > 1000) {
+                limit = 1000; // Default 500; max 1000.
+            }
+            request['limit'] = limit;
+        }
+        let response = undefined;
+        if (market['swap']) {
+            response = await this.fapiPublicGetV1Depth(this.extend(request, params));
+        }
+        else {
+            response = await this.sapiPublicGetV1Depth(this.extend(request, params));
+        }
+        //
+        //     {
+        //         "lastUpdateId": 1027024,
+        //         "E": 1589436922972, //     Message output time
+        //         "T": 1589436922959, //     Transaction time
+        //         "bids": [
+        //             [
+        //                 "4.00000000", //     PRICE
+        //                 "431.00000000" //     QTY
+        //             ]
+        //         ],
+        //         "asks": [
+        //             [
+        //                 "4.00000200",
+        //                 "12.00000000"
+        //             ]
+        //         ]
+        //     }
+        //
+        const timestamp = this.safeInteger(response, 'T');
+        return this.parseOrderBook(response, symbol, timestamp, 'bids', 'asks');
+    }
+    /**
+     * @method
+     * @name aster#fetchFundingRateHistory
+     * @description fetches historical funding rate prices
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-futures-api.md#get-funding-rate-history
+     * @param {string} symbol unified symbol of the market to fetch the funding rate history for
+     * @param {int} [since] timestamp in ms of the earliest funding rate to fetch
+     * @param {int} [limit] the maximum amount of [funding rate structures]{@link https://docs.ccxt.com/#/?id=funding-rate-history-structure} to fetch
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {int} [params.until] timestamp in ms of the latest funding rate
+     * @returns {object[]} a list of [funding rate structures]{@link https://docs.ccxt.com/#/?id=funding-rate-history-structure}
+     */
+    async fetchFundingRateHistory(symbol = undefined, since = undefined, limit = undefined, params = {}) {
+        await this.loadMarkets();
+        let request = {};
+        if (symbol !== undefined) {
+            const market = this.market(symbol);
+            request['symbol'] = market['id'];
+        }
+        if (since !== undefined) {
+            request['startTime'] = since;
+        }
+        if (limit !== undefined) {
+            if (limit > 1000) {
+                limit = 1000; // Default 100; max 1000
+            }
+            request['limit'] = limit;
+        }
+        [request, params] = this.handleUntilOption('endTime', request, params);
+        const response = await this.fapiPublicGetV1FundingRate(this.extend(request, params));
+        //
+        //     [
+        //         {
+        //             "symbol": "BTCUSDT",
+        //             "fundingTime": 1747209600000,
+        //             "fundingRate": "0.00010000"
+        //         }
+        //     ]
+        //
+        const rates = [];
+        for (let i = 0; i < response.length; i++) {
+            const entry = response[i];
+            const timestamp = this.safeInteger(entry, 'fundingTime');
+            rates.push({
+                'info': entry,
+                'symbol': this.safeSymbol(this.safeString(entry, 'symbol'), undefined, undefined, 'swap'),
+                'fundingRate': this.safeNumber(entry, 'fundingRate'),
+                'timestamp': timestamp,
+                'datetime': this.iso8601(timestamp),
+            });
+        }
+        const sorted = this.sortBy(rates, 'timestamp');
+        return this.filterBySymbolSinceLimit(sorted, symbol, since, limit);
+    }
+    parseTicker(ticker, market = undefined) {
+        //
+        // spot
+        //     {
+        //         "symbol": "BTCUSDT",
+        //         "priceChange": "-2274.38",
+        //         "priceChangePercent": "-2.049",
+        //         "weightedAvgPrice": "109524.37084136",
+        //         "lastPrice": "108738.78",
+        //         "lastQty": "0.00034",
+        //         "openPrice": "111013.16",
+        //         "highPrice": "111975.81",
+        //         "lowPrice": "107459.25",
+        //         "volume": "28.67876",
+        //         "quoteVolume": "3141023.14551030",
+        //         "openTime": "1760578800000",
+        //         "closeTime": "1760665024749",
+        //         "firstId": "37447",
+        //         "lastId": "39698",
+        //         "count": "2252",
+        //         "baseAsset": "BTC",
+        //         "quoteAsset": "USDT",
+        //         "bidPrice": "108705.11",
+        //         "bidQty": "0.03351",
+        //         "askPrice": "108725.99",
+        //         "askQty": "0.08724"
+        //     }
+        // swap
+        //     {
+        //         "symbol": "BTCUSDT",
+        //         "priceChange": "1845.7",
+        //         "priceChangePercent": "1.755",
+        //         "weightedAvgPrice": "105515.5",
+        //         "lastPrice": "107037.7",
+        //         "lastQty": "0.004",
+        //         "openPrice": "105192.0",
+        //         "highPrice": "107223.5",
+        //         "lowPrice": "104431.6",
+        //         "volume": "8753.286",
+        //         "quoteVolume": "923607368.61",
+        //         "openTime": 1749976620000,
+        //         "closeTime": 1750063053754,
+        //         "firstId": 24195078,
+        //         "lastId": 24375783,
+        //         "count": 180706
+        //     }
+        //
+        const timestamp = this.safeInteger(ticker, 'closeTime');
+        let marketType = undefined;
+        if ('bidQty' in ticker) {
+            marketType = 'spot';
+        }
+        else {
+            marketType = 'contract';
+        }
+        const marketId = this.safeString(ticker, 'symbol');
+        market = this.safeMarket(marketId, market, undefined, marketType);
+        const symbol = market['symbol'];
+        const last = this.safeString(ticker, 'lastPrice');
+        const open = this.safeString(ticker, 'openPrice');
+        let percentage = this.safeString(ticker, 'priceChangePercent');
+        percentage = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringMul(percentage, '100');
+        const quoteVolume = this.safeString(ticker, 'quoteVolume');
+        const baseVolume = this.safeString(ticker, 'volume');
+        const high = this.safeString(ticker, 'highPrice');
+        const low = this.safeString(ticker, 'lowPrice');
+        return this.safeTicker({
+            'symbol': symbol,
+            'timestamp': timestamp,
+            'datetime': this.iso8601(timestamp),
+            'high': high,
+            'low': low,
+            'bid': this.safeString(ticker, 'bidPrice'),
+            'bidVolume': this.safeString(ticker, 'bidQty'),
+            'ask': this.safeString(ticker, 'askPrice'),
+            'askVolume': this.safeString(ticker, 'askQty'),
+            'vwap': undefined,
+            'open': open,
+            'close': last,
+            'last': last,
+            'previousClose': undefined,
+            'change': undefined,
+            'percentage': percentage,
+            'average': undefined,
+            'baseVolume': baseVolume,
+            'quoteVolume': quoteVolume,
+            'markPrice': undefined,
+            'indexPrice': undefined,
+            'info': ticker,
+        }, market);
+    }
+    /**
+     * @method
+     * @name aster#fetchTicker
+     * @description fetches a price ticker, a statistical calculation with the information calculated over the past 24 hours for a specific market
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-spot-api.md#24h-price-change
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-futures-api.md#24hr-ticker-price-change-statistics
+     * @param {string} symbol unified symbol of the market to fetch the ticker for
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object} a [ticker structure]{@link https://docs.ccxt.com/#/?id=ticker-structure}
+     */
+    async fetchTicker(symbol, params = {}) {
+        if (symbol === undefined) {
+            throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired(this.id + ' fetchTicker() requires a symbol argument');
+        }
+        await this.loadMarkets();
+        const market = this.market(symbol);
+        const request = {
+            'symbol': market['id'],
+        };
+        let response = undefined;
+        if (market['swap']) {
+            response = await this.fapiPublicGetV1Ticker24hr(this.extend(request, params));
+            //
+            //     {
+            //         "symbol": "BTCUSDT",
+            //         "priceChange": "1845.7",
+            //         "priceChangePercent": "1.755",
+            //         "weightedAvgPrice": "105515.5",
+            //         "lastPrice": "107037.7",
+            //         "lastQty": "0.004",
+            //         "openPrice": "105192.0",
+            //         "highPrice": "107223.5",
+            //         "lowPrice": "104431.6",
+            //         "volume": "8753.286",
+            //         "quoteVolume": "923607368.61",
+            //         "openTime": 1749976620000,
+            //         "closeTime": 1750063053754,
+            //         "firstId": 24195078,
+            //         "lastId": 24375783,
+            //         "count": 180706
+            //     }
+            //
+        }
+        else {
+            response = await this.sapiPublicGetV1Ticker24hr(this.extend(request, params));
+            //     {
+            //         "symbol": "BTCUSDT",
+            //         "priceChange": "-2274.38",
+            //         "priceChangePercent": "-2.049",
+            //         "weightedAvgPrice": "109524.37084136",
+            //         "lastPrice": "108738.78",
+            //         "lastQty": "0.00034",
+            //         "openPrice": "111013.16",
+            //         "highPrice": "111975.81",
+            //         "lowPrice": "107459.25",
+            //         "volume": "28.67876",
+            //         "quoteVolume": "3141023.14551030",
+            //         "openTime": "1760578800000",
+            //         "closeTime": "1760665024749",
+            //         "firstId": "37447",
+            //         "lastId": "39698",
+            //         "count": "2252",
+            //         "baseAsset": "BTC",
+            //         "quoteAsset": "USDT",
+            //         "bidPrice": "108705.11",
+            //         "bidQty": "0.03351",
+            //         "askPrice": "108725.99",
+            //         "askQty": "0.08724"
+            //     }
+        }
+        return this.parseTicker(response, market);
+    }
+    /**
+     * @method
+     * @name aster#fetchTickers
+     * @description fetches price tickers for multiple markets, statistical information calculated over the past 24 hours for each market
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-spot-api.md#24h-price-change
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-futures-api.md#24hr-ticker-price-change-statistics
+     * @param {string[]} symbols unified symbols of the markets to fetch the ticker for, all market tickers are returned if not assigned
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {string} [params.subType] "linear" or "inverse"
+     * @param {string} [params.type] 'spot', 'option', use params["subType"] for swap and future markets
+     * @returns {object} an array of [ticker structures]{@link https://docs.ccxt.com/#/?id=ticker-structure}
+     */
+    async fetchTickers(symbols = undefined, params = {}) {
+        await this.loadMarkets();
+        symbols = this.marketSymbols(symbols, undefined, true, true, true);
+        const market = this.getMarketFromSymbols(symbols);
+        let type = undefined;
+        [type, params] = this.handleMarketTypeAndParams('fetchTickers', market, params);
+        let subType = undefined;
+        [subType, params] = this.handleSubTypeAndParams('fetchTickers', market, params);
+        let response = undefined;
+        if (this.isLinear(type, subType)) {
+            response = await this.fapiPublicGetV1Ticker24hr(params);
+        }
+        else if (type === 'spot') {
+            response = await this.sapiPublicGetV1Ticker24hr(params);
+        }
+        else {
+            throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchTickers() does not support ' + type + ' markets yet');
+        }
+        //
+        //     [
+        //         {
+        //             "symbol": "BTCUSDT",
+        //             "priceChange": "1845.7",
+        //             "priceChangePercent": "1.755",
+        //             "weightedAvgPrice": "105515.5",
+        //             "lastPrice": "107037.7",
+        //             "lastQty": "0.004",
+        //             "openPrice": "105192.0",
+        //             "highPrice": "107223.5",
+        //             "lowPrice": "104431.6",
+        //             "volume": "8753.286",
+        //             "quoteVolume": "923607368.61",
+        //             "openTime": 1749976620000,
+        //             "closeTime": 1750063053754,
+        //             "firstId": 24195078,
+        //             "lastId": 24375783,
+        //             "count": 180706
+        //         }
+        //     ]
+        //
+        return this.parseTickers(response, symbols);
+    }
+    parseFundingRate(contract, market = undefined) {
+        //
+        //     {
+        //         "symbol": "BTCUSDT",
+        //         "markPrice": "106729.84047826",
+        //         "indexPrice": "106775.72673913",
+        //         "estimatedSettlePrice": "106708.84997006",
+        //         "lastFundingRate": "0.00010000",
+        //         "interestRate": "0.00010000",
+        //         "nextFundingTime": 1750147200000,
+        //         "time": 1750146970000
+        //     }
+        //     {
+        //         "symbol": "INJUSDT",
+        //         "interestRate": "0.00010000",
+        //         "time": 1756197479000,
+        //         "fundingIntervalHours": 8,
+        //         "fundingFeeCap": 0.03,
+        //         "fundingFeeFloor": -0.03
+        //     }
+        //
+        const marketId = this.safeString(contract, 'symbol');
+        const nextFundingTimestamp = this.safeInteger(contract, 'nextFundingTime');
+        const timestamp = this.safeInteger(contract, 'time');
+        const interval = this.safeString(contract, 'fundingIntervalHours');
+        let intervalString = undefined;
+        if (interval !== undefined) {
+            intervalString = interval + 'h';
+        }
+        return {
+            'info': contract,
+            'symbol': this.safeSymbol(marketId, market, undefined, 'contract'),
+            'markPrice': this.safeNumber(contract, 'markPrice'),
+            'indexPrice': this.safeNumber(contract, 'indexPrice'),
+            'interestRate': this.safeNumber(contract, 'interestRate'),
+            'estimatedSettlePrice': this.safeNumber(contract, 'estimatedSettlePrice'),
+            'timestamp': timestamp,
+            'datetime': this.iso8601(timestamp),
+            'fundingRate': this.safeNumber(contract, 'lastFundingRate'),
+            'fundingTimestamp': undefined,
+            'fundingDatetime': undefined,
+            'nextFundingRate': undefined,
+            'nextFundingTimestamp': nextFundingTimestamp,
+            'nextFundingDatetime': this.iso8601(nextFundingTimestamp),
+            'previousFundingRate': undefined,
+            'previousFundingTimestamp': undefined,
+            'previousFundingDatetime': undefined,
+            'interval': intervalString,
+        };
+    }
+    /**
+     * @method
+     * @name aster#fetchFundingRate
+     * @description fetch the current funding rate
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-futures-api.md#mark-price
+     * @param {string} symbol unified market symbol
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object} a [funding rate structure]{@link https://docs.ccxt.com/#/?id=funding-rate-structure}
+     */
+    async fetchFundingRate(symbol, params = {}) {
+        if (symbol === undefined) {
+            throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired(this.id + ' fetchFundingRate() requires a symbol argument');
+        }
+        await this.loadMarkets();
+        const market = this.market(symbol);
+        const request = {
+            'symbol': market['id'],
+        };
+        const response = await this.fapiPublicGetV1PremiumIndex(this.extend(request, params));
+        //
+        //     {
+        //         "symbol": "BTCUSDT",
+        //         "markPrice": "106729.84047826",
+        //         "indexPrice": "106775.72673913",
+        //         "estimatedSettlePrice": "106708.84997006",
+        //         "lastFundingRate": "0.00010000",
+        //         "interestRate": "0.00010000",
+        //         "nextFundingTime": 1750147200000,
+        //         "time": 1750146970000
+        //     }
+        //
+        return this.parseFundingRate(response, market);
+    }
+    /**
+     * @method
+     * @name aster#fetchFundingRates
+     * @description fetch the current funding rate for multiple symbols
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-futures-api.md#24hr-ticker-price-change-statistics
+     * @param {string[]} [symbols] list of unified market symbols
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object[]} a list of [funding rate structures]{@link https://docs.ccxt.com/#/?id=funding-rate-structure}
+     */
+    async fetchFundingRates(symbols = undefined, params = {}) {
+        await this.loadMarkets();
+        symbols = this.marketSymbols(symbols);
+        const response = await this.fapiPublicGetV1PremiumIndex(this.extend(params));
+        //
+        //     [
+        //         {
+        //             "symbol": "BTCUSDT",
+        //             "markPrice": "106729.84047826",
+        //             "indexPrice": "106775.72673913",
+        //             "estimatedSettlePrice": "106708.84997006",
+        //             "lastFundingRate": "0.00010000",
+        //             "interestRate": "0.00010000",
+        //             "nextFundingTime": 1750147200000,
+        //             "time": 1750146970000
+        //         }
+        //     ]
+        //
+        return this.parseFundingRates(response, symbols);
+    }
+    /**
+     * @method
+     * @name aster#fetchFundingIntervals
+     * @description fetch the funding rate interval for multiple markets
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-futures-api.md#get-funding-rate-config
+     * @param {string[]} [symbols] list of unified market symbols
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object[]} a list of [funding rate structures]{@link https://docs.ccxt.com/#/?id=funding-rate-structure}
+     */
+    async fetchFundingIntervals(symbols = undefined, params = {}) {
+        await this.loadMarkets();
+        if (symbols !== undefined) {
+            symbols = this.marketSymbols(symbols);
+        }
+        const response = await this.fapiPublicGetV1FundingInfo(params);
+        //
+        //     [
+        //         {
+        //             "symbol": "INJUSDT",
+        //             "interestRate": "0.00010000",
+        //             "time": 1756197479000,
+        //             "fundingIntervalHours": 8,
+        //             "fundingFeeCap": 0.03,
+        //             "fundingFeeFloor": -0.03
+        //         }
+        //     ]
+        //
+        return this.parseFundingRates(response, symbols);
+    }
+    parseBalance(response) {
+        const result = { 'info': response };
+        for (let i = 0; i < response.length; i++) {
+            const balance = response[i];
+            const currencyId = this.safeString(balance, 'asset');
+            const code = this.safeCurrencyCode(currencyId);
+            const account = this.account();
+            account['free'] = this.safeString2(balance, 'free', 'maxWithdrawAmount');
+            account['used'] = this.safeString(balance, 'locked');
+            account['total'] = this.safeString(balance, 'walletBalance');
+            result[code] = account;
+        }
+        return this.safeBalance(result);
+    }
+    /**
+     * @method
+     * @name aster#fetchBalance
+     * @description query for balance and get the amount of funds available for trading or funds locked in orders
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-futures-api.md#account-information-v4-user_data
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-spot-api.md#account-information-user_data
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {string} [params.subType] "linear" or "inverse"
+     * @param {string} [params.type] 'spot', 'option', use params["subType"] for swap and future markets
+     * @returns {object} a [balance structure]{@link https://docs.ccxt.com/#/?id=balance-structure}
+     */
+    async fetchBalance(params = {}) {
+        let type = undefined;
+        [type, params] = this.handleMarketTypeAndParams('fetchBalance', undefined, params);
+        let subType = undefined;
+        [subType, params] = this.handleSubTypeAndParams('fetchBalance', undefined, params);
+        let response = undefined;
+        let data = undefined;
+        if (this.isLinear(type, subType)) {
+            response = await this.fapiPrivateGetV4Account(params);
+            data = this.safeList(response, 'assets', []);
+            //
+            //     [
+            //         {
+            //             "asset": "USDT", // asset name
+            //             "walletBalance": "23.72469206", // wallet balance
+            //             "unrealizedProfit": "0.00000000", // unrealized profit
+            //             "marginBalance": "23.72469206", // margin balance
+            //             "maintMargin": "0.00000000", // maintenance margin required
+            //             "initialMargin": "0.00000000", // total initial margin required with current mark price
+            //             "positionInitialMargin": "0.00000000", //initial margin required for positions with current mark price
+            //             "openOrderInitialMargin": "0.00000000", // initial margin required for open orders with current mark price
+            //             "crossWalletBalance": "23.72469206", // crossed wallet balance
+            //             "crossUnPnl": "0.00000000", // unrealized profit of crossed positions
+            //             "availableBalance": "23.72469206", // available balance
+            //             "maxWithdrawAmount": "23.72469206", // maximum amount for transfer out
+            //             "marginAvailable": true, // whether the asset can be used as margin in Multi-Assets mode
+            //             "updateTime": 1625474304765 // last update time
+            //         }
+            //     ]
+            //
+        }
+        else if (type === 'spot') {
+            response = await this.sapiPrivateGetV1Account(params);
+            data = this.safeList(response, 'balances', []);
+            //
+            //     [
+            //         {
+            //             "asset": "BTC",
+            //             "free": "4723846.89208129",
+            //             "locked": "0.00000000"
+            //         }
+            //     ]
+            //
+        }
+        else {
+            throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchBalance() does not support ' + type + ' markets yet');
+        }
+        return this.parseBalance(data);
+    }
+    /**
+     * @method
+     * @name aster#setMarginMode
+     * @description set margin mode to 'cross' or 'isolated'
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-futures-api.md#change-margin-type-trade
+     * @param {string} marginMode 'cross' or 'isolated'
+     * @param {string} symbol unified market symbol
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object} response from the exchange
+     */
+    async setMarginMode(marginMode, symbol = undefined, params = {}) {
+        if (symbol === undefined) {
+            throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired(this.id + ' setMarginMode() requires a symbol argument');
+        }
+        marginMode = marginMode.toUpperCase();
+        if (marginMode === 'CROSS') {
+            marginMode = 'CROSSED';
+        }
+        if ((marginMode !== 'ISOLATED') && (marginMode !== 'CROSSED')) {
+            throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest(this.id + ' marginMode must be either isolated or cross');
+        }
+        await this.loadMarkets();
+        const market = this.market(symbol);
+        const request = {
+            'symbol': market['id'],
+            'marginType': marginMode,
+        };
+        const response = await this.fapiPrivatePostV1MarginType(this.extend(request, params));
+        //
+        //     {
+        //         "amount": 100.0,
+        //         "code": 200,
+        //         "msg": "Successfully modify position margin.",
+        //         "type": 1
+        //     }
+        //
+        return response;
+    }
+    /**
+     * @method
+     * @name aster#fetchPositionMode
+     * @description fetchs the position mode, hedged or one way, hedged for aster is set identically for all linear markets or all inverse markets
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-futures-api.md#get-current-position-modeuser_data
+     * @param {string} symbol unified symbol of the market to fetch the order book for
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object} an object detailing whether the market is in hedged or one-way mode
+     */
+    async fetchPositionMode(symbol = undefined, params = {}) {
+        const response = await this.fapiPrivateGetV1PositionSideDual(params);
+        //
+        //     {
+        //         "dualSidePosition": true // "true": Hedge Mode; "false": One-way Mode
+        //     }
+        //
+        const dualSidePosition = this.safeBool(response, 'dualSidePosition');
+        return {
+            'info': response,
+            'hedged': (dualSidePosition === true),
+        };
+    }
+    /**
+     * @method
+     * @name aster#setPositionMode
+     * @description set hedged to true or false for a market
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-futures-api.md#change-position-modetrade
+     * @param {bool} hedged set to true to use dualSidePosition
+     * @param {string} symbol not used by bingx setPositionMode ()
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object} response from the exchange
+     */
+    async setPositionMode(hedged, symbol = undefined, params = {}) {
+        const request = {
+            'dualSidePosition': hedged,
+        };
+        //
+        //     {
+        //         "code": 200,
+        //         "msg": "success"
+        //     }
+        //
+        return await this.fapiPrivatePostV1PositionSideDual(this.extend(request, params));
+    }
+    parseTradingFee(fee, market = undefined) {
+        const marketId = this.safeString(fee, 'symbol');
+        market = this.safeMarket(marketId, market);
+        const symbol = this.safeSymbol(marketId, market);
+        return {
+            'info': fee,
+            'symbol': symbol,
+            'maker': this.safeNumber(fee, 'makerCommissionRate'),
+            'taker': this.safeNumber(fee, 'takerCommissionRate'),
+            'percentage': false,
+            'tierBased': false,
+        };
+    }
+    /**
+     * @method
+     * @name aster#fetchTradingFee
+     * @description fetch the trading fees for a market
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-spot-api.md#get-symbol-fees
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-futures-api.md#user-commission-rate-user_data
+     * @param {string} symbol unified market symbol
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object} a [fee structure]{@link https://docs.ccxt.com/#/?id=fee-structure}
+     */
+    async fetchTradingFee(symbol, params = {}) {
+        await this.loadMarkets();
+        const market = this.market(symbol);
+        const request = {
+            'symbol': market['id'],
+        };
+        let response = undefined;
+        if (market['swap']) {
+            response = await this.fapiPrivateGetV1CommissionRate(this.extend(request, params));
+        }
+        else {
+            response = await this.sapiPrivateGetV1CommissionRate(this.extend(request, params));
+        }
+        //
+        //     {
+        //         "symbol": "BTCUSDT",
+        //         "makerCommissionRate": "0.0002",
+        //         "takerCommissionRate": "0.0004"
+        //     }
+        //
+        return this.parseTradingFee(response, market);
+    }
+    parseOrderStatus(status) {
+        const statuses = {
+            'NEW': 'open',
+            'PARTIALLY_FILLED': 'open',
+            'FILLED': 'closed',
+            'CANCELED': 'canceled',
+            'REJECTED': 'canceled',
+            'EXPIRED': 'canceled',
+        };
+        return this.safeString(statuses, status, status);
+    }
+    parseOrderType(type) {
+        const types = {
+            'LIMIT': 'limit',
+            'MARKET': 'market',
+            'STOP': 'limit',
+            'STOP_MARKET': 'market',
+            'TAKE_PROFIT': 'limit',
+            'TAKE_PROFIT_MARKET': 'market',
+            'TRAILING_STOP_MARKET': 'market',
+        };
+        return this.safeString(types, type, type);
+    }
+    parseOrder(order, market = undefined) {
+        //
+        // swap
+        //     {
+        //         "avgPrice": "0.00000",
+        //         "clientOrderId": "abc",
+        //         "cumQuote": "0",
+        //         "executedQty": "0",
+        //         "orderId": 1917641,
+        //         "origQty": "0.40",
+        //         "origType": "TRAILING_STOP_MARKET",
+        //         "price": "0",
+        //         "reduceOnly": false,
+        //         "side": "BUY",
+        //         "positionSide": "SHORT",
+        //         "status": "NEW",
+        //         "stopPrice": "9300",
+        //         "closePosition": false,
+        //         "symbol": "BTCUSDT",
+        //         "time": 1579276756075,
+        //         "timeInForce": "GTC",
+        //         "type": "TRAILING_STOP_MARKET",
+        //         "activatePrice": "9020",
+        //         "priceRate": "0.3",
+        //         "updateTime": 1579276756075,
+        //         "workingType": "CONTRACT_PRICE",
+        //         "priceProtect": false
+        //     }
+        // spot
+        //     {
+        //         "orderId": 38,
+        //         "symbol": "ADA25SLP25",
+        //         "status": "FILLED",
+        //         "clientOrderId": "afMd4GBQyHkHpGWdiy34Li",
+        //         "price": "20",
+        //         "avgPrice": "12.0000000000000000",
+        //         "origQty": "10",
+        //         "executedQty": "10",
+        //         "cumQuote": "120",
+        //         "timeInForce": "GTC",
+        //         "type": "LIMIT",
+        //         "side": "BUY",
+        //         "stopPrice": "0",
+        //         "origType": "LIMIT",
+        //         "time": 1649913186270,
+        //         "updateTime": 1649913186297
+        //     }
+        //
+        const info = order;
+        const marketId = this.safeString(order, 'symbol');
+        market = this.safeMarket(marketId, market);
+        const side = this.safeStringLower(order, 'side');
+        const timestamp = this.safeInteger(order, 'time');
+        const lastTradeTimestamp = this.safeInteger(order, 'updateTime');
+        const statusId = this.safeStringUpper(order, 'status');
+        const rawType = this.safeStringUpper(order, 'type');
+        const stopPriceString = this.safeString(order, 'stopPrice');
+        const triggerPrice = this.parseNumber(this.omitZero(stopPriceString));
+        return this.safeOrder({
+            'info': info,
+            'id': this.safeString(order, 'orderId'),
+            'clientOrderId': this.safeString(order, 'clientOrderId'),
+            'symbol': this.safeSymbol(marketId, market),
+            'timestamp': timestamp,
+            'datetime': this.iso8601(timestamp),
+            'lastTradeTimestamp': lastTradeTimestamp,
+            'lastUpdateTimestamp': this.safeInteger(order, 'updateTime'),
+            'type': this.parseOrderType(rawType),
+            'timeInForce': this.safeString(order, 'timeInForce'),
+            'postOnly': undefined,
+            'side': side,
+            'price': this.safeString(order, 'price'),
+            'triggerPrice': triggerPrice,
+            'average': this.safeString(order, 'avgPrice'),
+            'cost': this.safeString(order, 'cumQuote'),
+            'amount': this.safeString(order, 'origQty'),
+            'filled': this.safeString(order, 'executedQty'),
+            'remaining': undefined,
+            'status': this.parseOrderStatus(statusId),
+            'fee': undefined,
+            'trades': undefined,
+            'reduceOnly': this.safeBool2(order, 'reduceOnly', 'ro'),
+        }, market);
+    }
+    /**
+     * @method
+     * @name aster#fetchOrder
+     * @description fetches information on an order made by the user
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-spot-api.md#query-order-user_data
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-futures-api.md#query-order-user_data
+     * @param {string} id the order id
+     * @param {string} symbol unified symbol of the market the order was made in
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {string} [params.clientOrderId] a unique id for the order
+     * @returns {object} an [order structure]{@link https://docs.ccxt.com/#/?id=order-structure}
+     */
+    async fetchOrder(id, symbol = undefined, params = {}) {
+        if (symbol === undefined) {
+            throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired(this.id + ' fetchOrder() requires a symbol argument');
+        }
+        await this.loadMarkets();
+        const market = this.market(symbol);
+        const request = {
+            'symbol': market['id'],
+        };
+        const clientOrderId = this.safeString2(params, 'clientOrderId', 'clientOid');
+        params = this.omit(params, ['clientOrderId', 'clientOid']);
+        if (clientOrderId !== undefined) {
+            request['origClientOrderId'] = clientOrderId;
+        }
+        else {
+            request['orderId'] = id;
+        }
+        let response = undefined;
+        if (market['swap']) {
+            response = await this.fapiPrivateGetV1Order(this.extend(request, params));
+        }
+        else {
+            response = await this.sapiPrivateGetV1Order(this.extend(request, params));
+        }
+        return this.parseOrder(response, market);
+    }
+    /**
+     * @method
+     * @name aster#fetchOpenOrder
+     * @description fetch an open order by the id
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-futures-api.md#query-current-open-order-user_data
+     * @param {string} id order id
+     * @param {string} symbol unified market symbol
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object} an [order structure]{@link https://docs.ccxt.com/#/?id=order-structure}
+     */
+    async fetchOpenOrder(id, symbol = undefined, params = {}) {
+        if (symbol === undefined) {
+            throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired(this.id + ' fetchOpenOrder() requires a symbol argument');
+        }
+        await this.loadMarkets();
+        const market = this.market(symbol);
+        const request = {
+            'symbol': market['id'],
+        };
+        const clientOrderId = this.safeString2(params, 'clientOrderId', 'clientOid');
+        params = this.omit(params, ['clientOrderId', 'clientOid']);
+        if (clientOrderId !== undefined) {
+            request['origClientOrderId'] = clientOrderId;
+        }
+        else {
+            request['orderId'] = id;
+        }
+        const response = await this.fapiPrivateGetV1OpenOrder(this.extend(request, params));
+        return this.parseOrder(response, market);
+    }
+    /**
+     * @method
+     * @name aster#fetchOrders
+     * @description fetches information on multiple orders made by the user
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-spot-api.md#query-all-orders-user_data
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-futures-api.md#all-orders-user_data
+     * @param {string} symbol unified market symbol of the market orders were made in
+     * @param {int} [since] the earliest time in ms to fetch orders for
+     * @param {int} [limit] the maximum number of order structures to retrieve
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {int} [params.until] the latest time in ms to fetch orders for
+     * @returns {Order[]} a list of [order structures]{@link https://docs.ccxt.com/#/?id=order-structure}
+     */
+    async fetchOrders(symbol = undefined, since = undefined, limit = undefined, params = {}) {
+        await this.loadMarkets();
+        if (symbol === undefined) {
+            throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired(this.id + ' fetchOrders() requires a symbol argument');
+        }
+        const market = this.market(symbol);
+        let request = {
+            'symbol': market['id'],
+        };
+        if (since !== undefined) {
+            request['startTime'] = since;
+        }
+        if (limit !== undefined) {
+            if (limit > 1000) {
+                limit = 1000; // Default 500; max 1000
+            }
+            request['limit'] = limit;
+        }
+        [request, params] = this.handleUntilOption('endTime', request, params);
+        let response = undefined;
+        if (market['swap']) {
+            response = await this.fapiPrivateGetV1AllOrders(this.extend(request, params));
+        }
+        else {
+            response = await this.sapiPrivateGetV1AllOrders(this.extend(request, params));
+        }
+        return this.parseOrders(response, market, since, limit);
+    }
+    /**
+     * @method
+     * @name aster#fetchOpenOrders
+     * @description fetch all unfilled currently open orders
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-spot-api.md#current-open-orders-user_data
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-futures-api.md#current-all-open-orders-user_data
+     * @param {string} symbol unified market symbol
+     * @param {int} [since] the earliest time in ms to fetch open orders for
+     * @param {int} [limit] the maximum number of  open orders structures to retrieve
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {string} [params.subType] "linear" or "inverse"
+     * @param {string} [params.type] 'spot', 'option', use params["subType"] for swap and future markets
+     * @returns {Order[]} a list of [order structures]{@link https://docs.ccxt.com/#/?id=order-structure}
+     */
+    async fetchOpenOrders(symbol = undefined, since = undefined, limit = undefined, params = {}) {
+        await this.loadMarkets();
+        const request = {};
+        let market = undefined;
+        let type = undefined;
+        let subType = undefined;
+        [subType, params] = this.handleSubTypeAndParams('fetchOpenOrders', market, params);
+        if (symbol !== undefined) {
+            market = this.market(symbol);
+            request['symbol'] = market['id'];
+        }
+        [type, params] = this.handleMarketTypeAndParams('fetchOpenOrders', market, params);
+        let response = undefined;
+        if (this.isLinear(type, subType)) {
+            response = await this.fapiPrivateGetV1OpenOrders(this.extend(request, params));
+        }
+        else if (type === 'spot') {
+            response = await this.sapiPrivateGetV1OpenOrders(this.extend(request, params));
+        }
+        else {
+            throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchOpenOrders() does not support ' + type + ' markets yet');
+        }
+        //
+        //     [
+        //         {
+        //             "avgPrice": "0.00000",
+        //             "clientOrderId": "abc",
+        //             "cumQuote": "0",
+        //             "executedQty": "0",
+        //             "orderId": 1917641,
+        //             "origQty": "0.40",
+        //             "origType": "TRAILING_STOP_MARKET",
+        //             "price": "0",
+        //             "reduceOnly": false,
+        //             "side": "BUY",
+        //             "positionSide": "SHORT",
+        //             "status": "NEW",
+        //             "stopPrice": "9300",
+        //             "closePosition": false,
+        //             "symbol": "BTCUSDT",
+        //             "time": 1579276756075,
+        //             "timeInForce": "GTC",
+        //             "type": "TRAILING_STOP_MARKET",
+        //             "activatePrice": "9020",
+        //             "priceRate": "0.3",
+        //             "updateTime": 1579276756075,
+        //             "workingType": "CONTRACT_PRICE",
+        //             "priceProtect": false
+        //         }
+        //     ]
+        //
+        return this.parseOrders(response, market, since, limit);
+    }
+    /**
+     * @method
+     * @name aster#createOrder
+     * @description create a trade order
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-spot-api.md#place-order-trade
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-futures-api.md#new-order--trade
+     * @param {string} symbol unified symbol of the market to create an order in
+     * @param {string} type 'market' or 'limit' or 'STOP' or 'STOP_MARKET' or 'TAKE_PROFIT' or 'TAKE_PROFIT_MARKET' or 'TRAILING_STOP_MARKET'
+     * @param {string} side 'buy' or 'sell'
+     * @param {float} amount how much of you want to trade in units of the base currency
+     * @param {float} [price] the price that the order is to be fulfilled, in units of the quote currency, ignored in market orders
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {string} [params.reduceOnly] for swap and future reduceOnly is a string 'true' or 'false' that cant be sent with close position set to true or in hedge mode. For spot margin and option reduceOnly is a boolean.
+     * @param {boolean} [params.test] whether to use the test endpoint or not, default is false
+     * @param {float} [params.trailingPercent] the percent to trail away from the current market price
+     * @param {float} [params.trailingTriggerPrice] the price to trigger a trailing order, default uses the price argument
+     * @param {string} [params.positionSide] "BOTH" for one-way mode, "LONG" for buy side of hedged mode, "SHORT" for sell side of hedged mode
+     * @param {float} [params.triggerPrice] the price that a trigger order is triggered at
+     * @param {float} [params.stopLossPrice] the price that a stop loss order is triggered at
+     * @param {float} [params.takeProfitPrice] the price that a take profit order is triggered at
+     * @returns {object} an [order structure]{@link https://docs.ccxt.com/#/?id=order-structure}
+     */
+    async createOrder(symbol, type, side, amount, price = undefined, params = {}) {
+        await this.loadMarkets();
+        const market = this.market(symbol);
+        const test = this.safeBool(params, 'test', false);
+        params = this.omit(params, 'test');
+        const request = this.createOrderRequest(symbol, type, side, amount, price, params);
+        let response = undefined;
+        if (market['swap']) {
+            if (test) {
+                response = await this.fapiPrivatePostV1OrderTest(request);
+            }
+            else {
+                response = await this.fapiPrivatePostV1Order(request);
+            }
+        }
+        else {
+            response = await this.sapiPrivatePostV1Order(request);
+        }
+        return this.parseOrder(response, market);
+    }
+    /**
+     * @method
+     * @name aster#createOrders
+     * @description create a list of trade orders
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-futures-api.md#place-multiple-orders--trade
+     * @param {Array} orders list of orders to create, each object should contain the parameters required by createOrder, namely symbol, type, side, amount, price and params
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object} an [order structure]{@link https://docs.ccxt.com/#/?id=order-structure}
+     */
+    async createOrders(orders, params = {}) {
+        await this.loadMarkets();
+        const ordersRequests = [];
+        let orderSymbols = [];
+        if (orders.length > 5) {
+            throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidOrder(this.id + ' createOrders() order list max 5 orders');
+        }
+        for (let i = 0; i < orders.length; i++) {
+            const rawOrder = orders[i];
+            const marketId = this.safeString(rawOrder, 'symbol');
+            const type = this.safeString(rawOrder, 'type');
+            const side = this.safeString(rawOrder, 'side');
+            const amount = this.safeValue(rawOrder, 'amount');
+            const price = this.safeValue(rawOrder, 'price');
+            const orderParams = this.safeDict(rawOrder, 'params', {});
+            const orderRequest = this.createOrderRequest(marketId, type, side, amount, price, orderParams);
+            ordersRequests.push(orderRequest);
+        }
+        orderSymbols = this.marketSymbols(orderSymbols, undefined, false, true, true);
+        const market = this.market(orderSymbols[0]);
+        if (market['spot']) {
+            throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' createOrders() does not support ' + market['type'] + ' orders');
+        }
+        const request = {
+            'batchOrders': ordersRequests,
+        };
+        const response = await this.fapiPrivatePostV1BatchOrders(this.extend(request, params));
+        return this.parseOrders(response);
+    }
+    createOrderRequest(symbol, type, side, amount, price = undefined, params = {}) {
+        /**
+         * @method
+         * @ignore
+         * @name aster#createOrderRequest
+         * @description helper function to build the request
+         * @param {string} symbol unified symbol of the market to create an order in
+         * @param {string} type 'market' or 'limit'
+         * @param {string} side 'buy' or 'sell'
+         * @param {float} amount how much you want to trade in units of the base currency
+         * @param {float} [price] the price that the order is to be fulfilled, in units of the quote currency, ignored in market orders
+         * @param {object} [params] extra parameters specific to the exchange API endpoint
+         * @returns {object} request to be sent to the exchange
+         */
+        const market = this.market(symbol);
+        const initialUppercaseType = type.toUpperCase();
+        const isMarketOrder = initialUppercaseType === 'MARKET';
+        const isLimitOrder = initialUppercaseType === 'LIMIT';
+        const request = {
+            'symbol': market['id'],
+            'side': side.toUpperCase(),
+        };
+        const clientOrderId = this.safeString2(params, 'newClientOrderId', 'clientOrderId');
+        if (clientOrderId !== undefined) {
+            request['newClientOrderId'] = clientOrderId;
+        }
+        const triggerPrice = this.safeString2(params, 'triggerPrice', 'stopPrice');
+        const stopLossPrice = this.safeString(params, 'stopLossPrice', triggerPrice);
+        const takeProfitPrice = this.safeString(params, 'takeProfitPrice');
+        const trailingDelta = this.safeString(params, 'trailingDelta');
+        const trailingTriggerPrice = this.safeString2(params, 'trailingTriggerPrice', 'activationPrice');
+        const trailingPercent = this.safeStringN(params, ['trailingPercent', 'callbackRate', 'trailingDelta']);
+        const isTrailingPercentOrder = trailingPercent !== undefined;
+        const isStopLoss = stopLossPrice !== undefined || trailingDelta !== undefined;
+        const isTakeProfit = takeProfitPrice !== undefined;
+        let uppercaseType = initialUppercaseType;
+        let stopPrice = undefined;
+        if (isTrailingPercentOrder) {
+            if (market['swap']) {
+                uppercaseType = 'TRAILING_STOP_MARKET';
+                request['callbackRate'] = trailingPercent;
+                if (trailingTriggerPrice !== undefined) {
+                    request['activationPrice'] = this.priceToPrecision(symbol, trailingTriggerPrice);
+                }
+            }
+        }
+        else if (isStopLoss) {
+            stopPrice = stopLossPrice;
+            if (isMarketOrder) {
+                uppercaseType = 'STOP_MARKET';
+            }
+            else if (isLimitOrder) {
+                uppercaseType = 'STOP';
+            }
+        }
+        else if (isTakeProfit) {
+            stopPrice = takeProfitPrice;
+            if (isMarketOrder) {
+                uppercaseType = 'TAKE_PROFIT_MARKET';
+            }
+            else if (isLimitOrder) {
+                uppercaseType = 'TAKE_PROFIT';
+            }
+        }
+        const postOnly = this.isPostOnly(isMarketOrder, undefined, params);
+        if (postOnly) {
+            request['timeInForce'] = 'GTX';
+        }
+        //
+        // spot
+        // LIMIT timeInForce, quantity, price
+        // MARKET quantity or quoteOrderQty
+        // STOP and TAKE_PROFIT quantity, price, stopPrice
+        // STOP_MARKET and TAKE_PROFIT_MARKET quantity, stopPrice
+        // future
+        // LIMIT timeInForce, quantity, price
+        // MARKET quantity
+        // STOP/TAKE_PROFIT quantity, price, stopPrice
+        // STOP_MARKET/TAKE_PROFIT_MARKET stopPrice
+        // TRAILING_STOP_MARKET callbackRate
+        //
+        // additional required fields depending on the order type
+        const closePosition = this.safeBool(params, 'closePosition', false);
+        let timeInForceIsRequired = false;
+        let priceIsRequired = false;
+        let triggerPriceIsRequired = false;
+        let quantityIsRequired = false;
+        request['type'] = uppercaseType;
+        if (uppercaseType === 'MARKET') {
+            if (market['spot']) {
+                const quoteOrderQty = this.safeBool(this.options, 'quoteOrderQty', true);
+                if (quoteOrderQty) {
+                    const quoteOrderQtyNew = this.safeString2(params, 'quoteOrderQty', 'cost');
+                    const precision = market['precision']['price'];
+                    if (quoteOrderQtyNew !== undefined) {
+                        request['quoteOrderQty'] = this.decimalToPrecision(quoteOrderQtyNew, _base_functions_number_js__WEBPACK_IMPORTED_MODULE_1__/* .TRUNCATE */ .R3, precision, this.precisionMode);
+                    }
+                    else if (price !== undefined) {
+                        const amountString = this.numberToString(amount);
+                        const priceString = this.numberToString(price);
+                        const quoteOrderQuantity = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringMul(amountString, priceString);
+                        request['quoteOrderQty'] = this.decimalToPrecision(quoteOrderQuantity, _base_functions_number_js__WEBPACK_IMPORTED_MODULE_1__/* .TRUNCATE */ .R3, precision, this.precisionMode);
+                    }
+                    else {
+                        quantityIsRequired = true;
+                    }
+                }
+                else {
+                    quantityIsRequired = true;
+                }
+            }
+            else {
+                quantityIsRequired = true;
+            }
+        }
+        else if (uppercaseType === 'LIMIT') {
+            timeInForceIsRequired = true;
+            quantityIsRequired = true;
+            priceIsRequired = true;
+        }
+        else if ((uppercaseType === 'STOP') || (uppercaseType === 'TAKE_PROFIT')) {
+            quantityIsRequired = true;
+            priceIsRequired = true;
+            triggerPriceIsRequired = true;
+        }
+        else if ((uppercaseType === 'STOP_MARKET') || (uppercaseType === 'TAKE_PROFIT_MARKET')) {
+            if (!closePosition) {
+                quantityIsRequired = true;
+            }
+            triggerPriceIsRequired = true;
+        }
+        else if (uppercaseType === 'TRAILING_STOP_MARKET') {
+            request['callbackRate'] = trailingPercent;
+            if (trailingTriggerPrice !== undefined) {
+                request['activationPrice'] = this.priceToPrecision(symbol, trailingTriggerPrice);
+            }
+        }
+        if (quantityIsRequired) {
+            const marketAmountPrecision = this.safeString(market['precision'], 'amount');
+            const isPrecisionAvailable = (marketAmountPrecision !== undefined);
+            if (isPrecisionAvailable) {
+                request['quantity'] = this.amountToPrecision(symbol, amount);
+            }
+            else {
+                request['quantity'] = this.parseToNumeric(amount);
+            }
+        }
+        if (priceIsRequired) {
+            if (price === undefined) {
+                throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidOrder(this.id + ' createOrder() requires a price argument for a ' + type + ' order');
+            }
+            const pricePrecision = this.safeString(market['precision'], 'price');
+            const isPricePrecisionAvailable = (pricePrecision !== undefined);
+            if (isPricePrecisionAvailable) {
+                request['price'] = this.priceToPrecision(symbol, price);
+            }
+            else {
+                request['price'] = this.parseToNumeric(price);
+            }
+        }
+        if (triggerPriceIsRequired) {
+            if (stopPrice === undefined) {
+                throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidOrder(this.id + ' createOrder() requires a stopPrice extra param for a ' + type + ' order');
+            }
+            if (stopPrice !== undefined) {
+                request['stopPrice'] = this.priceToPrecision(symbol, stopPrice);
+            }
+        }
+        if (timeInForceIsRequired && (this.safeString(params, 'timeInForce') === undefined) && (this.safeString(request, 'timeInForce') === undefined)) {
+            request['timeInForce'] = this.safeString(this.options, 'defaultTimeInForce'); // 'GTC' = Good To Cancel (default), 'IOC' = Immediate Or Cancel
+        }
+        const requestParams = this.omit(params, ['newClientOrderId', 'clientOrderId', 'stopPrice', 'triggerPrice', 'trailingTriggerPrice', 'trailingPercent', 'trailingDelta', 'stopPrice', 'stopLossPrice', 'takeProfitPrice']);
+        return this.extend(request, requestParams);
+    }
+    /**
+     * @method
+     * @name aster#cancelAllOrders
+     * @description cancel all open orders in a market
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-spot-api.md#cancel-all-open-orders-trade
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-futures-api.md#cancel-all-open-orders-trade
+     * @param {string} symbol unified market symbol of the market to cancel orders in
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object[]} a list of [order structures]{@link https://docs.ccxt.com/#/?id=order-structure}
+     */
+    async cancelAllOrders(symbol = undefined, params = {}) {
+        if (symbol === undefined) {
+            throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired(this.id + ' cancelAllOrders() requires a symbol argument');
+        }
+        await this.loadMarkets();
+        const market = this.market(symbol);
+        const request = {
+            'symbol': market['id'],
+        };
+        let response = undefined;
+        if (market['swap']) {
+            response = await this.fapiPrivateDeleteV1AllOpenOrders(this.extend(request, params));
+        }
+        else {
+            response = await this.sapiPrivateDeleteV1AllOpenOrders(this.extend(request, params));
+        }
+        //
+        //     {
+        //         "code": "200",
+        //         "msg": "The operation of cancel all open order is done."
+        //     }
+        //
+        return [
+            this.safeOrder({
+                'info': response,
+            }),
+        ];
+    }
+    /**
+     * @method
+     * @name aster#cancelOrder
+     * @description cancels an open order
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-spot-api.md#cancel-order-trade
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-futures-api.md#cancel-order-trade
+     * @param {string} id order id
+     * @param {string} symbol unified symbol of the market the order was made in
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object} An [order structure]{@link https://docs.ccxt.com/#/?id=order-structure}
+     */
+    async cancelOrder(id, symbol = undefined, params = {}) {
+        if (symbol === undefined) {
+            throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired(this.id + ' cancelOrder() requires a symbol argument');
+        }
+        await this.loadMarkets();
+        const market = this.market(symbol);
+        const request = {
+            'symbol': market['id'],
+        };
+        const clientOrderId = this.safeStringN(params, ['origClientOrderId', 'clientOrderId', 'newClientStrategyId']);
+        if (clientOrderId !== undefined) {
+            request['origClientOrderId'] = clientOrderId;
+        }
+        else {
+            request['orderId'] = id;
+        }
+        params = this.omit(params, ['origClientOrderId', 'clientOrderId', 'newClientStrategyId']);
+        let response = undefined;
+        if (market['swap']) {
+            response = await this.fapiPrivateDeleteV1Order(this.extend(request, params));
+        }
+        else {
+            response = await this.sapiPrivateDeleteV1Order(this.extend(request, params));
+        }
+        return this.parseOrder(response, market);
+    }
+    /**
+     * @method
+     * @name aster#cancelOrders
+     * @description cancel multiple orders
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-futures-api.md#cancel-multiple-orders-trade
+     * @param {string[]} ids order ids
+     * @param {string} [symbol] unified market symbol
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     *
+     * EXCHANGE SPECIFIC PARAMETERS
+     * @param {string[]} [params.origClientOrderIdList] max length 10 e.g. ["my_id_1","my_id_2"], encode the double quotes. No space after comma
+     * @param {int[]} [params.recvWindow]
+     * @returns {object} an list of [order structures]{@link https://docs.ccxt.com/#/?id=order-structure}
+     */
+    async cancelOrders(ids, symbol = undefined, params = {}) {
+        if (symbol === undefined) {
+            throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired(this.id + ' cancelOrders() requires a symbol argument');
+        }
+        await this.loadMarkets();
+        const market = this.market(symbol);
+        if (market['spot']) {
+            throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' cancelOrders() does not support ' + market['type'] + ' orders');
+        }
+        const request = {
+            'symbol': market['id'],
+        };
+        const clientOrderIdList = this.safeList(params, 'origClientOrderIdList');
+        if (clientOrderIdList !== undefined) {
+            request['origClientOrderIdList'] = clientOrderIdList;
+        }
+        else {
+            request['orderIdList'] = ids;
+        }
+        const response = await this.fapiPrivateDeleteV1BatchOrders(this.extend(request, params));
+        //
+        //    [
+        //        {
+        //            "clientOrderId": "myOrder1",
+        //            "cumQty": "0",
+        //            "cumQuote": "0",
+        //            "executedQty": "0",
+        //            "orderId": 283194212,
+        //            "origQty": "11",
+        //            "origType": "TRAILING_STOP_MARKET",
+        //            "price": "0",
+        //            "reduceOnly": false,
+        //            "side": "BUY",
+        //            "positionSide": "SHORT",
+        //            "status": "CANCELED",
+        //            "stopPrice": "9300",                  // please ignore when order type is TRAILING_STOP_MARKET
+        //            "closePosition": false,               // if Close-All
+        //            "symbol": "BTCUSDT",
+        //            "timeInForce": "GTC",
+        //            "type": "TRAILING_STOP_MARKET",
+        //            "activatePrice": "9020",              // activation price, only return with TRAILING_STOP_MARKET order
+        //            "priceRate": "0.3",                   // callback rate, only return with TRAILING_STOP_MARKET order
+        //            "updateTime": 1571110484038,
+        //            "workingType": "CONTRACT_PRICE",
+        //            "priceProtect": false,                // if conditional order trigger is protected
+        //        },
+        //        {
+        //            "code": -2011,
+        //            "msg": "Unknown order sent."
+        //        }
+        //    ]
+        //
+        return this.parseOrders(response, market);
+    }
+    /**
+     * @method
+     * @name aster#setLeverage
+     * @description set the level of leverage for a market
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-futures-api.md#change-initial-leverage-trade
+     * @param {float} leverage the rate of leverage
+     * @param {string} symbol unified market symbol
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object} response from the exchange
+     */
+    async setLeverage(leverage, symbol = undefined, params = {}) {
+        if (symbol === undefined) {
+            throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired(this.id + ' setLeverage() requires a symbol argument');
+        }
+        if ((leverage < 1) || (leverage > 125)) {
+            throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest(this.id + ' leverage should be between 1 and 125');
+        }
+        await this.loadMarkets();
+        const market = this.market(symbol);
+        const request = {
+            'symbol': market['id'],
+            'leverage': leverage,
+        };
+        const response = await this.fapiPrivatePostV1Leverage(this.extend(request, params));
+        //
+        //     {
+        //         "leverage": 21,
+        //         "maxNotionalValue": "1000000",
+        //         "symbol": "BTCUSDT"
+        //     }
+        //
+        return response;
+    }
+    /**
+     * @method
+     * @name aster#fetchLeverages
+     * @description fetch the set leverage for all markets
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-futures-api.md#position-information-v2-user_data
+     * @param {string[]} [symbols] a list of unified market symbols
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object} a list of [leverage structures]{@link https://docs.ccxt.com/#/?id=leverage-structure}
+     */
+    async fetchLeverages(symbols = undefined, params = {}) {
+        await this.loadMarkets();
+        const response = await this.fapiPrivateGetV2PositionRisk(params);
+        //
+        //     [
+        //         {
+        //             "symbol": "INJUSDT",
+        //             "positionAmt": "0.0",
+        //             "entryPrice": "0.0",
+        //             "markPrice": "0.00000000",
+        //             "unRealizedProfit": "0.00000000",
+        //             "liquidationPrice": "0",
+        //             "leverage": "20",
+        //             "maxNotionalValue": "25000",
+        //             "marginType": "cross",
+        //             "isolatedMargin": "0.00000000",
+        //             "isAutoAddMargin": "false",
+        //             "positionSide": "BOTH",
+        //             "notional": "0",
+        //             "isolatedWallet": "0",
+        //             "updateTime": 0
+        //         }
+        //     ]
+        //
+        return this.parseLeverages(response, symbols, 'symbol');
+    }
+    parseLeverage(leverage, market = undefined) {
+        //
+        //     {
+        //         "symbol": "INJUSDT",
+        //         "positionAmt": "0.0",
+        //         "entryPrice": "0.0",
+        //         "markPrice": "0.00000000",
+        //         "unRealizedProfit": "0.00000000",
+        //         "liquidationPrice": "0",
+        //         "leverage": "20",
+        //         "maxNotionalValue": "25000",
+        //         "marginType": "cross",
+        //         "isolatedMargin": "0.00000000",
+        //         "isAutoAddMargin": "false",
+        //         "positionSide": "BOTH",
+        //         "notional": "0",
+        //         "isolatedWallet": "0",
+        //         "updateTime": 0
+        //     }
+        //
+        const marketId = this.safeString(leverage, 'symbol');
+        const marginMode = this.safeStringLower(leverage, 'marginType');
+        const side = this.safeStringLower(leverage, 'positionSide');
+        let longLeverage = undefined;
+        let shortLeverage = undefined;
+        const leverageValue = this.safeInteger(leverage, 'leverage');
+        if ((side === undefined) || (side === 'both')) {
+            longLeverage = leverageValue;
+            shortLeverage = leverageValue;
+        }
+        else if (side === 'long') {
+            longLeverage = leverageValue;
+        }
+        else if (side === 'short') {
+            shortLeverage = leverageValue;
+        }
+        return {
+            'info': leverage,
+            'symbol': this.safeSymbol(marketId, market),
+            'marginMode': marginMode,
+            'longLeverage': longLeverage,
+            'shortLeverage': shortLeverage,
+        };
+    }
+    /**
+     * @method
+     * @name aster#fetchMarginModes
+     * @description fetches margin mode of the user
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-futures-api.md#position-information-v2-user_data
+     * @param {string[]} symbols unified market symbols
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object} a list of [margin mode structures]{@link https://docs.ccxt.com/#/?id=margin-mode-structure}
+     */
+    async fetchMarginModes(symbols = undefined, params = {}) {
+        await this.loadMarkets();
+        const response = await this.fapiPrivateGetV2PositionRisk(params);
+        //
+        //
+        //     [
+        //         {
+        //             "symbol": "INJUSDT",
+        //             "positionAmt": "0.0",
+        //             "entryPrice": "0.0",
+        //             "markPrice": "0.00000000",
+        //             "unRealizedProfit": "0.00000000",
+        //             "liquidationPrice": "0",
+        //             "leverage": "20",
+        //             "maxNotionalValue": "25000",
+        //             "marginType": "cross",
+        //             "isolatedMargin": "0.00000000",
+        //             "isAutoAddMargin": "false",
+        //             "positionSide": "BOTH",
+        //             "notional": "0",
+        //             "isolatedWallet": "0",
+        //             "updateTime": 0
+        //         }
+        //     ]
+        //
+        //
+        return this.parseMarginModes(response, symbols, 'symbol', 'swap');
+    }
+    parseMarginMode(marginMode, market = undefined) {
+        //
+        //     {
+        //         "symbol": "INJUSDT",
+        //         "positionAmt": "0.0",
+        //         "entryPrice": "0.0",
+        //         "markPrice": "0.00000000",
+        //         "unRealizedProfit": "0.00000000",
+        //         "liquidationPrice": "0",
+        //         "leverage": "20",
+        //         "maxNotionalValue": "25000",
+        //         "marginType": "cross",
+        //         "isolatedMargin": "0.00000000",
+        //         "isAutoAddMargin": "false",
+        //         "positionSide": "BOTH",
+        //         "notional": "0",
+        //         "isolatedWallet": "0",
+        //         "updateTime": 0
+        //     }
+        //
+        const marketId = this.safeString(marginMode, 'symbol');
+        market = this.safeMarket(marketId, market);
+        return {
+            'info': marginMode,
+            'symbol': market['symbol'],
+            'marginMode': this.safeStringLower(marginMode, 'marginType'),
+        };
+    }
+    /**
+     * @method
+     * @name aster#fetchMarginAdjustmentHistory
+     * @description fetches the history of margin added or reduced from contract isolated positions
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-futures-api.md#get-position-margin-change-history-trade
+     * @param {string} symbol unified market symbol
+     * @param {string} [type] "add" or "reduce"
+     * @param {int} [since] timestamp in ms of the earliest change to fetch
+     * @param {int} [limit] the maximum amount of changes to fetch
+     * @param {object} params extra parameters specific to the exchange api endpoint
+     * @param {int} [params.until] timestamp in ms of the latest change to fetch
+     * @returns {object[]} a list of [margin structures]{@link https://docs.ccxt.com/#/?id=margin-loan-structure}
+     */
+    async fetchMarginAdjustmentHistory(symbol = undefined, type = undefined, since = undefined, limit = undefined, params = {}) {
+        await this.loadMarkets();
+        if (symbol === undefined) {
+            throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired(this.id + ' fetchMarginAdjustmentHistory () requires a symbol argument');
+        }
+        const market = this.market(symbol);
+        const until = this.safeInteger(params, 'until');
+        params = this.omit(params, 'until');
+        const request = {
+            'symbol': market['id'],
+        };
+        if (type !== undefined) {
+            request['type'] = (type === 'add') ? 1 : 2;
+        }
+        if (since !== undefined) {
+            request['startTime'] = since;
+        }
+        if (limit !== undefined) {
+            request['limit'] = limit;
+        }
+        if (until !== undefined) {
+            request['endTime'] = until;
+        }
+        const response = await this.fapiPrivateGetV1PositionMarginHistory(this.extend(request, params));
+        //
+        //     [
+        //         {
+        //             "amount": "23.36332311",
+        //             "asset": "USDT",
+        //             "symbol": "BTCUSDT",
+        //             "time": 1578047897183,
+        //             "type": 1,
+        //             "positionSide": "BOTH"
+        //         }
+        //     ]
+        //
+        const modifications = this.parseMarginModifications(response);
+        return this.filterBySymbolSinceLimit(modifications, symbol, since, limit);
+    }
+    parseMarginModification(data, market = undefined) {
+        //
+        //     {
+        //         "amount": "100",
+        //         "asset": "USDT",
+        //         "symbol": "BTCUSDT",
+        //         "time": 1578047900425,
+        //         "type": 1,
+        //         "positionSide": "LONG"
+        //     }
+        //
+        //     {
+        //         "amount": 100.0,
+        //         "code": 200,
+        //         "msg": "Successfully modify position margin.",
+        //         "type": 1
+        //     }
+        //
+        const rawType = this.safeInteger(data, 'type');
+        const errorCode = this.safeString(data, 'code');
+        const marketId = this.safeString(data, 'symbol');
+        const timestamp = this.safeInteger(data, 'time');
+        market = this.safeMarket(marketId, market, undefined, 'swap');
+        const noErrorCode = errorCode === undefined;
+        const success = errorCode === '200';
+        return {
+            'info': data,
+            'symbol': market['symbol'],
+            'type': (rawType === 1) ? 'add' : 'reduce',
+            'marginMode': 'isolated',
+            'amount': this.safeNumber(data, 'amount'),
+            'code': this.safeString(data, 'asset'),
+            'total': undefined,
+            'status': (success || noErrorCode) ? 'ok' : 'failed',
+            'timestamp': timestamp,
+            'datetime': this.iso8601(timestamp),
+        };
+    }
+    async modifyMarginHelper(symbol, amount, addOrReduce, params = {}) {
+        await this.loadMarkets();
+        const market = this.market(symbol);
+        amount = this.amountToPrecision(symbol, amount);
+        const request = {
+            'type': addOrReduce,
+            'symbol': market['id'],
+            'amount': amount,
+        };
+        const code = market['quote'];
+        const response = await this.fapiPrivatePostV1PositionMargin(this.extend(request, params));
+        //
+        //     {
+        //         "amount": 100.0,
+        //         "code": 200,
+        //         "msg": "Successfully modify position margin.",
+        //         "type": 1
+        //     }
+        //
+        return this.extend(this.parseMarginModification(response, market), {
+            'code': code,
+        });
+    }
+    /**
+     * @method
+     * @name aster#reduceMargin
+     * @description remove margin from a position
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-futures-api.md#modify-isolated-position-margin-trade
+     * @param {string} symbol unified market symbol
+     * @param {float} amount the amount of margin to remove
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object} a [margin structure]{@link https://docs.ccxt.com/#/?id=reduce-margin-structure}
+     */
+    async reduceMargin(symbol, amount, params = {}) {
+        return await this.modifyMarginHelper(symbol, amount, 2, params);
+    }
+    /**
+     * @method
+     * @name aster#addMargin
+     * @description add margin
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-futures-api.md#modify-isolated-position-margin-trade
+     * @param {string} symbol unified market symbol
+     * @param {float} amount amount of margin to add
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object} a [margin structure]{@link https://docs.ccxt.com/#/?id=add-margin-structure}
+     */
+    async addMargin(symbol, amount, params = {}) {
+        return await this.modifyMarginHelper(symbol, amount, 1, params);
+    }
+    parseIncome(income, market = undefined) {
+        //
+        //     {
+        //       "symbol": "ETHUSDT",
+        //       "incomeType": "FUNDING_FEE",
+        //       "income": "0.00134317",
+        //       "asset": "USDT",
+        //       "time": "1621584000000",
+        //       "info": "FUNDING_FEE",
+        //       "tranId": "4480321991774044580",
+        //       "tradeId": ""
+        //     }
+        //
+        const marketId = this.safeString(income, 'symbol');
+        const currencyId = this.safeString(income, 'asset');
+        const timestamp = this.safeInteger(income, 'time');
+        return {
+            'info': income,
+            'symbol': this.safeSymbol(marketId, market, undefined, 'swap'),
+            'code': this.safeCurrencyCode(currencyId),
+            'timestamp': timestamp,
+            'datetime': this.iso8601(timestamp),
+            'id': this.safeString(income, 'tranId'),
+            'amount': this.safeNumber(income, 'income'),
+        };
+    }
+    /**
+     * @method
+     * @name aster#fetchFundingHistory
+     * @description fetch the history of funding payments paid and received on this account
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-futures-api.md#get-income-historyuser_data
+     * @param {string} symbol unified market symbol
+     * @param {int} [since] the earliest time in ms to fetch funding history for
+     * @param {int} [limit] the maximum number of funding history structures to retrieve
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {int} [params.until] timestamp in ms of the latest funding history entry
+     * @param {boolean} [params.portfolioMargin] set to true if you would like to fetch the funding history for a portfolio margin account
+     * @param {string} [params.subType] "linear" or "inverse"
+     * @returns {object} a [funding history structure]{@link https://docs.ccxt.com/#/?id=funding-history-structure}
+     */
+    async fetchFundingHistory(symbol = undefined, since = undefined, limit = undefined, params = {}) {
+        await this.loadMarkets();
+        let market = undefined;
+        let request = {
+            'incomeType': 'FUNDING_FEE', // "TRANSFER"，"WELCOME_BONUS", "REALIZED_PNL"，"FUNDING_FEE", "COMMISSION", "INSURANCE_CLEAR", and "MARKET_MERCHANT_RETURN_REWARD"
+        };
+        if (symbol !== undefined) {
+            market = this.market(symbol);
+            request['symbol'] = market['id'];
+        }
+        [request, params] = this.handleUntilOption('endTime', request, params);
+        if (since !== undefined) {
+            request['startTime'] = since;
+        }
+        if (limit !== undefined) {
+            request['limit'] = Math.min(limit, 1000); // max 1000
+        }
+        const response = await this.fapiPrivateGetV1Income(this.extend(request, params));
+        return this.parseIncomes(response, market, since, limit);
+    }
+    parseLedgerEntry(item, currency = undefined) {
+        //
+        //     {
+        //         "symbol": "",
+        //         "incomeType": "TRANSFER",
+        //         "income": "10.00000000",
+        //         "asset": "USDT",
+        //         "time": 1677645250000,
+        //         "info": "TRANSFER",
+        //         "tranId": 131001573082,
+        //         "tradeId": ""
+        //     }
+        //
+        let amount = this.safeString(item, 'income');
+        let direction = undefined;
+        if (_base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringLe(amount, '0')) {
+            direction = 'out';
+            amount = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringMul('-1', amount);
+        }
+        else {
+            direction = 'in';
+        }
+        const currencyId = this.safeString(item, 'asset');
+        const code = this.safeCurrencyCode(currencyId, currency);
+        currency = this.safeCurrency(currencyId, currency);
+        const timestamp = this.safeInteger(item, 'time');
+        const type = this.safeString(item, 'incomeType');
+        return this.safeLedgerEntry({
+            'info': item,
+            'id': this.safeString(item, 'tranId'),
+            'direction': direction,
+            'account': undefined,
+            'referenceAccount': undefined,
+            'referenceId': this.safeString(item, 'tradeId'),
+            'type': this.parseLedgerEntryType(type),
+            'currency': code,
+            'amount': this.parseNumber(amount),
+            'timestamp': timestamp,
+            'datetime': this.iso8601(timestamp),
+            'before': undefined,
+            'after': undefined,
+            'status': undefined,
+            'fee': undefined,
+        }, currency);
+    }
+    parseLedgerEntryType(type) {
+        const ledgerType = {
+            'TRANSFER': 'transfer',
+            'WELCOME_BONUS': 'cashback',
+            'REALIZED_PNL': 'trade',
+            'FUNDING_FEE': 'fee',
+            'COMMISSION': 'commission',
+            'INSURANCE_CLEAR': 'settlement',
+            'MARKET_MERCHANT_RETURN_REWARD': 'cashback',
+        };
+        return this.safeString(ledgerType, type, type);
+    }
+    /**
+     * @method
+     * @name aster#fetchLedger
+     * @description fetch the history of changes, actions done by the user or operations that altered the balance of the user
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-futures-api.md#get-income-historyuser_data
+     * @param {string} [code] unified currency code
+     * @param {int} [since] timestamp in ms of the earliest ledger entry
+     * @param {int} [limit] max number of ledger entries to return
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {int} [params.until] timestamp in ms of the latest ledger entry
+     * @returns {object} a [ledger structure]{@link https://docs.ccxt.com/#/?id=ledger}
+     */
+    async fetchLedger(code = undefined, since = undefined, limit = undefined, params = {}) {
+        await this.loadMarkets();
+        let currency = undefined;
+        if (code !== undefined) {
+            currency = this.currency(code);
+        }
+        const request = {};
+        if (since !== undefined) {
+            request['startTime'] = since;
+        }
+        if (limit !== undefined) {
+            request['limit'] = Math.min(limit, 1000); // max 1000
+        }
+        const until = this.safeInteger(params, 'until');
+        if (until !== undefined) {
+            params = this.omit(params, 'until');
+            request['endTime'] = until;
+        }
+        const response = await this.fapiPrivateGetV1Income(this.extend(request, params));
+        //
+        //     [
+        //         {
+        //             "symbol": "",
+        //             "incomeType": "TRANSFER",
+        //             "income": "10.00000000",
+        //             "asset": "USDT",
+        //             "time": 1677645250000,
+        //             "info": "TRANSFER",
+        //             "tranId": 131001573082,
+        //             "tradeId": ""
+        //         }
+        //     ]
+        //
+        return this.parseLedger(response, currency, since, limit);
+    }
+    parsePositionRisk(position, market = undefined) {
+        //
+        //     {
+        //         "entryPrice": "6563.66500",
+        //         "marginType": "isolated",
+        //         "isAutoAddMargin": "false",
+        //         "isolatedMargin": "15517.54150468",
+        //         "leverage": "10",
+        //         "liquidationPrice": "5930.78",
+        //         "markPrice": "6679.50671178",
+        //         "maxNotionalValue": "20000000",
+        //         "positionSide": "LONG",
+        //         "positionAmt": "20.000",
+        //         "symbol": "BTCUSDT",
+        //         "unRealizedProfit": "2316.83423560",
+        //         "updateTime": 1625474304765
+        //     }
+        //
+        const marketId = this.safeString(position, 'symbol');
+        market = this.safeMarket(marketId, market, undefined, 'contract');
+        const symbol = this.safeString(market, 'symbol');
+        const isolatedMarginString = this.safeString(position, 'isolatedMargin');
+        const leverageBrackets = this.safeDict(this.options, 'leverageBrackets', {});
+        const leverageBracket = this.safeList(leverageBrackets, symbol, []);
+        const notionalString = this.safeString2(position, 'notional', 'notionalValue');
+        const notionalStringAbs = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringAbs(notionalString);
+        let maintenanceMarginPercentageString = undefined;
+        for (let i = 0; i < leverageBracket.length; i++) {
+            const bracket = leverageBracket[i];
+            if (_base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringLt(notionalStringAbs, bracket[0])) {
+                break;
+            }
+            maintenanceMarginPercentageString = bracket[1];
+        }
+        const notional = this.parseNumber(notionalStringAbs);
+        const contractsAbs = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringAbs(this.safeString(position, 'positionAmt'));
+        const contracts = this.parseNumber(contractsAbs);
+        const unrealizedPnlString = this.safeString(position, 'unRealizedProfit');
+        const unrealizedPnl = this.parseNumber(unrealizedPnlString);
+        const liquidationPriceString = this.omitZero(this.safeString(position, 'liquidationPrice'));
+        const liquidationPrice = this.parseNumber(liquidationPriceString);
+        let collateralString = undefined;
+        let marginMode = this.safeString(position, 'marginType');
+        if (marginMode === undefined && isolatedMarginString !== undefined) {
+            marginMode = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringEq(isolatedMarginString, '0') ? 'cross' : 'isolated';
+        }
+        let side = undefined;
+        if (_base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringGt(notionalString, '0')) {
+            side = 'long';
+        }
+        else if (_base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringLt(notionalString, '0')) {
+            side = 'short';
+        }
+        const entryPriceString = this.safeString(position, 'entryPrice');
+        const entryPrice = this.parseNumber(entryPriceString);
+        const contractSize = this.safeValue(market, 'contractSize');
+        const contractSizeString = this.numberToString(contractSize);
+        // as oppose to notionalValue
+        const linear = ('notional' in position);
+        if (marginMode === 'cross') {
+            // calculate collateral
+            const precision = this.safeDict(market, 'precision', {});
+            const basePrecisionValue = this.safeString(precision, 'base');
+            const quotePrecisionValue = this.safeString2(precision, 'quote', 'price');
+            const precisionIsUndefined = (basePrecisionValue === undefined) && (quotePrecisionValue === undefined);
+            if (!precisionIsUndefined) {
+                if (linear) {
+                    // walletBalance = (liquidationPrice * (±1 + mmp) ± entryPrice) * contracts
+                    let onePlusMaintenanceMarginPercentageString = undefined;
+                    let entryPriceSignString = entryPriceString;
+                    if (side === 'short') {
+                        onePlusMaintenanceMarginPercentageString = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringAdd('1', maintenanceMarginPercentageString);
+                        entryPriceSignString = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringMul('-1', entryPriceSignString);
+                    }
+                    else {
+                        onePlusMaintenanceMarginPercentageString = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringAdd('-1', maintenanceMarginPercentageString);
+                    }
+                    const inner = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringMul(liquidationPriceString, onePlusMaintenanceMarginPercentageString);
+                    const leftSide = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringAdd(inner, entryPriceSignString);
+                    const quotePrecision = this.precisionFromString(this.safeString2(precision, 'quote', 'price'));
+                    if (quotePrecision !== undefined) {
+                        collateralString = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringDiv(_base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringMul(leftSide, contractsAbs), '1', quotePrecision);
+                    }
+                }
+                else {
+                    // walletBalance = (contracts * contractSize) * (±1/entryPrice - (±1 - mmp) / liquidationPrice)
+                    let onePlusMaintenanceMarginPercentageString = undefined;
+                    let entryPriceSignString = entryPriceString;
+                    if (side === 'short') {
+                        onePlusMaintenanceMarginPercentageString = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringSub('1', maintenanceMarginPercentageString);
+                    }
+                    else {
+                        onePlusMaintenanceMarginPercentageString = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringSub('-1', maintenanceMarginPercentageString);
+                        entryPriceSignString = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringMul('-1', entryPriceSignString);
+                    }
+                    const leftSide = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringMul(contractsAbs, contractSizeString);
+                    const rightSide = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringSub(_base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringDiv('1', entryPriceSignString), _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringDiv(onePlusMaintenanceMarginPercentageString, liquidationPriceString));
+                    const basePrecision = this.precisionFromString(this.safeString(precision, 'base'));
+                    if (basePrecision !== undefined) {
+                        collateralString = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringDiv(_base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringMul(leftSide, rightSide), '1', basePrecision);
+                    }
+                }
+            }
+        }
+        else {
+            collateralString = this.safeString(position, 'isolatedMargin');
+        }
+        collateralString = (collateralString === undefined) ? '0' : collateralString;
+        const collateral = this.parseNumber(collateralString);
+        const markPrice = this.parseNumber(this.omitZero(this.safeString(position, 'markPrice')));
+        let timestamp = this.safeInteger(position, 'updateTime');
+        if (timestamp === 0) {
+            timestamp = undefined;
+        }
+        const maintenanceMarginPercentage = this.parseNumber(maintenanceMarginPercentageString);
+        let maintenanceMarginString = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringMul(maintenanceMarginPercentageString, notionalStringAbs);
+        if (maintenanceMarginString === undefined) {
+            // for a while, this new value was a backup to the existing calculations, but in future we might prioritize this
+            maintenanceMarginString = this.safeString(position, 'maintMargin');
+        }
+        const maintenanceMargin = this.parseNumber(maintenanceMarginString);
+        let initialMarginString = undefined;
+        let initialMarginPercentageString = undefined;
+        const leverageString = this.safeString(position, 'leverage');
+        if (leverageString !== undefined) {
+            const leverage = parseInt(leverageString);
+            const rational = this.isRoundNumber(1000 % leverage);
+            initialMarginPercentageString = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringDiv('1', leverageString, 8);
+            if (!rational) {
+                initialMarginPercentageString = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringAdd(initialMarginPercentageString, '1e-8');
+            }
+            const unrounded = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringMul(notionalStringAbs, initialMarginPercentageString);
+            initialMarginString = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringDiv(unrounded, '1', 8);
+        }
+        else {
+            initialMarginString = this.safeString(position, 'initialMargin');
+            const unrounded = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringMul(initialMarginString, '1');
+            initialMarginPercentageString = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringDiv(unrounded, notionalStringAbs, 8);
+        }
+        let marginRatio = undefined;
+        let percentage = undefined;
+        if (!_base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringEquals(collateralString, '0')) {
+            marginRatio = this.parseNumber(_base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringDiv(_base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringAdd(_base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringDiv(maintenanceMarginString, collateralString), '5e-5'), '1', 4));
+            percentage = this.parseNumber(_base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringMul(_base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringDiv(unrealizedPnlString, initialMarginString, 4), '100'));
+        }
+        const positionSide = this.safeString(position, 'positionSide');
+        const hedged = positionSide !== 'BOTH';
+        return this.safePosition({
+            'info': position,
+            'id': undefined,
+            'symbol': symbol,
+            'contracts': contracts,
+            'contractSize': contractSize,
+            'unrealizedPnl': unrealizedPnl,
+            'leverage': this.parseNumber(leverageString),
+            'liquidationPrice': liquidationPrice,
+            'collateral': collateral,
+            'notional': notional,
+            'markPrice': markPrice,
+            'entryPrice': entryPrice,
+            'timestamp': timestamp,
+            'initialMargin': this.parseNumber(initialMarginString),
+            'initialMarginPercentage': this.parseNumber(initialMarginPercentageString),
+            'maintenanceMargin': maintenanceMargin,
+            'maintenanceMarginPercentage': maintenanceMarginPercentage,
+            'marginRatio': marginRatio,
+            'datetime': this.iso8601(timestamp),
+            'marginMode': marginMode,
+            'side': side,
+            'hedged': hedged,
+            'percentage': percentage,
+            'stopLossPrice': undefined,
+            'takeProfitPrice': undefined,
+        });
+    }
+    /**
+     * @method
+     * @name aster#fetchPositionsRisk
+     * @description fetch positions risk
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-futures-api.md#position-information-v2-user_data
+     * @param {string[]|undefined} symbols list of unified market symbols
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object} data on the positions risk
+     */
+    async fetchPositionsRisk(symbols = undefined, params = {}) {
+        if (symbols !== undefined) {
+            if (!Array.isArray(symbols)) {
+                throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired(this.id + ' fetchPositionsRisk() requires an array argument for symbols');
+            }
+        }
+        await this.loadMarkets();
+        await this.loadLeverageBrackets(false, params);
+        const request = {};
+        const response = await this.fapiPrivateGetV2PositionRisk(this.extend(request, params));
+        //
+        //     [
+        //         {
+        //             "entryPrice": "6563.66500",
+        //             "marginType": "isolated",
+        //             "isAutoAddMargin": "false",
+        //             "isolatedMargin": "15517.54150468",
+        //             "leverage": "10",
+        //             "liquidationPrice": "5930.78",
+        //             "markPrice": "6679.50671178",
+        //             "maxNotionalValue": "20000000",
+        //             "positionSide": "LONG",
+        //             "positionAmt": "20.000", // negative value for 'SHORT'
+        //             "symbol": "BTCUSDT",
+        //             "unRealizedProfit": "2316.83423560",
+        //             "updateTime": 1625474304765
+        //         }
+        //     ]
+        //
+        const result = [];
+        for (let i = 0; i < response.length; i++) {
+            const rawPosition = response[i];
+            const entryPriceString = this.safeString(rawPosition, 'entryPrice');
+            if (_base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringGt(entryPriceString, '0')) {
+                result.push(this.parsePositionRisk(response[i]));
+            }
+        }
+        symbols = this.marketSymbols(symbols);
+        return this.filterByArrayPositions(result, 'symbol', symbols, false);
+    }
+    /**
+     * @method
+     * @name aster#fetchPositions
+     * @description fetch all open positions
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-futures-api.md#position-information-v2-user_data
+     * @param {string[]} [symbols] list of unified market symbols
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {string} [params.method] method name to call, "positionRisk", "account" or "option", default is "positionRisk"
+     * @returns {object[]} a list of [position structure]{@link https://docs.ccxt.com/#/?id=position-structure}
+     */
+    async fetchPositions(symbols = undefined, params = {}) {
+        let defaultMethod = undefined;
+        [defaultMethod, params] = this.handleOptionAndParams(params, 'fetchPositions', 'method');
+        if (defaultMethod === undefined) {
+            const options = this.safeDict(this.options, 'fetchPositions');
+            if (options === undefined) {
+                defaultMethod = this.safeString(this.options, 'fetchPositions', 'positionRisk');
+            }
+            else {
+                defaultMethod = 'positionRisk';
+            }
+        }
+        if (defaultMethod === 'positionRisk') {
+            return await this.fetchPositionsRisk(symbols, params);
+        }
+        else if (defaultMethod === 'account') {
+            return await this.fetchAccountPositions(symbols, params);
+        }
+        else {
+            throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + '.options["fetchPositions"]["method"] or params["method"] = "' + defaultMethod + '" is invalid, please choose between "account" and "positionRisk"');
+        }
+    }
+    parseAccountPositions(account, filterClosed = false) {
+        const positions = this.safeList(account, 'positions');
+        const assets = this.safeList(account, 'assets', []);
+        const balances = {};
+        for (let i = 0; i < assets.length; i++) {
+            const entry = assets[i];
+            const currencyId = this.safeString(entry, 'asset');
+            const code = this.safeCurrencyCode(currencyId);
+            const crossWalletBalance = this.safeString(entry, 'crossWalletBalance');
+            const crossUnPnl = this.safeString(entry, 'crossUnPnl');
+            balances[code] = {
+                'crossMargin': _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringAdd(crossWalletBalance, crossUnPnl),
+                'crossWalletBalance': crossWalletBalance,
+            };
+        }
+        const result = [];
+        for (let i = 0; i < positions.length; i++) {
+            const position = positions[i];
+            const marketId = this.safeString(position, 'symbol');
+            const market = this.safeMarket(marketId, undefined, undefined, 'contract');
+            const code = market['linear'] ? market['quote'] : market['base'];
+            const maintenanceMargin = this.safeString(position, 'maintMargin');
+            // check for maintenance margin so empty positions are not returned
+            const isPositionOpen = (maintenanceMargin !== '0') && (maintenanceMargin !== '0.00000000');
+            if (!filterClosed || isPositionOpen) {
+                // sometimes not all the codes are correctly returned...
+                if (code in balances) {
+                    const parsed = this.parseAccountPosition(this.extend(position, {
+                        'crossMargin': balances[code]['crossMargin'],
+                        'crossWalletBalance': balances[code]['crossWalletBalance'],
+                    }), market);
+                    result.push(parsed);
+                }
+            }
+        }
+        return result;
+    }
+    parseAccountPosition(position, market = undefined) {
+        const marketId = this.safeString(position, 'symbol');
+        market = this.safeMarket(marketId, market, undefined, 'contract');
+        const symbol = this.safeString(market, 'symbol');
+        const leverageString = this.safeString(position, 'leverage');
+        const leverage = (leverageString !== undefined) ? parseInt(leverageString) : undefined;
+        const initialMarginString = this.safeString(position, 'initialMargin');
+        const initialMargin = this.parseNumber(initialMarginString);
+        let initialMarginPercentageString = undefined;
+        if (leverageString !== undefined) {
+            initialMarginPercentageString = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringDiv('1', leverageString, 8);
+            const rational = this.isRoundNumber(1000 % leverage);
+            if (!rational) {
+                initialMarginPercentageString = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringDiv(_base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringAdd(initialMarginPercentageString, '1e-8'), '1', 8);
+            }
+        }
+        // as oppose to notionalValue
+        const usdm = ('notional' in position);
+        const maintenanceMarginString = this.safeString(position, 'maintMargin');
+        const maintenanceMargin = this.parseNumber(maintenanceMarginString);
+        const entryPriceString = this.safeString(position, 'entryPrice');
+        let entryPrice = this.parseNumber(entryPriceString);
+        const notionalString = this.safeString2(position, 'notional', 'notionalValue');
+        const notionalStringAbs = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringAbs(notionalString);
+        const notional = this.parseNumber(notionalStringAbs);
+        let contractsString = this.safeString(position, 'positionAmt');
+        let contractsStringAbs = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringAbs(contractsString);
+        if (contractsString === undefined) {
+            const entryNotional = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringMul(_base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringMul(leverageString, initialMarginString), entryPriceString);
+            const contractSizeNew = this.safeString(market, 'contractSize');
+            contractsString = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringDiv(entryNotional, contractSizeNew);
+            contractsStringAbs = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringDiv(_base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringAdd(contractsString, '0.5'), '1', 0);
+        }
+        const contracts = this.parseNumber(contractsStringAbs);
+        const leverageBrackets = this.safeDict(this.options, 'leverageBrackets', {});
+        const leverageBracket = this.safeList(leverageBrackets, symbol, []);
+        let maintenanceMarginPercentageString = undefined;
+        for (let i = 0; i < leverageBracket.length; i++) {
+            const bracket = leverageBracket[i];
+            if (_base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringLt(notionalStringAbs, bracket[0])) {
+                break;
+            }
+            maintenanceMarginPercentageString = bracket[1];
+        }
+        const maintenanceMarginPercentage = this.parseNumber(maintenanceMarginPercentageString);
+        const unrealizedPnlString = this.safeString(position, 'unrealizedProfit');
+        const unrealizedPnl = this.parseNumber(unrealizedPnlString);
+        let timestamp = this.safeInteger(position, 'updateTime');
+        if (timestamp === 0) {
+            timestamp = undefined;
+        }
+        let isolated = this.safeBool(position, 'isolated');
+        if (isolated === undefined) {
+            const isolatedMarginRaw = this.safeString(position, 'isolatedMargin');
+            isolated = !_base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringEq(isolatedMarginRaw, '0');
+        }
+        let marginMode = undefined;
+        let collateralString = undefined;
+        let walletBalance = undefined;
+        if (isolated) {
+            marginMode = 'isolated';
+            walletBalance = this.safeString(position, 'isolatedWallet');
+            collateralString = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringAdd(walletBalance, unrealizedPnlString);
+        }
+        else {
+            marginMode = 'cross';
+            walletBalance = this.safeString(position, 'crossWalletBalance');
+            collateralString = this.safeString(position, 'crossMargin');
+        }
+        const collateral = this.parseNumber(collateralString);
+        let marginRatio = undefined;
+        let side = undefined;
+        let percentage = undefined;
+        let liquidationPriceStringRaw = undefined;
+        let liquidationPrice = undefined;
+        const contractSize = this.safeValue(market, 'contractSize');
+        const contractSizeString = this.numberToString(contractSize);
+        if (_base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringEquals(notionalString, '0')) {
+            entryPrice = undefined;
+        }
+        else {
+            side = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringLt(notionalString, '0') ? 'short' : 'long';
+            marginRatio = this.parseNumber(_base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringDiv(_base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringAdd(_base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringDiv(maintenanceMarginString, collateralString), '5e-5'), '1', 4));
+            percentage = this.parseNumber(_base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringMul(_base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringDiv(unrealizedPnlString, initialMarginString, 4), '100'));
+            if (usdm) {
+                // calculate liquidation price
+                //
+                // liquidationPrice = (walletBalance / (contracts * (±1 + mmp))) + (±entryPrice / (±1 + mmp))
+                //
+                // mmp = maintenanceMarginPercentage
+                // where ± is negative for long and positive for short
+                // TODO: calculate liquidation price for coinm contracts
+                let onePlusMaintenanceMarginPercentageString = undefined;
+                let entryPriceSignString = entryPriceString;
+                if (side === 'short') {
+                    onePlusMaintenanceMarginPercentageString = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringAdd('1', maintenanceMarginPercentageString);
+                }
+                else {
+                    onePlusMaintenanceMarginPercentageString = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringAdd('-1', maintenanceMarginPercentageString);
+                    entryPriceSignString = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringMul('-1', entryPriceSignString);
+                }
+                const leftSide = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringDiv(walletBalance, _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringMul(contractsStringAbs, onePlusMaintenanceMarginPercentageString));
+                const rightSide = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringDiv(entryPriceSignString, onePlusMaintenanceMarginPercentageString);
+                liquidationPriceStringRaw = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringAdd(leftSide, rightSide);
+            }
+            else {
+                // calculate liquidation price
+                //
+                // liquidationPrice = (contracts * contractSize(±1 - mmp)) / (±1/entryPrice * contracts * contractSize - walletBalance)
+                //
+                let onePlusMaintenanceMarginPercentageString = undefined;
+                let entryPriceSignString = entryPriceString;
+                if (side === 'short') {
+                    onePlusMaintenanceMarginPercentageString = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringSub('1', maintenanceMarginPercentageString);
+                }
+                else {
+                    onePlusMaintenanceMarginPercentageString = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringSub('-1', maintenanceMarginPercentageString);
+                    entryPriceSignString = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringMul('-1', entryPriceSignString);
+                }
+                const size = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringMul(contractsStringAbs, contractSizeString);
+                const leftSide = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringMul(size, onePlusMaintenanceMarginPercentageString);
+                const rightSide = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringSub(_base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringMul(_base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringDiv('1', entryPriceSignString), size), walletBalance);
+                liquidationPriceStringRaw = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringDiv(leftSide, rightSide);
+            }
+            const pricePrecision = this.precisionFromString(this.safeString(market['precision'], 'price'));
+            const pricePrecisionPlusOne = pricePrecision + 1;
+            const pricePrecisionPlusOneString = pricePrecisionPlusOne.toString();
+            // round half up
+            const rounder = new _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A('5e-' + pricePrecisionPlusOneString);
+            const rounderString = rounder.toString();
+            const liquidationPriceRoundedString = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringAdd(rounderString, liquidationPriceStringRaw);
+            let truncatedLiquidationPrice = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.stringDiv(liquidationPriceRoundedString, '1', pricePrecision);
+            if (truncatedLiquidationPrice[0] === '-') {
+                // user cannot be liquidated
+                // since he has more collateral than the size of the position
+                truncatedLiquidationPrice = undefined;
+            }
+            liquidationPrice = this.parseNumber(truncatedLiquidationPrice);
+        }
+        const positionSide = this.safeString(position, 'positionSide');
+        const hedged = positionSide !== 'BOTH';
+        return {
+            'info': position,
+            'id': undefined,
+            'symbol': symbol,
+            'timestamp': timestamp,
+            'datetime': this.iso8601(timestamp),
+            'initialMargin': initialMargin,
+            'initialMarginPercentage': this.parseNumber(initialMarginPercentageString),
+            'maintenanceMargin': maintenanceMargin,
+            'maintenanceMarginPercentage': maintenanceMarginPercentage,
+            'entryPrice': entryPrice,
+            'notional': notional,
+            'leverage': this.parseNumber(leverageString),
+            'unrealizedPnl': unrealizedPnl,
+            'contracts': contracts,
+            'contractSize': contractSize,
+            'marginRatio': marginRatio,
+            'liquidationPrice': liquidationPrice,
+            'markPrice': undefined,
+            'collateral': collateral,
+            'marginMode': marginMode,
+            'side': side,
+            'hedged': hedged,
+            'percentage': percentage,
+        };
+    }
+    /**
+     * @method
+     * @name aster#fetchAccountPositions
+     * @ignore
+     * @description fetch account positions
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-futures-api.md#position-information-v2-user_data
+     * @param {string[]} [symbols] list of unified market symbols
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object} data on account positions
+     */
+    async fetchAccountPositions(symbols = undefined, params = {}) {
+        if (symbols !== undefined) {
+            if (!Array.isArray(symbols)) {
+                throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired(this.id + ' fetchPositions() requires an array argument for symbols');
+            }
+        }
+        await this.loadMarkets();
+        await this.loadLeverageBrackets(false, params);
+        const response = await this.fapiPrivateGetV4Account(params);
+        let filterClosed = undefined;
+        [filterClosed, params] = this.handleOptionAndParams(params, 'fetchAccountPositions', 'filterClosed', false);
+        const result = this.parseAccountPositions(response, filterClosed);
+        symbols = this.marketSymbols(symbols);
+        return this.filterByArrayPositions(result, 'symbol', symbols, false);
+    }
+    async loadLeverageBrackets(reload = false, params = {}) {
+        await this.loadMarkets();
+        // by default cache the leverage bracket
+        // it contains useful stuff like the maintenance margin and initial margin for positions
+        const leverageBrackets = this.safeDict(this.options, 'leverageBrackets');
+        if ((leverageBrackets === undefined) || (reload)) {
+            const response = await this.fapiPrivateGetV1LeverageBracket(params);
+            this.options['leverageBrackets'] = this.createSafeDictionary();
+            for (let i = 0; i < response.length; i++) {
+                const entry = response[i];
+                const marketId = this.safeString(entry, 'symbol');
+                const symbol = this.safeSymbol(marketId, undefined, undefined, 'contract');
+                const brackets = this.safeList(entry, 'brackets', []);
+                const result = [];
+                for (let j = 0; j < brackets.length; j++) {
+                    const bracket = brackets[j];
+                    const floorValue = this.safeString(bracket, 'notionalFloor');
+                    const maintenanceMarginPercentage = this.safeString(bracket, 'maintMarginRatio');
+                    result.push([floorValue, maintenanceMarginPercentage]);
+                }
+                this.options['leverageBrackets'][symbol] = result;
+            }
+        }
+        return this.options['leverageBrackets'];
+    }
+    keccakMessage(message) {
+        return '0x' + this.hash(message, _static_dependencies_noble_hashes_sha3_js__WEBPACK_IMPORTED_MODULE_4__/* .keccak_256 */ .lY, 'hex');
+    }
+    signMessage(message, privateKey) {
+        return this.signHash(this.keccakMessage(message), privateKey.slice(-64));
+    }
+    signWithdrawPayload(withdrawPayload, network) {
+        const zeroAddress = this.safeString(this.options, 'zeroAddress');
+        const chainId = this.safeInteger(withdrawPayload, 'chainId');
+        const domain = {
+            'chainId': chainId,
+            'name': 'Aster',
+            'verifyingContract': zeroAddress,
+            'version': '1',
+        };
+        const messageTypes = {
+            'Action': [
+                { 'name': 'type', 'type': 'string' },
+                { 'name': 'destination', 'type': 'address' },
+                { 'name': 'destination Chain', 'type': 'string' },
+                { 'name': 'token', 'type': 'string' },
+                { 'name': 'amount', 'type': 'string' },
+                { 'name': 'fee', 'type': 'string' },
+                { 'name': 'nonce', 'type': 'uint256' },
+                { 'name': 'aster chain', 'type': 'string' },
+            ],
+        };
+        const withdraw = {
+            'type': 'Withdraw',
+            'destination': this.safeString(withdrawPayload, 'receiver'),
+            'destination Chain': network,
+            'token': this.safeString(withdrawPayload, 'asset'),
+            'amount': this.safeString(withdrawPayload, 'amount'),
+            'fee': this.safeString(withdrawPayload, 'fee'),
+            'nonce': this.safeInteger(withdrawPayload, 'nonce'),
+            'aster chain': 'Mainnet',
+        };
+        const msg = this.ethEncodeStructuredData(domain, messageTypes, withdraw);
+        const signature = this.signMessage(msg, this.privateKey);
+        return signature;
+    }
+    /**
+     * @method
+     * @name aster#withdraw
+     * @description make a withdrawal
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-spot-api.md#withdraw-user_data
+     * @param {string} code unified currency code
+     * @param {float} amount the amount to withdraw
+     * @param {string} address the address to withdraw to
+     * @param {string} tag
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object} a [transaction structure]{@link https://docs.ccxt.com/#/?id=transaction-structure}
+     */
+    async withdraw(code, amount, address, tag = undefined, params = {}) {
+        [tag, params] = this.handleWithdrawTagAndParams(tag, params);
+        this.checkAddress(address);
+        await this.loadMarkets();
+        const currency = this.currency(code);
+        const request = {
+            'asset': currency['id'],
+            'receiver': address,
+            'nonce': this.milliseconds() * 1000,
+        };
+        let chainId = this.safeInteger(params, 'chainId');
+        // TODO: check how ARBI signature would work
+        const networks = this.safeDict(this.options, 'networks', {});
+        let network = this.safeStringUpper(params, 'network');
+        network = this.safeString(networks, network, network);
+        if ((chainId === undefined) && (network !== undefined)) {
+            const chainIds = this.safeDict(this.options, 'networksToChainId', {});
+            chainId = this.safeInteger(chainIds, network);
+        }
+        if (chainId === undefined) {
+            throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired(this.id + ' withdraw require chainId or network parameter');
+        }
+        request['chainId'] = chainId;
+        const fee = this.safeString(params, 'fee');
+        if (fee === undefined) {
+            throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired(this.id + ' withdraw require fee parameter');
+        }
+        request['fee'] = fee;
+        params = this.omit(params, ['chainId', 'network', 'fee']);
+        request['amount'] = this.currencyToPrecision(code, amount, network);
+        request['userSignature'] = this.signWithdrawPayload(request, network);
+        const response = await this.sapiPrivatePostV1AsterUserWithdraw(this.extend(request, params));
+        return {
+            'info': response,
+            'id': this.safeString(response, 'withdrawId'),
+            'txid': this.safeString(response, 'hash'),
+            'timestamp': undefined,
+            'datetime': undefined,
+            'network': network,
+            'address': address,
+            'addressTo': address,
+            'addressFrom': undefined,
+            'tag': tag,
+            'tagTo': tag,
+            'tagFrom': undefined,
+            'type': 'withdrawal',
+            'amount': amount,
+            'currency': code,
+            'status': undefined,
+            'updated': undefined,
+            'internal': undefined,
+            'comment': undefined,
+            'fee': undefined,
+        };
+    }
+    /**
+     * @method
+     * @name aster#transfer
+     * @description transfer currency internally between wallets on the same account
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-spot-api.md#transfer-asset-to-other-address-trade
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-futures-api.md#transfer-between-futures-and-spot-user_data
+     * @param {string} code unified currency code
+     * @param {float} amount amount to transfer
+     * @param {string} fromAccount account to transfer from
+     * @param {string} toAccount account to transfer to
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object} a [transfer structure]{@link https://docs.ccxt.com/#/?id=transfer-structure}
+     */
+    async transfer(code, amount, fromAccount, toAccount, params = {}) {
+        await this.loadMarkets();
+        const currency = this.currency(code);
+        const request = {
+            'asset': currency['id'],
+            'amount': this.currencyToPrecision(code, amount),
+        };
+        let type = undefined;
+        let fromId = undefined;
+        if (fromAccount !== undefined) {
+            fromId = this.convertTypeToAccount(fromAccount).toUpperCase();
+        }
+        let toId = undefined;
+        if (toAccount !== undefined) {
+            toId = this.convertTypeToAccount(toAccount).toUpperCase();
+        }
+        if (fromId === 'SPOT' && toId === 'FUTURE') {
+            type = 'SPOT_FUTURE';
+        }
+        else if (fromId === 'FUTURE' && toId === 'SPOT') {
+            type = 'FUTURE_SPOT';
+        }
+        let response = undefined;
+        if (type !== undefined) {
+            const defaultClientTranId = this.numberToString(this.milliseconds());
+            const clientTranId = this.safeString(params, 'clientTranId', defaultClientTranId);
+            request['kindType'] = type;
+            request['clientTranId'] = clientTranId;
+            response = await this.fapiPrivatePostV1AssetWalletTransfer(this.extend(request, params));
+        }
+        else {
+            // transfer asset to other address
+            request['toAddress'] = toAccount;
+            response = await this.sapiPrivatePostV1AssetSendToAddress(this.extend(request, params));
+        }
+        //
+        //     {
+        //         "tranId":13526853623,
+        //         "status": "SUCCESS"
+        //     }
+        //
+        return {
+            'info': response,
+            'id': this.safeString(response, 'tranId'),
+            'txid': undefined,
+            'timestamp': undefined,
+            'datetime': undefined,
+            'network': undefined,
+            'address': undefined,
+            'addressTo': fromAccount,
+            'addressFrom': toAccount,
+            'tag': undefined,
+            'tagTo': undefined,
+            'tagFrom': undefined,
+            'type': 'transfer',
+            'amount': amount,
+            'currency': code,
+            'status': undefined,
+            'updated': undefined,
+            'internal': undefined,
+            'comment': undefined,
+            'fee': undefined,
+        };
+    }
+    hashMessage(binaryMessage) {
+        // const binaryMessage = this.encode (message);
+        const binaryMessageLength = this.binaryLength(binaryMessage);
+        const x19 = this.base16ToBinary('19');
+        const newline = this.base16ToBinary('0a');
+        const prefix = this.binaryConcat(x19, this.encode('Ethereum Signed Message:'), newline, this.encode(this.numberToString(binaryMessageLength)));
+        return '0x' + this.hash(this.binaryConcat(prefix, binaryMessage), _static_dependencies_noble_hashes_sha3_js__WEBPACK_IMPORTED_MODULE_4__/* .keccak_256 */ .lY, 'hex');
+    }
+    signHash(hash, privateKey) {
+        this.checkRequiredCredentials();
+        const signature = (0,_base_functions_crypto_js__WEBPACK_IMPORTED_MODULE_5__/* .ecdsa */ .h1)(hash.slice(-64), privateKey.slice(-64), _static_dependencies_noble_curves_secp256k1_js__WEBPACK_IMPORTED_MODULE_6__/* .secp256k1 */ .bI, undefined);
+        const r = signature['r'];
+        const s = signature['s'];
+        const v = this.intToBase16(this.sum(27, signature['v']));
+        return '0x' + r.padStart(64, '0') + s.padStart(64, '0') + v;
+    }
+    sign(path, api = 'public', method = 'GET', params = {}, headers = undefined, body = undefined) {
+        let url = this.implodeHostname(this.urls['api'][api]) + '/' + path;
+        if (api === 'fapiPublic' || api === 'sapiPublic') {
+            if (Object.keys(params).length) {
+                url += '?' + this.rawencode(params);
+            }
+        }
+        else if (api === 'fapiPrivate' || api === 'sapiPrivate') {
+            this.checkRequiredCredentials();
+            headers = {
+                'X-MBX-APIKEY': this.apiKey,
+            };
+            const nonce = this.milliseconds();
+            const defaultRecvWindow = this.safeInteger(this.options, 'recvWindow');
+            let extendedParams = this.extend({
+                'timestamp': nonce,
+            }, params);
+            if (defaultRecvWindow !== undefined) {
+                extendedParams['recvWindow'] = defaultRecvWindow;
+            }
+            const recvWindow = this.safeInteger(params, 'recvWindow');
+            if (recvWindow !== undefined) {
+                extendedParams['recvWindow'] = recvWindow;
+            }
+            let query = undefined;
+            if ((method === 'DELETE') && (path === 'v1/batchOrders')) {
+                const orderidlist = this.safeList(extendedParams, 'orderIdList', []);
+                const origclientorderidlist = this.safeList(extendedParams, 'origClientOrderIdList', []);
+                extendedParams = this.omit(extendedParams, ['orderIdList', 'origClientOrderIdList']);
+                query = this.rawencode(extendedParams);
+                const orderidlistLength = orderidlist.length;
+                const origclientorderidlistLength = origclientorderidlist.length;
+                if (orderidlistLength > 0) {
+                    query = query + '&' + 'orderidlist=%5B' + orderidlist.join('%2C') + '%5D';
+                }
+                if (origclientorderidlistLength > 0) {
+                    query = query + '&' + 'origclientorderidlist=%5B' + origclientorderidlist.join('%2C') + '%5D';
+                }
+            }
+            else {
+                query = this.rawencode(extendedParams);
+            }
+            let signature = '';
+            if (path.indexOf('v3') >= 0) {
+                const signerAddress = this.options['signerAddress'];
+                if (signerAddress === undefined) {
+                    throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired(this.id + ' requires signerAddress in options when use v3 api');
+                }
+                // the keys order matter
+                const keys = Object.keys(extendedParams);
+                const sortedKeys = this.sort(keys);
+                const signingPayload = {};
+                for (let i = 0; i < sortedKeys.length; i++) {
+                    const key = sortedKeys[i];
+                    signingPayload[key] = extendedParams[key].toString();
+                }
+                const signingHash = this.hashMessage(this.hash(this.ethAbiEncode([
+                    'string', 'address', 'address', 'uint256',
+                ], [this.json(signingPayload), this.walletAddress, signerAddress, nonce]), _static_dependencies_noble_hashes_sha3_js__WEBPACK_IMPORTED_MODULE_4__/* .keccak_256 */ .lY, 'binary'));
+                signature = this.signHash(signingHash, this.privateKey);
+                extendedParams['user'] = this.walletAddress;
+                extendedParams['signer'] = signerAddress;
+                extendedParams['nonce'] = nonce;
+                query = this.rawencode(extendedParams);
+            }
+            else {
+                signature = this.hmac(this.encode(query), this.encode(this.secret), _static_dependencies_noble_hashes_sha256_js__WEBPACK_IMPORTED_MODULE_7__/* .sha256 */ .s);
+            }
+            query += '&' + 'signature=' + signature;
+            if (method === 'GET') {
+                url += '?' + query;
+            }
+            else {
+                body = query;
+                headers['Content-Type'] = 'application/x-www-form-urlencoded';
+            }
+        }
+        return { 'url': url, 'method': method, 'body': body, 'headers': headers };
+    }
+    handleErrors(httpCode, reason, url, method, headers, body, response, requestHeaders, requestBody) {
+        if (response === undefined) {
+            return undefined; // fallback to default error handler
+        }
+        //
+        //    {
+        //        "code": -1121,
+        //        "msg": "Invalid symbol.",
+        //    }
+        //
+        const code = this.safeString(response, 'code');
+        const message = this.safeString(response, 'msg');
+        if (code !== undefined && code !== '200') {
+            const feedback = this.id + ' ' + body;
+            this.throwExactlyMatchedException(this.exceptions['exact'], message, feedback);
+            this.throwExactlyMatchedException(this.exceptions['exact'], code, feedback);
+            this.throwBroadlyMatchedException(this.exceptions['broad'], message, feedback);
+            throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.ExchangeError(feedback); // unknown message
+        }
+        return undefined;
+    }
+}
+
+
+/***/ }),
+
 /***/ 7698:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -12336,7 +18975,7 @@ class backpack extends _abstract_backpack_js__WEBPACK_IMPORTED_MODULE_0__/* ["de
         //                     "depositEnabled": true,
         //                     "displayName": "Jito",
         //                     "maximumWithdrawal": null,
-        //                     "minimumDeposit": "0.29",
+        //                     "minimumDeposit": "0.28",
         //                     "minimumWithdrawal": "0.58",
         //                     "withdrawEnabled": true,
         //                     "withdrawalFee": "0.29"
@@ -14130,26 +20769,28 @@ class backpack extends _abstract_backpack_js__WEBPACK_IMPORTED_MODULE_0__/* ["de
 /* harmony import */ var _functions_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(7437);
 /* harmony import */ var _functions_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(6238);
 /* harmony import */ var _errors_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(2079);
-/* harmony import */ var _Precise_js__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(5147);
+/* harmony import */ var _Precise_js__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(5147);
 /* harmony import */ var _ws_WsClient_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(7288);
 /* harmony import */ var _ws_Future_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(3206);
 /* harmony import */ var _ws_OrderBook_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(3828);
 /* harmony import */ var _functions_crypto_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(8283);
-/* harmony import */ var _functions_totp_js__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(8995);
+/* harmony import */ var _functions_totp_js__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(8995);
 /* harmony import */ var _static_dependencies_ethers_index_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(5897);
 /* harmony import */ var _static_dependencies_ethers_hash_index_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(4380);
-/* harmony import */ var _static_dependencies_jsencrypt_lib_jsbn_rng_js__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(447);
-/* harmony import */ var _static_dependencies_scure_starknet_index_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(3187);
+/* harmony import */ var _static_dependencies_noble_curves_secp256k1_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(987);
+/* harmony import */ var _static_dependencies_noble_hashes_sha3_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(8432);
+/* harmony import */ var _static_dependencies_jsencrypt_lib_jsbn_rng_js__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(447);
+/* harmony import */ var _static_dependencies_scure_starknet_index_js__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(3187);
 /* harmony import */ var _static_dependencies_zklink_zklink_sdk_web_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7661);
-/* harmony import */ var _static_dependencies_starknet_index_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(6907);
-/* harmony import */ var _static_dependencies_starknet_index_js__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(9793);
-/* harmony import */ var _static_dependencies_starknet_index_js__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(9491);
-/* harmony import */ var _static_dependencies_starknet_index_js__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(1878);
-/* harmony import */ var _static_dependencies_noble_hashes_sha256_js__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(4852);
+/* harmony import */ var _static_dependencies_starknet_index_js__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(6907);
+/* harmony import */ var _static_dependencies_starknet_index_js__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(9793);
+/* harmony import */ var _static_dependencies_starknet_index_js__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(9491);
+/* harmony import */ var _static_dependencies_starknet_index_js__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(1878);
+/* harmony import */ var _static_dependencies_noble_hashes_sha256_js__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(4852);
 /* harmony import */ var _static_dependencies_noble_hashes_sha1_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(3466);
-/* harmony import */ var _static_dependencies_dydx_v4_client_onboarding_js__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(9187);
-/* harmony import */ var _static_dependencies_dydx_v4_client_helpers_js__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(1291);
-/* harmony import */ var _static_dependencies_dydx_v4_client_helpers_js__WEBPACK_IMPORTED_MODULE_19___default = /*#__PURE__*/__webpack_require__.n(_static_dependencies_dydx_v4_client_helpers_js__WEBPACK_IMPORTED_MODULE_19__);
+/* harmony import */ var _static_dependencies_dydx_v4_client_onboarding_js__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(9187);
+/* harmony import */ var _static_dependencies_dydx_v4_client_helpers_js__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(1291);
+/* harmony import */ var _static_dependencies_dydx_v4_client_helpers_js__WEBPACK_IMPORTED_MODULE_21___default = /*#__PURE__*/__webpack_require__.n(_static_dependencies_dydx_v4_client_helpers_js__WEBPACK_IMPORTED_MODULE_21__);
 // ----------------------------------------------------------------------------
 
 
@@ -14162,6 +20803,8 @@ class backpack extends _abstract_backpack_js__WEBPACK_IMPORTED_MODULE_0__/* ["de
 
 // ----------------------------------------------------------------------------
 //
+
+
 
 
 
@@ -14740,11 +21383,15 @@ class Exchange {
         return undefined;
     }
     isBinaryMessage(msg) {
-        return msg instanceof Uint8Array;
+        return msg instanceof Uint8Array || msg instanceof ArrayBuffer;
     }
     decodeProtoMsg(data) {
         if (!protobufMexc) {
             throw new _errors_js__WEBPACK_IMPORTED_MODULE_5__.NotSupported(this.id + ' requires protobuf to decode messages, please install it with `npm install protobufjs`');
+        }
+        if (data instanceof ArrayBuffer) {
+            // browser case
+            data = new Uint8Array(data);
         }
         if (data instanceof Uint8Array) {
             const decoded = protobufMexc.default.PushDataV3ApiWrapper.decode(data);
@@ -15418,6 +22065,11 @@ class Exchange {
     setProperty(obj, property, defaultValue = undefined) {
         obj[property] = defaultValue;
     }
+    exceptionMessage(exc, includeStack = true) {
+        const message = '[' + exc.constructor.name + '] ' + (!includeStack ? exc.message : exc.stack);
+        const length = Math.min(100000, message.length);
+        return message.slice(0, length);
+    }
     axolotl(payload, hexKey, ed25519) {
         return (0,_functions_crypto_js__WEBPACK_IMPORTED_MODULE_9__/* .axolotl */ .Sw)(payload, hexKey, ed25519);
     }
@@ -15438,18 +22090,35 @@ class Exchange {
     ethEncodeStructuredData(domain, messageTypes, messageData) {
         return this.base16ToBinary(_static_dependencies_ethers_hash_index_js__WEBPACK_IMPORTED_MODULE_11__/* .TypedDataEncoder */ .z.encode(domain, messageTypes, messageData).slice(-132));
     }
+    ethGetAddressFromPrivateKey(privateKey) {
+        // Accepts a "0x"-prefixed hexstring private key and returns the corresponding Ethereum address
+        // Removes the "0x" prefix if present
+        const cleanPrivateKey = this.remove0xPrefix(privateKey);
+        // Get the public key from the private key using secp256k1 curve
+        const publicKeyBytes = _static_dependencies_noble_curves_secp256k1_js__WEBPACK_IMPORTED_MODULE_12__/* .secp256k1 */ .bI.getPublicKey(cleanPrivateKey);
+        // For Ethereum, we need to use the uncompressed public key (without the first byte which indicates compression)
+        // secp256k1.getPublicKey returns compressed key, we need uncompressed
+        const publicKeyUncompressed = _static_dependencies_noble_curves_secp256k1_js__WEBPACK_IMPORTED_MODULE_12__/* .secp256k1 */ .bI.ProjectivePoint.fromHex(publicKeyBytes).toRawBytes(false).slice(1); // Remove 0x04 prefix
+        // Hash the public key with Keccak256
+        const publicKeyHash = (0,_static_dependencies_noble_hashes_sha3_js__WEBPACK_IMPORTED_MODULE_13__/* .keccak_256 */ .lY)(publicKeyUncompressed);
+        // Take the last 20 bytes (40 hex chars)
+        const addressBytes = publicKeyHash.slice(-20);
+        // Convert to hex and add 0x prefix
+        const addressHex = '0x' + this.binaryToBase16(addressBytes);
+        return addressHex;
+    }
     retrieveStarkAccount(signature, accountClassHash, accountProxyClassHash) {
-        const privateKey = (0,_static_dependencies_scure_starknet_index_js__WEBPACK_IMPORTED_MODULE_12__/* .ethSigToPrivate */ .b)(signature);
-        const publicKey = (0,_static_dependencies_scure_starknet_index_js__WEBPACK_IMPORTED_MODULE_12__/* .getStarkKey */ .$u)(privateKey);
-        const callData = _static_dependencies_starknet_index_js__WEBPACK_IMPORTED_MODULE_13__/* .CallData */ .fP.compile({
+        const privateKey = (0,_static_dependencies_scure_starknet_index_js__WEBPACK_IMPORTED_MODULE_14__/* .ethSigToPrivate */ .b)(signature);
+        const publicKey = (0,_static_dependencies_scure_starknet_index_js__WEBPACK_IMPORTED_MODULE_14__/* .getStarkKey */ .$u)(privateKey);
+        const callData = _static_dependencies_starknet_index_js__WEBPACK_IMPORTED_MODULE_15__/* .CallData */ .fP.compile({
             'implementation': accountClassHash,
-            'selector': _static_dependencies_starknet_index_js__WEBPACK_IMPORTED_MODULE_14__/* .getSelectorFromName */ .BK('initialize'),
-            'calldata': _static_dependencies_starknet_index_js__WEBPACK_IMPORTED_MODULE_13__/* .CallData */ .fP.compile({
+            'selector': _static_dependencies_starknet_index_js__WEBPACK_IMPORTED_MODULE_16__/* .getSelectorFromName */ .BK('initialize'),
+            'calldata': _static_dependencies_starknet_index_js__WEBPACK_IMPORTED_MODULE_15__/* .CallData */ .fP.compile({
                 'signer': publicKey,
                 'guardian': '0',
             }),
         });
-        const address = _static_dependencies_starknet_index_js__WEBPACK_IMPORTED_MODULE_15__/* .calculateContractAddressFromHash */ .r4(publicKey, accountProxyClassHash, callData, 0);
+        const address = _static_dependencies_starknet_index_js__WEBPACK_IMPORTED_MODULE_17__/* .calculateContractAddressFromHash */ .r4(publicKey, accountProxyClassHash, callData, 0);
         return {
             privateKey,
             publicKey,
@@ -15473,26 +22142,26 @@ class Exchange {
             }, messageTypes),
             'message': messageData,
         };
-        const msgHash = _static_dependencies_starknet_index_js__WEBPACK_IMPORTED_MODULE_16__/* .getMessageHash */ .E(request, address);
+        const msgHash = _static_dependencies_starknet_index_js__WEBPACK_IMPORTED_MODULE_18__/* .getMessageHash */ .E(request, address);
         return msgHash;
     }
     starknetSign(msgHash, pri) {
         // TODO: unify to ecdsa
-        const signature = (0,_static_dependencies_scure_starknet_index_js__WEBPACK_IMPORTED_MODULE_12__/* .sign */ ._S)(msgHash.replace('0x', ''), pri.replace('0x', ''));
+        const signature = (0,_static_dependencies_scure_starknet_index_js__WEBPACK_IMPORTED_MODULE_14__/* .sign */ ._S)(msgHash.replace('0x', ''), pri.replace('0x', ''));
         return this.json([signature.r.toString(), signature.s.toString()]);
     }
     async getZKContractSignatureObj(seed, params = {}) {
-        const formattedSlotId = BigInt('0x' + this.remove0xPrefix(this.hash(this.encode(this.safeString(params, 'slotId')), _static_dependencies_noble_hashes_sha256_js__WEBPACK_IMPORTED_MODULE_17__/* .sha256 */ .s, 'hex'))).toString();
-        const formattedNonce = BigInt('0x' + this.remove0xPrefix(this.hash(this.encode(this.safeString(params, 'nonce')), _static_dependencies_noble_hashes_sha256_js__WEBPACK_IMPORTED_MODULE_17__/* .sha256 */ .s, 'hex'))).toString();
+        const formattedSlotId = BigInt('0x' + this.remove0xPrefix(this.hash(this.encode(this.safeString(params, 'slotId')), _static_dependencies_noble_hashes_sha256_js__WEBPACK_IMPORTED_MODULE_19__/* .sha256 */ .s, 'hex'))).toString();
+        const formattedNonce = BigInt('0x' + this.remove0xPrefix(this.hash(this.encode(this.safeString(params, 'nonce')), _static_dependencies_noble_hashes_sha256_js__WEBPACK_IMPORTED_MODULE_19__/* .sha256 */ .s, 'hex'))).toString();
         const formattedUint64 = '18446744073709551615';
         const formattedUint32 = '4294967295';
-        const accountId = parseInt(_Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringMod(this.safeString(params, 'accountId'), formattedUint32), 10);
-        const slotId = parseInt(_Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringDiv(_Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringMod(formattedSlotId, formattedUint64), formattedUint32), 10);
-        const nonce = parseInt(_Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringMod(formattedNonce, formattedUint32), 10);
+        const accountId = parseInt(_Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringMod(this.safeString(params, 'accountId'), formattedUint32), 10);
+        const slotId = parseInt(_Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringDiv(_Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringMod(formattedSlotId, formattedUint64), formattedUint32), 10);
+        const nonce = parseInt(_Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringMod(formattedNonce, formattedUint32), 10);
         await (0,_static_dependencies_zklink_zklink_sdk_web_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay)();
         const _signer = _static_dependencies_zklink_zklink_sdk_web_js__WEBPACK_IMPORTED_MODULE_0__/* .newRpcSignerWithProvider */ .$s({});
         await _signer.initZklinkSigner(seed);
-        const tx_builder = new _static_dependencies_zklink_zklink_sdk_web_js__WEBPACK_IMPORTED_MODULE_0__/* .ContractBuilder */ .KR(accountId, 0, slotId, nonce, this.safeInteger(params, 'pairId'), _Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringMul(this.safeString(params, 'size'), '1e18'), _Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringMul(this.safeString(params, 'price'), '1e18'), this.safeString(params, 'direction') === 'BUY', parseInt(_Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringMul(this.safeString(params, 'makerFeeRate'), '10000')), parseInt(_Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringMul(this.safeString(params, 'takerFeeRate'), '10000')), false);
+        const tx_builder = new _static_dependencies_zklink_zklink_sdk_web_js__WEBPACK_IMPORTED_MODULE_0__/* .ContractBuilder */ .KR(accountId, 0, slotId, nonce, this.safeInteger(params, 'pairId'), _Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringMul(this.safeString(params, 'size'), '1e18'), _Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringMul(this.safeString(params, 'price'), '1e18'), this.safeString(params, 'direction') === 'BUY', parseInt(_Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringMul(this.safeString(params, 'makerFeeRate'), '10000')), parseInt(_Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringMul(this.safeString(params, 'takerFeeRate'), '10000')), false);
         const contractor = _static_dependencies_zklink_zklink_sdk_web_js__WEBPACK_IMPORTED_MODULE_0__/* .newContract */ .JF(tx_builder);
         // const signer = ZkLinkSigner.ethSig(seed);
         // const signer = new Signer(seed);
@@ -15508,8 +22177,8 @@ class Exchange {
         let nonce = this.safeString(params, 'nonce', '0');
         if (this.safeBool(params, 'isContract') === true) {
             const formattedUint32 = '4294967295';
-            const formattedNonce = BigInt('0x' + this.remove0xPrefix(this.hash(this.encode(nonce), _static_dependencies_noble_hashes_sha256_js__WEBPACK_IMPORTED_MODULE_17__/* .sha256 */ .s, 'hex'))).toString();
-            nonce = _Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringMod(formattedNonce, formattedUint32);
+            const formattedNonce = BigInt('0x' + this.remove0xPrefix(this.hash(this.encode(nonce), _static_dependencies_noble_hashes_sha256_js__WEBPACK_IMPORTED_MODULE_19__/* .sha256 */ .s, 'hex'))).toString();
+            nonce = _Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringMod(formattedNonce, formattedUint32);
         }
         const tx_builder = new _static_dependencies_zklink_zklink_sdk_web_js__WEBPACK_IMPORTED_MODULE_0__/* .TransferBuilder */ .H3(this.safeNumber(params, 'zkAccountId', 0), this.safeString(params, 'receiverAddress'), this.safeNumber(params, 'subAccountId', 0), this.safeNumber(params, 'receiverSubAccountId', 0), this.safeNumber(params, 'tokenId', 0), this.safeString(params, 'fee', '0'), this.safeString(params, 'amount', '0'), this.parseToInt(nonce), this.safeNumber(params, 'timestampSeconds', 0));
         const contractor = _static_dependencies_zklink_zklink_sdk_web_js__WEBPACK_IMPORTED_MODULE_0__/* .newTransfer */ .qj(tx_builder);
@@ -15537,16 +22206,16 @@ class Exchange {
         SignMode = modules[2].SignMode;
     }
     toDydxLong(numStr) {
-        return _static_dependencies_dydx_v4_client_helpers_js__WEBPACK_IMPORTED_MODULE_19___default().fromString(numStr);
+        return _static_dependencies_dydx_v4_client_helpers_js__WEBPACK_IMPORTED_MODULE_21___default().fromString(numStr);
     }
     retrieveDydxCredentials(entropy) {
         let credentials = undefined;
         if (entropy.indexOf(' ') > 0) {
-            credentials = (0,_static_dependencies_dydx_v4_client_onboarding_js__WEBPACK_IMPORTED_MODULE_20__/* .deriveHDKeyFromMnemonic */ .t)(entropy);
+            credentials = (0,_static_dependencies_dydx_v4_client_onboarding_js__WEBPACK_IMPORTED_MODULE_22__/* .deriveHDKeyFromMnemonic */ .t)(entropy);
             credentials['mnemonic'] = entropy;
             return credentials;
         }
-        credentials = (0,_static_dependencies_dydx_v4_client_onboarding_js__WEBPACK_IMPORTED_MODULE_20__/* .exportMnemonicAndPrivateKey */ .e)(this.base16ToBinary(entropy));
+        credentials = (0,_static_dependencies_dydx_v4_client_onboarding_js__WEBPACK_IMPORTED_MODULE_22__/* .exportMnemonicAndPrivateKey */ .e)(this.base16ToBinary(entropy));
         return credentials;
     }
     encodeDydxTxForSimulation(message, memo, sequence, publicKey) {
@@ -15629,7 +22298,7 @@ class Exchange {
             'bodyBytes': txBodyBytes,
             'chainId': chainId,
         });
-        const signingHash = this.hash(SignDoc.encode(signDoc).finish(), _static_dependencies_noble_hashes_sha256_js__WEBPACK_IMPORTED_MODULE_17__/* .sha256 */ .s, 'hex');
+        const signingHash = this.hash(SignDoc.encode(signDoc).finish(), _static_dependencies_noble_hashes_sha256_js__WEBPACK_IMPORTED_MODULE_19__/* .sha256 */ .s, 'hex');
         return [signingHash, signDoc];
     }
     encodeDydxTxRaw(signDoc, signature) {
@@ -15655,7 +22324,7 @@ class Exchange {
         return dict;
     }
     randomBytes(length) {
-        const rng = new _static_dependencies_jsencrypt_lib_jsbn_rng_js__WEBPACK_IMPORTED_MODULE_21__/* .SecureRandom */ .D();
+        const rng = new _static_dependencies_jsencrypt_lib_jsbn_rng_js__WEBPACK_IMPORTED_MODULE_23__/* .SecureRandom */ .D();
         const x = [];
         x.length = length;
         rng.nextBytes(x);
@@ -17073,18 +23742,18 @@ class Exchange {
         const amount = this.safeString(entry, 'amount');
         if (amount !== undefined) {
             if (before === undefined && after !== undefined) {
-                before = _Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringSub(after, amount);
+                before = _Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringSub(after, amount);
             }
             else if (before !== undefined && after === undefined) {
-                after = _Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringAdd(before, amount);
+                after = _Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringAdd(before, amount);
             }
         }
         if (before !== undefined && after !== undefined) {
             if (direction === undefined) {
-                if (_Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringGt(before, after)) {
+                if (_Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringGt(before, after)) {
                     direction = 'out';
                 }
-                if (_Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringGt(after, before)) {
+                if (_Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringGt(after, before)) {
                     direction = 'in';
                 }
             }
@@ -17150,13 +23819,13 @@ class Exchange {
                 // find lowest fee (which is more desired)
                 const fee = this.safeString(network, 'fee');
                 const feeMain = this.safeString(currency, 'fee');
-                if (feeMain === undefined || _Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringLt(fee, feeMain)) {
+                if (feeMain === undefined || _Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringLt(fee, feeMain)) {
                     currency['fee'] = this.parseNumber(fee);
                 }
                 // find lowest precision (which is more desired)
                 const precision = this.safeString(network, 'precision');
                 const precisionMain = this.safeString(currency, 'precision');
-                if (precisionMain === undefined || _Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringGt(precision, precisionMain)) {
+                if (precisionMain === undefined || _Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringGt(precision, precisionMain)) {
                     currency['precision'] = this.parseNumber(precision);
                 }
                 // limits
@@ -17176,11 +23845,11 @@ class Exchange {
                 const limitsDepositMinMain = this.safeString(limitsDepositMain, 'min');
                 const limitsDepositMaxMain = this.safeString(limitsDepositMain, 'max');
                 // find min
-                if (limitsDepositMinMain === undefined || _Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringLt(limitsDepositMin, limitsDepositMinMain)) {
+                if (limitsDepositMinMain === undefined || _Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringLt(limitsDepositMin, limitsDepositMinMain)) {
                     currency['limits']['deposit']['min'] = this.parseNumber(limitsDepositMin);
                 }
                 // find max
-                if (limitsDepositMaxMain === undefined || _Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringGt(limitsDepositMax, limitsDepositMaxMain)) {
+                if (limitsDepositMaxMain === undefined || _Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringGt(limitsDepositMax, limitsDepositMaxMain)) {
                     currency['limits']['deposit']['max'] = this.parseNumber(limitsDepositMax);
                 }
                 // withdrawals
@@ -17194,11 +23863,11 @@ class Exchange {
                 const limitsWithdrawMinMain = this.safeString(limitsWithdrawMain, 'min');
                 const limitsWithdrawMaxMain = this.safeString(limitsWithdrawMain, 'max');
                 // find min
-                if (limitsWithdrawMinMain === undefined || _Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringLt(limitsWithdrawMin, limitsWithdrawMinMain)) {
+                if (limitsWithdrawMinMain === undefined || _Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringLt(limitsWithdrawMin, limitsWithdrawMinMain)) {
                     currency['limits']['withdraw']['min'] = this.parseNumber(limitsWithdrawMin);
                 }
                 // find max
-                if (limitsWithdrawMaxMain === undefined || _Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringGt(limitsWithdrawMax, limitsWithdrawMaxMain)) {
+                if (limitsWithdrawMaxMain === undefined || _Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringGt(limitsWithdrawMax, limitsWithdrawMaxMain)) {
                     currency['limits']['withdraw']['max'] = this.parseNumber(limitsWithdrawMax);
                 }
             }
@@ -17465,13 +24134,13 @@ class Exchange {
             let used = this.safeString(balance[code], 'used');
             const debt = this.safeString(balance[code], 'debt');
             if ((total === undefined) && (free !== undefined) && (used !== undefined)) {
-                total = _Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringAdd(free, used);
+                total = _Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringAdd(free, used);
             }
             if ((free === undefined) && (total !== undefined) && (used !== undefined)) {
-                free = _Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringSub(total, used);
+                free = _Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringSub(total, used);
             }
             if ((used === undefined) && (total !== undefined) && (free !== undefined)) {
-                used = _Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringSub(total, free);
+                used = _Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringSub(total, free);
             }
             balance[code]['free'] = this.parseNumber(free);
             balance[code]['used'] = this.parseNumber(used);
@@ -17561,11 +24230,11 @@ class Exchange {
                     const trade = trades[i];
                     const tradeAmount = this.safeString(trade, 'amount');
                     if (parseFilled && (tradeAmount !== undefined)) {
-                        filled = _Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringAdd(filled, tradeAmount);
+                        filled = _Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringAdd(filled, tradeAmount);
                     }
                     const tradeCost = this.safeString(trade, 'cost');
                     if (parseCost && (tradeCost !== undefined)) {
-                        cost = _Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringAdd(cost, tradeCost);
+                        cost = _Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringAdd(cost, tradeCost);
                     }
                     if (parseSymbol) {
                         symbol = this.safeString(trade, 'symbol');
@@ -17626,7 +24295,7 @@ class Exchange {
         if (amount === undefined) {
             // ensure amount = filled + remaining
             if (filled !== undefined && remaining !== undefined) {
-                amount = _Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringAdd(filled, remaining);
+                amount = _Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringAdd(filled, remaining);
             }
             else if (status === 'closed') {
                 amount = filled;
@@ -17634,7 +24303,7 @@ class Exchange {
         }
         if (filled === undefined) {
             if (amount !== undefined && remaining !== undefined) {
-                filled = _Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringSub(amount, remaining);
+                filled = _Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringSub(amount, remaining);
             }
             else if (status === 'closed' && amount !== undefined) {
                 filled = amount;
@@ -17642,7 +24311,7 @@ class Exchange {
         }
         if (remaining === undefined) {
             if (amount !== undefined && filled !== undefined) {
-                remaining = _Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringSub(amount, filled);
+                remaining = _Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringSub(amount, filled);
             }
             else if (status === 'closed') {
                 remaining = '0';
@@ -17657,13 +24326,13 @@ class Exchange {
         // linear
         // price = cost / (filled * contract size)
         if (average === undefined) {
-            if ((filled !== undefined) && (cost !== undefined) && _Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringGt(filled, '0')) {
-                const filledTimesContractSize = _Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringMul(filled, contractSize);
+            if ((filled !== undefined) && (cost !== undefined) && _Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringGt(filled, '0')) {
+                const filledTimesContractSize = _Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringMul(filled, contractSize);
                 if (inverse) {
-                    average = _Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringDiv(filledTimesContractSize, cost);
+                    average = _Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringDiv(filledTimesContractSize, cost);
                 }
                 else {
-                    average = _Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringDiv(cost, filledTimesContractSize);
+                    average = _Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringDiv(cost, filledTimesContractSize);
                 }
             }
         }
@@ -17683,17 +24352,17 @@ class Exchange {
                 multiplyPrice = average;
             }
             // contract trading
-            const filledTimesContractSize = _Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringMul(filled, contractSize);
+            const filledTimesContractSize = _Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringMul(filled, contractSize);
             if (inverse) {
-                cost = _Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringDiv(filledTimesContractSize, multiplyPrice);
+                cost = _Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringDiv(filledTimesContractSize, multiplyPrice);
             }
             else {
-                cost = _Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringMul(filledTimesContractSize, multiplyPrice);
+                cost = _Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringMul(filledTimesContractSize, multiplyPrice);
             }
         }
         // support for market orders
         const orderType = this.safeValue(order, 'type');
-        const emptyPrice = (price === undefined) || _Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringEquals(price, '0');
+        const emptyPrice = (price === undefined) || _Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringEquals(price, '0');
         if (emptyPrice && (orderType === 'market')) {
             price = average;
         }
@@ -17835,7 +24504,7 @@ class Exchange {
         let key = undefined;
         if (useQuote) {
             const priceString = this.numberToString(price);
-            cost = _Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringMul(cost, priceString);
+            cost = _Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringMul(cost, priceString);
             key = 'quote';
         }
         else {
@@ -17850,7 +24519,7 @@ class Exchange {
             takerOrMaker = 'taker';
         }
         const rate = (feeRate !== undefined) ? this.numberToString(feeRate) : this.safeString(market, takerOrMaker);
-        cost = _Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringMul(cost, rate);
+        cost = _Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringMul(cost, rate);
         return {
             'type': takerOrMaker,
             'currency': market[key],
@@ -17880,10 +24549,10 @@ class Exchange {
         let baseValue = this.safeString(liquidation, 'baseValue');
         let quoteValue = this.safeString(liquidation, 'quoteValue');
         if ((baseValue === undefined) && (contracts !== undefined) && (contractSize !== undefined) && (price !== undefined)) {
-            baseValue = _Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringMul(contracts, contractSize);
+            baseValue = _Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringMul(contracts, contractSize);
         }
         if ((quoteValue === undefined) && (baseValue !== undefined) && (price !== undefined)) {
-            quoteValue = _Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringMul(baseValue, price);
+            quoteValue = _Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringMul(baseValue, price);
         }
         liquidation['contracts'] = this.parseNumber(contracts);
         liquidation['contractSize'] = this.parseNumber(contractSize);
@@ -17903,11 +24572,11 @@ class Exchange {
             if (contractSize !== undefined) {
                 const inverse = this.safeBool(market, 'inverse', false);
                 if (inverse) {
-                    multiplyPrice = _Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringDiv('1', price);
+                    multiplyPrice = _Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringDiv('1', price);
                 }
-                multiplyPrice = _Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringMul(multiplyPrice, contractSize);
+                multiplyPrice = _Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringMul(multiplyPrice, contractSize);
             }
-            cost = _Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringMul(multiplyPrice, amount);
+            cost = _Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringMul(multiplyPrice, amount);
         }
         const [resultFee, resultFees] = this.parsedFeeAndFees(trade);
         trade['fee'] = resultFee;
@@ -18071,7 +24740,7 @@ class Exchange {
                 }
                 const rateKey = (rate === undefined) ? '' : rate;
                 if (rateKey in reduced[feeCurrencyCode]) {
-                    reduced[feeCurrencyCode][rateKey]['cost'] = _Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringAdd(reduced[feeCurrencyCode][rateKey]['cost'], cost);
+                    reduced[feeCurrencyCode][rateKey]['cost'] = _Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringAdd(reduced[feeCurrencyCode][rateKey]['cost'], cost);
                 }
                 else {
                     reduced[feeCurrencyCode][rateKey] = {
@@ -18102,54 +24771,54 @@ class Exchange {
         const baseVolume = this.safeString(ticker, 'baseVolume');
         const quoteVolume = this.safeString(ticker, 'quoteVolume');
         if (vwap === undefined) {
-            vwap = _Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringDiv(this.omitZero(quoteVolume), baseVolume);
+            vwap = _Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringDiv(this.omitZero(quoteVolume), baseVolume);
         }
         // calculate open
         if (change !== undefined) {
             if (close === undefined && average !== undefined) {
-                close = _Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringAdd(average, _Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringDiv(change, '2'));
+                close = _Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringAdd(average, _Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringDiv(change, '2'));
             }
             if (open === undefined && close !== undefined) {
-                open = _Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringSub(close, change);
+                open = _Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringSub(close, change);
             }
         }
         else if (percentage !== undefined) {
             if (close === undefined && average !== undefined) {
-                const openAddClose = _Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringMul(average, '2');
+                const openAddClose = _Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringMul(average, '2');
                 // openAddClose = open * (1 + (100 + percentage)/100)
-                const denominator = _Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringAdd('2', _Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringDiv(percentage, '100'));
-                const calcOpen = (open !== undefined) ? open : _Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringDiv(openAddClose, denominator);
-                close = _Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringMul(calcOpen, _Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringAdd('1', _Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringDiv(percentage, '100')));
+                const denominator = _Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringAdd('2', _Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringDiv(percentage, '100'));
+                const calcOpen = (open !== undefined) ? open : _Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringDiv(openAddClose, denominator);
+                close = _Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringMul(calcOpen, _Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringAdd('1', _Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringDiv(percentage, '100')));
             }
             if (open === undefined && close !== undefined) {
-                open = _Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringDiv(close, _Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringAdd('1', _Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringDiv(percentage, '100')));
+                open = _Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringDiv(close, _Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringAdd('1', _Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringDiv(percentage, '100')));
             }
         }
         // change
         if (change === undefined) {
             if (close !== undefined && open !== undefined) {
-                change = _Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringSub(close, open);
+                change = _Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringSub(close, open);
             }
             else if (close !== undefined && percentage !== undefined) {
-                change = _Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringMul(_Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringDiv(percentage, '100'), _Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringDiv(close, '100'));
+                change = _Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringMul(_Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringDiv(percentage, '100'), _Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringDiv(close, '100'));
             }
             else if (open !== undefined && percentage !== undefined) {
-                change = _Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringMul(open, _Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringDiv(percentage, '100'));
+                change = _Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringMul(open, _Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringDiv(percentage, '100'));
             }
         }
         // calculate things according to "open" (similar can be done with "close")
         if (open !== undefined) {
             // percentage (using change)
             if (percentage === undefined && change !== undefined) {
-                percentage = _Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringMul(_Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringDiv(change, open), '100');
+                percentage = _Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringMul(_Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringDiv(change, open), '100');
             }
             // close (using change)
             if (close === undefined && change !== undefined) {
-                close = _Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringAdd(open, change);
+                close = _Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringAdd(open, change);
             }
             // close (using average)
             if (close === undefined && average !== undefined) {
-                close = _Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringMul(average, '2');
+                close = _Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringMul(average, '2');
             }
             // average
             if (average === undefined && close !== undefined) {
@@ -18161,7 +24830,7 @@ class Exchange {
                         precision = this.precisionFromString(precisionPrice);
                     }
                 }
-                average = _Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringDiv(_Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringAdd(open, close), '2', precision);
+                average = _Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringDiv(_Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringAdd(open, close), '2', precision);
             }
         }
         // timestamp and symbol operations don't belong in safeTicker
@@ -18689,7 +25358,7 @@ class Exchange {
         const percentage = this.safeValue(position, 'percentage');
         if ((percentage === undefined) && (unrealizedPnlString !== undefined) && (initialMarginString !== undefined)) {
             // as it was done in all implementations ( aax, btcex, bybit, deribit, ftx, gate, kucoinfutures, phemex )
-            const percentageString = _Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringMul(_Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringDiv(unrealizedPnlString, initialMarginString, 4), '100');
+            const percentageString = _Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringMul(_Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringDiv(unrealizedPnlString, initialMarginString, 4), '100');
             position['percentage'] = this.parseNumber(percentageString);
         }
         // if contractSize is undefined get from market
@@ -19235,7 +25904,7 @@ class Exchange {
     }
     oath() {
         if (this.twofa !== undefined) {
-            return (0,_functions_totp_js__WEBPACK_IMPORTED_MODULE_22__/* .totp */ .O)(this.twofa);
+            return (0,_functions_totp_js__WEBPACK_IMPORTED_MODULE_24__/* .totp */ .O)(this.twofa);
         }
         else {
             throw new _errors_js__WEBPACK_IMPORTED_MODULE_5__.ExchangeError(this.id + ' exchange.twofa has not been set for 2FA Two-Factor Authentication');
@@ -20110,6 +26779,9 @@ class Exchange {
         }
         throw new _errors_js__WEBPACK_IMPORTED_MODULE_5__.NotSupported(this.id + ' fetchClosedOrders() is not supported yet');
     }
+    async fetchCanceledOrders(symbol = undefined, since = undefined, limit = undefined, params = {}) {
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_5__.NotSupported(this.id + ' fetchCanceledOrders() is not supported yet');
+    }
     async fetchCanceledAndClosedOrders(symbol = undefined, since = undefined, limit = undefined, params = {}) {
         throw new _errors_js__WEBPACK_IMPORTED_MODULE_5__.NotSupported(this.id + ' fetchCanceledAndClosedOrders() is not supported yet');
     }
@@ -20463,11 +27135,11 @@ class Exchange {
         if (precision === undefined) {
             return undefined;
         }
-        if (_Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringGe(precision, '0')) {
+        if (_Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringGe(precision, '0')) {
             return this.parsePrecision(precision);
         }
         else {
-            const positivePrecisionString = _Precise_js__WEBPACK_IMPORTED_MODULE_18__/* .Precise */ .Y.stringAbs(precision);
+            const positivePrecisionString = _Precise_js__WEBPACK_IMPORTED_MODULE_20__/* .Precise */ .Y.stringAbs(precision);
             const positivePrecision = parseInt(positivePrecisionString);
             let parsedPrecision = '1';
             for (let i = 0; i < positivePrecision - 1; i++) {
@@ -21859,6 +28531,9 @@ class Exchange {
         else {
             throw new _errors_js__WEBPACK_IMPORTED_MODULE_5__.NotSupported(this.id + ' fetchPositionHistory () is not supported yet');
         }
+    }
+    async loadMarketsAndSignIn() {
+        await Promise.all([this.loadMarkets(), this.signIn()]);
     }
     async fetchPositionsHistory(symbols = undefined, since = undefined, limit = undefined, params = {}) {
         /**
@@ -25597,6 +32272,7 @@ class WsClient extends _Client_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ 
         }
         else {
             this.connection = new WebSocketPlatform(this.url, this.protocols);
+            this.connection.binaryType = "arraybuffer"; // for browsers not to use blob by default
         }
         this.connection.onopen = this.onOpen.bind(this);
         this.connection.onmessage = this.onMessage.bind(this);
@@ -26548,7 +33224,7 @@ class bigone extends _abstract_bigone_js__WEBPACK_IMPORTED_MODULE_0__/* ["defaul
             'close': close,
             'last': close,
             'previousClose': undefined,
-            'change': this.safeString2(ticker, 'daily_change', 'last24hPriceChange'),
+            'change': this.safeString(ticker, 'daily_change'),
             'percentage': undefined,
             'average': undefined,
             'baseVolume': this.safeString2(ticker, 'volume', 'volume24h'),
@@ -29068,6 +35744,7 @@ class binance extends _abstract_binance_js__WEBPACK_IMPORTED_MODULE_0__/* ["defa
                         'block/order/execute': 5,
                         'block/user-trades': 5,
                         'blockTrades': 5,
+                        'comission': 5,
                     },
                     'post': {
                         'order': 1,
@@ -29143,6 +35820,8 @@ class binance extends _abstract_binance_js__WEBPACK_IMPORTED_MODULE_0__/* ["defa
                         'orderList/oco': 0.2,
                         'orderList/oto': 0.2,
                         'orderList/otoco': 0.2,
+                        'orderList/opo': 0.2,
+                        'orderList/opoco': 0.2,
                         'sor/order': 0.2,
                         'sor/order/test': 0.2,
                         'order': 0.2,
@@ -43164,6 +49843,7 @@ class bingx extends _abstract_bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
                 'fetchLiquidations': false,
                 'fetchMarginAdjustmentHistory': false,
                 'fetchMarginMode': true,
+                'fetchMarketLeverageTiers': true,
                 'fetchMarkets': true,
                 'fetchMarkOHLCV': true,
                 'fetchMarkPrice': true,
@@ -48522,7 +55202,7 @@ class bingx extends _abstract_bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
             '3': 'rejected',
             '4': 'pending',
             '5': 'rejected',
-            '6': 'pending',
+            '6': 'ok',
         };
         return this.safeString(statuses, status, status);
     }
@@ -49739,6 +56419,78 @@ class bingx extends _abstract_bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
             }
         }
         return result;
+    }
+    /**
+     * @method
+     * @name bingx#fetchMarketLeverageTiers
+     * @description retrieve information on the maximum leverage, for different trade sizes for a single market
+     * @see https://bingx-api.github.io/docs-v3/#/en/Swap/Trades%20Endpoints/Position%20and%20Maintenance%20Margin%20Ratio
+     * @param {string} symbol unified market symbol
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object} a [leverage tiers structure]{@link https://docs.ccxt.com/?id=leverage-tiers-structure}
+     */
+    async fetchMarketLeverageTiers(symbol, params = {}) {
+        await this.loadMarkets();
+        const market = this.market(symbol);
+        if (!market['swap']) {
+            throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest(this.id + ' fetchMarketLeverageTiers() supports swap markets only');
+        }
+        const request = {
+            'symbol': market['id'],
+        };
+        const response = await this.swapV1PrivateGetMaintMarginRatio(this.extend(request, params));
+        //
+        //     {
+        //         "code": 0,
+        //         "msg": "",
+        //         "timestamp": 1767789967284,
+        //         "data": [
+        //             {
+        //                 "tier": "Tier 1",
+        //                 "symbol": "ETH-USDT",
+        //                 "minPositionVal": "0",
+        //                 "maxPositionVal": "900000",
+        //                 "maintMarginRatio": "0.003300",
+        //                 "maintAmount": "0.000000"
+        //             }
+        //         ]
+        //     }
+        //
+        const data = this.safeList(response, 'data', []);
+        return this.parseMarketLeverageTiers(data, market);
+    }
+    parseMarketLeverageTiers(info, market = undefined) {
+        //
+        //     [
+        //         {
+        //             "tier": "Tier 1",
+        //             "symbol": "ETH-USDT",
+        //             "minPositionVal": "0",
+        //             "maxPositionVal": "900000",
+        //             "maintMarginRatio": "0.003300",
+        //             "maintAmount": "0.000000"
+        //         }
+        //     ]
+        //
+        const tiers = [];
+        for (let i = 0; i < info.length; i++) {
+            const tier = this.safeDict(info, i);
+            const tierString = this.safeString(tier, 'tier');
+            const tierParts = tierString.split(' ');
+            const marketId = this.safeString(tier, 'symbol');
+            market = this.safeMarket(marketId, market, undefined, 'swap');
+            tiers.push({
+                'tier': this.safeNumber(tierParts, 1),
+                'symbol': this.safeSymbol(marketId, market),
+                'currency': this.safeString(market, 'settle'),
+                'minNotional': this.safeNumber(tier, 'minPositionVal'),
+                'maxNotional': this.safeNumber(tier, 'maxPositionVal'),
+                'maintenanceMarginRate': this.safeNumber(tier, 'maintMarginRatio'),
+                'maxLeverage': undefined,
+                'info': tier,
+            });
+        }
+        return tiers;
     }
     sign(path, section = 'public', method = 'GET', params = {}, headers = undefined, body = undefined) {
         let type = section[0];
@@ -114050,7 +120802,15 @@ class bybit extends _abstract_bybit_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
         market = this.safeMarket(contract, market, undefined, 'contract');
         const size = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringAbs(this.safeString2(position, 'size', 'qty'));
         let side = this.safeString(position, 'side');
-        if (side !== undefined) {
+        const positionIdx = this.safeString(position, 'positionIdx');
+        let hedged = undefined;
+        if (positionIdx !== undefined) {
+            hedged = (positionIdx !== '0');
+        }
+        if ((hedged !== undefined) && hedged) {
+            side = (positionIdx === '1') ? 'long' : 'short';
+        }
+        else if (side !== undefined) {
             if (side === 'Buy') {
                 side = isHistory ? 'short' : 'long';
             }
@@ -114121,8 +120881,6 @@ class bybit extends _abstract_bybit_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
         }
         const maintenanceMarginPercentage = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringDiv(maintenanceMarginString, notional);
         const marginRatio = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringDiv(maintenanceMarginString, collateralString, 4);
-        const positionIdx = this.safeString(position, 'positionIdx');
-        const hedged = (positionIdx !== undefined) && (positionIdx !== '0');
         return this.safePosition({
             'info': position,
             'id': undefined,
@@ -116880,6 +123638,2921 @@ class bybit extends _abstract_bybit_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
             this.throwBroadlyMatchedException(this.exceptions['broad'], body, feedback);
             this.throwExactlyMatchedException(this.exceptions['exact'], errorCode, feedback);
             throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_1__.ExchangeError(feedback); // unknown message
+        }
+        return undefined;
+    }
+}
+
+
+/***/ }),
+
+/***/ 5000:
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   A: () => (/* binding */ bydfi)
+/* harmony export */ });
+/* harmony import */ var _abstract_bydfi_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(5439);
+/* harmony import */ var _ccxt_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(2079);
+/* harmony import */ var _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(5147);
+/* harmony import */ var _static_dependencies_noble_hashes_sha256_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(4852);
+/* harmony import */ var _base_functions_number_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1579);
+//  ---------------------------------------------------------------------------
+
+
+
+
+
+//  ---------------------------------------------------------------------------
+/**
+ * @class bydfi
+ * @augments Exchange
+ */
+class bydfi extends _abstract_bydfi_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A {
+    describe() {
+        return this.deepExtend(super.describe(), {
+            'id': 'bydfi',
+            'name': 'BYDFi',
+            'countries': ['SG'],
+            'rateLimit': 50,
+            'version': 'v1',
+            'certified': false,
+            'pro': true,
+            'has': {
+                'CORS': undefined,
+                'spot': false,
+                'margin': false,
+                'swap': true,
+                'future': false,
+                'option': false,
+                'addMargin': false,
+                'borrowCrossMargin': false,
+                'borrowIsolatedMargin': false,
+                'borrowMargin': false,
+                'cancelAllOrders': true,
+                'cancelOrder': false,
+                'cancelOrders': false,
+                'cancelOrdersWithClientOrderId': false,
+                'cancelOrderWithClientOrderId': false,
+                'closeAllPositions': false,
+                'closePosition': false,
+                'createDepositAddress': false,
+                'createLimitBuyOrder': false,
+                'createLimitOrder': true,
+                'createLimitSellOrder': false,
+                'createMarketBuyOrder': false,
+                'createMarketBuyOrderWithCost': false,
+                'createMarketOrder': true,
+                'createMarketOrderWithCost': false,
+                'createMarketSellOrder': false,
+                'createMarketSellOrderWithCost': false,
+                'createOrder': true,
+                'createOrders': true,
+                'createOrderWithTakeProfitAndStopLoss': false,
+                'createPostOnlyOrder': true,
+                'createReduceOnlyOrder': true,
+                'createStopLimitOrder': true,
+                'createStopLossOrder': true,
+                'createStopMarketOrder': false,
+                'createStopOrder': false,
+                'createTakeProfitOrder': true,
+                'createTrailingAmountOrder': false,
+                'createTrailingPercentOrder': true,
+                'createTriggerOrder': false,
+                'deposit': false,
+                'editOrder': true,
+                'editOrders': true,
+                'editOrderWithClientOrderId': true,
+                'fetchAccounts': false,
+                'fetchBalance': true,
+                'fetchBidsAsks': false,
+                'fetchBorrowInterest': false,
+                'fetchBorrowRate': false,
+                'fetchBorrowRateHistories': false,
+                'fetchBorrowRateHistory': false,
+                'fetchBorrowRates': false,
+                'fetchBorrowRatesPerSymbol': false,
+                'fetchCanceledAndClosedOrders': true,
+                'fetchCanceledOrders': false,
+                'fetchClosedOrder': false,
+                'fetchClosedOrders': false,
+                'fetchConvertCurrencies': false,
+                'fetchConvertQuote': false,
+                'fetchConvertTrade': false,
+                'fetchConvertTradeHistory': false,
+                'fetchCrossBorrowRate': false,
+                'fetchCrossBorrowRates': false,
+                'fetchCurrencies': false,
+                'fetchDeposit': false,
+                'fetchDepositAddress': false,
+                'fetchDepositAddresses': false,
+                'fetchDepositAddressesByNetwork': false,
+                'fetchDeposits': true,
+                'fetchDepositsWithdrawals': false,
+                'fetchDepositWithdrawFee': false,
+                'fetchDepositWithdrawFees': false,
+                'fetchFundingHistory': false,
+                'fetchFundingInterval': false,
+                'fetchFundingIntervals': false,
+                'fetchFundingRate': true,
+                'fetchFundingRateHistory': true,
+                'fetchFundingRates': false,
+                'fetchGreeks': false,
+                'fetchIndexOHLCV': false,
+                'fetchIsolatedBorrowRate': false,
+                'fetchIsolatedBorrowRates': false,
+                'fetchIsolatedPositions': false,
+                'fetchL2OrderBook': true,
+                'fetchL3OrderBook': false,
+                'fetchLastPrices': false,
+                'fetchLedger': false,
+                'fetchLedgerEntry': false,
+                'fetchLeverage': true,
+                'fetchLeverages': false,
+                'fetchLeverageTiers': false,
+                'fetchLiquidations': false,
+                'fetchLongShortRatio': false,
+                'fetchLongShortRatioHistory': false,
+                'fetchMarginAdjustmentHistory': false,
+                'fetchMarginMode': true,
+                'fetchMarginModes': false,
+                'fetchMarketLeverageTiers': false,
+                'fetchMarkets': true,
+                'fetchMarkOHLCV': false,
+                'fetchMarkPrices': false,
+                'fetchMyLiquidations': false,
+                'fetchMySettlementHistory': false,
+                'fetchMyTrades': true,
+                'fetchOHLCV': true,
+                'fetchOpenInterest': false,
+                'fetchOpenInterestHistory': false,
+                'fetchOpenInterests': false,
+                'fetchOpenOrder': false,
+                'fetchOpenOrders': true,
+                'fetchOption': false,
+                'fetchOptionChain': false,
+                'fetchOrder': false,
+                'fetchOrderBook': true,
+                'fetchOrderBooks': false,
+                'fetchOrders': false,
+                'fetchOrdersByStatus': false,
+                'fetchOrderTrades': false,
+                'fetchOrderWithClientOrderId': false,
+                'fetchPosition': false,
+                'fetchPositionHistory': true,
+                'fetchPositionMode': true,
+                'fetchPositions': true,
+                'fetchPositionsForSymbol': true,
+                'fetchPositionsHistory': true,
+                'fetchPositionsRisk': false,
+                'fetchPremiumIndexOHLCV': false,
+                'fetchSettlementHistory': false,
+                'fetchStatus': false,
+                'fetchTicker': true,
+                'fetchTickers': true,
+                'fetchTime': false,
+                'fetchTrades': true,
+                'fetchTradingFee': false,
+                'fetchTradingFees': false,
+                'fetchTradingLimits': false,
+                'fetchTransactionFee': false,
+                'fetchTransactionFees': false,
+                'fetchTransactions': false,
+                'fetchTransfer': false,
+                'fetchTransfers': true,
+                'fetchUnderlyingAssets': false,
+                'fetchVolatilityHistory': false,
+                'fetchWithdrawAddresses': false,
+                'fetchWithdrawal': false,
+                'fetchWithdrawals': true,
+                'fetchWithdrawalWhitelist': false,
+                'reduceMargin': false,
+                'repayCrossMargin': false,
+                'repayIsolatedMargin': false,
+                'setLeverage': true,
+                'setMargin': false,
+                'setMarginMode': true,
+                'setPositionMode': true,
+                'signIn': false,
+                'transfer': true,
+                'watchMyLiquidationsForSymbols': false,
+                'withdraw': false,
+                'ws': true,
+            },
+            'urls': {
+                'logo': 'https://github.com/user-attachments/assets/bfffb73d-29bd-465d-b75b-98e210491769',
+                'api': {
+                    'public': 'https://api.bydfi.com/api',
+                    'private': 'https://api.bydfi.com/api',
+                },
+                'www': 'https://bydfi.com/',
+                'doc': 'https://developers.bydfi.com/en/',
+                'referral': 'https://partner.bydfi.com/j/DilWutCI',
+            },
+            'fees': {},
+            'api': {
+                'public': {
+                    'get': {
+                        'v1/public/api_limits': 1,
+                        'v1/swap/market/exchange_info': 1,
+                        'v1/swap/market/depth': 1,
+                        'v1/swap/market/trades': 1,
+                        'v1/swap/market/klines': 1,
+                        'v1/swap/market/ticker/24hr': 1,
+                        'v1/swap/market/ticker/price': 1,
+                        'v1/swap/market/mark_price': 1,
+                        'v1/swap/market/funding_rate': 1,
+                        'v1/swap/market/funding_rate_history': 1,
+                        'v1/swap/market/risk_limit': 1, // https://developers.bydfi.com/en/swap/market#risk-limit
+                    },
+                },
+                'private': {
+                    'get': {
+                        'v1/account/assets': 1,
+                        'v1/account/transfer_records': 1,
+                        'v1/spot/deposit_records': 1,
+                        'v1/spot/withdraw_records': 1,
+                        'v1/swap/trade/open_order': 1,
+                        'v1/swap/trade/plan_order': 1,
+                        'v1/swap/trade/leverage': 1,
+                        'v1/swap/trade/history_order': 1,
+                        'v1/swap/trade/history_trade': 1,
+                        'v1/swap/trade/position_history': 1,
+                        'v1/swap/trade/positions': 1,
+                        'v1/swap/account/balance': 1,
+                        'v1/swap/user_data/assets_margin': 1,
+                        'v1/swap/user_data/position_side/dual': 1,
+                        'v1/agent/teams': 1,
+                        'v1/agent/agent_links': 1,
+                        'v1/agent/regular_overview': 1,
+                        'v1/agent/agent_sub_overview': 1,
+                        'v1/agent/partener_user_deposit': 1,
+                        'v1/agent/partener_users_data': 1,
+                        'v1/agent/affiliate_uids': 1,
+                        'v1/agent/affiliate_commission': 1,
+                        'v1/agent/internal_withdrawal_status': 1, // https://developers.bydfi.com/en/agent/#get-internal-withdrawal-status
+                    },
+                    'post': {
+                        'v1/account/transfer': 1,
+                        'v1/swap/trade/place_order': 1,
+                        'v1/swap/trade/batch_place_order': 1,
+                        'v1/swap/trade/edit_order': 1,
+                        'v1/swap/trade/batch_edit_order': 1,
+                        'v1/swap/trade/cancel_all_order': 1,
+                        'v1/swap/trade/leverage': 1,
+                        'v1/swap/trade/batch_leverage_margin': 1,
+                        'v1/swap/user_data/margin_type': 1,
+                        'v1/swap/user_data/position_side/dual': 1,
+                        'v1/agent/internal_withdrawal': 1, // https://developers.bydfi.com/en/agent/#internal-withdrawal
+                    },
+                },
+            },
+            'features': {
+                'spot': undefined,
+                'swap': {
+                    'linear': {
+                        'sandbox': false,
+                        'createOrder': {
+                            'marginMode': false,
+                            'triggerPrice': false,
+                            'triggerPriceType': {
+                                'mark': true,
+                                'last': true,
+                                'index': false,
+                            },
+                            'stopLossPrice': true,
+                            'takeProfitPrice': true,
+                            'attachedStopLossTakeProfit': undefined,
+                            'timeInForce': {
+                                'IOC': true,
+                                'FOK': true,
+                                'PO': true,
+                                'GTD': false,
+                            },
+                            'hedged': true,
+                            'selfTradePrevention': false,
+                            'trailing': true,
+                            'iceberg': false,
+                            'leverage': false,
+                            'marketBuyRequiresPrice': false,
+                            'marketBuyByCost': false,
+                        },
+                        'createOrders': {
+                            'max': 5,
+                        },
+                        'fetchMyTrades': {
+                            'marginMode': false,
+                            'daysBack': 182,
+                            'limit': 500,
+                            'untilDays': 7,
+                            'symbolRequired': false,
+                        },
+                        'fetchOrder': undefined,
+                        'fetchOpenOrder': {
+                            'marginMode': false,
+                            'trigger': true,
+                            'trailing': false,
+                            'symbolRequired': true,
+                        },
+                        'fetchOpenOrders': {
+                            'marginMode': false,
+                            'limit': 500,
+                            'trigger': true,
+                            'trailing': false,
+                            'symbolRequired': true,
+                        },
+                        'fetchOrders': undefined,
+                        'fetchCanceledAndClosedOrders': {
+                            'marginMode': false,
+                            'limit': 500,
+                            'daysBack': 182,
+                            'untilDays': 7,
+                            'trigger': false,
+                            'trailing': false,
+                            'symbolRequired': false,
+                        },
+                        'fetchClosedOrders': undefined,
+                        'fetchOHLCV': {
+                            'limit': 500,
+                        },
+                    },
+                    'inverse': undefined,
+                },
+                'future': {
+                    'linear': undefined,
+                    'inverse': undefined,
+                },
+            },
+            'timeframes': {
+                '1m': '1m',
+                '3m': '3m',
+                '5m': '5m',
+                '15m': '15m',
+                '30m': '30m',
+                '1h': '1h',
+                '2h': '2h',
+                '4h': '4h',
+                '6h': '6h',
+                '12h': '12h',
+                '1d': '1d',
+            },
+            'precisionMode': _base_functions_number_js__WEBPACK_IMPORTED_MODULE_1__/* .TICK_SIZE */ .kb,
+            'exceptions': {
+                'exact': {
+                    '101001': _ccxt_js__WEBPACK_IMPORTED_MODULE_2__.AuthenticationError,
+                    '101103': _ccxt_js__WEBPACK_IMPORTED_MODULE_2__.AuthenticationError,
+                    '102001': _ccxt_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest,
+                    '102002': _ccxt_js__WEBPACK_IMPORTED_MODULE_2__.PermissionDenied,
+                    '401': _ccxt_js__WEBPACK_IMPORTED_MODULE_2__.AuthenticationError,
+                    '500': _ccxt_js__WEBPACK_IMPORTED_MODULE_2__.ExchangeError,
+                    '501': _ccxt_js__WEBPACK_IMPORTED_MODULE_2__.ExchangeError,
+                    '506': _ccxt_js__WEBPACK_IMPORTED_MODULE_2__.ExchangeError,
+                    '510': _ccxt_js__WEBPACK_IMPORTED_MODULE_2__.RateLimitExceeded,
+                    '511': _ccxt_js__WEBPACK_IMPORTED_MODULE_2__.AuthenticationError,
+                    '513': _ccxt_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest,
+                    '514': _ccxt_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest,
+                    '600': _ccxt_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest,
+                    'Position does not exist': _ccxt_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest,
+                    'Requires transaction permissions': _ccxt_js__WEBPACK_IMPORTED_MODULE_2__.PermissionDenied,
+                    'Service error': _ccxt_js__WEBPACK_IMPORTED_MODULE_2__.ExchangeError,
+                    'transfer failed': _ccxt_js__WEBPACK_IMPORTED_MODULE_2__.InsufficientFunds, // {"code":500,"message":"transfer failed","success":false}
+                },
+                'broad': {
+                    'is missing': _ccxt_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired, // {"code":600,"message":"The parameter 'startTime' is missing"}
+                },
+            },
+            'commonCurrencies': {},
+            'options': {
+                'networks': {
+                    'ERC20': 'ETH', // todo add more networks
+                },
+                'timeInForce': {
+                    'GTC': 'GTC',
+                    'FOK': 'FOK',
+                    'IOC': 'IOC',
+                    'PO': 'POST_ONLY', // Post Only
+                },
+                'accountsByType': {
+                    'spot': 'SPOT',
+                    'swap': 'SWAP',
+                    'funding': 'FUND',
+                },
+                'accountsById': {
+                    'SPOT': 'spot',
+                    'SWAP': 'swap',
+                    'FUND': 'funding',
+                },
+            },
+        });
+    }
+    /**
+     * @method
+     * @name bydfi#fetchMarkets
+     * @description retrieves data on all markets for bydfi
+     * @see https://developers.bydfi.com/en/swap/market#fetching-trading-rules-and-pairs
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object[]} an array of objects representing market data
+     */
+    async fetchMarkets(params = {}) {
+        const response = await this.publicGetV1SwapMarketExchangeInfo(params);
+        //
+        //     {
+        //         "code": "200",
+        //         "message": "success",
+        //         "data": [
+        //             {
+        //                 "symbol": "CLANKER-USDT",
+        //                 "baseAsset": "CLANKER",
+        //                 "marginAsset": "USDT",
+        //                 "quoteAsset": "USDT",
+        //                 "contractFactor": "0.01",
+        //                 "limitMaxQty": "50000",
+        //                 "limitMinQty": "1",
+        //                 "marketMaxQty": "10000",
+        //                 "marketMinQty": "1",
+        //                 "pricePrecision": "8",
+        //                 "basePrecision": "8",
+        //                 "feeRateTaker": "0.0006",
+        //                 "feeRateMaker": "0.0002",
+        //                 "liqFeeRate": "0.0006",
+        //                 "openBuyLimitRateMax": "0.05",
+        //                 "openSellLimitRateMax": "100",
+        //                 "openBuyLimitRateMin": "0.98",
+        //                 "openSellLimitRateMin": "0.05",
+        //                 "priceOrderPrecision": "2",
+        //                 "baseShowPrecision": "2",
+        //                 "maxLeverageLevel": "20",
+        //                 "volumePrecision": "2",
+        //                 "maxLimitOrderNum": "200",
+        //                 "maxPlanOrderNum": "10",
+        //                 "reverse": false,
+        //                 "onboardTime": "1763373600000",
+        //                 "status": "NORMAL"
+        //             },
+        //             ...
+        //         ],
+        //         "success": true
+        //     }
+        const data = this.safeList(response, 'data', []);
+        return this.parseMarkets(data);
+    }
+    parseMarket(market) {
+        //
+        //     {
+        //         "symbol": "CLANKER-USDT",
+        //         "baseAsset": "CLANKER",
+        //         "marginAsset": "USDT",
+        //         "quoteAsset": "USDT",
+        //         "contractFactor": "0.01",
+        //         "limitMaxQty": "50000",
+        //         "limitMinQty": "1",
+        //         "marketMaxQty": "10000",
+        //         "marketMinQty": "1",
+        //         "pricePrecision": "8",
+        //         "basePrecision": "8",
+        //         "feeRateTaker": "0.0006",
+        //         "feeRateMaker": "0.0002",
+        //         "liqFeeRate": "0.0006",
+        //         "openBuyLimitRateMax": "0.05",
+        //         "openSellLimitRateMax": "100",
+        //         "openBuyLimitRateMin": "0.98",
+        //         "openSellLimitRateMin": "0.05",
+        //         "priceOrderPrecision": "2",
+        //         "baseShowPrecision": "2",
+        //         "maxLeverageLevel": "20",
+        //         "volumePrecision": "2",
+        //         "maxLimitOrderNum": "200",
+        //         "maxPlanOrderNum": "10",
+        //         "reverse": false,
+        //         "onboardTime": "1763373600000",
+        //         "status": "NORMAL"
+        //     }
+        //
+        const id = this.safeString(market, 'symbol');
+        const baseId = this.safeString(market, 'baseAsset');
+        const quoteId = this.safeString(market, 'quoteAsset');
+        const settleId = this.safeString(market, 'marginAsset');
+        const base = this.safeCurrencyCode(baseId);
+        const quote = this.safeCurrencyCode(quoteId);
+        const settle = this.safeCurrencyCode(settleId);
+        const symbol = base + '/' + quote + ':' + settle;
+        const inverse = this.safeBool(market, 'reverse');
+        const limitMaxQty = this.safeString(market, 'limitMaxQty');
+        const marketMaxQty = this.safeString(market, 'marketMaxQty');
+        const maxAmountString = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringMax(limitMaxQty, marketMaxQty);
+        const marketMinQty = this.safeString(market, 'marketMinQty');
+        const limitMinQty = this.safeString(market, 'limitMinQty');
+        const minAmountString = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringMin(marketMinQty, limitMinQty);
+        const contractSize = this.safeString(market, 'contractFactor');
+        const pricePrecision = this.parsePrecision(this.safeString(market, 'priceOrderPrecision'));
+        const rawAmountPrecision = this.parsePrecision(this.safeString(market, 'volumePrecision'));
+        const amountPrecision = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringDiv(rawAmountPrecision, contractSize);
+        const basePrecision = this.parsePrecision(this.safeString(market, 'basePrecision'));
+        const taker = this.safeNumber(market, 'feeRateTaker');
+        const maker = this.safeNumber(market, 'feeRateMaker');
+        const maxLeverage = this.safeNumber(market, 'maxLeverageLevel');
+        const status = this.safeString(market, 'status');
+        return this.safeMarketStructure({
+            'id': id,
+            'symbol': symbol,
+            'base': base,
+            'quote': quote,
+            'settle': settle,
+            'baseId': baseId,
+            'quoteId': quoteId,
+            'settleId': settleId,
+            'type': 'swap',
+            'spot': false,
+            'margin': undefined,
+            'swap': true,
+            'future': false,
+            'option': false,
+            'active': status === 'NORMAL',
+            'contract': true,
+            'linear': !inverse,
+            'inverse': inverse,
+            'taker': taker,
+            'maker': maker,
+            'contractSize': this.parseNumber(contractSize),
+            'expiry': undefined,
+            'expiryDatetime': undefined,
+            'strike': undefined,
+            'optionType': undefined,
+            'precision': {
+                'amount': this.parseNumber(amountPrecision),
+                'price': this.parseNumber(pricePrecision),
+                'base': this.parseNumber(basePrecision),
+            },
+            'limits': {
+                'leverage': {
+                    'min': undefined,
+                    'max': maxLeverage,
+                },
+                'amount': {
+                    'min': this.parseNumber(minAmountString),
+                    'max': this.parseNumber(maxAmountString),
+                },
+                'price': {
+                    'min': undefined,
+                    'max': undefined,
+                },
+                'cost': {
+                    'min': undefined,
+                    'max': undefined,
+                },
+            },
+            'created': this.parse8601(this.safeString(market, 'createdAt')),
+            'info': market,
+        });
+    }
+    /**
+     * @method
+     * @name bydfi#fetchOrderBook
+     * @description fetches information on open orders with bid (buy) and ask (sell) prices, volumes and other data
+     * @see https://developers.bydfi.com/en/swap/market#depth-information
+     * @param {string} symbol unified symbol of the market to fetch the order book for
+     * @param {int} [limit] the maximum amount of order book entries to return, could be 5, 10, 20, 50, 100, 500 or 1000 (default 500)
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {string} [params.loc] crypto location, default: us
+     * @returns {object} A dictionary of [order book structures]{@link https://github.com/ccxt/ccxt/wiki/Manual#order-book-structure} indexed by market symbols
+     */
+    async fetchOrderBook(symbol, limit = undefined, params = {}) {
+        await this.loadMarkets();
+        const market = this.market(symbol);
+        const request = {
+            'symbol': market['id'],
+        };
+        if (limit !== undefined) {
+            request['limit'] = this.getClosestLimit(limit);
+        }
+        const response = await this.publicGetV1SwapMarketDepth(this.extend(request, params));
+        //
+        //     {
+        //         "code": 200,
+        //         "message": "success",
+        //         "data": {
+        //             "lastUpdateId": "221780076",
+        //             "symbol": "ETH-USDT",
+        //             "asks": [
+        //                 {
+        //                     "price": "2958.21",
+        //                     "amount": "39478"
+        //                 },
+        //                 ...
+        //             ],
+        //             "bids": [
+        //                 {
+        //                     "price": "2958.19",
+        //                     "amount": "174498"
+        //                 },
+        //                 ...
+        //             ],
+        //             "e": "221780076"
+        //         },
+        //         "success": true
+        //     }
+        //
+        const data = this.safeDict(response, 'data', {});
+        const timestamp = this.milliseconds();
+        const orderBook = this.parseOrderBook(data, market['symbol'], timestamp, 'bids', 'asks', 'price', 'amount');
+        orderBook['nonce'] = this.safeInteger(data, 'lastUpdateId');
+        return orderBook;
+    }
+    getClosestLimit(limit) {
+        const limits = [5, 10, 20, 50, 100, 500, 1000];
+        let result = 1000;
+        for (let i = 0; i < limits.length; i++) {
+            if (limit <= limits[i]) {
+                result = limits[i];
+                break;
+            }
+        }
+        return result;
+    }
+    /**
+     * @method
+     * @name bydfi#fetchTrades
+     * @description get the list of most recent trades for a particular symbol
+     * @see https://developers.bydfi.com/en/swap/market#recent-trades
+     * @param {string} symbol unified symbol of the market to fetch trades for
+     * @param {int} [since] timestamp in ms of the earliest trade to fetch
+     * @param {int} [limit] the maximum amount of trades to fetch (default 500, max 1000)
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {int} [params.fromId] retrieve from which trade ID to start. Default to retrieve the most recent trade records
+     * @returns {Trade[]} a list of [trade structures]{@link https://docs.ccxt.com/?id=public-trades}
+     */
+    async fetchTrades(symbol, since = undefined, limit = undefined, params = {}) {
+        await this.loadMarkets();
+        const market = this.market(symbol);
+        const request = {
+            'symbol': market['id'],
+        };
+        if (limit !== undefined) {
+            request['limit'] = limit;
+        }
+        const response = await this.publicGetV1SwapMarketTrades(this.extend(request, params));
+        //
+        //     {
+        //         "code": 200,
+        //         "message": "success",
+        //         "data": [
+        //             {
+        //                 "id": "7407825178362667008",
+        //                 "symbol": "ETH-USDT",
+        //                 "price": "2970.49",
+        //                 "quantity": "63",
+        //                 "side": "SELL",
+        //                 "time": 1766163153218
+        //             }
+        //         ],
+        //         "success": true
+        //     }
+        //
+        const data = this.safeList(response, 'data', []);
+        return this.parseTrades(data, market, since, limit);
+    }
+    /**
+     * @method
+     * @name bydfi#fetchMyTrades
+     * @description fetch all trades made by the user
+     * @see https://developers.bydfi.com/en/swap/trade#historical-trades-query
+     * @param {string} symbol unified market symbol
+     * @param {int} [since] the earliest time in ms to fetch trades for
+     * @param {int} [limit] the maximum number of trades structures to retrieve
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {int} [params.until] the latest time in ms to fetch trades for
+     * @param {string} [params.contractType] FUTURE or DELIVERY, default is FUTURE
+     * @param {string} [params.wallet] The unique code of a sub-wallet
+     * @param {string} [params.orderType] order type ('LIMIT', 'MARKET', 'LIQ', 'LIMIT_CLOSE', 'MARKET_CLOSE', 'STOP', 'TAKE_PROFIT', 'STOP_MARKET', 'TAKE_PROFIT_MARKET' or 'TRAILING_STOP_MARKET')
+     * @returns {Trade[]} a list of [trade structures]{@link https://docs.ccxt.com/?id=trade-structure}
+     */
+    async fetchMyTrades(symbol = undefined, since = undefined, limit = undefined, params = {}) {
+        await this.loadMarkets();
+        const paginate = this.safeBool(params, 'paginate', false);
+        if (paginate) {
+            const maxLimit = 500;
+            params = this.omit(params, 'paginate');
+            params = this.extend(params, { 'paginationDirection': 'backward' });
+            const paginatedResponse = await this.fetchPaginatedCallDynamic('fetchMyTrades', symbol, since, limit, params, maxLimit, true);
+            return this.sortBy(paginatedResponse, 'timestamp');
+        }
+        let contractType = 'FUTURE';
+        [contractType, params] = this.handleOptionAndParams(params, 'fetchMyTrades', 'contractType', contractType);
+        const request = {
+            'contractType': contractType,
+        };
+        let market = undefined;
+        if (symbol !== undefined) {
+            market = this.market(symbol);
+            request['symbol'] = market['id'];
+        }
+        params = this.handleSinceAndUntil('fetchMyTrades', since, params);
+        if (limit !== undefined) {
+            request['limit'] = limit;
+        }
+        const response = await this.privateGetV1SwapTradeHistoryTrade(this.extend(request, params));
+        //
+        //     {
+        //         "code": 200,
+        //         "message": "success",
+        //         "data": [
+        //             {
+        //                 "orderId": "7408919189505597440",
+        //                 "wallet": "W001",
+        //                 "symbol": "ETH-USDC",
+        //                 "time": "1766423985842",
+        //                 "dealPrice": "3032.45",
+        //                 "dealVolume": "1",
+        //                 "fee": "0",
+        //                 "side": "BUY",
+        //                 "type": "2",
+        //                 "liqPrice": null,
+        //                 "basePrecision": "8",
+        //                 "baseShowPrecision": "2",
+        //                 "tradePnl": "0",
+        //                 "marginType": "CROSS",
+        //                 "leverageLevel": 1
+        //             }
+        //         ],
+        //         "success": true
+        //     }
+        //
+        const data = this.safeList(response, 'data', []);
+        return this.parseTrades(data, market, since, limit);
+    }
+    parseTrade(trade, market = undefined) {
+        //
+        // fetchTrades
+        //     {
+        //         "id": "7407825178362667008",
+        //         "symbol": "ETH-USDT",
+        //         "price": "2970.49",
+        //         "quantity": "63",
+        //         "side": "SELL",
+        //         "time": 1766163153218
+        //     }
+        //
+        // fetchMyTrades
+        //     {
+        //         "orderId": "7408919189505597440",
+        //         "wallet": "W001",
+        //         "symbol": "ETH-USDC",
+        //         "time": "1766423985842",
+        //         "dealPrice": "3032.45",
+        //         "dealVolume": "1",
+        //         "fee": "0",
+        //         "side": "BUY",
+        //         "type": "2",
+        //         "liqPrice": null,
+        //         "basePrecision": "8",
+        //         "baseShowPrecision": "2",
+        //         "tradePnl": "0",
+        //         "marginType": "CROSS",
+        //         "leverageLevel": 1
+        //     }
+        //
+        const marketId = this.safeString(trade, 'symbol');
+        market = this.safeMarket(marketId, market);
+        const timestamp = this.safeInteger(trade, 'time');
+        let fee = undefined;
+        const rawType = this.safeString(trade, 'type');
+        const feeCost = this.safeString(trade, 'fee');
+        if (feeCost !== undefined) {
+            fee = {
+                'cost': feeCost,
+                'currency': market['settle'],
+            };
+        }
+        const orderId = this.safeString(trade, 'orderId');
+        let side = undefined; // fetchMyTrades always returns side BUY
+        if (orderId === undefined) {
+            // from fetchTrades
+            side = this.safeStringLower(trade, 'side');
+        }
+        return this.safeTrade({
+            'info': trade,
+            'timestamp': timestamp,
+            'datetime': this.iso8601(timestamp),
+            'symbol': market['symbol'],
+            'id': this.safeString(trade, 'id'),
+            'order': orderId,
+            'type': this.parseTradeType(rawType),
+            'side': side,
+            'takerOrMaker': undefined,
+            'price': this.safeString2(trade, 'price', 'dealPrice'),
+            'amount': this.safeString2(trade, 'quantity', 'dealVolume'),
+            'cost': undefined,
+            'fee': fee,
+        }, market);
+    }
+    parseTradeType(type) {
+        const types = {
+            '1': 'limit',
+            '2': 'market',
+            '3': 'liquidation',
+        };
+        return this.safeString(types, type, type);
+    }
+    /**
+     * @method
+     * @name bydfi#fetchOHLCV
+     * @description fetches historical candlestick data containing the open, high, low, and close price, and the volume of a market
+     * @see https://developers.bydfi.com/en/swap/market#candlestick-data
+     * @param {string} symbol unified symbol of the market to fetch OHLCV data for
+     * @param {string} timeframe the length of time each candle represents
+     * @param {int} [since] timestamp in ms of the earliest candle to fetch
+     * @param {int} [limit] the maximum amount of candles to fetch (max 500)
+     * @param {object} [params] extra parameters specific to the bitteam api endpoint
+     * @param {int} [params.until] timestamp in ms of the latest candle to fetch
+     * @returns {int[][]} A list of candles ordered as timestamp, open, high, low, close, volume
+     */
+    async fetchOHLCV(symbol, timeframe = '1m', since = undefined, limit = undefined, params = {}) {
+        await this.loadMarkets();
+        const maxLimit = 500; // docs says max 1500, but in practice only 500 works
+        let paginate = false;
+        [paginate, params] = this.handleOptionAndParams(params, 'fetchOHLCV', 'paginate');
+        if (paginate) {
+            return this.fetchPaginatedCallDeterministic('fetchOHLCV', symbol, since, limit, timeframe, params, maxLimit);
+        }
+        const market = this.market(symbol);
+        const interval = this.safeString(this.timeframes, timeframe, timeframe);
+        const request = {
+            'symbol': market['id'],
+            'interval': interval,
+        };
+        let startTime = since;
+        const numberOfCandles = limit ? limit : maxLimit;
+        let until = undefined;
+        [until, params] = this.handleOptionAndParams(params, 'fetchOHLCV', 'until');
+        const now = this.milliseconds();
+        const duration = this.parseTimeframe(timeframe) * 1000;
+        const timeDelta = duration * numberOfCandles;
+        if (startTime === undefined && until === undefined) {
+            startTime = now - timeDelta;
+            until = now;
+        }
+        else if (until === undefined) {
+            until = startTime + timeDelta;
+            if (until > now) {
+                until = now;
+            }
+        }
+        else if (startTime === undefined) {
+            startTime = until - timeDelta;
+        }
+        request['startTime'] = startTime;
+        request['endTime'] = until;
+        if (limit !== undefined) {
+            request['limit'] = limit;
+        }
+        const response = await this.publicGetV1SwapMarketKlines(this.extend(request, params));
+        //
+        //     {
+        //         "code": 200,
+        //         "message": "success",
+        //         "data": [
+        //             {
+        //                 "s": "ETH-USDT",
+        //                 "t": "1766166000000",
+        //                 "c": "2964.990000000000000000",
+        //                 "o": "2967.830000000000000000",
+        //                 "h": "2967.830000000000000000",
+        //                 "l": "2964.130000000000000000",
+        //                 "v": "20358.000000000000000000"
+        //             }
+        //         ],
+        //         "success": true
+        //     }
+        //
+        const data = this.safeList(response, 'data', []);
+        const result = this.parseOHLCVs(data, market, timeframe, since, limit);
+        return result;
+    }
+    parseOHLCV(ohlcv, market = undefined) {
+        //
+        //     {
+        //         "s": "ETH-USDT",
+        //         "t": "1766166000000",
+        //         "c": "2964.990000000000000000",
+        //         "o": "2967.830000000000000000",
+        //         "h": "2967.830000000000000000",
+        //         "l": "2964.130000000000000000",
+        //         "v": "20358.000000000000000000"
+        //     }
+        //
+        return [
+            this.safeInteger(ohlcv, 't'),
+            this.safeNumber(ohlcv, 'o'),
+            this.safeNumber(ohlcv, 'h'),
+            this.safeNumber(ohlcv, 'l'),
+            this.safeNumber(ohlcv, 'c'),
+            this.safeNumber(ohlcv, 'v'),
+        ];
+    }
+    /**
+     * @method
+     * @name bydfi#fetchTickers
+     * @see https://developers.bydfi.com/en/swap/market#24hr-price-change-statistics
+     * @description fetches price tickers for multiple markets, statistical information calculated over the past 24 hours for each market
+     * @param {string[]|undefined} symbols unified symbols of the markets to fetch the ticker for, all market tickers are returned if not assigned
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object} a dictionary of [ticker structures]{@link https://docs.ccxt.com/?id=ticker-structure}
+     */
+    async fetchTickers(symbols = undefined, params = {}) {
+        await this.loadMarkets();
+        const response = await this.publicGetV1SwapMarketTicker24hr(params);
+        //
+        //     {
+        //         "code": 200,
+        //         "message": "success",
+        //         "data": [
+        //             {
+        //                 "symbol": "BTC-USDT",
+        //                 "open": "86452.9",
+        //                 "high": "89371.2",
+        //                 "low": "84418.5",
+        //                 "last": "87050.3",
+        //                 "vol": "12938783",
+        //                 "time": 1766169423872
+        //             }
+        //         ],
+        //         "success": true
+        //     }
+        //
+        const data = this.safeList(response, 'data', []);
+        return this.parseTickers(data, symbols);
+    }
+    /**
+     * @method
+     * @name bydfi#fetchTicker
+     * @description fetches a price ticker, a statistical calculation with the information calculated over the past 24 hours for a specific market
+     * @see https://developers.bydfi.com/en/swap/market#24hr-price-change-statistics
+     * @param {string} symbol unified symbol of the market to fetch the ticker for
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object} a [ticker structure]{@link https://docs.ccxt.com/?id=ticker-structure}
+     */
+    async fetchTicker(symbol, params = {}) {
+        await this.loadMarkets();
+        const market = this.market(symbol);
+        const request = {
+            'symbol': market['id'],
+        };
+        const response = await this.publicGetV1SwapMarketTicker24hr(this.extend(request, params));
+        const data = this.safeList(response, 'data', []);
+        const ticker = this.safeDict(data, 0, {});
+        return this.parseTicker(ticker, market);
+    }
+    parseTicker(ticker, market = undefined) {
+        //
+        // fetchTicker/fetchTickers
+        //     {
+        //         "symbol": "BTC-USDT",
+        //         "open": "86452.9",
+        //         "high": "89371.2",
+        //         "low": "84418.5",
+        //         "last": "87050.3",
+        //         "vol": "12938783",
+        //         "time": 1766169423872
+        //     }
+        //
+        const marketId = this.safeString2(ticker, 'symbol', 's');
+        market = this.safeMarket(marketId, market);
+        const timestamp = this.safeInteger2(ticker, 'time', 'E');
+        const last = this.safeString2(ticker, 'last', 'c');
+        return this.safeTicker({
+            'symbol': this.safeSymbol(marketId, market),
+            'timestamp': timestamp,
+            'datetime': this.iso8601(timestamp),
+            'high': this.safeString2(ticker, 'high', 'h'),
+            'low': this.safeString2(ticker, 'low', 'l'),
+            'bid': undefined,
+            'bidVolume': undefined,
+            'ask': undefined,
+            'askVolume': undefined,
+            'vwap': undefined,
+            'open': this.safeString2(ticker, 'open', 'o'),
+            'close': last,
+            'last': last,
+            'previousClose': undefined,
+            'change': undefined,
+            'percentage': undefined,
+            'average': undefined,
+            'baseVolume': this.safeString2(ticker, 'vol', 'v'),
+            'quoteVolume': undefined,
+            'markPrice': undefined,
+            'indexPrice': undefined,
+            'info': ticker,
+        }, market);
+    }
+    /**
+     * @method
+     * @name bydfi#fetchFundingRate
+     * @description fetch the current funding rate
+     * @see https://developers.bydfi.com/en/swap/market#recent-funding-rate
+     * @param {string} symbol unified market symbol
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object} a [funding rate structure]{@link https://docs.ccxt.com/?id=funding-rate-structure}
+     */
+    async fetchFundingRate(symbol, params = {}) {
+        await this.loadMarkets();
+        const market = this.market(symbol);
+        const request = {
+            'symbol': market['id'],
+        };
+        const response = await this.publicGetV1SwapMarketFundingRate(this.extend(request, params));
+        //
+        //     {
+        //         "code": 200,
+        //         "message": "success",
+        //         "data": {
+        //             "symbol": "BTC-USDT",
+        //             "lastFundingRate": "0.0001",
+        //             "nextFundingTime": "1766188800000",
+        //             "time": "1766170665007"
+        //         },
+        //         "success": true
+        //     }
+        //
+        const data = this.safeDict(response, 'data');
+        return this.parseFundingRate(data, market);
+    }
+    parseFundingRate(contract, market = undefined) {
+        //
+        //     {
+        //         "symbol": "BTC-USDT",
+        //         "lastFundingRate": "0.0001",
+        //         "nextFundingTime": "1766188800000",
+        //         "time": "1766170665007"
+        //     }
+        //
+        const marketId = this.safeString(contract, 'symbol');
+        const symbol = this.safeSymbol(marketId, market);
+        const timestamp = this.safeInteger(contract, 'time');
+        const nextFundingTimestamp = this.safeInteger(contract, 'nextFundingTime');
+        return {
+            'info': contract,
+            'symbol': symbol,
+            'markPrice': undefined,
+            'indexPrice': undefined,
+            'interestRate': undefined,
+            'estimatedSettlePrice': undefined,
+            'timestamp': timestamp,
+            'datetime': this.iso8601(timestamp),
+            'fundingRate': this.safeNumber(contract, 'lastFundingRate'),
+            'fundingTimestamp': undefined,
+            'fundingDatetime': undefined,
+            'nextFundingRate': undefined,
+            'nextFundingTimestamp': nextFundingTimestamp,
+            'nextFundingDatetime': this.iso8601(nextFundingTimestamp),
+            'previousFundingRate': undefined,
+            'previousFundingTimestamp': undefined,
+            'previousFundingDatetime': undefined,
+            'interval': undefined,
+        };
+    }
+    /**
+     * @method
+     * @name bydfi#fetchFundingRateHistory
+     * @description fetches historical funding rate prices
+     * @see https://developers.bydfi.com/en/swap/market#historical-funding-rates
+     * @param {string} symbol unified symbol of the market to fetch the funding rate history for
+     * @param {int} [since] timestamp in ms of the earliest funding rate to fetch
+     * @param {int} [limit] the maximum amount of [funding rate structures]{@link https://docs.ccxt.com/?id=funding-rate-history-structure} to fetch
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {int} [params.until] timestamp in ms of the latest funding rate to fetch
+     * @returns {object[]} a list of [funding rate structures]{@link https://docs.ccxt.com/?id=funding-rate-history-structure}
+     */
+    async fetchFundingRateHistory(symbol = undefined, since = undefined, limit = undefined, params = {}) {
+        if (symbol === undefined) {
+            throw new _ccxt_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired(this.id + ' fetchFundingRateHistory() requires a symbol argument');
+        }
+        await this.loadMarkets();
+        const market = this.market(symbol);
+        const request = {
+            'symbol': market['id'],
+        };
+        if (since !== undefined) {
+            request['startTime'] = since;
+        }
+        if (limit !== undefined) {
+            request['limit'] = limit;
+        }
+        let until = undefined;
+        [until, params] = this.handleOptionAndParams(params, 'fetchFundingRateHistory', 'until');
+        if (until !== undefined) {
+            request['endTime'] = until;
+        }
+        const response = await this.publicGetV1SwapMarketFundingRateHistory(this.extend(request, params));
+        //
+        //     {
+        //         "code": 200,
+        //         "message": "success",
+        //         "data": [
+        //             {
+        //                 "symbol": "ETH-USDT",
+        //                 "fundingRate": "0.00000025",
+        //                 "fundingTime": "1765584000000",
+        //                 "markPrice": "3083.2"
+        //             }
+        //         ],
+        //         "success": true
+        //     }
+        //
+        const data = this.safeList(response, 'data', []);
+        return this.parseFundingRateHistories(data, market, since, limit);
+    }
+    parseFundingRateHistory(contract, market = undefined) {
+        //
+        //     {
+        //         "symbol": "ETH-USDT",
+        //         "fundingRate": "0.00000025",
+        //         "fundingTime": "1765584000000",
+        //         "markPrice": "3083.2"
+        //     }
+        //
+        const marketId = this.safeString(contract, 'symbol');
+        const timestamp = this.safeInteger(contract, 'fundingTime');
+        return {
+            'info': contract,
+            'symbol': this.safeSymbol(marketId, market),
+            'fundingRate': this.safeNumber(contract, 'fundingRate'),
+            'timestamp': timestamp,
+            'datetime': this.iso8601(timestamp),
+        };
+    }
+    /**
+     * @method
+     * @name bydfi#createOrder
+     * @description create a trade order
+     * @see https://developers.bydfi.com/en/swap/trade#placing-an-order
+     * @param {string} symbol unified symbol of the market to create an order in
+     * @param {string} type 'market' or 'limit'
+     * @param {string} side 'buy' or 'sell'
+     * @param {float} amount how much of currency you want to trade in units of base currency
+     * @param {float} [price] the price at which the order is to be fullfilled, in units of the quote currency, ignored in market orders
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {string} [params.wallet] The unique code of a sub-wallet. W001 is the default wallet and the main wallet code of the contract
+     * @param {bool} [params.hedged] true for hedged mode, false for one way mode, default is false
+     * @param {string} [params.clientOrderId] Custom order ID, must be unique for open orders
+     * @param {string} [params.timeInForce] 'GTC' (Good Till Cancelled), 'FOK' (Fill Or Kill), 'IOC' (Immediate Or Cancel), 'PO' (Post Only)
+     * @param {bool} [params.postOnly] true or false, whether the order is post-only
+     * @param {bool} [params.reduceOnly] true or false, true or false whether the order is reduce-only
+     * @param {float} [params.stopLossPrice] The price a stop loss order is triggered at
+     * @param {float} [params.takeProfitPrice] The price a take profit order is triggered at
+     * @param {float} [params.trailingTriggerPrice] the price to activate a trailing order, default uses the price argument or market price if price is not provided
+     * @param {float} [params.trailingPercent] the percent to trail away from the current market price
+     * @param {string} [params.triggerPriceType] 'MARK_PRICE' or 'CONTRACT_PRICE', default is 'CONTRACT_PRICE', the price type used to trigger stop orders
+     * @param {bool} [params.closePosition] true or false, whether to close all positions after triggering, only supported in STOP_MARKET and TAKE_PROFIT_MARKET; not used with quantity;
+     * @returns {object} an [order structure]{@link https://docs.ccxt.com/?id=order-structure}
+     */
+    async createOrder(symbol, type, side, amount, price = undefined, params = {}) {
+        await this.loadMarkets();
+        const market = this.market(symbol);
+        let orderRequest = this.createOrderRequest(symbol, type, side, amount, price, params);
+        let wallet = 'W001';
+        [wallet, params] = this.handleOptionAndParams(params, 'createOrder', 'wallet', wallet);
+        orderRequest = this.extend(orderRequest, { 'wallet': wallet });
+        const response = await this.privatePostV1SwapTradePlaceOrder(orderRequest);
+        //
+        //     {
+        //         "code": 200,
+        //         "message": "success",
+        //         "data": {
+        //             "wallet": "W001",
+        //             "symbol": "ETH-USDT",
+        //             "orderId": "7408875768086683648",
+        //             "clientOrderId": "7408875768086683648",
+        //             "price": "1000",
+        //             "origQty": "10",
+        //             "avgPrice": null,
+        //             "executedQty": "0",
+        //             "orderType": "LIMIT",
+        //             "side": "BUY",
+        //             "status": "NEW",
+        //             "stopPrice": null,
+        //             "activatePrice": null,
+        //             "timeInForce": null,
+        //             "workingType": "CONTRACT_PRICE",
+        //             "positionSide": "BOTH",
+        //             "priceProtect": false,
+        //             "reduceOnly": false,
+        //             "closePosition": false,
+        //             "createTime": "1766413633367",
+        //             "updateTime": "1766413633367"
+        //         },
+        //         "success": true
+        //     }
+        //
+        const data = this.safeDict(response, 'data', {});
+        return this.parseOrder(data, market);
+    }
+    createOrderRequest(symbol, type, side, amount, price = undefined, params = {}) {
+        const market = this.market(symbol);
+        const request = {
+            'symbol': market['id'],
+            'side': side.toUpperCase(),
+            // 'positionSide': STRING Position direction, not required in single position mode, default and can only be BOTH; required in dual position mode, and can only choose LONG or SHORT
+            // 'type': STRING Order type LIMIT / MARKET / STOP / TAKE_PROFIT / STOP_MARKET / TAKE_PROFIT_MARKET / TRAILING_STOP_MARKET
+            // 'reduceOnly': BOOL true, false; defaults to false in non-dual mode; not accepted in dual mode; not supported when using closePosition.
+            // 'quantity': DECIMAL Order quantity, not supported with closePosition.
+            // 'price': DECIMAL Order price
+            // 'clientOrderId': STRING User-defined order number, must not be repeated in pending orders. If blank, the system will assign automatically
+            // 'stopPrice': DECIMAL Trigger price, only required for STOP, STOP_MARKET, TAKE_PROFIT, TAKE_PROFIT_MARKET
+            // 'closePosition': BOOL true, false; all positions closed after triggering, only supported in STOP_MARKET and TAKE_PROFIT_MARKET; not used with quantity; has a self-closing effect, not used with reduceOnly
+            // 'activationPrice': DECIMAL Trailing stop activation price, required for TRAILING_STOP_MARKET, default to current market price upon order (supports different workingType)
+            // 'callbackRate': DECIMAL Trailing stop callback rate, can range from [0.1, 5], where 1 represents 1%, only required for TRAILING_STOP_MARKET
+            // 'timeInForce': STRING Validity method GTC / FOK / POST_ONLY / IOC / TRAILING_STOP
+            // 'workingType': STRING stopPrice trigger type: MARK_PRICE(marking price), CONTRACT_PRICE(latest contract price). Default CONTRACT_PRICE
+        };
+        const stopLossPrice = this.safeString(params, 'stopLossPrice');
+        const isStopLossOrder = (stopLossPrice !== undefined);
+        const takeProfitPrice = this.safeString(params, 'takeProfitPrice');
+        const isTakeProfitOrder = (takeProfitPrice !== undefined);
+        const trailingPercent = this.safeString(params, 'trailingPercent');
+        const isTailingStopOrder = (trailingPercent !== undefined);
+        let stopPrice = undefined;
+        if (isStopLossOrder || isTakeProfitOrder) {
+            stopPrice = isStopLossOrder ? stopLossPrice : takeProfitPrice;
+            params = this.omit(params, ['stopLossPrice', 'takeProfitPrice']);
+            request['stopPrice'] = this.priceToPrecision(symbol, stopPrice);
+        }
+        else if (isTailingStopOrder) {
+            params = this.omit(params, ['trailingPercent']);
+            request['callbackRate'] = trailingPercent;
+            let trailingTriggerPrice = this.numberToString(price);
+            [trailingTriggerPrice, params] = this.handleParamString(params, 'trailingTriggerPrice', trailingTriggerPrice);
+            if (trailingTriggerPrice !== undefined) {
+                request['activationPrice'] = this.priceToPrecision(symbol, trailingTriggerPrice);
+                params = this.omit(params, ['trailingTriggerPrice']);
+            }
+        }
+        type = type.toUpperCase();
+        const isMarketOrder = ((type === 'MARKET') || (type === 'STOP_MARKET') || (type === 'TAKE_PROFIT_MARKET') || (type === 'TRAILING_STOP_MARKET'));
+        if (isMarketOrder) {
+            if (type === 'MARKET') {
+                if (isStopLossOrder) {
+                    type = 'STOP_MARKET';
+                }
+                else if (isTakeProfitOrder) {
+                    type = 'TAKE_PROFIT_MARKET';
+                }
+                else if (isTailingStopOrder) {
+                    type = 'TRAILING_STOP_MARKET';
+                }
+            }
+        }
+        else {
+            if (price === undefined) {
+                throw new _ccxt_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired(this.id + ' createOrder() requires a price argument for a ' + type + ' order');
+            }
+            request['price'] = this.priceToPrecision(symbol, price);
+            if (isStopLossOrder) {
+                type = 'STOP';
+            }
+            else if (isTakeProfitOrder) {
+                type = 'TAKE_PROFIT';
+            }
+        }
+        request['type'] = type;
+        let hedged = false;
+        [hedged, params] = this.handleOptionAndParams(params, 'createOrder', 'hedged', hedged);
+        const reduceOnly = this.safeBool(params, 'reduceOnly', false);
+        if (hedged) {
+            params = this.omit(params, 'reduceOnly');
+            if (side === 'buy') {
+                request['positionSide'] = reduceOnly ? 'SHORT' : 'LONG';
+            }
+            else if (side === 'sell') {
+                request['positionSide'] = reduceOnly ? 'LONG' : 'SHORT';
+            }
+        }
+        const closePosition = this.safeBool(params, 'closePosition', false);
+        if (!closePosition) {
+            params = this.omit(params, 'closePosition');
+            request['quantity'] = this.amountToPrecision(symbol, amount);
+        }
+        else if ((type !== 'STOP_MARKET') && (type !== 'TAKE_PROFIT_MARKET')) {
+            throw new _ccxt_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' createOrder() closePosition is only supported for stopLoss and takeProfit market orders');
+        }
+        let timeInForce = this.handleTimeInForce(params);
+        let postOnly = false;
+        [postOnly, params] = this.handlePostOnly(isMarketOrder, timeInForce === 'POST_ONLY', params);
+        if (postOnly) {
+            timeInForce = 'POST_ONLY';
+        }
+        if (timeInForce !== undefined) {
+            request['timeInForce'] = timeInForce;
+            params = this.omit(params, 'timeInForce');
+        }
+        if (isStopLossOrder || isTakeProfitOrder || isTailingStopOrder) {
+            let workingType = 'CONTRACT_PRICE';
+            [workingType, params] = this.handleOptionAndParams(params, 'createOrder', 'triggerPriceType', workingType);
+            request['workingType'] = this.encodeWorkingType(workingType);
+        }
+        return this.extend(request, params);
+    }
+    encodeWorkingType(workingType) {
+        const types = {
+            'markPrice': 'MARK_PRICE',
+            'mark': 'MARK_PRICE',
+            'contractPrice': 'CONTRACT_PRICE',
+            'contract': 'CONTRACT_PRICE',
+            'last': 'CONTRACT_PRICE',
+        };
+        return this.safeString(types, workingType, workingType);
+    }
+    /**
+     * @method
+     * @name bydfi#createOrders
+     * @description create a list of trade orders
+     * @see https://developers.bydfi.com/en/swap/trade#batch-order-placement
+     * @param {Array} orders list of orders to create, each object should contain the parameters required by createOrder, namely symbol, type, side, amount, price and params
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {string} [params.wallet] The unique code of a sub-wallet. W001 is the default wallet and the main wallet code of the contract
+     * @returns {object} an [order structure]{@link https://docs.ccxt.com/?id=order-structure}
+     */
+    async createOrders(orders, params = {}) {
+        await this.loadMarkets();
+        const length = orders.length;
+        if (length > 5) {
+            throw new _ccxt_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest(this.id + ' createOrders() accepts a maximum of 5 orders');
+        }
+        const ordersRequests = [];
+        for (let i = 0; i < orders.length; i++) {
+            const rawOrder = orders[i];
+            const symbol = this.safeString(rawOrder, 'symbol');
+            const type = this.safeString(rawOrder, 'type');
+            const side = this.safeString(rawOrder, 'side');
+            const amount = this.safeNumber(rawOrder, 'amount');
+            const price = this.safeNumber(rawOrder, 'price');
+            const orderParams = this.safeDict(rawOrder, 'params', {});
+            const orderRequest = this.createOrderRequest(symbol, type, side, amount, price, orderParams);
+            ordersRequests.push(orderRequest);
+        }
+        let wallet = 'W001';
+        [wallet, params] = this.handleOptionAndParams(params, 'createOrder', 'wallet', wallet);
+        const request = {
+            'wallet': wallet,
+            'orders': ordersRequests,
+        };
+        const response = await this.privatePostV1SwapTradeBatchPlaceOrder(this.extend(request, params));
+        const data = this.safeList(response, 'data', []);
+        return this.parseOrders(data);
+    }
+    /**
+     * @method
+     * @name bydfi#editOrder
+     * @description edit a trade order
+     * @see https://developers.bydfi.com/en/swap/trade#order-modification
+     * @param {string} id order id (mandatory if params.clientOrderId is not provided)
+     * @param {string} [symbol] unified symbol of the market to create an order in
+     * @param {string} [type] not used by bydfi editOrder
+     * @param {string} [side] 'buy' or 'sell'
+     * @param {float} [amount] how much of the currency you want to trade in units of the base currency
+     * @param {float} [price] the price for the order, in units of the quote currency, ignored in market orders
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {string} [params.clientOrderId] a unique identifier for the order (could be alternative to id)
+     * @param {string} [params.wallet] The unique code of a sub-wallet. W001 is the default wallet and the main wallet code of the contract
+     * @returns {object} an [order structure]{@link https://docs.ccxt.com/?id=order-structure}
+     */
+    async editOrder(id, symbol, type, side, amount = undefined, price = undefined, params = {}) {
+        await this.loadMarkets();
+        const request = this.createEditOrderRequest(id, symbol, 'limit', side, amount, price, params);
+        let wallet = 'W001';
+        [wallet, params] = this.handleOptionAndParams(params, 'editOrder', 'wallet', wallet);
+        request['wallet'] = wallet;
+        const response = await this.privatePostV1SwapTradeEditOrder(request);
+        const data = this.safeDict(response, 'data', {});
+        return this.parseOrder(data);
+    }
+    /**
+     * @method
+     * @name bydfi#editOrders
+     * @description edit a list of trade orders
+     * @see https://developers.bydfi.com/en/swap/trade#batch-order-modification
+     * @param {Array} orders list of orders to edit, each object should contain the parameters required by editOrder, namely id, symbol, amount, price and params
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {string} [params.wallet] The unique code of a sub-wallet. W001 is the default wallet and the main wallet code of the contract
+     * @returns {object} an [order structure]{@link https://docs.ccxt.com/?id=order-structure}
+     */
+    async editOrders(orders, params = {}) {
+        await this.loadMarkets();
+        const length = orders.length;
+        if (length > 5) {
+            throw new _ccxt_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest(this.id + ' editOrders() accepts a maximum of 5 orders');
+        }
+        const ordersRequests = [];
+        for (let i = 0; i < orders.length; i++) {
+            const rawOrder = orders[i];
+            const id = this.safeString(rawOrder, 'id');
+            const symbol = this.safeString(rawOrder, 'symbol');
+            const side = this.safeString(rawOrder, 'side');
+            const amount = this.safeNumber(rawOrder, 'amount');
+            const price = this.safeNumber(rawOrder, 'price');
+            const orderParams = this.safeDict(rawOrder, 'params', {});
+            const orderRequest = this.createEditOrderRequest(id, symbol, 'limit', side, amount, price, orderParams);
+            ordersRequests.push(orderRequest);
+        }
+        let wallet = 'W001';
+        [wallet, params] = this.handleOptionAndParams(params, 'editOrder', 'wallet', wallet);
+        const request = {
+            'wallet': wallet,
+            'editOrders': ordersRequests,
+        };
+        const response = await this.privatePostV1SwapTradeBatchEditOrder(this.extend(request, params));
+        const data = this.safeList(response, 'data', []);
+        return this.parseOrders(data);
+    }
+    createEditOrderRequest(id, symbol, type, side, amount = undefined, price = undefined, params = {}) {
+        const clientOrderId = this.safeString(params, 'clientOrderId');
+        const request = {};
+        if ((id === undefined) && (clientOrderId === undefined)) {
+            throw new _ccxt_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired(this.id + ' editOrder() requires an id argument or a clientOrderId parameter');
+        }
+        else if (id !== undefined) {
+            request['orderId'] = id;
+        }
+        const market = this.market(symbol);
+        request['symbol'] = market['id'];
+        if (side !== undefined) {
+            request['side'] = side.toUpperCase();
+        }
+        if (amount !== undefined) {
+            request['quantity'] = this.amountToPrecision(symbol, amount);
+        }
+        if (price !== undefined) {
+            request['price'] = this.priceToPrecision(symbol, price);
+        }
+        return this.extend(request, params);
+    }
+    /**
+     * @method
+     * @name bydfi#cancelAllOrders
+     * @description cancel all open orders in a market
+     * @see https://developers.bydfi.com/en/swap/trade#complete-order-cancellation
+     * @param {string} symbol unified market symbol of the market to cancel orders in
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {string} [params.wallet] The unique code of a sub-wallet. W001 is the default wallet and the main wallet code of the contract
+     * @returns {object[]} a list of [order structures]{@link https://docs.ccxt.com/?id=order-structure}
+     */
+    async cancelAllOrders(symbol = undefined, params = {}) {
+        if (symbol === undefined) {
+            throw new _ccxt_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired(this.id + ' cancelAllOrders() requires a symbol argument');
+        }
+        await this.loadMarkets();
+        const market = this.market(symbol);
+        let wallet = 'W001';
+        [wallet, params] = this.handleOptionAndParams(params, 'cancelAllOrders', 'wallet', wallet);
+        const request = {
+            'symbol': market['id'],
+            'wallet': wallet,
+        };
+        const response = await this.privatePostV1SwapTradeCancelAllOrder(this.extend(request, params));
+        //
+        //     {
+        //         "code": 200,
+        //         "message": "success",
+        //         "data": [
+        //             {
+        //                 "wallet": "W001",
+        //                 "symbol": "ETH-USDT",
+        //                 "orderId": "7408875768086683648",
+        //                 "clientOrderId": "7408875768086683648",
+        //                 "price": "1000",
+        //                 "origQty": "10",
+        //                 "avgPrice": "0",
+        //                 "executedQty": "0",
+        //                 "orderType": "LIMIT",
+        //                 "side": "BUY",
+        //                 "status": "CANCELED",
+        //                 "stopPrice": null,
+        //                 "activatePrice": null,
+        //                 "timeInForce": null,
+        //                 "workingType": "CONTRACT_PRICE",
+        //                 "positionSide": "BOTH",
+        //                 "priceProtect": false,
+        //                 "reduceOnly": false,
+        //                 "closePosition": false,
+        //                 "createTime": "1766413633367",
+        //                 "updateTime": "1766413633370"
+        //             }
+        //         ],
+        //         "success": true
+        //     }
+        //
+        const data = this.safeList(response, 'data', []);
+        return this.parseOrders(data, market);
+    }
+    /**
+     * @method
+     * @name bydfi#fetchOpenOrders
+     * @description fetch all unfilled currently open orders
+     * @see https://developers.bydfi.com/en/swap/trade#pending-order-query
+     * @see https://developers.bydfi.com/en/swap/trade#planned-order-query
+     * @param {string} symbol unified market symbol of the market orders were made in
+     * @param {int} [since] the earliest time in ms to fetch orders for
+     * @param {int} [limit] the maximum number of order structures to retrieve
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {bool} [params.trigger] true or false, whether to fetch conditional orders only
+     * @param {string} [params.wallet] The unique code of a sub-wallet. W001 is the default wallet and the main wallet code of the contract
+     * @returns {Order[]} a list of [order structures]{@link https://docs.ccxt.com/?id=order-structure}
+     */
+    async fetchOpenOrders(symbol = undefined, since = undefined, limit = undefined, params = {}) {
+        if (symbol === undefined) {
+            throw new _ccxt_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired(this.id + ' fetchOpenOrders() requires a symbol argument');
+        }
+        await this.loadMarkets();
+        const market = this.market(symbol);
+        let wallet = 'W001';
+        [wallet, params] = this.handleOptionAndParams(params, 'fetchOpenOrders', 'wallet', wallet);
+        const request = {
+            'symbol': market['id'],
+            'wallet': wallet,
+        };
+        let response = undefined;
+        let trigger = false;
+        [trigger, params] = this.handleOptionAndParams(params, 'fetchOpenOrders', 'trigger', trigger);
+        if (!trigger) {
+            //
+            //     {
+            //         "code": 200,
+            //         "message": "success",
+            //         "data": [
+            //             {
+            //                 "wallet": "W001",
+            //                 "symbol": "ETH-USDC",
+            //                 "orderId": "7408896083240091648",
+            //                 "clientOrderId": "7408896083240091648",
+            //                 "price": "999",
+            //                 "origQty": "1",
+            //                 "avgPrice": "0",
+            //                 "executedQty": "0",
+            //                 "orderType": "LIMIT",
+            //                 "side": "BUY",
+            //                 "status": "NEW",
+            //                 "stopPrice": null,
+            //                 "activatePrice": null,
+            //                 "timeInForce": null,
+            //                 "workingType": "CONTRACT_PRICE",
+            //                 "positionSide": "BOTH",
+            //                 "priceProtect": false,
+            //                 "reduceOnly": false,
+            //                 "closePosition": false,
+            //                 "createTime": "1766418476877",
+            //                 "updateTime": "1766418476880"
+            //             }
+            //         ],
+            //         "success": true
+            //     }
+            //
+            response = await this.privateGetV1SwapTradeOpenOrder(this.extend(request, params));
+        }
+        else {
+            response = await this.privateGetV1SwapTradePlanOrder(this.extend(request, params));
+        }
+        const data = this.safeList(response, 'data', []);
+        return this.parseOrders(data, market, since, limit);
+    }
+    /**
+     * @method
+     * @name bydfi#fetchOpenOrder
+     * @description fetch an open order by the id
+     * @see https://developers.bydfi.com/en/swap/trade#pending-order-query
+     * @see https://developers.bydfi.com/en/swap/trade#planned-order-query
+     * @param {string} id order id (mandatory if params.clientOrderId is not provided)
+     * @param {string} symbol unified market symbol
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {bool} [params.trigger] true or false, whether to fetch conditional orders only
+     * @param {string} [params.clientOrderId] a unique identifier for the order (could be alternative to id)
+     * @param {string} [params.wallet] The unique code of a sub-wallet. W001 is the default wallet and the main wallet code of the contract
+     * @returns {object} an [order structure]{@link https://docs.ccxt.com/?id=order-structure}
+     */
+    async fetchOpenOrder(id, symbol = undefined, params = {}) {
+        if (symbol === undefined) {
+            throw new _ccxt_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired(this.id + ' fetchOpenOrder() requires a symbol argument');
+        }
+        await this.loadMarkets();
+        const market = this.market(symbol);
+        const request = {
+            'symbol': market['id'],
+        };
+        const clientOrderId = this.safeString(params, 'clientOrderId');
+        if ((id === undefined) && (clientOrderId === undefined)) {
+            throw new _ccxt_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired(this.id + ' fetchOpenOrder() requires an id argument or a clientOrderId parameter');
+        }
+        else if (id !== undefined) {
+            request['orderId'] = id;
+        }
+        let wallet = 'W001';
+        [wallet, params] = this.handleOptionAndParams(params, 'fetchOpenOrder', 'wallet', wallet);
+        request['wallet'] = wallet;
+        let response = undefined;
+        let trigger = false;
+        [trigger, params] = this.handleOptionAndParams(params, 'fetchOpenOrder', 'trigger', trigger);
+        if (!trigger) {
+            response = await this.privateGetV1SwapTradeOpenOrder(this.extend(request, params));
+        }
+        else {
+            response = await this.privateGetV1SwapTradePlanOrder(this.extend(request, params));
+        }
+        const data = this.safeList(response, 'data', []);
+        const order = this.safeDict(data, 0, {});
+        return this.parseOrder(order, market);
+    }
+    /**
+     * @method
+     * @name bydfi#fetchCanceledAndClosedOrders
+     * @description fetches information on multiple canceled and closed orders made by the user
+     * @see https://developers.bydfi.com/en/swap/trade#historical-orders-query
+     * @param {string} symbol unified market symbol of the closed orders
+     * @param {int} [since] timestamp in ms of the earliest order
+     * @param {int} [limit] the max number of closed orders to return
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {int} [params.until] timestamp in ms of the latest order
+     * @param {string} [params.contractType] FUTURE or DELIVERY, default is FUTURE
+     * @param {string} [params.wallet] The unique code of a sub-wallet
+     * @param {string} [params.orderType] order type ('LIMIT', 'MARKET', 'LIQ', 'LIMIT_CLOSE', 'MARKET_CLOSE', 'STOP', 'TAKE_PROFIT', 'STOP_MARKET', 'TAKE_PROFIT_MARKET' or 'TRAILING_STOP_MARKET')
+     * @returns {object[]} a list of [order structures]{@link https://docs.ccxt.com/?id=order-structure}
+     */
+    async fetchCanceledAndClosedOrders(symbol = undefined, since = undefined, limit = undefined, params = {}) {
+        await this.loadMarkets();
+        const paginate = this.safeBool(params, 'paginate', false);
+        if (paginate) {
+            const maxLimit = 500;
+            params = this.omit(params, 'paginate');
+            params = this.extend(params, { 'paginationDirection': 'backward' });
+            const paginatedResponse = await this.fetchPaginatedCallDynamic('fetchCanceledAndClosedOrders', symbol, since, limit, params, maxLimit, true);
+            return this.sortBy(paginatedResponse, 'timestamp');
+        }
+        let contractType = 'FUTURE';
+        [contractType, params] = this.handleOptionAndParams(params, 'fetchCanceledAndClosedOrders', 'contractType', contractType);
+        const request = {
+            'contractType': contractType,
+        };
+        let market = undefined;
+        if (symbol !== undefined) {
+            market = this.market(symbol);
+            request['symbol'] = market['id'];
+        }
+        params = this.handleSinceAndUntil('fetchCanceledAndClosedOrders', since, params);
+        if (limit !== undefined) {
+            request['limit'] = limit;
+        }
+        const response = await this.privateGetV1SwapTradeHistoryOrder(this.extend(request, params));
+        //
+        //     {
+        //         "code": 200,
+        //         "message": "success",
+        //         "data": [
+        //             {
+        //                 "orderId": "7408919189505597440",
+        //                 "orderType": "MARKET",
+        //                 "symbol": "ETH-USDC",
+        //                 "origQty": "1",
+        //                 "side": "BUY",
+        //                 "positionSide": "BOTH",
+        //                 "positionAvgPrice": null,
+        //                 "positionVolume": null,
+        //                 "positionType": null,
+        //                 "reduceOnly": false,
+        //                 "closePosition": false,
+        //                 "action": null,
+        //                 "price": "3032.45",
+        //                 "avgPrice": "3032.45",
+        //                 "brkPrice": null,
+        //                 "dealVolume": null,
+        //                 "status": "2",
+        //                 "wallet": "W001",
+        //                 "alias": null,
+        //                 "contractId": null,
+        //                 "mtime": "1766423985842",
+        //                 "ctime": "1766423985840",
+        //                 "fixedPrice": null,
+        //                 "direction": null,
+        //                 "triggerPrice": null,
+        //                 "priceType": null,
+        //                 "basePrecision": "8",
+        //                 "baseShowPrecision": "2",
+        //                 "strategyType": null,
+        //                 "leverageLevel": 1,
+        //                 "marginType": "CROSS",
+        //                 "remark": null,
+        //                 "callbackRate": null,
+        //                 "activationPrice": null
+        //             }
+        //         ],
+        //         "success": true
+        //     }
+        //
+        const data = this.safeList(response, 'data', []);
+        return this.parseOrders(data, market, since, limit);
+    }
+    handleSinceAndUntil(methodName, since = undefined, params = {}) {
+        let until = undefined;
+        [until, params] = this.handleOptionAndParams2(params, methodName, 'until', 'endTime');
+        const now = this.milliseconds();
+        const sevenDays = 7 * 24 * 60 * 60 * 1000; // the maximum range is 7 days
+        let startTime = since;
+        if (startTime === undefined) {
+            if (until === undefined) {
+                // both since and until are undefined
+                startTime = now - sevenDays;
+                until = now;
+            }
+            else {
+                // since is undefined but until is defined
+                startTime = until - sevenDays;
+            }
+        }
+        else if (until === undefined) {
+            // until is undefined but since is defined
+            const delta = now - startTime;
+            if (delta > sevenDays) {
+                until = startTime + sevenDays;
+            }
+            else {
+                until = now;
+            }
+        }
+        const request = {
+            'startTime': startTime,
+            'endTime': until,
+        };
+        return this.extend(request, params);
+    }
+    parseOrder(order, market = undefined) {
+        //
+        // createOrder, fetchOpenOrders, fetchOpenOrder
+        //     {
+        //         "wallet": "W001",
+        //         "symbol": "ETH-USDT",
+        //         "orderId": "7408875768086683648",
+        //         "clientOrderId": "7408875768086683648",
+        //         "price": "1000",
+        //         "origQty": "10",
+        //         "avgPrice": "0",
+        //         "executedQty": "0",
+        //         "orderType": "LIMIT",
+        //         "side": "BUY",
+        //         "status": "CANCELED",
+        //         "stopPrice": null,
+        //         "activatePrice": null,
+        //         "timeInForce": null,
+        //         "workingType": "CONTRACT_PRICE",
+        //         "positionSide": "BOTH",
+        //         "priceProtect": false,
+        //         "reduceOnly": false,
+        //         "closePosition": false,
+        //         "createTime": "1766413633367",
+        //         "updateTime": "1766413633370"
+        //     }
+        //
+        // fetchCanceledAndClosedOrders
+        //     {
+        //         "orderId": "7408919189505597440",
+        //         "orderType": "MARKET",
+        //         "symbol": "ETH-USDC",
+        //         "origQty": "1",
+        //         "side": "BUY",
+        //         "positionSide": "BOTH",
+        //         "positionAvgPrice": null,
+        //         "positionVolume": null,
+        //         "positionType": null,
+        //         "reduceOnly": false,
+        //         "closePosition": false,
+        //         "action": null,
+        //         "price": "3032.45",
+        //         "avgPrice": "3032.45",
+        //         "brkPrice": null,
+        //         "dealVolume": null,
+        //         "status": "2",
+        //         "wallet": "W001",
+        //         "alias": null,
+        //         "contractId": null,
+        //         "mtime": "1766423985842",
+        //         "ctime": "1766423985840",
+        //         "fixedPrice": null,
+        //         "direction": null,
+        //         "triggerPrice": null,
+        //         "priceType": null,
+        //         "basePrecision": "8",
+        //         "baseShowPrecision": "2",
+        //         "strategyType": null,
+        //         "leverageLevel": 1,
+        //         "marginType": "CROSS",
+        //         "remark": null,
+        //         "callbackRate": null,
+        //         "activationPrice": null
+        //     }
+        //
+        const marketId = this.safeString(order, 'symbol');
+        market = this.safeMarket(marketId, market);
+        const timestamp = this.safeInteger2(order, 'createTime', 'ctime');
+        const rawType = this.safeString(order, 'orderType');
+        const stopPrice = this.safeStringN(order, ['stopPrice', 'activatePrice', 'triggerPrice']);
+        const isStopLossOrder = (rawType === 'STOP') || (rawType === 'STOP_MARKET') || (rawType === 'TRAILING_STOP_MARKET');
+        const isTakeProfitOrder = (rawType === 'TAKE_PROFIT') || (rawType === 'TAKE_PROFIT_MARKET');
+        const rawTimeInForce = this.safeString(order, 'timeInForce');
+        const timeInForce = this.parseOrderTimeInForce(rawTimeInForce);
+        let postOnly = undefined;
+        if (timeInForce === 'PO') {
+            postOnly = true;
+        }
+        const rawStatus = this.safeString(order, 'status');
+        const fee = {};
+        const quoteFee = this.safeNumber(order, 'quoteFee');
+        if (quoteFee !== undefined) {
+            fee['cost'] = quoteFee;
+            fee['currency'] = market['quote'];
+        }
+        return this.safeOrder({
+            'info': order,
+            'id': this.safeString(order, 'orderId'),
+            'clientOrderId': this.safeString(order, 'clientOrderId'),
+            'timestamp': timestamp,
+            'datetime': this.iso8601(timestamp),
+            'lastTradeTimestamp': undefined,
+            'lastUpdateTimestamp': this.safeInteger2(order, 'updateTime', 'mtime'),
+            'status': this.parseOrderStatus(rawStatus),
+            'symbol': market['symbol'],
+            'type': this.parseOrderType(rawType),
+            'timeInForce': timeInForce,
+            'postOnly': postOnly,
+            'reduceOnly': this.safeBool(order, 'reduceOnly'),
+            'side': this.safeStringLower(order, 'side'),
+            'price': this.safeString(order, 'price'),
+            'triggerPrice': stopPrice,
+            'stopLossPrice': isStopLossOrder ? stopPrice : undefined,
+            'takeProfitPrice': isTakeProfitOrder ? stopPrice : undefined,
+            'amount': this.safeString(order, 'origQty'),
+            'filled': this.safeString(order, 'executedQty'),
+            'remaining': undefined,
+            'cost': undefined,
+            'trades': undefined,
+            'fee': fee,
+            'average': this.omitZero(this.safeString(order, 'avgPrice')),
+        }, market);
+    }
+    parseOrderType(type) {
+        const types = {
+            'LIMIT': 'limit',
+            'MARKET': 'market',
+            'STOP': 'limit',
+            'STOP_MARKET': 'market',
+            'TAKE_PROFIT': 'limit',
+            'TAKE_PROFIT_MARKET': 'market',
+            'TRAILING_STOP_MARKET': 'market',
+        };
+        return this.safeString(types, type, type);
+    }
+    parseOrderTimeInForce(timeInForce) {
+        const timeInForces = {
+            'GTC': 'GTC',
+            'FOK': 'FOK',
+            'IOC': 'IOC',
+            'POST_ONLY': 'PO',
+            'TRAILING_STOP': 'IOC',
+        };
+        return this.safeString(timeInForces, timeInForce, timeInForce);
+    }
+    parseOrderStatus(status) {
+        const statuses = {
+            'NEW': 'open',
+            'PARTIALLY_FILLED': 'open',
+            'FILLED': 'closed',
+            'EXPIRED': 'canceled',
+            'PART_FILLED_CANCELLED': 'canceled',
+            'CANCELED': 'canceled',
+            '2': 'closed',
+            '4': 'canceled',
+        };
+        return this.safeString(statuses, status, status);
+    }
+    /**
+     * @method
+     * @name bydfi#setLeverage
+     * @description set the level of leverage for a market
+     * @see https://developers.bydfi.com/en/swap/trade#set-leverage-for-single-trading-pair
+     * @param {float} leverage the rate of leverage
+     * @param {string} symbol unified market symbol
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {string} [params.wallet] The unique code of a sub-wallet. W001 is the default wallet and the main wallet code of the contract
+     * @returns {object} response from the exchange
+     */
+    async setLeverage(leverage, symbol = undefined, params = {}) {
+        if (symbol === undefined) {
+            throw new _ccxt_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired(this.id + ' setLeverage() requires a symbol argument');
+        }
+        await this.loadMarkets();
+        const market = this.market(symbol);
+        let wallet = 'W001';
+        [wallet, params] = this.handleOptionAndParams(params, 'setLeverage', 'wallet', wallet);
+        const request = {
+            'symbol': market['id'],
+            'leverage': leverage,
+            'wallet': wallet,
+        };
+        const response = await this.privatePostV1SwapTradeLeverage(this.extend(request, params));
+        const data = this.safeDict(response, 'data', {});
+        return data;
+    }
+    /**
+     * @method
+     * @name bydfi#fetchLeverage
+     * @description fetch the set leverage for a market
+     * @see https://developers.bydfi.com/en/swap/trade#get-leverage-for-single-trading-pair
+     * @param {string} symbol unified market symbol
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {string} [params.wallet] The unique code of a sub-wallet. W001 is the default wallet and the main wallet code of the contract
+     * @returns {object} a [leverage structure]{@link https://docs.ccxt.com/?id=leverage-structure}
+     */
+    async fetchLeverage(symbol, params = {}) {
+        if (symbol === undefined) {
+            throw new _ccxt_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired(this.id + ' fetchLeverage() requires a symbol argument');
+        }
+        await this.loadMarkets();
+        const market = this.market(symbol);
+        let wallet = 'W001';
+        [wallet, params] = this.handleOptionAndParams(params, 'fetchLeverage', 'wallet', wallet);
+        const request = {
+            'symbol': market['id'],
+            'wallet': wallet,
+        };
+        const response = await this.privateGetV1SwapTradeLeverage(this.extend(request, params));
+        //
+        //     {
+        //         "code": 200,
+        //         "message": "success",
+        //         "data": {
+        //             "symbol": "ETH-USDC",
+        //             "leverage": 1,
+        //             "maxNotionalValue": "100000000"
+        //         },
+        //         "success": true
+        //     }
+        //
+        const data = this.safeDict(response, 'data', {});
+        return this.parseLeverage(data, market);
+    }
+    parseLeverage(leverage, market = undefined) {
+        const marketId = this.safeString(leverage, 'symbol');
+        return {
+            'info': leverage,
+            'symbol': this.safeSymbol(marketId, market),
+            'marginMode': undefined,
+            'longLeverage': this.safeInteger(leverage, 'leverage'),
+            'shortLeverage': this.safeInteger(leverage, 'leverage'),
+        };
+    }
+    /**
+     * @method
+     * @name bydfi#fetchPositions
+     * @description fetch all open positions
+     * @see https://developers.bydfi.com/en/swap/trade#positions-query
+     * @param {string[]} [symbols] list of unified market symbols
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {string} [params.contractType] FUTURE or DELIVERY, default is FUTURE
+     * @param {string} [params.settleCoin] the settlement currency (USDT or USDC or USD)
+     * @returns {object[]} a list of [position structure]{@link https://docs.ccxt.com/?id=position-structure}
+     */
+    async fetchPositions(symbols = undefined, params = {}) {
+        await this.loadMarkets();
+        let contractType = 'FUTURE';
+        [contractType, params] = this.handleOptionAndParams(params, 'fetchPositions', 'contractType', contractType);
+        const request = {
+            'contractType': contractType,
+        };
+        const response = await this.privateGetV1SwapTradePositions(this.extend(request, params));
+        //
+        //     {
+        //         "code": 200,
+        //         "message": "success",
+        //         "data": [
+        //             {
+        //                 "symbol": "ETH-USDC",
+        //                 "side": "BUY",
+        //                 "volume": "0.001",
+        //                 "avgPrice": "3032.45",
+        //                 "liqPrice": "0",
+        //                 "markPrice": "3032.37",
+        //                 "unPnl": "-0.00008",
+        //                 "positionMargin": "0",
+        //                 "settleCoin": "USDC",
+        //                 "im": "3.03245",
+        //                 "mm": "0.007581125"
+        //             }
+        //         ],
+        //         "success": true
+        //     }
+        //
+        const data = this.safeList(response, 'data', []);
+        return this.parsePositions(data, symbols);
+    }
+    /**
+     * @method
+     * @name bydfi#fetchPositionsForSymbol
+     * @description fetch open positions for a single market
+     * @see https://developers.bydfi.com/en/swap/trade#positions-query
+     * @description fetch all open positions for specific symbol
+     * @param {string} symbol unified market symbol
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {string} [params.contractType] FUTURE or DELIVERY, default is FUTURE
+     * @returns {object[]} a list of [position structure]{@link https://docs.ccxt.com/?id=position-structure}
+     */
+    async fetchPositionsForSymbol(symbol, params = {}) {
+        await this.loadMarkets();
+        const market = this.market(symbol);
+        let contractType = 'FUTURE';
+        [contractType, params] = this.handleOptionAndParams(params, 'fetchPositions', 'contractType', contractType);
+        const request = {
+            'contractType': contractType,
+            'symbol': market['id'],
+        };
+        const response = await this.privateGetV1SwapTradePositions(this.extend(request, params));
+        const data = this.safeList(response, 'data', []);
+        return this.parsePositions(data, [market['symbol']]);
+    }
+    parsePosition(position, market = undefined) {
+        //
+        // fetchPositions, fetchPositionsForSymbol
+        //     {
+        //         "symbol": "ETH-USDC",
+        //         "side": "BUY",
+        //         "volume": "0.001",
+        //         "avgPrice": "3032.45",
+        //         "liqPrice": "0",
+        //         "markPrice": "3032.37",
+        //         "unPnl": "-0.00008",
+        //         "positionMargin": "0",
+        //         "settleCoin": "USDC",
+        //         "im": "3.03245",
+        //         "mm": "0.007581125"
+        //     }
+        //
+        // fetchPositionsHistory
+        //     {
+        //         "id": "16788366",
+        //         "wallet": "W001",
+        //         "currency": "USDC",
+        //         "symbol": "ETH-USDC",
+        //         "side": "BUY",
+        //         "positionSide": "BOTH",
+        //         "leverage": 1,
+        //         "avgOpenPositionPrice": "3032.45",
+        //         "openPositionVolume": "1",
+        //         "openCount": 1,
+        //         "highPrice": "3032.45",
+        //         "lowPrice": "2953.67",
+        //         "avgClosePositionPrice": "2953.67",
+        //         "closePositionVolume": "1",
+        //         "closePositionCost": "2.95367",
+        //         "closeCount": 1,
+        //         "positionProfits": "-0.07878",
+        //         "lossBonus": "0",
+        //         "capitalFeeTotal": "-0.00026361",
+        //         "capitalFeeOutCash": "-0.00026361",
+        //         "capitalFeeInCash": "0",
+        //         "capitalFeeBonus": "0",
+        //         "openFeeTotal": "-0.00181947",
+        //         "openFeeBonus": "0",
+        //         "closeFeeTotal": "-0.00177221",
+        //         "closeFeeBonus": "0",
+        //         "liqLoss": "0",
+        //         "liqClosed": false,
+        //         "sequence": "53685341336",
+        //         "updateTime": "1766494929423",
+        //         "createTime": "1766423985842"
+        //     }
+        //
+        const marketId = this.safeString(position, 'symbol');
+        market = this.safeMarket(marketId, market);
+        const buyOrSell = this.safeString(position, 'side');
+        const rawPositionSide = this.safeStringLower(position, 'positionSide');
+        let positionSide = this.parsePositionSide(buyOrSell);
+        let hedged = undefined;
+        let isFetchPositionsHistory = false;
+        if (rawPositionSide !== undefined) {
+            isFetchPositionsHistory = true;
+            if (rawPositionSide !== 'both') {
+                positionSide = rawPositionSide;
+                hedged = true;
+            }
+            else {
+                hedged = false;
+            }
+        }
+        const contractSize = this.safeString(market, 'contractSize');
+        let contracts = this.safeString2(position, 'volume', 'openPositionVolume');
+        if (!isFetchPositionsHistory) {
+            // in fetchPositions, the 'volume' is in base currency units, need to convert to contracts
+            contracts = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringDiv(contracts, contractSize);
+        }
+        const timestamp = this.safeInteger(position, 'createTime');
+        return this.safePosition({
+            'info': position,
+            'id': this.safeString(position, 'id'),
+            'symbol': market['symbol'],
+            'entryPrice': this.parseNumber(this.safeString2(position, 'avgOpenPositionPrice', 'avgPrice')),
+            'markPrice': this.parseNumber(this.safeString(position, 'markPrice')),
+            'lastPrice': this.parseNumber(this.safeString(position, 'avgClosePositionPrice')),
+            'notional': this.parseNumber(this.safeString(position, 'closePositionCost')),
+            'collateral': undefined,
+            'unrealizedPnl': this.parseNumber(this.safeString(position, 'unPnl')),
+            'realizedPnl': this.parseNumber(this.safeString(position, 'positionProfits')),
+            'side': positionSide,
+            'contracts': this.parseNumber(contracts),
+            'contractSize': this.parseNumber(contractSize),
+            'timestamp': timestamp,
+            'datetime': this.iso8601(timestamp),
+            'lastUpdateTimestamp': this.safeInteger(position, 'updateTime'),
+            'hedged': hedged,
+            'maintenanceMargin': this.parseNumber(this.safeString(position, 'mm')),
+            'maintenanceMarginPercentage': undefined,
+            'initialMargin': this.parseNumber(this.safeString(position, 'im')),
+            'initialMarginPercentage': undefined,
+            'leverage': this.parseNumber(this.safeString(position, 'leverage')),
+            'liquidationPrice': this.parseNumber(this.safeString(position, 'liqPrice')),
+            'marginRatio': undefined,
+            'marginMode': undefined,
+            'percentage': undefined,
+        });
+    }
+    parsePositionSide(side) {
+        const sides = {
+            'BUY': 'long',
+            'SELL': 'short',
+        };
+        return this.safeString(sides, side, side);
+    }
+    /**
+     * @method
+     * @name bydfi#fetchPositionHistory
+     * @description fetches historical positions
+     * @see https://developers.bydfi.com/en/swap/trade#query-historical-position-profit-and-loss-records
+     * @param {string} symbol a unified market symbol
+     * @param {int} [since] timestamp in ms of the earliest position to fetch , params["until"] - since <= 7 days
+     * @param {int} [limit] the maximum amount of records to fetch (default 500, max 500)
+     * @param {object} params extra parameters specific to the exchange api endpoint
+     * @param {int} [params.until] timestamp in ms of the latest position to fetch , params["until"] - since <= 7 days
+     * @param {string} [params.contractType] FUTURE or DELIVERY, default is FUTURE
+     * @param {string} [params.wallet] The unique code of a sub-wallet. W001 is the default wallet and the main wallet code of the contract
+     * @returns {object[]} a list of [position structures]{@link https://docs.ccxt.com/?id=position-structure}
+     */
+    async fetchPositionHistory(symbol, since = undefined, limit = undefined, params = {}) {
+        await this.loadMarkets();
+        const market = this.market(symbol);
+        let contractType = 'FUTURE';
+        [contractType, params] = this.handleOptionAndParams(params, 'fetchPositionsHistory', 'contractType', contractType);
+        const request = {
+            'symbol': market['id'],
+            'contractType': contractType,
+        };
+        params = this.handleSinceAndUntil('fetchPositionsHistory', since, params);
+        if (limit !== undefined) {
+            request['limit'] = limit;
+        }
+        const response = await this.privateGetV1SwapTradePositionHistory(this.extend(request, params));
+        //
+        //
+        const data = this.safeList(response, 'data', []);
+        const positions = this.parsePositions(data);
+        return this.filterBySinceLimit(positions, since, limit);
+    }
+    /**
+     * @method
+     * @name bydfi#fetchPositionsHistory
+     * @description fetches historical positions
+     * @see https://developers.bydfi.com/en/swap/trade#query-historical-position-profit-and-loss-records
+     * @param {string[]} symbols a list of unified market symbols
+     * @param {int} [since] timestamp in ms of the earliest position to fetch , params["until"] - since <= 7 days
+     * @param {int} [limit] the maximum amount of records to fetch (default 500, max 500)
+     * @param {object} params extra parameters specific to the exchange api endpoint
+     * @param {int} [params.until] timestamp in ms of the latest position to fetch , params["until"] - since <= 7 days
+     * @param {string} [params.contractType] FUTURE or DELIVERY, default is FUTURE
+     * @param {string} [params.wallet] The unique code of a sub-wallet. W001 is the default wallet and the main wallet code of the contract
+     * @returns {object[]} a list of [position structures]{@link https://docs.ccxt.com/?id=position-structure}
+     */
+    async fetchPositionsHistory(symbols = undefined, since = undefined, limit = undefined, params = {}) {
+        await this.loadMarkets();
+        let contractType = 'FUTURE';
+        [contractType, params] = this.handleOptionAndParams(params, 'fetchPositionsHistory', 'contractType', contractType);
+        const request = {
+            'contractType': contractType,
+        };
+        params = this.handleSinceAndUntil('fetchPositionsHistory', since, params);
+        if (limit !== undefined) {
+            request['limit'] = limit;
+        }
+        const response = await this.privateGetV1SwapTradePositionHistory(this.extend(request, params));
+        //
+        //     {
+        //         "code": 200,
+        //         "message": "success",
+        //         "data": [
+        //             {
+        //                 "id": "16788366",
+        //                 "wallet": "W001",
+        //                 "currency": "USDC",
+        //                 "symbol": "ETH-USDC",
+        //                 "side": "BUY",
+        //                 "positionSide": "BOTH",
+        //                 "leverage": 1,
+        //                 "avgOpenPositionPrice": "3032.45",
+        //                 "openPositionVolume": "1",
+        //                 "openCount": 1,
+        //                 "highPrice": "3032.45",
+        //                 "lowPrice": "2953.67",
+        //                 "avgClosePositionPrice": "2953.67",
+        //                 "closePositionVolume": "1",
+        //                 "closePositionCost": "2.95367",
+        //                 "closeCount": 1,
+        //                 "positionProfits": "-0.07878",
+        //                 "lossBonus": "0",
+        //                 "capitalFeeTotal": "-0.00026361",
+        //                 "capitalFeeOutCash": "-0.00026361",
+        //                 "capitalFeeInCash": "0",
+        //                 "capitalFeeBonus": "0",
+        //                 "openFeeTotal": "-0.00181947",
+        //                 "openFeeBonus": "0",
+        //                 "closeFeeTotal": "-0.00177221",
+        //                 "closeFeeBonus": "0",
+        //                 "liqLoss": "0",
+        //                 "liqClosed": false,
+        //                 "sequence": "53685341336",
+        //                 "updateTime": "1766494929423",
+        //                 "createTime": "1766423985842"
+        //             }
+        //         ],
+        //         "success": true
+        //     }
+        //
+        const data = this.safeList(response, 'data', []);
+        const positions = this.parsePositions(data, symbols);
+        return this.filterBySinceLimit(positions, since, limit);
+    }
+    /**
+     * @method
+     * @name bydfi#fetchMarginMode
+     * @description fetches the margin mode of a trading pair
+     * @see https://developers.bydfi.com/en/swap/user#margin-mode-query
+     * @param {string} symbol unified symbol of the market to fetch the margin mode for
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {string} [params.contractType] FUTURE or DELIVERY, default is FUTURE
+     * @param {string} [params.wallet] The unique code of a sub-wallet. W001 is the default wallet and the main wallet code of the contract
+     * @returns {object} a [margin mode structure]{@link https://docs.ccxt.com/?id=margin-mode-structure}
+     */
+    async fetchMarginMode(symbol, params = {}) {
+        await this.loadMarkets();
+        const market = this.market(symbol);
+        let contractType = 'FUTURE';
+        [contractType, params] = this.handleOptionAndParams(params, 'fetchMarginMode', 'contractType', contractType);
+        let wallet = 'W001';
+        [wallet, params] = this.handleOptionAndParams(params, 'fetchMarginMode', 'wallet', wallet);
+        const request = {
+            'contractType': contractType,
+            'symbol': market['id'],
+            'wallet': wallet,
+        };
+        const response = await this.privateGetV1SwapUserDataAssetsMargin(this.extend(request, params));
+        //
+        //     {
+        //         "code": 200,
+        //         "message": "success",
+        //         "data": {
+        //             "wallet": "W001",
+        //             "symbol": "ETH-USDC",
+        //             "marginType": "CROSS"
+        //         },
+        //         "success": true
+        //     }
+        //
+        const data = this.safeDict(response, 'data', {});
+        return this.parseMarginMode(data, market);
+    }
+    parseMarginMode(marginMode, market = undefined) {
+        const marketId = this.safeString(marginMode, 'symbol');
+        return {
+            'info': marginMode,
+            'symbol': this.safeSymbol(marketId, market),
+            'marginMode': this.safeStringLower(marginMode, 'marginType'),
+        };
+    }
+    /**
+     * @method
+     * @name bydfi#setMarginMode
+     * @description set margin mode to 'cross' or 'isolated'
+     * @see https://developers.bydfi.com/en/swap/user#change-margin-type-cross-margin
+     * @param {string} marginMode 'cross' or 'isolated'
+     * @param {string} symbol unified market symbol
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {string} [params.contractType] FUTURE or DELIVERY, default is FUTURE
+     * @param {string} [params.wallet] The unique code of a sub-wallet. W001 is the default wallet and the main wallet code of the contract
+     * @returns {object} response from the exchange
+     */
+    async setMarginMode(marginMode, symbol = undefined, params = {}) {
+        if (symbol === undefined) {
+            throw new _ccxt_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired(this.id + ' setMarginMode() requires a symbol argument');
+        }
+        marginMode = marginMode.toLowerCase();
+        if (marginMode !== 'isolated' && marginMode !== 'cross') {
+            throw new _ccxt_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest(this.id + ' setMarginMode() marginMode argument should be isolated or cross');
+        }
+        await this.loadMarkets();
+        const market = this.market(symbol);
+        let contractType = 'FUTURE';
+        [contractType, params] = this.handleOptionAndParams(params, 'fetchMarginMode', 'contractType', contractType);
+        let wallet = 'W001';
+        [wallet, params] = this.handleOptionAndParams(params, 'fetchMarginMode', 'wallet', wallet);
+        const request = {
+            'contractType': contractType,
+            'symbol': market['id'],
+            'marginType': marginMode.toUpperCase(),
+            'wallet': wallet,
+        };
+        return await this.privatePostV1SwapUserDataMarginType(this.extend(request, params));
+    }
+    /**
+     * @method
+     * @name bydfi#setPositionMode
+     * @description set hedged to true or false for a market, hedged for bydfi is set identically for all markets with same settle currency
+     * @see https://developers.bydfi.com/en/swap/user#change-position-mode-dual
+     * @param {bool} hedged set to true to use dualSidePosition
+     * @param {string} [symbol] not used by bydfi setPositionMode ()
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {string} [params.contractType] FUTURE or DELIVERY, default is FUTURE
+     * @param {string} [params.wallet] The unique code of a sub-wallet. W001 is the default wallet and the main wallet code of the contract
+     * @param {string} [params.settleCoin] The settlement currency - USDT or USDC or USD (default is USDT)
+     * @returns {object} response from the exchange
+     */
+    async setPositionMode(hedged, symbol = undefined, params = {}) {
+        if (symbol !== undefined) {
+            throw new _ccxt_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' setPositionMode() does not support a symbol argument. The position mode is set identically for all markets with same settle currency');
+        }
+        await this.loadMarkets();
+        const positionType = hedged ? 'HEDGE' : 'ONEWAY';
+        let wallet = 'W001';
+        [wallet, params] = this.handleOptionAndParams(params, 'setPositionMode', 'wallet', wallet);
+        let contractType = 'FUTURE';
+        [contractType, params] = this.handleOptionAndParams(params, 'setPositionMode', 'contractType', contractType);
+        let settleCoin = 'USDT';
+        [settleCoin, params] = this.handleOptionAndParams(params, 'setPositionMode', 'settleCoin', settleCoin);
+        const request = {
+            'contractType': contractType,
+            'wallet': wallet,
+            'positionType': positionType,
+            'settleCoin': settleCoin,
+        };
+        //
+        //     {
+        //         "code": 200,
+        //         "message": "success",
+        //         "success": true
+        //     }
+        //
+        return await this.privatePostV1SwapUserDataPositionSideDual(this.extend(request, params));
+    }
+    /**
+     * @method
+     * @name bydfi#fetchPositionMode
+     * @description fetchs the position mode, hedged or one way, hedged for bydfi is set identically for all markets with same settle currency
+     * @see https://developers.bydfi.com/en/swap/user#get-position-mode
+     * @param {string} [symbol] unified symbol of the market to fetch the order book for
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {string} [params.contractType] FUTURE or DELIVERY, default is FUTURE
+     * @param {string} [params.wallet] The unique code of a sub-wallet. W001 is the default wallet and the main wallet code of the contract
+     * @param {string} [params.settleCoin] The settlement currency - USDT or USDC or USD (default is USDT or settle currency of the market if market is provided)
+     * @returns {object} an object detailing whether the market is in hedged or one-way mode
+     */
+    async fetchPositionMode(symbol = undefined, params = {}) {
+        await this.loadMarkets();
+        let wallet = 'W001';
+        [wallet, params] = this.handleOptionAndParams(params, 'fetchPositionMode', 'wallet', wallet);
+        let contractType = 'FUTURE';
+        [contractType, params] = this.handleOptionAndParams(params, 'fetchPositionMode', 'contractType', contractType);
+        let settleCoin = 'USDT';
+        if (symbol === undefined) {
+            [settleCoin, params] = this.handleOptionAndParams(params, 'fetchPositionMode', 'settleCoin', settleCoin);
+        }
+        else {
+            const market = this.market(symbol);
+            settleCoin = market['settleId'];
+        }
+        const request = {
+            'contractType': contractType,
+            'settleCoin': settleCoin,
+            'wallet': wallet,
+        };
+        const response = await this.privateGetV1SwapUserDataPositionSideDual(this.extend(request, params));
+        //
+        //     {
+        //         "code": 200,
+        //         "message": "success",
+        //         "data": {
+        //             "wallet": "W001",
+        //             "contractType": "FUTURE",
+        //             "settleCoin": "USDT",
+        //             "positionType": "HEDGE",
+        //             "unitModel": 2,
+        //             "pricingModel": "FLAG",
+        //             "priceProtection": "CLOSE",
+        //             "totalWallet": 2
+        //         },
+        //         "success": true
+        //     }
+        //
+        const data = this.safeDict(response, 'data', {});
+        const hedged = this.safeString(data, 'positionType') === 'HEDGE';
+        return {
+            'info': response,
+            'hedged': hedged,
+        };
+    }
+    /**
+     * @method
+     * @name bydfi#fetchBalance
+     * @description query for balance and get the amount of funds available for trading or funds locked in orders
+     * @see https://developers.bydfi.com/en/account#asset-inquiry
+     * @see https://developers.bydfi.com/en/swap/user#asset-query
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {string} [params.accountType] the type of account to fetch the balance for, either 'spot' or 'swap'  or 'funding' (default is 'spot')
+     * @param {string} [params.wallet] *swap only* The unique code of a sub-wallet. W001 is the default wallet and the main wallet code of the contract
+     * @param {string} [params.asset] currency id for the balance to fetch
+     * @returns {object} a [balance structure]{@link https://docs.ccxt.com/?id=balance-structure}
+     */
+    async fetchBalance(params = {}) {
+        await this.loadMarkets();
+        let accountType = 'spot';
+        [accountType, params] = this.handleOptionAndParams2(params, 'fetchBalance', 'accountType', 'type', accountType);
+        const request = {};
+        let response = undefined;
+        if (accountType !== 'swap') {
+            const options = this.safeDict(this.options, 'accountsByType', {});
+            const parsedAccountType = this.safeString(options, accountType, accountType);
+            request['walletType'] = parsedAccountType;
+            //
+            //     {
+            //         "code": 200,
+            //         "message": "success",
+            //         "data": [
+            //             {
+            //                 "walletType": "spot",
+            //                 "asset": "USDC",
+            //                 "total": "100",
+            //                 "available": "100",
+            //                 "frozen": "0"
+            //             }
+            //         ],
+            //         "success": true
+            //     }
+            //
+            response = await this.privateGetV1AccountAssets(this.extend(request, params));
+        }
+        else {
+            let wallet = 'W001';
+            [wallet, params] = this.handleOptionAndParams(params, 'fetchBalance', 'wallet', wallet);
+            request['wallet'] = wallet;
+            //
+            //     {
+            //         "code": 200,
+            //         "message": "success",
+            //         "data": [
+            //             {
+            //                 "wallet": "W001",
+            //                 "asset": "USDT",
+            //                 "balance": "0",
+            //                 "frozen": "0",
+            //                 "positionMargin": "0",
+            //                 "availableBalance": "0",
+            //                 "canWithdrawAmount": "0",
+            //                 "bonusAmount": "0"
+            //             },
+            //             {
+            //                 "wallet": "W001",
+            //                 "asset": "USDC",
+            //                 "balance": "99.99505828",
+            //                 "frozen": "4.0024",
+            //                 "positionMargin": "2.95342",
+            //                 "availableBalance": "92.96020828",
+            //                 "canWithdrawAmount": "92.96020828",
+            //                 "bonusAmount": "0"
+            //             }
+            //         ],
+            //         "success": true
+            //     }
+            response = await this.privateGetV1SwapAccountBalance(this.extend(request, params));
+        }
+        const data = this.safeList(response, 'data', []);
+        return this.parseBalance(data);
+    }
+    parseBalance(response) {
+        const timestamp = this.milliseconds();
+        const result = {
+            'info': response,
+            'timestamp': timestamp,
+            'datetime': this.iso8601(timestamp),
+        };
+        for (let i = 0; i < response.length; i++) {
+            const balance = response[i];
+            const symbol = this.safeString(balance, 'asset');
+            const code = this.safeCurrencyCode(symbol);
+            const account = this.account();
+            account['total'] = this.safeString2(balance, 'total', 'balance');
+            account['free'] = this.safeString2(balance, 'available', 'availableBalance');
+            result[code] = account;
+        }
+        return this.safeBalance(result);
+    }
+    /**
+     * @method
+     * @name budfi#transfer
+     * @description transfer currency internally between wallets on the same account
+     * @see https://developers.bydfi.com/en/account#asset-transfer-between-accounts
+     * @param {string} code unified currency code
+     * @param {float} amount amount to transfer
+     * @param {string} fromAccount 'spot', 'funding', or 'swap'
+     * @param {string} toAccount 'spot', 'funding', or 'swap'
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object} a [transfer structure]{@link https://docs.ccxt.com/?id=transfer-structure}
+     */
+    async transfer(code, amount, fromAccount, toAccount, params = {}) {
+        await this.loadMarkets();
+        const currency = this.currency(code);
+        const accountsByType = this.safeDict(this.options, 'accountsByType', {});
+        const fromId = this.safeString(accountsByType, fromAccount, fromAccount);
+        const toId = this.safeString(accountsByType, toAccount, toAccount);
+        const request = {
+            'asset': currency['id'],
+            'amount': this.currencyToPrecision(code, amount),
+            'fromType': fromId,
+            'toType': toId,
+        };
+        const response = await this.privatePostV1AccountTransfer(this.extend(request, params));
+        //
+        //     {
+        //         "code": 200,
+        //         "message": "success",
+        //         "success": true
+        //     }
+        //
+        const transfer = this.parseTransfer(response, currency);
+        const transferOptions = this.safeDict(this.options, 'transfer', {});
+        const fillResponseFromRequest = this.safeBool(transferOptions, 'fillResponseFromRequest', true);
+        if (fillResponseFromRequest) {
+            const timestamp = this.milliseconds();
+            transfer['timestamp'] = timestamp;
+            transfer['datetime'] = this.iso8601(timestamp);
+            transfer['currency'] = code;
+            transfer['fromAccount'] = fromAccount;
+            transfer['toAccount'] = toAccount;
+            transfer['amount'] = amount;
+        }
+        return transfer;
+    }
+    /**
+     * @method
+     * @name bydfi#fetchTransfers
+     * @description fetch a history of internal transfers made on an account
+     * @see https://developers.bydfi.com/en/account#query-wallet-transfer-records
+     * @param {string} code unified currency code of the currency transferred
+     * @param {int} [since] the earliest time in ms to fetch transfers for
+     * @param {int} [limit] the maximum number of transfers structures to retrieve (default 10)
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {int} [params.until] the latest time in ms to fetch entries for
+     * @returns {object[]} a list of [transfer structures]{@link https://docs.ccxt.com/?id=transfer-structure}
+     */
+    async fetchTransfers(code = undefined, since = undefined, limit = undefined, params = {}) {
+        if (code === undefined) {
+            throw new _ccxt_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired(this.id + ' fetchTransfers() requires a code argument');
+        }
+        await this.loadMarkets();
+        const currency = this.currency(code);
+        const paginate = this.safeBool(params, 'paginate', false);
+        if (paginate) {
+            const maxLimit = 50;
+            params = this.omit(params, 'paginate');
+            params = this.extend(params, { 'paginationDirection': 'backward' });
+            const paginatedResponse = await this.fetchPaginatedCallDynamic('fetchTransfers', currency['code'], since, limit, params, maxLimit, true);
+            return this.sortBy(paginatedResponse, 'timestamp');
+        }
+        const request = {
+            'asset': currency['id'],
+        };
+        let until = undefined;
+        [until, params] = this.handleOptionAndParams2(params, 'fetchTransfers', 'until', 'endTime');
+        if (until === undefined) {
+            until = this.milliseconds(); // exchange requires endTime
+        }
+        if (since === undefined) {
+            since = 1; // exchange requires startTime but allows any value
+        }
+        request['startTime'] = since;
+        request['endTime'] = until;
+        if (limit !== undefined) {
+            request['rows'] = limit;
+        }
+        const response = await this.privateGetV1AccountTransferRecords(this.extend(request, params));
+        //
+        //     {
+        //         "code": 200,
+        //         "message": "success",
+        //         "data": [
+        //             {
+        //                 "orderId": "1209991065294581760",
+        //                 "txId": "6km5fRK83Gwdp43HA479DW1Colh2pKyS",
+        //                 "sourceWallet": "SPOT",
+        //                 "targetWallet": "SWAP",
+        //                 "asset": "USDC",
+        //                 "amount": "100",
+        //                 "status": "SUCCESS",
+        //                 "timestamp": 1766413950000
+        //             }
+        //         ],
+        //         "success": true
+        //     }
+        //
+        const data = this.safeList(response, 'data', []);
+        return this.parseTransfers(data, currency, since, limit);
+    }
+    parseTransfer(transfer, currency = undefined) {
+        //
+        // transfer
+        //     {
+        //         "code": 200,
+        //         "message": "success",
+        //         "success": true
+        //     }
+        //
+        // fetchTransfers
+        //     {
+        //         "orderId": "1209991065294581760",
+        //         "txId": "6km5fRK83Gwdp43HA479DW1Colh2pKyS",
+        //         "sourceWallet": "SPOT",
+        //         "targetWallet": "SWAP",
+        //         "asset": "USDC",
+        //         "amount": "100",
+        //         "status": "SUCCESS",
+        //         "timestamp": 1766413950000
+        //     }
+        //
+        const status = this.safeStringUpper2(transfer, 'message', 'status');
+        const accountsById = this.safeDict(this.options, 'accountsById', {});
+        const fromId = this.safeStringUpper(transfer, 'sourceWallet');
+        const toId = this.safeStringUpper(transfer, 'targetWallet');
+        const fromAccount = this.safeString(accountsById, fromId, fromId);
+        const toAccount = this.safeString(accountsById, toId, toId);
+        const timestamp = this.safeInteger(transfer, 'timestamp');
+        const currencyId = this.safeString(transfer, 'asset');
+        return {
+            'info': transfer,
+            'id': this.safeString(transfer, 'txId'),
+            'timestamp': timestamp,
+            'datetime': this.iso8601(timestamp),
+            'currency': this.safeCurrencyCode(currencyId, currency),
+            'amount': this.safeNumber(transfer, 'amount'),
+            'fromAccount': fromAccount,
+            'toAccount': toAccount,
+            'status': this.paraseTransferStatus(status),
+        };
+    }
+    paraseTransferStatus(status) {
+        const statuses = {
+            'SUCCESS': 'ok',
+            'WAIT': 'pending',
+            'FAILED': 'failed',
+        };
+        return this.safeString(statuses, status, status);
+    }
+    /**
+     * @method
+     * @name bydfi#fetchDeposits
+     * @description fetch all deposits made to an account
+     * @see https://developers.bydfi.com/en/spot/account#query-deposit-records
+     * @param {string} code unified currency code (mandatory)
+     * @param {int} [since] the earliest time in ms to fetch deposits for
+     * @param {int} [limit] the maximum number of deposits structures to retrieve
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object[]} a list of [transaction structures]{@link https://docs.ccxt.com/?id=transaction-structure}
+     */
+    async fetchDeposits(code = undefined, since = undefined, limit = undefined, params = {}) {
+        return await this.fetchTransactionsHelper('deposit', code, since, limit, params);
+    }
+    /**
+     * @method
+     * @name bydfi#fetchWithdrawals
+     * @description fetch all withdrawals made from an account
+     * @see https://developers.bydfi.com/en/spot/account#query-withdrawal-records
+     * @param {string} code unified currency code (mandatory)
+     * @param {int} [since] the earliest time in ms to fetch withdrawals for
+     * @param {int} [limit] the maximum number of withdrawal structures to retrieve
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object[]} a list of [transaction structures]{@link https://docs.ccxt.com/?id=transaction-structure}
+     */
+    async fetchWithdrawals(code = undefined, since = undefined, limit = undefined, params = {}) {
+        return await this.fetchTransactionsHelper('withdrawal', code, since, limit, params);
+    }
+    async fetchTransactionsHelper(type, code, since, limit, params) {
+        const methodName = (type === 'deposit') ? 'fetchDeposits' : 'fetchWithdrawals';
+        if (code === undefined) {
+            throw new _ccxt_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired(this.id + ' ' + methodName + '() requires a code argument');
+        }
+        await this.loadMarkets();
+        const currency = this.currency(code);
+        const paginate = this.safeBool(params, 'paginate', false);
+        if (paginate) {
+            const maxLimit = 50;
+            params = this.omit(params, 'paginate');
+            params = this.extend(params, { 'paginationDirection': 'backward' });
+            const paginatedResponse = await this.fetchPaginatedCallDynamic(methodName, currency['code'], since, limit, params, maxLimit, true);
+            return this.sortBy(paginatedResponse, 'timestamp');
+        }
+        const request = {
+            'asset': currency['id'],
+        };
+        let until = undefined;
+        [until, params] = this.handleOptionAndParams2(params, 'fetchTransfers', 'until', 'endTime');
+        const now = this.milliseconds();
+        const sevenDays = 7 * 24 * 60 * 60 * 1000; // the maximum range is 7 days
+        let startTime = since;
+        if (startTime === undefined) {
+            if (until === undefined) {
+                // both since and until are undefined
+                startTime = now - sevenDays;
+                until = now;
+            }
+            else {
+                // since is undefined but until is defined
+                startTime = until - sevenDays;
+            }
+        }
+        else if (until === undefined) {
+            // until is undefined but since is defined
+            const delta = now - startTime;
+            if (delta > sevenDays) {
+                until = startTime + sevenDays;
+            }
+            else {
+                until = now;
+            }
+        }
+        request['startTime'] = startTime;
+        request['endTime'] = until;
+        if (limit !== undefined) {
+            request['limit'] = limit;
+        }
+        let response = undefined;
+        if (type === 'deposit') {
+            //
+            //     {
+            //         "code": 200,
+            //         "message": "success",
+            //         "data": [
+            //             {
+            //                 "orderId": "1208864446987255809",
+            //                 "asset": "USDC",
+            //                 "amount": "200",
+            //                 "status": "SUCCESS",
+            //                 "txId": "0xd059a82a55ffc737722bd23c1ef3db2884ce8525b72ff0b3c038b430ce0c8ca5",
+            //                 "network": "ETH",
+            //                 "address": "0x8346b46f6aa9843c09f79f1c170a37aca83c8fcd",
+            //                 "addressTag": null,
+            //                 "finishTime": 1766145475000,
+            //                 "createTime": 1766145344000
+            //             }
+            //         ],
+            //         "success": true
+            //     }
+            //
+            response = await this.privateGetV1SpotDepositRecords(this.extend(request, params));
+        }
+        else {
+            //
+            // todo check after withdrawal
+            //
+            response = await this.privateGetV1SpotWithdrawRecords(this.extend(request, params));
+        }
+        const data = this.safeList(response, 'data', []);
+        const transactionParams = {
+            'type': type,
+        };
+        params = this.extend(params, transactionParams);
+        return this.parseTransactions(data, currency, since, limit, params);
+    }
+    parseTransaction(transaction, currency = undefined) {
+        //
+        // fetchDeposits
+        //     {
+        //         "orderId": "1208864446987255809",
+        //         "asset": "USDC",
+        //         "amount": "200",
+        //         "status": "SUCCESS",
+        //         "txId": "0xd059a82a55ffc737722bd23c1ef3db2884ce8525b72ff0b3c038b430ce0c8ca5",
+        //         "network": "ETH",
+        //         "address": "0x8346b46f6aa9843c09f79f1c170a37aca83c8fcd",
+        //         "addressTag": null,
+        //         "finishTime": 1766145475000,
+        //         "createTime": 1766145344000
+        //     }
+        //
+        const currencyId = this.safeString(transaction, 'asset');
+        const code = this.safeCurrencyCode(currencyId, currency);
+        const rawStatus = this.safeStringLower(transaction, 'status');
+        const timestamp = this.safeInteger(transaction, 'createTime');
+        let fee = undefined;
+        const feeCost = this.safeNumber(transaction, 'fee');
+        if (feeCost !== undefined) {
+            fee = {
+                'cost': feeCost,
+                'currency': undefined,
+            };
+        }
+        return {
+            'info': transaction,
+            'id': this.safeString(transaction, 'orderId'),
+            'txid': this.safeString(transaction, 'txId'),
+            'type': undefined,
+            'currency': code,
+            'network': this.networkIdToCode(this.safeString(transaction, 'network')),
+            'amount': this.safeNumber(transaction, 'amount'),
+            'status': this.parseTransactionStatus(rawStatus),
+            'timestamp': timestamp,
+            'datetime': this.iso8601(timestamp),
+            'address': this.safeString(transaction, 'address'),
+            'addressFrom': undefined,
+            'addressTo': undefined,
+            'tag': this.safeString(transaction, 'addressTag'),
+            'tagFrom': undefined,
+            'tagTo': undefined,
+            'updated': this.safeInteger(transaction, 'finishTime'),
+            'comment': undefined,
+            'fee': fee,
+            'internal': false,
+        };
+    }
+    parseTransactionStatus(status) {
+        const statuses = {
+            'success': 'ok',
+            'wait': 'pending',
+            'failed': 'failed',
+        };
+        return this.safeString(statuses, status, status);
+    }
+    sign(path, api = 'public', method = 'GET', params = {}, headers = undefined, body = undefined) {
+        let url = this.urls['api'][api];
+        let endpoint = '/' + path;
+        let query = '';
+        const sortedParams = this.keysort(params);
+        if (method === 'GET') {
+            query = this.urlencode(sortedParams);
+            if (query.length !== 0) {
+                endpoint += '?' + query;
+            }
+        }
+        if (api === 'private') {
+            this.checkRequiredCredentials();
+            const timestamp = this.milliseconds().toString();
+            if (method === 'GET') {
+                const payload = this.apiKey + timestamp + query;
+                const signature = this.hmac(this.encode(payload), this.encode(this.secret), _static_dependencies_noble_hashes_sha256_js__WEBPACK_IMPORTED_MODULE_4__/* .sha256 */ .s, 'hex');
+                headers = {
+                    'X-API-KEY': this.apiKey,
+                    'X-API-TIMESTAMP': timestamp,
+                    'X-API-SIGNATURE': signature,
+                };
+            }
+            else {
+                body = this.json(sortedParams);
+                const payload = this.apiKey + timestamp + body;
+                const signature = this.hmac(this.encode(payload), this.encode(this.secret), _static_dependencies_noble_hashes_sha256_js__WEBPACK_IMPORTED_MODULE_4__/* .sha256 */ .s, 'hex');
+                headers = {
+                    'Content-Type': 'application/json',
+                    'X-API-KEY': this.apiKey,
+                    'X-API-TIMESTAMP': timestamp,
+                    'X-API-SIGNATURE': signature,
+                };
+            }
+        }
+        url += endpoint;
+        return { 'url': url, 'method': method, 'body': body, 'headers': headers };
+    }
+    handleErrors(httpCode, reason, url, method, headers, body, response, requestHeaders, requestBody) {
+        if (response === undefined) {
+            return undefined; // fallback to default error handler
+        }
+        //
+        //     {
+        //         "code": 101107,
+        //         "message": "Requires transaction permissions"
+        //     }
+        //
+        const code = this.safeString(response, 'code');
+        const message = this.safeString(response, 'message');
+        if (code !== '200') {
+            const feedback = this.id + ' ' + body;
+            this.throwExactlyMatchedException(this.exceptions['exact'], message, feedback);
+            this.throwBroadlyMatchedException(this.exceptions['broad'], message, feedback);
+            this.throwExactlyMatchedException(this.exceptions['exact'], code, feedback);
+            throw new _ccxt_js__WEBPACK_IMPORTED_MODULE_2__.ExchangeError(feedback); // unknown message
         }
         return undefined;
     }
@@ -152399,7 +162072,7 @@ class cryptomus extends _abstract_cryptomus_js__WEBPACK_IMPORTED_MODULE_0__/* ["
                 'fetchConvertTradeHistory': false,
                 'fetchCrossBorrowRate': false,
                 'fetchCrossBorrowRates': false,
-                'fetchCurrencies': true,
+                'fetchCurrencies': false,
                 'fetchDepositAddress': false,
                 'fetchDeposits': false,
                 'fetchDepositsWithdrawals': false,
@@ -185823,6 +195496,24 @@ class gate extends _abstract_gate_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] 
         //
         //  {"user_id":10406147,"id":"id","succeeded":false,"message":"INVALID_PROTOCOL","label":"INVALID_PROTOCOL"}
         //
+        // cancel trigger order returns timestamps in ms
+        //   id: '2007047737421336576',
+        //   id_string: '2007047737421336576',
+        //   trigger_time: '0',
+        //   trade_id: '0',
+        //   trade_id_string: '',
+        //   status: 'finished',
+        //   finish_as: 'cancelled',
+        //   reason: '',
+        //   create_time: '1767352444402496'
+        //   finish_time: '1767352509535790',
+        //   is_stop_order: false,
+        //   stop_trigger: { rule: '0', trigger_price: '', order_price: '' },
+        //   me_order_id: '0',
+        //   me_order_id_string: '',
+        //   order_type: '',
+        //   in_dual_mode: false,
+        //   parent_id: '0',
         const succeeded = this.safeBool(order, 'succeeded', true);
         if (!succeeded) {
             // cancelOrders response
@@ -185865,13 +195556,33 @@ class gate extends _abstract_gate_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] 
             side = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringGt(amount, '0') ? 'buy' : 'sell';
         }
         const rawStatus = this.safeStringN(order, ['finish_as', 'status', 'open']);
-        let timestamp = this.safeInteger(order, 'create_time_ms');
-        if (timestamp === undefined) {
-            timestamp = this.safeTimestamp2(order, 'create_time', 'ctime');
+        let timestampStr = this.safeString(order, 'create_time_ms');
+        if (timestampStr === undefined) {
+            timestampStr = this.safeString2(order, 'create_time', 'ctime');
+            if (timestampStr !== undefined) {
+                if (timestampStr.length === 10 || timestampStr.indexOf('.') >= 0) {
+                    // ts in seconds, multiply to ms
+                    timestampStr = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringMul(timestampStr, '1000');
+                }
+                else if (timestampStr.length === 16) {
+                    // ts in microseconds, divide to ms
+                    timestampStr = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringDiv(timestampStr, '1000');
+                }
+            }
         }
-        let lastTradeTimestamp = this.safeInteger(order, 'update_time_ms');
-        if (lastTradeTimestamp === undefined) {
-            lastTradeTimestamp = this.safeTimestamp2(order, 'update_time', 'finish_time');
+        let lastTradeTimestampStr = this.safeString(order, 'update_time_ms');
+        if (lastTradeTimestampStr === undefined) {
+            lastTradeTimestampStr = this.safeString2(order, 'update_time', 'finish_time');
+            if (lastTradeTimestampStr !== undefined) {
+                if (lastTradeTimestampStr.length === 10 || lastTradeTimestampStr.indexOf('.') >= 0) {
+                    // ts in seconds, multiply to ms
+                    lastTradeTimestampStr = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringMul(lastTradeTimestampStr, '1000');
+                }
+                else if (lastTradeTimestampStr.length === 16) {
+                    // ts in microseconds, divide to ms
+                    lastTradeTimestampStr = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringDiv(lastTradeTimestampStr, '1000');
+                }
+            }
         }
         let marketType = 'contract';
         if (('currency_pair' in order) || ('market' in order)) {
@@ -185917,6 +195628,14 @@ class gate extends _abstract_gate_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] 
                 cost = amount;
                 amount = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringDiv(amount, averageString);
             }
+        }
+        let timestamp = undefined;
+        let lastTradeTimestamp = undefined;
+        if (timestampStr !== undefined) {
+            timestamp = this.parseToInt(timestampStr);
+        }
+        if (lastTradeTimestampStr !== undefined) {
+            lastTradeTimestamp = this.parseToInt(lastTradeTimestampStr);
         }
         return this.safeOrder({
             'id': this.safeString(order, 'id'),
@@ -203847,7 +213566,7 @@ class htx extends _abstract_htx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */
                 // },
                 'logo': 'https://user-images.githubusercontent.com/1294454/76137448-22748a80-604e-11ea-8069-6e389271911d.jpg',
                 'hostnames': {
-                    'contract': 'api.hbdm.com',
+                    'contract': 'api.hbdm.vn',
                     'spot': 'api.huobi.pro',
                     'status': {
                         'spot': 'status.huobigroup.com',
@@ -213987,17 +223706,24 @@ class hyperliquid extends _abstract_hyperliquid_js__WEBPACK_IMPORTED_MODULE_0__/
         let fetchDexesList = [];
         const options = this.safeDict(this.options, 'fetchMarkets', {});
         const hip3 = this.safeDict(options, 'hip3', {});
-        const dexesProvided = this.safeList(hip3, 'dexes'); // let users provide their own list of dexes to load
+        const dexesProvided = this.safeList(hip3, 'dexes', []); // let users provide their own list of dexes to load
         const maxLimit = this.safeInteger(hip3, 'limit', 10);
-        if (dexesProvided !== undefined) {
-            const userProvidedDexesLength = dexesProvided.length;
+        const userProvidedDexesLength = dexesProvided.length;
+        if (userProvidedDexesLength > 0) {
             if (userProvidedDexesLength > 0) {
                 fetchDexesList = dexesProvided;
             }
         }
         else {
+            const fetchDexesLength = fetchDexes.length;
             for (let i = 1; i < maxLimit; i++) {
+                if (i >= fetchDexesLength) {
+                    break;
+                }
                 const dex = this.safeDict(fetchDexes, i, {});
+                if (dex === undefined) {
+                    continue;
+                }
                 const dexName = this.safeString(dex, 'name');
                 fetchDexesList.push(dexName);
             }
@@ -214464,6 +224190,13 @@ class hyperliquid extends _abstract_hyperliquid_js__WEBPACK_IMPORTED_MODULE_0__/
             'info': market,
         });
     }
+    updateSpotCurrencyCode(code) {
+        if (code === undefined) {
+            return code;
+        }
+        const spotCurrencyMapping = this.safeDict(this.options, 'spotCurrencyMapping', {});
+        return this.safeString(spotCurrencyMapping, code, code);
+    }
     /**
      * @method
      * @name hyperliquid#fetchBalance
@@ -214531,7 +224264,8 @@ class hyperliquid extends _abstract_hyperliquid_js__WEBPACK_IMPORTED_MODULE_0__/
             const spotBalances = { 'info': response };
             for (let i = 0; i < balances.length; i++) {
                 const balance = balances[i];
-                const code = this.safeCurrencyCode(this.safeString(balance, 'coin'));
+                const unifiedCode = this.safeCurrencyCode(this.safeString(balance, 'coin'));
+                const code = isSpot ? this.updateSpotCurrencyCode(unifiedCode) : unifiedCode;
                 const account = this.account();
                 const total = this.safeString(balance, 'total');
                 const used = this.safeString(balance, 'hold');
@@ -224182,7 +233916,7 @@ class krakenfutures extends _abstract_krakenfutures_js__WEBPACK_IMPORTED_MODULE_
                 'cancelAllOrdersAfter': true,
                 'cancelOrder': true,
                 'cancelOrders': true,
-                'createMarketOrder': false,
+                'createMarketOrder': true,
                 'createOrder': true,
                 'createPostOnlyOrder': true,
                 'createReduceOnlyOrder': true,
@@ -224219,9 +233953,9 @@ class krakenfutures extends _abstract_krakenfutures_js__WEBPACK_IMPORTED_MODULE_
                 'fetchMyTrades': true,
                 'fetchOHLCV': true,
                 'fetchOpenOrders': true,
-                'fetchOrder': false,
+                'fetchOrder': true,
                 'fetchOrderBook': true,
-                'fetchOrders': false,
+                'fetchOrders': true,
                 'fetchPositions': true,
                 'fetchPremiumIndexOHLCV': false,
                 'fetchTickers': true,
@@ -224279,6 +234013,7 @@ class krakenfutures extends _abstract_krakenfutures_js__WEBPACK_IMPORTED_MODULE_
                         'pnlpreferences',
                         'assignmentprogram/current',
                         'assignmentprogram/history',
+                        'orders/status',
                     ],
                     'post': [
                         'sendorder',
@@ -224474,7 +234209,7 @@ class krakenfutures extends _abstract_krakenfutures_js__WEBPACK_IMPORTED_MODULE_
                         'symbolRequired': false,
                     },
                     'fetchOHLCV': {
-                        'limit': 5000,
+                        'limit': 2000,
                     },
                 },
                 'spot': undefined,
@@ -224873,27 +234608,27 @@ class krakenfutures extends _abstract_krakenfutures_js__WEBPACK_IMPORTED_MODULE_
         let paginate = false;
         [paginate, params] = this.handleOptionAndParams(params, 'fetchOHLCV', 'paginate');
         if (paginate) {
-            return await this.fetchPaginatedCallDeterministic('fetchOHLCV', symbol, since, limit, timeframe, params, 5000);
+            return await this.fetchPaginatedCallDeterministic('fetchOHLCV', symbol, since, limit, timeframe, params, 2000);
         }
         const request = {
             'symbol': market['id'],
             'price_type': this.safeString(params, 'price', 'trade'),
-            'interval': this.timeframes[timeframe],
+            'interval': this.safeString(this.timeframes, timeframe, timeframe),
         };
         params = this.omit(params, 'price');
         if (since !== undefined) {
             const duration = this.parseTimeframe(timeframe);
             request['from'] = this.parseToInt(since / 1000);
             if (limit === undefined) {
-                limit = 5000;
+                limit = 2000;
             }
-            limit = Math.min(limit, 5000);
+            limit = Math.min(limit, 2000);
             const toTimestamp = this.sum(request['from'], limit * duration - 1);
             const currentTimestamp = this.seconds();
             request['to'] = Math.min(toTimestamp, currentTimestamp);
         }
         else if (limit !== undefined) {
-            limit = Math.min(limit, 5000);
+            limit = Math.min(limit, 2000);
             const duration = this.parseTimeframe(timeframe);
             request['to'] = this.seconds();
             request['from'] = this.parseToInt(request['to'] - (duration * limit));
@@ -225603,6 +235338,49 @@ class krakenfutures extends _abstract_krakenfutures_js__WEBPACK_IMPORTED_MODULE_
         const response = await this.privateGetOpenorders(params);
         const orders = this.safeList(response, 'openOrders', []);
         return this.parseOrders(orders, market, since, limit);
+    }
+    /**
+     * @method
+     * @name krakenfutures#fetchOrders
+     * @see https://docs.kraken.com/api/docs/futures-api/trading/get-order-status/
+     * @description Gets all orders for an account from the exchange api
+     * @param {string} symbol Unified market symbol
+     * @param {int} [since] Timestamp (ms) of earliest order. (Not used by kraken api but filtered internally by CCXT)
+     * @param {int} [limit] How many orders to return. (Not used by kraken api but filtered internally by CCXT)
+     * @param {object} [params] Exchange specific parameters
+     * @returns An array of [order structures]{@link https://docs.ccxt.com/?id=order-structure}
+     */
+    async fetchOrders(symbol = undefined, since = undefined, limit = undefined, params = {}) {
+        await this.loadMarkets();
+        let market = undefined;
+        if (symbol !== undefined) {
+            market = this.market(symbol);
+        }
+        const response = await this.privateGetOrdersStatus(params);
+        const orders = this.safeList(response, 'orders', []);
+        return this.parseOrders(orders, market, since, limit);
+    }
+    /**
+     * @method
+     * @name krakenfutures#fetchOrder
+     * @description fetches information on an order made by the user
+     * @see https://docs.kraken.com/api/docs/futures-api/trading/get-order-status/
+     * @param {string} id the order id
+     * @param {string} symbol unified market symbol that the order was made in
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object} An [order structure]{@link https://docs.ccxt.com/?id=order-structure}
+     */
+    async fetchOrder(id, symbol = undefined, params = {}) {
+        await this.loadMarkets();
+        const request = {
+            'orderIds': [id],
+        };
+        const orders = await this.fetchOrders(undefined, undefined, undefined, this.extend(request, params));
+        const order = this.safeDict(orders, 0);
+        if (order === undefined) {
+            throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_1__.OrderNotFound(this.id + ' fetchOrder could not find order id ' + id);
+        }
+        return order;
     }
     /**
      * @method
@@ -227180,7 +236958,7 @@ class kucoin extends _abstract_kucoin_js__WEBPACK_IMPORTED_MODULE_0__/* ["defaul
                 'fetchTradingFee': true,
                 'fetchTradingFees': false,
                 'fetchTransactionFee': true,
-                'fetchTransfers': false,
+                'fetchTransfers': true,
                 'fetchWithdrawals': true,
                 'repayCrossMargin': true,
                 'repayIsolatedMargin': true,
@@ -227257,6 +237035,7 @@ class kucoin extends _abstract_kucoin_js__WEBPACK_IMPORTED_MODULE_0__/* ["defaul
                     'get': {
                         // account
                         'user-info': 30,
+                        'user/api-key': 30,
                         'accounts': 7.5,
                         'accounts/{accountId}': 7.5,
                         'accounts/ledgers': 3,
@@ -227341,6 +237120,8 @@ class kucoin extends _abstract_kucoin_js__WEBPACK_IMPORTED_MODULE_0__/* ["defaul
                         'convert/limit/orders': 5,
                         // affiliate
                         'affiliate/inviter/statistics': 30,
+                        // earn
+                        'earn/redeem-preview': 5, // 5EW
                     },
                     'post': {
                         // account
@@ -227599,6 +237380,8 @@ class kucoin extends _abstract_kucoin_js__WEBPACK_IMPORTED_MODULE_0__/* ["defaul
                     'Unsuccessful! Exceeded the max. funds out-transfer limit': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InsufficientFunds,
                     'The amount increment is invalid.': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest,
                     'The quantity is below the minimum requirement.': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidOrder,
+                    'not in the given range!': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest,
+                    'recAccountType not in the given range': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest,
                     '400': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest,
                     '401': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.AuthenticationError,
                     '403': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported,
@@ -227785,6 +237568,9 @@ class kucoin extends _abstract_kucoin_js__WEBPACK_IMPORTED_MODULE_0__/* ["defaul
                 },
                 'withdraw': {
                     'includeFee': false,
+                },
+                'transfer': {
+                    'fillResponseFromRequest': true,
                 },
                 // endpoint versions
                 'versions': {
@@ -231656,96 +241442,89 @@ class kucoin extends _abstract_kucoin_js__WEBPACK_IMPORTED_MODULE_0__/* ["defaul
      * @method
      * @name kucoin#transfer
      * @description transfer currency internally between wallets on the same account
-     * @see https://www.kucoin.com/docs/rest/funding/transfer/inner-transfer
-     * @see https://docs.kucoin.com/futures/#transfer-funds-to-kucoin-main-account-2
-     * @see https://docs.kucoin.com/spot-hf/#internal-funds-transfers-in-high-frequency-trading-accounts
+     * @see https://www.kucoin.com/docs-new/rest/account-info/transfer/flex-transfer?lang=en_US&
      * @param {string} code unified currency code
      * @param {float} amount amount to transfer
      * @param {string} fromAccount account to transfer from
      * @param {string} toAccount account to transfer to
      * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {string} [params.transferType] INTERNAL, PARENT_TO_SUB, SUB_TO_PARENT (default is INTERNAL)
+     * @param {string} [params.fromUserId] required if transferType is SUB_TO_PARENT
+     * @param {string} [params.toUserId] required if transferType is PARENT_TO_SUB
      * @returns {object} a [transfer structure]{@link https://docs.ccxt.com/?id=transfer-structure}
      */
     async transfer(code, amount, fromAccount, toAccount, params = {}) {
         await this.loadMarkets();
         const currency = this.currency(code);
         const requestedAmount = this.currencyToPrecision(code, amount);
+        const request = {
+            'currency': currency['id'],
+            'amount': requestedAmount,
+        };
+        let transferType = 'INTERNAL';
+        [transferType, params] = this.handleParamString2(params, 'transferType', 'type', transferType);
+        if (transferType === 'PARENT_TO_SUB') {
+            if (!('toUserId' in params)) {
+                throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.ExchangeError(this.id + ' transfer() requires a toUserId param for PARENT_TO_SUB transfers');
+            }
+        }
+        else if (transferType === 'SUB_TO_PARENT') {
+            if (!('fromUserId' in params)) {
+                throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.ExchangeError(this.id + ' transfer() requires a fromUserId param for SUB_TO_PARENT transfers');
+            }
+        }
+        if (!('clientOid' in params)) {
+            request['clientOid'] = this.uuid();
+        }
         let fromId = this.convertTypeToAccount(fromAccount);
         let toId = this.convertTypeToAccount(toAccount);
         const fromIsolated = this.inArray(fromId, this.ids);
         const toIsolated = this.inArray(toId, this.ids);
-        if (fromId === 'contract') {
-            if (toId !== 'main') {
-                throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.ExchangeError(this.id + ' transfer() only supports transferring from futures account to main account');
-            }
-            const request = {
-                'currency': currency['id'],
-                'amount': requestedAmount,
-            };
-            if (!('bizNo' in params)) {
-                // it doesn't like more than 24 characters
-                request['bizNo'] = this.uuid22();
-            }
-            const response = await this.futuresPrivatePostTransferOut(this.extend(request, params));
-            //
-            //     {
-            //         "code": "200000",
-            //         "data": {
-            //             "applyId": "605a87217dff1500063d485d",
-            //             "bizNo": "bcd6e5e1291f4905af84dc",
-            //             "payAccountType": "CONTRACT",
-            //             "payTag": "DEFAULT",
-            //             "remark": '',
-            //             "recAccountType": "MAIN",
-            //             "recTag": "DEFAULT",
-            //             "recRemark": '',
-            //             "recSystem": "KUCOIN",
-            //             "status": "PROCESSING",
-            //             "currency": "XBT",
-            //             "amount": "0.00001",
-            //             "fee": "0",
-            //             "sn": "573688685663948",
-            //             "reason": '',
-            //             "createdAt": 1616545569000,
-            //             "updatedAt": 1616545569000
-            //         }
-            //     }
-            //
-            const data = this.safeDict(response, 'data');
-            return this.parseTransfer(data, currency);
+        if (fromIsolated) {
+            request['fromAccountTag'] = fromId;
+            fromId = 'isolated';
         }
-        else {
-            const request = {
-                'currency': currency['id'],
-                'amount': requestedAmount,
-            };
-            if (fromIsolated || toIsolated) {
-                if (this.inArray(fromId, this.ids)) {
-                    request['fromTag'] = fromId;
-                    fromId = 'isolated';
-                }
-                if (this.inArray(toId, this.ids)) {
-                    request['toTag'] = toId;
-                    toId = 'isolated';
-                }
-            }
+        if (toIsolated) {
+            request['toAccountTag'] = toId;
+            toId = 'isolated';
+        }
+        const hfOrMining = this.isHfOrMining(fromId, toId);
+        let response = undefined;
+        if (hfOrMining) {
+            // new endpoint does not support hf and mining transfers
+            // use old endpoint for hf and mining transfers
             request['from'] = fromId;
             request['to'] = toId;
-            if (!('clientOid' in params)) {
-                request['clientOid'] = this.uuid();
-            }
-            const response = await this.privatePostAccountsInnerTransfer(this.extend(request, params));
+            response = await this.privatePostAccountsInnerTransfer(this.extend(request, params));
+        }
+        else {
+            request['type'] = transferType;
+            request['fromAccountType'] = fromId.toUpperCase();
+            request['toAccountType'] = toId.toUpperCase();
             //
             //     {
             //         "code": "200000",
             //         "data": {
-            //              "orderId": "605a6211e657f00006ad0ad6"
+            //             "orderId": "694fcb5b08bb1600015cda75"
             //         }
             //     }
             //
-            const data = this.safeDict(response, 'data');
-            return this.parseTransfer(data, currency);
+            response = await this.privatePostAccountsUniversalTransfer(this.extend(request, params));
         }
+        const data = this.safeDict(response, 'data');
+        const transfer = this.parseTransfer(data, currency);
+        const transferOptions = this.safeDict(this.options, 'transfer', {});
+        const fillResponseFromRequest = this.safeBool(transferOptions, 'fillResponseFromRequest', true);
+        if (fillResponseFromRequest) {
+            transfer['amount'] = amount;
+            transfer['fromAccount'] = fromAccount;
+            transfer['toAccount'] = toAccount;
+            transfer['status'] = 'ok';
+        }
+        return transfer;
+    }
+    isHfOrMining(fromId, toId) {
+        return (fromId === 'trade_hf' || toId === 'trade_hf' || fromId === 'pool' || toId === 'pool');
     }
     parseTransfer(transfer, currency = undefined) {
         //
@@ -231782,16 +241561,49 @@ class kucoin extends _abstract_kucoin_js__WEBPACK_IMPORTED_MODULE_0__/* ["defaul
         //         "updatedAt": 1616545569000
         //     }
         //
+        // ledger entry - from account ledgers API (for fetchTransfers)
+        //
+        // {
+        //     "id": "611a1e7c6a053300067a88d9",
+        //     "currency": "USDT",
+        //     "amount": "10.00059547",
+        //     "fee": "0",
+        //     "balance": "0",
+        //     "accountType": "MAIN",
+        //     "bizType": "Transfer",
+        //     "direction": "in",
+        //     "createdAt": 1629101692950,
+        //     "context": "{\"orderId\":\"611a1e7c6a053300067a88d9\"}"
+        // }
+        //
         const timestamp = this.safeInteger(transfer, 'createdAt');
         const currencyId = this.safeString(transfer, 'currency');
         const rawStatus = this.safeString(transfer, 'status');
-        const accountFromRaw = this.safeStringLower(transfer, 'payAccountType');
-        const accountToRaw = this.safeStringLower(transfer, 'recAccountType');
+        const bizType = this.safeString(transfer, 'bizType');
+        const isLedgerEntry = (bizType !== undefined);
+        let accountFromRaw = undefined;
+        let accountToRaw = undefined;
+        if (isLedgerEntry) {
+            // Ledger entry format: uses accountType + direction
+            const accountType = this.safeStringLower(transfer, 'accountType');
+            const direction = this.safeString(transfer, 'direction');
+            if (direction === 'out') {
+                accountFromRaw = accountType;
+            }
+            else if (direction === 'in') {
+                accountToRaw = accountType;
+            }
+        }
+        else {
+            // Transfer API format: uses payAccountType/recAccountType
+            accountFromRaw = this.safeStringLower(transfer, 'payAccountType');
+            accountToRaw = this.safeStringLower(transfer, 'recAccountType');
+        }
         const accountsByType = this.safeDict(this.options, 'accountsByType');
         const accountFrom = this.safeString(accountsByType, accountFromRaw, accountFromRaw);
         const accountTo = this.safeString(accountsByType, accountToRaw, accountToRaw);
         return {
-            'id': this.safeString2(transfer, 'applyId', 'orderId'),
+            'id': this.safeStringN(transfer, ['id', 'applyId', 'orderId']),
             'currency': this.safeCurrencyCode(currencyId, currency),
             'timestamp': timestamp,
             'datetime': this.iso8601(timestamp),
@@ -232883,6 +242695,79 @@ class kucoin extends _abstract_kucoin_js__WEBPACK_IMPORTED_MODULE_0__/* ["defaul
             throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.ExchangeError(feedback);
         }
         return undefined;
+    }
+    /**
+     * @method
+     * @name kucoin#fetchTransfers
+     * @description fetch a history of internal transfers made on an account
+     * @see https://www.kucoin.com/docs-new/rest/account-info/account-funding/get-account-ledgers-spot-margin
+     * @param {string} [code] unified currency code of the currency transferred
+     * @param {int} [since] the earliest time in ms to fetch transfers for
+     * @param {int} [limit] the maximum number of transfer structures to retrieve
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {int} [params.until] the latest time in ms to fetch transfers for
+     * @param {boolean} [params.paginate] default false, when true will automatically paginate by calling this endpoint multiple times. See in the docs all the [availble parameters](https://github.com/ccxt/ccxt/wiki/Manual#pagination-params)
+     * @returns {object[]} a list of [transfer structures]{@link https://docs.ccxt.com/?id=transfer-structure}
+     */
+    async fetchTransfers(code = undefined, since = undefined, limit = undefined, params = {}) {
+        await this.loadMarkets();
+        let paginate = false;
+        [paginate, params] = this.handleOptionAndParams(params, 'fetchTransfers', 'paginate');
+        if (paginate) {
+            return await this.fetchPaginatedCallDynamic('fetchTransfers', code, since, limit, params);
+        }
+        let request = {
+            'bizType': 'TRANSFER',
+        };
+        const until = this.safeInteger(params, 'until');
+        if (until !== undefined) {
+            params = this.omit(params, 'until');
+            request['endAt'] = until;
+        }
+        let currency = undefined;
+        if (code !== undefined) {
+            currency = this.currency(code);
+            request['currency'] = currency['id'];
+        }
+        if (since !== undefined) {
+            request['startAt'] = since;
+        }
+        if (limit !== undefined) {
+            request['pageSize'] = limit;
+        }
+        else {
+            request['pageSize'] = 500;
+        }
+        [request, params] = this.handleUntilOption('endAt', request, params);
+        const response = await this.privateGetAccountsLedgers(this.extend(request, params));
+        //
+        // {
+        //     "code": "200000",
+        //     "data": {
+        //         "currentPage": 1,
+        //         "pageSize": 50,
+        //         "totalNum": 1,
+        //         "totalPage": 1,
+        //         "items": [
+        //             {
+        //                 "id": "611a1e7c6a053300067a88d9",
+        //                 "currency": "USDT",
+        //                 "amount": "10.00059547",
+        //                 "fee": "0",
+        //                 "balance": "0",
+        //                 "accountType": "MAIN",
+        //                 "bizType": "Transfer",
+        //                 "direction": "in",
+        //                 "createdAt": 1629101692950,
+        //                 "context": "{\"orderId\":\"611a1e7c6a053300067a88d9\"}"
+        //             }
+        //         ]
+        //     }
+        // }
+        //
+        const data = this.safeDict(response, 'data', {});
+        const items = this.safeList(data, 'items', []);
+        return this.parseTransfers(items, currency, since, limit);
     }
 }
 
@@ -257349,1140 +267234,6 @@ class novadax extends _abstract_novadax_js__WEBPACK_IMPORTED_MODULE_0__/* ["defa
 
 /***/ }),
 
-/***/ 3805:
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   A: () => (/* binding */ oceanex)
-/* harmony export */ });
-/* harmony import */ var _abstract_oceanex_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7774);
-/* harmony import */ var _base_errors_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(2079);
-/* harmony import */ var _base_functions_number_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1579);
-/* harmony import */ var _static_dependencies_noble_hashes_sha256_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(4852);
-/* harmony import */ var _base_functions_rsa_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(5354);
-//  ---------------------------------------------------------------------------
-
-
-
-
-
-//  ---------------------------------------------------------------------------
-/**
- * @class oceanex
- * @augments Exchange
- */
-class oceanex extends _abstract_oceanex_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A {
-    describe() {
-        return this.deepExtend(super.describe(), {
-            'id': 'oceanex',
-            'name': 'OceanEx',
-            'countries': ['BS'],
-            'version': 'v1',
-            'rateLimit': 3000,
-            'urls': {
-                'logo': 'https://user-images.githubusercontent.com/1294454/58385970-794e2d80-8001-11e9-889c-0567cd79b78e.jpg',
-                'api': {
-                    'rest': 'https://api.oceanex.pro',
-                },
-                'www': 'https://www.oceanex.pro.com',
-                'doc': 'https://api.oceanex.pro/doc/v1',
-                'referral': 'https://oceanex.pro/signup?referral=VE24QX',
-            },
-            'has': {
-                'CORS': undefined,
-                'spot': true,
-                'margin': false,
-                'swap': undefined,
-                'future': undefined,
-                'option': undefined,
-                'cancelAllOrders': true,
-                'cancelOrder': true,
-                'cancelOrders': true,
-                'createMarketOrder': true,
-                'createOrder': true,
-                'fetchBalance': true,
-                'fetchBorrowRateHistories': false,
-                'fetchBorrowRateHistory': false,
-                'fetchClosedOrders': true,
-                'fetchCrossBorrowRate': false,
-                'fetchCrossBorrowRates': false,
-                'fetchCurrencies': false,
-                'fetchDepositAddress': 'emulated',
-                'fetchDepositAddresses': undefined,
-                'fetchDepositAddressesByNetwork': true,
-                'fetchFundingRateHistory': false,
-                'fetchFundingRates': false,
-                'fetchIsolatedBorrowRate': false,
-                'fetchIsolatedBorrowRates': false,
-                'fetchMarkets': true,
-                'fetchOHLCV': true,
-                'fetchOpenOrders': true,
-                'fetchOrder': true,
-                'fetchOrderBook': true,
-                'fetchOrderBooks': true,
-                'fetchOrders': true,
-                'fetchTicker': true,
-                'fetchTickers': true,
-                'fetchTime': true,
-                'fetchTrades': true,
-                'fetchTradingFee': false,
-                'fetchTradingFees': true,
-                'fetchTransactionFees': undefined,
-            },
-            'timeframes': {
-                '1m': '1',
-                '5m': '5',
-                '15m': '15',
-                '30m': '30',
-                '1h': '60',
-                '2h': '120',
-                '4h': '240',
-                '6h': '360',
-                '12h': '720',
-                '1d': '1440',
-                '3d': '4320',
-                '1w': '10080',
-            },
-            'api': {
-                'public': {
-                    'get': [
-                        'markets',
-                        'tickers/{pair}',
-                        'tickers_multi',
-                        'order_book',
-                        'order_book/multi',
-                        'fees/trading',
-                        'trades',
-                        'timestamp',
-                    ],
-                    'post': [
-                        'k',
-                    ],
-                },
-                'private': {
-                    'get': [
-                        'key',
-                        'members/me',
-                        'orders',
-                        'orders/filter',
-                    ],
-                    'post': [
-                        'orders',
-                        'orders/multi',
-                        'order/delete',
-                        'order/delete/multi',
-                        'orders/clear',
-                        '/withdraws/special/new',
-                        '/deposit_address',
-                        '/deposit_addresses',
-                        '/deposit_history',
-                        '/withdraw_history',
-                    ],
-                },
-            },
-            'fees': {
-                'trading': {
-                    'tierBased': false,
-                    'percentage': true,
-                    'maker': this.parseNumber('0.001'),
-                    'taker': this.parseNumber('0.001'),
-                },
-            },
-            'commonCurrencies': {
-                'PLA': 'Plair',
-            },
-            'precisionMode': _base_functions_number_js__WEBPACK_IMPORTED_MODULE_1__/* .TICK_SIZE */ .kb,
-            'features': {
-                'spot': {
-                    'sandbox': false,
-                    'createOrder': {
-                        'marginMode': false,
-                        'triggerPrice': true,
-                        'triggerDirection': true,
-                        'triggerPriceType': undefined,
-                        'stopLossPrice': false,
-                        'takeProfitPrice': false,
-                        'attachedStopLossTakeProfit': undefined,
-                        'timeInForce': {
-                            'IOC': false,
-                            'FOK': false,
-                            'PO': false,
-                            'GTD': false,
-                        },
-                        'hedged': false,
-                        'trailing': false,
-                        'leverage': false,
-                        'marketBuyByCost': false,
-                        'marketBuyRequiresPrice': false,
-                        'selfTradePrevention': false,
-                        'iceberg': false,
-                    },
-                    'createOrders': undefined,
-                    'fetchMyTrades': undefined,
-                    'fetchOrder': {
-                        'marginMode': false,
-                        'trigger': false,
-                        'trailing': false,
-                        'symbolRequired': false,
-                    },
-                    'fetchOpenOrders': {
-                        'marginMode': false,
-                        'limit': 100,
-                        'trigger': false,
-                        'trailing': false,
-                        'symbolRequired': false,
-                    },
-                    'fetchOrders': {
-                        'marginMode': false,
-                        'limit': 100,
-                        'daysBack': 100000,
-                        'untilDays': 100000,
-                        'trigger': false,
-                        'trailing': false,
-                        'symbolRequired': false,
-                    },
-                    'fetchClosedOrders': {
-                        'marginMode': false,
-                        'limit': 100,
-                        'daysBack': 100000,
-                        'daysBackCanceled': 1,
-                        'untilDays': 100000,
-                        'trigger': false,
-                        'trailing': false,
-                        'symbolRequired': false,
-                    },
-                    'fetchOHLCV': {
-                        'limit': 100,
-                    },
-                },
-                // todo implement swap
-                'swap': {
-                    'linear': undefined,
-                    'inverse': undefined,
-                },
-                'future': {
-                    'linear': undefined,
-                    'inverse': undefined,
-                },
-            },
-            'exceptions': {
-                'codes': {
-                    '-1': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest,
-                    '-2': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest,
-                    '1001': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest,
-                    '1004': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired,
-                    '1006': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.AuthenticationError,
-                    '1008': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.AuthenticationError,
-                    '1010': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.AuthenticationError,
-                    '1011': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.PermissionDenied,
-                    '2001': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.AuthenticationError,
-                    '2002': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidOrder,
-                    '2004': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.OrderNotFound,
-                    '9003': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.PermissionDenied,
-                },
-                'exact': {
-                    'market does not have a valid value': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest,
-                    'side does not have a valid value': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest,
-                    'Account::AccountError: Cannot lock funds': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InsufficientFunds,
-                    'The account does not exist': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.AuthenticationError,
-                },
-            },
-        });
-    }
-    /**
-     * @method
-     * @name oceanex#fetchMarkets
-     * @description retrieves data on all markets for oceanex
-     * @see https://api.oceanex.pro/doc/v1/#markets-post
-     * @param {object} [params] extra parameters specific to the exchange API endpoint
-     * @returns {object[]} an array of objects representing market data
-     */
-    async fetchMarkets(params = {}) {
-        const request = { 'show_details': true };
-        const response = await this.publicGetMarkets(this.extend(request, params));
-        //
-        //    {
-        //        "id": "xtzusdt",
-        //        "name": "XTZ/USDT",
-        //        "ask_precision": "8",
-        //        "bid_precision": "8",
-        //        "enabled": true,
-        //        "price_precision": "4",
-        //        "amount_precision": "3",
-        //        "usd_precision": "4",
-        //        "minimum_trading_amount": "1.0"
-        //    },
-        //
-        const markets = this.safeValue(response, 'data', []);
-        return this.parseMarkets(markets);
-    }
-    parseMarket(market) {
-        const id = this.safeValue(market, 'id');
-        const name = this.safeValue(market, 'name');
-        let [baseId, quoteId] = name.split('/');
-        const base = this.safeCurrencyCode(baseId);
-        const quote = this.safeCurrencyCode(quoteId);
-        baseId = baseId.toLowerCase();
-        quoteId = quoteId.toLowerCase();
-        const symbol = base + '/' + quote;
-        return {
-            'id': id,
-            'symbol': symbol,
-            'base': base,
-            'quote': quote,
-            'settle': undefined,
-            'baseId': baseId,
-            'quoteId': quoteId,
-            'settleId': undefined,
-            'type': 'spot',
-            'spot': true,
-            'margin': false,
-            'swap': false,
-            'future': false,
-            'option': false,
-            'active': undefined,
-            'contract': false,
-            'linear': undefined,
-            'inverse': undefined,
-            'contractSize': undefined,
-            'expiry': undefined,
-            'expiryDatetime': undefined,
-            'strike': undefined,
-            'optionType': undefined,
-            'precision': {
-                'amount': this.parseNumber(this.parsePrecision(this.safeString(market, 'amount_precision'))),
-                'price': this.parseNumber(this.parsePrecision(this.safeString(market, 'price_precision'))),
-            },
-            'limits': {
-                'leverage': {
-                    'min': undefined,
-                    'max': undefined,
-                },
-                'amount': {
-                    'min': undefined,
-                    'max': undefined,
-                },
-                'price': {
-                    'min': undefined,
-                    'max': undefined,
-                },
-                'cost': {
-                    'min': this.safeNumber(market, 'minimum_trading_amount'),
-                    'max': undefined,
-                },
-            },
-            'created': undefined,
-            'info': market,
-        };
-    }
-    /**
-     * @method
-     * @name oceanex#fetchTicker
-     * @description fetches a price ticker, a statistical calculation with the information calculated over the past 24 hours for a specific market
-     * @see https://api.oceanex.pro/doc/v1/#ticker-post
-     * @param {string} symbol unified symbol of the market to fetch the ticker for
-     * @param {object} [params] extra parameters specific to the exchange API endpoint
-     * @returns {object} a [ticker structure]{@link https://docs.ccxt.com/?id=ticker-structure}
-     */
-    async fetchTicker(symbol, params = {}) {
-        await this.loadMarkets();
-        const market = this.market(symbol);
-        const request = {
-            'pair': market['id'],
-        };
-        const response = await this.publicGetTickersPair(this.extend(request, params));
-        //
-        //     {
-        //         "code":0,
-        //         "message":"Operation successful",
-        //         "data": {
-        //             "at":1559431729,
-        //             "ticker": {
-        //                 "buy":"0.0065",
-        //                 "sell":"0.00677",
-        //                 "low":"0.00677",
-        //                 "high":"0.00677",
-        //                 "last":"0.00677",
-        //                 "vol":"2000.0"
-        //             }
-        //         }
-        //     }
-        //
-        const data = this.safeDict(response, 'data', {});
-        return this.parseTicker(data, market);
-    }
-    /**
-     * @method
-     * @name oceanex#fetchTickers
-     * @description fetches price tickers for multiple markets, statistical information calculated over the past 24 hours for each market
-     * @see https://api.oceanex.pro/doc/v1/#multiple-tickers-post
-     * @param {string[]|undefined} symbols unified symbols of the markets to fetch the ticker for, all market tickers are returned if not assigned
-     * @param {object} [params] extra parameters specific to the exchange API endpoint
-     * @returns {object} a dictionary of [ticker structures]{@link https://docs.ccxt.com/?id=ticker-structure}
-     */
-    async fetchTickers(symbols = undefined, params = {}) {
-        await this.loadMarkets();
-        symbols = this.marketSymbols(symbols);
-        if (symbols === undefined) {
-            symbols = this.symbols;
-        }
-        const marketIds = this.marketIds(symbols);
-        const request = { 'markets': marketIds };
-        const response = await this.publicGetTickersMulti(this.extend(request, params));
-        //
-        //     {
-        //         "code":0,
-        //         "message":"Operation successful",
-        //         "data": {
-        //             "at":1559431729,
-        //             "ticker": {
-        //                 "buy":"0.0065",
-        //                 "sell":"0.00677",
-        //                 "low":"0.00677",
-        //                 "high":"0.00677",
-        //                 "last":"0.00677",
-        //                 "vol":"2000.0"
-        //             }
-        //         }
-        //     }
-        //
-        const data = this.safeValue(response, 'data', []);
-        const result = {};
-        for (let i = 0; i < data.length; i++) {
-            const ticker = data[i];
-            const marketId = this.safeString(ticker, 'market');
-            const market = this.safeMarket(marketId);
-            const symbol = market['symbol'];
-            result[symbol] = this.parseTicker(ticker, market);
-        }
-        return this.filterByArrayTickers(result, 'symbol', symbols);
-    }
-    parseTicker(data, market = undefined) {
-        //
-        //         {
-        //             "at":1559431729,
-        //             "ticker": {
-        //                 "buy":"0.0065",
-        //                 "sell":"0.00677",
-        //                 "low":"0.00677",
-        //                 "high":"0.00677",
-        //                 "last":"0.00677",
-        //                 "vol":"2000.0"
-        //             }
-        //         }
-        //
-        const ticker = this.safeValue(data, 'ticker', {});
-        const timestamp = this.safeTimestamp(data, 'at');
-        const symbol = this.safeSymbol(undefined, market);
-        return this.safeTicker({
-            'symbol': symbol,
-            'timestamp': timestamp,
-            'datetime': this.iso8601(timestamp),
-            'high': this.safeString(ticker, 'high'),
-            'low': this.safeString(ticker, 'low'),
-            'bid': this.safeString(ticker, 'buy'),
-            'bidVolume': undefined,
-            'ask': this.safeString(ticker, 'sell'),
-            'askVolume': undefined,
-            'vwap': undefined,
-            'open': undefined,
-            'close': this.safeString(ticker, 'last'),
-            'last': this.safeString(ticker, 'last'),
-            'previousClose': undefined,
-            'change': undefined,
-            'percentage': undefined,
-            'average': undefined,
-            'baseVolume': this.safeString(ticker, 'volume'),
-            'quoteVolume': undefined,
-            'info': ticker,
-        }, market);
-    }
-    /**
-     * @method
-     * @name oceanex#fetchOrderBook
-     * @description fetches information on open orders with bid (buy) and ask (sell) prices, volumes and other data
-     * @see https://api.oceanex.pro/doc/v1/#order-book-post
-     * @param {string} symbol unified symbol of the market to fetch the order book for
-     * @param {int} [limit] the maximum amount of order book entries to return
-     * @param {object} [params] extra parameters specific to the exchange API endpoint
-     * @returns {object} A dictionary of [order book structures]{@link https://docs.ccxt.com/?id=order-book-structure} indexed by market symbols
-     */
-    async fetchOrderBook(symbol, limit = undefined, params = {}) {
-        await this.loadMarkets();
-        const market = this.market(symbol);
-        const request = {
-            'market': market['id'],
-        };
-        if (limit !== undefined) {
-            request['limit'] = limit;
-        }
-        const response = await this.publicGetOrderBook(this.extend(request, params));
-        //
-        //     {
-        //         "code":0,
-        //         "message":"Operation successful",
-        //         "data": {
-        //             "timestamp":1559433057,
-        //             "asks": [
-        //                 ["100.0","20.0"],
-        //                 ["4.74","2000.0"],
-        //                 ["1.74","4000.0"],
-        //             ],
-        //             "bids":[
-        //                 ["0.0065","5482873.4"],
-        //                 ["0.00649","4781956.2"],
-        //                 ["0.00648","2876006.8"],
-        //             ],
-        //         }
-        //     }
-        //
-        const orderbook = this.safeValue(response, 'data', {});
-        const timestamp = this.safeTimestamp(orderbook, 'timestamp');
-        return this.parseOrderBook(orderbook, symbol, timestamp);
-    }
-    /**
-     * @method
-     * @name oceanex#fetchOrderBooks
-     * @description fetches information on open orders with bid (buy) and ask (sell) prices, volumes and other data for multiple markets
-     * @see https://api.oceanex.pro/doc/v1/#multiple-order-books-post
-     * @param {string[]|undefined} symbols list of unified market symbols, all symbols fetched if undefined, default is undefined
-     * @param {int} [limit] max number of entries per orderbook to return, default is undefined
-     * @param {object} [params] extra parameters specific to the exchange API endpoint
-     * @returns {object} a dictionary of [order book structures]{@link https://docs.ccxt.com/?id=order-book-structure} indexed by market symbol
-     */
-    async fetchOrderBooks(symbols = undefined, limit = undefined, params = {}) {
-        await this.loadMarkets();
-        if (symbols === undefined) {
-            symbols = this.symbols;
-        }
-        const marketIds = this.marketIds(symbols);
-        const request = {
-            'markets': marketIds,
-        };
-        if (limit !== undefined) {
-            request['limit'] = limit;
-        }
-        const response = await this.publicGetOrderBookMulti(this.extend(request, params));
-        //
-        //     {
-        //         "code":0,
-        //         "message":"Operation successful",
-        //         "data": [
-        //             {
-        //                 "timestamp":1559433057,
-        //                 "market": "bagvet",
-        //                 "asks": [
-        //                     ["100.0","20.0"],
-        //                     ["4.74","2000.0"],
-        //                     ["1.74","4000.0"],
-        //                 ],
-        //                 "bids":[
-        //                     ["0.0065","5482873.4"],
-        //                     ["0.00649","4781956.2"],
-        //                     ["0.00648","2876006.8"],
-        //                 ],
-        //             },
-        //             ...,
-        //         ],
-        //     }
-        //
-        const data = this.safeValue(response, 'data', []);
-        const result = {};
-        for (let i = 0; i < data.length; i++) {
-            const orderbook = data[i];
-            const marketId = this.safeString(orderbook, 'market');
-            const symbol = this.safeSymbol(marketId);
-            const timestamp = this.safeTimestamp(orderbook, 'timestamp');
-            result[symbol] = this.parseOrderBook(orderbook, symbol, timestamp);
-        }
-        return result;
-    }
-    /**
-     * @method
-     * @name oceanex#fetchTrades
-     * @description get the list of most recent trades for a particular symbol
-     * @see https://api.oceanex.pro/doc/v1/#trades-post
-     * @param {string} symbol unified symbol of the market to fetch trades for
-     * @param {int} [since] timestamp in ms of the earliest trade to fetch
-     * @param {int} [limit] the maximum amount of trades to fetch
-     * @param {object} [params] extra parameters specific to the exchange API endpoint
-     * @returns {Trade[]} a list of [trade structures]{@link https://docs.ccxt.com/?id=public-trades}
-     */
-    async fetchTrades(symbol, since = undefined, limit = undefined, params = {}) {
-        await this.loadMarkets();
-        const market = this.market(symbol);
-        const request = {
-            'market': market['id'],
-        };
-        if (limit !== undefined) {
-            request['limit'] = Math.min(limit, 1000);
-        }
-        const response = await this.publicGetTrades(this.extend(request, params));
-        //
-        //      {
-        //          "code":0,
-        //          "message":"Operation successful",
-        //          "data": [
-        //              {
-        //                  "id":220247666,
-        //                  "price":"3098.62",
-        //                  "volume":"0.00196",
-        //                  "funds":"6.0732952",
-        //                  "market":"ethusdt",
-        //                  "created_at":"2022-04-19T19:03:15Z",
-        //                  "created_on":1650394994,
-        //                  "side":"bid"
-        //              },
-        //          ]
-        //      }
-        //
-        const data = this.safeList(response, 'data');
-        return this.parseTrades(data, market, since, limit);
-    }
-    parseTrade(trade, market = undefined) {
-        //
-        // fetchTrades (public)
-        //
-        //      {
-        //          "id":220247666,
-        //          "price":"3098.62",
-        //          "volume":"0.00196",
-        //          "funds":"6.0732952",
-        //          "market":"ethusdt",
-        //          "created_at":"2022-04-19T19:03:15Z",
-        //          "created_on":1650394995,
-        //          "side":"bid"
-        //      }
-        //
-        let side = this.safeValue(trade, 'side');
-        if (side === 'bid') {
-            side = 'buy';
-        }
-        else if (side === 'ask') {
-            side = 'sell';
-        }
-        const marketId = this.safeValue(trade, 'market');
-        const symbol = this.safeSymbol(marketId, market);
-        let timestamp = this.safeTimestamp(trade, 'created_on');
-        if (timestamp === undefined) {
-            timestamp = this.parse8601(this.safeString(trade, 'created_at'));
-        }
-        const priceString = this.safeString(trade, 'price');
-        const amountString = this.safeString(trade, 'volume');
-        return this.safeTrade({
-            'info': trade,
-            'timestamp': timestamp,
-            'datetime': this.iso8601(timestamp),
-            'symbol': symbol,
-            'id': this.safeString(trade, 'id'),
-            'order': undefined,
-            'type': 'limit',
-            'takerOrMaker': undefined,
-            'side': side,
-            'price': priceString,
-            'amount': amountString,
-            'cost': undefined,
-            'fee': undefined,
-        }, market);
-    }
-    /**
-     * @method
-     * @name oceanex#fetchTime
-     * @description fetches the current integer timestamp in milliseconds from the exchange server
-     * @see https://api.oceanex.pro/doc/v1/#api-server-time-post
-     * @param {object} [params] extra parameters specific to the exchange API endpoint
-     * @returns {int} the current integer timestamp in milliseconds from the exchange server
-     */
-    async fetchTime(params = {}) {
-        const response = await this.publicGetTimestamp(params);
-        //
-        //     {"code":0,"message":"Operation successful","data":1559433420}
-        //
-        return this.safeTimestamp(response, 'data');
-    }
-    /**
-     * @method
-     * @name oceanex#fetchTradingFees
-     * @description fetch the trading fees for multiple markets
-     * @see https://api.oceanex.pro/doc/v1/#trading-fees-post
-     * @param {object} [params] extra parameters specific to the exchange API endpoint
-     * @returns {object} a dictionary of [fee structures]{@link https://docs.ccxt.com/?id=fee-structure} indexed by market symbols
-     */
-    async fetchTradingFees(params = {}) {
-        const response = await this.publicGetFeesTrading(params);
-        const data = this.safeValue(response, 'data', []);
-        const result = {};
-        for (let i = 0; i < data.length; i++) {
-            const group = data[i];
-            const maker = this.safeValue(group, 'ask_fee', {});
-            const taker = this.safeValue(group, 'bid_fee', {});
-            const marketId = this.safeString(group, 'market');
-            const symbol = this.safeSymbol(marketId);
-            result[symbol] = {
-                'info': group,
-                'symbol': symbol,
-                'maker': this.safeNumber(maker, 'value'),
-                'taker': this.safeNumber(taker, 'value'),
-                'percentage': true,
-            };
-        }
-        return result;
-    }
-    async fetchKey(params = {}) {
-        const response = await this.privateGetKey(params);
-        return this.safeValue(response, 'data');
-    }
-    parseBalance(response) {
-        const data = this.safeValue(response, 'data');
-        const balances = this.safeValue(data, 'accounts', []);
-        const result = { 'info': response };
-        for (let i = 0; i < balances.length; i++) {
-            const balance = balances[i];
-            const currencyId = this.safeValue(balance, 'currency');
-            const code = this.safeCurrencyCode(currencyId);
-            const account = this.account();
-            account['free'] = this.safeString(balance, 'balance');
-            account['used'] = this.safeString(balance, 'locked');
-            result[code] = account;
-        }
-        return this.safeBalance(result);
-    }
-    /**
-     * @method
-     * @name oceanex#fetchBalance
-     * @description query for balance and get the amount of funds available for trading or funds locked in orders
-     * @see https://api.oceanex.pro/doc/v1/#account-info-post
-     * @param {object} [params] extra parameters specific to the exchange API endpoint
-     * @returns {object} a [balance structure]{@link https://docs.ccxt.com/?id=balance-structure}
-     */
-    async fetchBalance(params = {}) {
-        await this.loadMarkets();
-        const response = await this.privateGetMembersMe(params);
-        return this.parseBalance(response);
-    }
-    /**
-     * @method
-     * @name oceanex#createOrder
-     * @description create a trade order
-     * @see https://api.oceanex.pro/doc/v1/#new-order-post
-     * @param {string} symbol unified symbol of the market to create an order in
-     * @param {string} type 'market' or 'limit'
-     * @param {string} side 'buy' or 'sell'
-     * @param {float} amount how much of currency you want to trade in units of base currency
-     * @param {float} [price] the price at which the order is to be fulfilled, in units of the quote currency, ignored in market orders
-     * @param {object} [params] extra parameters specific to the exchange API endpoint
-     * @returns {object} an [order structure]{@link https://docs.ccxt.com/?id=order-structure}
-     */
-    async createOrder(symbol, type, side, amount, price = undefined, params = {}) {
-        await this.loadMarkets();
-        const market = this.market(symbol);
-        const request = {
-            'market': market['id'],
-            'side': side,
-            'ord_type': type,
-            'volume': this.amountToPrecision(symbol, amount),
-        };
-        if (type === 'limit') {
-            request['price'] = this.priceToPrecision(symbol, price);
-        }
-        const response = await this.privatePostOrders(this.extend(request, params));
-        const data = this.safeDict(response, 'data');
-        return this.parseOrder(data, market);
-    }
-    /**
-     * @method
-     * @name oceanex#fetchOrder
-     * @description fetches information on an order made by the user
-     * @see https://api.oceanex.pro/doc/v1/#order-status-get
-     * @param {string} id order id
-     * @param {string} symbol unified symbol of the market the order was made in
-     * @param {object} [params] extra parameters specific to the exchange API endpoint
-     * @returns {object} An [order structure]{@link https://docs.ccxt.com/?id=order-structure}
-     */
-    async fetchOrder(id, symbol = undefined, params = {}) {
-        await this.loadMarkets();
-        let market = undefined;
-        if (symbol !== undefined) {
-            market = this.market(symbol);
-        }
-        const ids = [id];
-        const request = { 'ids': ids };
-        const response = await this.privateGetOrders(this.extend(request, params));
-        const data = this.safeValue(response, 'data');
-        const dataLength = data.length;
-        if (data === undefined) {
-            throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.OrderNotFound(this.id + ' could not found matching order');
-        }
-        if (Array.isArray(id)) {
-            const orders = this.parseOrders(data, market);
-            return orders[0];
-        }
-        if (dataLength === 0) {
-            throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.OrderNotFound(this.id + ' could not found matching order');
-        }
-        return this.parseOrder(data[0], market);
-    }
-    /**
-     * @method
-     * @name oceanex#fetchOpenOrders
-     * @description fetch all unfilled currently open orders
-     * @see https://api.oceanex.pro/doc/v1/#order-status-get
-     * @param {string} symbol unified market symbol
-     * @param {int} [since] the earliest time in ms to fetch open orders for
-     * @param {int} [limit] the maximum number of  open orders structures to retrieve
-     * @param {object} [params] extra parameters specific to the exchange API endpoint
-     * @returns {Order[]} a list of [order structures]{@link https://docs.ccxt.com/?id=order-structure}
-     */
-    async fetchOpenOrders(symbol = undefined, since = undefined, limit = undefined, params = {}) {
-        const request = {
-            'states': ['wait'],
-        };
-        return await this.fetchOrders(symbol, since, limit, this.extend(request, params));
-    }
-    /**
-     * @method
-     * @name oceanex#fetchClosedOrders
-     * @description fetches information on multiple closed orders made by the user
-     * @see https://api.oceanex.pro/doc/v1/#order-status-get
-     * @param {string} symbol unified market symbol of the market orders were made in
-     * @param {int} [since] the earliest time in ms to fetch orders for
-     * @param {int} [limit] the maximum number of order structures to retrieve
-     * @param {object} [params] extra parameters specific to the exchange API endpoint
-     * @returns {Order[]} a list of [order structures]{@link https://docs.ccxt.com/?id=order-structure}
-     */
-    async fetchClosedOrders(symbol = undefined, since = undefined, limit = undefined, params = {}) {
-        const request = {
-            'states': ['done', 'cancel'],
-        };
-        return await this.fetchOrders(symbol, since, limit, this.extend(request, params));
-    }
-    /**
-     * @method
-     * @name oceanex#fetchOrders
-     * @description fetches information on multiple orders made by the user
-     * @see https://api.oceanex.pro/doc/v1/#order-status-with-filters-post
-     * @param {string} symbol unified market symbol of the market orders were made in
-     * @param {int} [since] the earliest time in ms to fetch orders for
-     * @param {int} [limit] the maximum number of order structures to retrieve
-     * @param {object} [params] extra parameters specific to the exchange API endpoint
-     * @returns {Order[]} a list of [order structures]{@link https://docs.ccxt.com/?id=order-structure}
-     */
-    async fetchOrders(symbol = undefined, since = undefined, limit = undefined, params = {}) {
-        if (symbol === undefined) {
-            throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired(this.id + ' fetchOrders() requires a symbol argument');
-        }
-        await this.loadMarkets();
-        const market = this.market(symbol);
-        const states = this.safeValue(params, 'states', ['wait', 'done', 'cancel']);
-        const query = this.omit(params, 'states');
-        const request = {
-            'market': market['id'],
-            'states': states,
-            'need_price': 'True',
-        };
-        if (limit !== undefined) {
-            request['limit'] = limit;
-        }
-        const response = await this.privateGetOrdersFilter(this.extend(request, query));
-        const data = this.safeValue(response, 'data', []);
-        let result = [];
-        for (let i = 0; i < data.length; i++) {
-            const orders = this.safeValue(data[i], 'orders', []);
-            const status = this.parseOrderStatus(this.safeValue(data[i], 'state'));
-            const parsedOrders = this.parseOrders(orders, market, since, limit, { 'status': status });
-            result = this.arrayConcat(result, parsedOrders);
-        }
-        return result;
-    }
-    parseOHLCV(ohlcv, market = undefined) {
-        // [
-        //    1559232000,
-        //    8889.22,
-        //    9028.52,
-        //    8889.22,
-        //    9028.52
-        //    0.3121
-        // ]
-        return [
-            this.safeTimestamp(ohlcv, 0),
-            this.safeNumber(ohlcv, 1),
-            this.safeNumber(ohlcv, 2),
-            this.safeNumber(ohlcv, 3),
-            this.safeNumber(ohlcv, 4),
-            this.safeNumber(ohlcv, 5),
-        ];
-    }
-    /**
-     * @method
-     * @name oceanex#fetchOHLCV
-     * @description fetches historical candlestick data containing the open, high, low, and close price, and the volume of a market
-     * @see https://api.oceanex.pro/doc/v1/#k-line-post
-     * @param {string} symbol unified symbol of the market to fetch OHLCV data for
-     * @param {string} timeframe the length of time each candle represents
-     * @param {int} [since] timestamp in ms of the earliest candle to fetch
-     * @param {int} [limit] the maximum amount of candles to fetch
-     * @param {object} [params] extra parameters specific to the exchange API endpoint
-     * @returns {int[][]} A list of candles ordered as timestamp, open, high, low, close, volume
-     */
-    async fetchOHLCV(symbol, timeframe = '1m', since = undefined, limit = undefined, params = {}) {
-        await this.loadMarkets();
-        const market = this.market(symbol);
-        const request = {
-            'market': market['id'],
-            'period': this.safeString(this.timeframes, timeframe, timeframe),
-        };
-        if (since !== undefined) {
-            request['timestamp'] = since;
-        }
-        if (limit !== undefined) {
-            request['limit'] = Math.min(limit, 10000);
-        }
-        const response = await this.publicPostK(this.extend(request, params));
-        const ohlcvs = this.safeList(response, 'data', []);
-        return this.parseOHLCVs(ohlcvs, market, timeframe, since, limit);
-    }
-    parseOrder(order, market = undefined) {
-        //
-        //     {
-        //         "created_at": "2019-01-18T00:38:18Z",
-        //         "trades_count": 0,
-        //         "remaining_volume": "0.2",
-        //         "price": "1001.0",
-        //         "created_on": "1547771898",
-        //         "side": "buy",
-        //         "volume": "0.2",
-        //         "state": "wait",
-        //         "ord_type": "limit",
-        //         "avg_price": "0.0",
-        //         "executed_volume": "0.0",
-        //         "id": 473797,
-        //         "market": "veteth"
-        //     }
-        //
-        const status = this.parseOrderStatus(this.safeValue(order, 'state'));
-        const marketId = this.safeString2(order, 'market', 'market_id');
-        const symbol = this.safeSymbol(marketId, market);
-        let timestamp = this.safeTimestamp(order, 'created_on');
-        if (timestamp === undefined) {
-            timestamp = this.parse8601(this.safeString(order, 'created_at'));
-        }
-        const price = this.safeString(order, 'price');
-        const average = this.safeString(order, 'avg_price');
-        const amount = this.safeString(order, 'volume');
-        const remaining = this.safeString(order, 'remaining_volume');
-        const filled = this.safeString(order, 'executed_volume');
-        return this.safeOrder({
-            'info': order,
-            'id': this.safeString(order, 'id'),
-            'clientOrderId': undefined,
-            'timestamp': timestamp,
-            'datetime': this.iso8601(timestamp),
-            'lastTradeTimestamp': undefined,
-            'symbol': symbol,
-            'type': this.safeValue(order, 'ord_type'),
-            'timeInForce': undefined,
-            'postOnly': undefined,
-            'side': this.safeValue(order, 'side'),
-            'price': price,
-            'triggerPrice': undefined,
-            'average': average,
-            'amount': amount,
-            'remaining': remaining,
-            'filled': filled,
-            'status': status,
-            'cost': undefined,
-            'trades': undefined,
-            'fee': undefined,
-        }, market);
-    }
-    parseOrderStatus(status) {
-        const statuses = {
-            'wait': 'open',
-            'done': 'closed',
-            'cancel': 'canceled',
-        };
-        return this.safeString(statuses, status, status);
-    }
-    /**
-     * @method
-     * @name oceanex#cancelOrder
-     * @description cancels an open order
-     * @see https://api.oceanex.pro/doc/v1/#cancel-order-post
-     * @param {string} id order id
-     * @param {string} symbol not used by oceanex cancelOrder ()
-     * @param {object} [params] extra parameters specific to the exchange API endpoint
-     * @returns {object} An [order structure]{@link https://docs.ccxt.com/?id=order-structure}
-     */
-    async cancelOrder(id, symbol = undefined, params = {}) {
-        await this.loadMarkets();
-        const response = await this.privatePostOrderDelete(this.extend({ 'id': id }, params));
-        const data = this.safeDict(response, 'data');
-        return this.parseOrder(data);
-    }
-    /**
-     * @method
-     * @name oceanex#cancelOrders
-     * @description cancel multiple orders
-     * @see https://api.oceanex.pro/doc/v1/#cancel-multiple-orders-post
-     * @param {string[]} ids order ids
-     * @param {string} symbol not used by oceanex cancelOrders ()
-     * @param {object} [params] extra parameters specific to the exchange API endpoint
-     * @returns {object} an list of [order structures]{@link https://docs.ccxt.com/?id=order-structure}
-     */
-    async cancelOrders(ids, symbol = undefined, params = {}) {
-        await this.loadMarkets();
-        const response = await this.privatePostOrderDeleteMulti(this.extend({ 'ids': ids }, params));
-        const data = this.safeList(response, 'data');
-        return this.parseOrders(data);
-    }
-    /**
-     * @method
-     * @name oceanex#cancelAllOrders
-     * @description cancel all open orders
-     * @see https://api.oceanex.pro/doc/v1/#cancel-all-orders-post
-     * @param {string} symbol unified market symbol, only orders in the market of this symbol are cancelled when symbol is not undefined
-     * @param {object} [params] extra parameters specific to the exchange API endpoint
-     * @returns {object[]} a list of [order structures]{@link https://docs.ccxt.com/?id=order-structure}
-     */
-    async cancelAllOrders(symbol = undefined, params = {}) {
-        await this.loadMarkets();
-        const response = await this.privatePostOrdersClear(params);
-        const data = this.safeList(response, 'data');
-        return this.parseOrders(data);
-    }
-    /**
-     * @method
-     * @name oceanex#fetchDepositAddressesByNetwork
-     * @description fetch the deposit addresses for a currency associated with this account
-     * @see https://api.oceanex.pro/doc/v1/#deposit-addresses-post
-     * @param {string} code unified currency code
-     * @param {object} [params] extra parameters specific to the exchange API endpoint
-     * @returns {object} a dictionary [address structures]{@link https://docs.ccxt.com/?id=address-structure}, indexed by the network
-     */
-    async fetchDepositAddressesByNetwork(code, params = {}) {
-        await this.loadMarkets();
-        const currency = this.currency(code);
-        const request = {
-            'currency': currency['id'],
-        };
-        const response = await this.privatePostDepositAddresses(this.extend(request, params));
-        //
-        //    {
-        //        code: '0',
-        //        message: 'Operation successful',
-        //        data: {
-        //          data: {
-        //            currency_id: 'usdt',
-        //            display_name: 'USDT',
-        //            num_of_resources: '3',
-        //            resources: [
-        //              {
-        //                chain_name: 'TRC20',
-        //                currency_id: 'usdt',
-        //                address: 'TPcS7VgKMFmpRrWY82GbJzDeMnemWxEbpg',
-        //                memo: '',
-        //                deposit_status: 'enabled'
-        //              },
-        //              ...
-        //            ]
-        //          }
-        //        }
-        //    }
-        //
-        const data = this.safeDict(response, 'data', {});
-        const data2 = this.safeDict(data, 'data', {});
-        const resources = this.safeList(data2, 'resources', []);
-        const result = {};
-        for (let i = 0; i < resources.length; i++) {
-            const resource = resources[i];
-            const enabled = this.safeString(resource, 'deposit_status');
-            if (enabled === 'enabled') {
-                const parsedAddress = this.parseDepositAddress(resource, currency);
-                result[parsedAddress['currency']] = parsedAddress;
-            }
-        }
-        return result;
-    }
-    parseDepositAddress(depositAddress, currency = undefined) {
-        //
-        //    {
-        //        chain_name: 'TRC20',
-        //        currency_id: 'usdt',
-        //        address: 'TPcS7VgKMFmpRrWY82GbJzDeMnemWxEbpg',
-        //        memo: '',
-        //        deposit_status: 'enabled'
-        //    }
-        //
-        const address = this.safeString(depositAddress, 'address');
-        this.checkAddress(address);
-        const currencyId = this.safeString(depositAddress, 'currency_id');
-        const networkId = this.safeString(depositAddress, 'chain_name');
-        return {
-            'info': depositAddress,
-            'currency': this.safeCurrencyCode(currencyId, currency),
-            'network': this.networkIdToCode(networkId),
-            'address': address,
-            'tag': this.safeString(depositAddress, 'memo'),
-        };
-    }
-    sign(path, api = 'public', method = 'GET', params = {}, headers = undefined, body = undefined) {
-        let url = this.urls['api']['rest'] + '/' + this.version + '/' + this.implodeParams(path, params);
-        const query = this.omit(params, this.extractParams(path));
-        if (api === 'public') {
-            if (path === 'tickers_multi' || path === 'order_book/multi') {
-                let request = '?';
-                const markets = this.safeValue(params, 'markets');
-                for (let i = 0; i < markets.length; i++) {
-                    request += 'markets[]=' + markets[i] + '&';
-                }
-                const limit = this.safeValue(params, 'limit');
-                if (limit !== undefined) {
-                    request += 'limit=' + limit;
-                }
-                url += request;
-            }
-            else if (Object.keys(query).length) {
-                url += '?' + this.urlencode(query);
-            }
-        }
-        else if (api === 'private') {
-            this.checkRequiredCredentials();
-            const request = {
-                'uid': this.apiKey,
-                'data': query,
-            };
-            // to set the private key:
-            // const fs = require ('fs')
-            // exchange.secret = fs.readFileSync ('oceanex.pem', 'utf8')
-            const jwt_token = (0,_base_functions_rsa_js__WEBPACK_IMPORTED_MODULE_3__/* .jwt */ .a)(request, this.encode(this.secret), _static_dependencies_noble_hashes_sha256_js__WEBPACK_IMPORTED_MODULE_4__/* .sha256 */ .s, true);
-            url += '?user_jwt=' + jwt_token;
-        }
-        headers = { 'Content-Type': 'application/json' };
-        return { 'url': url, 'method': method, 'body': body, 'headers': headers };
-    }
-    handleErrors(code, reason, url, method, headers, body, response, requestHeaders, requestBody) {
-        //
-        //     {"code":1011,"message":"This IP 'x.x.x.x' is not allowed","data":{}}
-        //
-        if (response === undefined) {
-            return undefined;
-        }
-        const errorCode = this.safeString(response, 'code');
-        const message = this.safeString(response, 'message');
-        if ((errorCode !== undefined) && (errorCode !== '0')) {
-            const feedback = this.id + ' ' + body;
-            this.throwExactlyMatchedException(this.exceptions['codes'], errorCode, feedback);
-            this.throwExactlyMatchedException(this.exceptions['exact'], message, feedback);
-            throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.ExchangeError(feedback);
-        }
-        return undefined;
-    }
-}
-
-
-/***/ }),
-
 /***/ 3660:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -261502,6 +270253,9 @@ class okx extends _abstract_okx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */
     }
     createOrderRequest(symbol, type, side, amount, price = undefined, params = {}) {
         const market = this.market(symbol);
+        const takeProfitPrice = this.safeValue2(params, 'takeProfitPrice', 'tpTriggerPx');
+        const stopLossPrice = this.safeValue2(params, 'stopLossPrice', 'slTriggerPx');
+        const conditional = (stopLossPrice !== undefined) || (takeProfitPrice !== undefined) || (type === 'conditional');
         let request = {
             'instId': market['id'],
             // 'ccy': currency['id'], // only applicable to cross MARGIN orders in single-currency margin
@@ -261512,7 +270266,7 @@ class okx extends _abstract_okx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */
             'ordType': type,
             // 'ordType': type, // privatePostTradeOrder: market, limit, post_only, fok, ioc, optimal_limit_ioc
             // 'ordType': type, // privatePostTradeOrderAlgo: conditional, oco, trigger, move_order_stop, iceberg, twap
-            'sz': this.amountToPrecision(symbol, amount),
+            // 'sz': this.amountToPrecision (symbol, amount),
             // 'px': this.priceToPrecision (symbol, price), // limit orders only
             // 'reduceOnly': false,
             //
@@ -261528,14 +270282,20 @@ class okx extends _abstract_okx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */
             // 'slTriggerPxType': 'last', // Conditional default is last, mark or index (conditional orders)
             // 'slOrdPx': 10, // Order price for Stop-Loss orders, if -1 will be executed at market price (conditional orders)
         };
+        const isConditionalOrOCO = conditional || (type === 'oco');
+        const closeFraction = this.safeString(params, 'closeFraction');
+        const shouldOmitSize = isConditionalOrOCO && closeFraction !== undefined;
+        if (!shouldOmitSize) {
+            request['sz'] = this.amountToPrecision(symbol, amount);
+        }
         const spot = market['spot'];
         const contract = market['contract'];
         const triggerPrice = this.safeValueN(params, ['triggerPrice', 'stopPrice', 'triggerPx']);
         const timeInForce = this.safeString(params, 'timeInForce', 'GTC');
-        const takeProfitPrice = this.safeValue2(params, 'takeProfitPrice', 'tpTriggerPx');
+        // const takeProfitPrice = this.safeValue2 (params, 'takeProfitPrice', 'tpTriggerPx');
         const tpOrdPx = this.safeValue(params, 'tpOrdPx', price);
         const tpTriggerPxType = this.safeString(params, 'tpTriggerPxType', 'last');
-        const stopLossPrice = this.safeValue2(params, 'stopLossPrice', 'slTriggerPx');
+        // const stopLossPrice = this.safeValue2 (params, 'stopLossPrice', 'slTriggerPx');
         const slOrdPx = this.safeValue(params, 'slOrdPx', price);
         const slTriggerPxType = this.safeString(params, 'slTriggerPxType', 'last');
         const clientOrderId = this.safeString2(params, 'clOrdId', 'clientOrderId');
@@ -261548,7 +270308,7 @@ class okx extends _abstract_okx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */
         const trailingPrice = this.safeString2(params, 'trailingPrice', 'callbackSpread');
         const isTrailingPriceOrder = trailingPrice !== undefined;
         const trigger = (triggerPrice !== undefined) || (type === 'trigger');
-        const isReduceOnly = this.safeValue(params, 'reduceOnly', false);
+        const isReduceOnly = this.safeValue(params, 'reduceOnly', false) || (closeFraction !== undefined);
         const defaultMarginMode = this.safeString2(this.options, 'defaultMarginMode', 'marginMode', 'cross');
         let marginMode = this.safeString2(params, 'marginMode', 'tdMode'); // cross or isolated, tdMode not ommited so as to be extended into the request
         let margin = false;
@@ -261603,7 +270363,7 @@ class okx extends _abstract_okx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */
         params = this.omit(params, ['currency', 'ccy', 'marginMode', 'timeInForce', 'stopPrice', 'triggerPrice', 'clientOrderId', 'stopLossPrice', 'takeProfitPrice', 'slOrdPx', 'tpOrdPx', 'margin', 'stopLoss', 'takeProfit', 'trailingPercent']);
         const ioc = (timeInForce === 'IOC') || (type === 'ioc');
         const fok = (timeInForce === 'FOK') || (type === 'fok');
-        const conditional = (stopLossPrice !== undefined) || (takeProfitPrice !== undefined) || (type === 'conditional');
+        // const conditional = (stopLossPrice !== undefined) || (takeProfitPrice !== undefined) || (type === 'conditional');
         const marketIOC = (isMarketOrder && ioc) || (type === 'optimal_limit_ioc');
         const defaultTgtCcy = this.safeString(this.options, 'tgtCcy', 'base_ccy');
         const tgtCcy = this.safeString(params, 'tgtCcy', defaultTgtCcy);
@@ -288023,7 +296783,7 @@ class apex extends _apex_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A {
             await client.send({ 'args': [timeStamp.toString()], 'op': 'pong' });
         }
         catch (e) {
-            const error = new _base_errors_js__WEBPACK_IMPORTED_MODULE_1__.NetworkError(this.id + ' handlePing failed with error ' + this.json(e));
+            const error = new _base_errors_js__WEBPACK_IMPORTED_MODULE_1__.NetworkError(this.id + ' handlePing failed with error ' + this.exceptionMessage(e));
             client.reset(error);
         }
     }
@@ -288038,7 +296798,7 @@ class apex extends _apex_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A {
         //
         //   { pong: 1653296711335 }
         //
-        client.lastPong = this.safeInteger(message, 'pong');
+        client.lastPong = this.safeInteger(message, 'pong', this.milliseconds());
         return message;
     }
     handlePing(client, message) {
@@ -289812,7 +298572,7 @@ class ascendex extends _ascendex_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] *
             await client.send({ 'op': 'pong', 'hp': this.safeInteger(message, 'hp') });
         }
         catch (e) {
-            const error = new _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.NetworkError(this.id + ' handlePing failed with error ' + this.json(e));
+            const error = new _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.NetworkError(this.id + ' handlePing failed with error ' + this.exceptionMessage(e));
             client.reset(error);
         }
     }
@@ -289844,6 +298604,1059 @@ class ascendex extends _ascendex_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] *
             client.subscriptions[messageHash] = future;
         }
         return future;
+    }
+}
+
+
+/***/ }),
+
+/***/ 1273:
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   A: () => (/* binding */ aster)
+/* harmony export */ });
+/* harmony import */ var _aster_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4521);
+/* harmony import */ var _base_errors_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2079);
+/* harmony import */ var _base_ws_Cache_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(2931);
+//  ---------------------------------------------------------------------------
+
+
+
+//  ---------------------------------------------------------------------------
+class aster extends _aster_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A {
+    describe() {
+        return this.deepExtend(super.describe(), {
+            'has': {
+                'ws': true,
+                'watchBalance': false,
+                'watchBidsAsks': true,
+                'watchTicker': true,
+                'watchTickers': true,
+                'watchMarkPrice': true,
+                'watchMarkPrices': true,
+                'watchTrades': true,
+                'watchTradesForSymbols': true,
+                'watchOrderBook': true,
+                'watchOrderBookForSymbols': true,
+                'watchOHLCV': true,
+                'watchOHLCVForSymbols': true,
+                'unWatchTicker': true,
+                'unWatchTickers': true,
+                'unWatchMarkPrice': true,
+                'unWatchMarkPrices': true,
+                'unWatchBidsAsks': true,
+                'unWatchTrades': true,
+                'unWatchTradesForSymbols': true,
+                'unWatchOrderBook': true,
+                'unWatchOrderBookForSymbols': true,
+                'unWatchOHLCV': true,
+                'unWatchOHLCVForSymbols': true,
+            },
+            'urls': {
+                'api': {
+                    'ws': {
+                        'spot': 'wss://sstream.asterdex.com/stream',
+                        'swap': 'wss://fstream.asterdex.com/stream',
+                    },
+                },
+            },
+            'options': {},
+            'streaming': {},
+            'exceptions': {},
+        });
+    }
+    getAccountTypeFromSubscriptions(subscriptions) {
+        let accountType = '';
+        for (let i = 0; i < subscriptions.length; i++) {
+            const subscription = subscriptions[i];
+            if ((subscription === 'spot') || (subscription === 'swap')) {
+                accountType = subscription;
+                break;
+            }
+        }
+        return accountType;
+    }
+    /**
+     * @method
+     * @name aster#watchTicker
+     * @description watches a price ticker, a statistical calculation with the information calculated over the past 24 hours for a specific market
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-spot-api.md#full-ticker-per-symbol
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-futures-api.md#individual-symbol-ticker-streams
+     * @param {string} symbol unified symbol of the market to fetch the ticker for
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object} a [ticker structure]{@link https://docs.ccxt.com/#/?id=ticker-structure}
+     */
+    async watchTicker(symbol, params = {}) {
+        params['callerMethodName'] = 'watchTicker';
+        await this.loadMarkets();
+        symbol = this.safeSymbol(symbol);
+        const tickers = await this.watchTickers([symbol], params);
+        return tickers[symbol];
+    }
+    /**
+     * @method
+     * @name aster#unWatchTicker
+     * @description unWatches a price ticker
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-spot-api.md#full-ticker-per-symbol
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-futures-api.md#individual-symbol-ticker-streams
+     * @param {string} symbol unified symbol of the market to fetch the ticker for
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object} a [ticker structure]{@link https://docs.ccxt.com/#/?id=ticker-structure}
+     */
+    async unWatchTicker(symbol, params = {}) {
+        params['callerMethodName'] = 'unWatchTicker';
+        return await this.unWatchTickers([symbol], params);
+    }
+    /**
+     * @method
+     * @name aster#watchTickers
+     * @description watches a price ticker, a statistical calculation with the information calculated over the past 24 hours for all markets of a specific list
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-spot-api.md#full-ticker-per-symbol
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-futures-api.md#individual-symbol-ticker-streams
+     * @param {string[]} symbols unified symbol of the market to fetch the ticker for
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object} a [ticker structure]{@link https://docs.ccxt.com/#/?id=ticker-structure}
+     */
+    async watchTickers(symbols = undefined, params = {}) {
+        await this.loadMarkets();
+        symbols = this.marketSymbols(symbols, undefined, true, true, true);
+        const firstMarket = this.getMarketFromSymbols(symbols);
+        const type = this.safeString(firstMarket, 'type', 'swap');
+        const symbolsLength = symbols.length;
+        let methodName = undefined;
+        [methodName, params] = this.handleParamString(params, 'callerMethodName', 'watchTickers');
+        params = this.omit(params, 'callerMethodName');
+        if (symbolsLength === 0) {
+            throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_1__.ArgumentsRequired(this.id + ' ' + methodName + '() requires a non-empty array of symbols');
+        }
+        const url = this.urls['api']['ws'][type];
+        const subscriptionArgs = [];
+        const messageHashes = [];
+        const request = {
+            'method': 'SUBSCRIBE',
+            'params': subscriptionArgs,
+        };
+        for (let i = 0; i < symbols.length; i++) {
+            const symbol = symbols[i];
+            const market = this.market(symbol);
+            subscriptionArgs.push(this.safeStringLower(market, 'id') + '@ticker');
+            messageHashes.push('ticker:' + market['symbol']);
+        }
+        const newTicker = await this.watchMultiple(url, messageHashes, this.extend(request, params), [type]);
+        if (this.newUpdates) {
+            const result = {};
+            result[newTicker['symbol']] = newTicker;
+            return result;
+        }
+        return this.filterByArray(this.tickers, 'symbol', symbols);
+    }
+    /**
+     * @method
+     * @name aster#unWatchTickers
+     * @description unWatches a price ticker, a statistical calculation with the information calculated over the past 24 hours for all markets of a specific list
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-spot-api.md#full-ticker-per-symbol
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-futures-api.md#individual-symbol-ticker-streams
+     * @param {string[]} symbols unified symbol of the market to fetch the ticker for
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object} a [ticker structure]{@link https://docs.ccxt.com/#/?id=ticker-structure}
+     */
+    async unWatchTickers(symbols = undefined, params = {}) {
+        await this.loadMarkets();
+        symbols = this.marketSymbols(symbols, undefined, true, true, true);
+        const firstMarket = this.getMarketFromSymbols(symbols);
+        const type = this.safeString(firstMarket, 'type', 'swap');
+        const symbolsLength = symbols.length;
+        let methodName = undefined;
+        [methodName, params] = this.handleParamString(params, 'callerMethodName', 'unWatchTickers');
+        params = this.omit(params, 'callerMethodName');
+        if (symbolsLength === 0) {
+            throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_1__.ArgumentsRequired(this.id + ' ' + methodName + '() requires a non-empty array of symbols');
+        }
+        const url = this.urls['api']['ws'][type];
+        const subscriptionArgs = [];
+        const messageHashes = [];
+        const request = {
+            'method': 'UNSUBSCRIBE',
+            'params': subscriptionArgs,
+        };
+        for (let i = 0; i < symbols.length; i++) {
+            const symbol = symbols[i];
+            const market = this.market(symbol);
+            subscriptionArgs.push(this.safeStringLower(market, 'id') + '@ticker');
+            messageHashes.push('unsubscribe:ticker:' + market['symbol']);
+        }
+        return await this.watchMultiple(url, messageHashes, this.extend(request, params), [type]);
+    }
+    /**
+     * @method
+     * @name aster#watchMarkPrice
+     * @description watches a mark price for a specific market
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-futures-api.md#mark-price-stream
+     * @param {string} symbol unified symbol of the market to fetch the ticker for
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {boolean} [params.use1sFreq] *default is true* if set to true, the mark price will be updated every second, otherwise every 3 seconds
+     * @returns {object} a [ticker structure]{@link https://docs.ccxt.com/#/?id=ticker-structure}
+     */
+    async watchMarkPrice(symbol, params = {}) {
+        params['callerMethodName'] = 'watchMarkPrice';
+        await this.loadMarkets();
+        symbol = this.safeSymbol(symbol);
+        const tickers = await this.watchMarkPrices([symbol], params);
+        return tickers[symbol];
+    }
+    /**
+     * @method
+     * @name aster#unWatchMarkPrice
+     * @description unWatches a mark price for a specific market
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-futures-api.md#mark-price-stream
+     * @param {string} symbol unified symbol of the market to fetch the ticker for
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {boolean} [params.use1sFreq] *default is true* if set to true, the mark price will be updated every second, otherwise every 3 seconds
+     * @returns {object} a [ticker structure]{@link https://docs.ccxt.com/#/?id=ticker-structure}
+     */
+    async unWatchMarkPrice(symbol, params = {}) {
+        params['callerMethodName'] = 'unWatchMarkPrice';
+        return await this.unWatchMarkPrices([symbol], params);
+    }
+    /**
+     * @method
+     * @name aster#watchMarkPrices
+     * @description watches the mark price for all markets
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-futures-api.md#mark-price-stream
+     * @param {string[]} symbols unified symbol of the market to fetch the ticker for
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {boolean} [params.use1sFreq] *default is true* if set to true, the mark price will be updated every second, otherwise every 3 seconds
+     * @returns {object} a [ticker structure]{@link https://docs.ccxt.com/#/?id=ticker-structure}
+     */
+    async watchMarkPrices(symbols = undefined, params = {}) {
+        await this.loadMarkets();
+        symbols = this.marketSymbols(symbols, undefined, true, true, true);
+        const firstMarket = this.getMarketFromSymbols(symbols);
+        const type = this.safeString(firstMarket, 'type', 'swap');
+        const symbolsLength = symbols.length;
+        let methodName = undefined;
+        [methodName, params] = this.handleParamString(params, 'callerMethodName', 'watchMarkPrices');
+        params = this.omit(params, 'callerMethodName');
+        if (symbolsLength === 0) {
+            throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_1__.ArgumentsRequired(this.id + ' ' + methodName + '() requires a non-empty array of symbols');
+        }
+        const url = this.urls['api']['ws'][type];
+        const subscriptionArgs = [];
+        const messageHashes = [];
+        const request = {
+            'method': 'SUBSCRIBE',
+            'params': subscriptionArgs,
+        };
+        const use1sFreq = this.safeBool(params, 'use1sFreq', true);
+        for (let i = 0; i < symbols.length; i++) {
+            const symbol = symbols[i];
+            const market = this.market(symbol);
+            const suffix = (use1sFreq) ? '@1s' : '';
+            subscriptionArgs.push(this.safeStringLower(market, 'id') + '@markPrice' + suffix);
+            messageHashes.push('ticker:' + market['symbol']);
+        }
+        const newTicker = await this.watchMultiple(url, messageHashes, this.extend(request, params), [type]);
+        if (this.newUpdates) {
+            const result = {};
+            result[newTicker['symbol']] = newTicker;
+            return result;
+        }
+        return this.filterByArray(this.tickers, 'symbol', symbols);
+    }
+    /**
+     * @method
+     * @name aster#unWatchMarkPrices
+     * @description watches the mark price for all markets
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-futures-api.md#mark-price-stream
+     * @param {string[]} symbols unified symbol of the market to fetch the ticker for
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {boolean} [params.use1sFreq] *default is true* if set to true, the mark price will be updated every second, otherwise every 3 seconds
+     * @returns {object} a [ticker structure]{@link https://docs.ccxt.com/#/?id=ticker-structure}
+     */
+    async unWatchMarkPrices(symbols = undefined, params = {}) {
+        await this.loadMarkets();
+        symbols = this.marketSymbols(symbols, undefined, true, true, true);
+        const firstMarket = this.getMarketFromSymbols(symbols);
+        const type = this.safeString(firstMarket, 'type', 'swap');
+        const symbolsLength = symbols.length;
+        let methodName = undefined;
+        [methodName, params] = this.handleParamString(params, 'callerMethodName', 'unWatchMarkPrices');
+        params = this.omit(params, 'callerMethodName');
+        if (symbolsLength === 0) {
+            throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_1__.ArgumentsRequired(this.id + ' ' + methodName + '() requires a non-empty array of symbols');
+        }
+        const url = this.urls['api']['ws'][type];
+        const subscriptionArgs = [];
+        const messageHashes = [];
+        const request = {
+            'method': 'UNSUBSCRIBE',
+            'params': subscriptionArgs,
+        };
+        const use1sFreq = this.safeBool(params, 'use1sFreq', true);
+        for (let i = 0; i < symbols.length; i++) {
+            const symbol = symbols[i];
+            const market = this.market(symbol);
+            const suffix = (use1sFreq) ? '@1s' : '';
+            subscriptionArgs.push(this.safeStringLower(market, 'id') + '@markPrice' + suffix);
+            messageHashes.push('unsubscribe:ticker:' + market['symbol']);
+        }
+        return await this.watchMultiple(url, messageHashes, this.extend(request, params), [type]);
+    }
+    handleTicker(client, message) {
+        //
+        //     {
+        //         "stream": "trumpusdt@ticker",
+        //         "data": {
+        //             "e": "24hrTicker",
+        //             "E": 1754451187277,
+        //             "s": "CAKEUSDT",
+        //             "p": "-0.08800",
+        //             "P": "-3.361",
+        //             "w": "2.58095",
+        //             "c": "2.53000",
+        //             "Q": "5",
+        //             "o": "2.61800",
+        //             "h": "2.64700",
+        //             "l": "2.52400",
+        //             "v": "15775",
+        //             "q": "40714.46000",
+        //             "O": 1754364780000,
+        //             "C": 1754451187274,
+        //             "F": 6571389,
+        //             "L": 6574507,
+        //             "n": 3119
+        //         }
+        //     }
+        //     {
+        //         "stream": "btcusdt@markPrice",
+        //         "data": {
+        //             "e": "markPriceUpdate",
+        //             "E": 1754660466000,
+        //             "s": "BTCUSDT",
+        //             "p": "116809.60000000",
+        //             "P": "116595.54012838",
+        //             "i": "116836.93534884",
+        //             "r": "0.00010000",
+        //             "T": 1754668800000
+        //         }
+        //     }
+        //
+        const subscriptions = client.subscriptions;
+        const subscriptionsKeys = Object.keys(subscriptions);
+        const marketType = this.getAccountTypeFromSubscriptions(subscriptionsKeys);
+        const ticker = this.safeDict(message, 'data');
+        const parsed = this.parseWsTicker(ticker, marketType);
+        const symbol = parsed['symbol'];
+        const messageHash = 'ticker:' + symbol;
+        this.tickers[symbol] = parsed;
+        client.resolve(this.tickers[symbol], messageHash);
+    }
+    parseWsTicker(message, marketType) {
+        const event = this.safeString(message, 'e');
+        const part = event.split('@');
+        const channel = this.safeString(part, 1);
+        const marketId = this.safeString(message, 's');
+        const timestamp = this.safeInteger(message, 'E');
+        const market = this.safeMarket(marketId, undefined, undefined, marketType);
+        const last = this.safeString(message, 'c');
+        if (channel === 'markPriceUpdate') {
+            return this.safeTicker({
+                'symbol': market['symbol'],
+                'timestamp': timestamp,
+                'datetime': this.iso8601(timestamp),
+                'info': message,
+                'markPrice': this.safeString(message, 'p'),
+                'indexPrice': this.safeString(message, 'i'),
+            });
+        }
+        return this.safeTicker({
+            'symbol': market['symbol'],
+            'timestamp': timestamp,
+            'datetime': this.iso8601(timestamp),
+            'high': this.safeString(message, 'h'),
+            'low': this.safeString(message, 'l'),
+            'bid': undefined,
+            'bidVolume': undefined,
+            'ask': undefined,
+            'askVolume': undefined,
+            'vwap': this.safeString(message, 'w'),
+            'open': this.safeString(message, 'o'),
+            'close': last,
+            'last': last,
+            'previousClose': undefined,
+            'change': this.safeString(message, 'p'),
+            'percentage': this.safeString(message, 'P'),
+            'average': undefined,
+            'baseVolume': this.safeString(message, 'v'),
+            'quoteVolume': this.safeString(message, 'q'),
+            'info': message,
+        }, market);
+    }
+    /**
+     * @method
+     * @name aster#watchBidsAsks
+     * @description watches best bid & ask for symbols
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-spot-api.md#best-order-book-information-by-symbol
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-futures-api.md#individual-symbol-book-ticker-streams
+     * @param {string[]} symbols unified symbol of the market to fetch the ticker for
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object} a [ticker structure]{@link https://docs.ccxt.com/#/?id=ticker-structure}
+     */
+    async watchBidsAsks(symbols = undefined, params = {}) {
+        await this.loadMarkets();
+        symbols = this.marketSymbols(symbols, undefined, true, true, true);
+        const firstMarket = this.getMarketFromSymbols(symbols);
+        const type = this.safeString(firstMarket, 'type', 'swap');
+        const symbolsLength = symbols.length;
+        if (symbolsLength === 0) {
+            throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_1__.ArgumentsRequired(this.id + ' watchBidsAsks() requires a non-empty array of symbols');
+        }
+        const url = this.urls['api']['ws'][type];
+        const subscriptionArgs = [];
+        const messageHashes = [];
+        const request = {
+            'method': 'SUBSCRIBE',
+            'params': subscriptionArgs,
+        };
+        for (let i = 0; i < symbols.length; i++) {
+            const symbol = symbols[i];
+            const market = this.market(symbol);
+            subscriptionArgs.push(this.safeStringLower(market, 'id') + '@bookTicker');
+            messageHashes.push('bidask:' + market['symbol']);
+        }
+        const newTicker = await this.watchMultiple(url, messageHashes, this.extend(request, params), [type]);
+        if (this.newUpdates) {
+            const result = {};
+            result[newTicker['symbol']] = newTicker;
+            return result;
+        }
+        return this.filterByArray(this.bidsasks, 'symbol', symbols);
+    }
+    /**
+     * @method
+     * @name aster#unWatchBidsAsks
+     * @description unWatches best bid & ask for symbols
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-spot-api.md#best-order-book-information-by-symbol
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-futures-api.md#individual-symbol-book-ticker-streams
+     * @param {string[]} symbols unified symbol of the market to fetch the ticker for
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object} a [ticker structure]{@link https://docs.ccxt.com/#/?id=ticker-structure}
+     */
+    async unWatchBidsAsks(symbols = undefined, params = {}) {
+        await this.loadMarkets();
+        symbols = this.marketSymbols(symbols, undefined, true, true, true);
+        const firstMarket = this.getMarketFromSymbols(symbols);
+        const type = this.safeString(firstMarket, 'type', 'swap');
+        const symbolsLength = symbols.length;
+        if (symbolsLength === 0) {
+            throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_1__.ArgumentsRequired(this.id + ' unWatchBidsAsks() requires a non-empty array of symbols');
+        }
+        const url = this.urls['api']['ws'][type];
+        const subscriptionArgs = [];
+        const messageHashes = [];
+        const request = {
+            'method': 'UNSUBSCRIBE',
+            'params': subscriptionArgs,
+        };
+        for (let i = 0; i < symbols.length; i++) {
+            const symbol = symbols[i];
+            const market = this.market(symbol);
+            subscriptionArgs.push(this.safeStringLower(market, 'id') + '@bookTicker');
+            messageHashes.push('unsubscribe:bidask:' + market['symbol']);
+        }
+        return await this.watchMultiple(url, messageHashes, this.extend(request, params), [type]);
+    }
+    handleBidAsk(client, message) {
+        //
+        //     {
+        //         "stream": "btcusdt@bookTicker",
+        //         "data": {
+        //             "e": "bookTicker",
+        //             "u": 157240846459,
+        //             "s": "BTCUSDT",
+        //             "b": "122046.7",
+        //             "B": "1.084",
+        //             "a": "122046.8",
+        //             "A": "0.001",
+        //             "T": 1754896692922,
+        //             "E": 1754896692926
+        //         }
+        //     }
+        //
+        const subscriptions = client.subscriptions;
+        const subscriptionsKeys = Object.keys(subscriptions);
+        const marketType = this.getAccountTypeFromSubscriptions(subscriptionsKeys);
+        const data = this.safeDict(message, 'data', {});
+        const marketId = this.safeString(data, 's');
+        const market = this.safeMarket(marketId, undefined, undefined, marketType);
+        const ticker = this.parseWsBidAsk(data, market);
+        const symbol = ticker['symbol'];
+        this.bidsasks[symbol] = ticker;
+        const messageHash = 'bidask:' + symbol;
+        client.resolve(ticker, messageHash);
+    }
+    parseWsBidAsk(message, market = undefined) {
+        const timestamp = this.safeInteger(message, 'T');
+        return this.safeTicker({
+            'symbol': market['symbol'],
+            'timestamp': timestamp,
+            'datetime': this.iso8601(timestamp),
+            'ask': this.safeString(message, 'a'),
+            'askVolume': this.safeString(message, 'A'),
+            'bid': this.safeString(message, 'b'),
+            'bidVolume': this.safeString(message, 'B'),
+            'info': message,
+        }, market);
+    }
+    /**
+     * @method
+     * @name aster#watchTrades
+     * @description watches information on multiple trades made in a market
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-spot-api.md#collection-transaction-flow
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-futures-api.md#aggregate-trade-streams
+     * @param {string} symbol unified market symbol of the market trades were made in
+     * @param {int} [since] the earliest time in ms to fetch trades for
+     * @param {int} [limit] the maximum number of trade structures to retrieve
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object[]} a list of [trade structures]{@link https://docs.ccxt.com/#/?id=trade-structure}
+     */
+    async watchTrades(symbol, since = undefined, limit = undefined, params = {}) {
+        params['callerMethodName'] = 'watchTrades';
+        return await this.watchTradesForSymbols([symbol], since, limit, params);
+    }
+    /**
+     * @method
+     * @name aster#unWatchTrades
+     * @description unsubscribe from the trades channel
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-spot-api.md#collection-transaction-flow
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-futures-api.md#aggregate-trade-streams
+     * @param {string} symbol unified market symbol of the market trades were made in
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object[]} a list of [trade structures]{@link https://docs.ccxt.com/#/?id=trade-structure}
+     */
+    async unWatchTrades(symbol, params = {}) {
+        params['callerMethodName'] = 'unWatchTrades';
+        return await this.unWatchTradesForSymbols([symbol], params);
+    }
+    /**
+     * @method
+     * @name aster#watchTradesForSymbols
+     * @description get the list of most recent trades for a list of symbols
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-spot-api.md#collection-transaction-flow
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-futures-api.md#aggregate-trade-streams
+     * @param {string[]} symbols unified symbol of the market to fetch trades for
+     * @param {int} [since] timestamp in ms of the earliest trade to fetch
+     * @param {int} [limit] the maximum amount of trades to fetch
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object[]} a list of [trade structures]{@link https://docs.ccxt.com/#/?id=public-trades}
+     */
+    async watchTradesForSymbols(symbols, since = undefined, limit = undefined, params = {}) {
+        await this.loadMarkets();
+        symbols = this.marketSymbols(symbols, undefined, true, true, true);
+        const firstMarket = this.getMarketFromSymbols(symbols);
+        const type = this.safeString(firstMarket, 'type', 'swap');
+        const symbolsLength = symbols.length;
+        let methodName = undefined;
+        [methodName, params] = this.handleParamString(params, 'callerMethodName', 'watchTradesForSymbols');
+        params = this.omit(params, 'callerMethodName');
+        if (symbolsLength === 0) {
+            throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_1__.ArgumentsRequired(this.id + ' ' + methodName + '() requires a non-empty array of symbols');
+        }
+        const url = this.urls['api']['ws'][type];
+        const subscriptionArgs = [];
+        const messageHashes = [];
+        const request = {
+            'method': 'SUBSCRIBE',
+            'params': subscriptionArgs,
+        };
+        for (let i = 0; i < symbols.length; i++) {
+            const symbol = symbols[i];
+            const market = this.market(symbol);
+            subscriptionArgs.push(this.safeStringLower(market, 'id') + '@aggTrade');
+            messageHashes.push('trade:' + market['symbol']);
+        }
+        const trades = await this.watchMultiple(url, messageHashes, this.extend(request, params), [type]);
+        if (this.newUpdates) {
+            const first = this.safeValue(trades, 0);
+            const tradeSymbol = this.safeString(first, 'symbol');
+            limit = trades.getLimit(tradeSymbol, limit);
+        }
+        return this.filterBySinceLimit(trades, since, limit, 'timestamp', true);
+    }
+    /**
+     * @method
+     * @name aster#unWatchTradesForSymbols
+     * @description unsubscribe from the trades channel
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-spot-api.md#collection-transaction-flow
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-futures-api.md#aggregate-trade-streams
+     * @param {string[]} symbols unified symbol of the market to fetch trades for
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object[]} a list of [trade structures]{@link https://docs.ccxt.com/#/?id=public-trades}
+     */
+    async unWatchTradesForSymbols(symbols, params = {}) {
+        await this.loadMarkets();
+        symbols = this.marketSymbols(symbols, undefined, true, true, true);
+        const firstMarket = this.getMarketFromSymbols(symbols);
+        const type = this.safeString(firstMarket, 'type', 'swap');
+        const symbolsLength = symbols.length;
+        let methodName = undefined;
+        [methodName, params] = this.handleParamString(params, 'callerMethodName', 'unWatchTradesForSymbols');
+        params = this.omit(params, 'callerMethodName');
+        if (symbolsLength === 0) {
+            throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_1__.ArgumentsRequired(this.id + ' ' + methodName + '() requires a non-empty array of symbols');
+        }
+        const url = this.urls['api']['ws'][type];
+        const subscriptionArgs = [];
+        const messageHashes = [];
+        const request = {
+            'method': 'UNSUBSCRIBE',
+            'params': subscriptionArgs,
+        };
+        for (let i = 0; i < symbols.length; i++) {
+            const symbol = symbols[i];
+            const market = this.market(symbol);
+            subscriptionArgs.push(this.safeStringLower(market, 'id') + '@aggTrade');
+            messageHashes.push('unsubscribe:trade:' + market['symbol']);
+        }
+        return await this.watchMultiple(url, messageHashes, this.extend(request, params), [type]);
+    }
+    handleTrade(client, message) {
+        //
+        //     {
+        //         "stream": "btcusdt@aggTrade",
+        //         "data": {
+        //             "e": "aggTrade",
+        //             "E": 1754551358681,
+        //             "a": 20505890,
+        //             "s": "BTCUSDT",
+        //             "p": "114783.7",
+        //             "q": "0.020",
+        //             "f": 26024678,
+        //             "l": 26024682,
+        //             "T": 1754551358528,
+        //             "m": false
+        //         }
+        //     }
+        //
+        const subscriptions = client.subscriptions;
+        const subscriptionsKeys = Object.keys(subscriptions);
+        const marketType = this.getAccountTypeFromSubscriptions(subscriptionsKeys);
+        const trade = this.safeDict(message, 'data');
+        const marketId = this.safeString(trade, 's');
+        const market = this.safeMarket(marketId, undefined, undefined, marketType);
+        const parsed = this.parseWsTrade(trade, market);
+        const symbol = parsed['symbol'];
+        let stored = this.safeValue(this.trades, symbol);
+        if (stored === undefined) {
+            const limit = this.safeInteger(this.options, 'tradesLimit', 1000);
+            stored = new _base_ws_Cache_js__WEBPACK_IMPORTED_MODULE_2__/* .ArrayCache */ .I3(limit);
+            this.trades[symbol] = stored;
+        }
+        stored.append(parsed);
+        const messageHash = 'trade' + ':' + symbol;
+        client.resolve(stored, messageHash);
+    }
+    parseWsTrade(trade, market = undefined) {
+        const timestamp = this.safeInteger(trade, 'T');
+        const symbol = market['symbol'];
+        const amountString = this.safeString(trade, 'q');
+        const priceString = this.safeString(trade, 'p');
+        const isMaker = this.safeBool(trade, 'm');
+        let takerOrMaker = undefined;
+        if (isMaker !== undefined) {
+            takerOrMaker = isMaker ? 'maker' : 'taker';
+        }
+        return this.safeTrade({
+            'id': this.safeString(trade, 'a'),
+            'info': trade,
+            'timestamp': timestamp,
+            'datetime': this.iso8601(timestamp),
+            'symbol': symbol,
+            'order': undefined,
+            'type': undefined,
+            'side': undefined,
+            'takerOrMaker': takerOrMaker,
+            'price': priceString,
+            'amount': amountString,
+            'cost': undefined,
+            'fee': undefined,
+        }, market);
+    }
+    /**
+     * @method
+     * @name aster#watchOrderBook
+     * @description watches information on open orders with bid (buy) and ask (sell) prices, volumes and other data
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-spot-api.md#limited-depth-information
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-futures-api.md#partial-book-depth-streams
+     * @param {string} symbol unified symbol of the market to fetch the order book for
+     * @param {int} [limit] the maximum amount of order book entries to return.
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object} A dictionary of [order book structures]{@link https://docs.ccxt.com/#/?id=order-book-structure} indexed by market symbols
+     */
+    async watchOrderBook(symbol, limit = undefined, params = {}) {
+        params['callerMethodName'] = 'watchOrderBook';
+        return await this.watchOrderBookForSymbols([symbol], limit, params);
+    }
+    /**
+     * @method
+     * @name aster#unWatchOrderBook
+     * @description unsubscribe from the orderbook channel
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-spot-api.md#limited-depth-information
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-futures-api.md#partial-book-depth-streams
+     * @param {string} symbol symbol of the market to unwatch the trades for
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {int} [params.limit] orderbook limit, default is undefined
+     * @returns {object} A dictionary of [order book structures]{@link https://docs.ccxt.com/#/?id=order-book-structure} indexed by market symbols
+     */
+    async unWatchOrderBook(symbol, params = {}) {
+        params['callerMethodName'] = 'unWatchOrderBook';
+        return await this.unWatchOrderBookForSymbols([symbol], params);
+    }
+    /**
+     * @method
+     * @name aster#watchOrderBookForSymbols
+     * @description watches information on open orders with bid (buy) and ask (sell) prices, volumes and other data
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-spot-api.md#limited-depth-information
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-futures-api.md#partial-book-depth-streams
+     * @param {string[]} symbols unified array of symbols
+     * @param {int} [limit] the maximum amount of order book entries to return.
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object} A dictionary of [order book structures]{@link https://docs.ccxt.com/#/?id=order-book-structure} indexed by market symbols
+     */
+    async watchOrderBookForSymbols(symbols, limit = undefined, params = {}) {
+        await this.loadMarkets();
+        symbols = this.marketSymbols(symbols, undefined, true, true, true);
+        const firstMarket = this.getMarketFromSymbols(symbols);
+        const type = this.safeString(firstMarket, 'type', 'swap');
+        const symbolsLength = symbols.length;
+        let methodName = undefined;
+        [methodName, params] = this.handleParamString(params, 'callerMethodName', 'watchOrderBookForSymbols');
+        params = this.omit(params, 'callerMethodName');
+        if (symbolsLength === 0) {
+            throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_1__.ArgumentsRequired(this.id + ' ' + methodName + '() requires a non-empty array of symbols');
+        }
+        const url = this.urls['api']['ws'][type];
+        const subscriptionArgs = [];
+        const messageHashes = [];
+        const request = {
+            'method': 'SUBSCRIBE',
+            'params': subscriptionArgs,
+        };
+        if (limit === undefined || (limit !== 5 && limit !== 10 && limit !== 20)) {
+            limit = 20;
+        }
+        for (let i = 0; i < symbols.length; i++) {
+            const symbol = symbols[i];
+            const market = this.market(symbol);
+            subscriptionArgs.push(this.safeStringLower(market, 'id') + '@depth' + limit);
+            messageHashes.push('orderbook:' + market['symbol']);
+        }
+        const orderbook = await this.watchMultiple(url, messageHashes, this.extend(request, params), [type]);
+        return orderbook.limit();
+    }
+    /**
+     * @method
+     * @name aster#unWatchOrderBookForSymbols
+     * @description unsubscribe from the orderbook channel
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-spot-api.md#limited-depth-information
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-futures-api.md#partial-book-depth-streams
+     * @param {string[]} symbols unified symbol of the market to unwatch the trades for
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {int} [params.limit] orderbook limit, default is undefined
+     * @returns {object} A dictionary of [order book structures]{@link https://docs.ccxt.com/#/?id=order-book-structure} indexed by market symbols
+     */
+    async unWatchOrderBookForSymbols(symbols, params = {}) {
+        await this.loadMarkets();
+        symbols = this.marketSymbols(symbols, undefined, true, true, true);
+        const firstMarket = this.getMarketFromSymbols(symbols);
+        const type = this.safeString(firstMarket, 'type', 'swap');
+        const symbolsLength = symbols.length;
+        let methodName = undefined;
+        [methodName, params] = this.handleParamString(params, 'callerMethodName', 'unWatchOrderBookForSymbols');
+        params = this.omit(params, 'callerMethodName');
+        if (symbolsLength === 0) {
+            throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_1__.ArgumentsRequired(this.id + ' ' + methodName + '() requires a non-empty array of symbols');
+        }
+        const url = this.urls['api']['ws'][type];
+        const subscriptionArgs = [];
+        const messageHashes = [];
+        const request = {
+            'method': 'UNSUBSCRIBE',
+            'params': subscriptionArgs,
+        };
+        let limit = this.safeNumber(params, 'limit');
+        params = this.omit(params, 'limit');
+        if (limit === undefined || (limit !== 5 && limit !== 10 && limit !== 20)) {
+            limit = 20;
+        }
+        for (let i = 0; i < symbols.length; i++) {
+            const symbol = symbols[i];
+            const market = this.market(symbol);
+            subscriptionArgs.push(this.safeStringLower(market, 'id') + '@depth' + limit);
+            messageHashes.push('unsubscribe:orderbook:' + market['symbol']);
+        }
+        return await this.watchMultiple(url, messageHashes, this.extend(request, params), [type]);
+    }
+    handleOrderBook(client, message) {
+        //
+        //     {
+        //         "stream": "btcusdt@depth20",
+        //         "data": {
+        //             "e": "depthUpdate",
+        //             "E": 1754556878284,
+        //             "T": 1754556878031,
+        //             "s": "BTCUSDT",
+        //             "U": 156391349814,
+        //             "u": 156391349814,
+        //             "pu": 156391348236,
+        //             "b": [
+        //                 [
+        //                     "114988.3",
+        //                     "0.147"
+        //                 ]
+        //             ],
+        //             "a": [
+        //                 [
+        //                     "114988.4",
+        //                     "1.060"
+        //                 ]
+        //             ]
+        //         }
+        //     }
+        //
+        const subscriptions = client.subscriptions;
+        const subscriptionsKeys = Object.keys(subscriptions);
+        const marketType = this.getAccountTypeFromSubscriptions(subscriptionsKeys);
+        const data = this.safeDict(message, 'data');
+        const marketId = this.safeString(data, 's');
+        const timestamp = this.safeInteger(data, 'T');
+        const market = this.safeMarket(marketId, undefined, undefined, marketType);
+        const symbol = market['symbol'];
+        if (!(symbol in this.orderbooks)) {
+            this.orderbooks[symbol] = this.orderBook();
+        }
+        const orderbook = this.orderbooks[symbol];
+        const snapshot = this.parseOrderBook(data, symbol, timestamp, 'b', 'a');
+        orderbook.reset(snapshot);
+        const messageHash = 'orderbook' + ':' + symbol;
+        this.orderbooks[symbol] = orderbook;
+        client.resolve(orderbook, messageHash);
+    }
+    /**
+     * @method
+     * @name aster#watchOHLCV
+     * @description watches historical candlestick data containing the open, high, low, and close price, and the volume of a market
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-spot-api.md#k-line-streams
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-futures-api.md#klinecandlestick-streams
+     * @param {string} symbol unified symbol of the market to fetch OHLCV data for
+     * @param {string} timeframe the length of time each candle represents
+     * @param {int} [since] timestamp in ms of the earliest candle to fetch
+     * @param {int} [limit] the maximum amount of candles to fetch
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {int[][]} A list of candles ordered as timestamp, open, high, low, close, volume
+     */
+    async watchOHLCV(symbol, timeframe = '1m', since = undefined, limit = undefined, params = {}) {
+        params['callerMethodName'] = 'watchOHLCV';
+        await this.loadMarkets();
+        symbol = this.safeSymbol(symbol);
+        const result = await this.watchOHLCVForSymbols([[symbol, timeframe]], since, limit, params);
+        return result[symbol][timeframe];
+    }
+    /**
+     * @method
+     * @name aster#unWatchOHLCV
+     * @description unWatches historical candlestick data containing the open, high, low, and close price, and the volume of a market
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-spot-api.md#k-line-streams
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-futures-api.md#klinecandlestick-streams
+     * @param {string} symbol unified symbol of the market to fetch OHLCV data for
+     * @param {string} timeframe the length of time each candle represents
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {int[][]} A list of candles ordered as timestamp, open, high, low, close, volume
+     */
+    async unWatchOHLCV(symbol, timeframe = '1m', params = {}) {
+        params['callerMethodName'] = 'unWatchOHLCV';
+        return await this.unWatchOHLCVForSymbols([[symbol, timeframe]], params);
+    }
+    /**
+     * @method
+     * @name aster#watchOHLCVForSymbols
+     * @description watches historical candlestick data containing the open, high, low, and close price, and the volume of a market
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-spot-api.md#k-line-streams
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-futures-api.md#klinecandlestick-streams
+     * @param {string[][]} symbolsAndTimeframes array of arrays containing unified symbols and timeframes to fetch OHLCV data for, example [['BTC/USDT', '1m'], ['LTC/USDT', '5m']]
+     * @param {int} [since] timestamp in ms of the earliest candle to fetch
+     * @param {int} [limit] the maximum amount of candles to fetch
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object} A list of candles ordered as timestamp, open, high, low, close, volume
+     */
+    async watchOHLCVForSymbols(symbolsAndTimeframes, since = undefined, limit = undefined, params = {}) {
+        await this.loadMarkets();
+        const symbolsLength = symbolsAndTimeframes.length;
+        let methodName = undefined;
+        [methodName, params] = this.handleParamString(params, 'callerMethodName', 'watchOHLCVForSymbols');
+        params = this.omit(params, 'callerMethodName');
+        if (symbolsLength === 0) {
+            throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_1__.ArgumentsRequired(this.id + ' ' + methodName + '() requires a non-empty array of symbols');
+        }
+        const symbols = this.getListFromObjectValues(symbolsAndTimeframes, 0);
+        const marketSymbols = this.marketSymbols(symbols, undefined, false, true, true);
+        const firstMarket = this.market(marketSymbols[0]);
+        const type = this.safeString(firstMarket, 'type', 'swap');
+        const url = this.urls['api']['ws'][type];
+        const subscriptionArgs = [];
+        const messageHashes = [];
+        const request = {
+            'method': 'SUBSCRIBE',
+            'params': subscriptionArgs,
+        };
+        for (let i = 0; i < symbolsAndTimeframes.length; i++) {
+            const data = symbolsAndTimeframes[i];
+            let symbolString = this.safeString(data, 0);
+            const market = this.market(symbolString);
+            symbolString = market['symbol'];
+            const unfiedTimeframe = this.safeString(data, 1);
+            const timeframeId = this.safeString(this.timeframes, unfiedTimeframe, unfiedTimeframe);
+            subscriptionArgs.push(this.safeStringLower(market, 'id') + '@kline_' + timeframeId);
+            messageHashes.push('ohlcv:' + market['symbol'] + ':' + unfiedTimeframe);
+        }
+        const [symbol, timeframe, stored] = await this.watchMultiple(url, messageHashes, this.extend(request, params), [type]);
+        if (this.newUpdates) {
+            limit = stored.getLimit(symbol, limit);
+        }
+        const filtered = this.filterBySinceLimit(stored, since, limit, 0, true);
+        return this.createOHLCVObject(symbol, timeframe, filtered);
+    }
+    /**
+     * @method
+     * @name aster#unWatchOHLCVForSymbols
+     * @description unWatches historical candlestick data containing the open, high, low, and close price, and the volume of a market
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-spot-api.md#k-line-streams
+     * @see https://github.com/asterdex/api-docs/blob/master/aster-finance-futures-api.md#klinecandlestick-streams
+     * @param {string[][]} symbolsAndTimeframes array of arrays containing unified symbols and timeframes to fetch OHLCV data for, example [['BTC/USDT', '1m'], ['LTC/USDT', '5m']]
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {int[][]} A list of candles ordered as timestamp, open, high, low, close, volume
+     */
+    async unWatchOHLCVForSymbols(symbolsAndTimeframes, params = {}) {
+        await this.loadMarkets();
+        const symbolsLength = symbolsAndTimeframes.length;
+        let methodName = undefined;
+        [methodName, params] = this.handleParamString(params, 'callerMethodName', 'unWatchOHLCVForSymbols');
+        params = this.omit(params, 'callerMethodName');
+        if (symbolsLength === 0) {
+            throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_1__.ArgumentsRequired(this.id + ' ' + methodName + '() requires a non-empty array of symbols');
+        }
+        const symbols = this.getListFromObjectValues(symbolsAndTimeframes, 0);
+        const marketSymbols = this.marketSymbols(symbols, undefined, false, true, true);
+        const firstMarket = this.market(marketSymbols[0]);
+        const type = this.safeString(firstMarket, 'type', 'swap');
+        const url = this.urls['api']['ws'][type];
+        const subscriptionArgs = [];
+        const messageHashes = [];
+        const request = {
+            'method': 'UNSUBSCRIBE',
+            'params': subscriptionArgs,
+        };
+        for (let i = 0; i < symbolsAndTimeframes.length; i++) {
+            const data = symbolsAndTimeframes[i];
+            let symbolString = this.safeString(data, 0);
+            const market = this.market(symbolString);
+            symbolString = market['symbol'];
+            const unfiedTimeframe = this.safeString(data, 1);
+            const timeframeId = this.safeString(this.timeframes, unfiedTimeframe, unfiedTimeframe);
+            subscriptionArgs.push(this.safeStringLower(market, 'id') + '@kline_' + timeframeId);
+            messageHashes.push('unsubscribe:ohlcv:' + market['symbol'] + ':' + unfiedTimeframe);
+        }
+        return await this.watchMultiple(url, messageHashes, this.extend(request, params), [type]);
+    }
+    handleOHLCV(client, message) {
+        //
+        //     {
+        //         "stream": "btcusdt@kline_1m",
+        //         "data": {
+        //             "e": "kline",
+        //             "E": 1754655777119,
+        //             "s": "BTCUSDT",
+        //             "k": {
+        //                 "t": 1754655720000,
+        //                 "T": 1754655779999,
+        //                 "s": "BTCUSDT",
+        //                 "i": "1m",
+        //                 "f": 26032629,
+        //                 "L": 26032629,
+        //                 "o": "116546.9",
+        //                 "c": "116546.9",
+        //                 "h": "116546.9",
+        //                 "l": "116546.9",
+        //                 "v": "0.011",
+        //                 "n": 1,
+        //                 "x": false,
+        //                 "q": "1282.0159",
+        //                 "V": "0.000",
+        //                 "Q": "0.0000",
+        //                 "B": "0"
+        //             }
+        //         }
+        //     }
+        //
+        const subscriptions = client.subscriptions;
+        const subscriptionsKeys = Object.keys(subscriptions);
+        const marketType = this.getAccountTypeFromSubscriptions(subscriptionsKeys);
+        const data = this.safeDict(message, 'data');
+        const marketId = this.safeString(data, 's');
+        const market = this.safeMarket(marketId, undefined, undefined, marketType);
+        const symbol = market['symbol'];
+        const kline = this.safeDict(data, 'k');
+        const timeframeId = this.safeString(kline, 'i');
+        const timeframe = this.findTimeframe(timeframeId);
+        const ohlcvsByTimeframe = this.safeValue(this.ohlcvs, symbol);
+        if (ohlcvsByTimeframe === undefined) {
+            this.ohlcvs[symbol] = {};
+        }
+        if (this.safeValue(ohlcvsByTimeframe, timeframe) === undefined) {
+            const limit = this.safeInteger(this.options, 'OHLCVLimit', 1000);
+            this.ohlcvs[symbol][timeframe] = new _base_ws_Cache_js__WEBPACK_IMPORTED_MODULE_2__/* .ArrayCacheByTimestamp */ .TG(limit);
+        }
+        const stored = this.ohlcvs[symbol][timeframe];
+        const parsed = this.parseWsOHLCV(kline);
+        stored.append(parsed);
+        const messageHash = 'ohlcv:' + symbol + ':' + timeframe;
+        const resolveData = [symbol, timeframe, stored];
+        client.resolve(resolveData, messageHash);
+    }
+    parseWsOHLCV(ohlcv, market = undefined) {
+        return [
+            this.safeInteger(ohlcv, 't'),
+            this.safeNumber(ohlcv, 'o'),
+            this.safeNumber(ohlcv, 'h'),
+            this.safeNumber(ohlcv, 'l'),
+            this.safeNumber(ohlcv, 'c'),
+            this.safeNumber(ohlcv, 'v'),
+        ];
+    }
+    handleMessage(client, message) {
+        const stream = this.safeString(message, 'stream');
+        if (stream !== undefined) {
+            const part = stream.split('@');
+            let topic = this.safeString(part, 1, '');
+            const part2 = topic.split('_');
+            topic = this.safeString(part2, 0, '');
+            const methods = {
+                'ticker': this.handleTicker,
+                'aggTrade': this.handleTrade,
+                'depth5': this.handleOrderBook,
+                'depth10': this.handleOrderBook,
+                'depth20': this.handleOrderBook,
+                'kline': this.handleOHLCV,
+                'markPrice': this.handleTicker,
+                'bookTicker': this.handleBidAsk,
+            };
+            const method = this.safeValue(methods, topic);
+            if (method !== undefined) {
+                method.call(this, client, message);
+            }
+        }
     }
 }
 
@@ -290495,7 +300308,8 @@ class backpack extends _backpack_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] *
             const tradeSymbol = this.safeString(first, 'symbol');
             limit = trades.getLimit(tradeSymbol, limit);
         }
-        return this.filterBySinceLimit(trades, since, limit, 'timestamp', true);
+        const result = this.filterBySinceLimit(trades, since, limit, 'timestamp', true);
+        return this.sortBy(result, 'timestamp'); // needed bcz of https://github.com/ccxt/ccxt/actions/runs/20755599389/job/59597208008?pr=27624#step:10:537
     }
     /**
      * @method
@@ -297272,7 +307086,7 @@ class bingx extends _bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A {
             }
         }
         catch (e) {
-            const error = new _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.NetworkError(this.id + ' pong failed with error ' + this.json(e));
+            const error = new _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.NetworkError(this.id + ' pong failed with error ' + this.exceptionMessage(e));
             client.reset(error);
         }
     }
@@ -301809,20 +311623,20 @@ class bitget extends _bitget_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A
         for (let i = 0; i < argsList.length; i++) {
             const arg = argsList[i];
             const channel = this.safeString2(arg, 'channel', 'topic');
-            if (channel === 'books') {
+            if (channel.indexOf('books') >= 0) {
                 // for now only unWatchOrderBook is supporteod
                 this.handleOrderBookUnSubscription(client, message);
             }
-            else if ((channel === 'trade') || (channel === 'publicTrade')) {
+            else if ((channel.indexOf('trade') >= 0) || (channel.indexOf('publicTrade') >= 0)) {
                 this.handleTradesUnSubscription(client, message);
             }
-            else if (channel === 'ticker') {
+            else if (channel.indexOf('ticker') >= 0) {
                 this.handleTickerUnSubscription(client, message);
             }
-            else if (channel.startsWith('candle')) {
+            else if (channel.indexOf('candle') >= 0) {
                 this.handleOHLCVUnSubscription(client, message);
             }
-            else if (channel.startsWith('kline')) {
+            else if (channel.indexOf('kline') >= 0) {
                 this.handleOHLCVUnSubscription(client, message);
             }
         }
@@ -314766,7 +324580,7 @@ class bybit extends _bybit_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A {
         //       "conn_id": "d266o6hqo29sqmnq4vk0-1yus1"
         //   }
         //
-        client.lastPong = this.safeInteger(message, 'pong');
+        client.lastPong = this.safeInteger(message, 'pong', this.milliseconds());
         return message;
     }
     handleAuthenticate(client, message) {
@@ -314864,6 +324678,1092 @@ class bybit extends _bybit_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A {
             }
         }
         return message;
+    }
+}
+
+
+/***/ }),
+
+/***/ 3720:
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   A: () => (/* binding */ bydfi)
+/* harmony export */ });
+/* harmony import */ var _bydfi_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(5000);
+/* harmony import */ var _base_Precise_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(5147);
+/* harmony import */ var _base_errors_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(2079);
+/* harmony import */ var _base_ws_Cache_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(2931);
+/* harmony import */ var _static_dependencies_noble_hashes_sha256_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(4852);
+//  ---------------------------------------------------------------------------
+
+
+
+
+
+//  ---------------------------------------------------------------------------
+class bydfi extends _bydfi_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A {
+    describe() {
+        return this.deepExtend(super.describe(), {
+            'has': {
+                'ws': true,
+                'watchBalance': true,
+                'watchBidsAsks': false,
+                'watchMyTrades': false,
+                'watchOHLCV': true,
+                'watchOHLCVForSymbols': true,
+                'watchOrderBook': true,
+                'watchOrderBookForSymbols': true,
+                'watchOrders': true,
+                'watchOrdersForSymbols': true,
+                'watchPositions': true,
+                'watchTicker': true,
+                'watchTickers': true,
+                'watchTrades': false,
+                'watchTradesForSymbols': false,
+                'unwatchBidsAsks': false,
+                'unwatchOHLCV': true,
+                'unwatchOHLCVForSymbols': true,
+                'unwatchOrderBook': true,
+                'unwatchOrderBookForSymbols': true,
+                'unwatchTicker': true,
+                'unwatchTickers': true,
+                'unWatchTrades': false,
+                'unWatchTradesForSymbols': false,
+                'unWatchOrders': false,
+                'unWatchOrdersForSymbols': false,
+                'unWatchPositions': false,
+            },
+            'urls': {
+                'api': {
+                    'ws': 'wss://stream.bydfi.com/v1/public/swap',
+                },
+            },
+            'options': {
+                'watchOrderBookForSymbols': {
+                    'depth': '100',
+                    'frequency': '1000ms', // 100ms, 1000ms
+                },
+                'watchBalance': {
+                    'fetchBalanceSnapshot': false,
+                    'awaitBalanceSnapshot': true, // whether to wait for the balance snapshot before providing updates
+                },
+                'timeframes': {
+                    '1m': '1m',
+                    '3m': '3m',
+                    '5m': '5m',
+                    '15m': '15m',
+                    '30m': '30m',
+                    '1h': '1h',
+                    '2h': '2h',
+                    '4h': '4h',
+                    '6h': '6h',
+                    '8h': '8h',
+                    '12h': '12h',
+                    '1d': '1d',
+                    '1w': '1w',
+                    '1M': '1M',
+                },
+            },
+            'streaming': {
+                'ping': this.ping,
+                'keepAlive': 119000, // 2 minutes
+            },
+        });
+    }
+    ping(client) {
+        return {
+            'id': this.requestId(),
+            'method': 'ping',
+        };
+    }
+    requestId() {
+        this.lockId();
+        const reqid = this.sum(this.safeInteger(this.options, 'reqid', 0), 1);
+        this.options['reqid'] = reqid;
+        this.unlockId();
+        return reqid;
+    }
+    async watchPublic(messageHashes, channels, params = {}, subscription = {}) {
+        const url = this.urls['api']['ws'];
+        const id = this.requestId();
+        const subscriptionParams = {
+            'id': id,
+        };
+        const unsubscribe = this.safeBool(params, 'unsubscribe', false);
+        let method = 'SUBSCRIBE';
+        if (unsubscribe) {
+            method = 'UNSUBSCRIBE';
+            params = this.omit(params, 'unsubscribe');
+            subscriptionParams['unsubscribe'] = true;
+            subscriptionParams['messageHashes'] = messageHashes;
+        }
+        const message = {
+            'id': id,
+            'method': method,
+            'params': channels,
+        };
+        return await this.watchMultiple(url, messageHashes, this.deepExtend(message, params), messageHashes, this.extend(subscriptionParams, subscription));
+    }
+    async watchPrivate(messageHashes, params = {}) {
+        this.checkRequiredCredentials();
+        const url = this.urls['api']['ws'];
+        const subHash = 'private';
+        const client = this.client(url);
+        const privateSubscription = this.safeValue(client.subscriptions, subHash);
+        const subscription = {};
+        if (privateSubscription === undefined) {
+            const id = this.requestId();
+            const timestamp = this.milliseconds().toString();
+            const payload = this.apiKey + timestamp;
+            const signature = this.hmac(this.encode(payload), this.encode(this.secret), _static_dependencies_noble_hashes_sha256_js__WEBPACK_IMPORTED_MODULE_1__/* .sha256 */ .s, 'hex');
+            const request = {
+                'id': id,
+                'method': 'LOGIN',
+                'params': {
+                    'apiKey': this.apiKey,
+                    'timestamp': timestamp,
+                    'sign': signature,
+                },
+            };
+            params = this.deepExtend(request, params);
+            subscription['id'] = id;
+        }
+        return await this.watchMultiple(url, messageHashes, params, ['private'], subscription);
+    }
+    /**
+     * @method
+     * @name bydfi#watchTicker
+     * @description watches a price ticker, a statistical calculation with the information calculated over the past 24 hours for a specific market
+     * @see https://developers.bydfi.com/en/swap/websocket-market#ticker-by-symbol
+     * @param {string} symbol unified symbol of the market to fetch the ticker for
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object} a [ticker structure]{@link https://docs.ccxt.com/?id=ticker-structure}
+     */
+    async watchTicker(symbol, params = {}) {
+        await this.loadMarkets();
+        const market = this.market(symbol);
+        const marketId = market['id'];
+        const messageHash = 'ticker::' + symbol;
+        const channel = marketId + '@ticker';
+        return await this.watchPublic([messageHash], [channel], params);
+    }
+    /**
+     * @method
+     * @name bydfi#unWatchTicker
+     * @description unWatches a price ticker, a statistical calculation with the information calculated over the past 24 hours for a specific market
+     * @see https://developers.bydfi.com/en/swap/websocket-market#ticker-by-symbol
+     * @param {string} symbol unified symbol of the market to fetch the ticker for
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object} a [ticker structure]{@link https://docs.ccxt.com/?id=ticker-structure}
+     */
+    async unWatchTicker(symbol, params = {}) {
+        return await this.unWatchTickers([symbol], params);
+    }
+    /**
+     * @method
+     * @name bydfi#watchTickers
+     * @description watches a price ticker, a statistical calculation with the information calculated over the past 24 hours for all markets of a specific list
+     * @see https://developers.bydfi.com/en/swap/websocket-market#ticker-by-symbol
+     * @see https://developers.bydfi.com/en/swap/websocket-market#market-wide-ticker
+     * @param {string[]} symbols unified symbol of the market to fetch the ticker for
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object} a [ticker structure]{@link https://docs.ccxt.com/?id=ticker-structure}
+     */
+    async watchTickers(symbols = undefined, params = {}) {
+        await this.loadMarkets();
+        symbols = this.marketSymbols(symbols, undefined, true);
+        const messageHashes = [];
+        const messageHash = 'ticker::';
+        const channels = [];
+        const channel = '@ticker';
+        if (symbols === undefined) {
+            messageHashes.push(messageHash + 'all');
+            channels.push('!ticker@arr');
+        }
+        else {
+            for (let i = 0; i < symbols.length; i++) {
+                const symbol = symbols[i];
+                const marketId = this.marketId(symbol);
+                messageHashes.push(messageHash + symbol);
+                channels.push(marketId + channel);
+            }
+        }
+        await this.watchPublic(messageHashes, channels, params);
+        return this.filterByArray(this.tickers, 'symbol', symbols);
+    }
+    /**
+     * @method
+     * @name bydfi#unWatchTickers
+     * @description unWatches a price ticker, a statistical calculation with the information calculated over the past 24 hours for all markets of a specific list
+     * @see https://developers.bydfi.com/en/swap/websocket-market#ticker-by-symbol
+     * @see https://developers.bydfi.com/en/swap/websocket-market#market-wide-ticker
+     * @param {string[]} symbols unified symbol of the market to fetch the ticker for
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object} a [ticker structure]{@link https://docs.ccxt.com/?id=ticker-structure}
+     */
+    async unWatchTickers(symbols = undefined, params = {}) {
+        symbols = this.marketSymbols(symbols, undefined, true);
+        const messageHashes = [];
+        const messageHash = 'unsubscribe::ticker::';
+        const channels = [];
+        const channel = '@ticker';
+        const subscription = {
+            'topic': 'ticker',
+        };
+        if (symbols === undefined) {
+            // all tickers and tickers for specific symbols are different channels
+            // we need to unsubscribe from all ticker channels
+            const subHashes = this.getMessageHashesForTickersUnsubscription();
+            subscription['subHashIsPrefix'] = true;
+            for (let i = 0; i < subHashes.length; i++) {
+                const subHash = this.safeString(subHashes, i);
+                if (subHash !== undefined) {
+                    const parts = subHash.split('::');
+                    const symbol = this.safeString(parts, 1);
+                    if (symbol === 'all') {
+                        continue;
+                    }
+                    const marketId = this.marketId(symbol);
+                    channels.push(marketId + channel);
+                }
+            }
+            messageHashes.push(messageHash);
+            channels.push('!ticker@arr');
+        }
+        else {
+            for (let i = 0; i < symbols.length; i++) {
+                const symbol = symbols[i];
+                const marketId = this.marketId(symbol);
+                messageHashes.push(messageHash + symbol);
+                channels.push(marketId + channel);
+            }
+            subscription['symbols'] = symbols;
+        }
+        params = this.extend(params, { 'unsubscribe': true });
+        return await this.watchPublic(messageHashes, channels, params, subscription);
+    }
+    getMessageHashesForTickersUnsubscription() {
+        const url = this.urls['api']['ws']['public'];
+        const client = this.client(url);
+        const subscriptions = client.subscriptions;
+        const messageHashes = [];
+        const keys = Object.keys(subscriptions);
+        for (let i = 0; i < keys.length; i++) {
+            const key = keys[i];
+            if (key.indexOf('ticker::') === 0) {
+                messageHashes.push(key);
+            }
+        }
+        return messageHashes;
+    }
+    handleTicker(client, message) {
+        //
+        //     {
+        //         "s": "KAS-USDT",
+        //         "c": 0.04543,
+        //         "e": "24hrTicker",
+        //         "E": 1766528295905,
+        //         "v": 98278925,
+        //         "h": 0.04685,
+        //         "l": 0.04404,
+        //         "o": 0.04657
+        //     }
+        //
+        const ticker = this.parseTicker(message);
+        const symbol = ticker['symbol'];
+        const messageHash = 'ticker::' + symbol;
+        this.tickers[symbol] = ticker;
+        client.resolve(this.tickers[symbol], messageHash);
+        client.resolve(this.tickers, 'ticker::all');
+    }
+    /**
+     * @method
+     * @name bydfi#watchOHLCV
+     * @description watches historical candlestick data containing the open, high, low, close price, and the volume of a market
+     * @see https://developers.bydfi.com/en/swap/websocket-market#candlestick-data
+     * @param {string} symbol unified symbol of the market to fetch OHLCV data for
+     * @param {string} timeframe the length of time each candle represents
+     * @param {int} [since] timestamp in ms of the earliest candle to fetch
+     * @param {int} [limit] the maximum amount of candles to fetch
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {int[][]} A list of candles ordered as timestamp, open, high, low, close, volume
+     */
+    async watchOHLCV(symbol, timeframe = '1m', since = undefined, limit = undefined, params = {}) {
+        const result = await this.watchOHLCVForSymbols([[symbol, timeframe]], since, limit, params);
+        return result[symbol][timeframe];
+    }
+    /**
+     * @method
+     * @name bydfi#unWatchOHLCV
+     * @description watches historical candlestick data containing the open, high, low, and close price, and the volume of a market
+     * @see https://developers.bydfi.com/en/swap/websocket-market#candlestick-data
+     * @param {string} symbol unified symbol of the market to fetch OHLCV data for
+     * @param {string} timeframe the length of time each candle represents
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {int[][]} A list of candles ordered as timestamp, open, high, low, close, volume
+     */
+    async unWatchOHLCV(symbol, timeframe = '1m', params = {}) {
+        return await this.unWatchOHLCVForSymbols([[symbol, timeframe]], params);
+    }
+    /**
+     * @method
+     * @name bydfi#watchOHLCVForSymbols
+     * @description watches historical candlestick data containing the open, high, low, close price, and the volume of a market
+     * @see https://developers.bydfi.com/en/swap/websocket-market#candlestick-data
+     * @param {string[][]} symbolsAndTimeframes array of arrays containing unified symbols and timeframes to fetch OHLCV data for, example [['BTC/USDT', '1m'], ['LTC/USDT', '5m']]
+     * @param {int} [since] timestamp in ms of the earliest candle to fetch
+     * @param {int} [limit] the maximum amount of candles to fetch
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {int[][]} A list of candles ordered as timestamp, open, high, low, close, volume
+     */
+    async watchOHLCVForSymbols(symbolsAndTimeframes, since = undefined, limit = undefined, params = {}) {
+        const symbolsLength = symbolsAndTimeframes.length;
+        if (symbolsLength === 0 || !Array.isArray(symbolsAndTimeframes[0])) {
+            throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired(this.id + " watchOHLCVForSymbols() requires a an array of symbols and timeframes, like  ['ETH/USDC', '1m']");
+        }
+        await this.loadMarkets();
+        const channels = [];
+        const messageHashes = [];
+        for (let i = 0; i < symbolsAndTimeframes.length; i++) {
+            const symbolAndTimeframe = symbolsAndTimeframes[i];
+            const marketId = this.safeString(symbolAndTimeframe, 0);
+            const market = this.market(marketId);
+            const tf = this.safeString(symbolAndTimeframe, 1);
+            const timeframes = this.safeDict(this.options, 'timeframes', {});
+            const interval = this.safeString(timeframes, tf, tf);
+            channels.push(market['id'] + '@kline_' + interval);
+            messageHashes.push('ohlcv::' + market['symbol'] + '::' + interval);
+        }
+        const [symbol, timeframe, candles] = await this.watchPublic(messageHashes, channels, params);
+        if (this.newUpdates) {
+            limit = candles.getLimit(symbol, limit);
+        }
+        const filtered = this.filterBySinceLimit(candles, since, limit, 0, true);
+        return this.createOHLCVObject(symbol, timeframe, filtered);
+    }
+    /**
+     * @method
+     * @name bydfi#unWatchOHLCVForSymbols
+     * @description unWatches historical candlestick data containing the open, high, low, and close price, and the volume of a market
+     * @see https://developers.bydfi.com/en/swap/websocket-market#candlestick-data
+     * @param {string[][]} symbolsAndTimeframes array of arrays containing unified symbols and timeframes to fetch OHLCV data for, example [['BTC/USDT', '1m'], ['LTC/USDT', '5m']]
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {int[][]} A list of candles ordered as timestamp, open, high, low, close, volume
+     */
+    async unWatchOHLCVForSymbols(symbolsAndTimeframes, params = {}) {
+        const symbolsLength = symbolsAndTimeframes.length;
+        if (symbolsLength === 0 || !Array.isArray(symbolsAndTimeframes[0])) {
+            throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired(this.id + " unWatchOHLCVForSymbols() requires a an array of symbols and timeframes, like  ['ETH/USDC', '1m']");
+        }
+        await this.loadMarkets();
+        const channels = [];
+        const messageHashes = [];
+        for (let i = 0; i < symbolsAndTimeframes.length; i++) {
+            const symbolAndTimeframe = symbolsAndTimeframes[i];
+            const marketId = this.safeString(symbolAndTimeframe, 0);
+            const market = this.market(marketId);
+            const tf = this.safeString(symbolAndTimeframe, 1);
+            const interval = this.safeString(this.timeframes, tf, tf);
+            channels.push(market['id'] + '@kline_' + interval);
+            messageHashes.push('unsubscribe::ohlcv::' + market['symbol'] + '::' + interval);
+        }
+        params = this.extend(params, { 'unsubscribe': true });
+        const subscription = {
+            'topic': 'ohlcv',
+            'symbolsAndTimeframes': symbolsAndTimeframes,
+        };
+        return await this.watchPublic(messageHashes, channels, params, subscription);
+    }
+    handleOHLCV(client, message) {
+        //
+        //     {
+        //         "s": "ETH-USDC",
+        //         "c": 2956.13,
+        //         "t": 1766506860000,
+        //         "T": 1766506920000,
+        //         "e": "kline",
+        //         "v": 3955,
+        //         "h": 2956.41,
+        //         "i": "1m",
+        //         "l": 2956.05,
+        //         "o": 2956.05
+        //     }
+        //
+        const marketId = this.safeString(message, 's');
+        const market = this.safeMarket(marketId);
+        const symbol = market['symbol'];
+        const interval = this.safeString(message, 'i');
+        const timeframes = this.safeDict(this.options, 'timeframes', {});
+        const timeframe = this.findTimeframe(interval, timeframes);
+        if (!(symbol in this.ohlcvs)) {
+            this.ohlcvs[symbol] = {};
+        }
+        if (!(timeframe in this.ohlcvs[symbol])) {
+            const limit = this.safeInteger(this.options, 'OHLCVLimit', 1000);
+            const stored = new _base_ws_Cache_js__WEBPACK_IMPORTED_MODULE_3__/* .ArrayCacheByTimestamp */ .TG(limit);
+            this.ohlcvs[symbol][timeframe] = stored;
+        }
+        const ohlcv = this.ohlcvs[symbol][timeframe];
+        const parsed = this.parseWsOHLCV(message);
+        ohlcv.append(parsed);
+        const messageHash = 'ohlcv::' + symbol + '::' + timeframe;
+        client.resolve([symbol, timeframe, ohlcv], messageHash);
+    }
+    /**
+     * @method
+     * @name bydfi#watchOrderBook
+     * @description watches information on open orders with bid (buy) and ask (sell) prices, volumes and other data
+     * @see https://developers.bydfi.com/en/swap/websocket-market#limited-depth-information
+     * @param {string} symbol unified symbol of the market to fetch the order book for
+     * @param {int} [limit] the maximum amount of order book entries to return (default and maxi is 100)
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object} A dictionary of [order book structures]{@link https://docs.ccxt.com/?id=order-book-structure} indexed by market symbols
+     */
+    async watchOrderBook(symbol, limit = undefined, params = {}) {
+        return await this.watchOrderBookForSymbols([symbol], limit, params);
+    }
+    /**
+     * @method
+     * @name bydfi#unWatchOrderBook
+     * @description unWatches information on open orders with bid (buy) and ask (sell) prices, volumes and other data
+     * @see https://developers.bydfi.com/en/swap/websocket-market#limited-depth-information
+     * @param {string} symbol unified array of symbols
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object} A dictionary of [order book structures]{@link https://docs.ccxt.com/?id=order-book-structure} indexed by market symbols
+     */
+    async unWatchOrderBook(symbol, params = {}) {
+        return await this.unWatchOrderBookForSymbols([symbol], params);
+    }
+    /**
+     * @method
+     * @name bydfi#watchOrderBookForSymbols
+     * @description watches information on open orders with bid (buy) and ask (sell) prices, volumes and other data
+     * @see https://developers.bydfi.com/en/swap/websocket-market#limited-depth-information
+     * @param {string[]} symbols unified array of symbols
+     * @param {int} [limit] the maximum amount of order book entries to return (default and max is 100)
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object} A dictionary of [order book structures]{@link https://docs.ccxt.com/?id=order-book-structure} indexed by market symbols
+     */
+    async watchOrderBookForSymbols(symbols, limit = undefined, params = {}) {
+        await this.loadMarkets();
+        symbols = this.marketSymbols(symbols, undefined, false);
+        let depth = '100';
+        [depth, params] = this.handleOptionAndParams(params, 'watchOrderBookForSymbols', 'depth', depth);
+        let frequency = '100ms';
+        [frequency, params] = this.handleOptionAndParams(params, 'watchOrderBookForSymbols', 'frequency', frequency);
+        let channelSuffix = '';
+        if (frequency === '100ms') {
+            channelSuffix = '@100ms';
+        }
+        const channels = [];
+        const messageHashes = [];
+        for (let i = 0; i < symbols.length; i++) {
+            const symbol = symbols[i];
+            const market = this.market(symbol);
+            channels.push(market['id'] + '@depth' + depth + channelSuffix);
+            messageHashes.push('orderbook::' + symbol);
+        }
+        const orderbook = await this.watchPublic(messageHashes, channels, params);
+        return orderbook.limit();
+    }
+    /**
+     * @method
+     * @name bydfi#unWatchOrderBookForSymbols
+     * @description unWatches information on open orders with bid (buy) and ask (sell) prices, volumes and other data
+     * @see https://developers.bydfi.com/en/swap/websocket-market#limited-depth-information
+     * @param {string[]} symbols unified array of symbols
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {string} [params.method] either '/market/level2' or '/spotMarket/level2Depth5' or '/spotMarket/level2Depth50' default is '/market/level2'
+     * @returns {object} A dictionary of [order book structures]{@link https://docs.ccxt.com/?id=order-book-structure} indexed by market symbols
+     */
+    async unWatchOrderBookForSymbols(symbols, params = {}) {
+        await this.loadMarkets();
+        symbols = this.marketSymbols(symbols, undefined, false);
+        let depth = '100';
+        [depth, params] = this.handleOptionAndParams(params, 'watchOrderBookForSymbols', 'depth', depth);
+        let frequency = '100ms';
+        [frequency, params] = this.handleOptionAndParams(params, 'watchOrderBookForSymbols', 'frequency', frequency);
+        let channelSuffix = '';
+        if (frequency === '100ms') {
+            channelSuffix = '@100ms';
+        }
+        const channels = [];
+        const messageHashes = [];
+        for (let i = 0; i < symbols.length; i++) {
+            const symbol = symbols[i];
+            const market = this.market(symbol);
+            channels.push(market['id'] + '@depth' + depth + channelSuffix);
+            messageHashes.push('unsubscribe::orderbook::' + symbol);
+        }
+        const subscription = {
+            'topic': 'orderbook',
+            'symbols': symbols,
+        };
+        params = this.extend(params, { 'unsubscribe': true });
+        return await this.watchPublic(messageHashes, channels, params, subscription);
+    }
+    handleOrderBook(client, message) {
+        //
+        //     {
+        //         "a": [ [ 150000, 15 ], ... ],
+        //         "b": [ [ 90450.7, 3615 ], ... ],
+        //         "s": "BTC-USDT",
+        //         "e": "depthUpdate",
+        //         "E": 1766577624512
+        //     }
+        //
+        const marketId = this.safeString(message, 's');
+        const symbol = this.safeSymbol(marketId);
+        const timestamp = this.safeInteger(message, 'E');
+        if (!(symbol in this.orderbooks)) {
+            this.orderbooks[symbol] = this.orderBook();
+        }
+        const orderbook = this.orderbooks[symbol];
+        const parsed = this.parseOrderBook(message, symbol, timestamp, 'b', 'a');
+        orderbook.reset(parsed);
+        const messageHash = 'orderbook::' + symbol;
+        this.orderbooks[symbol] = orderbook;
+        client.resolve(orderbook, messageHash);
+    }
+    /**
+     * @method
+     * @name bydfi#watchOrders
+     * @description watches information on multiple orders made by the user
+     * @see https://developers.bydfi.com/en/swap/websocket-account#order-trade-update-push
+     * @param {string} symbol unified market symbol of the market orders were made in
+     * @param {int} [since] the earliest time in ms to fetch orders for
+     * @param {int} [limit] the maximum number of order structures to retrieve
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object[]} a list of [order structures]{@link https://docs.ccxt.com/?id=order-structure}
+     */
+    async watchOrders(symbol = undefined, since = undefined, limit = undefined, params = {}) {
+        let symbols = undefined;
+        if (symbol !== undefined) {
+            symbols = [symbol];
+        }
+        return await this.watchOrdersForSymbols(symbols, since, limit, params);
+    }
+    /**
+     * @method
+     * @name bydfi#watchOrdersForSymbols
+     * @description watches information on multiple orders made by the user
+     * @see https://developers.bydfi.com/en/swap/websocket-account#order-trade-update-push
+     * @param {string[]} symbols unified symbol of the market to fetch orders for
+     * @param {int} [since] the earliest time in ms to fetch orders for
+     * @param {int} [limit] the maximum number of trade structures to retrieve
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object[]} a list of [order structures]{@link https://docs.ccxt.com/?id=order-structure}
+     */
+    async watchOrdersForSymbols(symbols, since = undefined, limit = undefined, params = {}) {
+        await this.loadMarkets();
+        symbols = this.marketSymbols(symbols, undefined, true);
+        const messageHashes = [];
+        if (symbols === undefined) {
+            messageHashes.push('orders');
+        }
+        else {
+            for (let i = 0; i < symbols.length; i++) {
+                const symbol = symbols[i];
+                messageHashes.push('orders::' + symbol);
+            }
+        }
+        const orders = await this.watchPrivate(messageHashes, params);
+        if (this.newUpdates) {
+            const first = this.safeValue(orders, 0);
+            const tradeSymbol = this.safeString(first, 'symbol');
+            limit = orders.getLimit(tradeSymbol, limit);
+        }
+        return this.filterBySinceLimit(orders, since, limit, 'timestamp', true);
+    }
+    handleOrder(client, message) {
+        //
+        //     {
+        //         "T": 1766588450558,
+        //         "E": 1766588450685,
+        //         "e": "ORDER_TRADE_UPDATE",
+        //         "o": {
+        //             "S": "BUY",
+        //             "ap": "0",
+        //             "cpt": false,
+        //             "ct": "future",
+        //             "ev": "0",
+        //             "fee": "0",
+        //             "lv": 2,
+        //             "mt": "isolated",
+        //             "o": "7409609004526010368",
+        //             "p": "1000",
+        //             "ps": "BOTH",
+        //             "pt": "ONE_WAY",
+        //             "ro": false,
+        //             "s": "ETH-USDC",
+        //             "st": "NEW",
+        //             "t": "LIMIT",
+        //             "tp": "0",
+        //             "u": "0.001",
+        //             "v": "2"
+        //         }
+        //     }
+        //
+        const rawOrder = this.safeDict(message, 'o', {});
+        const marketId = this.safeString(rawOrder, 's');
+        const market = this.safeMarket(marketId);
+        const symbol = market['symbol'];
+        let match = false;
+        const messageHash = 'orders';
+        const symbolMessageHash = messageHash + '::' + symbol;
+        const messageHashes = this.findMessageHashes(client, messageHash);
+        for (let i = 0; i < messageHashes.length; i++) {
+            const hash = messageHashes[i];
+            if (hash === symbolMessageHash || hash === messageHash) {
+                match = true;
+                break;
+            }
+        }
+        if (match) {
+            if (this.orders === undefined) {
+                const limit = this.safeInteger(this.options, 'ordersLimit', 1000);
+                this.orders = new _base_ws_Cache_js__WEBPACK_IMPORTED_MODULE_3__/* .ArrayCacheBySymbolById */ .Pt(limit);
+            }
+            const orders = this.orders;
+            const order = this.parseWsOrder(rawOrder, market);
+            const lastUpdateTimestamp = this.safeInteger(message, 'T');
+            order['lastUpdateTimestamp'] = lastUpdateTimestamp;
+            orders.append(order);
+            client.resolve(orders, messageHash);
+            client.resolve(orders, symbolMessageHash);
+        }
+    }
+    parseWsOrder(order, market = undefined) {
+        //
+        //     {
+        //         "S": "BUY",
+        //         "ap": "0",
+        //         "cpt": false,
+        //         "ct": "future",
+        //         "ev": "0",
+        //         "fee": "0",
+        //         "lv": 2,
+        //         "mt": "isolated",
+        //         "o": "7409609004526010368",
+        //         "p": "1000",
+        //         "ps": "BOTH",
+        //         "pt": "ONE_WAY",
+        //         "ro": false,
+        //         "s": "ETH-USDC",
+        //         "st": "NEW",
+        //         "t": "LIMIT",
+        //         "tp": "0",
+        //         "u": "0.001",
+        //         "v": "2"
+        //     }
+        //
+        const marketId = this.safeString(order, 's');
+        market = this.safeMarket(marketId, market);
+        const rawStatus = this.safeString(order, 'st');
+        const rawType = this.safeString(order, 't');
+        let fee = undefined;
+        const feeCost = this.safeString(order, 'fee');
+        if (feeCost !== undefined) {
+            fee = {
+                'cost': _base_Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringAbs(feeCost),
+                'currency': market['quote'],
+            };
+        }
+        return this.safeOrder({
+            'info': order,
+            'id': this.safeString(order, 'o'),
+            'clientOrderId': this.safeString(order, 'cid'),
+            'timestamp': undefined,
+            'datetime': undefined,
+            'lastTradeTimestamp': undefined,
+            'lastUpdateTimestamp': undefined,
+            'status': this.parseOrderStatus(rawStatus),
+            'symbol': market['symbol'],
+            'type': this.parseOrderType(rawType),
+            'timeInForce': undefined,
+            'postOnly': undefined,
+            'reduceOnly': this.safeBool(order, 'ro'),
+            'side': this.safeStringLower(order, 'S'),
+            'price': this.safeString(order, 'p'),
+            'triggerPrice': undefined,
+            'stopLossPrice': undefined,
+            'takeProfitPrice': undefined,
+            'amount': this.safeString(order, 'v'),
+            'filled': this.safeString(order, 'ev'),
+            'remaining': this.safeString(order, 'qty'),
+            'cost': undefined,
+            'trades': undefined,
+            'fee': fee,
+            'average': this.omitZero(this.safeString(order, 'ap')),
+        }, market);
+    }
+    /**
+     * @method
+     * @name bydfi#watchPositions
+     * @description watch all open positions
+     * @see https://developers.bydfi.com/en/swap/websocket-account#balance-and-position-update-push
+     * @param {string[]} [symbols] list of unified market symbols
+     * @param {int} [since] the earliest time in ms to fetch positions for
+     * @param {int} [limit] the maximum number of positions to retrieve
+     * @param {object} params extra parameters specific to the exchange API endpoint
+     * @returns {object[]} a list of [position structure]{@link https://docs.ccxt.com/en/latest/manual.html#position-structure}
+     */
+    async watchPositions(symbols = undefined, since = undefined, limit = undefined, params = {}) {
+        await this.loadMarkets();
+        symbols = this.marketSymbols(symbols, undefined, true);
+        const messageHashes = [];
+        const messageHash = 'positions';
+        if (symbols === undefined) {
+            messageHashes.push(messageHash);
+        }
+        else {
+            for (let i = 0; i < symbols.length; i++) {
+                const symbol = symbols[i];
+                messageHashes.push(messageHash + '::' + symbol);
+            }
+        }
+        const positions = await this.watchPrivate(messageHashes, params);
+        if (this.newUpdates) {
+            return positions;
+        }
+        return this.filterBySymbolsSinceLimit(this.positions, symbols, since, limit, true);
+    }
+    handlePositions(client, message) {
+        //
+        //     {
+        //         "a": {
+        //             "B": [
+        //                 {
+        //                     "a": "USDC",
+        //                     "ba": "0",
+        //                     "im": "1.46282986",
+        //                     "om": "0",
+        //                     "tfm": "1.46282986",
+        //                     "wb": "109.86879703"
+        //                 }
+        //             ],
+        //             "m": "ORDER",
+        //             "p": [
+        //                 {
+        //                     "S": "1",
+        //                     "ap": "2925.81666667",
+        //                     "c": "USDC",
+        //                     "ct": "FUTURE",
+        //                     "l": 2,
+        //                     "lq": "1471.1840621072728637",
+        //                     "lv": "0",
+        //                     "ma": "0",
+        //                     "mt": "ISOLATED",
+        //                     "pm": "1.4628298566666665",
+        //                     "pt": "ONEWAY",
+        //                     "rp": "-0.00036721",
+        //                     "s": "ETH-USDC",
+        //                     "t": "0",
+        //                     "uq": "0.001",
+        //                     "v": "1"
+        //                 }
+        //             ]
+        //         },
+        //         "T": 1766592694451,
+        //         "E": 1766592694554,
+        //         "e": "ACCOUNT_UPDATE"
+        //     }
+        //
+        const data = this.safeDict(message, 'a', {});
+        const positionsData = this.safeList(data, 'p', []);
+        const rawPosition = this.safeDict(positionsData, 0, {});
+        const marketId = this.safeString(rawPosition, 's');
+        const market = this.safeMarket(marketId);
+        const symbol = market['symbol'];
+        const messageHash = 'positions';
+        const symbolMessageHash = messageHash + '::' + symbol;
+        const messageHashes = this.findMessageHashes(client, messageHash);
+        let match = false;
+        for (let i = 0; i < messageHashes.length; i++) {
+            const hash = messageHashes[i];
+            if (hash === symbolMessageHash || hash === messageHash) {
+                match = true;
+                break;
+            }
+        }
+        if (match) {
+            if (this.positions === undefined) {
+                this.positions = new _base_ws_Cache_js__WEBPACK_IMPORTED_MODULE_3__/* .ArrayCacheBySymbolBySide */ .Hk();
+            }
+            const cache = this.positions;
+            const parsedPosition = this.parseWsPosition(rawPosition, market);
+            const timestamp = this.safeInteger(message, 'T');
+            parsedPosition['timestamp'] = timestamp;
+            parsedPosition['datetime'] = this.iso8601(timestamp);
+            cache.append(parsedPosition);
+            const symbolSpecificMessageHash = messageHash + ':' + parsedPosition['symbol'];
+            client.resolve([parsedPosition], messageHash);
+            client.resolve([parsedPosition], symbolSpecificMessageHash);
+        }
+    }
+    parseWsPosition(position, market = undefined) {
+        //
+        //     {
+        //         "S": "1",
+        //         "ap": "2925.81666667",
+        //         "c": "USDC",
+        //         "ct": "FUTURE",
+        //         "l": 2,
+        //         "lq": "1471.1840621072728637",
+        //         "lv": "0",
+        //         "ma": "0",
+        //         "mt": "ISOLATED",
+        //         "pm": "1.4628298566666665",
+        //         "pt": "ONEWAY",
+        //         "rp": "-0.00036721",
+        //         "s": "ETH-USDC",
+        //         "t": "0",
+        //         "uq": "0.001",
+        //         "v": "1"
+        //     }
+        //
+        const marketId = this.safeString(position, 's');
+        market = this.safeMarket(marketId, market);
+        const rawPositionSide = this.safeString(position, 'S');
+        const positionMode = this.safeString(position, 'pt');
+        return this.safePosition({
+            'info': position,
+            'id': this.safeString(position, 'id'),
+            'symbol': market['symbol'],
+            'entryPrice': this.parseNumber(this.safeString(position, 'ap')),
+            'markPrice': undefined,
+            'lastPrice': undefined,
+            'notional': undefined,
+            'collateral': undefined,
+            'unrealizedPnl': undefined,
+            'realizedPnl': this.parseNumber(this.safeString(position, 'rp')),
+            'side': this.parseWsPositionSide(rawPositionSide),
+            'contracts': this.parseNumber(this.safeString(position, 'v')),
+            'contractSize': this.parseNumber(this.safeString(position, 'uq')),
+            'timestamp': undefined,
+            'datetime': undefined,
+            'lastUpdateTimestamp': undefined,
+            'hedged': (positionMode !== 'ONEWAY'),
+            'maintenanceMargin': undefined,
+            'maintenanceMarginPercentage': undefined,
+            'initialMargin': this.parseNumber(this.safeString(position, 'pm')),
+            'initialMarginPercentage': undefined,
+            'leverage': this.safeInteger(position, 'l'),
+            'liquidationPrice': this.parseNumber(this.safeString(position, 'lq')),
+            'marginRatio': undefined,
+            'marginMode': this.safeStringLower(position, 'mt'),
+            'percentage': undefined,
+        });
+    }
+    parseWsPositionSide(rawPositionSide) {
+        const sides = {
+            '1': 'long',
+            '2': 'short',
+        };
+        return this.safeString(sides, rawPositionSide, rawPositionSide);
+    }
+    /**
+     * @method
+     * @name bydfi#watchBalance
+     * @description watch balance and get the amount of funds available for trading or funds locked in orders
+     * @see https://developers.bydfi.com/en/swap/websocket-account#balance-and-position-update-push
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object} a [balance structure]{@link https://docs.ccxt.com/?id=balance-structure}
+     */
+    async watchBalance(params = {}) {
+        await this.loadMarkets();
+        const url = this.urls['api']['ws'];
+        const client = this.client(url);
+        this.fetchBalanceSnapshot(client);
+        const options = this.safeDict(this.options, 'watchBalance');
+        const fetchBalanceSnapshot = this.safeBool(options, 'fetchBalanceSnapshot', false);
+        const awaitBalanceSnapshot = this.safeBool(options, 'awaitBalanceSnapshot', true);
+        if (fetchBalanceSnapshot && awaitBalanceSnapshot) {
+            await client.future('fetchBalanceSnapshot');
+        }
+        const messageHash = 'balance';
+        return await this.watchPrivate([messageHash], params);
+    }
+    fetchBalanceSnapshot(client) {
+        const options = this.safeValue(this.options, 'watchBalance');
+        const fetchBalanceSnapshot = this.safeBool(options, 'fetchBalanceSnapshot', false);
+        if (fetchBalanceSnapshot) {
+            const messageHash = 'fetchBalanceSnapshot';
+            if (!(messageHash in client.futures)) {
+                client.future(messageHash);
+                this.spawn(this.loadBalanceSnapshot, client, messageHash);
+            }
+        }
+    }
+    async loadBalanceSnapshot(client, messageHash) {
+        const params = {
+            'type': 'swap',
+        };
+        const response = await this.fetchBalance(params);
+        this.balance = this.extend(response, this.balance);
+        // don't remove the future from the .futures cache
+        const future = client.futures[messageHash];
+        future.resolve();
+        client.resolve(this.balance, 'balance');
+    }
+    handleBalance(client, message) {
+        //
+        //     {
+        //         "a": {
+        //             "B": [
+        //                 {
+        //                     "a": "USDC",
+        //                     "ba": "0",
+        //                     "im": "1.46282986",
+        //                     "om": "0",
+        //                     "tfm": "1.46282986",
+        //                     "wb": "109.86879703"
+        //                 }
+        //             ],
+        //             "m": "ORDER",
+        //             "p": [
+        //                 {
+        //                     "S": "1",
+        //                     "ap": "2925.81666667",
+        //                     "c": "USDC",
+        //                     "ct": "FUTURE",
+        //                     "l": 2,
+        //                     "lq": "1471.1840621072728637",
+        //                     "lv": "0",
+        //                     "ma": "0",
+        //                     "mt": "ISOLATED",
+        //                     "pm": "1.4628298566666665",
+        //                     "pt": "ONEWAY",
+        //                     "rp": "-0.00036721",
+        //                     "s": "ETH-USDC",
+        //                     "t": "0",
+        //                     "uq": "0.001",
+        //                     "v": "1"
+        //                 }
+        //             ]
+        //         },
+        //         "T": 1766592694451,
+        //         "E": 1766592694554,
+        //         "e": "ACCOUNT_UPDATE"
+        //     }
+        //
+        const messageHash = 'balance';
+        if (messageHash in client.futures) {
+            const data = this.safeDict(message, 'a', {});
+            const balances = this.safeList(data, 'B', []);
+            const timestamp = this.safeInteger(message, 'T');
+            const result = {
+                'info': message,
+                'timestamp': timestamp,
+                'datetime': this.iso8601(timestamp),
+            };
+            for (let i = 0; i < balances.length; i++) {
+                const balance = balances[i];
+                const currencyId = this.safeString(balance, 'a');
+                const code = this.safeCurrencyCode(currencyId);
+                const account = this.account();
+                account['total'] = this.safeString(balance, 'wb');
+                account['used'] = this.safeString(balance, 'tfm');
+                result[code] = account;
+            }
+            const parsedBalance = this.safeBalance(result);
+            this.balance = this.extend(this.balance, parsedBalance);
+            client.resolve(this.balance, messageHash);
+        }
+    }
+    handleSubscriptionStatus(client, message) {
+        //
+        //     {
+        //         "result": true,
+        //         "id": 1
+        //     }
+        //
+        const id = this.safeString(message, 'id');
+        const subscriptionsById = this.indexBy(client.subscriptions, 'id');
+        const subscription = this.safeDict(subscriptionsById, id, {});
+        const isUnSubMessage = this.safeBool(subscription, 'unsubscribe', false);
+        if (isUnSubMessage) {
+            this.handleUnSubscription(client, subscription);
+        }
+        return message;
+    }
+    handleUnSubscription(client, subscription) {
+        const messageHashes = this.safeList(subscription, 'messageHashes', []);
+        const subHashIsPrefix = this.safeBool(subscription, 'subHashIsPrefix', false);
+        for (let i = 0; i < messageHashes.length; i++) {
+            const unsubHash = messageHashes[i];
+            const subHash = unsubHash.replace('unsubscribe::', '');
+            this.cleanUnsubscription(client, subHash, unsubHash, subHashIsPrefix);
+        }
+        this.cleanCache(subscription);
+    }
+    handlePong(client, message) {
+        //
+        //     {
+        //         "id": 1,
+        //         "result": "pong"
+        //     }
+        //
+        client.lastPong = this.milliseconds();
+        return message;
+    }
+    handleErrorMessage(client, message) {
+        //
+        //     {
+        //         "msg": "Service error",
+        //         "code": "-1"
+        //     }
+        //
+        const code = this.safeString(message, 'code');
+        const msg = this.safeString(message, 'msg');
+        const feedback = this.id + ' ' + this.json(message);
+        this.throwExactlyMatchedException(this.exceptions['exact'], msg, feedback);
+        this.throwBroadlyMatchedException(this.exceptions['broad'], msg, feedback);
+        this.throwExactlyMatchedException(this.exceptions['exact'], code, feedback);
+        throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.ExchangeError(feedback);
+    }
+    handleMessage(client, message) {
+        const code = this.safeString(message, 'code');
+        if (code !== undefined && (code !== '0')) {
+            this.handleErrorMessage(client, message);
+        }
+        const result = this.safeString(message, 'result');
+        if (result === 'pong') {
+            this.handlePong(client, message);
+        }
+        else if (result !== undefined) {
+            this.handleSubscriptionStatus(client, message);
+        }
+        else {
+            const event = this.safeString(message, 'e');
+            if (event === '24hrTicker') {
+                this.handleTicker(client, message);
+            }
+            else if (event === 'kline') {
+                this.handleOHLCV(client, message);
+            }
+            else if (event === 'depthUpdate') {
+                this.handleOrderBook(client, message);
+            }
+            else if (event === 'ORDER_TRADE_UPDATE') {
+                this.handleOrder(client, message);
+            }
+            else if (event === 'ACCOUNT_UPDATE') {
+                const account = this.safeDict(message, 'a', {});
+                const balances = this.safeList(account, 'B', []);
+                const balancesLength = balances.length;
+                if (balancesLength > 0) {
+                    this.handleBalance(client, message);
+                }
+                const positions = this.safeList(account, 'p', []);
+                const positionsLength = positions.length;
+                if (positionsLength > 0) {
+                    this.handlePositions(client, message);
+                }
+            }
+        }
     }
 }
 
@@ -322926,7 +333826,7 @@ class cryptocom extends _cryptocom_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"]
             await client.send({ 'id': this.safeInteger(message, 'id'), 'method': 'public/respond-heartbeat' });
         }
         catch (e) {
-            const error = new _base_errors_js__WEBPACK_IMPORTED_MODULE_1__.NetworkError(this.id + ' pong failed with error ' + this.json(e));
+            const error = new _base_errors_js__WEBPACK_IMPORTED_MODULE_1__.NetworkError(this.id + ' pong failed with error ' + this.exceptionMessage(e));
             client.reset(error);
         }
     }
@@ -328326,7 +339226,7 @@ class dydx extends _dydx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A {
         //                 "size": "0.024",
         //                 "price": "114581",
         //                 "type": "LIMIT",
-        //                 "createdAt": "2025-08-04T00:42:07.118Z",
+        //                 "createdAt": "2025-08-04T00:42:07.119Z",
         //                 "createdAtHeight": "45487245"
         //             }
         //         ]
@@ -337541,7 +348441,7 @@ class htx extends _htx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A {
             }
         }
         catch (e) {
-            const error = new _base_errors_js__WEBPACK_IMPORTED_MODULE_1__.NetworkError(this.id + ' pong failed ' + this.json(e));
+            const error = new _base_errors_js__WEBPACK_IMPORTED_MODULE_1__.NetworkError(this.id + ' pong failed ' + this.exceptionMessage(e));
             client.reset(error);
         }
     }
@@ -339381,7 +350281,7 @@ class hyperliquid extends _hyperliquid_js__WEBPACK_IMPORTED_MODULE_0__/* ["defau
         //       "channel": "pong"
         //   }
         //
-        client.lastPong = this.safeInteger(message, 'pong');
+        client.lastPong = this.safeInteger(message, 'pong', this.milliseconds());
         return message;
     }
     requestId() {
@@ -351266,7 +362166,7 @@ class okx extends _okx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A {
         const messageHashes = [];
         for (let i = 0; i < symbols.length; i++) {
             const symbol = symbols[i];
-            messageHashes.push('unsubscribe:' + channel + symbol);
+            messageHashes.push('unsubscribe:' + channel + ':' + symbol);
             const marketId = this.marketId(symbol);
             const topic = {
                 'channel': channel,
@@ -356549,7 +367449,7 @@ class p2b extends _p2b_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A {
         //        id: 1706539608030
         //    }
         //
-        client.lastPong = this.safeInteger(message, 'id');
+        client.lastPong = this.safeInteger(message, 'id', this.milliseconds());
         return message;
     }
     onError(client, error) {
@@ -356586,7 +367486,7 @@ class paradex extends _paradex_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ 
                 'watchTicker': true,
                 'watchTickers': true,
                 'watchOrderBook': true,
-                'watchOrders': false,
+                'watchOrders': true,
                 'watchTrades': true,
                 'watchTradesForSymbols': false,
                 'watchBalance': false,
@@ -356608,6 +367508,48 @@ class paradex extends _paradex_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ 
             'options': {},
             'streaming': {},
         });
+    }
+    requestId() {
+        const requestId = this.sum(this.safeInteger(this.options, 'requestId', 0), 1);
+        this.options['requestId'] = requestId;
+        return requestId;
+    }
+    async authenticate(params = {}) {
+        const url = this.urls['api']['ws'];
+        const client = this.client(url);
+        const messageHash = 'authenticated';
+        const future = client.reusableFuture('authenticated');
+        const authenticated = this.safeValue(client.subscriptions, messageHash);
+        if (authenticated === undefined) {
+            const token = await this.authenticateRest();
+            const request = {
+                'jsonrpc': '2.0',
+                'id': this.requestId(),
+                'method': 'auth',
+                'params': {
+                    'bearer': token,
+                },
+            };
+            this.watch(url, messageHash, this.deepExtend(request, params), messageHash);
+        }
+        return await future;
+    }
+    handleAuthenticationMessage(client, message) {
+        //
+        //     {
+        //         "jsonrpc": "2.0",
+        //         "id": 1,
+        //         "result": { "node_id": "73cf456f7cb78d59" }
+        //     }
+        //
+        const result = this.safeDict(message, 'result');
+        if (result !== undefined) {
+            // client.resolve (true, messageHash);
+            const future = this.safeValue(client.futures, 'authenticated');
+            if (future !== undefined) {
+                future.resolve(true);
+            }
+        }
     }
     /**
      * @method
@@ -356828,6 +367770,89 @@ class paradex extends _paradex_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ 
         }
         return this.filterByArray(this.tickers, 'symbol', symbols);
     }
+    /**
+     * @method
+     * @name paradex#watchOrders
+     * @description watches information on multiple orders made by the user
+     * @see https://docs.paradex.trade/ws/web-socket-channels/orders/orders
+     * @param {string} [symbol] unified market symbol of the market orders were made in
+     * @param {int} [since] the earliest time in ms to fetch orders for
+     * @param {int} [limit] the maximum number of order structures to retrieve
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object[]} a list of [order structures]{@link https://docs.ccxt.com/?id=order-structure}
+     */
+    async watchOrders(symbol = undefined, since = undefined, limit = undefined, params = {}) {
+        await this.loadMarkets();
+        await this.authenticate();
+        let messageHash = 'orders';
+        let channel = 'orders.';
+        if (symbol !== undefined) {
+            const market = this.market(symbol);
+            symbol = market['symbol'];
+            channel += market['id'];
+            messageHash += ':' + symbol;
+        }
+        else {
+            channel += 'ALL';
+        }
+        const url = this.urls['api']['ws'];
+        const request = {
+            'jsonrpc': '2.0',
+            'method': 'subscribe',
+            'params': {
+                'channel': channel,
+            },
+        };
+        const orders = await this.watch(url, messageHash, this.deepExtend(request, params), channel);
+        if (this.newUpdates) {
+            limit = orders.getLimit(symbol, limit);
+        }
+        return this.filterBySymbolSinceLimit(orders, symbol, since, limit, true);
+    }
+    handleOrder(client, message) {
+        //
+        //     {
+        //         "jsonrpc": "2.0",
+        //         "method": "subscription",
+        //         "params": {
+        //             "channel": "orders.ALL",
+        //             "data": {
+        //                 "account": "0x4638e3041366aa71720be63e32e53e1223316c7f0d56f7aa617542ed1e7512x",
+        //                 "avg_fill_price": "26000",
+        //                 "client_id": "x1234",
+        //                 "cancel_reason": "",
+        //                 "created_at": 1681493746016,
+        //                 "flags": ["REDUCE_ONLY"],
+        //                 "id": "123456",
+        //                 "instruction": "GTC",
+        //                 "last_updated_at": 1681493746016,
+        //                 "market": "BTC-USD-PERP",
+        //                 "price": "26000",
+        //                 "remaining_size": "0",
+        //                 "side": "BUY",
+        //                 "size": "0.05",
+        //                 "status": "NEW",
+        //                 "type": "LIMIT"
+        //             }
+        //         }
+        //     }
+        //
+        const params = this.safeDict(message, 'params', {});
+        const data = this.safeDict(params, 'data', {});
+        const parsed = this.parseOrder(data);
+        const symbol = this.safeString(parsed, 'symbol');
+        if (this.orders === undefined) {
+            const limit = this.safeInteger(this.options, 'ordersLimit', 1000);
+            this.orders = new _base_ws_Cache_js__WEBPACK_IMPORTED_MODULE_1__/* .ArrayCacheBySymbolById */ .Pt(limit);
+        }
+        this.orders.append(parsed);
+        const messageHash = 'orders';
+        client.resolve(this.orders, messageHash);
+        if (symbol !== undefined) {
+            const symbolMessageHash = messageHash + ':' + symbol;
+            client.resolve(this.orders, symbolMessageHash);
+        }
+    }
     handleTicker(client, message) {
         //
         //     {
@@ -356903,6 +367928,16 @@ class paradex extends _paradex_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ 
             return;
         }
         //
+        // auth response
+        //
+        //     {
+        //         "jsonrpc": "2.0",
+        //         "id": 1,
+        //         "result": { "node_id": "73cf456f7cb78d59" }
+        //     }
+        //
+        // subscription message
+        //
         //     {
         //         "jsonrpc": "2.0",
         //         "method": "subscription",
@@ -356920,6 +367955,11 @@ class paradex extends _paradex_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ 
         //         }
         //     }
         //
+        const result = this.safeValue(message, 'result');
+        if (result !== undefined) {
+            this.handleAuthenticationMessage(client, message);
+            return;
+        }
         const data = this.safeDict(message, 'params');
         if (data !== undefined) {
             const channel = this.safeString(data, 'channel');
@@ -356929,7 +367969,7 @@ class paradex extends _paradex_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ 
                 'trades': this.handleTrade,
                 'order_book': this.handleOrderBook,
                 'markets_summary': this.handleTicker,
-                // ...
+                'orders': this.handleOrder,
             };
             const method = this.safeValue(methods, name);
             if (method !== undefined) {
@@ -361572,7 +372612,7 @@ class toobit extends _toobit_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A
                     this.delay(listenKeyRefreshRate, this.keepAliveListenKey, params);
                 }
                 catch (e) {
-                    const err = new _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.AuthenticationError(this.id + ' ' + this.json(e));
+                    const err = new _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.AuthenticationError(this.id + ' ' + this.exceptionMessage(e));
                     client.reject(err, messageHash);
                     if (messageHash in client.subscriptions) {
                         delete client.subscriptions[messageHash];
@@ -369629,7 +380669,8 @@ class probit extends _abstract_probit_js__WEBPACK_IMPORTED_MODULE_0__/* ["defaul
 /* harmony export */   KO: () => (/* binding */ Coin)
 /* harmony export */ });
 /* unused harmony exports DecCoin, IntProto, DecProto */
-Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }());
+/* harmony import */ var protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6946);
+/* harmony import */ var protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0__);
 
 function createBaseCoin() {
     return {
@@ -369638,7 +380679,7 @@ function createBaseCoin() {
     };
 }
 const Coin = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.denom !== "") {
             writer.uint32(10).string(message.denom);
         }
@@ -369648,7 +380689,7 @@ const Coin = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseCoin();
         while (reader.pos < end) {
@@ -369681,7 +380722,7 @@ function createBaseDecCoin() {
     };
 }
 const DecCoin = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.denom !== "") {
             writer.uint32(10).string(message.denom);
         }
@@ -369691,7 +380732,7 @@ const DecCoin = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseDecCoin();
         while (reader.pos < end) {
@@ -369723,14 +380764,14 @@ function createBaseIntProto() {
     };
 }
 const IntProto = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.int !== "") {
             writer.uint32(10).string(message.int);
         }
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseIntProto();
         while (reader.pos < end) {
@@ -369758,14 +380799,14 @@ function createBaseDecProto() {
     };
 }
 const DecProto = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.dec !== "") {
             writer.uint32(10).string(message.dec);
         }
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseDecProto();
         while (reader.pos < end) {
@@ -369799,7 +380840,8 @@ const DecProto = {
 /* harmony export */   s: () => (/* binding */ CompactBitArray)
 /* harmony export */ });
 /* unused harmony export MultiSignature */
-Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }());
+/* harmony import */ var protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6946);
+/* harmony import */ var protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0__);
 
 function createBaseMultiSignature() {
     return {
@@ -369807,14 +380849,14 @@ function createBaseMultiSignature() {
     };
 }
 const MultiSignature = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         for (const v of message.signatures) {
             writer.uint32(10).bytes(v);
         }
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseMultiSignature();
         while (reader.pos < end) {
@@ -369843,7 +380885,7 @@ function createBaseCompactBitArray() {
     };
 }
 const CompactBitArray = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.extraBitsStored !== 0) {
             writer.uint32(8).uint32(message.extraBitsStored);
         }
@@ -369853,7 +380895,7 @@ const CompactBitArray = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseCompactBitArray();
         while (reader.pos < end) {
@@ -369891,7 +380933,8 @@ const CompactBitArray = {
 /* harmony export */   r: () => (/* binding */ PubKey)
 /* harmony export */ });
 /* unused harmony export PrivKey */
-Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }());
+/* harmony import */ var protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6946);
+/* harmony import */ var protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0__);
 
 function createBasePubKey() {
     return {
@@ -369899,14 +380942,14 @@ function createBasePubKey() {
     };
 }
 const PubKey = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.key.length !== 0) {
             writer.uint32(10).bytes(message.key);
         }
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBasePubKey();
         while (reader.pos < end) {
@@ -369934,14 +380977,14 @@ function createBasePrivKey() {
     };
 }
 const PrivKey = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.key.length !== 0) {
             writer.uint32(10).bytes(message.key);
         }
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBasePrivKey();
         while (reader.pos < end) {
@@ -369985,7 +381028,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _crypto_multisig_v1beta1_multisig_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(497);
 /* harmony import */ var _google_protobuf_any_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(8166);
-Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }());
+/* harmony import */ var protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6946);
+/* harmony import */ var protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _helpers_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1291);
 /* harmony import */ var _helpers_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_helpers_js__WEBPACK_IMPORTED_MODULE_1__);
 
@@ -370102,14 +381146,14 @@ function createBaseSignatureDescriptors() {
     };
 }
 const SignatureDescriptors = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         for (const v of message.signatures) {
             SignatureDescriptor.encode(v, writer.uint32(10).fork()).ldelim();
         }
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseSignatureDescriptors();
         while (reader.pos < end) {
@@ -370139,7 +381183,7 @@ function createBaseSignatureDescriptor() {
     };
 }
 const SignatureDescriptor = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.publicKey !== undefined) {
             _google_protobuf_any_js__WEBPACK_IMPORTED_MODULE_2__/* .Any */ .F.encode(message.publicKey, writer.uint32(10).fork()).ldelim();
         }
@@ -370152,7 +381196,7 @@ const SignatureDescriptor = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseSignatureDescriptor();
         while (reader.pos < end) {
@@ -370189,7 +381233,7 @@ function createBaseSignatureDescriptor_Data() {
     };
 }
 const SignatureDescriptor_Data = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.single !== undefined) {
             SignatureDescriptor_Data_Single.encode(message.single, writer.uint32(10).fork()).ldelim();
         }
@@ -370199,7 +381243,7 @@ const SignatureDescriptor_Data = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseSignatureDescriptor_Data();
         while (reader.pos < end) {
@@ -370232,7 +381276,7 @@ function createBaseSignatureDescriptor_Data_Single() {
     };
 }
 const SignatureDescriptor_Data_Single = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.mode !== 0) {
             writer.uint32(8).int32(message.mode);
         }
@@ -370242,7 +381286,7 @@ const SignatureDescriptor_Data_Single = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseSignatureDescriptor_Data_Single();
         while (reader.pos < end) {
@@ -370275,7 +381319,7 @@ function createBaseSignatureDescriptor_Data_Multi() {
     };
 }
 const SignatureDescriptor_Data_Multi = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.bitarray !== undefined) {
             _crypto_multisig_v1beta1_multisig_js__WEBPACK_IMPORTED_MODULE_3__/* .CompactBitArray */ .s.encode(message.bitarray, writer.uint32(10).fork()).ldelim();
         }
@@ -370285,7 +381329,7 @@ const SignatureDescriptor_Data_Multi = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseSignatureDescriptor_Data_Multi();
         while (reader.pos < end) {
@@ -370338,7 +381382,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _google_protobuf_any_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(8166);
 /* harmony import */ var _crypto_multisig_v1beta1_multisig_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(497);
 /* harmony import */ var _base_v1beta1_coin_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(7021);
-Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }());
+/* harmony import */ var protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6946);
+/* harmony import */ var protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _helpers_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1291);
 /* harmony import */ var _helpers_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_helpers_js__WEBPACK_IMPORTED_MODULE_1__);
 
@@ -370354,7 +381399,7 @@ function createBaseTx() {
     };
 }
 const Tx = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.body !== undefined) {
             TxBody.encode(message.body, writer.uint32(10).fork()).ldelim();
         }
@@ -370367,7 +381412,7 @@ const Tx = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseTx();
         while (reader.pos < end) {
@@ -370405,7 +381450,7 @@ function createBaseTxRaw() {
     };
 }
 const TxRaw = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.bodyBytes.length !== 0) {
             writer.uint32(10).bytes(message.bodyBytes);
         }
@@ -370418,7 +381463,7 @@ const TxRaw = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseTxRaw();
         while (reader.pos < end) {
@@ -370457,7 +381502,7 @@ function createBaseSignDoc() {
     };
 }
 const SignDoc = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.bodyBytes.length !== 0) {
             writer.uint32(10).bytes(message.bodyBytes);
         }
@@ -370473,7 +381518,7 @@ const SignDoc = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseSignDoc();
         while (reader.pos < end) {
@@ -370518,7 +381563,7 @@ function createBaseSignDocDirectAux() {
     };
 }
 const SignDocDirectAux = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.bodyBytes.length !== 0) {
             writer.uint32(10).bytes(message.bodyBytes);
         }
@@ -370540,7 +381585,7 @@ const SignDocDirectAux = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseSignDocDirectAux();
         while (reader.pos < end) {
@@ -370592,7 +381637,7 @@ function createBaseTxBody() {
     };
 }
 const TxBody = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         for (const v of message.messages) {
             _google_protobuf_any_js__WEBPACK_IMPORTED_MODULE_2__/* .Any */ .F.encode(v, writer.uint32(10).fork()).ldelim();
         }
@@ -370611,7 +381656,7 @@ const TxBody = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseTxBody();
         while (reader.pos < end) {
@@ -370657,7 +381702,7 @@ function createBaseAuthInfo() {
     };
 }
 const AuthInfo = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         for (const v of message.signerInfos) {
             SignerInfo.encode(v, writer.uint32(10).fork()).ldelim();
         }
@@ -370670,7 +381715,7 @@ const AuthInfo = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseAuthInfo();
         while (reader.pos < end) {
@@ -370708,7 +381753,7 @@ function createBaseSignerInfo() {
     };
 }
 const SignerInfo = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.publicKey !== undefined) {
             _google_protobuf_any_js__WEBPACK_IMPORTED_MODULE_2__/* .Any */ .F.encode(message.publicKey, writer.uint32(10).fork()).ldelim();
         }
@@ -370721,7 +381766,7 @@ const SignerInfo = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseSignerInfo();
         while (reader.pos < end) {
@@ -370758,7 +381803,7 @@ function createBaseModeInfo() {
     };
 }
 const ModeInfo = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.single !== undefined) {
             ModeInfo_Single.encode(message.single, writer.uint32(10).fork()).ldelim();
         }
@@ -370768,7 +381813,7 @@ const ModeInfo = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseModeInfo();
         while (reader.pos < end) {
@@ -370800,14 +381845,14 @@ function createBaseModeInfo_Single() {
     };
 }
 const ModeInfo_Single = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.mode !== 0) {
             writer.uint32(8).int32(message.mode);
         }
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseModeInfo_Single();
         while (reader.pos < end) {
@@ -370836,7 +381881,7 @@ function createBaseModeInfo_Multi() {
     };
 }
 const ModeInfo_Multi = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.bitarray !== undefined) {
             _crypto_multisig_v1beta1_multisig_js__WEBPACK_IMPORTED_MODULE_3__/* .CompactBitArray */ .s.encode(message.bitarray, writer.uint32(10).fork()).ldelim();
         }
@@ -370846,7 +381891,7 @@ const ModeInfo_Multi = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseModeInfo_Multi();
         while (reader.pos < end) {
@@ -370881,7 +381926,7 @@ function createBaseFee() {
     };
 }
 const Fee = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         for (const v of message.amount) {
             _base_v1beta1_coin_js__WEBPACK_IMPORTED_MODULE_4__/* .Coin */ .KO.encode(v, writer.uint32(10).fork()).ldelim();
         }
@@ -370897,7 +381942,7 @@ const Fee = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseFee();
         while (reader.pos < end) {
@@ -370938,7 +381983,7 @@ function createBaseTip() {
     };
 }
 const Tip = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         for (const v of message.amount) {
             _base_v1beta1_coin_js__WEBPACK_IMPORTED_MODULE_4__/* .Coin */ .KO.encode(v, writer.uint32(10).fork()).ldelim();
         }
@@ -370948,7 +381993,7 @@ const Tip = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseTip();
         while (reader.pos < end) {
@@ -370983,7 +382028,7 @@ function createBaseAuxSignerData() {
     };
 }
 const AuxSignerData = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.address !== "") {
             writer.uint32(10).string(message.address);
         }
@@ -370999,7 +382044,7 @@ const AuxSignerData = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseAuxSignerData();
         while (reader.pos < end) {
@@ -371045,7 +382090,8 @@ const AuxSignerData = {
 /* harmony export */   KX: () => (/* binding */ TxExtension)
 /* harmony export */ });
 /* unused harmony exports MsgAddAuthenticator, MsgAddAuthenticatorResponse, MsgRemoveAuthenticator, MsgRemoveAuthenticatorResponse, MsgSetActiveState, MsgSetActiveStateResponse */
-Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }());
+/* harmony import */ var protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6946);
+/* harmony import */ var protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _helpers_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1291);
 /* harmony import */ var _helpers_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_helpers_js__WEBPACK_IMPORTED_MODULE_1__);
 
@@ -371058,7 +382104,7 @@ function createBaseMsgAddAuthenticator() {
     };
 }
 const MsgAddAuthenticator = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.sender !== "") {
             writer.uint32(10).string(message.sender);
         }
@@ -371071,7 +382117,7 @@ const MsgAddAuthenticator = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseMsgAddAuthenticator();
         while (reader.pos < end) {
@@ -371107,14 +382153,14 @@ function createBaseMsgAddAuthenticatorResponse() {
     };
 }
 const MsgAddAuthenticatorResponse = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.success === true) {
             writer.uint32(8).bool(message.success);
         }
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseMsgAddAuthenticatorResponse();
         while (reader.pos < end) {
@@ -371143,7 +382189,7 @@ function createBaseMsgRemoveAuthenticator() {
     };
 }
 const MsgRemoveAuthenticator = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.sender !== "") {
             writer.uint32(10).string(message.sender);
         }
@@ -371153,7 +382199,7 @@ const MsgRemoveAuthenticator = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseMsgRemoveAuthenticator();
         while (reader.pos < end) {
@@ -371185,14 +382231,14 @@ function createBaseMsgRemoveAuthenticatorResponse() {
     };
 }
 const MsgRemoveAuthenticatorResponse = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.success === true) {
             writer.uint32(8).bool(message.success);
         }
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseMsgRemoveAuthenticatorResponse();
         while (reader.pos < end) {
@@ -371221,7 +382267,7 @@ function createBaseMsgSetActiveState() {
     };
 }
 const MsgSetActiveState = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.authority !== "") {
             writer.uint32(10).string(message.authority);
         }
@@ -371231,7 +382277,7 @@ const MsgSetActiveState = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseMsgSetActiveState();
         while (reader.pos < end) {
@@ -371261,11 +382307,11 @@ function createBaseMsgSetActiveStateResponse() {
     return {};
 }
 const MsgSetActiveStateResponse = {
-    encode(_, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(_, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseMsgSetActiveStateResponse();
         while (reader.pos < end) {
@@ -371289,7 +382335,7 @@ function createBaseTxExtension() {
     };
 }
 const TxExtension = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         writer.uint32(10).fork();
         for (const v of message.selectedAuthenticators) {
             writer.uint64(v);
@@ -371298,7 +382344,7 @@ const TxExtension = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseTxExtension();
         while (reader.pos < end) {
@@ -371340,7 +382386,8 @@ const TxExtension = {
 /* harmony export */   f: () => (/* binding */ BlockRateLimitConfiguration)
 /* harmony export */ });
 /* unused harmony export MaxPerNBlocksRateLimit */
-Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }());
+/* harmony import */ var protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6946);
+/* harmony import */ var protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0__);
 
 function createBaseBlockRateLimitConfiguration() {
     return {
@@ -371351,7 +382398,7 @@ function createBaseBlockRateLimitConfiguration() {
     };
 }
 const BlockRateLimitConfiguration = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         for (const v of message.maxShortTermOrdersPerNBlocks) {
             MaxPerNBlocksRateLimit.encode(v, writer.uint32(10).fork()).ldelim();
         }
@@ -371367,7 +382414,7 @@ const BlockRateLimitConfiguration = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseBlockRateLimitConfiguration();
         while (reader.pos < end) {
@@ -371408,7 +382455,7 @@ function createBaseMaxPerNBlocksRateLimit() {
     };
 }
 const MaxPerNBlocksRateLimit = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.numBlocks !== 0) {
             writer.uint32(8).uint32(message.numBlocks);
         }
@@ -371418,7 +382465,7 @@ const MaxPerNBlocksRateLimit = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseMaxPerNBlocksRateLimit();
         while (reader.pos < end) {
@@ -371456,7 +382503,8 @@ const MaxPerNBlocksRateLimit = {
 /* harmony export */   Jt: () => (/* binding */ ClobPair)
 /* harmony export */ });
 /* unused harmony exports ClobPair_Status, ClobPair_StatusSDKType, clobPair_StatusFromJSON, clobPair_StatusToJSON, PerpetualClobMetadata, SpotClobMetadata */
-Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }());
+/* harmony import */ var protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6946);
+/* harmony import */ var protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _helpers_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1291);
 /* harmony import */ var _helpers_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_helpers_js__WEBPACK_IMPORTED_MODULE_1__);
 
@@ -371555,14 +382603,14 @@ function createBasePerpetualClobMetadata() {
     };
 }
 const PerpetualClobMetadata = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.perpetualId !== 0) {
             writer.uint32(8).uint32(message.perpetualId);
         }
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBasePerpetualClobMetadata();
         while (reader.pos < end) {
@@ -371591,7 +382639,7 @@ function createBaseSpotClobMetadata() {
     };
 }
 const SpotClobMetadata = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.baseAssetId !== 0) {
             writer.uint32(8).uint32(message.baseAssetId);
         }
@@ -371601,7 +382649,7 @@ const SpotClobMetadata = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseSpotClobMetadata();
         while (reader.pos < end) {
@@ -371639,7 +382687,7 @@ function createBaseClobPair() {
     };
 }
 const ClobPair = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.id !== 0) {
             writer.uint32(8).uint32(message.id);
         }
@@ -371664,7 +382712,7 @@ const ClobPair = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseClobPair();
         while (reader.pos < end) {
@@ -371722,7 +382770,8 @@ const ClobPair = {
 /* harmony export */   X: () => (/* binding */ EquityTierLimitConfiguration)
 /* harmony export */ });
 /* unused harmony export EquityTierLimit */
-Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }());
+/* harmony import */ var protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6946);
+/* harmony import */ var protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0__);
 
 function createBaseEquityTierLimitConfiguration() {
     return {
@@ -371731,7 +382780,7 @@ function createBaseEquityTierLimitConfiguration() {
     };
 }
 const EquityTierLimitConfiguration = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         for (const v of message.shortTermOrderEquityTiers) {
             EquityTierLimit.encode(v, writer.uint32(10).fork()).ldelim();
         }
@@ -371741,7 +382790,7 @@ const EquityTierLimitConfiguration = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseEquityTierLimitConfiguration();
         while (reader.pos < end) {
@@ -371774,7 +382823,7 @@ function createBaseEquityTierLimit() {
     };
 }
 const EquityTierLimit = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.usdTncRequired.length !== 0) {
             writer.uint32(10).bytes(message.usdTncRequired);
         }
@@ -371784,7 +382833,7 @@ const EquityTierLimit = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseEquityTierLimit();
         while (reader.pos < end) {
@@ -371823,7 +382872,8 @@ const EquityTierLimit = {
 /* harmony export */ });
 /* unused harmony exports SubaccountLiquidationInfo, SubaccountOpenPositionInfo */
 /* harmony import */ var _subaccounts_subaccount_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(9806);
-Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }());
+/* harmony import */ var protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6946);
+/* harmony import */ var protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _helpers_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(1291);
 /* harmony import */ var _helpers_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_helpers_js__WEBPACK_IMPORTED_MODULE_2__);
 
@@ -371836,7 +382886,7 @@ function createBasePerpetualLiquidationInfo() {
     };
 }
 const PerpetualLiquidationInfo = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0__.Writer.create()) {
         if (message.subaccountId !== undefined) {
             _subaccounts_subaccount_js__WEBPACK_IMPORTED_MODULE_1__/* .SubaccountId */ .D.encode(message.subaccountId, writer.uint32(10).fork()).ldelim();
         }
@@ -371846,7 +382896,7 @@ const PerpetualLiquidationInfo = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0__.Reader ? input : new protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0__.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBasePerpetualLiquidationInfo();
         while (reader.pos < end) {
@@ -371880,7 +382930,7 @@ function createBaseSubaccountLiquidationInfo() {
     };
 }
 const SubaccountLiquidationInfo = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0__.Writer.create()) {
         writer.uint32(10).fork();
         for (const v of message.perpetualsLiquidated) {
             writer.uint32(v);
@@ -371895,7 +382945,7 @@ const SubaccountLiquidationInfo = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0__.Reader ? input : new protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0__.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseSubaccountLiquidationInfo();
         while (reader.pos < end) {
@@ -371941,7 +382991,7 @@ function createBaseSubaccountOpenPositionInfo() {
     };
 }
 const SubaccountOpenPositionInfo = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0__.Writer.create()) {
         if (message.perpetualId !== 0) {
             writer.uint32(8).uint32(message.perpetualId);
         }
@@ -371954,7 +383004,7 @@ const SubaccountOpenPositionInfo = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0__.Reader ? input : new protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0__.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseSubaccountOpenPositionInfo();
         while (reader.pos < end) {
@@ -371996,7 +383046,8 @@ const SubaccountOpenPositionInfo = {
 /* harmony export */   J_: () => (/* binding */ LiquidationsConfig)
 /* harmony export */ });
 /* unused harmony exports PositionBlockLimits, SubaccountBlockLimits, FillablePriceConfig */
-Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }());
+/* harmony import */ var protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6946);
+/* harmony import */ var protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _helpers_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1291);
 /* harmony import */ var _helpers_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_helpers_js__WEBPACK_IMPORTED_MODULE_1__);
 
@@ -372010,7 +383061,7 @@ function createBaseLiquidationsConfig() {
     };
 }
 const LiquidationsConfig = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.maxLiquidationFeePpm !== 0) {
             writer.uint32(8).uint32(message.maxLiquidationFeePpm);
         }
@@ -372026,7 +383077,7 @@ const LiquidationsConfig = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseLiquidationsConfig();
         while (reader.pos < end) {
@@ -372067,7 +383118,7 @@ function createBasePositionBlockLimits() {
     };
 }
 const PositionBlockLimits = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (!message.minPositionNotionalLiquidated.isZero()) {
             writer.uint32(8).uint64(message.minPositionNotionalLiquidated);
         }
@@ -372077,7 +383128,7 @@ const PositionBlockLimits = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBasePositionBlockLimits();
         while (reader.pos < end) {
@@ -372110,7 +383161,7 @@ function createBaseSubaccountBlockLimits() {
     };
 }
 const SubaccountBlockLimits = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (!message.maxNotionalLiquidated.isZero()) {
             writer.uint32(8).uint64(message.maxNotionalLiquidated);
         }
@@ -372120,7 +383171,7 @@ const SubaccountBlockLimits = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseSubaccountBlockLimits();
         while (reader.pos < end) {
@@ -372153,7 +383204,7 @@ function createBaseFillablePriceConfig() {
     };
 }
 const FillablePriceConfig = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.bankruptcyAdjustmentPpm !== 0) {
             writer.uint32(8).uint32(message.bankruptcyAdjustmentPpm);
         }
@@ -372163,7 +383214,7 @@ const FillablePriceConfig = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseFillablePriceConfig();
         while (reader.pos < end) {
@@ -372203,7 +383254,8 @@ const FillablePriceConfig = {
 /* unused harmony exports MakerFill, MatchOrders, MatchPerpetualLiquidation, MatchPerpetualDeleveraging, MatchPerpetualDeleveraging_Fill */
 /* harmony import */ var _order_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(7525);
 /* harmony import */ var _subaccounts_subaccount_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(9806);
-Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }());
+/* harmony import */ var protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6946);
+/* harmony import */ var protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _helpers_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1291);
 /* harmony import */ var _helpers_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_helpers_js__WEBPACK_IMPORTED_MODULE_1__);
 
@@ -372218,7 +383270,7 @@ function createBaseClobMatch() {
     };
 }
 const ClobMatch = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.matchOrders !== undefined) {
             MatchOrders.encode(message.matchOrders, writer.uint32(10).fork()).ldelim();
         }
@@ -372231,7 +383283,7 @@ const ClobMatch = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseClobMatch();
         while (reader.pos < end) {
@@ -372268,7 +383320,7 @@ function createBaseMakerFill() {
     };
 }
 const MakerFill = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (!message.fillAmount.isZero()) {
             writer.uint32(8).uint64(message.fillAmount);
         }
@@ -372278,7 +383330,7 @@ const MakerFill = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseMakerFill();
         while (reader.pos < end) {
@@ -372311,7 +383363,7 @@ function createBaseMatchOrders() {
     };
 }
 const MatchOrders = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.takerOrderId !== undefined) {
             _order_js__WEBPACK_IMPORTED_MODULE_2__/* .OrderId */ .e3.encode(message.takerOrderId, writer.uint32(10).fork()).ldelim();
         }
@@ -372321,7 +383373,7 @@ const MatchOrders = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseMatchOrders();
         while (reader.pos < end) {
@@ -372358,7 +383410,7 @@ function createBaseMatchPerpetualLiquidation() {
     };
 }
 const MatchPerpetualLiquidation = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.liquidated !== undefined) {
             _subaccounts_subaccount_js__WEBPACK_IMPORTED_MODULE_3__/* .SubaccountId */ .D.encode(message.liquidated, writer.uint32(10).fork()).ldelim();
         }
@@ -372380,7 +383432,7 @@ const MatchPerpetualLiquidation = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseMatchPerpetualLiquidation();
         while (reader.pos < end) {
@@ -372431,7 +383483,7 @@ function createBaseMatchPerpetualDeleveraging() {
     };
 }
 const MatchPerpetualDeleveraging = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.liquidated !== undefined) {
             _subaccounts_subaccount_js__WEBPACK_IMPORTED_MODULE_3__/* .SubaccountId */ .D.encode(message.liquidated, writer.uint32(10).fork()).ldelim();
         }
@@ -372447,7 +383499,7 @@ const MatchPerpetualDeleveraging = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseMatchPerpetualDeleveraging();
         while (reader.pos < end) {
@@ -372488,7 +383540,7 @@ function createBaseMatchPerpetualDeleveraging_Fill() {
     };
 }
 const MatchPerpetualDeleveraging_Fill = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.offsettingSubaccountId !== undefined) {
             _subaccounts_subaccount_js__WEBPACK_IMPORTED_MODULE_3__/* .SubaccountId */ .D.encode(message.offsettingSubaccountId, writer.uint32(10).fork()).ldelim();
         }
@@ -372498,7 +383550,7 @@ const MatchPerpetualDeleveraging_Fill = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseMatchPerpetualDeleveraging_Fill();
         while (reader.pos < end) {
@@ -372539,7 +383591,8 @@ const MatchPerpetualDeleveraging_Fill = {
 /* unused harmony exports Order_Side, Order_SideSDKType, order_SideFromJSON, order_SideToJSON, Order_TimeInForce, Order_TimeInForceSDKType, order_TimeInForceFromJSON, order_TimeInForceToJSON, Order_ConditionType, Order_ConditionTypeSDKType, order_ConditionTypeFromJSON, order_ConditionTypeToJSON, OrdersFilledDuringLatestBlock, PotentiallyPrunableOrders, OrderFillState, StatefulOrderTimeSliceValue, LongTermOrderPlacement, TwapOrderPlacement, ConditionalOrderPlacement, TwapParameters, BuilderCodeParameters, TransactionOrdering, StreamLiquidationOrder */
 /* harmony import */ var _subaccounts_subaccount_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(9806);
 /* harmony import */ var _liquidations_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(9999);
-Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }());
+/* harmony import */ var protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6946);
+/* harmony import */ var protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _helpers_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(1291);
 /* harmony import */ var _helpers_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_helpers_js__WEBPACK_IMPORTED_MODULE_2__);
 
@@ -372722,7 +383775,7 @@ function createBaseOrderId() {
     };
 }
 const OrderId = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.subaccountId !== undefined) {
             _subaccounts_subaccount_js__WEBPACK_IMPORTED_MODULE_1__/* .SubaccountId */ .D.encode(message.subaccountId, writer.uint32(10).fork()).ldelim();
         }
@@ -372738,7 +383791,7 @@ const OrderId = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseOrderId();
         while (reader.pos < end) {
@@ -372778,14 +383831,14 @@ function createBaseOrdersFilledDuringLatestBlock() {
     };
 }
 const OrdersFilledDuringLatestBlock = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         for (const v of message.orderIds) {
             OrderId.encode(v, writer.uint32(10).fork()).ldelim();
         }
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseOrdersFilledDuringLatestBlock();
         while (reader.pos < end) {
@@ -372813,14 +383866,14 @@ function createBasePotentiallyPrunableOrders() {
     };
 }
 const PotentiallyPrunableOrders = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         for (const v of message.orderIds) {
             OrderId.encode(v, writer.uint32(10).fork()).ldelim();
         }
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBasePotentiallyPrunableOrders();
         while (reader.pos < end) {
@@ -372849,7 +383902,7 @@ function createBaseOrderFillState() {
     };
 }
 const OrderFillState = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (!message.fillAmount.isZero()) {
             writer.uint32(8).uint64(message.fillAmount);
         }
@@ -372859,7 +383912,7 @@ const OrderFillState = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseOrderFillState();
         while (reader.pos < end) {
@@ -372891,14 +383944,14 @@ function createBaseStatefulOrderTimeSliceValue() {
     };
 }
 const StatefulOrderTimeSliceValue = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         for (const v of message.orderIds) {
             OrderId.encode(v, writer.uint32(10).fork()).ldelim();
         }
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseStatefulOrderTimeSliceValue();
         while (reader.pos < end) {
@@ -372927,7 +383980,7 @@ function createBaseLongTermOrderPlacement() {
     };
 }
 const LongTermOrderPlacement = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.order !== undefined) {
             Order.encode(message.order, writer.uint32(10).fork()).ldelim();
         }
@@ -372937,7 +383990,7 @@ const LongTermOrderPlacement = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseLongTermOrderPlacement();
         while (reader.pos < end) {
@@ -372971,7 +384024,7 @@ function createBaseTwapOrderPlacement() {
     };
 }
 const TwapOrderPlacement = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.order !== undefined) {
             Order.encode(message.order, writer.uint32(10).fork()).ldelim();
         }
@@ -372984,7 +384037,7 @@ const TwapOrderPlacement = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseTwapOrderPlacement();
         while (reader.pos < end) {
@@ -373022,7 +384075,7 @@ function createBaseConditionalOrderPlacement() {
     };
 }
 const ConditionalOrderPlacement = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.order !== undefined) {
             Order.encode(message.order, writer.uint32(10).fork()).ldelim();
         }
@@ -373035,7 +384088,7 @@ const ConditionalOrderPlacement = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseConditionalOrderPlacement();
         while (reader.pos < end) {
@@ -373084,7 +384137,7 @@ function createBaseOrder() {
     };
 }
 const Order = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.orderId !== undefined) {
             OrderId.encode(message.orderId, writer.uint32(10).fork()).ldelim();
         }
@@ -373130,7 +384183,7 @@ const Order = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseOrder();
         while (reader.pos < end) {
@@ -373212,7 +384265,7 @@ function createBaseTwapParameters() {
     };
 }
 const TwapParameters = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.duration !== 0) {
             writer.uint32(8).uint32(message.duration);
         }
@@ -373225,7 +384278,7 @@ const TwapParameters = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseTwapParameters();
         while (reader.pos < end) {
@@ -373262,7 +384315,7 @@ function createBaseBuilderCodeParameters() {
     };
 }
 const BuilderCodeParameters = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.builderAddress !== "") {
             writer.uint32(10).string(message.builderAddress);
         }
@@ -373272,7 +384325,7 @@ const BuilderCodeParameters = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseBuilderCodeParameters();
         while (reader.pos < end) {
@@ -373305,7 +384358,7 @@ function createBaseTransactionOrdering() {
     };
 }
 const TransactionOrdering = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.blockHeight !== 0) {
             writer.uint32(8).uint32(message.blockHeight);
         }
@@ -373315,7 +384368,7 @@ const TransactionOrdering = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseTransactionOrdering();
         while (reader.pos < end) {
@@ -373351,7 +384404,7 @@ function createBaseStreamLiquidationOrder() {
     };
 }
 const StreamLiquidationOrder = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.liquidationInfo !== undefined) {
             _liquidations_js__WEBPACK_IMPORTED_MODULE_3__/* .PerpetualLiquidationInfo */ .mX.encode(message.liquidationInfo, writer.uint32(10).fork()).ldelim();
         }
@@ -373370,7 +384423,7 @@ const StreamLiquidationOrder = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseStreamLiquidationOrder();
         while (reader.pos < end) {
@@ -373421,7 +384474,8 @@ const StreamLiquidationOrder = {
 /* harmony export */ });
 /* unused harmony exports OrderRemoval_RemovalReason, OrderRemoval_RemovalReasonSDKType, orderRemoval_RemovalReasonFromJSON, orderRemoval_RemovalReasonToJSON */
 /* harmony import */ var _order_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7525);
-Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }());
+/* harmony import */ var protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6946);
+/* harmony import */ var protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0__);
 
 
 var OrderRemoval_RemovalReason;
@@ -373561,7 +384615,7 @@ function createBaseOrderRemoval() {
     };
 }
 const OrderRemoval = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.orderId !== undefined) {
             _order_js__WEBPACK_IMPORTED_MODULE_1__/* .OrderId */ .e3.encode(message.orderId, writer.uint32(10).fork()).ldelim();
         }
@@ -373571,7 +384625,7 @@ const OrderRemoval = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseOrderRemoval();
         while (reader.pos < end) {
@@ -373619,7 +384673,8 @@ const OrderRemoval = {
 /* harmony import */ var _liquidations_config_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(7648);
 /* harmony import */ var _matches_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(3200);
 /* harmony import */ var _order_removals_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(5425);
-Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }());
+/* harmony import */ var protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6946);
+/* harmony import */ var protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0__);
 
 
 
@@ -373636,7 +384691,7 @@ function createBaseMsgCreateClobPair() {
     };
 }
 const MsgCreateClobPair = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.authority !== "") {
             writer.uint32(10).string(message.authority);
         }
@@ -373646,7 +384701,7 @@ const MsgCreateClobPair = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseMsgCreateClobPair();
         while (reader.pos < end) {
@@ -373676,11 +384731,11 @@ function createBaseMsgCreateClobPairResponse() {
     return {};
 }
 const MsgCreateClobPairResponse = {
-    encode(_, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(_, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseMsgCreateClobPairResponse();
         while (reader.pos < end) {
@@ -373704,14 +384759,14 @@ function createBaseMsgProposedOperations() {
     };
 }
 const MsgProposedOperations = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         for (const v of message.operationsQueue) {
             OperationRaw.encode(v, writer.uint32(10).fork()).ldelim();
         }
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseMsgProposedOperations();
         while (reader.pos < end) {
@@ -373737,11 +384792,11 @@ function createBaseMsgProposedOperationsResponse() {
     return {};
 }
 const MsgProposedOperationsResponse = {
-    encode(_, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(_, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseMsgProposedOperationsResponse();
         while (reader.pos < end) {
@@ -373765,14 +384820,14 @@ function createBaseMsgPlaceOrder() {
     };
 }
 const MsgPlaceOrder = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.order !== undefined) {
             _order_js__WEBPACK_IMPORTED_MODULE_2__/* .Order */ .pH.encode(message.order, writer.uint32(10).fork()).ldelim();
         }
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseMsgPlaceOrder();
         while (reader.pos < end) {
@@ -373798,11 +384853,11 @@ function createBaseMsgPlaceOrderResponse() {
     return {};
 }
 const MsgPlaceOrderResponse = {
-    encode(_, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(_, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseMsgPlaceOrderResponse();
         while (reader.pos < end) {
@@ -373828,7 +384883,7 @@ function createBaseMsgCancelOrder() {
     };
 }
 const MsgCancelOrder = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.orderId !== undefined) {
             _order_js__WEBPACK_IMPORTED_MODULE_2__/* .OrderId */ .e3.encode(message.orderId, writer.uint32(10).fork()).ldelim();
         }
@@ -373841,7 +384896,7 @@ const MsgCancelOrder = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseMsgCancelOrder();
         while (reader.pos < end) {
@@ -373875,11 +384930,11 @@ function createBaseMsgCancelOrderResponse() {
     return {};
 }
 const MsgCancelOrderResponse = {
-    encode(_, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(_, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseMsgCancelOrderResponse();
         while (reader.pos < end) {
@@ -373905,7 +384960,7 @@ function createBaseMsgBatchCancel() {
     };
 }
 const MsgBatchCancel = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.subaccountId !== undefined) {
             _subaccounts_subaccount_js__WEBPACK_IMPORTED_MODULE_3__/* .SubaccountId */ .D.encode(message.subaccountId, writer.uint32(10).fork()).ldelim();
         }
@@ -373918,7 +384973,7 @@ const MsgBatchCancel = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseMsgBatchCancel();
         while (reader.pos < end) {
@@ -373955,7 +385010,7 @@ function createBaseOrderBatch() {
     };
 }
 const OrderBatch = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.clobPairId !== 0) {
             writer.uint32(8).uint32(message.clobPairId);
         }
@@ -373967,7 +385022,7 @@ const OrderBatch = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseOrderBatch();
         while (reader.pos < end) {
@@ -374008,7 +385063,7 @@ function createBaseMsgBatchCancelResponse() {
     };
 }
 const MsgBatchCancelResponse = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         for (const v of message.shortTermSucceeded) {
             OrderBatch.encode(v, writer.uint32(10).fork()).ldelim();
         }
@@ -374018,7 +385073,7 @@ const MsgBatchCancelResponse = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseMsgBatchCancelResponse();
         while (reader.pos < end) {
@@ -374051,7 +385106,7 @@ function createBaseMsgUpdateClobPair() {
     };
 }
 const MsgUpdateClobPair = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.authority !== "") {
             writer.uint32(10).string(message.authority);
         }
@@ -374061,7 +385116,7 @@ const MsgUpdateClobPair = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseMsgUpdateClobPair();
         while (reader.pos < end) {
@@ -374091,11 +385146,11 @@ function createBaseMsgUpdateClobPairResponse() {
     return {};
 }
 const MsgUpdateClobPairResponse = {
-    encode(_, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(_, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseMsgUpdateClobPairResponse();
         while (reader.pos < end) {
@@ -374121,7 +385176,7 @@ function createBaseOperationRaw() {
     };
 }
 const OperationRaw = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.match !== undefined) {
             _matches_js__WEBPACK_IMPORTED_MODULE_4__/* .ClobMatch */ .i0.encode(message.match, writer.uint32(10).fork()).ldelim();
         }
@@ -374134,7 +385189,7 @@ const OperationRaw = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseOperationRaw();
         while (reader.pos < end) {
@@ -374171,7 +385226,7 @@ function createBaseMsgUpdateEquityTierLimitConfiguration() {
     };
 }
 const MsgUpdateEquityTierLimitConfiguration = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.authority !== "") {
             writer.uint32(10).string(message.authority);
         }
@@ -374181,7 +385236,7 @@ const MsgUpdateEquityTierLimitConfiguration = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseMsgUpdateEquityTierLimitConfiguration();
         while (reader.pos < end) {
@@ -374211,11 +385266,11 @@ function createBaseMsgUpdateEquityTierLimitConfigurationResponse() {
     return {};
 }
 const MsgUpdateEquityTierLimitConfigurationResponse = {
-    encode(_, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(_, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseMsgUpdateEquityTierLimitConfigurationResponse();
         while (reader.pos < end) {
@@ -374240,7 +385295,7 @@ function createBaseMsgUpdateBlockRateLimitConfiguration() {
     };
 }
 const MsgUpdateBlockRateLimitConfiguration = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.authority !== "") {
             writer.uint32(10).string(message.authority);
         }
@@ -374250,7 +385305,7 @@ const MsgUpdateBlockRateLimitConfiguration = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseMsgUpdateBlockRateLimitConfiguration();
         while (reader.pos < end) {
@@ -374280,11 +385335,11 @@ function createBaseMsgUpdateBlockRateLimitConfigurationResponse() {
     return {};
 }
 const MsgUpdateBlockRateLimitConfigurationResponse = {
-    encode(_, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(_, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseMsgUpdateBlockRateLimitConfigurationResponse();
         while (reader.pos < end) {
@@ -374309,7 +385364,7 @@ function createBaseMsgUpdateLiquidationsConfig() {
     };
 }
 const MsgUpdateLiquidationsConfig = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.authority !== "") {
             writer.uint32(10).string(message.authority);
         }
@@ -374319,7 +385374,7 @@ const MsgUpdateLiquidationsConfig = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseMsgUpdateLiquidationsConfig();
         while (reader.pos < end) {
@@ -374349,11 +385404,11 @@ function createBaseMsgUpdateLiquidationsConfigResponse() {
     return {};
 }
 const MsgUpdateLiquidationsConfigResponse = {
-    encode(_, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(_, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseMsgUpdateLiquidationsConfigResponse();
         while (reader.pos < end) {
@@ -374389,7 +385444,8 @@ const MsgUpdateLiquidationsConfigResponse = {
 /* harmony import */ var _cosmos_base_v1beta1_coin_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(7021);
 /* harmony import */ var _helpers_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1291);
 /* harmony import */ var _helpers_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_helpers_js__WEBPACK_IMPORTED_MODULE_1__);
-Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }());
+/* harmony import */ var protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6946);
+/* harmony import */ var protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0__);
 
 
 
@@ -374403,7 +385459,7 @@ function createBaseTransfer() {
     };
 }
 const Transfer = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.sender !== undefined) {
             _subaccounts_subaccount_js__WEBPACK_IMPORTED_MODULE_2__/* .SubaccountId */ .D.encode(message.sender, writer.uint32(10).fork()).ldelim();
         }
@@ -374419,7 +385475,7 @@ const Transfer = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseTransfer();
         while (reader.pos < end) {
@@ -374462,7 +385518,7 @@ function createBaseMsgDepositToSubaccount() {
     };
 }
 const MsgDepositToSubaccount = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.sender !== "") {
             writer.uint32(10).string(message.sender);
         }
@@ -374478,7 +385534,7 @@ const MsgDepositToSubaccount = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseMsgDepositToSubaccount();
         while (reader.pos < end) {
@@ -374521,7 +385577,7 @@ function createBaseMsgWithdrawFromSubaccount() {
     };
 }
 const MsgWithdrawFromSubaccount = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.sender !== undefined) {
             _subaccounts_subaccount_js__WEBPACK_IMPORTED_MODULE_2__/* .SubaccountId */ .D.encode(message.sender, writer.uint32(18).fork()).ldelim();
         }
@@ -374537,7 +385593,7 @@ const MsgWithdrawFromSubaccount = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseMsgWithdrawFromSubaccount();
         while (reader.pos < end) {
@@ -374580,7 +385636,7 @@ function createBaseMsgSendFromModuleToAccount() {
     };
 }
 const MsgSendFromModuleToAccount = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.authority !== "") {
             writer.uint32(10).string(message.authority);
         }
@@ -374596,7 +385652,7 @@ const MsgSendFromModuleToAccount = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseMsgSendFromModuleToAccount();
         while (reader.pos < end) {
@@ -374643,7 +385699,8 @@ const MsgSendFromModuleToAccount = {
 /* harmony export */ });
 /* unused harmony exports MsgCreateTransferResponse, MsgDepositToSubaccountResponse, MsgWithdrawFromSubaccountResponse, MsgSendFromModuleToAccountResponse */
 /* harmony import */ var _transfer_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(6951);
-Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }());
+/* harmony import */ var protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6946);
+/* harmony import */ var protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0__);
 
 
 function createBaseMsgCreateTransfer() {
@@ -374652,14 +385709,14 @@ function createBaseMsgCreateTransfer() {
     };
 }
 const MsgCreateTransfer = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.transfer !== undefined) {
             _transfer_js__WEBPACK_IMPORTED_MODULE_1__/* .Transfer */ .mr.encode(message.transfer, writer.uint32(10).fork()).ldelim();
         }
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseMsgCreateTransfer();
         while (reader.pos < end) {
@@ -374685,11 +385742,11 @@ function createBaseMsgCreateTransferResponse() {
     return {};
 }
 const MsgCreateTransferResponse = {
-    encode(_, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(_, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseMsgCreateTransferResponse();
         while (reader.pos < end) {
@@ -374711,11 +385768,11 @@ function createBaseMsgDepositToSubaccountResponse() {
     return {};
 }
 const MsgDepositToSubaccountResponse = {
-    encode(_, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(_, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseMsgDepositToSubaccountResponse();
         while (reader.pos < end) {
@@ -374737,11 +385794,11 @@ function createBaseMsgWithdrawFromSubaccountResponse() {
     return {};
 }
 const MsgWithdrawFromSubaccountResponse = {
-    encode(_, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(_, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseMsgWithdrawFromSubaccountResponse();
         while (reader.pos < end) {
@@ -374763,11 +385820,11 @@ function createBaseMsgSendFromModuleToAccountResponse() {
     return {};
 }
 const MsgSendFromModuleToAccountResponse = {
-    encode(_, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(_, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseMsgSendFromModuleToAccountResponse();
         while (reader.pos < end) {
@@ -374798,7 +385855,8 @@ const MsgSendFromModuleToAccountResponse = {
 /* harmony export */ });
 /* harmony import */ var _helpers_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1291);
 /* harmony import */ var _helpers_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_helpers_js__WEBPACK_IMPORTED_MODULE_1__);
-Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }());
+/* harmony import */ var protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6946);
+/* harmony import */ var protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0__);
 
 
 function createBaseAssetPosition() {
@@ -374809,7 +385867,7 @@ function createBaseAssetPosition() {
     };
 }
 const AssetPosition = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0__.Writer.create()) {
         if (message.assetId !== 0) {
             writer.uint32(8).uint32(message.assetId);
         }
@@ -374822,7 +385880,7 @@ const AssetPosition = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0__.Reader ? input : new protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0__.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseAssetPosition();
         while (reader.pos < end) {
@@ -374863,7 +385921,8 @@ const AssetPosition = {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   c: () => (/* binding */ PerpetualPosition)
 /* harmony export */ });
-Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }());
+/* harmony import */ var protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6946);
+/* harmony import */ var protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0__);
 
 function createBasePerpetualPosition() {
     return {
@@ -374874,7 +385933,7 @@ function createBasePerpetualPosition() {
     };
 }
 const PerpetualPosition = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0__.Writer.create()) {
         if (message.perpetualId !== 0) {
             writer.uint32(8).uint32(message.perpetualId);
         }
@@ -374890,7 +385949,7 @@ const PerpetualPosition = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0__.Reader ? input : new protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0__.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBasePerpetualPosition();
         while (reader.pos < end) {
@@ -374938,7 +385997,8 @@ const PerpetualPosition = {
 /* unused harmony export Subaccount */
 /* harmony import */ var _asset_position_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1265);
 /* harmony import */ var _perpetual_position_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(9171);
-Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }());
+/* harmony import */ var protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6946);
+/* harmony import */ var protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0__);
 
 
 
@@ -374949,7 +386009,7 @@ function createBaseSubaccountId() {
     };
 }
 const SubaccountId = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.owner !== "") {
             writer.uint32(10).string(message.owner);
         }
@@ -374959,7 +386019,7 @@ const SubaccountId = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseSubaccountId();
         while (reader.pos < end) {
@@ -374994,7 +386054,7 @@ function createBaseSubaccount() {
     };
 }
 const Subaccount = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.id !== undefined) {
             SubaccountId.encode(message.id, writer.uint32(10).fork()).ldelim();
         }
@@ -375010,7 +386070,7 @@ const Subaccount = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseSubaccount();
         while (reader.pos < end) {
@@ -375055,7 +386115,8 @@ const Subaccount = {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   F: () => (/* binding */ Any)
 /* harmony export */ });
-Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }());
+/* harmony import */ var protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6946);
+/* harmony import */ var protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0__);
 
 function createBaseAny() {
     return {
@@ -375064,7 +386125,7 @@ function createBaseAny() {
     };
 }
 const Any = {
-    encode(message, writer = Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()).create()) {
+    encode(message, writer = protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Writer.create()) {
         if (message.typeUrl !== "") {
             writer.uint32(10).string(message.typeUrl);
         }
@@ -375074,7 +386135,7 @@ const Any = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()) ? input : new Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(input);
+        const reader = input instanceof (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader) ? input : new (protobufjs_minimal_js__WEBPACK_IMPORTED_MODULE_0___default().Reader)(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseAny();
         while (reader.pos < end) {
@@ -413275,7 +424336,7 @@ class whitebit extends _abstract_whitebit_js__WEBPACK_IMPORTED_MODULE_0__/* ["de
         //         { ... }                                 // More withdrawal transactions
         //     ]
         //
-        return this.parseTransactions(response, currency, since, limit);
+        return this.parseTransactions(this.safeList(response, 'records', []), currency, since, limit);
     }
     /**
      * @method
@@ -413614,7 +424675,7 @@ class whitebit extends _abstract_whitebit_js__WEBPACK_IMPORTED_MODULE_0__/* ["de
         //
         //     []
         //
-        return this.extend({ 'id': uniqueId }, this.parseTransaction(response, currency));
+        return this.extend(this.parseTransaction(response, currency), { 'id': uniqueId });
     }
     parseTransaction(transaction, currency = undefined) {
         //
@@ -433424,7 +444485,7 @@ module.exports = function () {
 /*eslint-disable block-scoped-var, id-length, no-control-regex, no-magic-numbers, no-prototype-builtins, no-redeclare, no-shadow, no-var, sort-vars*/
 
 
-var $protobuf = __webpack_require__(Object(function webpackMissingModule() { var e = new Error("Cannot find module 'protobufjs/minimal'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+var $protobuf = __webpack_require__(6946);
 
 // Common aliases
 var $Reader = $protobuf.Reader, $Writer = $protobuf.Writer, $util = $protobuf.util;
@@ -451535,6 +462596,18 @@ async function __wbg_init(input) {
 /******/ 		};
 /******/ 	})();
 /******/ 	
+/******/ 	/* webpack/runtime/global */
+/******/ 	(() => {
+/******/ 		__webpack_require__.g = (function() {
+/******/ 			if (typeof globalThis === 'object') return globalThis;
+/******/ 			try {
+/******/ 				return this || new Function('return this')();
+/******/ 			} catch (e) {
+/******/ 				if (typeof window === 'object') return window;
+/******/ 			}
+/******/ 		})();
+/******/ 	})();
+/******/ 	
 /******/ 	/* webpack/runtime/hasOwnProperty shorthand */
 /******/ 	(() => {
 /******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
@@ -451558,356 +462631,360 @@ var __webpack_exports__ = {};
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   AccountNotEnabled: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_189_.AccountNotEnabled),
-/* harmony export */   AccountSuspended: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_189_.AccountSuspended),
-/* harmony export */   AddressPending: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_189_.AddressPending),
-/* harmony export */   ArgumentsRequired: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_189_.ArgumentsRequired),
-/* harmony export */   AuthenticationError: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_189_.AuthenticationError),
-/* harmony export */   BadRequest: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_189_.BadRequest),
-/* harmony export */   BadResponse: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_189_.BadResponse),
-/* harmony export */   BadSymbol: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_189_.BadSymbol),
-/* harmony export */   BaseError: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_189_.BaseError),
-/* harmony export */   CancelPending: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_189_.CancelPending),
-/* harmony export */   ChecksumError: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_189_.ChecksumError),
-/* harmony export */   ContractUnavailable: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_189_.ContractUnavailable),
-/* harmony export */   DDoSProtection: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_189_.DDoSProtection),
-/* harmony export */   DuplicateOrderId: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_189_.DuplicateOrderId),
+/* harmony export */   AccountNotEnabled: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_192_.AccountNotEnabled),
+/* harmony export */   AccountSuspended: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_192_.AccountSuspended),
+/* harmony export */   AddressPending: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_192_.AddressPending),
+/* harmony export */   ArgumentsRequired: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_192_.ArgumentsRequired),
+/* harmony export */   AuthenticationError: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_192_.AuthenticationError),
+/* harmony export */   BadRequest: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_192_.BadRequest),
+/* harmony export */   BadResponse: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_192_.BadResponse),
+/* harmony export */   BadSymbol: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_192_.BadSymbol),
+/* harmony export */   BaseError: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_192_.BaseError),
+/* harmony export */   CancelPending: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_192_.CancelPending),
+/* harmony export */   ChecksumError: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_192_.ChecksumError),
+/* harmony export */   ContractUnavailable: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_192_.ContractUnavailable),
+/* harmony export */   DDoSProtection: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_192_.DDoSProtection),
+/* harmony export */   DuplicateOrderId: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_192_.DuplicateOrderId),
 /* harmony export */   Exchange: () => (/* reexport safe */ ccxt_src_base_Exchange_js_WEBPACK_IMPORTED_MODULE_0_.k),
-/* harmony export */   ExchangeClosedByUser: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_189_.ExchangeClosedByUser),
-/* harmony export */   ExchangeError: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_189_.ExchangeError),
-/* harmony export */   ExchangeNotAvailable: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_189_.ExchangeNotAvailable),
-/* harmony export */   InsufficientFunds: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_189_.InsufficientFunds),
-/* harmony export */   InvalidAddress: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_189_.InvalidAddress),
-/* harmony export */   InvalidNonce: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_189_.InvalidNonce),
-/* harmony export */   InvalidOrder: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_189_.InvalidOrder),
-/* harmony export */   InvalidProxySettings: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_189_.InvalidProxySettings),
-/* harmony export */   ManualInteractionNeeded: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_189_.ManualInteractionNeeded),
-/* harmony export */   MarginModeAlreadySet: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_189_.MarginModeAlreadySet),
-/* harmony export */   MarketClosed: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_189_.MarketClosed),
-/* harmony export */   NetworkError: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_189_.NetworkError),
-/* harmony export */   NoChange: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_189_.NoChange),
-/* harmony export */   NotSupported: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_189_.NotSupported),
-/* harmony export */   NullResponse: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_189_.NullResponse),
-/* harmony export */   OnMaintenance: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_189_.OnMaintenance),
-/* harmony export */   OperationFailed: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_189_.OperationFailed),
-/* harmony export */   OperationRejected: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_189_.OperationRejected),
-/* harmony export */   OrderImmediatelyFillable: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_189_.OrderImmediatelyFillable),
-/* harmony export */   OrderNotCached: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_189_.OrderNotCached),
-/* harmony export */   OrderNotFillable: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_189_.OrderNotFillable),
-/* harmony export */   OrderNotFound: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_189_.OrderNotFound),
-/* harmony export */   PermissionDenied: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_189_.PermissionDenied),
-/* harmony export */   Precise: () => (/* reexport safe */ ccxt_src_base_Precise_js_WEBPACK_IMPORTED_MODULE_187_.Y),
-/* harmony export */   RateLimitExceeded: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_189_.RateLimitExceeded),
-/* harmony export */   RequestTimeout: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_189_.RequestTimeout),
-/* harmony export */   RestrictedLocation: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_189_.RestrictedLocation),
-/* harmony export */   UnsubscribeError: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_189_.UnsubscribeError),
+/* harmony export */   ExchangeClosedByUser: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_192_.ExchangeClosedByUser),
+/* harmony export */   ExchangeError: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_192_.ExchangeError),
+/* harmony export */   ExchangeNotAvailable: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_192_.ExchangeNotAvailable),
+/* harmony export */   InsufficientFunds: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_192_.InsufficientFunds),
+/* harmony export */   InvalidAddress: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_192_.InvalidAddress),
+/* harmony export */   InvalidNonce: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_192_.InvalidNonce),
+/* harmony export */   InvalidOrder: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_192_.InvalidOrder),
+/* harmony export */   InvalidProxySettings: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_192_.InvalidProxySettings),
+/* harmony export */   ManualInteractionNeeded: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_192_.ManualInteractionNeeded),
+/* harmony export */   MarginModeAlreadySet: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_192_.MarginModeAlreadySet),
+/* harmony export */   MarketClosed: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_192_.MarketClosed),
+/* harmony export */   NetworkError: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_192_.NetworkError),
+/* harmony export */   NoChange: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_192_.NoChange),
+/* harmony export */   NotSupported: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_192_.NotSupported),
+/* harmony export */   NullResponse: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_192_.NullResponse),
+/* harmony export */   OnMaintenance: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_192_.OnMaintenance),
+/* harmony export */   OperationFailed: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_192_.OperationFailed),
+/* harmony export */   OperationRejected: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_192_.OperationRejected),
+/* harmony export */   OrderImmediatelyFillable: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_192_.OrderImmediatelyFillable),
+/* harmony export */   OrderNotCached: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_192_.OrderNotCached),
+/* harmony export */   OrderNotFillable: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_192_.OrderNotFillable),
+/* harmony export */   OrderNotFound: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_192_.OrderNotFound),
+/* harmony export */   PermissionDenied: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_192_.PermissionDenied),
+/* harmony export */   Precise: () => (/* reexport safe */ ccxt_src_base_Precise_js_WEBPACK_IMPORTED_MODULE_190_.Y),
+/* harmony export */   RateLimitExceeded: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_192_.RateLimitExceeded),
+/* harmony export */   RequestTimeout: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_192_.RequestTimeout),
+/* harmony export */   RestrictedLocation: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_192_.RestrictedLocation),
+/* harmony export */   UnsubscribeError: () => (/* reexport safe */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_192_.UnsubscribeError),
 /* harmony export */   alpaca: () => (/* reexport safe */ ccxt_src_alpaca_js_WEBPACK_IMPORTED_MODULE_1_.A),
 /* harmony export */   apex: () => (/* reexport safe */ ccxt_src_apex_js_WEBPACK_IMPORTED_MODULE_2_.A),
 /* harmony export */   arkham: () => (/* reexport safe */ ccxt_src_arkham_js_WEBPACK_IMPORTED_MODULE_3_.A),
 /* harmony export */   ascendex: () => (/* reexport safe */ ccxt_src_ascendex_js_WEBPACK_IMPORTED_MODULE_4_.A),
-/* harmony export */   backpack: () => (/* reexport safe */ ccxt_src_backpack_js_WEBPACK_IMPORTED_MODULE_5_.A),
-/* harmony export */   bequant: () => (/* reexport safe */ ccxt_src_bequant_js_WEBPACK_IMPORTED_MODULE_6_.A),
-/* harmony export */   bigone: () => (/* reexport safe */ ccxt_src_bigone_js_WEBPACK_IMPORTED_MODULE_7_.A),
-/* harmony export */   binance: () => (/* reexport safe */ ccxt_src_binance_js_WEBPACK_IMPORTED_MODULE_8_.A),
-/* harmony export */   binancecoinm: () => (/* reexport safe */ ccxt_src_binancecoinm_js_WEBPACK_IMPORTED_MODULE_9_.A),
-/* harmony export */   binanceus: () => (/* reexport safe */ ccxt_src_binanceus_js_WEBPACK_IMPORTED_MODULE_10_.A),
-/* harmony export */   binanceusdm: () => (/* reexport safe */ ccxt_src_binanceusdm_js_WEBPACK_IMPORTED_MODULE_11_.A),
-/* harmony export */   bingx: () => (/* reexport safe */ ccxt_src_bingx_js_WEBPACK_IMPORTED_MODULE_12_.A),
-/* harmony export */   bit2c: () => (/* reexport safe */ ccxt_src_bit2c_js_WEBPACK_IMPORTED_MODULE_13_.A),
-/* harmony export */   bitbank: () => (/* reexport safe */ ccxt_src_bitbank_js_WEBPACK_IMPORTED_MODULE_14_.A),
-/* harmony export */   bitbns: () => (/* reexport safe */ ccxt_src_bitbns_js_WEBPACK_IMPORTED_MODULE_15_.A),
-/* harmony export */   bitfinex: () => (/* reexport safe */ ccxt_src_bitfinex_js_WEBPACK_IMPORTED_MODULE_16_.A),
-/* harmony export */   bitflyer: () => (/* reexport safe */ ccxt_src_bitflyer_js_WEBPACK_IMPORTED_MODULE_17_.A),
-/* harmony export */   bitget: () => (/* reexport safe */ ccxt_src_bitget_js_WEBPACK_IMPORTED_MODULE_18_.A),
-/* harmony export */   bithumb: () => (/* reexport safe */ ccxt_src_bithumb_js_WEBPACK_IMPORTED_MODULE_19_.A),
-/* harmony export */   bitmart: () => (/* reexport safe */ ccxt_src_bitmart_js_WEBPACK_IMPORTED_MODULE_20_.A),
-/* harmony export */   bitmex: () => (/* reexport safe */ ccxt_src_bitmex_js_WEBPACK_IMPORTED_MODULE_21_.A),
-/* harmony export */   bitopro: () => (/* reexport safe */ ccxt_src_bitopro_js_WEBPACK_IMPORTED_MODULE_22_.A),
-/* harmony export */   bitrue: () => (/* reexport safe */ ccxt_src_bitrue_js_WEBPACK_IMPORTED_MODULE_23_.A),
-/* harmony export */   bitso: () => (/* reexport safe */ ccxt_src_bitso_js_WEBPACK_IMPORTED_MODULE_24_.A),
-/* harmony export */   bitstamp: () => (/* reexport safe */ ccxt_src_bitstamp_js_WEBPACK_IMPORTED_MODULE_25_.A),
-/* harmony export */   bitteam: () => (/* reexport safe */ ccxt_src_bitteam_js_WEBPACK_IMPORTED_MODULE_26_.A),
-/* harmony export */   bittrade: () => (/* reexport safe */ ccxt_src_bittrade_js_WEBPACK_IMPORTED_MODULE_27_.A),
-/* harmony export */   bitvavo: () => (/* reexport safe */ ccxt_src_bitvavo_js_WEBPACK_IMPORTED_MODULE_28_.A),
-/* harmony export */   blockchaincom: () => (/* reexport safe */ ccxt_src_blockchaincom_js_WEBPACK_IMPORTED_MODULE_29_.A),
-/* harmony export */   blofin: () => (/* reexport safe */ ccxt_src_blofin_js_WEBPACK_IMPORTED_MODULE_30_.A),
-/* harmony export */   btcalpha: () => (/* reexport safe */ ccxt_src_btcalpha_js_WEBPACK_IMPORTED_MODULE_31_.A),
-/* harmony export */   btcbox: () => (/* reexport safe */ ccxt_src_btcbox_js_WEBPACK_IMPORTED_MODULE_32_.A),
-/* harmony export */   btcmarkets: () => (/* reexport safe */ ccxt_src_btcmarkets_js_WEBPACK_IMPORTED_MODULE_33_.A),
-/* harmony export */   btcturk: () => (/* reexport safe */ ccxt_src_btcturk_js_WEBPACK_IMPORTED_MODULE_34_.A),
-/* harmony export */   bullish: () => (/* reexport safe */ ccxt_src_bullish_js_WEBPACK_IMPORTED_MODULE_35_.A),
-/* harmony export */   bybit: () => (/* reexport safe */ ccxt_src_bybit_js_WEBPACK_IMPORTED_MODULE_36_.A),
-/* harmony export */   cex: () => (/* reexport safe */ ccxt_src_cex_js_WEBPACK_IMPORTED_MODULE_37_.A),
-/* harmony export */   coinbase: () => (/* reexport safe */ ccxt_src_coinbase_js_WEBPACK_IMPORTED_MODULE_38_.A),
-/* harmony export */   coinbaseadvanced: () => (/* reexport safe */ ccxt_src_coinbaseadvanced_js_WEBPACK_IMPORTED_MODULE_39_.A),
-/* harmony export */   coinbaseexchange: () => (/* reexport safe */ ccxt_src_coinbaseexchange_js_WEBPACK_IMPORTED_MODULE_40_.A),
-/* harmony export */   coinbaseinternational: () => (/* reexport safe */ ccxt_src_coinbaseinternational_js_WEBPACK_IMPORTED_MODULE_41_.A),
-/* harmony export */   coincatch: () => (/* reexport safe */ ccxt_src_coincatch_js_WEBPACK_IMPORTED_MODULE_42_.A),
-/* harmony export */   coincheck: () => (/* reexport safe */ ccxt_src_coincheck_js_WEBPACK_IMPORTED_MODULE_43_.A),
-/* harmony export */   coinex: () => (/* reexport safe */ ccxt_src_coinex_js_WEBPACK_IMPORTED_MODULE_44_.A),
-/* harmony export */   coinmate: () => (/* reexport safe */ ccxt_src_coinmate_js_WEBPACK_IMPORTED_MODULE_45_.A),
-/* harmony export */   coinmetro: () => (/* reexport safe */ ccxt_src_coinmetro_js_WEBPACK_IMPORTED_MODULE_46_.A),
-/* harmony export */   coinone: () => (/* reexport safe */ ccxt_src_coinone_js_WEBPACK_IMPORTED_MODULE_47_.A),
-/* harmony export */   coinsph: () => (/* reexport safe */ ccxt_src_coinsph_js_WEBPACK_IMPORTED_MODULE_48_.A),
-/* harmony export */   coinspot: () => (/* reexport safe */ ccxt_src_coinspot_js_WEBPACK_IMPORTED_MODULE_49_.A),
-/* harmony export */   cryptocom: () => (/* reexport safe */ ccxt_src_cryptocom_js_WEBPACK_IMPORTED_MODULE_50_.A),
-/* harmony export */   cryptomus: () => (/* reexport safe */ ccxt_src_cryptomus_js_WEBPACK_IMPORTED_MODULE_51_.A),
-/* harmony export */   deepcoin: () => (/* reexport safe */ ccxt_src_deepcoin_js_WEBPACK_IMPORTED_MODULE_52_.A),
+/* harmony export */   aster: () => (/* reexport safe */ ccxt_src_aster_js_WEBPACK_IMPORTED_MODULE_5_.A),
+/* harmony export */   backpack: () => (/* reexport safe */ ccxt_src_backpack_js_WEBPACK_IMPORTED_MODULE_6_.A),
+/* harmony export */   bequant: () => (/* reexport safe */ ccxt_src_bequant_js_WEBPACK_IMPORTED_MODULE_7_.A),
+/* harmony export */   bigone: () => (/* reexport safe */ ccxt_src_bigone_js_WEBPACK_IMPORTED_MODULE_8_.A),
+/* harmony export */   binance: () => (/* reexport safe */ ccxt_src_binance_js_WEBPACK_IMPORTED_MODULE_9_.A),
+/* harmony export */   binancecoinm: () => (/* reexport safe */ ccxt_src_binancecoinm_js_WEBPACK_IMPORTED_MODULE_10_.A),
+/* harmony export */   binanceus: () => (/* reexport safe */ ccxt_src_binanceus_js_WEBPACK_IMPORTED_MODULE_11_.A),
+/* harmony export */   binanceusdm: () => (/* reexport safe */ ccxt_src_binanceusdm_js_WEBPACK_IMPORTED_MODULE_12_.A),
+/* harmony export */   bingx: () => (/* reexport safe */ ccxt_src_bingx_js_WEBPACK_IMPORTED_MODULE_13_.A),
+/* harmony export */   bit2c: () => (/* reexport safe */ ccxt_src_bit2c_js_WEBPACK_IMPORTED_MODULE_14_.A),
+/* harmony export */   bitbank: () => (/* reexport safe */ ccxt_src_bitbank_js_WEBPACK_IMPORTED_MODULE_15_.A),
+/* harmony export */   bitbns: () => (/* reexport safe */ ccxt_src_bitbns_js_WEBPACK_IMPORTED_MODULE_16_.A),
+/* harmony export */   bitfinex: () => (/* reexport safe */ ccxt_src_bitfinex_js_WEBPACK_IMPORTED_MODULE_17_.A),
+/* harmony export */   bitflyer: () => (/* reexport safe */ ccxt_src_bitflyer_js_WEBPACK_IMPORTED_MODULE_18_.A),
+/* harmony export */   bitget: () => (/* reexport safe */ ccxt_src_bitget_js_WEBPACK_IMPORTED_MODULE_19_.A),
+/* harmony export */   bithumb: () => (/* reexport safe */ ccxt_src_bithumb_js_WEBPACK_IMPORTED_MODULE_20_.A),
+/* harmony export */   bitmart: () => (/* reexport safe */ ccxt_src_bitmart_js_WEBPACK_IMPORTED_MODULE_21_.A),
+/* harmony export */   bitmex: () => (/* reexport safe */ ccxt_src_bitmex_js_WEBPACK_IMPORTED_MODULE_22_.A),
+/* harmony export */   bitopro: () => (/* reexport safe */ ccxt_src_bitopro_js_WEBPACK_IMPORTED_MODULE_23_.A),
+/* harmony export */   bitrue: () => (/* reexport safe */ ccxt_src_bitrue_js_WEBPACK_IMPORTED_MODULE_24_.A),
+/* harmony export */   bitso: () => (/* reexport safe */ ccxt_src_bitso_js_WEBPACK_IMPORTED_MODULE_25_.A),
+/* harmony export */   bitstamp: () => (/* reexport safe */ ccxt_src_bitstamp_js_WEBPACK_IMPORTED_MODULE_26_.A),
+/* harmony export */   bitteam: () => (/* reexport safe */ ccxt_src_bitteam_js_WEBPACK_IMPORTED_MODULE_27_.A),
+/* harmony export */   bittrade: () => (/* reexport safe */ ccxt_src_bittrade_js_WEBPACK_IMPORTED_MODULE_28_.A),
+/* harmony export */   bitvavo: () => (/* reexport safe */ ccxt_src_bitvavo_js_WEBPACK_IMPORTED_MODULE_29_.A),
+/* harmony export */   blockchaincom: () => (/* reexport safe */ ccxt_src_blockchaincom_js_WEBPACK_IMPORTED_MODULE_30_.A),
+/* harmony export */   blofin: () => (/* reexport safe */ ccxt_src_blofin_js_WEBPACK_IMPORTED_MODULE_31_.A),
+/* harmony export */   btcalpha: () => (/* reexport safe */ ccxt_src_btcalpha_js_WEBPACK_IMPORTED_MODULE_32_.A),
+/* harmony export */   btcbox: () => (/* reexport safe */ ccxt_src_btcbox_js_WEBPACK_IMPORTED_MODULE_33_.A),
+/* harmony export */   btcmarkets: () => (/* reexport safe */ ccxt_src_btcmarkets_js_WEBPACK_IMPORTED_MODULE_34_.A),
+/* harmony export */   btcturk: () => (/* reexport safe */ ccxt_src_btcturk_js_WEBPACK_IMPORTED_MODULE_35_.A),
+/* harmony export */   bullish: () => (/* reexport safe */ ccxt_src_bullish_js_WEBPACK_IMPORTED_MODULE_36_.A),
+/* harmony export */   bybit: () => (/* reexport safe */ ccxt_src_bybit_js_WEBPACK_IMPORTED_MODULE_37_.A),
+/* harmony export */   bydfi: () => (/* reexport safe */ ccxt_src_bydfi_js_WEBPACK_IMPORTED_MODULE_38_.A),
+/* harmony export */   cex: () => (/* reexport safe */ ccxt_src_cex_js_WEBPACK_IMPORTED_MODULE_39_.A),
+/* harmony export */   coinbase: () => (/* reexport safe */ ccxt_src_coinbase_js_WEBPACK_IMPORTED_MODULE_40_.A),
+/* harmony export */   coinbaseadvanced: () => (/* reexport safe */ ccxt_src_coinbaseadvanced_js_WEBPACK_IMPORTED_MODULE_41_.A),
+/* harmony export */   coinbaseexchange: () => (/* reexport safe */ ccxt_src_coinbaseexchange_js_WEBPACK_IMPORTED_MODULE_42_.A),
+/* harmony export */   coinbaseinternational: () => (/* reexport safe */ ccxt_src_coinbaseinternational_js_WEBPACK_IMPORTED_MODULE_43_.A),
+/* harmony export */   coincatch: () => (/* reexport safe */ ccxt_src_coincatch_js_WEBPACK_IMPORTED_MODULE_44_.A),
+/* harmony export */   coincheck: () => (/* reexport safe */ ccxt_src_coincheck_js_WEBPACK_IMPORTED_MODULE_45_.A),
+/* harmony export */   coinex: () => (/* reexport safe */ ccxt_src_coinex_js_WEBPACK_IMPORTED_MODULE_46_.A),
+/* harmony export */   coinmate: () => (/* reexport safe */ ccxt_src_coinmate_js_WEBPACK_IMPORTED_MODULE_47_.A),
+/* harmony export */   coinmetro: () => (/* reexport safe */ ccxt_src_coinmetro_js_WEBPACK_IMPORTED_MODULE_48_.A),
+/* harmony export */   coinone: () => (/* reexport safe */ ccxt_src_coinone_js_WEBPACK_IMPORTED_MODULE_49_.A),
+/* harmony export */   coinsph: () => (/* reexport safe */ ccxt_src_coinsph_js_WEBPACK_IMPORTED_MODULE_50_.A),
+/* harmony export */   coinspot: () => (/* reexport safe */ ccxt_src_coinspot_js_WEBPACK_IMPORTED_MODULE_51_.A),
+/* harmony export */   cryptocom: () => (/* reexport safe */ ccxt_src_cryptocom_js_WEBPACK_IMPORTED_MODULE_52_.A),
+/* harmony export */   cryptomus: () => (/* reexport safe */ ccxt_src_cryptomus_js_WEBPACK_IMPORTED_MODULE_53_.A),
+/* harmony export */   deepcoin: () => (/* reexport safe */ ccxt_src_deepcoin_js_WEBPACK_IMPORTED_MODULE_54_.A),
 /* harmony export */   "default": () => (ts_ccxt),
-/* harmony export */   defx: () => (/* reexport safe */ ccxt_src_defx_js_WEBPACK_IMPORTED_MODULE_53_.A),
-/* harmony export */   delta: () => (/* reexport safe */ ccxt_src_delta_js_WEBPACK_IMPORTED_MODULE_54_.A),
-/* harmony export */   deribit: () => (/* reexport safe */ ccxt_src_deribit_js_WEBPACK_IMPORTED_MODULE_55_.A),
-/* harmony export */   derive: () => (/* reexport safe */ ccxt_src_derive_js_WEBPACK_IMPORTED_MODULE_56_.A),
-/* harmony export */   digifinex: () => (/* reexport safe */ ccxt_src_digifinex_js_WEBPACK_IMPORTED_MODULE_57_.A),
-/* harmony export */   dydx: () => (/* reexport safe */ ccxt_src_dydx_js_WEBPACK_IMPORTED_MODULE_58_.A),
-/* harmony export */   errors: () => (/* reexport module object */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_189_),
+/* harmony export */   defx: () => (/* reexport safe */ ccxt_src_defx_js_WEBPACK_IMPORTED_MODULE_55_.A),
+/* harmony export */   delta: () => (/* reexport safe */ ccxt_src_delta_js_WEBPACK_IMPORTED_MODULE_56_.A),
+/* harmony export */   deribit: () => (/* reexport safe */ ccxt_src_deribit_js_WEBPACK_IMPORTED_MODULE_57_.A),
+/* harmony export */   derive: () => (/* reexport safe */ ccxt_src_derive_js_WEBPACK_IMPORTED_MODULE_58_.A),
+/* harmony export */   digifinex: () => (/* reexport safe */ ccxt_src_digifinex_js_WEBPACK_IMPORTED_MODULE_59_.A),
+/* harmony export */   dydx: () => (/* reexport safe */ ccxt_src_dydx_js_WEBPACK_IMPORTED_MODULE_60_.A),
+/* harmony export */   errors: () => (/* reexport module object */ ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_192_),
 /* harmony export */   exchanges: () => (/* binding */ ccxt_exchanges),
-/* harmony export */   exmo: () => (/* reexport safe */ ccxt_src_exmo_js_WEBPACK_IMPORTED_MODULE_59_.A),
-/* harmony export */   fmfwio: () => (/* reexport safe */ ccxt_src_fmfwio_js_WEBPACK_IMPORTED_MODULE_60_.A),
-/* harmony export */   foxbit: () => (/* reexport safe */ ccxt_src_foxbit_js_WEBPACK_IMPORTED_MODULE_61_.A),
-/* harmony export */   functions: () => (/* reexport module object */ ccxt_src_base_functions_js_WEBPACK_IMPORTED_MODULE_188_),
-/* harmony export */   gate: () => (/* reexport safe */ ccxt_src_gate_js_WEBPACK_IMPORTED_MODULE_62_.A),
-/* harmony export */   gateio: () => (/* reexport safe */ ccxt_src_gateio_js_WEBPACK_IMPORTED_MODULE_63_.A),
-/* harmony export */   gemini: () => (/* reexport safe */ ccxt_src_gemini_js_WEBPACK_IMPORTED_MODULE_64_.A),
-/* harmony export */   hashkey: () => (/* reexport safe */ ccxt_src_hashkey_js_WEBPACK_IMPORTED_MODULE_65_.A),
-/* harmony export */   hibachi: () => (/* reexport safe */ ccxt_src_hibachi_js_WEBPACK_IMPORTED_MODULE_66_.A),
-/* harmony export */   hitbtc: () => (/* reexport safe */ ccxt_src_hitbtc_js_WEBPACK_IMPORTED_MODULE_67_.A),
-/* harmony export */   hollaex: () => (/* reexport safe */ ccxt_src_hollaex_js_WEBPACK_IMPORTED_MODULE_68_.A),
-/* harmony export */   htx: () => (/* reexport safe */ ccxt_src_htx_js_WEBPACK_IMPORTED_MODULE_69_.A),
-/* harmony export */   huobi: () => (/* reexport safe */ ccxt_src_huobi_js_WEBPACK_IMPORTED_MODULE_70_.A),
-/* harmony export */   hyperliquid: () => (/* reexport safe */ ccxt_src_hyperliquid_js_WEBPACK_IMPORTED_MODULE_71_.A),
-/* harmony export */   independentreserve: () => (/* reexport safe */ ccxt_src_independentreserve_js_WEBPACK_IMPORTED_MODULE_72_.A),
-/* harmony export */   indodax: () => (/* reexport safe */ ccxt_src_indodax_js_WEBPACK_IMPORTED_MODULE_73_.A),
-/* harmony export */   kraken: () => (/* reexport safe */ ccxt_src_kraken_js_WEBPACK_IMPORTED_MODULE_74_.A),
-/* harmony export */   krakenfutures: () => (/* reexport safe */ ccxt_src_krakenfutures_js_WEBPACK_IMPORTED_MODULE_75_.A),
-/* harmony export */   kucoin: () => (/* reexport safe */ ccxt_src_kucoin_js_WEBPACK_IMPORTED_MODULE_76_.A),
-/* harmony export */   kucoinfutures: () => (/* reexport safe */ ccxt_src_kucoinfutures_js_WEBPACK_IMPORTED_MODULE_77_.A),
-/* harmony export */   latoken: () => (/* reexport safe */ ccxt_src_latoken_js_WEBPACK_IMPORTED_MODULE_78_.A),
-/* harmony export */   lbank: () => (/* reexport safe */ ccxt_src_lbank_js_WEBPACK_IMPORTED_MODULE_79_.A),
-/* harmony export */   luno: () => (/* reexport safe */ ccxt_src_luno_js_WEBPACK_IMPORTED_MODULE_80_.A),
-/* harmony export */   mercado: () => (/* reexport safe */ ccxt_src_mercado_js_WEBPACK_IMPORTED_MODULE_81_.A),
-/* harmony export */   mexc: () => (/* reexport safe */ ccxt_src_mexc_js_WEBPACK_IMPORTED_MODULE_82_.A),
-/* harmony export */   modetrade: () => (/* reexport safe */ ccxt_src_modetrade_js_WEBPACK_IMPORTED_MODULE_83_.A),
-/* harmony export */   myokx: () => (/* reexport safe */ ccxt_src_myokx_js_WEBPACK_IMPORTED_MODULE_84_.A),
-/* harmony export */   ndax: () => (/* reexport safe */ ccxt_src_ndax_js_WEBPACK_IMPORTED_MODULE_85_.A),
-/* harmony export */   novadax: () => (/* reexport safe */ ccxt_src_novadax_js_WEBPACK_IMPORTED_MODULE_86_.A),
-/* harmony export */   oceanex: () => (/* reexport safe */ ccxt_src_oceanex_js_WEBPACK_IMPORTED_MODULE_87_.A),
-/* harmony export */   okx: () => (/* reexport safe */ ccxt_src_okx_js_WEBPACK_IMPORTED_MODULE_88_.A),
-/* harmony export */   okxus: () => (/* reexport safe */ ccxt_src_okxus_js_WEBPACK_IMPORTED_MODULE_89_.A),
-/* harmony export */   onetrading: () => (/* reexport safe */ ccxt_src_onetrading_js_WEBPACK_IMPORTED_MODULE_90_.A),
-/* harmony export */   oxfun: () => (/* reexport safe */ ccxt_src_oxfun_js_WEBPACK_IMPORTED_MODULE_91_.A),
-/* harmony export */   p2b: () => (/* reexport safe */ ccxt_src_p2b_js_WEBPACK_IMPORTED_MODULE_92_.A),
-/* harmony export */   paradex: () => (/* reexport safe */ ccxt_src_paradex_js_WEBPACK_IMPORTED_MODULE_93_.A),
-/* harmony export */   paymium: () => (/* reexport safe */ ccxt_src_paymium_js_WEBPACK_IMPORTED_MODULE_94_.A),
-/* harmony export */   phemex: () => (/* reexport safe */ ccxt_src_phemex_js_WEBPACK_IMPORTED_MODULE_95_.A),
-/* harmony export */   poloniex: () => (/* reexport safe */ ccxt_src_poloniex_js_WEBPACK_IMPORTED_MODULE_96_.A),
+/* harmony export */   exmo: () => (/* reexport safe */ ccxt_src_exmo_js_WEBPACK_IMPORTED_MODULE_61_.A),
+/* harmony export */   fmfwio: () => (/* reexport safe */ ccxt_src_fmfwio_js_WEBPACK_IMPORTED_MODULE_62_.A),
+/* harmony export */   foxbit: () => (/* reexport safe */ ccxt_src_foxbit_js_WEBPACK_IMPORTED_MODULE_63_.A),
+/* harmony export */   functions: () => (/* reexport module object */ ccxt_src_base_functions_js_WEBPACK_IMPORTED_MODULE_191_),
+/* harmony export */   gate: () => (/* reexport safe */ ccxt_src_gate_js_WEBPACK_IMPORTED_MODULE_64_.A),
+/* harmony export */   gateio: () => (/* reexport safe */ ccxt_src_gateio_js_WEBPACK_IMPORTED_MODULE_65_.A),
+/* harmony export */   gemini: () => (/* reexport safe */ ccxt_src_gemini_js_WEBPACK_IMPORTED_MODULE_66_.A),
+/* harmony export */   hashkey: () => (/* reexport safe */ ccxt_src_hashkey_js_WEBPACK_IMPORTED_MODULE_67_.A),
+/* harmony export */   hibachi: () => (/* reexport safe */ ccxt_src_hibachi_js_WEBPACK_IMPORTED_MODULE_68_.A),
+/* harmony export */   hitbtc: () => (/* reexport safe */ ccxt_src_hitbtc_js_WEBPACK_IMPORTED_MODULE_69_.A),
+/* harmony export */   hollaex: () => (/* reexport safe */ ccxt_src_hollaex_js_WEBPACK_IMPORTED_MODULE_70_.A),
+/* harmony export */   htx: () => (/* reexport safe */ ccxt_src_htx_js_WEBPACK_IMPORTED_MODULE_71_.A),
+/* harmony export */   huobi: () => (/* reexport safe */ ccxt_src_huobi_js_WEBPACK_IMPORTED_MODULE_72_.A),
+/* harmony export */   hyperliquid: () => (/* reexport safe */ ccxt_src_hyperliquid_js_WEBPACK_IMPORTED_MODULE_73_.A),
+/* harmony export */   independentreserve: () => (/* reexport safe */ ccxt_src_independentreserve_js_WEBPACK_IMPORTED_MODULE_74_.A),
+/* harmony export */   indodax: () => (/* reexport safe */ ccxt_src_indodax_js_WEBPACK_IMPORTED_MODULE_75_.A),
+/* harmony export */   kraken: () => (/* reexport safe */ ccxt_src_kraken_js_WEBPACK_IMPORTED_MODULE_76_.A),
+/* harmony export */   krakenfutures: () => (/* reexport safe */ ccxt_src_krakenfutures_js_WEBPACK_IMPORTED_MODULE_77_.A),
+/* harmony export */   kucoin: () => (/* reexport safe */ ccxt_src_kucoin_js_WEBPACK_IMPORTED_MODULE_78_.A),
+/* harmony export */   kucoinfutures: () => (/* reexport safe */ ccxt_src_kucoinfutures_js_WEBPACK_IMPORTED_MODULE_79_.A),
+/* harmony export */   latoken: () => (/* reexport safe */ ccxt_src_latoken_js_WEBPACK_IMPORTED_MODULE_80_.A),
+/* harmony export */   lbank: () => (/* reexport safe */ ccxt_src_lbank_js_WEBPACK_IMPORTED_MODULE_81_.A),
+/* harmony export */   luno: () => (/* reexport safe */ ccxt_src_luno_js_WEBPACK_IMPORTED_MODULE_82_.A),
+/* harmony export */   mercado: () => (/* reexport safe */ ccxt_src_mercado_js_WEBPACK_IMPORTED_MODULE_83_.A),
+/* harmony export */   mexc: () => (/* reexport safe */ ccxt_src_mexc_js_WEBPACK_IMPORTED_MODULE_84_.A),
+/* harmony export */   modetrade: () => (/* reexport safe */ ccxt_src_modetrade_js_WEBPACK_IMPORTED_MODULE_85_.A),
+/* harmony export */   myokx: () => (/* reexport safe */ ccxt_src_myokx_js_WEBPACK_IMPORTED_MODULE_86_.A),
+/* harmony export */   ndax: () => (/* reexport safe */ ccxt_src_ndax_js_WEBPACK_IMPORTED_MODULE_87_.A),
+/* harmony export */   novadax: () => (/* reexport safe */ ccxt_src_novadax_js_WEBPACK_IMPORTED_MODULE_88_.A),
+/* harmony export */   okx: () => (/* reexport safe */ ccxt_src_okx_js_WEBPACK_IMPORTED_MODULE_89_.A),
+/* harmony export */   okxus: () => (/* reexport safe */ ccxt_src_okxus_js_WEBPACK_IMPORTED_MODULE_90_.A),
+/* harmony export */   onetrading: () => (/* reexport safe */ ccxt_src_onetrading_js_WEBPACK_IMPORTED_MODULE_91_.A),
+/* harmony export */   oxfun: () => (/* reexport safe */ ccxt_src_oxfun_js_WEBPACK_IMPORTED_MODULE_92_.A),
+/* harmony export */   p2b: () => (/* reexport safe */ ccxt_src_p2b_js_WEBPACK_IMPORTED_MODULE_93_.A),
+/* harmony export */   paradex: () => (/* reexport safe */ ccxt_src_paradex_js_WEBPACK_IMPORTED_MODULE_94_.A),
+/* harmony export */   paymium: () => (/* reexport safe */ ccxt_src_paymium_js_WEBPACK_IMPORTED_MODULE_95_.A),
+/* harmony export */   phemex: () => (/* reexport safe */ ccxt_src_phemex_js_WEBPACK_IMPORTED_MODULE_96_.A),
+/* harmony export */   poloniex: () => (/* reexport safe */ ccxt_src_poloniex_js_WEBPACK_IMPORTED_MODULE_97_.A),
 /* harmony export */   pro: () => (/* binding */ ccxt_pro),
-/* harmony export */   probit: () => (/* reexport safe */ ccxt_src_probit_js_WEBPACK_IMPORTED_MODULE_97_.A),
-/* harmony export */   timex: () => (/* reexport safe */ ccxt_src_timex_js_WEBPACK_IMPORTED_MODULE_98_.A),
-/* harmony export */   tokocrypto: () => (/* reexport safe */ ccxt_src_tokocrypto_js_WEBPACK_IMPORTED_MODULE_99_.A),
-/* harmony export */   toobit: () => (/* reexport safe */ ccxt_src_toobit_js_WEBPACK_IMPORTED_MODULE_100_.A),
-/* harmony export */   upbit: () => (/* reexport safe */ ccxt_src_upbit_js_WEBPACK_IMPORTED_MODULE_101_.A),
+/* harmony export */   probit: () => (/* reexport safe */ ccxt_src_probit_js_WEBPACK_IMPORTED_MODULE_98_.A),
+/* harmony export */   timex: () => (/* reexport safe */ ccxt_src_timex_js_WEBPACK_IMPORTED_MODULE_99_.A),
+/* harmony export */   tokocrypto: () => (/* reexport safe */ ccxt_src_tokocrypto_js_WEBPACK_IMPORTED_MODULE_100_.A),
+/* harmony export */   toobit: () => (/* reexport safe */ ccxt_src_toobit_js_WEBPACK_IMPORTED_MODULE_101_.A),
+/* harmony export */   upbit: () => (/* reexport safe */ ccxt_src_upbit_js_WEBPACK_IMPORTED_MODULE_102_.A),
 /* harmony export */   version: () => (/* binding */ ccxt_version),
-/* harmony export */   wavesexchange: () => (/* reexport safe */ ccxt_src_wavesexchange_js_WEBPACK_IMPORTED_MODULE_102_.A),
-/* harmony export */   whitebit: () => (/* reexport safe */ ccxt_src_whitebit_js_WEBPACK_IMPORTED_MODULE_103_.A),
-/* harmony export */   woo: () => (/* reexport safe */ ccxt_src_woo_js_WEBPACK_IMPORTED_MODULE_104_.A),
-/* harmony export */   woofipro: () => (/* reexport safe */ ccxt_src_woofipro_js_WEBPACK_IMPORTED_MODULE_105_.A),
-/* harmony export */   xt: () => (/* reexport safe */ ccxt_src_xt_js_WEBPACK_IMPORTED_MODULE_106_.A),
-/* harmony export */   yobit: () => (/* reexport safe */ ccxt_src_yobit_js_WEBPACK_IMPORTED_MODULE_107_.A),
-/* harmony export */   zaif: () => (/* reexport safe */ ccxt_src_zaif_js_WEBPACK_IMPORTED_MODULE_108_.A),
-/* harmony export */   zebpay: () => (/* reexport safe */ ccxt_src_zebpay_js_WEBPACK_IMPORTED_MODULE_109_.A),
-/* harmony export */   zonda: () => (/* reexport safe */ ccxt_src_zonda_js_WEBPACK_IMPORTED_MODULE_110_.A)
+/* harmony export */   wavesexchange: () => (/* reexport safe */ ccxt_src_wavesexchange_js_WEBPACK_IMPORTED_MODULE_103_.A),
+/* harmony export */   whitebit: () => (/* reexport safe */ ccxt_src_whitebit_js_WEBPACK_IMPORTED_MODULE_104_.A),
+/* harmony export */   woo: () => (/* reexport safe */ ccxt_src_woo_js_WEBPACK_IMPORTED_MODULE_105_.A),
+/* harmony export */   woofipro: () => (/* reexport safe */ ccxt_src_woofipro_js_WEBPACK_IMPORTED_MODULE_106_.A),
+/* harmony export */   xt: () => (/* reexport safe */ ccxt_src_xt_js_WEBPACK_IMPORTED_MODULE_107_.A),
+/* harmony export */   yobit: () => (/* reexport safe */ ccxt_src_yobit_js_WEBPACK_IMPORTED_MODULE_108_.A),
+/* harmony export */   zaif: () => (/* reexport safe */ ccxt_src_zaif_js_WEBPACK_IMPORTED_MODULE_109_.A),
+/* harmony export */   zebpay: () => (/* reexport safe */ ccxt_src_zebpay_js_WEBPACK_IMPORTED_MODULE_110_.A),
+/* harmony export */   zonda: () => (/* reexport safe */ ccxt_src_zonda_js_WEBPACK_IMPORTED_MODULE_111_.A)
 /* harmony export */ });
 /* harmony import */ var ccxt_src_base_Exchange_js_WEBPACK_IMPORTED_MODULE_0_ = __webpack_require__(2961);
-/* harmony import */ var ccxt_src_base_Precise_js_WEBPACK_IMPORTED_MODULE_187_ = __webpack_require__(5147);
-/* harmony import */ var ccxt_src_base_functions_js_WEBPACK_IMPORTED_MODULE_188_ = __webpack_require__(5095);
-/* harmony import */ var ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_189_ = __webpack_require__(2079);
+/* harmony import */ var ccxt_src_base_Precise_js_WEBPACK_IMPORTED_MODULE_190_ = __webpack_require__(5147);
+/* harmony import */ var ccxt_src_base_functions_js_WEBPACK_IMPORTED_MODULE_191_ = __webpack_require__(5095);
+/* harmony import */ var ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_192_ = __webpack_require__(2079);
 /* harmony import */ var ccxt_src_alpaca_js_WEBPACK_IMPORTED_MODULE_1_ = __webpack_require__(7930);
 /* harmony import */ var ccxt_src_apex_js_WEBPACK_IMPORTED_MODULE_2_ = __webpack_require__(4920);
 /* harmony import */ var ccxt_src_arkham_js_WEBPACK_IMPORTED_MODULE_3_ = __webpack_require__(5278);
 /* harmony import */ var ccxt_src_ascendex_js_WEBPACK_IMPORTED_MODULE_4_ = __webpack_require__(1411);
-/* harmony import */ var ccxt_src_backpack_js_WEBPACK_IMPORTED_MODULE_5_ = __webpack_require__(7698);
-/* harmony import */ var ccxt_src_bequant_js_WEBPACK_IMPORTED_MODULE_6_ = __webpack_require__(9002);
-/* harmony import */ var ccxt_src_bigone_js_WEBPACK_IMPORTED_MODULE_7_ = __webpack_require__(8698);
-/* harmony import */ var ccxt_src_binance_js_WEBPACK_IMPORTED_MODULE_8_ = __webpack_require__(3192);
-/* harmony import */ var ccxt_src_binancecoinm_js_WEBPACK_IMPORTED_MODULE_9_ = __webpack_require__(1510);
-/* harmony import */ var ccxt_src_binanceus_js_WEBPACK_IMPORTED_MODULE_10_ = __webpack_require__(8228);
-/* harmony import */ var ccxt_src_binanceusdm_js_WEBPACK_IMPORTED_MODULE_11_ = __webpack_require__(2171);
-/* harmony import */ var ccxt_src_bingx_js_WEBPACK_IMPORTED_MODULE_12_ = __webpack_require__(2480);
-/* harmony import */ var ccxt_src_bit2c_js_WEBPACK_IMPORTED_MODULE_13_ = __webpack_require__(2342);
-/* harmony import */ var ccxt_src_bitbank_js_WEBPACK_IMPORTED_MODULE_14_ = __webpack_require__(7399);
-/* harmony import */ var ccxt_src_bitbns_js_WEBPACK_IMPORTED_MODULE_15_ = __webpack_require__(6328);
-/* harmony import */ var ccxt_src_bitfinex_js_WEBPACK_IMPORTED_MODULE_16_ = __webpack_require__(8657);
-/* harmony import */ var ccxt_src_bitflyer_js_WEBPACK_IMPORTED_MODULE_17_ = __webpack_require__(1787);
-/* harmony import */ var ccxt_src_bitget_js_WEBPACK_IMPORTED_MODULE_18_ = __webpack_require__(7757);
-/* harmony import */ var ccxt_src_bithumb_js_WEBPACK_IMPORTED_MODULE_19_ = __webpack_require__(357);
-/* harmony import */ var ccxt_src_bitmart_js_WEBPACK_IMPORTED_MODULE_20_ = __webpack_require__(1837);
-/* harmony import */ var ccxt_src_bitmex_js_WEBPACK_IMPORTED_MODULE_21_ = __webpack_require__(9523);
-/* harmony import */ var ccxt_src_bitopro_js_WEBPACK_IMPORTED_MODULE_22_ = __webpack_require__(2753);
-/* harmony import */ var ccxt_src_bitrue_js_WEBPACK_IMPORTED_MODULE_23_ = __webpack_require__(9061);
-/* harmony import */ var ccxt_src_bitso_js_WEBPACK_IMPORTED_MODULE_24_ = __webpack_require__(3019);
-/* harmony import */ var ccxt_src_bitstamp_js_WEBPACK_IMPORTED_MODULE_25_ = __webpack_require__(382);
-/* harmony import */ var ccxt_src_bitteam_js_WEBPACK_IMPORTED_MODULE_26_ = __webpack_require__(112);
-/* harmony import */ var ccxt_src_bittrade_js_WEBPACK_IMPORTED_MODULE_27_ = __webpack_require__(2263);
-/* harmony import */ var ccxt_src_bitvavo_js_WEBPACK_IMPORTED_MODULE_28_ = __webpack_require__(3727);
-/* harmony import */ var ccxt_src_blockchaincom_js_WEBPACK_IMPORTED_MODULE_29_ = __webpack_require__(3205);
-/* harmony import */ var ccxt_src_blofin_js_WEBPACK_IMPORTED_MODULE_30_ = __webpack_require__(2520);
-/* harmony import */ var ccxt_src_btcalpha_js_WEBPACK_IMPORTED_MODULE_31_ = __webpack_require__(3413);
-/* harmony import */ var ccxt_src_btcbox_js_WEBPACK_IMPORTED_MODULE_32_ = __webpack_require__(5376);
-/* harmony import */ var ccxt_src_btcmarkets_js_WEBPACK_IMPORTED_MODULE_33_ = __webpack_require__(4936);
-/* harmony import */ var ccxt_src_btcturk_js_WEBPACK_IMPORTED_MODULE_34_ = __webpack_require__(9265);
-/* harmony import */ var ccxt_src_bullish_js_WEBPACK_IMPORTED_MODULE_35_ = __webpack_require__(1849);
-/* harmony import */ var ccxt_src_bybit_js_WEBPACK_IMPORTED_MODULE_36_ = __webpack_require__(5462);
-/* harmony import */ var ccxt_src_cex_js_WEBPACK_IMPORTED_MODULE_37_ = __webpack_require__(8846);
-/* harmony import */ var ccxt_src_coinbase_js_WEBPACK_IMPORTED_MODULE_38_ = __webpack_require__(7504);
-/* harmony import */ var ccxt_src_coinbaseadvanced_js_WEBPACK_IMPORTED_MODULE_39_ = __webpack_require__(3278);
-/* harmony import */ var ccxt_src_coinbaseexchange_js_WEBPACK_IMPORTED_MODULE_40_ = __webpack_require__(4293);
-/* harmony import */ var ccxt_src_coinbaseinternational_js_WEBPACK_IMPORTED_MODULE_41_ = __webpack_require__(1558);
-/* harmony import */ var ccxt_src_coincatch_js_WEBPACK_IMPORTED_MODULE_42_ = __webpack_require__(570);
-/* harmony import */ var ccxt_src_coincheck_js_WEBPACK_IMPORTED_MODULE_43_ = __webpack_require__(2741);
-/* harmony import */ var ccxt_src_coinex_js_WEBPACK_IMPORTED_MODULE_44_ = __webpack_require__(9344);
-/* harmony import */ var ccxt_src_coinmate_js_WEBPACK_IMPORTED_MODULE_45_ = __webpack_require__(6016);
-/* harmony import */ var ccxt_src_coinmetro_js_WEBPACK_IMPORTED_MODULE_46_ = __webpack_require__(8692);
-/* harmony import */ var ccxt_src_coinone_js_WEBPACK_IMPORTED_MODULE_47_ = __webpack_require__(5377);
-/* harmony import */ var ccxt_src_coinsph_js_WEBPACK_IMPORTED_MODULE_48_ = __webpack_require__(2692);
-/* harmony import */ var ccxt_src_coinspot_js_WEBPACK_IMPORTED_MODULE_49_ = __webpack_require__(1669);
-/* harmony import */ var ccxt_src_cryptocom_js_WEBPACK_IMPORTED_MODULE_50_ = __webpack_require__(6068);
-/* harmony import */ var ccxt_src_cryptomus_js_WEBPACK_IMPORTED_MODULE_51_ = __webpack_require__(870);
-/* harmony import */ var ccxt_src_deepcoin_js_WEBPACK_IMPORTED_MODULE_52_ = __webpack_require__(763);
-/* harmony import */ var ccxt_src_defx_js_WEBPACK_IMPORTED_MODULE_53_ = __webpack_require__(6077);
-/* harmony import */ var ccxt_src_delta_js_WEBPACK_IMPORTED_MODULE_54_ = __webpack_require__(1080);
-/* harmony import */ var ccxt_src_deribit_js_WEBPACK_IMPORTED_MODULE_55_ = __webpack_require__(2591);
-/* harmony import */ var ccxt_src_derive_js_WEBPACK_IMPORTED_MODULE_56_ = __webpack_require__(1839);
-/* harmony import */ var ccxt_src_digifinex_js_WEBPACK_IMPORTED_MODULE_57_ = __webpack_require__(779);
-/* harmony import */ var ccxt_src_dydx_js_WEBPACK_IMPORTED_MODULE_58_ = __webpack_require__(2987);
-/* harmony import */ var ccxt_src_exmo_js_WEBPACK_IMPORTED_MODULE_59_ = __webpack_require__(7057);
-/* harmony import */ var ccxt_src_fmfwio_js_WEBPACK_IMPORTED_MODULE_60_ = __webpack_require__(3042);
-/* harmony import */ var ccxt_src_foxbit_js_WEBPACK_IMPORTED_MODULE_61_ = __webpack_require__(448);
-/* harmony import */ var ccxt_src_gate_js_WEBPACK_IMPORTED_MODULE_62_ = __webpack_require__(9403);
-/* harmony import */ var ccxt_src_gateio_js_WEBPACK_IMPORTED_MODULE_63_ = __webpack_require__(784);
-/* harmony import */ var ccxt_src_gemini_js_WEBPACK_IMPORTED_MODULE_64_ = __webpack_require__(8823);
-/* harmony import */ var ccxt_src_hashkey_js_WEBPACK_IMPORTED_MODULE_65_ = __webpack_require__(2937);
-/* harmony import */ var ccxt_src_hibachi_js_WEBPACK_IMPORTED_MODULE_66_ = __webpack_require__(5106);
-/* harmony import */ var ccxt_src_hitbtc_js_WEBPACK_IMPORTED_MODULE_67_ = __webpack_require__(7996);
-/* harmony import */ var ccxt_src_hollaex_js_WEBPACK_IMPORTED_MODULE_68_ = __webpack_require__(4455);
-/* harmony import */ var ccxt_src_htx_js_WEBPACK_IMPORTED_MODULE_69_ = __webpack_require__(9946);
-/* harmony import */ var ccxt_src_huobi_js_WEBPACK_IMPORTED_MODULE_70_ = __webpack_require__(63);
-/* harmony import */ var ccxt_src_hyperliquid_js_WEBPACK_IMPORTED_MODULE_71_ = __webpack_require__(1936);
-/* harmony import */ var ccxt_src_independentreserve_js_WEBPACK_IMPORTED_MODULE_72_ = __webpack_require__(4162);
-/* harmony import */ var ccxt_src_indodax_js_WEBPACK_IMPORTED_MODULE_73_ = __webpack_require__(7325);
-/* harmony import */ var ccxt_src_kraken_js_WEBPACK_IMPORTED_MODULE_74_ = __webpack_require__(8042);
-/* harmony import */ var ccxt_src_krakenfutures_js_WEBPACK_IMPORTED_MODULE_75_ = __webpack_require__(2300);
-/* harmony import */ var ccxt_src_kucoin_js_WEBPACK_IMPORTED_MODULE_76_ = __webpack_require__(1397);
-/* harmony import */ var ccxt_src_kucoinfutures_js_WEBPACK_IMPORTED_MODULE_77_ = __webpack_require__(6217);
-/* harmony import */ var ccxt_src_latoken_js_WEBPACK_IMPORTED_MODULE_78_ = __webpack_require__(8146);
-/* harmony import */ var ccxt_src_lbank_js_WEBPACK_IMPORTED_MODULE_79_ = __webpack_require__(3144);
-/* harmony import */ var ccxt_src_luno_js_WEBPACK_IMPORTED_MODULE_80_ = __webpack_require__(9248);
-/* harmony import */ var ccxt_src_mercado_js_WEBPACK_IMPORTED_MODULE_81_ = __webpack_require__(6419);
-/* harmony import */ var ccxt_src_mexc_js_WEBPACK_IMPORTED_MODULE_82_ = __webpack_require__(2403);
-/* harmony import */ var ccxt_src_modetrade_js_WEBPACK_IMPORTED_MODULE_83_ = __webpack_require__(5345);
-/* harmony import */ var ccxt_src_myokx_js_WEBPACK_IMPORTED_MODULE_84_ = __webpack_require__(8982);
-/* harmony import */ var ccxt_src_ndax_js_WEBPACK_IMPORTED_MODULE_85_ = __webpack_require__(4460);
-/* harmony import */ var ccxt_src_novadax_js_WEBPACK_IMPORTED_MODULE_86_ = __webpack_require__(8473);
-/* harmony import */ var ccxt_src_oceanex_js_WEBPACK_IMPORTED_MODULE_87_ = __webpack_require__(3805);
-/* harmony import */ var ccxt_src_okx_js_WEBPACK_IMPORTED_MODULE_88_ = __webpack_require__(3660);
-/* harmony import */ var ccxt_src_okxus_js_WEBPACK_IMPORTED_MODULE_89_ = __webpack_require__(3536);
-/* harmony import */ var ccxt_src_onetrading_js_WEBPACK_IMPORTED_MODULE_90_ = __webpack_require__(3573);
-/* harmony import */ var ccxt_src_oxfun_js_WEBPACK_IMPORTED_MODULE_91_ = __webpack_require__(6358);
-/* harmony import */ var ccxt_src_p2b_js_WEBPACK_IMPORTED_MODULE_92_ = __webpack_require__(4998);
-/* harmony import */ var ccxt_src_paradex_js_WEBPACK_IMPORTED_MODULE_93_ = __webpack_require__(6993);
-/* harmony import */ var ccxt_src_paymium_js_WEBPACK_IMPORTED_MODULE_94_ = __webpack_require__(3280);
-/* harmony import */ var ccxt_src_phemex_js_WEBPACK_IMPORTED_MODULE_95_ = __webpack_require__(9075);
-/* harmony import */ var ccxt_src_poloniex_js_WEBPACK_IMPORTED_MODULE_96_ = __webpack_require__(288);
-/* harmony import */ var ccxt_src_probit_js_WEBPACK_IMPORTED_MODULE_97_ = __webpack_require__(5037);
-/* harmony import */ var ccxt_src_timex_js_WEBPACK_IMPORTED_MODULE_98_ = __webpack_require__(6213);
-/* harmony import */ var ccxt_src_tokocrypto_js_WEBPACK_IMPORTED_MODULE_99_ = __webpack_require__(2490);
-/* harmony import */ var ccxt_src_toobit_js_WEBPACK_IMPORTED_MODULE_100_ = __webpack_require__(237);
-/* harmony import */ var ccxt_src_upbit_js_WEBPACK_IMPORTED_MODULE_101_ = __webpack_require__(930);
-/* harmony import */ var ccxt_src_wavesexchange_js_WEBPACK_IMPORTED_MODULE_102_ = __webpack_require__(7073);
-/* harmony import */ var ccxt_src_whitebit_js_WEBPACK_IMPORTED_MODULE_103_ = __webpack_require__(5336);
-/* harmony import */ var ccxt_src_woo_js_WEBPACK_IMPORTED_MODULE_104_ = __webpack_require__(669);
-/* harmony import */ var ccxt_src_woofipro_js_WEBPACK_IMPORTED_MODULE_105_ = __webpack_require__(9641);
-/* harmony import */ var ccxt_src_xt_js_WEBPACK_IMPORTED_MODULE_106_ = __webpack_require__(5344);
-/* harmony import */ var ccxt_src_yobit_js_WEBPACK_IMPORTED_MODULE_107_ = __webpack_require__(7469);
-/* harmony import */ var ccxt_src_zaif_js_WEBPACK_IMPORTED_MODULE_108_ = __webpack_require__(1530);
-/* harmony import */ var ccxt_src_zebpay_js_WEBPACK_IMPORTED_MODULE_109_ = __webpack_require__(585);
-/* harmony import */ var ccxt_src_zonda_js_WEBPACK_IMPORTED_MODULE_110_ = __webpack_require__(6022);
-/* harmony import */ var ccxt_src_pro_alpaca_js_WEBPACK_IMPORTED_MODULE_111_ = __webpack_require__(6810);
-/* harmony import */ var ccxt_src_pro_apex_js_WEBPACK_IMPORTED_MODULE_112_ = __webpack_require__(136);
-/* harmony import */ var ccxt_src_pro_arkham_js_WEBPACK_IMPORTED_MODULE_113_ = __webpack_require__(5758);
-/* harmony import */ var ccxt_src_pro_ascendex_js_WEBPACK_IMPORTED_MODULE_114_ = __webpack_require__(1657);
-/* harmony import */ var ccxt_src_pro_backpack_js_WEBPACK_IMPORTED_MODULE_115_ = __webpack_require__(4034);
-/* harmony import */ var ccxt_src_pro_bequant_js_WEBPACK_IMPORTED_MODULE_116_ = __webpack_require__(9338);
-/* harmony import */ var ccxt_src_pro_binance_js_WEBPACK_IMPORTED_MODULE_117_ = __webpack_require__(9544);
-/* harmony import */ var ccxt_src_pro_binancecoinm_js_WEBPACK_IMPORTED_MODULE_118_ = __webpack_require__(902);
-/* harmony import */ var ccxt_src_pro_binanceus_js_WEBPACK_IMPORTED_MODULE_119_ = __webpack_require__(8788);
-/* harmony import */ var ccxt_src_pro_binanceusdm_js_WEBPACK_IMPORTED_MODULE_120_ = __webpack_require__(8251);
-/* harmony import */ var ccxt_src_pro_bingx_js_WEBPACK_IMPORTED_MODULE_121_ = __webpack_require__(9456);
-/* harmony import */ var ccxt_src_pro_bitfinex_js_WEBPACK_IMPORTED_MODULE_122_ = __webpack_require__(1038);
-/* harmony import */ var ccxt_src_pro_bitget_js_WEBPACK_IMPORTED_MODULE_123_ = __webpack_require__(205);
-/* harmony import */ var ccxt_src_pro_bithumb_js_WEBPACK_IMPORTED_MODULE_124_ = __webpack_require__(6181);
-/* harmony import */ var ccxt_src_pro_bitmart_js_WEBPACK_IMPORTED_MODULE_125_ = __webpack_require__(3069);
-/* harmony import */ var ccxt_src_pro_bitmex_js_WEBPACK_IMPORTED_MODULE_126_ = __webpack_require__(3731);
-/* harmony import */ var ccxt_src_pro_bitopro_js_WEBPACK_IMPORTED_MODULE_127_ = __webpack_require__(4401);
-/* harmony import */ var ccxt_src_pro_bitrue_js_WEBPACK_IMPORTED_MODULE_128_ = __webpack_require__(3333);
-/* harmony import */ var ccxt_src_pro_bitstamp_js_WEBPACK_IMPORTED_MODULE_129_ = __webpack_require__(3326);
-/* harmony import */ var ccxt_src_pro_bittrade_js_WEBPACK_IMPORTED_MODULE_130_ = __webpack_require__(2391);
-/* harmony import */ var ccxt_src_pro_bitvavo_js_WEBPACK_IMPORTED_MODULE_131_ = __webpack_require__(1327);
-/* harmony import */ var ccxt_src_pro_blockchaincom_js_WEBPACK_IMPORTED_MODULE_132_ = __webpack_require__(8693);
-/* harmony import */ var ccxt_src_pro_blofin_js_WEBPACK_IMPORTED_MODULE_133_ = __webpack_require__(1672);
-/* harmony import */ var ccxt_src_pro_bullish_js_WEBPACK_IMPORTED_MODULE_134_ = __webpack_require__(7753);
-/* harmony import */ var ccxt_src_pro_bybit_js_WEBPACK_IMPORTED_MODULE_135_ = __webpack_require__(8518);
-/* harmony import */ var ccxt_src_pro_cex_js_WEBPACK_IMPORTED_MODULE_136_ = __webpack_require__(3774);
-/* harmony import */ var ccxt_src_pro_coinbase_js_WEBPACK_IMPORTED_MODULE_137_ = __webpack_require__(8160);
-/* harmony import */ var ccxt_src_pro_coinbaseadvanced_js_WEBPACK_IMPORTED_MODULE_138_ = __webpack_require__(5918);
-/* harmony import */ var ccxt_src_pro_coinbaseexchange_js_WEBPACK_IMPORTED_MODULE_139_ = __webpack_require__(1925);
-/* harmony import */ var ccxt_src_pro_coinbaseinternational_js_WEBPACK_IMPORTED_MODULE_140_ = __webpack_require__(998);
-/* harmony import */ var ccxt_src_pro_coincatch_js_WEBPACK_IMPORTED_MODULE_141_ = __webpack_require__(3242);
-/* harmony import */ var ccxt_src_pro_coincheck_js_WEBPACK_IMPORTED_MODULE_142_ = __webpack_require__(79);
-/* harmony import */ var ccxt_src_pro_coinex_js_WEBPACK_IMPORTED_MODULE_143_ = __webpack_require__(9088);
-/* harmony import */ var ccxt_src_pro_coinone_js_WEBPACK_IMPORTED_MODULE_144_ = __webpack_require__(8673);
-/* harmony import */ var ccxt_src_pro_cryptocom_js_WEBPACK_IMPORTED_MODULE_145_ = __webpack_require__(6292);
-/* harmony import */ var ccxt_src_pro_deepcoin_js_WEBPACK_IMPORTED_MODULE_146_ = __webpack_require__(4811);
-/* harmony import */ var ccxt_src_pro_defx_js_WEBPACK_IMPORTED_MODULE_147_ = __webpack_require__(8717);
-/* harmony import */ var ccxt_src_pro_deribit_js_WEBPACK_IMPORTED_MODULE_148_ = __webpack_require__(7791);
-/* harmony import */ var ccxt_src_pro_derive_js_WEBPACK_IMPORTED_MODULE_149_ = __webpack_require__(2127);
-/* harmony import */ var ccxt_src_pro_dydx_js_WEBPACK_IMPORTED_MODULE_150_ = __webpack_require__(8027);
-/* harmony import */ var ccxt_src_pro_exmo_js_WEBPACK_IMPORTED_MODULE_151_ = __webpack_require__(5233);
-/* harmony import */ var ccxt_src_pro_gate_js_WEBPACK_IMPORTED_MODULE_152_ = __webpack_require__(9195);
-/* harmony import */ var ccxt_src_pro_gateio_js_WEBPACK_IMPORTED_MODULE_153_ = __webpack_require__(5843);
-/* harmony import */ var ccxt_src_pro_gemini_js_WEBPACK_IMPORTED_MODULE_154_ = __webpack_require__(375);
-/* harmony import */ var ccxt_src_pro_hashkey_js_WEBPACK_IMPORTED_MODULE_155_ = __webpack_require__(1481);
-/* harmony import */ var ccxt_src_pro_hitbtc_js_WEBPACK_IMPORTED_MODULE_156_ = __webpack_require__(4524);
-/* harmony import */ var ccxt_src_pro_hollaex_js_WEBPACK_IMPORTED_MODULE_157_ = __webpack_require__(8247);
-/* harmony import */ var ccxt_src_pro_htx_js_WEBPACK_IMPORTED_MODULE_158_ = __webpack_require__(3898);
-/* harmony import */ var ccxt_src_pro_huobi_js_WEBPACK_IMPORTED_MODULE_159_ = __webpack_require__(6335);
-/* harmony import */ var ccxt_src_pro_hyperliquid_js_WEBPACK_IMPORTED_MODULE_160_ = __webpack_require__(3984);
-/* harmony import */ var ccxt_src_pro_independentreserve_js_WEBPACK_IMPORTED_MODULE_161_ = __webpack_require__(98);
-/* harmony import */ var ccxt_src_pro_kraken_js_WEBPACK_IMPORTED_MODULE_162_ = __webpack_require__(9050);
-/* harmony import */ var ccxt_src_pro_krakenfutures_js_WEBPACK_IMPORTED_MODULE_163_ = __webpack_require__(6396);
-/* harmony import */ var ccxt_src_pro_kucoin_js_WEBPACK_IMPORTED_MODULE_164_ = __webpack_require__(4965);
-/* harmony import */ var ccxt_src_pro_kucoinfutures_js_WEBPACK_IMPORTED_MODULE_165_ = __webpack_require__(905);
-/* harmony import */ var ccxt_src_pro_lbank_js_WEBPACK_IMPORTED_MODULE_166_ = __webpack_require__(1736);
-/* harmony import */ var ccxt_src_pro_luno_js_WEBPACK_IMPORTED_MODULE_167_ = __webpack_require__(2208);
-/* harmony import */ var ccxt_src_pro_mexc_js_WEBPACK_IMPORTED_MODULE_168_ = __webpack_require__(9219);
-/* harmony import */ var ccxt_src_pro_modetrade_js_WEBPACK_IMPORTED_MODULE_169_ = __webpack_require__(49);
-/* harmony import */ var ccxt_src_pro_myokx_js_WEBPACK_IMPORTED_MODULE_170_ = __webpack_require__(3062);
-/* harmony import */ var ccxt_src_pro_ndax_js_WEBPACK_IMPORTED_MODULE_171_ = __webpack_require__(3887);
-/* harmony import */ var ccxt_src_pro_okx_js_WEBPACK_IMPORTED_MODULE_172_ = __webpack_require__(8588);
-/* harmony import */ var ccxt_src_pro_okxus_js_WEBPACK_IMPORTED_MODULE_173_ = __webpack_require__(3296);
-/* harmony import */ var ccxt_src_pro_onetrading_js_WEBPACK_IMPORTED_MODULE_174_ = __webpack_require__(4357);
-/* harmony import */ var ccxt_src_pro_oxfun_js_WEBPACK_IMPORTED_MODULE_175_ = __webpack_require__(550);
-/* harmony import */ var ccxt_src_pro_p2b_js_WEBPACK_IMPORTED_MODULE_176_ = __webpack_require__(4934);
-/* harmony import */ var ccxt_src_pro_paradex_js_WEBPACK_IMPORTED_MODULE_177_ = __webpack_require__(1057);
-/* harmony import */ var ccxt_src_pro_phemex_js_WEBPACK_IMPORTED_MODULE_178_ = __webpack_require__(1619);
-/* harmony import */ var ccxt_src_pro_poloniex_js_WEBPACK_IMPORTED_MODULE_179_ = __webpack_require__(3456);
-/* harmony import */ var ccxt_src_pro_probit_js_WEBPACK_IMPORTED_MODULE_180_ = __webpack_require__(5738);
-/* harmony import */ var ccxt_src_pro_toobit_js_WEBPACK_IMPORTED_MODULE_181_ = __webpack_require__(3933);
-/* harmony import */ var ccxt_src_pro_upbit_js_WEBPACK_IMPORTED_MODULE_182_ = __webpack_require__(5794);
-/* harmony import */ var ccxt_src_pro_whitebit_js_WEBPACK_IMPORTED_MODULE_183_ = __webpack_require__(4712);
-/* harmony import */ var ccxt_src_pro_woo_js_WEBPACK_IMPORTED_MODULE_184_ = __webpack_require__(5869);
-/* harmony import */ var ccxt_src_pro_woofipro_js_WEBPACK_IMPORTED_MODULE_185_ = __webpack_require__(8713);
-/* harmony import */ var ccxt_src_pro_xt_js_WEBPACK_IMPORTED_MODULE_186_ = __webpack_require__(2368);
+/* harmony import */ var ccxt_src_aster_js_WEBPACK_IMPORTED_MODULE_5_ = __webpack_require__(4521);
+/* harmony import */ var ccxt_src_backpack_js_WEBPACK_IMPORTED_MODULE_6_ = __webpack_require__(7698);
+/* harmony import */ var ccxt_src_bequant_js_WEBPACK_IMPORTED_MODULE_7_ = __webpack_require__(9002);
+/* harmony import */ var ccxt_src_bigone_js_WEBPACK_IMPORTED_MODULE_8_ = __webpack_require__(8698);
+/* harmony import */ var ccxt_src_binance_js_WEBPACK_IMPORTED_MODULE_9_ = __webpack_require__(3192);
+/* harmony import */ var ccxt_src_binancecoinm_js_WEBPACK_IMPORTED_MODULE_10_ = __webpack_require__(1510);
+/* harmony import */ var ccxt_src_binanceus_js_WEBPACK_IMPORTED_MODULE_11_ = __webpack_require__(8228);
+/* harmony import */ var ccxt_src_binanceusdm_js_WEBPACK_IMPORTED_MODULE_12_ = __webpack_require__(2171);
+/* harmony import */ var ccxt_src_bingx_js_WEBPACK_IMPORTED_MODULE_13_ = __webpack_require__(2480);
+/* harmony import */ var ccxt_src_bit2c_js_WEBPACK_IMPORTED_MODULE_14_ = __webpack_require__(2342);
+/* harmony import */ var ccxt_src_bitbank_js_WEBPACK_IMPORTED_MODULE_15_ = __webpack_require__(7399);
+/* harmony import */ var ccxt_src_bitbns_js_WEBPACK_IMPORTED_MODULE_16_ = __webpack_require__(6328);
+/* harmony import */ var ccxt_src_bitfinex_js_WEBPACK_IMPORTED_MODULE_17_ = __webpack_require__(8657);
+/* harmony import */ var ccxt_src_bitflyer_js_WEBPACK_IMPORTED_MODULE_18_ = __webpack_require__(1787);
+/* harmony import */ var ccxt_src_bitget_js_WEBPACK_IMPORTED_MODULE_19_ = __webpack_require__(7757);
+/* harmony import */ var ccxt_src_bithumb_js_WEBPACK_IMPORTED_MODULE_20_ = __webpack_require__(357);
+/* harmony import */ var ccxt_src_bitmart_js_WEBPACK_IMPORTED_MODULE_21_ = __webpack_require__(1837);
+/* harmony import */ var ccxt_src_bitmex_js_WEBPACK_IMPORTED_MODULE_22_ = __webpack_require__(9523);
+/* harmony import */ var ccxt_src_bitopro_js_WEBPACK_IMPORTED_MODULE_23_ = __webpack_require__(2753);
+/* harmony import */ var ccxt_src_bitrue_js_WEBPACK_IMPORTED_MODULE_24_ = __webpack_require__(9061);
+/* harmony import */ var ccxt_src_bitso_js_WEBPACK_IMPORTED_MODULE_25_ = __webpack_require__(3019);
+/* harmony import */ var ccxt_src_bitstamp_js_WEBPACK_IMPORTED_MODULE_26_ = __webpack_require__(382);
+/* harmony import */ var ccxt_src_bitteam_js_WEBPACK_IMPORTED_MODULE_27_ = __webpack_require__(112);
+/* harmony import */ var ccxt_src_bittrade_js_WEBPACK_IMPORTED_MODULE_28_ = __webpack_require__(2263);
+/* harmony import */ var ccxt_src_bitvavo_js_WEBPACK_IMPORTED_MODULE_29_ = __webpack_require__(3727);
+/* harmony import */ var ccxt_src_blockchaincom_js_WEBPACK_IMPORTED_MODULE_30_ = __webpack_require__(3205);
+/* harmony import */ var ccxt_src_blofin_js_WEBPACK_IMPORTED_MODULE_31_ = __webpack_require__(2520);
+/* harmony import */ var ccxt_src_btcalpha_js_WEBPACK_IMPORTED_MODULE_32_ = __webpack_require__(3413);
+/* harmony import */ var ccxt_src_btcbox_js_WEBPACK_IMPORTED_MODULE_33_ = __webpack_require__(5376);
+/* harmony import */ var ccxt_src_btcmarkets_js_WEBPACK_IMPORTED_MODULE_34_ = __webpack_require__(4936);
+/* harmony import */ var ccxt_src_btcturk_js_WEBPACK_IMPORTED_MODULE_35_ = __webpack_require__(9265);
+/* harmony import */ var ccxt_src_bullish_js_WEBPACK_IMPORTED_MODULE_36_ = __webpack_require__(1849);
+/* harmony import */ var ccxt_src_bybit_js_WEBPACK_IMPORTED_MODULE_37_ = __webpack_require__(5462);
+/* harmony import */ var ccxt_src_bydfi_js_WEBPACK_IMPORTED_MODULE_38_ = __webpack_require__(5000);
+/* harmony import */ var ccxt_src_cex_js_WEBPACK_IMPORTED_MODULE_39_ = __webpack_require__(8846);
+/* harmony import */ var ccxt_src_coinbase_js_WEBPACK_IMPORTED_MODULE_40_ = __webpack_require__(7504);
+/* harmony import */ var ccxt_src_coinbaseadvanced_js_WEBPACK_IMPORTED_MODULE_41_ = __webpack_require__(3278);
+/* harmony import */ var ccxt_src_coinbaseexchange_js_WEBPACK_IMPORTED_MODULE_42_ = __webpack_require__(4293);
+/* harmony import */ var ccxt_src_coinbaseinternational_js_WEBPACK_IMPORTED_MODULE_43_ = __webpack_require__(1558);
+/* harmony import */ var ccxt_src_coincatch_js_WEBPACK_IMPORTED_MODULE_44_ = __webpack_require__(570);
+/* harmony import */ var ccxt_src_coincheck_js_WEBPACK_IMPORTED_MODULE_45_ = __webpack_require__(2741);
+/* harmony import */ var ccxt_src_coinex_js_WEBPACK_IMPORTED_MODULE_46_ = __webpack_require__(9344);
+/* harmony import */ var ccxt_src_coinmate_js_WEBPACK_IMPORTED_MODULE_47_ = __webpack_require__(6016);
+/* harmony import */ var ccxt_src_coinmetro_js_WEBPACK_IMPORTED_MODULE_48_ = __webpack_require__(8692);
+/* harmony import */ var ccxt_src_coinone_js_WEBPACK_IMPORTED_MODULE_49_ = __webpack_require__(5377);
+/* harmony import */ var ccxt_src_coinsph_js_WEBPACK_IMPORTED_MODULE_50_ = __webpack_require__(2692);
+/* harmony import */ var ccxt_src_coinspot_js_WEBPACK_IMPORTED_MODULE_51_ = __webpack_require__(1669);
+/* harmony import */ var ccxt_src_cryptocom_js_WEBPACK_IMPORTED_MODULE_52_ = __webpack_require__(6068);
+/* harmony import */ var ccxt_src_cryptomus_js_WEBPACK_IMPORTED_MODULE_53_ = __webpack_require__(870);
+/* harmony import */ var ccxt_src_deepcoin_js_WEBPACK_IMPORTED_MODULE_54_ = __webpack_require__(763);
+/* harmony import */ var ccxt_src_defx_js_WEBPACK_IMPORTED_MODULE_55_ = __webpack_require__(6077);
+/* harmony import */ var ccxt_src_delta_js_WEBPACK_IMPORTED_MODULE_56_ = __webpack_require__(1080);
+/* harmony import */ var ccxt_src_deribit_js_WEBPACK_IMPORTED_MODULE_57_ = __webpack_require__(2591);
+/* harmony import */ var ccxt_src_derive_js_WEBPACK_IMPORTED_MODULE_58_ = __webpack_require__(1839);
+/* harmony import */ var ccxt_src_digifinex_js_WEBPACK_IMPORTED_MODULE_59_ = __webpack_require__(779);
+/* harmony import */ var ccxt_src_dydx_js_WEBPACK_IMPORTED_MODULE_60_ = __webpack_require__(2987);
+/* harmony import */ var ccxt_src_exmo_js_WEBPACK_IMPORTED_MODULE_61_ = __webpack_require__(7057);
+/* harmony import */ var ccxt_src_fmfwio_js_WEBPACK_IMPORTED_MODULE_62_ = __webpack_require__(3042);
+/* harmony import */ var ccxt_src_foxbit_js_WEBPACK_IMPORTED_MODULE_63_ = __webpack_require__(448);
+/* harmony import */ var ccxt_src_gate_js_WEBPACK_IMPORTED_MODULE_64_ = __webpack_require__(9403);
+/* harmony import */ var ccxt_src_gateio_js_WEBPACK_IMPORTED_MODULE_65_ = __webpack_require__(784);
+/* harmony import */ var ccxt_src_gemini_js_WEBPACK_IMPORTED_MODULE_66_ = __webpack_require__(8823);
+/* harmony import */ var ccxt_src_hashkey_js_WEBPACK_IMPORTED_MODULE_67_ = __webpack_require__(2937);
+/* harmony import */ var ccxt_src_hibachi_js_WEBPACK_IMPORTED_MODULE_68_ = __webpack_require__(5106);
+/* harmony import */ var ccxt_src_hitbtc_js_WEBPACK_IMPORTED_MODULE_69_ = __webpack_require__(7996);
+/* harmony import */ var ccxt_src_hollaex_js_WEBPACK_IMPORTED_MODULE_70_ = __webpack_require__(4455);
+/* harmony import */ var ccxt_src_htx_js_WEBPACK_IMPORTED_MODULE_71_ = __webpack_require__(9946);
+/* harmony import */ var ccxt_src_huobi_js_WEBPACK_IMPORTED_MODULE_72_ = __webpack_require__(63);
+/* harmony import */ var ccxt_src_hyperliquid_js_WEBPACK_IMPORTED_MODULE_73_ = __webpack_require__(1936);
+/* harmony import */ var ccxt_src_independentreserve_js_WEBPACK_IMPORTED_MODULE_74_ = __webpack_require__(4162);
+/* harmony import */ var ccxt_src_indodax_js_WEBPACK_IMPORTED_MODULE_75_ = __webpack_require__(7325);
+/* harmony import */ var ccxt_src_kraken_js_WEBPACK_IMPORTED_MODULE_76_ = __webpack_require__(8042);
+/* harmony import */ var ccxt_src_krakenfutures_js_WEBPACK_IMPORTED_MODULE_77_ = __webpack_require__(2300);
+/* harmony import */ var ccxt_src_kucoin_js_WEBPACK_IMPORTED_MODULE_78_ = __webpack_require__(1397);
+/* harmony import */ var ccxt_src_kucoinfutures_js_WEBPACK_IMPORTED_MODULE_79_ = __webpack_require__(6217);
+/* harmony import */ var ccxt_src_latoken_js_WEBPACK_IMPORTED_MODULE_80_ = __webpack_require__(8146);
+/* harmony import */ var ccxt_src_lbank_js_WEBPACK_IMPORTED_MODULE_81_ = __webpack_require__(3144);
+/* harmony import */ var ccxt_src_luno_js_WEBPACK_IMPORTED_MODULE_82_ = __webpack_require__(9248);
+/* harmony import */ var ccxt_src_mercado_js_WEBPACK_IMPORTED_MODULE_83_ = __webpack_require__(6419);
+/* harmony import */ var ccxt_src_mexc_js_WEBPACK_IMPORTED_MODULE_84_ = __webpack_require__(2403);
+/* harmony import */ var ccxt_src_modetrade_js_WEBPACK_IMPORTED_MODULE_85_ = __webpack_require__(5345);
+/* harmony import */ var ccxt_src_myokx_js_WEBPACK_IMPORTED_MODULE_86_ = __webpack_require__(8982);
+/* harmony import */ var ccxt_src_ndax_js_WEBPACK_IMPORTED_MODULE_87_ = __webpack_require__(4460);
+/* harmony import */ var ccxt_src_novadax_js_WEBPACK_IMPORTED_MODULE_88_ = __webpack_require__(8473);
+/* harmony import */ var ccxt_src_okx_js_WEBPACK_IMPORTED_MODULE_89_ = __webpack_require__(3660);
+/* harmony import */ var ccxt_src_okxus_js_WEBPACK_IMPORTED_MODULE_90_ = __webpack_require__(3536);
+/* harmony import */ var ccxt_src_onetrading_js_WEBPACK_IMPORTED_MODULE_91_ = __webpack_require__(3573);
+/* harmony import */ var ccxt_src_oxfun_js_WEBPACK_IMPORTED_MODULE_92_ = __webpack_require__(6358);
+/* harmony import */ var ccxt_src_p2b_js_WEBPACK_IMPORTED_MODULE_93_ = __webpack_require__(4998);
+/* harmony import */ var ccxt_src_paradex_js_WEBPACK_IMPORTED_MODULE_94_ = __webpack_require__(6993);
+/* harmony import */ var ccxt_src_paymium_js_WEBPACK_IMPORTED_MODULE_95_ = __webpack_require__(3280);
+/* harmony import */ var ccxt_src_phemex_js_WEBPACK_IMPORTED_MODULE_96_ = __webpack_require__(9075);
+/* harmony import */ var ccxt_src_poloniex_js_WEBPACK_IMPORTED_MODULE_97_ = __webpack_require__(288);
+/* harmony import */ var ccxt_src_probit_js_WEBPACK_IMPORTED_MODULE_98_ = __webpack_require__(5037);
+/* harmony import */ var ccxt_src_timex_js_WEBPACK_IMPORTED_MODULE_99_ = __webpack_require__(6213);
+/* harmony import */ var ccxt_src_tokocrypto_js_WEBPACK_IMPORTED_MODULE_100_ = __webpack_require__(2490);
+/* harmony import */ var ccxt_src_toobit_js_WEBPACK_IMPORTED_MODULE_101_ = __webpack_require__(237);
+/* harmony import */ var ccxt_src_upbit_js_WEBPACK_IMPORTED_MODULE_102_ = __webpack_require__(930);
+/* harmony import */ var ccxt_src_wavesexchange_js_WEBPACK_IMPORTED_MODULE_103_ = __webpack_require__(7073);
+/* harmony import */ var ccxt_src_whitebit_js_WEBPACK_IMPORTED_MODULE_104_ = __webpack_require__(5336);
+/* harmony import */ var ccxt_src_woo_js_WEBPACK_IMPORTED_MODULE_105_ = __webpack_require__(669);
+/* harmony import */ var ccxt_src_woofipro_js_WEBPACK_IMPORTED_MODULE_106_ = __webpack_require__(9641);
+/* harmony import */ var ccxt_src_xt_js_WEBPACK_IMPORTED_MODULE_107_ = __webpack_require__(5344);
+/* harmony import */ var ccxt_src_yobit_js_WEBPACK_IMPORTED_MODULE_108_ = __webpack_require__(7469);
+/* harmony import */ var ccxt_src_zaif_js_WEBPACK_IMPORTED_MODULE_109_ = __webpack_require__(1530);
+/* harmony import */ var ccxt_src_zebpay_js_WEBPACK_IMPORTED_MODULE_110_ = __webpack_require__(585);
+/* harmony import */ var ccxt_src_zonda_js_WEBPACK_IMPORTED_MODULE_111_ = __webpack_require__(6022);
+/* harmony import */ var ccxt_src_pro_alpaca_js_WEBPACK_IMPORTED_MODULE_112_ = __webpack_require__(6810);
+/* harmony import */ var ccxt_src_pro_apex_js_WEBPACK_IMPORTED_MODULE_113_ = __webpack_require__(136);
+/* harmony import */ var ccxt_src_pro_arkham_js_WEBPACK_IMPORTED_MODULE_114_ = __webpack_require__(5758);
+/* harmony import */ var ccxt_src_pro_ascendex_js_WEBPACK_IMPORTED_MODULE_115_ = __webpack_require__(1657);
+/* harmony import */ var ccxt_src_pro_aster_js_WEBPACK_IMPORTED_MODULE_116_ = __webpack_require__(1273);
+/* harmony import */ var ccxt_src_pro_backpack_js_WEBPACK_IMPORTED_MODULE_117_ = __webpack_require__(4034);
+/* harmony import */ var ccxt_src_pro_bequant_js_WEBPACK_IMPORTED_MODULE_118_ = __webpack_require__(9338);
+/* harmony import */ var ccxt_src_pro_binance_js_WEBPACK_IMPORTED_MODULE_119_ = __webpack_require__(9544);
+/* harmony import */ var ccxt_src_pro_binancecoinm_js_WEBPACK_IMPORTED_MODULE_120_ = __webpack_require__(902);
+/* harmony import */ var ccxt_src_pro_binanceus_js_WEBPACK_IMPORTED_MODULE_121_ = __webpack_require__(8788);
+/* harmony import */ var ccxt_src_pro_binanceusdm_js_WEBPACK_IMPORTED_MODULE_122_ = __webpack_require__(8251);
+/* harmony import */ var ccxt_src_pro_bingx_js_WEBPACK_IMPORTED_MODULE_123_ = __webpack_require__(9456);
+/* harmony import */ var ccxt_src_pro_bitfinex_js_WEBPACK_IMPORTED_MODULE_124_ = __webpack_require__(1038);
+/* harmony import */ var ccxt_src_pro_bitget_js_WEBPACK_IMPORTED_MODULE_125_ = __webpack_require__(205);
+/* harmony import */ var ccxt_src_pro_bithumb_js_WEBPACK_IMPORTED_MODULE_126_ = __webpack_require__(6181);
+/* harmony import */ var ccxt_src_pro_bitmart_js_WEBPACK_IMPORTED_MODULE_127_ = __webpack_require__(3069);
+/* harmony import */ var ccxt_src_pro_bitmex_js_WEBPACK_IMPORTED_MODULE_128_ = __webpack_require__(3731);
+/* harmony import */ var ccxt_src_pro_bitopro_js_WEBPACK_IMPORTED_MODULE_129_ = __webpack_require__(4401);
+/* harmony import */ var ccxt_src_pro_bitrue_js_WEBPACK_IMPORTED_MODULE_130_ = __webpack_require__(3333);
+/* harmony import */ var ccxt_src_pro_bitstamp_js_WEBPACK_IMPORTED_MODULE_131_ = __webpack_require__(3326);
+/* harmony import */ var ccxt_src_pro_bittrade_js_WEBPACK_IMPORTED_MODULE_132_ = __webpack_require__(2391);
+/* harmony import */ var ccxt_src_pro_bitvavo_js_WEBPACK_IMPORTED_MODULE_133_ = __webpack_require__(1327);
+/* harmony import */ var ccxt_src_pro_blockchaincom_js_WEBPACK_IMPORTED_MODULE_134_ = __webpack_require__(8693);
+/* harmony import */ var ccxt_src_pro_blofin_js_WEBPACK_IMPORTED_MODULE_135_ = __webpack_require__(1672);
+/* harmony import */ var ccxt_src_pro_bullish_js_WEBPACK_IMPORTED_MODULE_136_ = __webpack_require__(7753);
+/* harmony import */ var ccxt_src_pro_bybit_js_WEBPACK_IMPORTED_MODULE_137_ = __webpack_require__(8518);
+/* harmony import */ var ccxt_src_pro_bydfi_js_WEBPACK_IMPORTED_MODULE_138_ = __webpack_require__(3720);
+/* harmony import */ var ccxt_src_pro_cex_js_WEBPACK_IMPORTED_MODULE_139_ = __webpack_require__(3774);
+/* harmony import */ var ccxt_src_pro_coinbase_js_WEBPACK_IMPORTED_MODULE_140_ = __webpack_require__(8160);
+/* harmony import */ var ccxt_src_pro_coinbaseadvanced_js_WEBPACK_IMPORTED_MODULE_141_ = __webpack_require__(5918);
+/* harmony import */ var ccxt_src_pro_coinbaseexchange_js_WEBPACK_IMPORTED_MODULE_142_ = __webpack_require__(1925);
+/* harmony import */ var ccxt_src_pro_coinbaseinternational_js_WEBPACK_IMPORTED_MODULE_143_ = __webpack_require__(998);
+/* harmony import */ var ccxt_src_pro_coincatch_js_WEBPACK_IMPORTED_MODULE_144_ = __webpack_require__(3242);
+/* harmony import */ var ccxt_src_pro_coincheck_js_WEBPACK_IMPORTED_MODULE_145_ = __webpack_require__(79);
+/* harmony import */ var ccxt_src_pro_coinex_js_WEBPACK_IMPORTED_MODULE_146_ = __webpack_require__(9088);
+/* harmony import */ var ccxt_src_pro_coinone_js_WEBPACK_IMPORTED_MODULE_147_ = __webpack_require__(8673);
+/* harmony import */ var ccxt_src_pro_cryptocom_js_WEBPACK_IMPORTED_MODULE_148_ = __webpack_require__(6292);
+/* harmony import */ var ccxt_src_pro_deepcoin_js_WEBPACK_IMPORTED_MODULE_149_ = __webpack_require__(4811);
+/* harmony import */ var ccxt_src_pro_defx_js_WEBPACK_IMPORTED_MODULE_150_ = __webpack_require__(8717);
+/* harmony import */ var ccxt_src_pro_deribit_js_WEBPACK_IMPORTED_MODULE_151_ = __webpack_require__(7791);
+/* harmony import */ var ccxt_src_pro_derive_js_WEBPACK_IMPORTED_MODULE_152_ = __webpack_require__(2127);
+/* harmony import */ var ccxt_src_pro_dydx_js_WEBPACK_IMPORTED_MODULE_153_ = __webpack_require__(8027);
+/* harmony import */ var ccxt_src_pro_exmo_js_WEBPACK_IMPORTED_MODULE_154_ = __webpack_require__(5233);
+/* harmony import */ var ccxt_src_pro_gate_js_WEBPACK_IMPORTED_MODULE_155_ = __webpack_require__(9195);
+/* harmony import */ var ccxt_src_pro_gateio_js_WEBPACK_IMPORTED_MODULE_156_ = __webpack_require__(5843);
+/* harmony import */ var ccxt_src_pro_gemini_js_WEBPACK_IMPORTED_MODULE_157_ = __webpack_require__(375);
+/* harmony import */ var ccxt_src_pro_hashkey_js_WEBPACK_IMPORTED_MODULE_158_ = __webpack_require__(1481);
+/* harmony import */ var ccxt_src_pro_hitbtc_js_WEBPACK_IMPORTED_MODULE_159_ = __webpack_require__(4524);
+/* harmony import */ var ccxt_src_pro_hollaex_js_WEBPACK_IMPORTED_MODULE_160_ = __webpack_require__(8247);
+/* harmony import */ var ccxt_src_pro_htx_js_WEBPACK_IMPORTED_MODULE_161_ = __webpack_require__(3898);
+/* harmony import */ var ccxt_src_pro_huobi_js_WEBPACK_IMPORTED_MODULE_162_ = __webpack_require__(6335);
+/* harmony import */ var ccxt_src_pro_hyperliquid_js_WEBPACK_IMPORTED_MODULE_163_ = __webpack_require__(3984);
+/* harmony import */ var ccxt_src_pro_independentreserve_js_WEBPACK_IMPORTED_MODULE_164_ = __webpack_require__(98);
+/* harmony import */ var ccxt_src_pro_kraken_js_WEBPACK_IMPORTED_MODULE_165_ = __webpack_require__(9050);
+/* harmony import */ var ccxt_src_pro_krakenfutures_js_WEBPACK_IMPORTED_MODULE_166_ = __webpack_require__(6396);
+/* harmony import */ var ccxt_src_pro_kucoin_js_WEBPACK_IMPORTED_MODULE_167_ = __webpack_require__(4965);
+/* harmony import */ var ccxt_src_pro_kucoinfutures_js_WEBPACK_IMPORTED_MODULE_168_ = __webpack_require__(905);
+/* harmony import */ var ccxt_src_pro_lbank_js_WEBPACK_IMPORTED_MODULE_169_ = __webpack_require__(1736);
+/* harmony import */ var ccxt_src_pro_luno_js_WEBPACK_IMPORTED_MODULE_170_ = __webpack_require__(2208);
+/* harmony import */ var ccxt_src_pro_mexc_js_WEBPACK_IMPORTED_MODULE_171_ = __webpack_require__(9219);
+/* harmony import */ var ccxt_src_pro_modetrade_js_WEBPACK_IMPORTED_MODULE_172_ = __webpack_require__(49);
+/* harmony import */ var ccxt_src_pro_myokx_js_WEBPACK_IMPORTED_MODULE_173_ = __webpack_require__(3062);
+/* harmony import */ var ccxt_src_pro_ndax_js_WEBPACK_IMPORTED_MODULE_174_ = __webpack_require__(3887);
+/* harmony import */ var ccxt_src_pro_okx_js_WEBPACK_IMPORTED_MODULE_175_ = __webpack_require__(8588);
+/* harmony import */ var ccxt_src_pro_okxus_js_WEBPACK_IMPORTED_MODULE_176_ = __webpack_require__(3296);
+/* harmony import */ var ccxt_src_pro_onetrading_js_WEBPACK_IMPORTED_MODULE_177_ = __webpack_require__(4357);
+/* harmony import */ var ccxt_src_pro_oxfun_js_WEBPACK_IMPORTED_MODULE_178_ = __webpack_require__(550);
+/* harmony import */ var ccxt_src_pro_p2b_js_WEBPACK_IMPORTED_MODULE_179_ = __webpack_require__(4934);
+/* harmony import */ var ccxt_src_pro_paradex_js_WEBPACK_IMPORTED_MODULE_180_ = __webpack_require__(1057);
+/* harmony import */ var ccxt_src_pro_phemex_js_WEBPACK_IMPORTED_MODULE_181_ = __webpack_require__(1619);
+/* harmony import */ var ccxt_src_pro_poloniex_js_WEBPACK_IMPORTED_MODULE_182_ = __webpack_require__(3456);
+/* harmony import */ var ccxt_src_pro_probit_js_WEBPACK_IMPORTED_MODULE_183_ = __webpack_require__(5738);
+/* harmony import */ var ccxt_src_pro_toobit_js_WEBPACK_IMPORTED_MODULE_184_ = __webpack_require__(3933);
+/* harmony import */ var ccxt_src_pro_upbit_js_WEBPACK_IMPORTED_MODULE_185_ = __webpack_require__(5794);
+/* harmony import */ var ccxt_src_pro_whitebit_js_WEBPACK_IMPORTED_MODULE_186_ = __webpack_require__(4712);
+/* harmony import */ var ccxt_src_pro_woo_js_WEBPACK_IMPORTED_MODULE_187_ = __webpack_require__(5869);
+/* harmony import */ var ccxt_src_pro_woofipro_js_WEBPACK_IMPORTED_MODULE_188_ = __webpack_require__(8713);
+/* harmony import */ var ccxt_src_pro_xt_js_WEBPACK_IMPORTED_MODULE_189_ = __webpack_require__(2368);
 /*
 
 MIT License
@@ -451942,9 +463019,10 @@ SOFTWARE.
 
 //-----------------------------------------------------------------------------
 // this is updated by vss.js when building
-const ccxt_version = '4.5.29';
+const ccxt_version = '4.5.32';
 ccxt_src_base_Exchange_js_WEBPACK_IMPORTED_MODULE_0_/* .Exchange */ .k.ccxtVersion = ccxt_version;
 //-----------------------------------------------------------------------------
+
 
 
 
@@ -452132,195 +463210,200 @@ ccxt_src_base_Exchange_js_WEBPACK_IMPORTED_MODULE_0_/* .Exchange */ .k.ccxtVersi
 
 
 
+
+
 const ccxt_exchanges = {
     'alpaca': ccxt_src_alpaca_js_WEBPACK_IMPORTED_MODULE_1_/* ["default"] */ .A,
     'apex': ccxt_src_apex_js_WEBPACK_IMPORTED_MODULE_2_/* ["default"] */ .A,
     'arkham': ccxt_src_arkham_js_WEBPACK_IMPORTED_MODULE_3_/* ["default"] */ .A,
     'ascendex': ccxt_src_ascendex_js_WEBPACK_IMPORTED_MODULE_4_/* ["default"] */ .A,
-    'backpack': ccxt_src_backpack_js_WEBPACK_IMPORTED_MODULE_5_/* ["default"] */ .A,
-    'bequant': ccxt_src_bequant_js_WEBPACK_IMPORTED_MODULE_6_/* ["default"] */ .A,
-    'bigone': ccxt_src_bigone_js_WEBPACK_IMPORTED_MODULE_7_/* ["default"] */ .A,
-    'binance': ccxt_src_binance_js_WEBPACK_IMPORTED_MODULE_8_/* ["default"] */ .A,
-    'binancecoinm': ccxt_src_binancecoinm_js_WEBPACK_IMPORTED_MODULE_9_/* ["default"] */ .A,
-    'binanceus': ccxt_src_binanceus_js_WEBPACK_IMPORTED_MODULE_10_/* ["default"] */ .A,
-    'binanceusdm': ccxt_src_binanceusdm_js_WEBPACK_IMPORTED_MODULE_11_/* ["default"] */ .A,
-    'bingx': ccxt_src_bingx_js_WEBPACK_IMPORTED_MODULE_12_/* ["default"] */ .A,
-    'bit2c': ccxt_src_bit2c_js_WEBPACK_IMPORTED_MODULE_13_/* ["default"] */ .A,
-    'bitbank': ccxt_src_bitbank_js_WEBPACK_IMPORTED_MODULE_14_/* ["default"] */ .A,
-    'bitbns': ccxt_src_bitbns_js_WEBPACK_IMPORTED_MODULE_15_/* ["default"] */ .A,
-    'bitfinex': ccxt_src_bitfinex_js_WEBPACK_IMPORTED_MODULE_16_/* ["default"] */ .A,
-    'bitflyer': ccxt_src_bitflyer_js_WEBPACK_IMPORTED_MODULE_17_/* ["default"] */ .A,
-    'bitget': ccxt_src_bitget_js_WEBPACK_IMPORTED_MODULE_18_/* ["default"] */ .A,
-    'bithumb': ccxt_src_bithumb_js_WEBPACK_IMPORTED_MODULE_19_/* ["default"] */ .A,
-    'bitmart': ccxt_src_bitmart_js_WEBPACK_IMPORTED_MODULE_20_/* ["default"] */ .A,
-    'bitmex': ccxt_src_bitmex_js_WEBPACK_IMPORTED_MODULE_21_/* ["default"] */ .A,
-    'bitopro': ccxt_src_bitopro_js_WEBPACK_IMPORTED_MODULE_22_/* ["default"] */ .A,
-    'bitrue': ccxt_src_bitrue_js_WEBPACK_IMPORTED_MODULE_23_/* ["default"] */ .A,
-    'bitso': ccxt_src_bitso_js_WEBPACK_IMPORTED_MODULE_24_/* ["default"] */ .A,
-    'bitstamp': ccxt_src_bitstamp_js_WEBPACK_IMPORTED_MODULE_25_/* ["default"] */ .A,
-    'bitteam': ccxt_src_bitteam_js_WEBPACK_IMPORTED_MODULE_26_/* ["default"] */ .A,
-    'bittrade': ccxt_src_bittrade_js_WEBPACK_IMPORTED_MODULE_27_/* ["default"] */ .A,
-    'bitvavo': ccxt_src_bitvavo_js_WEBPACK_IMPORTED_MODULE_28_/* ["default"] */ .A,
-    'blockchaincom': ccxt_src_blockchaincom_js_WEBPACK_IMPORTED_MODULE_29_/* ["default"] */ .A,
-    'blofin': ccxt_src_blofin_js_WEBPACK_IMPORTED_MODULE_30_/* ["default"] */ .A,
-    'btcalpha': ccxt_src_btcalpha_js_WEBPACK_IMPORTED_MODULE_31_/* ["default"] */ .A,
-    'btcbox': ccxt_src_btcbox_js_WEBPACK_IMPORTED_MODULE_32_/* ["default"] */ .A,
-    'btcmarkets': ccxt_src_btcmarkets_js_WEBPACK_IMPORTED_MODULE_33_/* ["default"] */ .A,
-    'btcturk': ccxt_src_btcturk_js_WEBPACK_IMPORTED_MODULE_34_/* ["default"] */ .A,
-    'bullish': ccxt_src_bullish_js_WEBPACK_IMPORTED_MODULE_35_/* ["default"] */ .A,
-    'bybit': ccxt_src_bybit_js_WEBPACK_IMPORTED_MODULE_36_/* ["default"] */ .A,
-    'cex': ccxt_src_cex_js_WEBPACK_IMPORTED_MODULE_37_/* ["default"] */ .A,
-    'coinbase': ccxt_src_coinbase_js_WEBPACK_IMPORTED_MODULE_38_/* ["default"] */ .A,
-    'coinbaseadvanced': ccxt_src_coinbaseadvanced_js_WEBPACK_IMPORTED_MODULE_39_/* ["default"] */ .A,
-    'coinbaseexchange': ccxt_src_coinbaseexchange_js_WEBPACK_IMPORTED_MODULE_40_/* ["default"] */ .A,
-    'coinbaseinternational': ccxt_src_coinbaseinternational_js_WEBPACK_IMPORTED_MODULE_41_/* ["default"] */ .A,
-    'coincatch': ccxt_src_coincatch_js_WEBPACK_IMPORTED_MODULE_42_/* ["default"] */ .A,
-    'coincheck': ccxt_src_coincheck_js_WEBPACK_IMPORTED_MODULE_43_/* ["default"] */ .A,
-    'coinex': ccxt_src_coinex_js_WEBPACK_IMPORTED_MODULE_44_/* ["default"] */ .A,
-    'coinmate': ccxt_src_coinmate_js_WEBPACK_IMPORTED_MODULE_45_/* ["default"] */ .A,
-    'coinmetro': ccxt_src_coinmetro_js_WEBPACK_IMPORTED_MODULE_46_/* ["default"] */ .A,
-    'coinone': ccxt_src_coinone_js_WEBPACK_IMPORTED_MODULE_47_/* ["default"] */ .A,
-    'coinsph': ccxt_src_coinsph_js_WEBPACK_IMPORTED_MODULE_48_/* ["default"] */ .A,
-    'coinspot': ccxt_src_coinspot_js_WEBPACK_IMPORTED_MODULE_49_/* ["default"] */ .A,
-    'cryptocom': ccxt_src_cryptocom_js_WEBPACK_IMPORTED_MODULE_50_/* ["default"] */ .A,
-    'cryptomus': ccxt_src_cryptomus_js_WEBPACK_IMPORTED_MODULE_51_/* ["default"] */ .A,
-    'deepcoin': ccxt_src_deepcoin_js_WEBPACK_IMPORTED_MODULE_52_/* ["default"] */ .A,
-    'defx': ccxt_src_defx_js_WEBPACK_IMPORTED_MODULE_53_/* ["default"] */ .A,
-    'delta': ccxt_src_delta_js_WEBPACK_IMPORTED_MODULE_54_/* ["default"] */ .A,
-    'deribit': ccxt_src_deribit_js_WEBPACK_IMPORTED_MODULE_55_/* ["default"] */ .A,
-    'derive': ccxt_src_derive_js_WEBPACK_IMPORTED_MODULE_56_/* ["default"] */ .A,
-    'digifinex': ccxt_src_digifinex_js_WEBPACK_IMPORTED_MODULE_57_/* ["default"] */ .A,
-    'dydx': ccxt_src_dydx_js_WEBPACK_IMPORTED_MODULE_58_/* ["default"] */ .A,
-    'exmo': ccxt_src_exmo_js_WEBPACK_IMPORTED_MODULE_59_/* ["default"] */ .A,
-    'fmfwio': ccxt_src_fmfwio_js_WEBPACK_IMPORTED_MODULE_60_/* ["default"] */ .A,
-    'foxbit': ccxt_src_foxbit_js_WEBPACK_IMPORTED_MODULE_61_/* ["default"] */ .A,
-    'gate': ccxt_src_gate_js_WEBPACK_IMPORTED_MODULE_62_/* ["default"] */ .A,
-    'gateio': ccxt_src_gateio_js_WEBPACK_IMPORTED_MODULE_63_/* ["default"] */ .A,
-    'gemini': ccxt_src_gemini_js_WEBPACK_IMPORTED_MODULE_64_/* ["default"] */ .A,
-    'hashkey': ccxt_src_hashkey_js_WEBPACK_IMPORTED_MODULE_65_/* ["default"] */ .A,
-    'hibachi': ccxt_src_hibachi_js_WEBPACK_IMPORTED_MODULE_66_/* ["default"] */ .A,
-    'hitbtc': ccxt_src_hitbtc_js_WEBPACK_IMPORTED_MODULE_67_/* ["default"] */ .A,
-    'hollaex': ccxt_src_hollaex_js_WEBPACK_IMPORTED_MODULE_68_/* ["default"] */ .A,
-    'htx': ccxt_src_htx_js_WEBPACK_IMPORTED_MODULE_69_/* ["default"] */ .A,
-    'huobi': ccxt_src_huobi_js_WEBPACK_IMPORTED_MODULE_70_/* ["default"] */ .A,
-    'hyperliquid': ccxt_src_hyperliquid_js_WEBPACK_IMPORTED_MODULE_71_/* ["default"] */ .A,
-    'independentreserve': ccxt_src_independentreserve_js_WEBPACK_IMPORTED_MODULE_72_/* ["default"] */ .A,
-    'indodax': ccxt_src_indodax_js_WEBPACK_IMPORTED_MODULE_73_/* ["default"] */ .A,
-    'kraken': ccxt_src_kraken_js_WEBPACK_IMPORTED_MODULE_74_/* ["default"] */ .A,
-    'krakenfutures': ccxt_src_krakenfutures_js_WEBPACK_IMPORTED_MODULE_75_/* ["default"] */ .A,
-    'kucoin': ccxt_src_kucoin_js_WEBPACK_IMPORTED_MODULE_76_/* ["default"] */ .A,
-    'kucoinfutures': ccxt_src_kucoinfutures_js_WEBPACK_IMPORTED_MODULE_77_/* ["default"] */ .A,
-    'latoken': ccxt_src_latoken_js_WEBPACK_IMPORTED_MODULE_78_/* ["default"] */ .A,
-    'lbank': ccxt_src_lbank_js_WEBPACK_IMPORTED_MODULE_79_/* ["default"] */ .A,
-    'luno': ccxt_src_luno_js_WEBPACK_IMPORTED_MODULE_80_/* ["default"] */ .A,
-    'mercado': ccxt_src_mercado_js_WEBPACK_IMPORTED_MODULE_81_/* ["default"] */ .A,
-    'mexc': ccxt_src_mexc_js_WEBPACK_IMPORTED_MODULE_82_/* ["default"] */ .A,
-    'modetrade': ccxt_src_modetrade_js_WEBPACK_IMPORTED_MODULE_83_/* ["default"] */ .A,
-    'myokx': ccxt_src_myokx_js_WEBPACK_IMPORTED_MODULE_84_/* ["default"] */ .A,
-    'ndax': ccxt_src_ndax_js_WEBPACK_IMPORTED_MODULE_85_/* ["default"] */ .A,
-    'novadax': ccxt_src_novadax_js_WEBPACK_IMPORTED_MODULE_86_/* ["default"] */ .A,
-    'oceanex': ccxt_src_oceanex_js_WEBPACK_IMPORTED_MODULE_87_/* ["default"] */ .A,
-    'okx': ccxt_src_okx_js_WEBPACK_IMPORTED_MODULE_88_/* ["default"] */ .A,
-    'okxus': ccxt_src_okxus_js_WEBPACK_IMPORTED_MODULE_89_/* ["default"] */ .A,
-    'onetrading': ccxt_src_onetrading_js_WEBPACK_IMPORTED_MODULE_90_/* ["default"] */ .A,
-    'oxfun': ccxt_src_oxfun_js_WEBPACK_IMPORTED_MODULE_91_/* ["default"] */ .A,
-    'p2b': ccxt_src_p2b_js_WEBPACK_IMPORTED_MODULE_92_/* ["default"] */ .A,
-    'paradex': ccxt_src_paradex_js_WEBPACK_IMPORTED_MODULE_93_/* ["default"] */ .A,
-    'paymium': ccxt_src_paymium_js_WEBPACK_IMPORTED_MODULE_94_/* ["default"] */ .A,
-    'phemex': ccxt_src_phemex_js_WEBPACK_IMPORTED_MODULE_95_/* ["default"] */ .A,
-    'poloniex': ccxt_src_poloniex_js_WEBPACK_IMPORTED_MODULE_96_/* ["default"] */ .A,
-    'probit': ccxt_src_probit_js_WEBPACK_IMPORTED_MODULE_97_/* ["default"] */ .A,
-    'timex': ccxt_src_timex_js_WEBPACK_IMPORTED_MODULE_98_/* ["default"] */ .A,
-    'tokocrypto': ccxt_src_tokocrypto_js_WEBPACK_IMPORTED_MODULE_99_/* ["default"] */ .A,
-    'toobit': ccxt_src_toobit_js_WEBPACK_IMPORTED_MODULE_100_/* ["default"] */ .A,
-    'upbit': ccxt_src_upbit_js_WEBPACK_IMPORTED_MODULE_101_/* ["default"] */ .A,
-    'wavesexchange': ccxt_src_wavesexchange_js_WEBPACK_IMPORTED_MODULE_102_/* ["default"] */ .A,
-    'whitebit': ccxt_src_whitebit_js_WEBPACK_IMPORTED_MODULE_103_/* ["default"] */ .A,
-    'woo': ccxt_src_woo_js_WEBPACK_IMPORTED_MODULE_104_/* ["default"] */ .A,
-    'woofipro': ccxt_src_woofipro_js_WEBPACK_IMPORTED_MODULE_105_/* ["default"] */ .A,
-    'xt': ccxt_src_xt_js_WEBPACK_IMPORTED_MODULE_106_/* ["default"] */ .A,
-    'yobit': ccxt_src_yobit_js_WEBPACK_IMPORTED_MODULE_107_/* ["default"] */ .A,
-    'zaif': ccxt_src_zaif_js_WEBPACK_IMPORTED_MODULE_108_/* ["default"] */ .A,
-    'zebpay': ccxt_src_zebpay_js_WEBPACK_IMPORTED_MODULE_109_/* ["default"] */ .A,
-    'zonda': ccxt_src_zonda_js_WEBPACK_IMPORTED_MODULE_110_/* ["default"] */ .A,
+    'aster': ccxt_src_aster_js_WEBPACK_IMPORTED_MODULE_5_/* ["default"] */ .A,
+    'backpack': ccxt_src_backpack_js_WEBPACK_IMPORTED_MODULE_6_/* ["default"] */ .A,
+    'bequant': ccxt_src_bequant_js_WEBPACK_IMPORTED_MODULE_7_/* ["default"] */ .A,
+    'bigone': ccxt_src_bigone_js_WEBPACK_IMPORTED_MODULE_8_/* ["default"] */ .A,
+    'binance': ccxt_src_binance_js_WEBPACK_IMPORTED_MODULE_9_/* ["default"] */ .A,
+    'binancecoinm': ccxt_src_binancecoinm_js_WEBPACK_IMPORTED_MODULE_10_/* ["default"] */ .A,
+    'binanceus': ccxt_src_binanceus_js_WEBPACK_IMPORTED_MODULE_11_/* ["default"] */ .A,
+    'binanceusdm': ccxt_src_binanceusdm_js_WEBPACK_IMPORTED_MODULE_12_/* ["default"] */ .A,
+    'bingx': ccxt_src_bingx_js_WEBPACK_IMPORTED_MODULE_13_/* ["default"] */ .A,
+    'bit2c': ccxt_src_bit2c_js_WEBPACK_IMPORTED_MODULE_14_/* ["default"] */ .A,
+    'bitbank': ccxt_src_bitbank_js_WEBPACK_IMPORTED_MODULE_15_/* ["default"] */ .A,
+    'bitbns': ccxt_src_bitbns_js_WEBPACK_IMPORTED_MODULE_16_/* ["default"] */ .A,
+    'bitfinex': ccxt_src_bitfinex_js_WEBPACK_IMPORTED_MODULE_17_/* ["default"] */ .A,
+    'bitflyer': ccxt_src_bitflyer_js_WEBPACK_IMPORTED_MODULE_18_/* ["default"] */ .A,
+    'bitget': ccxt_src_bitget_js_WEBPACK_IMPORTED_MODULE_19_/* ["default"] */ .A,
+    'bithumb': ccxt_src_bithumb_js_WEBPACK_IMPORTED_MODULE_20_/* ["default"] */ .A,
+    'bitmart': ccxt_src_bitmart_js_WEBPACK_IMPORTED_MODULE_21_/* ["default"] */ .A,
+    'bitmex': ccxt_src_bitmex_js_WEBPACK_IMPORTED_MODULE_22_/* ["default"] */ .A,
+    'bitopro': ccxt_src_bitopro_js_WEBPACK_IMPORTED_MODULE_23_/* ["default"] */ .A,
+    'bitrue': ccxt_src_bitrue_js_WEBPACK_IMPORTED_MODULE_24_/* ["default"] */ .A,
+    'bitso': ccxt_src_bitso_js_WEBPACK_IMPORTED_MODULE_25_/* ["default"] */ .A,
+    'bitstamp': ccxt_src_bitstamp_js_WEBPACK_IMPORTED_MODULE_26_/* ["default"] */ .A,
+    'bitteam': ccxt_src_bitteam_js_WEBPACK_IMPORTED_MODULE_27_/* ["default"] */ .A,
+    'bittrade': ccxt_src_bittrade_js_WEBPACK_IMPORTED_MODULE_28_/* ["default"] */ .A,
+    'bitvavo': ccxt_src_bitvavo_js_WEBPACK_IMPORTED_MODULE_29_/* ["default"] */ .A,
+    'blockchaincom': ccxt_src_blockchaincom_js_WEBPACK_IMPORTED_MODULE_30_/* ["default"] */ .A,
+    'blofin': ccxt_src_blofin_js_WEBPACK_IMPORTED_MODULE_31_/* ["default"] */ .A,
+    'btcalpha': ccxt_src_btcalpha_js_WEBPACK_IMPORTED_MODULE_32_/* ["default"] */ .A,
+    'btcbox': ccxt_src_btcbox_js_WEBPACK_IMPORTED_MODULE_33_/* ["default"] */ .A,
+    'btcmarkets': ccxt_src_btcmarkets_js_WEBPACK_IMPORTED_MODULE_34_/* ["default"] */ .A,
+    'btcturk': ccxt_src_btcturk_js_WEBPACK_IMPORTED_MODULE_35_/* ["default"] */ .A,
+    'bullish': ccxt_src_bullish_js_WEBPACK_IMPORTED_MODULE_36_/* ["default"] */ .A,
+    'bybit': ccxt_src_bybit_js_WEBPACK_IMPORTED_MODULE_37_/* ["default"] */ .A,
+    'bydfi': ccxt_src_bydfi_js_WEBPACK_IMPORTED_MODULE_38_/* ["default"] */ .A,
+    'cex': ccxt_src_cex_js_WEBPACK_IMPORTED_MODULE_39_/* ["default"] */ .A,
+    'coinbase': ccxt_src_coinbase_js_WEBPACK_IMPORTED_MODULE_40_/* ["default"] */ .A,
+    'coinbaseadvanced': ccxt_src_coinbaseadvanced_js_WEBPACK_IMPORTED_MODULE_41_/* ["default"] */ .A,
+    'coinbaseexchange': ccxt_src_coinbaseexchange_js_WEBPACK_IMPORTED_MODULE_42_/* ["default"] */ .A,
+    'coinbaseinternational': ccxt_src_coinbaseinternational_js_WEBPACK_IMPORTED_MODULE_43_/* ["default"] */ .A,
+    'coincatch': ccxt_src_coincatch_js_WEBPACK_IMPORTED_MODULE_44_/* ["default"] */ .A,
+    'coincheck': ccxt_src_coincheck_js_WEBPACK_IMPORTED_MODULE_45_/* ["default"] */ .A,
+    'coinex': ccxt_src_coinex_js_WEBPACK_IMPORTED_MODULE_46_/* ["default"] */ .A,
+    'coinmate': ccxt_src_coinmate_js_WEBPACK_IMPORTED_MODULE_47_/* ["default"] */ .A,
+    'coinmetro': ccxt_src_coinmetro_js_WEBPACK_IMPORTED_MODULE_48_/* ["default"] */ .A,
+    'coinone': ccxt_src_coinone_js_WEBPACK_IMPORTED_MODULE_49_/* ["default"] */ .A,
+    'coinsph': ccxt_src_coinsph_js_WEBPACK_IMPORTED_MODULE_50_/* ["default"] */ .A,
+    'coinspot': ccxt_src_coinspot_js_WEBPACK_IMPORTED_MODULE_51_/* ["default"] */ .A,
+    'cryptocom': ccxt_src_cryptocom_js_WEBPACK_IMPORTED_MODULE_52_/* ["default"] */ .A,
+    'cryptomus': ccxt_src_cryptomus_js_WEBPACK_IMPORTED_MODULE_53_/* ["default"] */ .A,
+    'deepcoin': ccxt_src_deepcoin_js_WEBPACK_IMPORTED_MODULE_54_/* ["default"] */ .A,
+    'defx': ccxt_src_defx_js_WEBPACK_IMPORTED_MODULE_55_/* ["default"] */ .A,
+    'delta': ccxt_src_delta_js_WEBPACK_IMPORTED_MODULE_56_/* ["default"] */ .A,
+    'deribit': ccxt_src_deribit_js_WEBPACK_IMPORTED_MODULE_57_/* ["default"] */ .A,
+    'derive': ccxt_src_derive_js_WEBPACK_IMPORTED_MODULE_58_/* ["default"] */ .A,
+    'digifinex': ccxt_src_digifinex_js_WEBPACK_IMPORTED_MODULE_59_/* ["default"] */ .A,
+    'dydx': ccxt_src_dydx_js_WEBPACK_IMPORTED_MODULE_60_/* ["default"] */ .A,
+    'exmo': ccxt_src_exmo_js_WEBPACK_IMPORTED_MODULE_61_/* ["default"] */ .A,
+    'fmfwio': ccxt_src_fmfwio_js_WEBPACK_IMPORTED_MODULE_62_/* ["default"] */ .A,
+    'foxbit': ccxt_src_foxbit_js_WEBPACK_IMPORTED_MODULE_63_/* ["default"] */ .A,
+    'gate': ccxt_src_gate_js_WEBPACK_IMPORTED_MODULE_64_/* ["default"] */ .A,
+    'gateio': ccxt_src_gateio_js_WEBPACK_IMPORTED_MODULE_65_/* ["default"] */ .A,
+    'gemini': ccxt_src_gemini_js_WEBPACK_IMPORTED_MODULE_66_/* ["default"] */ .A,
+    'hashkey': ccxt_src_hashkey_js_WEBPACK_IMPORTED_MODULE_67_/* ["default"] */ .A,
+    'hibachi': ccxt_src_hibachi_js_WEBPACK_IMPORTED_MODULE_68_/* ["default"] */ .A,
+    'hitbtc': ccxt_src_hitbtc_js_WEBPACK_IMPORTED_MODULE_69_/* ["default"] */ .A,
+    'hollaex': ccxt_src_hollaex_js_WEBPACK_IMPORTED_MODULE_70_/* ["default"] */ .A,
+    'htx': ccxt_src_htx_js_WEBPACK_IMPORTED_MODULE_71_/* ["default"] */ .A,
+    'huobi': ccxt_src_huobi_js_WEBPACK_IMPORTED_MODULE_72_/* ["default"] */ .A,
+    'hyperliquid': ccxt_src_hyperliquid_js_WEBPACK_IMPORTED_MODULE_73_/* ["default"] */ .A,
+    'independentreserve': ccxt_src_independentreserve_js_WEBPACK_IMPORTED_MODULE_74_/* ["default"] */ .A,
+    'indodax': ccxt_src_indodax_js_WEBPACK_IMPORTED_MODULE_75_/* ["default"] */ .A,
+    'kraken': ccxt_src_kraken_js_WEBPACK_IMPORTED_MODULE_76_/* ["default"] */ .A,
+    'krakenfutures': ccxt_src_krakenfutures_js_WEBPACK_IMPORTED_MODULE_77_/* ["default"] */ .A,
+    'kucoin': ccxt_src_kucoin_js_WEBPACK_IMPORTED_MODULE_78_/* ["default"] */ .A,
+    'kucoinfutures': ccxt_src_kucoinfutures_js_WEBPACK_IMPORTED_MODULE_79_/* ["default"] */ .A,
+    'latoken': ccxt_src_latoken_js_WEBPACK_IMPORTED_MODULE_80_/* ["default"] */ .A,
+    'lbank': ccxt_src_lbank_js_WEBPACK_IMPORTED_MODULE_81_/* ["default"] */ .A,
+    'luno': ccxt_src_luno_js_WEBPACK_IMPORTED_MODULE_82_/* ["default"] */ .A,
+    'mercado': ccxt_src_mercado_js_WEBPACK_IMPORTED_MODULE_83_/* ["default"] */ .A,
+    'mexc': ccxt_src_mexc_js_WEBPACK_IMPORTED_MODULE_84_/* ["default"] */ .A,
+    'modetrade': ccxt_src_modetrade_js_WEBPACK_IMPORTED_MODULE_85_/* ["default"] */ .A,
+    'myokx': ccxt_src_myokx_js_WEBPACK_IMPORTED_MODULE_86_/* ["default"] */ .A,
+    'ndax': ccxt_src_ndax_js_WEBPACK_IMPORTED_MODULE_87_/* ["default"] */ .A,
+    'novadax': ccxt_src_novadax_js_WEBPACK_IMPORTED_MODULE_88_/* ["default"] */ .A,
+    'okx': ccxt_src_okx_js_WEBPACK_IMPORTED_MODULE_89_/* ["default"] */ .A,
+    'okxus': ccxt_src_okxus_js_WEBPACK_IMPORTED_MODULE_90_/* ["default"] */ .A,
+    'onetrading': ccxt_src_onetrading_js_WEBPACK_IMPORTED_MODULE_91_/* ["default"] */ .A,
+    'oxfun': ccxt_src_oxfun_js_WEBPACK_IMPORTED_MODULE_92_/* ["default"] */ .A,
+    'p2b': ccxt_src_p2b_js_WEBPACK_IMPORTED_MODULE_93_/* ["default"] */ .A,
+    'paradex': ccxt_src_paradex_js_WEBPACK_IMPORTED_MODULE_94_/* ["default"] */ .A,
+    'paymium': ccxt_src_paymium_js_WEBPACK_IMPORTED_MODULE_95_/* ["default"] */ .A,
+    'phemex': ccxt_src_phemex_js_WEBPACK_IMPORTED_MODULE_96_/* ["default"] */ .A,
+    'poloniex': ccxt_src_poloniex_js_WEBPACK_IMPORTED_MODULE_97_/* ["default"] */ .A,
+    'probit': ccxt_src_probit_js_WEBPACK_IMPORTED_MODULE_98_/* ["default"] */ .A,
+    'timex': ccxt_src_timex_js_WEBPACK_IMPORTED_MODULE_99_/* ["default"] */ .A,
+    'tokocrypto': ccxt_src_tokocrypto_js_WEBPACK_IMPORTED_MODULE_100_/* ["default"] */ .A,
+    'toobit': ccxt_src_toobit_js_WEBPACK_IMPORTED_MODULE_101_/* ["default"] */ .A,
+    'upbit': ccxt_src_upbit_js_WEBPACK_IMPORTED_MODULE_102_/* ["default"] */ .A,
+    'wavesexchange': ccxt_src_wavesexchange_js_WEBPACK_IMPORTED_MODULE_103_/* ["default"] */ .A,
+    'whitebit': ccxt_src_whitebit_js_WEBPACK_IMPORTED_MODULE_104_/* ["default"] */ .A,
+    'woo': ccxt_src_woo_js_WEBPACK_IMPORTED_MODULE_105_/* ["default"] */ .A,
+    'woofipro': ccxt_src_woofipro_js_WEBPACK_IMPORTED_MODULE_106_/* ["default"] */ .A,
+    'xt': ccxt_src_xt_js_WEBPACK_IMPORTED_MODULE_107_/* ["default"] */ .A,
+    'yobit': ccxt_src_yobit_js_WEBPACK_IMPORTED_MODULE_108_/* ["default"] */ .A,
+    'zaif': ccxt_src_zaif_js_WEBPACK_IMPORTED_MODULE_109_/* ["default"] */ .A,
+    'zebpay': ccxt_src_zebpay_js_WEBPACK_IMPORTED_MODULE_110_/* ["default"] */ .A,
+    'zonda': ccxt_src_zonda_js_WEBPACK_IMPORTED_MODULE_111_/* ["default"] */ .A,
 };
 const ccxt_pro = {
-    'alpaca': ccxt_src_pro_alpaca_js_WEBPACK_IMPORTED_MODULE_111_/* ["default"] */ .A,
-    'apex': ccxt_src_pro_apex_js_WEBPACK_IMPORTED_MODULE_112_/* ["default"] */ .A,
-    'arkham': ccxt_src_pro_arkham_js_WEBPACK_IMPORTED_MODULE_113_/* ["default"] */ .A,
-    'ascendex': ccxt_src_pro_ascendex_js_WEBPACK_IMPORTED_MODULE_114_/* ["default"] */ .A,
-    'backpack': ccxt_src_pro_backpack_js_WEBPACK_IMPORTED_MODULE_115_/* ["default"] */ .A,
-    'bequant': ccxt_src_pro_bequant_js_WEBPACK_IMPORTED_MODULE_116_/* ["default"] */ .A,
-    'binance': ccxt_src_pro_binance_js_WEBPACK_IMPORTED_MODULE_117_/* ["default"] */ .A,
-    'binancecoinm': ccxt_src_pro_binancecoinm_js_WEBPACK_IMPORTED_MODULE_118_/* ["default"] */ .A,
-    'binanceus': ccxt_src_pro_binanceus_js_WEBPACK_IMPORTED_MODULE_119_/* ["default"] */ .A,
-    'binanceusdm': ccxt_src_pro_binanceusdm_js_WEBPACK_IMPORTED_MODULE_120_/* ["default"] */ .A,
-    'bingx': ccxt_src_pro_bingx_js_WEBPACK_IMPORTED_MODULE_121_/* ["default"] */ .A,
-    'bitfinex': ccxt_src_pro_bitfinex_js_WEBPACK_IMPORTED_MODULE_122_/* ["default"] */ .A,
-    'bitget': ccxt_src_pro_bitget_js_WEBPACK_IMPORTED_MODULE_123_/* ["default"] */ .A,
-    'bithumb': ccxt_src_pro_bithumb_js_WEBPACK_IMPORTED_MODULE_124_/* ["default"] */ .A,
-    'bitmart': ccxt_src_pro_bitmart_js_WEBPACK_IMPORTED_MODULE_125_/* ["default"] */ .A,
-    'bitmex': ccxt_src_pro_bitmex_js_WEBPACK_IMPORTED_MODULE_126_/* ["default"] */ .A,
-    'bitopro': ccxt_src_pro_bitopro_js_WEBPACK_IMPORTED_MODULE_127_/* ["default"] */ .A,
-    'bitrue': ccxt_src_pro_bitrue_js_WEBPACK_IMPORTED_MODULE_128_/* ["default"] */ .A,
-    'bitstamp': ccxt_src_pro_bitstamp_js_WEBPACK_IMPORTED_MODULE_129_/* ["default"] */ .A,
-    'bittrade': ccxt_src_pro_bittrade_js_WEBPACK_IMPORTED_MODULE_130_/* ["default"] */ .A,
-    'bitvavo': ccxt_src_pro_bitvavo_js_WEBPACK_IMPORTED_MODULE_131_/* ["default"] */ .A,
-    'blockchaincom': ccxt_src_pro_blockchaincom_js_WEBPACK_IMPORTED_MODULE_132_/* ["default"] */ .A,
-    'blofin': ccxt_src_pro_blofin_js_WEBPACK_IMPORTED_MODULE_133_/* ["default"] */ .A,
-    'bullish': ccxt_src_pro_bullish_js_WEBPACK_IMPORTED_MODULE_134_/* ["default"] */ .A,
-    'bybit': ccxt_src_pro_bybit_js_WEBPACK_IMPORTED_MODULE_135_/* ["default"] */ .A,
-    'cex': ccxt_src_pro_cex_js_WEBPACK_IMPORTED_MODULE_136_/* ["default"] */ .A,
-    'coinbase': ccxt_src_pro_coinbase_js_WEBPACK_IMPORTED_MODULE_137_/* ["default"] */ .A,
-    'coinbaseadvanced': ccxt_src_pro_coinbaseadvanced_js_WEBPACK_IMPORTED_MODULE_138_/* ["default"] */ .A,
-    'coinbaseexchange': ccxt_src_pro_coinbaseexchange_js_WEBPACK_IMPORTED_MODULE_139_/* ["default"] */ .A,
-    'coinbaseinternational': ccxt_src_pro_coinbaseinternational_js_WEBPACK_IMPORTED_MODULE_140_/* ["default"] */ .A,
-    'coincatch': ccxt_src_pro_coincatch_js_WEBPACK_IMPORTED_MODULE_141_/* ["default"] */ .A,
-    'coincheck': ccxt_src_pro_coincheck_js_WEBPACK_IMPORTED_MODULE_142_/* ["default"] */ .A,
-    'coinex': ccxt_src_pro_coinex_js_WEBPACK_IMPORTED_MODULE_143_/* ["default"] */ .A,
-    'coinone': ccxt_src_pro_coinone_js_WEBPACK_IMPORTED_MODULE_144_/* ["default"] */ .A,
-    'cryptocom': ccxt_src_pro_cryptocom_js_WEBPACK_IMPORTED_MODULE_145_/* ["default"] */ .A,
-    'deepcoin': ccxt_src_pro_deepcoin_js_WEBPACK_IMPORTED_MODULE_146_/* ["default"] */ .A,
-    'defx': ccxt_src_pro_defx_js_WEBPACK_IMPORTED_MODULE_147_/* ["default"] */ .A,
-    'deribit': ccxt_src_pro_deribit_js_WEBPACK_IMPORTED_MODULE_148_/* ["default"] */ .A,
-    'derive': ccxt_src_pro_derive_js_WEBPACK_IMPORTED_MODULE_149_/* ["default"] */ .A,
-    'dydx': ccxt_src_pro_dydx_js_WEBPACK_IMPORTED_MODULE_150_/* ["default"] */ .A,
-    'exmo': ccxt_src_pro_exmo_js_WEBPACK_IMPORTED_MODULE_151_/* ["default"] */ .A,
-    'gate': ccxt_src_pro_gate_js_WEBPACK_IMPORTED_MODULE_152_/* ["default"] */ .A,
-    'gateio': ccxt_src_pro_gateio_js_WEBPACK_IMPORTED_MODULE_153_/* ["default"] */ .A,
-    'gemini': ccxt_src_pro_gemini_js_WEBPACK_IMPORTED_MODULE_154_/* ["default"] */ .A,
-    'hashkey': ccxt_src_pro_hashkey_js_WEBPACK_IMPORTED_MODULE_155_/* ["default"] */ .A,
-    'hitbtc': ccxt_src_pro_hitbtc_js_WEBPACK_IMPORTED_MODULE_156_/* ["default"] */ .A,
-    'hollaex': ccxt_src_pro_hollaex_js_WEBPACK_IMPORTED_MODULE_157_/* ["default"] */ .A,
-    'htx': ccxt_src_pro_htx_js_WEBPACK_IMPORTED_MODULE_158_/* ["default"] */ .A,
-    'huobi': ccxt_src_pro_huobi_js_WEBPACK_IMPORTED_MODULE_159_/* ["default"] */ .A,
-    'hyperliquid': ccxt_src_pro_hyperliquid_js_WEBPACK_IMPORTED_MODULE_160_/* ["default"] */ .A,
-    'independentreserve': ccxt_src_pro_independentreserve_js_WEBPACK_IMPORTED_MODULE_161_/* ["default"] */ .A,
-    'kraken': ccxt_src_pro_kraken_js_WEBPACK_IMPORTED_MODULE_162_/* ["default"] */ .A,
-    'krakenfutures': ccxt_src_pro_krakenfutures_js_WEBPACK_IMPORTED_MODULE_163_/* ["default"] */ .A,
-    'kucoin': ccxt_src_pro_kucoin_js_WEBPACK_IMPORTED_MODULE_164_/* ["default"] */ .A,
-    'kucoinfutures': ccxt_src_pro_kucoinfutures_js_WEBPACK_IMPORTED_MODULE_165_/* ["default"] */ .A,
-    'lbank': ccxt_src_pro_lbank_js_WEBPACK_IMPORTED_MODULE_166_/* ["default"] */ .A,
-    'luno': ccxt_src_pro_luno_js_WEBPACK_IMPORTED_MODULE_167_/* ["default"] */ .A,
-    'mexc': ccxt_src_pro_mexc_js_WEBPACK_IMPORTED_MODULE_168_/* ["default"] */ .A,
-    'modetrade': ccxt_src_pro_modetrade_js_WEBPACK_IMPORTED_MODULE_169_/* ["default"] */ .A,
-    'myokx': ccxt_src_pro_myokx_js_WEBPACK_IMPORTED_MODULE_170_/* ["default"] */ .A,
-    'ndax': ccxt_src_pro_ndax_js_WEBPACK_IMPORTED_MODULE_171_/* ["default"] */ .A,
-    'okx': ccxt_src_pro_okx_js_WEBPACK_IMPORTED_MODULE_172_/* ["default"] */ .A,
-    'okxus': ccxt_src_pro_okxus_js_WEBPACK_IMPORTED_MODULE_173_/* ["default"] */ .A,
-    'onetrading': ccxt_src_pro_onetrading_js_WEBPACK_IMPORTED_MODULE_174_/* ["default"] */ .A,
-    'oxfun': ccxt_src_pro_oxfun_js_WEBPACK_IMPORTED_MODULE_175_/* ["default"] */ .A,
-    'p2b': ccxt_src_pro_p2b_js_WEBPACK_IMPORTED_MODULE_176_/* ["default"] */ .A,
-    'paradex': ccxt_src_pro_paradex_js_WEBPACK_IMPORTED_MODULE_177_/* ["default"] */ .A,
-    'phemex': ccxt_src_pro_phemex_js_WEBPACK_IMPORTED_MODULE_178_/* ["default"] */ .A,
-    'poloniex': ccxt_src_pro_poloniex_js_WEBPACK_IMPORTED_MODULE_179_/* ["default"] */ .A,
-    'probit': ccxt_src_pro_probit_js_WEBPACK_IMPORTED_MODULE_180_/* ["default"] */ .A,
-    'toobit': ccxt_src_pro_toobit_js_WEBPACK_IMPORTED_MODULE_181_/* ["default"] */ .A,
-    'upbit': ccxt_src_pro_upbit_js_WEBPACK_IMPORTED_MODULE_182_/* ["default"] */ .A,
-    'whitebit': ccxt_src_pro_whitebit_js_WEBPACK_IMPORTED_MODULE_183_/* ["default"] */ .A,
-    'woo': ccxt_src_pro_woo_js_WEBPACK_IMPORTED_MODULE_184_/* ["default"] */ .A,
-    'woofipro': ccxt_src_pro_woofipro_js_WEBPACK_IMPORTED_MODULE_185_/* ["default"] */ .A,
-    'xt': ccxt_src_pro_xt_js_WEBPACK_IMPORTED_MODULE_186_/* ["default"] */ .A,
+    'alpaca': ccxt_src_pro_alpaca_js_WEBPACK_IMPORTED_MODULE_112_/* ["default"] */ .A,
+    'apex': ccxt_src_pro_apex_js_WEBPACK_IMPORTED_MODULE_113_/* ["default"] */ .A,
+    'arkham': ccxt_src_pro_arkham_js_WEBPACK_IMPORTED_MODULE_114_/* ["default"] */ .A,
+    'ascendex': ccxt_src_pro_ascendex_js_WEBPACK_IMPORTED_MODULE_115_/* ["default"] */ .A,
+    'aster': ccxt_src_pro_aster_js_WEBPACK_IMPORTED_MODULE_116_/* ["default"] */ .A,
+    'backpack': ccxt_src_pro_backpack_js_WEBPACK_IMPORTED_MODULE_117_/* ["default"] */ .A,
+    'bequant': ccxt_src_pro_bequant_js_WEBPACK_IMPORTED_MODULE_118_/* ["default"] */ .A,
+    'binance': ccxt_src_pro_binance_js_WEBPACK_IMPORTED_MODULE_119_/* ["default"] */ .A,
+    'binancecoinm': ccxt_src_pro_binancecoinm_js_WEBPACK_IMPORTED_MODULE_120_/* ["default"] */ .A,
+    'binanceus': ccxt_src_pro_binanceus_js_WEBPACK_IMPORTED_MODULE_121_/* ["default"] */ .A,
+    'binanceusdm': ccxt_src_pro_binanceusdm_js_WEBPACK_IMPORTED_MODULE_122_/* ["default"] */ .A,
+    'bingx': ccxt_src_pro_bingx_js_WEBPACK_IMPORTED_MODULE_123_/* ["default"] */ .A,
+    'bitfinex': ccxt_src_pro_bitfinex_js_WEBPACK_IMPORTED_MODULE_124_/* ["default"] */ .A,
+    'bitget': ccxt_src_pro_bitget_js_WEBPACK_IMPORTED_MODULE_125_/* ["default"] */ .A,
+    'bithumb': ccxt_src_pro_bithumb_js_WEBPACK_IMPORTED_MODULE_126_/* ["default"] */ .A,
+    'bitmart': ccxt_src_pro_bitmart_js_WEBPACK_IMPORTED_MODULE_127_/* ["default"] */ .A,
+    'bitmex': ccxt_src_pro_bitmex_js_WEBPACK_IMPORTED_MODULE_128_/* ["default"] */ .A,
+    'bitopro': ccxt_src_pro_bitopro_js_WEBPACK_IMPORTED_MODULE_129_/* ["default"] */ .A,
+    'bitrue': ccxt_src_pro_bitrue_js_WEBPACK_IMPORTED_MODULE_130_/* ["default"] */ .A,
+    'bitstamp': ccxt_src_pro_bitstamp_js_WEBPACK_IMPORTED_MODULE_131_/* ["default"] */ .A,
+    'bittrade': ccxt_src_pro_bittrade_js_WEBPACK_IMPORTED_MODULE_132_/* ["default"] */ .A,
+    'bitvavo': ccxt_src_pro_bitvavo_js_WEBPACK_IMPORTED_MODULE_133_/* ["default"] */ .A,
+    'blockchaincom': ccxt_src_pro_blockchaincom_js_WEBPACK_IMPORTED_MODULE_134_/* ["default"] */ .A,
+    'blofin': ccxt_src_pro_blofin_js_WEBPACK_IMPORTED_MODULE_135_/* ["default"] */ .A,
+    'bullish': ccxt_src_pro_bullish_js_WEBPACK_IMPORTED_MODULE_136_/* ["default"] */ .A,
+    'bybit': ccxt_src_pro_bybit_js_WEBPACK_IMPORTED_MODULE_137_/* ["default"] */ .A,
+    'bydfi': ccxt_src_pro_bydfi_js_WEBPACK_IMPORTED_MODULE_138_/* ["default"] */ .A,
+    'cex': ccxt_src_pro_cex_js_WEBPACK_IMPORTED_MODULE_139_/* ["default"] */ .A,
+    'coinbase': ccxt_src_pro_coinbase_js_WEBPACK_IMPORTED_MODULE_140_/* ["default"] */ .A,
+    'coinbaseadvanced': ccxt_src_pro_coinbaseadvanced_js_WEBPACK_IMPORTED_MODULE_141_/* ["default"] */ .A,
+    'coinbaseexchange': ccxt_src_pro_coinbaseexchange_js_WEBPACK_IMPORTED_MODULE_142_/* ["default"] */ .A,
+    'coinbaseinternational': ccxt_src_pro_coinbaseinternational_js_WEBPACK_IMPORTED_MODULE_143_/* ["default"] */ .A,
+    'coincatch': ccxt_src_pro_coincatch_js_WEBPACK_IMPORTED_MODULE_144_/* ["default"] */ .A,
+    'coincheck': ccxt_src_pro_coincheck_js_WEBPACK_IMPORTED_MODULE_145_/* ["default"] */ .A,
+    'coinex': ccxt_src_pro_coinex_js_WEBPACK_IMPORTED_MODULE_146_/* ["default"] */ .A,
+    'coinone': ccxt_src_pro_coinone_js_WEBPACK_IMPORTED_MODULE_147_/* ["default"] */ .A,
+    'cryptocom': ccxt_src_pro_cryptocom_js_WEBPACK_IMPORTED_MODULE_148_/* ["default"] */ .A,
+    'deepcoin': ccxt_src_pro_deepcoin_js_WEBPACK_IMPORTED_MODULE_149_/* ["default"] */ .A,
+    'defx': ccxt_src_pro_defx_js_WEBPACK_IMPORTED_MODULE_150_/* ["default"] */ .A,
+    'deribit': ccxt_src_pro_deribit_js_WEBPACK_IMPORTED_MODULE_151_/* ["default"] */ .A,
+    'derive': ccxt_src_pro_derive_js_WEBPACK_IMPORTED_MODULE_152_/* ["default"] */ .A,
+    'dydx': ccxt_src_pro_dydx_js_WEBPACK_IMPORTED_MODULE_153_/* ["default"] */ .A,
+    'exmo': ccxt_src_pro_exmo_js_WEBPACK_IMPORTED_MODULE_154_/* ["default"] */ .A,
+    'gate': ccxt_src_pro_gate_js_WEBPACK_IMPORTED_MODULE_155_/* ["default"] */ .A,
+    'gateio': ccxt_src_pro_gateio_js_WEBPACK_IMPORTED_MODULE_156_/* ["default"] */ .A,
+    'gemini': ccxt_src_pro_gemini_js_WEBPACK_IMPORTED_MODULE_157_/* ["default"] */ .A,
+    'hashkey': ccxt_src_pro_hashkey_js_WEBPACK_IMPORTED_MODULE_158_/* ["default"] */ .A,
+    'hitbtc': ccxt_src_pro_hitbtc_js_WEBPACK_IMPORTED_MODULE_159_/* ["default"] */ .A,
+    'hollaex': ccxt_src_pro_hollaex_js_WEBPACK_IMPORTED_MODULE_160_/* ["default"] */ .A,
+    'htx': ccxt_src_pro_htx_js_WEBPACK_IMPORTED_MODULE_161_/* ["default"] */ .A,
+    'huobi': ccxt_src_pro_huobi_js_WEBPACK_IMPORTED_MODULE_162_/* ["default"] */ .A,
+    'hyperliquid': ccxt_src_pro_hyperliquid_js_WEBPACK_IMPORTED_MODULE_163_/* ["default"] */ .A,
+    'independentreserve': ccxt_src_pro_independentreserve_js_WEBPACK_IMPORTED_MODULE_164_/* ["default"] */ .A,
+    'kraken': ccxt_src_pro_kraken_js_WEBPACK_IMPORTED_MODULE_165_/* ["default"] */ .A,
+    'krakenfutures': ccxt_src_pro_krakenfutures_js_WEBPACK_IMPORTED_MODULE_166_/* ["default"] */ .A,
+    'kucoin': ccxt_src_pro_kucoin_js_WEBPACK_IMPORTED_MODULE_167_/* ["default"] */ .A,
+    'kucoinfutures': ccxt_src_pro_kucoinfutures_js_WEBPACK_IMPORTED_MODULE_168_/* ["default"] */ .A,
+    'lbank': ccxt_src_pro_lbank_js_WEBPACK_IMPORTED_MODULE_169_/* ["default"] */ .A,
+    'luno': ccxt_src_pro_luno_js_WEBPACK_IMPORTED_MODULE_170_/* ["default"] */ .A,
+    'mexc': ccxt_src_pro_mexc_js_WEBPACK_IMPORTED_MODULE_171_/* ["default"] */ .A,
+    'modetrade': ccxt_src_pro_modetrade_js_WEBPACK_IMPORTED_MODULE_172_/* ["default"] */ .A,
+    'myokx': ccxt_src_pro_myokx_js_WEBPACK_IMPORTED_MODULE_173_/* ["default"] */ .A,
+    'ndax': ccxt_src_pro_ndax_js_WEBPACK_IMPORTED_MODULE_174_/* ["default"] */ .A,
+    'okx': ccxt_src_pro_okx_js_WEBPACK_IMPORTED_MODULE_175_/* ["default"] */ .A,
+    'okxus': ccxt_src_pro_okxus_js_WEBPACK_IMPORTED_MODULE_176_/* ["default"] */ .A,
+    'onetrading': ccxt_src_pro_onetrading_js_WEBPACK_IMPORTED_MODULE_177_/* ["default"] */ .A,
+    'oxfun': ccxt_src_pro_oxfun_js_WEBPACK_IMPORTED_MODULE_178_/* ["default"] */ .A,
+    'p2b': ccxt_src_pro_p2b_js_WEBPACK_IMPORTED_MODULE_179_/* ["default"] */ .A,
+    'paradex': ccxt_src_pro_paradex_js_WEBPACK_IMPORTED_MODULE_180_/* ["default"] */ .A,
+    'phemex': ccxt_src_pro_phemex_js_WEBPACK_IMPORTED_MODULE_181_/* ["default"] */ .A,
+    'poloniex': ccxt_src_pro_poloniex_js_WEBPACK_IMPORTED_MODULE_182_/* ["default"] */ .A,
+    'probit': ccxt_src_pro_probit_js_WEBPACK_IMPORTED_MODULE_183_/* ["default"] */ .A,
+    'toobit': ccxt_src_pro_toobit_js_WEBPACK_IMPORTED_MODULE_184_/* ["default"] */ .A,
+    'upbit': ccxt_src_pro_upbit_js_WEBPACK_IMPORTED_MODULE_185_/* ["default"] */ .A,
+    'whitebit': ccxt_src_pro_whitebit_js_WEBPACK_IMPORTED_MODULE_186_/* ["default"] */ .A,
+    'woo': ccxt_src_pro_woo_js_WEBPACK_IMPORTED_MODULE_187_/* ["default"] */ .A,
+    'woofipro': ccxt_src_pro_woofipro_js_WEBPACK_IMPORTED_MODULE_188_/* ["default"] */ .A,
+    'xt': ccxt_src_pro_xt_js_WEBPACK_IMPORTED_MODULE_189_/* ["default"] */ .A,
 };
 for (const exchange in ccxt_pro) {
     // const ccxtExchange = exchanges[exchange]
@@ -452333,7 +463416,7 @@ for (const exchange in ccxt_pro) {
 ccxt_pro.exchanges = Object.keys(ccxt_pro);
 ccxt_pro['Exchange'] = ccxt_src_base_Exchange_js_WEBPACK_IMPORTED_MODULE_0_/* .Exchange */ .k; // now the same for rest and ts
 //-----------------------------------------------------------------------------
-const ccxt_ccxt = Object.assign({ version: ccxt_version, Exchange: ccxt_src_base_Exchange_js_WEBPACK_IMPORTED_MODULE_0_/* .Exchange */ .k, Precise: ccxt_src_base_Precise_js_WEBPACK_IMPORTED_MODULE_187_/* .Precise */ .Y, 'exchanges': Object.keys(ccxt_exchanges), 'pro': ccxt_pro }, ccxt_exchanges, ccxt_src_base_functions_js_WEBPACK_IMPORTED_MODULE_188_, ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_189_);
+const ccxt_ccxt = Object.assign({ version: ccxt_version, Exchange: ccxt_src_base_Exchange_js_WEBPACK_IMPORTED_MODULE_0_/* .Exchange */ .k, Precise: ccxt_src_base_Precise_js_WEBPACK_IMPORTED_MODULE_190_/* .Precise */ .Y, 'exchanges': Object.keys(ccxt_exchanges), 'pro': ccxt_pro }, ccxt_exchanges, ccxt_src_base_functions_js_WEBPACK_IMPORTED_MODULE_191_, ccxt_src_base_errors_js_WEBPACK_IMPORTED_MODULE_192_);
 
 /* harmony default export */ const ts_ccxt = (ccxt_ccxt);
 //-----------------------------------------------------------------------------
