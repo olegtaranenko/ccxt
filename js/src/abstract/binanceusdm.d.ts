@@ -607,6 +607,7 @@ interface binance {
     sapiGetPortfolioNegativeBalanceExchangeRecord(params?: {}): Promise<implicitReturnType>;
     sapiGetPortfolioPmloanHistory(params?: {}): Promise<implicitReturnType>;
     sapiGetPortfolioEarnAssetBalance(params?: {}): Promise<implicitReturnType>;
+    sapiGetPortfolioDeltaMode(params?: {}): Promise<implicitReturnType>;
     sapiGetLendingAutoInvestAllAsset(params?: {}): Promise<implicitReturnType>;
     sapiGetLendingAutoInvestHistoryList(params?: {}): Promise<implicitReturnType>;
     sapiGetLendingAutoInvestIndexInfo(params?: {}): Promise<implicitReturnType>;
@@ -750,6 +751,7 @@ interface binance {
     sapiPostPortfolioAssetCollection(params?: {}): Promise<implicitReturnType>;
     sapiPostPortfolioAutoCollection(params?: {}): Promise<implicitReturnType>;
     sapiPostPortfolioBnbTransfer(params?: {}): Promise<implicitReturnType>;
+    sapiPostPortfolioDeltaMode(params?: {}): Promise<implicitReturnType>;
     sapiPostPortfolioEarnAssetTransfer(params?: {}): Promise<implicitReturnType>;
     sapiPostPortfolioMint(params?: {}): Promise<implicitReturnType>;
     sapiPostPortfolioRedeem(params?: {}): Promise<implicitReturnType>;

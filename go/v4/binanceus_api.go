@@ -2443,6 +2443,10 @@ func (this *BinanceusCore) SapiGetPortfolioEarnAssetBalance (args ...interface{}
    return this.callEndpointAsync("sapiGetPortfolioEarnAssetBalance", args...)
 }
 
+func (this *BinanceusCore) SapiGetPortfolioDeltaMode (args ...interface{}) <-chan interface{} {
+   return this.callEndpointAsync("sapiGetPortfolioDeltaMode", args...)
+}
+
 func (this *BinanceusCore) SapiGetLendingAutoInvestAllAsset (args ...interface{}) <-chan interface{} {
    return this.callEndpointAsync("sapiGetLendingAutoInvestAllAsset", args...)
 }
@@ -3137,6 +3141,10 @@ func (this *BinanceusCore) SapiPostPortfolioAutoCollection (args ...interface{})
 
 func (this *BinanceusCore) SapiPostPortfolioBnbTransfer (args ...interface{}) <-chan interface{} {
    return this.callEndpointAsync("sapiPostPortfolioBnbTransfer", args...)
+}
+
+func (this *BinanceusCore) SapiPostPortfolioDeltaMode (args ...interface{}) <-chan interface{} {
+   return this.callEndpointAsync("sapiPostPortfolioDeltaMode", args...)
 }
 
 func (this *BinanceusCore) SapiPostPortfolioEarnAssetTransfer (args ...interface{}) <-chan interface{} {

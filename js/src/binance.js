@@ -793,6 +793,7 @@ export default class binance extends Exchange {
                         'portfolio/negative-balance-exchange-record': 2,
                         'portfolio/pmloan-history': 5,
                         'portfolio/earn-asset-balance': 150,
+                        'portfolio/delta-mode': 150,
                         // staking
                         'lending/auto-invest/all/asset': 0.1,
                         'lending/auto-invest/history/list': 0.1,
@@ -952,6 +953,7 @@ export default class binance extends Exchange {
                         'portfolio/asset-collection': 6,
                         'portfolio/auto-collection': 150,
                         'portfolio/bnb-transfer': 150,
+                        'portfolio/delta-mode': 150,
                         'portfolio/earn-asset-transfer': 150,
                         'portfolio/mint': 20,
                         'portfolio/redeem': 20,
