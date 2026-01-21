@@ -575,6 +575,7 @@ class bybit extends Exchange {
                         'v5/crypto-loan/adjust-ltv' => 5,
                         // crypto loan (new)
                         'v5/crypto-loan-common/adjust-ltv' => 50, // 1/s => cost = 50 / 1 = 50
+                        'v5/crypto-loan-common/max-loan' => 10, // 5/s => cost = 50 / 5 = 10
                         'v5/crypto-loan-flexible/borrow' => 50, // 1/s => cost = 50 / 1 = 50
                         'v5/crypto-loan-flexible/repay' => 50, // 1/s => cost = 50 / 1 = 50
                         'v5/crypto-loan-flexible/repay-collateral' => 50, // 1/s => cost = 50 / 1 = 50
@@ -1079,6 +1080,7 @@ class bybit extends Exchange {
                 'enableDemoTrading' => false,
                 'fetchMarkets' => array(
                     'types' => array( 'spot', 'linear', 'inverse', 'option' ),
+                    'options' => array( 'BTC', 'ETH', 'SOL', 'XRP', 'MNT', 'DOGE' ),
                 ),
                 'enableUnifiedMargin' => null,
                 'enableUnifiedAccount' => null,
@@ -1796,25 +1798,33 @@ class bybit extends Exchange {
             } elseif ($marketType === 'inverse') {
                 $promisesUnresolved[] = $this->fetch_future_markets(array( 'category' => 'inverse' ));
             } elseif ($marketType === 'option') {
-                $promisesUnresolved[] = $this->fetch_option_markets(array( 'baseCoin' => 'BTC' ));
-                $promisesUnresolved[] = $this->fetch_option_markets(array( 'baseCoin' => 'ETH' ));
-                $promisesUnresolved[] = $this->fetch_option_markets(array( 'baseCoin' => 'SOL' ));
+                $optionsCurrencies = $this->safe_list($fetchMarketsOptions, 'options', array( 'BTC', 'ETH', 'SOL' ));
+                for ($j = 0; $j < count($optionsCurrencies); $j++) {
+                    $currency = $optionsCurrencies[$j];
+                    $promisesUnresolved[] = $this->fetch_option_markets(array( 'baseCoin' => $currency ));
+                }
             } else {
                 throw new ExchangeError($this->id . ' fetchMarkets() $this->options fetchMarkets "' . $marketType . '" is not a supported market type');
             }
         }
         $promises = $promisesUnresolved;
-        $spotMarkets = $this->safe_list($promises, 0, array());
-        $linearMarkets = $this->safe_list($promises, 1, array());
-        $inverseMarkets = $this->safe_list($promises, 2, array());
-        $btcOptionMarkets = $this->safe_list($promises, 3, array());
-        $ethOptionMarkets = $this->safe_list($promises, 4, array());
-        $solOptionMarkets = $this->safe_list($promises, 5, array());
-        $futureMarkets = $this->array_concat($linearMarkets, $inverseMarkets);
-        $optionMarkets = $this->array_concat($btcOptionMarkets, $ethOptionMarkets);
-        $optionMarkets = $this->array_concat($optionMarkets, $solOptionMarkets);
-        $derivativeMarkets = $this->array_concat($futureMarkets, $optionMarkets);
-        return $this->array_concat($spotMarkets, $derivativeMarkets);
+        $result = array();
+        for ($i = 0; $i < count($promises); $i++) {
+            $parsedMarket = $promises[$i];
+            $result = $this->array_concat($result, $parsedMarket);
+        }
+        // $spotMarkets = $this->safe_list($promises, 0, array());
+        // $linearMarkets = $this->safe_list($promises, 1, array());
+        // $inverseMarkets = $this->safe_list($promises, 2, array());
+        // $btcOptionMarkets = $this->safe_list($promises, 3, array());
+        // $ethOptionMarkets = $this->safe_list($promises, 4, array());
+        // $solOptionMarkets = $this->safe_list($promises, 5, array());
+        // $futureMarkets = $this->array_concat($linearMarkets, $inverseMarkets);
+        // $optionMarkets = $this->array_concat($btcOptionMarkets, $ethOptionMarkets);
+        // $optionMarkets = $this->array_concat($optionMarkets, $solOptionMarkets);
+        // $derivativeMarkets = $this->array_concat($futureMarkets, $optionMarkets);
+        // return $this->array_concat($spotMarkets, $derivativeMarkets);
+        return $result;
     }
 
     public function fetch_spot_markets($params): array {
@@ -6067,7 +6077,7 @@ class bybit extends Exchange {
          * @param {array} [$params] extra parameters specific to the exchange API endpoint
          * @param {boolean} [$params->paginate] default false, when true will automatically $paginate by calling this endpoint multiple times. See in the docs all the [available parameters](https://github.com/ccxt/ccxt/wiki/Manual#pagination-$params)
          * @param {string} [$params->subType] if inverse will use v5/account/contract-transaction-log
-         * @return {array} a ~@link https://docs.ccxt.com/?id=ledger ledger structure~
+         * @return {array} a ~@link https://docs.ccxt.com/?id=ledger-entry-structure ledger structure~
          */
         $this->load_markets();
         $paginate = false;
@@ -6737,7 +6747,14 @@ class bybit extends Exchange {
                 $side = null;
             }
         }
-        $notional = $this->safe_string_2($position, 'positionValue', 'cumExitValue');
+        $notional = null;
+        $contractSize = $this->safe_string($market, 'contractSize');
+        $markPrice = $this->safe_string($position, 'markPrice');
+        if ($market['inverse']) {
+            $notional = Precise::string_div(Precise::string_mul($size, $contractSize), $markPrice);
+        } else {
+            $notional = $this->safe_string_2($position, 'positionValue', 'cumExitValue');
+        }
         $unrealisedPnl = $this->omit_zero($this->safe_string($position, 'unrealisedPnl'));
         $initialMarginString = $this->safe_string_2($position, 'positionIM', 'cumEntryValue');
         $maintenanceMarginString = $this->safe_string($position, 'positionMM');
@@ -6746,17 +6763,8 @@ class bybit extends Exchange {
         if ($lastUpdateTimestamp === null) {
             $lastUpdateTimestamp = $this->safe_integer_n($position, array( 'updatedTime', 'updatedAt', 'updatedTime' ));
         }
-        $tradeMode = $this->safe_integer($position, 'tradeMode', 0);
-        $marginMode = null;
-        if ((!$this->options['enableUnifiedAccount']) || ($this->options['enableUnifiedAccount'] && $market['inverse'])) {
-            // $tradeMode would work for classic and UTA(inverse)
-            if (!$isHistory) {     // cannot tell $marginMode for fetchPositionsHistory, and $closedSize will only be defined for fetchPositionsHistory response
-                $marginMode = ($tradeMode === 1) ? 'isolated' : 'cross';
-            }
-        }
         $collateralString = $this->safe_string($position, 'positionBalance');
         $entryPrice = $this->omit_zero($this->safe_string_n($position, array( 'entryPrice', 'avgPrice', 'avgEntryPrice' )));
-        $markPrice = $this->safe_string($position, 'markPrice');
         $liquidationPrice = $this->omit_zero($this->safe_string($position, 'liqPrice'));
         $leverage = $this->safe_string($position, 'leverage');
         if ($liquidationPrice !== null) {
@@ -6818,7 +6826,7 @@ class bybit extends Exchange {
             'markPrice' => $this->parse_number($markPrice),
             'lastPrice' => $this->safe_number($position, 'avgExitPrice'),
             'collateral' => $this->parse_number($collateralString),
-            'marginMode' => $marginMode,
+            'marginMode' => null, // tradeMode was deprecated
             'side' => $side,
             'percentage' => null,
             'stopLossPrice' => $this->safe_number_2($position, 'stop_loss', 'stopLoss'),

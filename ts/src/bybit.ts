@@ -7,7 +7,7 @@ import { AuthenticationError, ExchangeError, ArgumentsRequired, PermissionDenied
 import { Precise } from './base/Precise.js';
 import { sha256 } from './static_dependencies/noble-hashes/sha256.js';
 import { rsa } from './base/functions/rsa.js';
-import type { Int, OrderSide, OrderType, Trade, Order, OHLCV, FundingRateHistory, OpenInterest, OrderRequest, Balances, Str, Transaction, Ticker, OrderBook, Tickers, Greeks, Strings, Market, Currency, MarketInterface, TransferEntry, Liquidation, Leverage, Num, FundingHistory, Option, OptionChain, TradingFeeInterface, Currencies, TradingFees, CancellationRequest, Position, CrossBorrowRate, Dict, LeverageTier, LeverageTiers, int, LedgerEntry, Conversion, FundingRate, FundingRates, DepositAddress, LongShortRatio, BorrowInterest } from './base/types.js';
+import type { Int, OrderSide, OrderType, Trade, Order, OHLCV, FundingRateHistory, OpenInterest, OrderRequest, Balances, Str, Transaction, Ticker, OrderBook, Tickers, Greeks, Strings, Market, Currency, MarketInterface, TransferEntry, Liquidation, Leverage, Num, FundingHistory, Option, OptionChain, TradingFeeInterface, Currencies, TradingFees, CancellationRequest, Position, CrossBorrowRate, Dict, LeverageTier, LeverageTiers, int, LedgerEntry, Conversion, FundingRate, FundingRates, DepositAddress, LongShortRatio, BorrowInterest, MarginMode } from './base/types.js';
 
 //  ---------------------------------------------------------------------------
 
@@ -97,6 +97,7 @@ export default class bybit extends Exchange {
                 'fetchLongShortRatio': false,
                 'fetchLongShortRatioHistory': true,
                 'fetchMarginAdjustmentHistory': false,
+                'fetchMarginMode': true,
                 'fetchMarketLeverageTiers': true,
                 'fetchMarkets': true,
                 'fetchMarkOHLCV': true,
@@ -581,6 +582,7 @@ export default class bybit extends Exchange {
                         'v5/crypto-loan/adjust-ltv': 5,
                         // crypto loan (new)
                         'v5/crypto-loan-common/adjust-ltv': 50, // 1/s => cost = 50 / 1 = 50
+                        'v5/crypto-loan-common/max-loan': 10, // 5/s => cost = 50 / 5 = 10
                         'v5/crypto-loan-flexible/borrow': 50, // 1/s => cost = 50 / 1 = 50
                         'v5/crypto-loan-flexible/repay': 50, // 1/s => cost = 50 / 1 = 50
                         'v5/crypto-loan-flexible/repay-collateral': 50, // 1/s => cost = 50 / 1 = 50
@@ -1085,6 +1087,7 @@ export default class bybit extends Exchange {
                 'enableDemoTrading': false,
                 'fetchMarkets': {
                     'types': [ 'spot', 'linear', 'inverse', 'option' ],
+                    'options': [ 'BTC', 'ETH', 'SOL', 'XRP', 'MNT', 'DOGE' ],
                 },
                 'enableUnifiedMargin': undefined,
                 'enableUnifiedAccount': undefined,
@@ -1802,25 +1805,33 @@ export default class bybit extends Exchange {
             } else if (marketType === 'inverse') {
                 promisesUnresolved.push (this.fetchFutureMarkets ({ 'category': 'inverse' }));
             } else if (marketType === 'option') {
-                promisesUnresolved.push (this.fetchOptionMarkets ({ 'baseCoin': 'BTC' }));
-                promisesUnresolved.push (this.fetchOptionMarkets ({ 'baseCoin': 'ETH' }));
-                promisesUnresolved.push (this.fetchOptionMarkets ({ 'baseCoin': 'SOL' }));
+                const optionsCurrencies = this.safeList (fetchMarketsOptions, 'options', [ 'BTC', 'ETH', 'SOL' ]);
+                for (let j = 0; j < optionsCurrencies.length; j++) {
+                    const currency = optionsCurrencies[j];
+                    promisesUnresolved.push (this.fetchOptionMarkets ({ 'baseCoin': currency }));
+                }
             } else {
                 throw new ExchangeError (this.id + ' fetchMarkets() this.options fetchMarkets "' + marketType + '" is not a supported market type');
             }
         }
         const promises = await Promise.all (promisesUnresolved);
-        const spotMarkets = this.safeList (promises, 0, []);
-        const linearMarkets = this.safeList (promises, 1, []);
-        const inverseMarkets = this.safeList (promises, 2, []);
-        const btcOptionMarkets = this.safeList (promises, 3, []);
-        const ethOptionMarkets = this.safeList (promises, 4, []);
-        const solOptionMarkets = this.safeList (promises, 5, []);
-        const futureMarkets = this.arrayConcat (linearMarkets, inverseMarkets);
-        let optionMarkets = this.arrayConcat (btcOptionMarkets, ethOptionMarkets);
-        optionMarkets = this.arrayConcat (optionMarkets, solOptionMarkets);
-        const derivativeMarkets = this.arrayConcat (futureMarkets, optionMarkets);
-        return this.arrayConcat (spotMarkets, derivativeMarkets);
+        let result = [];
+        for (let i = 0; i < promises.length; i++) {
+            const parsedMarket = promises[i];
+            result = this.arrayConcat (result, parsedMarket);
+        }
+        // const spotMarkets = this.safeList (promises, 0, []);
+        // const linearMarkets = this.safeList (promises, 1, []);
+        // const inverseMarkets = this.safeList (promises, 2, []);
+        // const btcOptionMarkets = this.safeList (promises, 3, []);
+        // const ethOptionMarkets = this.safeList (promises, 4, []);
+        // const solOptionMarkets = this.safeList (promises, 5, []);
+        // const futureMarkets = this.arrayConcat (linearMarkets, inverseMarkets);
+        // let optionMarkets = this.arrayConcat (btcOptionMarkets, ethOptionMarkets);
+        // optionMarkets = this.arrayConcat (optionMarkets, solOptionMarkets);
+        // const derivativeMarkets = this.arrayConcat (futureMarkets, optionMarkets);
+        // return this.arrayConcat (spotMarkets, derivativeMarkets);
+        return result;
     }
 
     async fetchSpotMarkets (params): Promise<Market[]> {
@@ -6074,7 +6085,7 @@ export default class bybit extends Exchange {
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @param {boolean} [params.paginate] default false, when true will automatically paginate by calling this endpoint multiple times. See in the docs all the [available parameters](https://github.com/ccxt/ccxt/wiki/Manual#pagination-params)
      * @param {string} [params.subType] if inverse will use v5/account/contract-transaction-log
-     * @returns {object} a [ledger structure]{@link https://docs.ccxt.com/?id=ledger}
+     * @returns {object} a [ledger structure]{@link https://docs.ccxt.com/?id=ledger-entry-structure}
      */
     async fetchLedger (code: Str = undefined, since: Int = undefined, limit: Int = undefined, params = {}): Promise<LedgerEntry[]> {
         await this.loadMarkets ();
@@ -6745,7 +6756,14 @@ export default class bybit extends Exchange {
                 side = undefined;
             }
         }
-        const notional = this.safeString2 (position, 'positionValue', 'cumExitValue');
+        let notional = undefined;
+        const contractSize = this.safeString (market, 'contractSize');
+        const markPrice = this.safeString (position, 'markPrice');
+        if (market['inverse']) {
+            notional = Precise.stringDiv (Precise.stringMul (size, contractSize), markPrice);
+        } else {
+            notional = this.safeString2 (position, 'positionValue', 'cumExitValue');
+        }
         const unrealisedPnl = this.omitZero (this.safeString (position, 'unrealisedPnl'));
         let initialMarginString = this.safeString2 (position, 'positionIM', 'cumEntryValue');
         let maintenanceMarginString = this.safeString (position, 'positionMM');
@@ -6754,17 +6772,8 @@ export default class bybit extends Exchange {
         if (lastUpdateTimestamp === undefined) {
             lastUpdateTimestamp = this.safeIntegerN (position, [ 'updatedTime', 'updatedAt', 'updatedTime' ]);
         }
-        const tradeMode = this.safeInteger (position, 'tradeMode', 0);
-        let marginMode = undefined;
-        if ((!this.options['enableUnifiedAccount']) || (this.options['enableUnifiedAccount'] && market['inverse'])) {
-            // tradeMode would work for classic and UTA(inverse)
-            if (!isHistory) {     // cannot tell marginMode for fetchPositionsHistory, and closedSize will only be defined for fetchPositionsHistory response
-                marginMode = (tradeMode === 1) ? 'isolated' : 'cross';
-            }
-        }
         let collateralString = this.safeString (position, 'positionBalance');
         const entryPrice = this.omitZero (this.safeStringN (position, [ 'entryPrice', 'avgPrice', 'avgEntryPrice' ]));
-        const markPrice = this.safeString (position, 'markPrice');
         const liquidationPrice = this.omitZero (this.safeString (position, 'liqPrice'));
         const leverage = this.safeString (position, 'leverage');
         if (liquidationPrice !== undefined) {
@@ -6826,7 +6835,7 @@ export default class bybit extends Exchange {
             'markPrice': this.parseNumber (markPrice),
             'lastPrice': this.safeNumber (position, 'avgExitPrice'),
             'collateral': this.parseNumber (collateralString),
-            'marginMode': marginMode,
+            'marginMode': undefined, // tradeMode was deprecated
             'side': side,
             'percentage': undefined,
             'stopLossPrice': this.safeNumber2 (position, 'stop_loss', 'stopLoss'),
@@ -9444,6 +9453,56 @@ export default class bybit extends Exchange {
             'timeframe': undefined,
             'longShortRatio': this.parseToNumeric (Precise.stringDiv (longString, shortString)),
         } as LongShortRatio;
+    }
+
+    /**
+     * @method
+     * @name bybit#fetchMarginMode
+     * @description fetches the margin mode of the trading pair
+     * @see https://bybit-exchange.github.io/docs/v5/account/account-info
+     * @param {string} [symbol] unified symbol of the market to fetch the margin mode for (not used by bybit)
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object} a [margin mode structure]{@link https://docs.ccxt.com/?id=margin-mode-structure}
+     */
+    async fetchMarginMode (symbol: string, params = {}): Promise<MarginMode> {
+        await this.loadMarkets ();
+        const response = await this.privateGetV5AccountInfo (params);
+        //
+        //     {
+        //         "retCode": 0,
+        //         "retMsg": "OK",
+        //         "result": {
+        //             "marginMode": "REGULAR_MARGIN",
+        //             "updatedTime": "1723481446000",
+        //             "unifiedMarginStatus": 5,
+        //             "dcpStatus": "OFF",
+        //             "timeWindow": 0,
+        //             "smpGroup": 0,
+        //             "isMasterTrader": false,
+        //             "spotHedgingStatus": "OFF"
+        //         }
+        //     }
+        //
+        const result = this.safeDict (response, 'result', {});
+        return this.parseMarginMode (result);
+    }
+
+    parseMarginMode (marginMode: Dict, market = undefined): MarginMode {
+        const marginType = this.safeString (marginMode, 'marginMode');
+        return {
+            'info': marginMode,
+            'symbol': this.safeSymbol (undefined, market),
+            'marginMode': this.parseMarginModeType (marginType),
+        } as MarginMode;
+    }
+
+    parseMarginModeType (marginMode: Str): Str {
+        const marginModes: Dict = {
+            'ISOLATED_MARGIN': 'isolated',
+            'REGULAR_MARGIN': 'cross',
+            'PORTFOLIO_MARGIN': 'portfolio',
+        };
+        return this.safeString (marginModes, marginMode, marginMode);
     }
 
     sign (path, api = 'public', method = 'GET', params = {}, headers = undefined, body = undefined) {
