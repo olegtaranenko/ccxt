@@ -509,9 +509,9 @@ async function run () {
                             log (exchange.iso8601 (end), 'iteration', i++, 'passed in', end - start, 'ms\n')
                         }
                         printHumanReadable (exchange, result)
-                        if (!isWsMethod && !raw) {
-                            log (exchange.iso8601 (end), 'iteration', i, 'passed in', end - start, 'ms\n')
-                        }
+                        // if (!isWsMethod && !raw) {
+                        //     log (exchange.iso8601 (end), 'iteration', i, 'passed in', end - start, 'ms\n')
+                        // }
                         if (shouldCreateRequestReport || shouldCreateBoth) {
                             createRequestTemplate(exchange, methodName, args, result)
                         }
