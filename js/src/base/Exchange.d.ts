@@ -132,12 +132,12 @@ export default class Exchange {
         leverage?: MinMax;
         price?: MinMax;
     };
-    liquidations: Dictionary<Liquidation>;
+    liquidations: any;
     markets: Dictionary<any>;
     markets_by_id: Dictionary<any>;
     marketsByAltname: Dictionary<any>;
     marketsLoading: Promise<Dictionary<any>>;
-    myLiquidations: Dictionary<Liquidation>;
+    myLiquidations: any;
     myTrades: ArrayCache;
     name: Str;
     ohlcvs: Dictionary<Dictionary<ArrayCacheByTimestamp>>;
@@ -219,8 +219,8 @@ export default class Exchange {
     crc32: typeof functions.crc32;
     decimalToPrecision: (x: string, roundingMode: number, numPrecisionDigits: any, countingMode?: number, paddingMode?: number) => string;
     decode: (data: Uint8Array) => string;
-    deepExtend: (...xs: any) => any;
-    deepExtendSafe: (...xs: any) => any;
+    deepExtend: (...args: any) => any;
+    deepExtendSafe: (...args: any) => any;
     encode: (str: string) => Uint8Array;
     extend: (...args: any[]) => any;
     extractParams: (string: string) => string[];
@@ -340,6 +340,7 @@ export default class Exchange {
     isBinaryMessage(msg: any): boolean;
     decodeProtoMsg(data: any): any;
     fetch(url: any, method?: string, headers?: any, body?: any): Promise<any>;
+    jsonStringifyWithNull(obj: any): string;
     parseJson(jsonString: any): any;
     getResponseHeaders(response: any): {};
     handleRestResponse(response: any, url: any, method?: string, requestHeaders?: any, requestBody?: any): any;
@@ -1012,5 +1013,6 @@ export default class Exchange {
     unWatchBidsAsks(symbols?: Strings, params?: {}): Promise<any>;
     cleanUnsubscription(client: any, subHash: string, unsubHash: string, subHashIsPrefix?: boolean): void;
     cleanCache(subscription: Dict): void;
+    timeframeFromMilliseconds(ms: number): string;
 }
 export { Exchange, };

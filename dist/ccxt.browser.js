@@ -21976,12 +21976,12 @@ class Exchange {
         this.last_request_url = undefined;
         this.last_response_headers = undefined;
         this.limits = undefined;
-        this.liquidations = {};
+        this.liquidations = undefined;
         this.markets = undefined;
         this.markets_by_id = undefined;
         this.marketsByAltname = undefined;
         this.marketsLoading = undefined;
-        this.myLiquidations = {};
+        this.myLiquidations = undefined;
         this.name = undefined;
         this.orderbooks = {};
         this.orders = undefined;
@@ -22165,8 +22165,8 @@ class Exchange {
         // placeholders for cached data
         this.balance = {};
         this.bidsasks = {};
-        this.liquidations = {};
-        this.myLiquidations = {};
+        this.liquidations = undefined;
+        this.myLiquidations = undefined;
         this.myTrades = undefined;
         this.ohlcvs = {};
         this.orderbooks = {};
@@ -22632,6 +22632,9 @@ class Exchange {
             throw e;
         }
     }
+    jsonStringifyWithNull(obj) {
+        return JSON.stringify(obj, (_, v) => (v === undefined ? null : v));
+    }
     parseJson(jsonString) {
         try {
             if (this.isJsonEncodedObject(jsonString)) {
@@ -22758,7 +22761,7 @@ class Exchange {
                     if (isEmpty(currencies) && !isEmpty(currenciesFromOutside)) {
                         currencies = currenciesFromOutside;
                     }
-                    else {
+                    if (typeof fetchCurrenciesCallback === 'function' && !isEmpty(currencies)) {
                         fetchCurrenciesCallback(currencies);
                     }
                 }
@@ -23961,7 +23964,11 @@ class Exchange {
          * @description safely extract boolean value from dictionary or list
          * @returns {bool | undefined}
          */
-        return this.safeBoolN(dictionary, [key], defaultValue);
+        const value = this.safeValue(dictionary, key, defaultValue);
+        if (typeof value === 'boolean') {
+            return value;
+        }
+        return defaultValue;
     }
     safeDictN(dictionaryOrList, keys, defaultValue = undefined) {
         /**
@@ -23986,7 +23993,14 @@ class Exchange {
          * @description safely extract a dictionary from dictionary or list
          * @returns {object | undefined}
          */
-        return this.safeDictN(dictionary, [key], defaultValue);
+        const value = this.safeValue(dictionary, key, defaultValue);
+        if (value === undefined) {
+            return defaultValue;
+        }
+        if ((typeof value === 'object') && !Array.isArray(value)) {
+            return value;
+        }
+        return defaultValue;
     }
     safeDict2(dictionary, key1, key2, defaultValue = undefined) {
         /**
@@ -24029,7 +24043,14 @@ class Exchange {
          * @description safely extract an Array from dictionary or list
          * @returns {Array | undefined}
          */
-        return this.safeListN(dictionaryOrList, [key], defaultValue);
+        const value = this.safeValue(dictionaryOrList, key, defaultValue);
+        if (value === undefined) {
+            return defaultValue;
+        }
+        if (Array.isArray(value)) {
+            return value;
+        }
+        return defaultValue;
     }
     handleDeltas(orderbook, deltas) {
         for (let i = 0; i < deltas.length; i++) {
@@ -29270,7 +29291,8 @@ class Exchange {
             uniqueResults = this.removeRepeatedElementsFromArray(result);
         }
         const key = (method === 'fetchOHLCV') ? 0 : 'timestamp';
-        return this.filterBySinceLimit(uniqueResults, since, limit, key);
+        const sortedRes = this.sortBy(uniqueResults, key);
+        return this.filterBySinceLimit(sortedRes, since, limit, key);
     }
     async safeDeterministicCall(method, symbol = undefined, since = undefined, limit = undefined, timeframe = undefined, params = {}) {
         let maxRetries = undefined;
@@ -30039,6 +30061,32 @@ class Exchange {
             }
         }
     }
+    timeframeFromMilliseconds(ms) {
+        if (ms <= 0) {
+            return '';
+        }
+        const second = 1000;
+        const minute = 60 * second;
+        const hour = 60 * minute;
+        const day = 24 * hour;
+        const week = 7 * day;
+        if (ms % week === 0) {
+            return (ms / week) + 'w';
+        }
+        if (ms % day === 0) {
+            return (ms / day) + 'd';
+        }
+        if (ms % hour === 0) {
+            return (ms / hour) + 'h';
+        }
+        if (ms % minute === 0) {
+            return (ms / minute) + 'm';
+        }
+        if (ms % second === 0) {
+            return (ms / second) + 's';
+        }
+        return '';
+    }
 }
 
 
@@ -30721,7 +30769,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   precisionFromString: () => (/* reexport safe */ _functions_number_js__WEBPACK_IMPORTED_MODULE_4__.Iu),
 /* harmony export */   prop: () => (/* reexport safe */ _functions_type_js__WEBPACK_IMPORTED_MODULE_3__._w),
 /* harmony export */   rawencode: () => (/* reexport safe */ _functions_encode_js__WEBPACK_IMPORTED_MODULE_5__.rO),
-/* harmony export */   rfc2616: () => (/* reexport safe */ _functions_time_js__WEBPACK_IMPORTED_MODULE_7__.D9),
 /* harmony export */   roundTimeframe: () => (/* reexport safe */ _functions_misc_js__WEBPACK_IMPORTED_MODULE_9__.jG),
 /* harmony export */   safeFloat: () => (/* reexport safe */ _functions_type_js__WEBPACK_IMPORTED_MODULE_3__.w),
 /* harmony export */   safeFloat2: () => (/* reexport safe */ _functions_type_js__WEBPACK_IMPORTED_MODULE_3__.Cw),
@@ -31192,22 +31239,39 @@ const sum = (...xs) => {
     const ns = xs.filter(_type_js__WEBPACK_IMPORTED_MODULE_0__/* .isNumber */ .Et); // leave only numbers
     return (ns.length > 0) ? ns.reduce((a, b) => a + b, 0) : undefined;
 };
-const deepExtend = function deepExtend(...xs) {
-    let out = undefined;
-    for (const x of xs) {
-        if ((0,_type_js__WEBPACK_IMPORTED_MODULE_0__/* .isDictionary */ .Hf)(x)) {
-            if (!(0,_type_js__WEBPACK_IMPORTED_MODULE_0__/* .isDictionary */ .Hf)(out)) {
-                out = {};
+const deepExtend = function (...args) {
+    let result = null;
+    let resultIsObject = false;
+    for (const arg of args) {
+        if (arg !== null && typeof arg === 'object' && arg.constructor === Object) {
+            // This is a plain object (even if empty) so set the return type.
+            if (result === null || !resultIsObject) {
+                result = {};
+                resultIsObject = true;
             }
-            for (const k in x) {
-                out[k] = deepExtend(out[k], x[k]);
+            // Skip actual merging if object is empty.
+            if (Object.keys(arg).length === 0) {
+                continue;
+            }
+            for (const key in arg) {
+                const value = arg[key];
+                const current = result[key];
+                if (current !== null && typeof current === 'object' && current.constructor === Object &&
+                    value !== null && typeof value === 'object' && value.constructor === Object) {
+                    result[key] = deepExtend(current, value);
+                }
+                else {
+                    result[key] = value;
+                }
             }
         }
         else {
-            out = x;
+            // arg is null or other non-object.
+            result = arg;
+            resultIsObject = false;
         }
     }
-    return out;
+    return result;
 };
 const merge = (target, ...args) => {
     // doesn't overwrite defined keys with undefined
@@ -31968,7 +32032,6 @@ class Throttler {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   D9: () => (/* binding */ rfc2616),
 /* harmony export */   Dj: () => (/* binding */ parse8601),
 /* harmony export */   EZ: () => (/* binding */ microseconds),
 /* harmony export */   GA: () => (/* binding */ TimedOut),
@@ -32098,7 +32161,6 @@ const parseDate = (x) => {
     }
     return parse8601(x);
 };
-const rfc2616 = (timestamp = undefined) => new Date(timestamp).toUTCString();
 const mdy = (timestamp, infix = '-') => {
     infix = infix || '';
     const date = new Date(timestamp);
@@ -35117,7 +35179,7 @@ class bigone extends _abstract_bigone_js__WEBPACK_IMPORTED_MODULE_0__/* ["defaul
     parseOrder(order, market = undefined) {
         //
         //    {
-        //        "id": "42154072251",
+        //        "id": "42154072252",
         //        "asset_pair_name": "SOL-USDT",
         //        "price": "20",
         //        "amount": "0.5",
@@ -36029,11 +36091,13 @@ class bigone extends _abstract_bigone_js__WEBPACK_IMPORTED_MODULE_0__/* ["defaul
 /* harmony import */ var _base_errors_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2079);
 /* harmony import */ var _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(5147);
 /* harmony import */ var _base_functions_number_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(1579);
-/* harmony import */ var _static_dependencies_noble_hashes_sha256_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(4852);
-/* harmony import */ var _base_functions_rsa_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(5354);
-/* harmony import */ var _base_functions_crypto_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(8283);
-/* harmony import */ var _static_dependencies_noble_curves_ed25519_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(6414);
+/* harmony import */ var _static_dependencies_noble_hashes_sha256_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(4852);
+/* harmony import */ var _base_functions_rsa_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(5354);
+/* harmony import */ var _base_functions_crypto_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(8283);
+/* harmony import */ var _static_dependencies_noble_curves_ed25519_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(6414);
+/* harmony import */ var _base_functions_generic_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(7437);
 //  ---------------------------------------------------------------------------
+
 
 
 
@@ -46884,10 +46948,16 @@ class binance extends _abstract_binance_js__WEBPACK_IMPORTED_MODULE_0__/* ["defa
     }
     async loadLeverageBrackets(reload = false, params = {}) {
         await this.loadMarkets();
+        const leveragesFromOutside = this.safeValue(params, 'leveragesFromOutside', this.options['leveragesFromOutside']);
+        const fetchLeveragesCallback = this.safeValue(params, 'fetchLeveragesCallback', this.options['fetchLeveragesCallback']);
+        const outdated = !fetchLeveragesCallback || fetchLeveragesCallback();
+        if (outdated && fetchLeveragesCallback !== undefined) {
+            reload = true;
+        }
         // by default cache the leverage bracket
         // it contains useful stuff like the maintenance margin and initial margin for positions
         const leverageBrackets = this.safeDict(this.options, 'leverageBrackets');
-        if ((leverageBrackets === undefined) || (reload)) {
+        if ((leverageBrackets === undefined || reload) && outdated) {
             const defaultType = this.safeString(this.options, 'defaultType', 'future');
             const type = this.safeString(params, 'type', defaultType);
             const query = this.omit(params, 'type');
@@ -46896,27 +46966,77 @@ class binance extends _abstract_binance_js__WEBPACK_IMPORTED_MODULE_0__/* ["defa
             let isPortfolioMargin = undefined;
             [isPortfolioMargin, params] = this.handleOptionAndParams2(params, 'loadLeverageBrackets', 'papi', 'portfolioMargin', false);
             let response = undefined;
+            let catched;
+            let catchedHandled;
             if (this.isLinear(type, subType)) {
                 if (isPortfolioMargin) {
-                    response = await this.papiGetUmLeverageBracket(query);
+                    try {
+                        response = await this.papiGetUmLeverageBracket(query);
+                    }
+                    catch (e) {
+                        catched = e;
+                        if (e instanceof _base_errors_js__WEBPACK_IMPORTED_MODULE_1__.NetworkError || e instanceof _base_errors_js__WEBPACK_IMPORTED_MODULE_1__.AuthenticationError) {
+                            if (leveragesFromOutside) {
+                                response = leveragesFromOutside;
+                                catchedHandled = true;
+                            }
+                        }
+                    }
                 }
                 else {
-                    response = await this.fapiPrivateGetLeverageBracket(query);
+                    try {
+                        response = await this.fapiPrivateGetLeverageBracket(query);
+                    }
+                    catch (e) {
+                        catched = e;
+                        if (e instanceof _base_errors_js__WEBPACK_IMPORTED_MODULE_1__.NetworkError || e instanceof _base_errors_js__WEBPACK_IMPORTED_MODULE_1__.AuthenticationError) {
+                            if (leveragesFromOutside) {
+                                response = leveragesFromOutside;
+                                catchedHandled = true;
+                            }
+                        }
+                    }
                 }
             }
             else if (this.isInverse(type, subType)) {
                 if (isPortfolioMargin) {
-                    response = await this.papiGetCmLeverageBracket(query);
+                    try {
+                        response = await this.papiGetCmLeverageBracket(query);
+                    }
+                    catch (e) {
+                        catched = e;
+                        if (e instanceof _base_errors_js__WEBPACK_IMPORTED_MODULE_1__.NetworkError || e instanceof _base_errors_js__WEBPACK_IMPORTED_MODULE_1__.AuthenticationError) {
+                            if (leveragesFromOutside) {
+                                response = leveragesFromOutside;
+                                catchedHandled = true;
+                            }
+                        }
+                    }
                 }
                 else {
-                    response = await this.dapiPrivateV2GetLeverageBracket(query);
+                    try {
+                        response = await this.dapiPrivateV2GetLeverageBracket(query);
+                    }
+                    catch (e) {
+                        catched = e;
+                        if (e instanceof _base_errors_js__WEBPACK_IMPORTED_MODULE_1__.NetworkError || e instanceof _base_errors_js__WEBPACK_IMPORTED_MODULE_1__.AuthenticationError) {
+                            if (leveragesFromOutside) {
+                                response = leveragesFromOutside;
+                                catchedHandled = true;
+                            }
+                        }
+                    }
                 }
             }
             else {
                 throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_1__.NotSupported(this.id + ' loadLeverageBrackets() supports linear and inverse contracts only');
             }
             this.options['leverageBrackets'] = this.createSafeDictionary();
-            for (let i = 0; i < response.length; i++) {
+            let length = 0;
+            if (Array.isArray(response)) {
+                length = response.length;
+            }
+            for (let i = 0; i < length; i++) {
                 const entry = response[i];
                 const marketId = this.safeString(entry, 'symbol');
                 const symbol = this.safeSymbol(marketId, undefined, undefined, 'contract');
@@ -46930,6 +47050,22 @@ class binance extends _abstract_binance_js__WEBPACK_IMPORTED_MODULE_0__/* ["defa
                 }
                 this.options['leverageBrackets'][symbol] = result;
             }
+            if (fetchLeveragesCallback) {
+                if (!catched) {
+                    fetchLeveragesCallback(this.options['leverageBrackets']);
+                }
+                this.omit(params, 'fetchLeveragesCallback');
+                this.options['fetchLeveragesCallback'] = fetchLeveragesCallback;
+            }
+            this.omit(params, 'leveragesFromOutside');
+            this.omit(this.options, 'leveragesFromOutside');
+            if (catched && !catchedHandled) {
+                // this.bootstrapped = false
+                throw catched;
+            }
+        }
+        else if (!(0,_base_functions_generic_js__WEBPACK_IMPORTED_MODULE_4__/* .isEmpty */ .Im)(leveragesFromOutside)) {
+            return leveragesFromOutside;
         }
         return this.options['leverageBrackets'];
     }
@@ -48461,14 +48597,14 @@ class binance extends _abstract_binance_js__WEBPACK_IMPORTED_MODULE_0__/* ["defa
             let signature = undefined;
             if (this.secret.indexOf('PRIVATE KEY') > -1) {
                 if (this.secret.length > 120) {
-                    signature = this.encodeURIComponent((0,_base_functions_rsa_js__WEBPACK_IMPORTED_MODULE_4__/* .rsa */ .n)(query, this.secret, _static_dependencies_noble_hashes_sha256_js__WEBPACK_IMPORTED_MODULE_5__/* .sha256 */ .s));
+                    signature = this.encodeURIComponent((0,_base_functions_rsa_js__WEBPACK_IMPORTED_MODULE_5__/* .rsa */ .n)(query, this.secret, _static_dependencies_noble_hashes_sha256_js__WEBPACK_IMPORTED_MODULE_6__/* .sha256 */ .s));
                 }
                 else {
-                    signature = this.encodeURIComponent((0,_base_functions_crypto_js__WEBPACK_IMPORTED_MODULE_6__/* .eddsa */ .q4)(this.encode(query), this.secret, _static_dependencies_noble_curves_ed25519_js__WEBPACK_IMPORTED_MODULE_7__/* .ed25519 */ .ev));
+                    signature = this.encodeURIComponent((0,_base_functions_crypto_js__WEBPACK_IMPORTED_MODULE_7__/* .eddsa */ .q4)(this.encode(query), this.secret, _static_dependencies_noble_curves_ed25519_js__WEBPACK_IMPORTED_MODULE_8__/* .ed25519 */ .ev));
                 }
             }
             else {
-                signature = this.hmac(this.encode(query), this.encode(this.secret), _static_dependencies_noble_hashes_sha256_js__WEBPACK_IMPORTED_MODULE_5__/* .sha256 */ .s);
+                signature = this.hmac(this.encode(query), this.encode(this.secret), _static_dependencies_noble_hashes_sha256_js__WEBPACK_IMPORTED_MODULE_6__/* .sha256 */ .s);
             }
             query += '&' + 'signature=' + signature;
             headers = {
@@ -51247,6 +51383,7 @@ class bingx extends _abstract_bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
                 'fetchDeposits': true,
                 'fetchDepositWithdrawFee': 'emulated',
                 'fetchDepositWithdrawFees': true,
+                'fetchFundingHistory': true,
                 'fetchFundingRate': true,
                 'fetchFundingRateHistory': true,
                 'fetchFundingRates': true,
@@ -52980,6 +53117,89 @@ class bingx extends _abstract_bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
             'fundingRate': this.safeNumber(contract, 'fundingRate'),
             'timestamp': timestamp,
             'datetime': this.iso8601(timestamp),
+        };
+    }
+    /**
+     * @method
+     * @name bingx#fetchFundingHistory
+     * @description fetches historical funding received
+     * @see https://bingx-api.github.io/docs-v3/#/en/Swap/Account%20Endpoints/Get%20Account%20Profit%20and%20Loss%20Fund%20Flow
+     * @param {string} symbol unified symbol of the market to fetch the funding history for
+     * @param {int} [since] timestamp in ms of the earliest funding to fetch
+     * @param {int} [limit] the maximum amount of [funding history structures]{@link https://docs.ccxt.com/?id=funding-history-structure} to fetch
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {int} [params.until] timestamp in ms of the latest funding to fetch
+     * @returns {object[]} a list of [funding history structures]{@link https://docs.ccxt.com/?id=funding-history-structure}
+     */
+    async fetchFundingHistory(symbol = undefined, since = undefined, limit = undefined, params = {}) {
+        await this.loadMarkets();
+        let paginate = false;
+        [paginate, params] = this.handleOptionAndParams(params, 'fetchFundingHistory', 'paginate');
+        if (paginate) {
+            return await this.fetchPaginatedCallDeterministic('fetchFundingHistory', symbol, since, limit, '24h', params);
+        }
+        const request = {
+            'incomeType': 'FUNDING_FEE',
+        };
+        let market = undefined;
+        if (symbol !== undefined) {
+            market = this.market(symbol);
+            request['symbol'] = market['id'];
+        }
+        if (since !== undefined) {
+            request['startTime'] = since;
+        }
+        if (limit !== undefined) {
+            request['limit'] = limit;
+        }
+        const until = this.safeInteger2(params, 'until', 'endTime');
+        if (until !== undefined) {
+            params = this.omit(params, ['until']);
+            request['endTime'] = until;
+        }
+        const response = await this.swapV2PrivateGetUserIncome(this.extend(request, params));
+        //         {
+        //             "code": 0,
+        //             "msg": "",
+        //             "data": [
+        //                 {
+        //                 "symbol": "LDO-USDT",
+        //                 "incomeType": "FUNDING_FEE",
+        //                 "income": "-0.0292",
+        //                 "asset": "USDT",
+        //                 "info": "Funding Fee",
+        //                 "time": 1702713615000,
+        //                 "tranId": "170***6*2_3*9_20***97",
+        //                 "tradeId": "170***6*2_3*9_20***97"
+        //                 }
+        //             ]
+        //         }
+        const data = this.safeList(response, 'data', []);
+        return this.parseIncomes(data, market, since, limit);
+    }
+    parseIncome(income, market = undefined) {
+        // {
+        //     "symbol": "LDO-USDT",
+        //     "incomeType": "FUNDING_FEE",
+        //     "income": "-0.0292",
+        //     "asset": "USDT",
+        //     "info": "Funding Fee",
+        //     "time": 1702713615000,
+        //     "tranId": "170***6*2_3*9_20***97",
+        //     "tradeId": "170***6*2_3*9_20***97"
+        // }
+        const marketId = this.safeString(income, 'symbol');
+        const currencyId = this.safeString(income, 'asset');
+        const timestamp = this.safeInteger(income, 'time');
+        return {
+            'info': income,
+            'symbol': this.safeSymbol(marketId, market, undefined, 'swap'),
+            'code': this.safeCurrencyCode(currencyId),
+            'timestamp': timestamp,
+            'datetime': this.iso8601(timestamp),
+            'id': this.safeString(income, 'tranId'),
+            'amount': this.safeNumber(income, 'income'),
+            'type': 'funding',
         };
     }
     /**
@@ -70006,7 +70226,6 @@ class bitget extends _abstract_bitget_js__WEBPACK_IMPORTED_MODULE_0__/* ["defaul
         const marketId = this.safeString(ticker, 'symbol');
         const close = this.safeString2(ticker, 'lastPr', 'lastPrice');
         const timestamp = this.safeIntegerOmitZero(ticker, 'ts'); // exchange bitget provided 0
-        const change = this.safeString(ticker, 'change24h');
         const category = this.safeString(ticker, 'category');
         const markPrice = this.safeString(ticker, 'markPrice');
         let marketType;
@@ -70018,7 +70237,8 @@ class bitget extends _abstract_bitget_js__WEBPACK_IMPORTED_MODULE_0__/* ["defaul
         }
         let percentage = this.safeString(ticker, 'price24hPcnt');
         if (percentage === undefined) {
-            percentage = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringMul(change, '100');
+            const change24h = this.safeString(ticker, 'change24h');
+            percentage = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringMul(change24h, '100');
         }
         return this.safeTicker({
             'symbol': this.safeSymbol(marketId, market, undefined, marketType),
@@ -70035,7 +70255,7 @@ class bitget extends _abstract_bitget_js__WEBPACK_IMPORTED_MODULE_0__/* ["defaul
             'close': close,
             'last': close,
             'previousClose': undefined,
-            'change': change,
+            'change': undefined,
             'percentage': percentage,
             'average': undefined,
             'baseVolume': this.safeString2(ticker, 'baseVolume', 'volume24h'),
@@ -92304,7 +92524,7 @@ class bitrue extends _abstract_bitrue_js__WEBPACK_IMPORTED_MODULE_0__/* ["defaul
         //         "code": "0",
         //         "msg": "Success",
         //         "data": {
-        //             "orderId": 1690615847831143159
+        //             "orderId": 1690615847831143154
         //         }
         //     }
         //
@@ -114773,7 +114993,7 @@ class bybit extends _abstract_bybit_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
                         'v5/asset/coin-greeks': 1,
                         'v5/account/fee-rate': 10,
                         'v5/account/info': 5,
-                        'v5/account/transaction-log': 1,
+                        'v5/account/transaction-log': 1.66,
                         'v5/account/contract-transaction-log': 1,
                         'v5/account/smp-group': 1,
                         'v5/account/mmp-state': 5,
@@ -115327,6 +115547,7 @@ class bybit extends _abstract_bybit_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
                     '170203': _base_errors_js__WEBPACK_IMPORTED_MODULE_1__.InvalidOrder,
                     '170204': _base_errors_js__WEBPACK_IMPORTED_MODULE_1__.InvalidOrder,
                     '170206': _base_errors_js__WEBPACK_IMPORTED_MODULE_1__.InvalidOrder,
+                    '170209': _base_errors_js__WEBPACK_IMPORTED_MODULE_1__.RestrictedLocation,
                     '170210': _base_errors_js__WEBPACK_IMPORTED_MODULE_1__.InvalidOrder,
                     '170213': _base_errors_js__WEBPACK_IMPORTED_MODULE_1__.OrderNotFound,
                     '170217': _base_errors_js__WEBPACK_IMPORTED_MODULE_1__.InvalidOrder,
@@ -117325,7 +117546,7 @@ class bybit extends _abstract_bybit_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
         let paginate = false;
         [paginate, params] = this.handleOptionAndParams(params, 'fetchFundingRateHistory', 'paginate');
         if (paginate) {
-            return await this.fetchPaginatedCallDeterministic('fetchFundingRateHistory', symbol, since, limit, '8h', params, 200);
+            return await this.fetchPaginatedCallDynamic('fetchFundingRateHistory', symbol, since, limit, params, 200);
         }
         if (limit === undefined) {
             limit = 200;
@@ -117338,6 +117559,7 @@ class bybit extends _abstract_bybit_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
             'limit': limit, // Limit for data size per page. [1, 200]. Default: 200
         };
         const market = this.market(symbol);
+        const fundingTimeFrameMins = this.safeInteger(market['info'], 'fundingInterval');
         symbol = market['symbol'];
         request['symbol'] = market['id'];
         let type = undefined;
@@ -117358,8 +117580,11 @@ class bybit extends _abstract_bybit_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
         else {
             if (since !== undefined) {
                 // end time is required when since is not empty
-                const fundingInterval = 60 * 60 * 8 * 1000;
-                request['endTime'] = since + limit * fundingInterval;
+                let fundingInterval = 60 * 60 * 8 * 1000;
+                if (fundingTimeFrameMins !== undefined) {
+                    fundingInterval = fundingTimeFrameMins * 60 * 1000;
+                }
+                request['endTime'] = this.sum(since, limit * fundingInterval);
             }
         }
         const response = await this.publicGetV5MarketFundingHistory(this.extend(request, params));
@@ -118605,11 +118830,16 @@ class bybit extends _abstract_bybit_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
                         }
                     }
                 }
-                if (tpslModeSl !== tpslModeTp) {
+                if (isTakeProfitOrder && isStopLossOrder && tpslModeSl !== tpslModeTp) {
                     throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_1__.InvalidOrder(this.id + ' createOrder() requires both stopLoss and takeProfit to be full or partial when using as OCO combination');
                 }
-                request['tpslMode'] = tpslModeSl; // same as tpslModeTp
-                params = this.omit(params, ['stopLossLimitPrice', 'takeProfitLimitPrice']);
+                if (tpslModeSl !== undefined) {
+                    request['tpslMode'] = tpslModeSl;
+                }
+                else {
+                    request['tpslMode'] = tpslModeTp;
+                }
+                params = this.omit(params, ['stopLossLimitPrice', 'takeProfitLimitPrice', 'tradingStopEndpoint']);
             }
         }
         else {
@@ -123856,12 +124086,13 @@ class bybit extends _abstract_bybit_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
      * @name bybit#fetchMarginMode
      * @description fetches the margin mode of the trading pair
      * @see https://bybit-exchange.github.io/docs/v5/account/account-info
-     * @param {string} [symbol] unified symbol of the market to fetch the margin mode for (not used by bybit)
+     * @param {string} [symbol] unified symbol of the market to fetch the margin mode for
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @returns {object} a [margin mode structure]{@link https://docs.ccxt.com/?id=margin-mode-structure}
      */
     async fetchMarginMode(symbol, params = {}) {
         await this.loadMarkets();
+        const market = this.market(symbol);
         const response = await this.privateGetV5AccountInfo(params);
         //
         //     {
@@ -123880,7 +124111,7 @@ class bybit extends _abstract_bybit_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
         //     }
         //
         const result = this.safeDict(response, 'result', {});
-        return this.parseMarginMode(result);
+        return this.parseMarginMode(result, market);
     }
     parseMarginMode(marginMode, market = undefined) {
         const marginType = this.safeString(marginMode, 'marginMode');
@@ -131772,6 +132003,7 @@ class coinbase extends _abstract_coinbase_js__WEBPACK_IMPORTED_MODULE_0__/* ["de
      * @param {string} [params.retail_portfolio_id] portfolio uid
      * @param {boolean} [params.is_max] Used in conjunction with tradable_balance to indicate the user wants to use their entire tradable balance
      * @param {string} [params.tradable_balance] amount of tradable balance
+     * @param {float} [params.reduceOnly] set to true for closing a position or use closePosition
      * @returns {object} an [order structure]{@link https://docs.ccxt.com/?id=order-structure}
      */
     async createOrder(symbol, type, side, amount, price = undefined, params = {}) {
@@ -131783,6 +132015,12 @@ class coinbase extends _abstract_coinbase_js__WEBPACK_IMPORTED_MODULE_0__/* ["de
             'product_id': market['id'],
             'side': side.toUpperCase(),
         };
+        const reduceOnly = this.safeBool(params, 'reduceOnly');
+        if (reduceOnly) {
+            params = this.omit(params, 'reduceOnly');
+            params['amount'] = amount;
+            return await this.closePosition(symbol, side, params);
+        }
         const triggerPrice = this.safeNumberN(params, ['stopPrice', 'stop_price', 'triggerPrice']);
         const stopLossPrice = this.safeNumber(params, 'stopLossPrice');
         const takeProfitPrice = this.safeNumber(params, 'takeProfitPrice');
@@ -132889,12 +133127,14 @@ class coinbase extends _abstract_coinbase_js__WEBPACK_IMPORTED_MODULE_0__/* ["de
      * @method
      * @name coinbase#withdraw
      * @description make a withdrawal
-     * @see https://docs.cloud.coinbase.com/sign-in-with-coinbase/docs/api-transactions#send-money
+     * @see https://docs.cdp.coinbase.com/coinbase-app/transfer-apis/send-crypto
      * @param {string} code unified currency code
      * @param {float} amount the amount to withdraw
      * @param {string} address the address to withdraw to
      * @param {string} [tag] an optional tag for the withdrawal
      * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {string} [params.network] the cryptocurrency network to use for the withdrawal using the lowercase name like bitcoin, ethereum, solana, etc.
+     * @param {object} [params.travel_rule_data] some regions require travel rule information for crypto withdrawals, see the exchange docs for details https://docs.cdp.coinbase.com/coinbase-app/transfer-apis/travel-rule
      * @returns {object} a [transaction structure]{@link https://docs.ccxt.com/?id=transaction-structure}
      */
     async withdraw(code, amount, address, tag = undefined, params = {}) {
@@ -132902,6 +133142,12 @@ class coinbase extends _abstract_coinbase_js__WEBPACK_IMPORTED_MODULE_0__/* ["de
         this.checkAddress(address);
         await this.loadMarkets();
         const currency = this.currency(code);
+        const request = {
+            'type': 'send',
+            'to': address,
+            'amount': this.numberToString(amount),
+            'currency': currency['id'],
+        };
         let accountId = this.safeString2(params, 'account_id', 'accountId');
         params = this.omit(params, ['account_id', 'accountId']);
         if (accountId === undefined) {
@@ -132912,14 +133158,11 @@ class coinbase extends _abstract_coinbase_js__WEBPACK_IMPORTED_MODULE_0__/* ["de
             if (accountId === undefined) {
                 throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.ExchangeError(this.id + ' withdraw() could not find account id for ' + code);
             }
+            request['account_id'] = accountId;
         }
-        const request = {
-            'account_id': accountId,
-            'type': 'send',
-            'to': address,
-            'amount': amount,
-            'currency': currency['id'],
-        };
+        else {
+            request['account_id'] = accountId;
+        }
         if (tag !== undefined) {
             request['destination_tag'] = tag;
         }
@@ -159319,6 +159562,7 @@ class cryptocom extends _abstract_cryptocom_js__WEBPACK_IMPORTED_MODULE_0__/* ["
                     '219': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidOrder,
                     '306': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InsufficientFunds,
                     '314': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidOrder,
+                    '315': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidOrder,
                     '325': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidOrder,
                     '415': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidOrder,
                     '10001': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.ExchangeError,
@@ -163151,7 +163395,7 @@ class cryptomus extends _abstract_cryptomus_js__WEBPACK_IMPORTED_MODULE_0__/* ["
         }
         //
         //     {
-        //         "order_id": "01JEXAFCCC5ZVJPZAAHHDKQBNG"
+        //         "order_id": "01JEXAFCCC5ZVJPZAAHHDKQBMG"
         //     }
         //
         return this.parseOrder(response, market);
@@ -214008,7 +214252,7 @@ class htx extends _abstract_htx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */
                 // },
                 'logo': 'https://user-images.githubusercontent.com/1294454/76137448-22748a80-604e-11ea-8069-6e389271911d.jpg',
                 'hostnames': {
-                    'contract': 'api.hbdm.com',
+                    'contract': 'api.hbdm.vn',
                     'spot': 'api.huobi.pro',
                     'status': {
                         'spot': 'status.huobigroup.com',
@@ -224994,6 +225238,7 @@ class hyperliquid extends _abstract_hyperliquid_js__WEBPACK_IMPORTED_MODULE_0__/
             'datetime': undefined,
             'previousClose': this.safeNumber(ticker, 'prevDayPx'),
             'close': this.safeNumber(ticker, 'midPx'),
+            'last': this.safeNumber(ticker, 'price'),
             'bid': this.safeNumber(bidAsk, 0),
             'ask': this.safeNumber(bidAsk, 1),
             'quoteVolume': this.safeNumber(ticker, 'dayNtlVlm'),
@@ -235859,6 +236104,7 @@ class krakenfutures extends _abstract_krakenfutures_js__WEBPACK_IMPORTED_MODULE_
      * @param {int} [since] Timestamp (ms) of earliest order.
      * @param {int} [limit] How many orders to return.
      * @param {object} [params] Exchange specific parameters
+     * @param {bool} [params.trigger] set to true if you wish to fetch only trigger orders
      * @returns An array of [order structures]{@link https://docs.ccxt.com/?id=order-structure}
      */
     async fetchClosedOrders(symbol = undefined, since = undefined, limit = undefined, params = {}) {
@@ -235874,13 +236120,21 @@ class krakenfutures extends _abstract_krakenfutures_js__WEBPACK_IMPORTED_MODULE_
         if (since !== undefined) {
             request['from'] = since;
         }
-        const response = await this.historyGetOrders(this.extend(request, params));
+        const isTrigger = this.safeBool2(params, 'trigger', 'stop', false);
+        let response = undefined;
+        if (isTrigger) {
+            params = this.omit(params, ['trigger', 'stop']);
+            response = await this.historyGetTriggers(this.extend(request, params));
+        }
+        else {
+            response = await this.historyGetOrders(this.extend(request, params));
+        }
         const allOrders = this.safeList(response, 'elements', []);
         const closedOrders = [];
         for (let i = 0; i < allOrders.length; i++) {
             const order = allOrders[i];
             const event = this.safeDict(order, 'event', {});
-            const orderPlaced = this.safeDict(event, 'OrderPlaced');
+            const orderPlaced = this.safeDict2(event, 'OrderPlaced', 'OrderTriggerActivated');
             if (orderPlaced !== undefined) {
                 const innerOrder = this.safeDict(orderPlaced, 'order', {});
                 const filled = this.safeString(innerOrder, 'filled');
@@ -235901,6 +236155,7 @@ class krakenfutures extends _abstract_krakenfutures_js__WEBPACK_IMPORTED_MODULE_
      * @param {int} [since] Timestamp (ms) of earliest order.
      * @param {int} [limit] How many orders to return.
      * @param {object} [params] Exchange specific parameters
+     * @param {bool} [params.trigger] set to true if you wish to fetch only trigger orders
      * @returns An array of [order structures]{@link https://docs.ccxt.com/?id=order-structure}
      */
     async fetchCanceledOrders(symbol = undefined, since = undefined, limit = undefined, params = {}) {
@@ -235916,17 +236171,26 @@ class krakenfutures extends _abstract_krakenfutures_js__WEBPACK_IMPORTED_MODULE_
         if (since !== undefined) {
             request['from'] = since;
         }
-        const response = await this.historyGetOrders(this.extend(request, params));
+        let response = undefined;
+        const isTrigger = this.safeBool2(params, 'trigger', 'stop', false);
+        if (isTrigger) {
+            params = this.omit(params, ['trigger', 'stop']);
+            response = await this.historyGetTriggers(this.extend(request, params));
+        }
+        else {
+            response = await this.historyGetOrders(this.extend(request, params));
+        }
         const allOrders = this.safeList(response, 'elements', []);
         const canceledAndRejected = [];
         for (let i = 0; i < allOrders.length; i++) {
             const order = allOrders[i];
             const event = this.safeDict(order, 'event', {});
-            const orderPlaced = this.safeDict(event, 'OrderPlaced');
+            const isCancelledTriggerOrder = ('OrderTriggerCancelled' in event);
+            const orderPlaced = this.safeDict2(event, 'OrderPlaced', 'OrderTriggerCancelled');
             if (orderPlaced !== undefined) {
                 const innerOrder = this.safeDict(orderPlaced, 'order', {});
                 const filled = this.safeString(innerOrder, 'filled');
-                if (filled === '0') {
+                if (filled === '0' || isCancelledTriggerOrder) {
                     innerOrder['status'] = 'canceled'; // status not available in the response
                     canceledAndRejected.push(innerOrder);
                 }
@@ -237021,7 +237285,7 @@ class krakenfutures extends _abstract_krakenfutures_js__WEBPACK_IMPORTED_MODULE_
         for (let i = 0; i < marginLevels.length; i++) {
             const tier = marginLevels[i];
             const initialMargin = this.safeString(tier, 'initialMargin');
-            const minNotional = this.safeNumber(tier, 'numNonContractUnits');
+            const minNotional = this.safeNumber2(tier, 'numNonContractUnits', 'contracts');
             if (i !== 0) {
                 const tiersLength = tiers.length;
                 const previousTier = tiers[tiersLength - 1];
@@ -237284,7 +237548,12 @@ class krakenfutures extends _abstract_krakenfutures_js__WEBPACK_IMPORTED_MODULE_
             body = postData;
         }
         else if (Object.keys(params).length) {
-            postData = this.urlencode(params);
+            if ('orderIds' in params) {
+                postData = this.urlencodeWithArrayRepeat(params);
+            }
+            else {
+                postData = this.urlencode(params);
+            }
             query += '?' + postData;
         }
         const url = this.urls['api'][api] + query;
@@ -237946,7 +238215,7 @@ class kucoin extends _abstract_kucoin_js__WEBPACK_IMPORTED_MODULE_0__/* ["defaul
                     '400370': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidOrder,
                     '400400': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest,
                     '400401': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.AuthenticationError,
-                    '400500': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidOrder,
+                    '400500': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.RestrictedLocation,
                     '400600': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.BadSymbol,
                     '400760': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidOrder,
                     '401000': _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest,
@@ -269492,8 +269761,10 @@ class okx extends _abstract_okx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */
         maxLeverage = _base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringMax(maxLeverage, '1');
         const maxSpotCost = this.safeNumber(market, 'maxMktSz');
         const status = this.safeString(market, 'state');
+        const instIdCode = this.safeInteger(market, 'instIdCode');
         return this.extend(fees, {
             'id': id,
+            'instIdCode': instIdCode,
             'symbol': symbol,
             'base': base,
             'quote': quote,
@@ -300567,23 +300838,26 @@ class aster extends _aster_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A {
         //     }
         //
         const messageHash = 'positions';
+        if (this.positions === undefined) {
+            this.positions = new _base_ws_Cache_js__WEBPACK_IMPORTED_MODULE_2__/* .ArrayCacheBySymbolBySide */ .Hk();
+        }
+        const cache = this.positions;
+        const data = this.safeDict(message, 'a', {});
+        const rawPositions = this.safeList(data, 'P', []);
+        const newPositions = [];
+        for (let i = 0; i < rawPositions.length; i++) {
+            const rawPosition = rawPositions[i];
+            const position = this.parseWsPosition(rawPosition);
+            const timestamp = this.safeInteger(message, 'E');
+            position['timestamp'] = timestamp;
+            position['datetime'] = this.iso8601(timestamp);
+            newPositions.push(position);
+            cache.append(position);
+        }
         const messageHashes = this.findMessageHashes(client, messageHash);
         if (!this.isEmpty(messageHashes)) {
-            if (this.positions === undefined) {
-                this.positions = new _base_ws_Cache_js__WEBPACK_IMPORTED_MODULE_2__/* .ArrayCacheBySymbolBySide */ .Hk();
-            }
-            const cache = this.positions;
-            const data = this.safeDict(message, 'a', {});
-            const rawPositions = this.safeList(data, 'P', []);
-            const newPositions = [];
-            for (let i = 0; i < rawPositions.length; i++) {
-                const rawPosition = rawPositions[i];
-                const position = this.parseWsPosition(rawPosition);
-                const timestamp = this.safeInteger(message, 'E');
-                position['timestamp'] = timestamp;
-                position['datetime'] = this.iso8601(timestamp);
-                newPositions.push(position);
-                cache.append(position);
+            for (let i = 0; i < newPositions.length; i++) {
+                const position = newPositions[i];
                 const symbol = position['symbol'];
                 const symbolMessageHash = messageHash + '::' + symbol;
                 client.resolve(position, symbolMessageHash);
@@ -300875,18 +301149,18 @@ class aster extends _aster_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A {
         //     }
         //
         const messageHash = 'orders';
+        const market = this.getMarketFromOrder(client, message);
+        if (this.orders === undefined) {
+            const limit = this.safeInteger(this.options, 'ordersLimit', 1000);
+            this.orders = new _base_ws_Cache_js__WEBPACK_IMPORTED_MODULE_2__/* .ArrayCacheBySymbolById */ .Pt(limit);
+        }
+        const cache = this.orders;
+        const parsed = this.parseWsOrder(message, market);
+        const symbol = market['symbol'];
+        cache.append(parsed);
         const messageHashes = this.findMessageHashes(client, messageHash);
         if (!this.isEmpty(messageHashes)) {
-            const market = this.getMarketFromOrder(client, message);
-            if (this.orders === undefined) {
-                const limit = this.safeInteger(this.options, 'ordersLimit', 1000);
-                this.orders = new _base_ws_Cache_js__WEBPACK_IMPORTED_MODULE_2__/* .ArrayCacheBySymbolById */ .Pt(limit);
-            }
-            const cache = this.orders;
-            const parsed = this.parseWsOrder(message, market);
-            const symbol = market['symbol'];
             const symbolMessageHash = messageHash + '::' + symbol;
-            cache.append(parsed);
             client.resolve(cache, symbolMessageHash);
             client.resolve(cache, messageHash);
         }
@@ -302759,13 +303033,11 @@ class binance extends _binance_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ 
         const market = this.safeMarket(marketId, undefined, '', 'contract');
         const symbol = market['symbol'];
         const liquidation = this.parseWsLiquidation(rawLiquidation, market);
-        let liquidations = this.safeValue(this.liquidations, symbol);
-        if (liquidations === undefined) {
-            const limit = this.safeInteger(this.options, 'liquidationsLimit', 1000);
-            liquidations = new _base_ws_Cache_js__WEBPACK_IMPORTED_MODULE_2__/* .ArrayCache */ .I3(limit);
+        if (this.liquidations === undefined) {
+            this.liquidations = new _base_ws_Cache_js__WEBPACK_IMPORTED_MODULE_2__/* .ArrayCacheBySymbolBySide */ .Hk();
         }
-        liquidations.append(liquidation);
-        this.liquidations[symbol] = liquidations;
+        const cache = this.liquidations;
+        cache.append(liquidation);
         client.resolve([liquidation], 'liquidations');
         client.resolve([liquidation], 'liquidations::' + symbol);
     }
@@ -302970,13 +303242,12 @@ class binance extends _binance_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ 
         const market = this.safeMarket(marketId, undefined, undefined, 'swap');
         const symbol = this.safeSymbol(marketId, market);
         const liquidation = this.parseWsLiquidation(message, market);
-        let myLiquidations = this.safeValue(this.myLiquidations, symbol);
-        if (myLiquidations === undefined) {
-            const limit = this.safeInteger(this.options, 'myLiquidationsLimit', 1000);
-            myLiquidations = new _base_ws_Cache_js__WEBPACK_IMPORTED_MODULE_2__/* .ArrayCache */ .I3(limit);
+        let cache = this.myLiquidations;
+        if (cache === undefined) {
+            cache = new _base_ws_Cache_js__WEBPACK_IMPORTED_MODULE_2__/* .ArrayCacheBySymbolBySide */ .Hk();
         }
-        myLiquidations.append(liquidation);
-        this.myLiquidations[symbol] = myLiquidations;
+        cache.append(liquidation);
+        this.myLiquidations = cache;
         client.resolve([liquidation], 'myLiquidations');
         client.resolve([liquidation], 'myLiquidations::' + symbol);
     }
@@ -305173,7 +305444,12 @@ class binance extends _binance_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ 
                 payload['symbol'] = market['id'];
             }
         }
-        const type = this.getMarketType('fetchPositionsWs', market, params);
+        let type = this.getMarketType('fetchPositionsWs', market, params);
+        if (symbols === undefined && (type === 'spot')) {
+            // when symbols aren't provide
+            // we shouldn't rely on the defaultType
+            type = 'future';
+        }
         if (type !== 'future' && type !== 'delivery') {
             throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_1__.BadRequest(this.id + ' fetchPositionsWs only supports swap markets');
         }
@@ -316201,17 +316477,14 @@ class bitmex extends _bitmex_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A
         //
         const rawLiquidations = this.safeValue(message, 'data', []);
         const newLiquidations = [];
+        if (this.liquidations === undefined) {
+            this.liquidations = new _base_ws_Cache_js__WEBPACK_IMPORTED_MODULE_2__/* .ArrayCacheBySymbolBySide */ .Hk();
+        }
+        const cache = this.liquidations;
         for (let i = 0; i < rawLiquidations.length; i++) {
             const rawLiquidation = rawLiquidations[i];
             const liquidation = this.parseLiquidation(rawLiquidation);
-            const symbol = liquidation['symbol'];
-            let liquidations = this.safeValue(this.liquidations, symbol);
-            if (liquidations === undefined) {
-                const limit = this.safeInteger(this.options, 'liquidationsLimit', 1000);
-                liquidations = new _base_ws_Cache_js__WEBPACK_IMPORTED_MODULE_2__/* .ArrayCache */ .I3(limit);
-            }
-            liquidations.append(liquidation);
-            this.liquidations[symbol] = liquidations;
+            cache.append(liquidation);
             newLiquidations.push(liquidation);
         }
         client.resolve(newLiquidations, 'liquidations');
@@ -325184,13 +325457,11 @@ class bybit extends _bybit_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A {
                 const market = this.safeMarket(marketId, undefined, '', 'contract');
                 const symbol = market['symbol'];
                 const liquidation = this.parseWsLiquidation(rawLiquidation, market);
-                let liquidations = this.safeValue(this.liquidations, symbol);
-                if (liquidations === undefined) {
-                    const limit = this.safeInteger(this.options, 'liquidationsLimit', 1000);
-                    liquidations = new _base_ws_Cache_js__WEBPACK_IMPORTED_MODULE_2__/* .ArrayCache */ .I3(limit);
+                if (this.liquidations === undefined) {
+                    this.liquidations = new _base_ws_Cache_js__WEBPACK_IMPORTED_MODULE_2__/* .ArrayCacheBySymbolBySide */ .Hk();
                 }
-                liquidations.append(liquidation);
-                this.liquidations[symbol] = liquidations;
+                const cache = this.liquidations;
+                cache.append(liquidation);
                 client.resolve([liquidation], 'liquidations');
                 client.resolve([liquidation], 'liquidations::' + symbol);
             }
@@ -325201,13 +325472,11 @@ class bybit extends _bybit_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A {
             const market = this.safeMarket(marketId, undefined, '', 'contract');
             const symbol = market['symbol'];
             const liquidation = this.parseWsLiquidation(rawLiquidation, market);
-            let liquidations = this.safeValue(this.liquidations, symbol);
-            if (liquidations === undefined) {
-                const limit = this.safeInteger(this.options, 'liquidationsLimit', 1000);
-                liquidations = new _base_ws_Cache_js__WEBPACK_IMPORTED_MODULE_2__/* .ArrayCache */ .I3(limit);
+            if (this.liquidations === undefined) {
+                this.liquidations = new _base_ws_Cache_js__WEBPACK_IMPORTED_MODULE_2__/* .ArrayCacheBySymbolBySide */ .Hk();
             }
-            liquidations.append(liquidation);
-            this.liquidations[symbol] = liquidations;
+            const cache = this.liquidations;
+            cache.append(liquidation);
             client.resolve([liquidation], 'liquidations');
             client.resolve([liquidation], 'liquidations::' + symbol);
         }
@@ -326699,30 +326968,19 @@ class bydfi extends _bydfi_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A {
         const marketId = this.safeString(rawOrder, 's');
         const market = this.safeMarket(marketId);
         const symbol = market['symbol'];
-        let match = false;
         const messageHash = 'orders';
         const symbolMessageHash = messageHash + '::' + symbol;
-        const messageHashes = this.findMessageHashes(client, messageHash);
-        for (let i = 0; i < messageHashes.length; i++) {
-            const hash = messageHashes[i];
-            if (hash === symbolMessageHash || hash === messageHash) {
-                match = true;
-                break;
-            }
+        if (this.orders === undefined) {
+            const limit = this.safeInteger(this.options, 'ordersLimit', 1000);
+            this.orders = new _base_ws_Cache_js__WEBPACK_IMPORTED_MODULE_3__/* .ArrayCacheBySymbolById */ .Pt(limit);
         }
-        if (match) {
-            if (this.orders === undefined) {
-                const limit = this.safeInteger(this.options, 'ordersLimit', 1000);
-                this.orders = new _base_ws_Cache_js__WEBPACK_IMPORTED_MODULE_3__/* .ArrayCacheBySymbolById */ .Pt(limit);
-            }
-            const orders = this.orders;
-            const order = this.parseWsOrder(rawOrder, market);
-            const lastUpdateTimestamp = this.safeInteger(message, 'T');
-            order['lastUpdateTimestamp'] = lastUpdateTimestamp;
-            orders.append(order);
-            client.resolve(orders, messageHash);
-            client.resolve(orders, symbolMessageHash);
-        }
+        const orders = this.orders;
+        const order = this.parseWsOrder(rawOrder, market);
+        const lastUpdateTimestamp = this.safeInteger(message, 'T');
+        order['lastUpdateTimestamp'] = lastUpdateTimestamp;
+        orders.append(order);
+        client.resolve(orders, messageHash);
+        client.resolve(orders, symbolMessageHash);
     }
     parseWsOrder(order, market = undefined) {
         //
@@ -326868,29 +327126,17 @@ class bydfi extends _bydfi_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A {
         const symbol = market['symbol'];
         const messageHash = 'positions';
         const symbolMessageHash = messageHash + '::' + symbol;
-        const messageHashes = this.findMessageHashes(client, messageHash);
-        let match = false;
-        for (let i = 0; i < messageHashes.length; i++) {
-            const hash = messageHashes[i];
-            if (hash === symbolMessageHash || hash === messageHash) {
-                match = true;
-                break;
-            }
+        if (this.positions === undefined) {
+            this.positions = new _base_ws_Cache_js__WEBPACK_IMPORTED_MODULE_3__/* .ArrayCacheBySymbolBySide */ .Hk();
         }
-        if (match) {
-            if (this.positions === undefined) {
-                this.positions = new _base_ws_Cache_js__WEBPACK_IMPORTED_MODULE_3__/* .ArrayCacheBySymbolBySide */ .Hk();
-            }
-            const cache = this.positions;
-            const parsedPosition = this.parseWsPosition(rawPosition, market);
-            const timestamp = this.safeInteger(message, 'T');
-            parsedPosition['timestamp'] = timestamp;
-            parsedPosition['datetime'] = this.iso8601(timestamp);
-            cache.append(parsedPosition);
-            const symbolSpecificMessageHash = messageHash + ':' + parsedPosition['symbol'];
-            client.resolve([parsedPosition], messageHash);
-            client.resolve([parsedPosition], symbolSpecificMessageHash);
-        }
+        const cache = this.positions;
+        const parsedPosition = this.parseWsPosition(rawPosition, market);
+        const timestamp = this.safeInteger(message, 'T');
+        parsedPosition['timestamp'] = timestamp;
+        parsedPosition['datetime'] = this.iso8601(timestamp);
+        cache.append(parsedPosition);
+        client.resolve([parsedPosition], messageHash);
+        client.resolve([parsedPosition], symbolMessageHash);
     }
     parseWsPosition(position, market = undefined) {
         //
@@ -340644,13 +340890,13 @@ class dydx extends _dydx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A {
     parseWsTrade(trade, market = undefined) {
         //
         // {
-        //     "id": "02b6148d0000000200000005",
+        //     "id": "02b6148d0000000200000003",
         //     "side": "BUY",
         //     "size": "0.024",
         //     "price": "114581",
         //     "type": "LIMIT",
         //     "createdAt": "2025-08-04T00:42:07.118Z",
-        //     "createdAtHeight": "45487245"
+        //     "createdAtHeight": "45487244"
         // }
         //
         const timestamp = this.parse8601(this.safeString(trade, 'createdAt'));
@@ -343382,18 +343628,17 @@ class gate extends _gate_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A {
         //
         const rawLiquidations = this.safeList(message, 'result', []);
         const newLiquidations = [];
+        if (this.liquidations === undefined) {
+            this.liquidations = new _base_ws_Cache_js__WEBPACK_IMPORTED_MODULE_2__/* .ArrayCacheBySymbolBySide */ .Hk();
+        }
+        const cache = this.liquidations;
         for (let i = 0; i < rawLiquidations.length; i++) {
             const rawLiquidation = rawLiquidations[i];
             const liquidation = this.parseWsLiquidation(rawLiquidation);
+            cache.append(liquidation);
             const symbol = this.safeString(liquidation, 'symbol');
-            let liquidations = this.safeValue(this.liquidations, symbol);
-            if (liquidations === undefined) {
-                const limit = this.safeInteger(this.options, 'liquidationsLimit', 1000);
-                liquidations = new _base_ws_Cache_js__WEBPACK_IMPORTED_MODULE_2__/* .ArrayCache */ .I3(limit);
-            }
-            liquidations.append(liquidation);
-            this.liquidations[symbol] = liquidations;
-            client.resolve(liquidations, 'myLiquidations::' + symbol);
+            const symbolLiquidations = this.safeValue(cache, symbol, []);
+            client.resolve(symbolLiquidations, 'myLiquidations::' + symbol);
         }
         client.resolve(newLiquidations, 'myLiquidations');
     }
@@ -347845,22 +348090,22 @@ class htx extends _htx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A {
                             },
                             'future': {
                                 'linear': {
-                                    'public': 'wss://api.hbdm.com/linear-swap-ws',
-                                    'private': 'wss://api.hbdm.com/linear-swap-notification',
+                                    'public': 'wss://api.hbdm.vn/linear-swap-ws',
+                                    'private': 'wss://api.hbdm.vn/linear-swap-notification',
                                 },
                                 'inverse': {
-                                    'public': 'wss://api.hbdm.com/ws',
-                                    'private': 'wss://api.hbdm.com/notification',
+                                    'public': 'wss://api.hbdm.vn/ws',
+                                    'private': 'wss://api.hbdm.vn/notification',
                                 },
                             },
                             'swap': {
                                 'inverse': {
-                                    'public': 'wss://api.hbdm.com/swap-ws',
-                                    'private': 'wss://api.hbdm.com/swap-notification',
+                                    'public': 'wss://api.hbdm.vn/swap-ws',
+                                    'private': 'wss://api.hbdm.vn/swap-notification',
                                 },
                                 'linear': {
-                                    'public': 'wss://api.hbdm.com/linear-swap-ws',
-                                    'private': 'wss://api.hbdm.com/linear-swap-notification',
+                                    'public': 'wss://api.hbdm.vn/linear-swap-ws',
+                                    'private': 'wss://api.hbdm.vn/linear-swap-notification',
                                 },
                             },
                         },
@@ -350719,6 +350964,7 @@ class hyperliquid extends _hyperliquid_js__WEBPACK_IMPORTED_MODULE_0__/* ["defau
      * @description watches a price ticker, a statistical calculation with the information calculated over the past 24 hours for a specific market
      * @param {string} symbol unified symbol of the market to fetch the ticker for
      * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {string} [params.channel] 'webData2' or 'allMids', default is 'webData2'
      * @returns {object} a [ticker structure]{@link https://docs.ccxt.com/?id=ticker-structure}
      */
     async watchTicker(symbol, params = {}) {
@@ -350739,6 +350985,7 @@ class hyperliquid extends _hyperliquid_js__WEBPACK_IMPORTED_MODULE_0__/* ["defau
      * @see https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/websocket/subscriptions
      * @param {string[]} symbols unified symbol of the market to fetch the ticker for
      * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {string} [params.channel] 'webData2' or 'allMids', default is 'webData2'
      * @param {string} [params.dex] for for hip3 tokens subscription, eg: 'xyz' or 'flx`, if symbols are provided we will infer it from the first symbol's market
      * @returns {object} a [ticker structure]{@link https://docs.ccxt.com/?id=ticker-structure}
      */
@@ -350747,10 +350994,12 @@ class hyperliquid extends _hyperliquid_js__WEBPACK_IMPORTED_MODULE_0__/* ["defau
         symbols = this.marketSymbols(symbols, undefined, true);
         let messageHash = 'tickers';
         const url = this.urls['api']['ws']['public'];
+        let channel = 'webData2';
+        [channel, params] = this.handleOptionAndParams(params, 'watchTickers', 'channel', channel);
         const request = {
             'method': 'subscribe',
             'subscription': {
-                'type': 'webData2',
+                'type': channel,
                 'user': '0x0000000000000000000000000000000000000000',
             },
         };
@@ -350782,18 +351031,21 @@ class hyperliquid extends _hyperliquid_js__WEBPACK_IMPORTED_MODULE_0__/* ["defau
      * @see https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/websocket/subscriptions
      * @param {string[]} symbols unified symbol of the market to fetch the ticker for
      * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {string} [params.channel] 'webData2' or 'allMids', default is 'webData2'
      * @returns {object} a [ticker structure]{@link https://docs.ccxt.com/?id=ticker-structure}
      */
     async unWatchTickers(symbols = undefined, params = {}) {
         await this.loadMarkets();
         symbols = this.marketSymbols(symbols, undefined, true);
         const subMessageHash = 'tickers';
+        let channel = 'webData2';
+        [channel, params] = this.handleOptionAndParams(params, 'unWatchTickers', 'channel', channel);
         const messageHash = 'unsubscribe:' + subMessageHash;
         const url = this.urls['api']['ws']['public'];
         const request = {
             'method': 'unsubscribe',
             'subscription': {
-                'type': 'webData2',
+                'type': channel,
                 'user': '0x0000000000000000000000000000000000000000',
             },
         };
@@ -350941,7 +351193,11 @@ class hyperliquid extends _hyperliquid_js__WEBPACK_IMPORTED_MODULE_0__/* ["defau
                     }, market);
                     this.tickers[symbol] = ticker;
                 }
-                const messageHash = 'tickers:' + this.safeString(data, 'dex');
+                let messageHash = 'tickers';
+                const dexMessage = this.safeString(data, 'dex');
+                if (dexMessage !== undefined) {
+                    messageHash += ':' + dexMessage;
+                }
                 client.resolve(this.tickers, messageHash);
                 return true;
             }
@@ -358448,7 +358704,8 @@ class lbank extends _lbank_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A {
         };
         const request = this.deepExtend(message, params);
         const trades = await this.watch(url, messageHash, request, messageHash, request);
-        return this.filterBySinceLimit(trades, since, limit, 'timestamp', true);
+        const result = this.filterBySinceLimit(trades, since, limit, 'timestamp', true);
+        return this.sortBy(result, 'timestamp'); // needed bcz of https://github.com/ccxt/ccxt/actions/runs/21364685870/job/61493905690?pr=27750#step:11:1067
     }
     handleTrades(client, message) {
         //
@@ -364061,13 +364318,11 @@ class okx extends _okx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A {
             const rawLiquidation = rawLiquidations[i];
             const liquidation = this.parseWsLiquidation(rawLiquidation);
             const symbol = this.safeString(liquidation, 'symbol');
-            let liquidations = this.safeValue(this.liquidations, symbol);
-            if (liquidations === undefined) {
-                const limit = this.safeInteger(this.options, 'liquidationsLimit', 1000);
-                liquidations = new _base_ws_Cache_js__WEBPACK_IMPORTED_MODULE_2__/* .ArrayCache */ .I3(limit);
+            if (this.liquidations === undefined) {
+                this.liquidations = new _base_ws_Cache_js__WEBPACK_IMPORTED_MODULE_2__/* .ArrayCacheBySymbolBySide */ .Hk();
             }
-            liquidations.append(liquidation);
-            this.liquidations[symbol] = liquidations;
+            const cache = this.liquidations;
+            cache.append(liquidation);
             client.resolve([liquidation], 'liquidations');
             client.resolve([liquidation], 'liquidations::' + symbol);
         }
@@ -364160,13 +364415,11 @@ class okx extends _okx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A {
             }
             const liquidation = this.parseWsMyLiquidation(rawLiquidation);
             const symbol = this.safeString(liquidation, 'symbol');
-            let liquidations = this.safeValue(this.liquidations, symbol);
-            if (liquidations === undefined) {
-                const limit = this.safeInteger(this.options, 'myLiquidationsLimit', 1000);
-                liquidations = new _base_ws_Cache_js__WEBPACK_IMPORTED_MODULE_2__/* .ArrayCache */ .I3(limit);
+            if (this.liquidations === undefined) {
+                this.liquidations = new _base_ws_Cache_js__WEBPACK_IMPORTED_MODULE_2__/* .ArrayCacheBySymbolBySide */ .Hk();
             }
-            liquidations.append(liquidation);
-            this.liquidations[symbol] = liquidations;
+            const cache = this.liquidations;
+            cache.append(liquidation);
             client.resolve([liquidation], 'myLiquidations');
             client.resolve([liquidation], 'myLiquidations::' + symbol);
         }
@@ -365370,6 +365623,12 @@ class okx extends _okx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A {
         let op = undefined;
         [op, params] = this.handleOptionAndParams(params, 'createOrderWs', 'op', 'batch-orders');
         const args = this.createOrderRequest(symbol, type, side, amount, price, params);
+        const market = this.market(symbol);
+        const instIdCode = this.safeInteger(market, 'instIdCode');
+        if (instIdCode !== undefined) {
+            delete args['instId'];
+            args['instIdCode'] = instIdCode;
+        }
         const ordType = this.safeString(args, 'ordType');
         if ((ordType === 'trigger') || (ordType === 'conditional') || (type === 'oco') || (type === 'move_order_stop') || (type === 'iceberg') || (type === 'twap')) {
             throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_1__.BadRequest(this.id + ' createOrderWs() does not support algo trading. this.options["createOrderWs"]["op"] must be either order or batch-order');
@@ -365440,6 +365699,12 @@ class okx extends _okx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A {
         let op = undefined;
         [op, params] = this.handleOptionAndParams(params, 'editOrderWs', 'op', 'amend-order');
         const args = this.editOrderRequest(id, symbol, type, side, amount, price, params);
+        const market = this.market(symbol);
+        const instIdCode = this.safeInteger(market, 'instIdCode');
+        if (instIdCode !== undefined) {
+            delete args['instId'];
+            args['instIdCode'] = instIdCode;
+        }
         const request = {
             'id': messageHash,
             'op': op,
@@ -365468,8 +365733,10 @@ class okx extends _okx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A {
         const messageHash = this.requestId();
         const clientOrderId = this.safeString2(params, 'clOrdId', 'clientOrderId');
         params = this.omit(params, ['clientOrderId', 'clOrdId']);
+        const market = this.market(symbol);
+        const instIdCode = this.safeInteger(market, 'instIdCode');
         const arg = {
-            'instId': this.marketId(symbol),
+            'instIdCode': instIdCode,
         };
         if (clientOrderId !== undefined) {
             arg['clOrdId'] = clientOrderId;
@@ -365507,11 +365774,15 @@ class okx extends _okx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A {
         const url = this.getUrl('private', 'private');
         const messageHash = this.requestId();
         const args = [];
+        const market = this.market(symbol);
+        const instIdCode = this.safeInteger(market, 'instIdCode');
+        const instParams = {
+            'instIdCode': instIdCode,
+        };
         for (let i = 0; i < idsLength; i++) {
-            const arg = {
-                'instId': this.marketId(symbol),
+            const arg = this.extend(instParams, {
                 'ordId': ids[i],
-            };
+            });
             args.push(arg);
         }
         const request = {
@@ -374036,7 +374307,7 @@ class toobit extends _toobit_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A
             return;
         }
         // whether or not to schedule another listenKey keepAlive request
-        const listenKeyRefreshRate = this.safeInteger(this.options, 'listenKeyRefreshRate', 1200000);
+        const listenKeyRefreshRate = this.safeInteger(this.options['ws'], 'listenKeyRefreshRate', 1200000);
         this.delay(listenKeyRefreshRate, this.keepAliveListenKey, params);
     }
     getUserStreamUrl() {
@@ -429319,7 +429590,7 @@ class woo extends _abstract_woo_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */
             request['limit'] = Math.min(limit, 1000);
         }
         if (since !== undefined) {
-            request['after'] = since;
+            request['after'] = since - 1; // #27793
         }
         const until = this.safeInteger(params, 'until');
         params = this.omit(params, 'until');
@@ -436281,8 +436552,8 @@ class xt extends _abstract_xt_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .
             'change': this.safeNumber(ticker, 'cv'),
             'percentage': this.parseNumber(percentage),
             'average': undefined,
-            'baseVolume': undefined,
-            'quoteVolume': this.safeNumber2(ticker, 'a', 'v'),
+            'baseVolume': this.safeNumber(ticker, 'a'),
+            'quoteVolume': this.safeNumber(ticker, 'v'),
             'info': ticker,
         }, market);
     }
@@ -438120,7 +438391,7 @@ class xt extends _abstract_xt_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .
         //             "hasNext": false,
         //             "items": [
         //                 {
-        //                     "id": "207260567109387524",
+        //                     "id": "207260567109387525",
         //                     "coin": "usdt",
         //                     "symbol": "btc_usdt",
         //                     "type": "FEE",
@@ -464408,7 +464679,7 @@ SOFTWARE.
 
 //-----------------------------------------------------------------------------
 // this is updated by vss.js when building
-const ccxt_version = '4.5.34';
+const ccxt_version = '4.5.35';
 ccxt_src_base_Exchange_js_WEBPACK_IMPORTED_MODULE_0_/* .Exchange */ .k.ccxtVersion = ccxt_version;
 //-----------------------------------------------------------------------------
 
