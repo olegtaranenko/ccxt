@@ -2579,6 +2579,18 @@ func (this *BinanceusdmCore) SapiGetDciProductAccounts (args ...interface{}) <-c
    return this.callEndpointAsync("sapiGetDciProductAccounts", args...)
 }
 
+func (this *BinanceusdmCore) SapiGetAccumulatorProductList (args ...interface{}) <-chan interface{} {
+   return this.callEndpointAsync("sapiGetAccumulatorProductList", args...)
+}
+
+func (this *BinanceusdmCore) SapiGetAccumulatorProductPositionList (args ...interface{}) <-chan interface{} {
+   return this.callEndpointAsync("sapiGetAccumulatorProductPositionList", args...)
+}
+
+func (this *BinanceusdmCore) SapiGetAccumulatorProductSumHolding (args ...interface{}) <-chan interface{} {
+   return this.callEndpointAsync("sapiGetAccumulatorProductSumHolding", args...)
+}
+
 func (this *BinanceusdmCore) SapiPostAccountDisableFastWithdrawSwitch (args ...interface{}) <-chan interface{} {
    return this.callEndpointAsync("sapiPostAccountDisableFastWithdrawSwitch", args...)
 }
@@ -2725,6 +2737,10 @@ func (this *BinanceusdmCore) SapiPostUserDataStream (args ...interface{}) <-chan
 
 func (this *BinanceusdmCore) SapiPostUserDataStreamIsolated (args ...interface{}) <-chan interface{} {
    return this.callEndpointAsync("sapiPostUserDataStreamIsolated", args...)
+}
+
+func (this *BinanceusdmCore) SapiPostUserListenToken (args ...interface{}) <-chan interface{} {
+   return this.callEndpointAsync("sapiPostUserListenToken", args...)
 }
 
 func (this *BinanceusdmCore) SapiPostLendingCustomizedFixedPurchase (args ...interface{}) <-chan interface{} {
@@ -3069,6 +3085,10 @@ func (this *BinanceusdmCore) SapiPostDciProductAutoCompoundEdit (args ...interfa
 
 func (this *BinanceusdmCore) SapiPostDciProductSubscribe (args ...interface{}) <-chan interface{} {
    return this.callEndpointAsync("sapiPostDciProductSubscribe", args...)
+}
+
+func (this *BinanceusdmCore) SapiPostAccumulatorProductSubscribe (args ...interface{}) <-chan interface{} {
+   return this.callEndpointAsync("sapiPostAccumulatorProductSubscribe", args...)
 }
 
 func (this *BinanceusdmCore) SapiPutUserDataStream (args ...interface{}) <-chan interface{} {

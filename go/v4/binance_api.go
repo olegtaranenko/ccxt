@@ -2579,6 +2579,18 @@ func (this *BinanceCore) SapiGetDciProductAccounts (args ...interface{}) <-chan 
    return this.callEndpointAsync("sapiGetDciProductAccounts", args...)
 }
 
+func (this *BinanceCore) SapiGetAccumulatorProductList (args ...interface{}) <-chan interface{} {
+   return this.callEndpointAsync("sapiGetAccumulatorProductList", args...)
+}
+
+func (this *BinanceCore) SapiGetAccumulatorProductPositionList (args ...interface{}) <-chan interface{} {
+   return this.callEndpointAsync("sapiGetAccumulatorProductPositionList", args...)
+}
+
+func (this *BinanceCore) SapiGetAccumulatorProductSumHolding (args ...interface{}) <-chan interface{} {
+   return this.callEndpointAsync("sapiGetAccumulatorProductSumHolding", args...)
+}
+
 func (this *BinanceCore) SapiPostAccountDisableFastWithdrawSwitch (args ...interface{}) <-chan interface{} {
    return this.callEndpointAsync("sapiPostAccountDisableFastWithdrawSwitch", args...)
 }
@@ -2725,6 +2737,10 @@ func (this *BinanceCore) SapiPostUserDataStream (args ...interface{}) <-chan int
 
 func (this *BinanceCore) SapiPostUserDataStreamIsolated (args ...interface{}) <-chan interface{} {
    return this.callEndpointAsync("sapiPostUserDataStreamIsolated", args...)
+}
+
+func (this *BinanceCore) SapiPostUserListenToken (args ...interface{}) <-chan interface{} {
+   return this.callEndpointAsync("sapiPostUserListenToken", args...)
 }
 
 func (this *BinanceCore) SapiPostLendingCustomizedFixedPurchase (args ...interface{}) <-chan interface{} {
@@ -3069,6 +3085,10 @@ func (this *BinanceCore) SapiPostDciProductAutoCompoundEdit (args ...interface{}
 
 func (this *BinanceCore) SapiPostDciProductSubscribe (args ...interface{}) <-chan interface{} {
    return this.callEndpointAsync("sapiPostDciProductSubscribe", args...)
+}
+
+func (this *BinanceCore) SapiPostAccumulatorProductSubscribe (args ...interface{}) <-chan interface{} {
+   return this.callEndpointAsync("sapiPostAccumulatorProductSubscribe", args...)
 }
 
 func (this *BinanceCore) SapiPutUserDataStream (args ...interface{}) <-chan interface{} {

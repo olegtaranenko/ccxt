@@ -655,6 +655,9 @@ interface binance {
     sapiGetDciProductList (params?: {}): Promise<implicitReturnType>;
     sapiGetDciProductPositions (params?: {}): Promise<implicitReturnType>;
     sapiGetDciProductAccounts (params?: {}): Promise<implicitReturnType>;
+    sapiGetAccumulatorProductList (params?: {}): Promise<implicitReturnType>;
+    sapiGetAccumulatorProductPositionList (params?: {}): Promise<implicitReturnType>;
+    sapiGetAccumulatorProductSumHolding (params?: {}): Promise<implicitReturnType>;
     sapiGetApipartnerCheckEligibility (params?: {}): Promise<implicitReturnType>;
     sapiGetApipartnerRebateHistory (params?: {}): Promise<implicitReturnType>;
     sapiGetAssetAssetDistributionHistory (params?: {}): Promise<implicitReturnType>;
@@ -723,6 +726,7 @@ interface binance {
     sapiPostSubAccountVirtualSubAccount (params?: {}): Promise<implicitReturnType>;
     sapiPostUserDataStream (params?: {}): Promise<implicitReturnType>;
     sapiPostUserDataStreamIsolated (params?: {}): Promise<implicitReturnType>;
+    sapiPostUserListenToken (params?: {}): Promise<implicitReturnType>;
     sapiPostLendingCustomizedFixedPurchase (params?: {}): Promise<implicitReturnType>;
     sapiPostLendingDailyPurchase (params?: {}): Promise<implicitReturnType>;
     sapiPostLendingDailyRedeem (params?: {}): Promise<implicitReturnType>;
@@ -809,6 +813,7 @@ interface binance {
     sapiPostSimpleEarnLockedSubscribe (params?: {}): Promise<implicitReturnType>;
     sapiPostDciProductAutoCompoundEdit (params?: {}): Promise<implicitReturnType>;
     sapiPostDciProductSubscribe (params?: {}): Promise<implicitReturnType>;
+    sapiPostAccumulatorProductSubscribe (params?: {}): Promise<implicitReturnType>;
     sapiPostClTransfer (params?: {}): Promise<implicitReturnType>;
     sapiPostCustodianCustodianTransfer (params?: {}): Promise<implicitReturnType>;
     sapiPostCustodianOcoOrder (params?: {}): Promise<implicitReturnType>;

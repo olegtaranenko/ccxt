@@ -1945,6 +1945,15 @@ abstract class binanceus extends \ccxt\binance {
     public function sapi_get_dci_product_accounts($params = array()) {
         return $this->request('dci/product/accounts', 'sapi', 'GET', $params, null, null, array("cost" => 0.1));
     }
+    public function sapi_get_accumulator_product_list($params = array()) {
+        return $this->request('accumulator/product/list', 'sapi', 'GET', $params, null, null, array("cost" => 0.1));
+    }
+    public function sapi_get_accumulator_product_position_list($params = array()) {
+        return $this->request('accumulator/product/position/list', 'sapi', 'GET', $params, null, null, array("cost" => 0.1));
+    }
+    public function sapi_get_accumulator_product_sum_holding($params = array()) {
+        return $this->request('accumulator/product/sum-holding', 'sapi', 'GET', $params, null, null, array("cost" => 0.1));
+    }
     public function sapi_get_apipartner_checkeligibility($params = array()) {
         return $this->request('apipartner/checkEligibility', 'sapi', 'GET', $params, null, null, array("cost" => 1));
     }
@@ -2148,6 +2157,9 @@ abstract class binanceus extends \ccxt\binance {
     }
     public function sapi_post_userdatastream_isolated($params = array()) {
         return $this->request('userDataStream/isolated', 'sapi', 'POST', $params, null, null, array("cost" => 0.1));
+    }
+    public function sapi_post_userlistentoken($params = array()) {
+        return $this->request('userListenToken', 'sapi', 'POST', $params, null, null, array("cost" => 0.1));
     }
     public function sapi_post_lending_customizedfixed_purchase($params = array()) {
         return $this->request('lending/customizedFixed/purchase', 'sapi', 'POST', $params, null, null, array("cost" => 0.1));
@@ -2406,6 +2418,9 @@ abstract class binanceus extends \ccxt\binance {
     }
     public function sapi_post_dci_product_subscribe($params = array()) {
         return $this->request('dci/product/subscribe', 'sapi', 'POST', $params, null, null, array("cost" => 0.1));
+    }
+    public function sapi_post_accumulator_product_subscribe($params = array()) {
+        return $this->request('accumulator/product/subscribe', 'sapi', 'POST', $params, null, null, array("cost" => 0.1));
     }
     public function sapi_post_cl_transfer($params = array()) {
         return $this->request('cl/transfer', 'sapi', 'POST', $params, null, null, array("cost" => 1));
@@ -4462,6 +4477,15 @@ abstract class binanceus extends \ccxt\binance {
     public function sapiGetDciProductAccounts($params = array()) {
         return $this->request('dci/product/accounts', 'sapi', 'GET', $params, null, null, array("cost" => 0.1));
     }
+    public function sapiGetAccumulatorProductList($params = array()) {
+        return $this->request('accumulator/product/list', 'sapi', 'GET', $params, null, null, array("cost" => 0.1));
+    }
+    public function sapiGetAccumulatorProductPositionList($params = array()) {
+        return $this->request('accumulator/product/position/list', 'sapi', 'GET', $params, null, null, array("cost" => 0.1));
+    }
+    public function sapiGetAccumulatorProductSumHolding($params = array()) {
+        return $this->request('accumulator/product/sum-holding', 'sapi', 'GET', $params, null, null, array("cost" => 0.1));
+    }
     public function sapiGetApipartnerCheckEligibility($params = array()) {
         return $this->request('apipartner/checkEligibility', 'sapi', 'GET', $params, null, null, array("cost" => 1));
     }
@@ -4665,6 +4689,9 @@ abstract class binanceus extends \ccxt\binance {
     }
     public function sapiPostUserDataStreamIsolated($params = array()) {
         return $this->request('userDataStream/isolated', 'sapi', 'POST', $params, null, null, array("cost" => 0.1));
+    }
+    public function sapiPostUserListenToken($params = array()) {
+        return $this->request('userListenToken', 'sapi', 'POST', $params, null, null, array("cost" => 0.1));
     }
     public function sapiPostLendingCustomizedFixedPurchase($params = array()) {
         return $this->request('lending/customizedFixed/purchase', 'sapi', 'POST', $params, null, null, array("cost" => 0.1));
@@ -4923,6 +4950,9 @@ abstract class binanceus extends \ccxt\binance {
     }
     public function sapiPostDciProductSubscribe($params = array()) {
         return $this->request('dci/product/subscribe', 'sapi', 'POST', $params, null, null, array("cost" => 0.1));
+    }
+    public function sapiPostAccumulatorProductSubscribe($params = array()) {
+        return $this->request('accumulator/product/subscribe', 'sapi', 'POST', $params, null, null, array("cost" => 0.1));
     }
     public function sapiPostClTransfer($params = array()) {
         return $this->request('cl/transfer', 'sapi', 'POST', $params, null, null, array("cost" => 1));

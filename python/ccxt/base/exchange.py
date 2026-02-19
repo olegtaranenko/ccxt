@@ -4,7 +4,7 @@
 
 # -----------------------------------------------------------------------------
 
-__version__ = '4.5.35'
+__version__ = '4.5.38'
 
 # -----------------------------------------------------------------------------
 
@@ -913,15 +913,19 @@ class Exchange(object):
 
     @staticmethod
     def get_object_value_from_key_list(dictionary_or_list, key_list):
-        isDataArray = isinstance(dictionary_or_list, list)
-        isDataDict = isinstance(dictionary_or_list, dict)
-        for key in key_list:
-            if isDataDict:
-                if key in dictionary_or_list and dictionary_or_list[key] is not None and dictionary_or_list[key] != '':
-                    return dictionary_or_list[key]
-            elif isDataArray and not isinstance(key, str):
-                if (key < len(dictionary_or_list)) and (dictionary_or_list[key] is not None) and (dictionary_or_list[key] != ''):
-                    return dictionary_or_list[key]
+        if isinstance(dictionary_or_list, dict):
+            get = dictionary_or_list.get
+            for key in key_list:
+                value = get(key)
+                if value is not None and value != '':
+                    return value
+        elif isinstance(dictionary_or_list, list):
+            length = len(dictionary_or_list)
+            for key in key_list:
+                if isinstance(key, int) and 0 <= key < length:
+                    value = dictionary_or_list[key]
+                    if value is not None and value != '':
+                        return value
         return None
 
     @staticmethod
@@ -973,9 +977,9 @@ class Exchange(object):
         # the native pythonic .capitalize() method lowercases all other characters
         # which is an unwanted behaviour, therefore we use this custom implementation
         # check it yourself: print('foobar'.capitalize(), 'fooBar'.capitalize())
-        if len(string) > 1:
-            return "%s%s" % (string[0].upper(), string[1:])
-        return string.upper()
+        if string:
+            return string[0].upper() + string[1:]
+        return string
 
     @staticmethod
     def strip(string):
@@ -1171,14 +1175,6 @@ class Exchange(object):
         return list(set(array))
 
     @staticmethod
-    def pluck(array, key):
-        return [
-            element[key]
-            for element in array
-            if (key in element) and (element[key] is not None)
-        ]
-
-    @staticmethod
     def sum(*args):
         return sum([arg for arg in args if isinstance(arg, (float, int))])
 
@@ -1201,11 +1197,11 @@ class Exchange(object):
 
     @staticmethod
     def milliseconds():
-        return int(time.time() * 1000)
+        return time.time_ns() // 1_000_000
 
     @staticmethod
     def microseconds():
-        return int(time.time() * 1000000)
+        return time.time_ns() // 1_000
 
     @staticmethod
     def iso8601(timestamp=None):
@@ -1246,18 +1242,18 @@ class Exchange(object):
     @staticmethod
     def parse_date(timestamp=None):
         if timestamp is None:
-            return timestamp
+            return None
         if not isinstance(timestamp, str):
             return None
         if 'GMT' in timestamp:
             try:
-                string = ''.join([str(value).zfill(2) for value in parsedate(timestamp)[:6]]) + '.000Z'
-                dt = datetime.datetime.strptime(string, "%Y%m%d%H%M%S.%fZ")
-                return calendar.timegm(dt.utctimetuple()) * 1000
+                parsed = parsedate(timestamp)
+                if parsed is None:
+                    return None
+                return calendar.timegm(parsed[:6]) * 1000
             except (TypeError, OverflowError, OSError):
                 return None
-        else:
-            return Exchange.parse8601(timestamp)
+        return Exchange.parse8601(timestamp)
 
     _PARSE8601_ISO8601_PATTERN = re.compile(
         r'([0-9]{4})-?([0-9]{2})-?([0-9]{2})(?:T|[\s])?'
@@ -1337,7 +1333,11 @@ class Exchange(object):
 
     @staticmethod
     def urlencode_base64(s):
-        return Exchange.decode(base64.urlsafe_b64encode(s)).replace('=', '')
+        payload = s
+        if isinstance(s, str):
+            payload64 = Exchange.string_to_base64(s)
+            payload = Exchange.base64_to_binary(payload64)
+        return base64.urlsafe_b64encode(payload).decode().rstrip('=')
 
     @staticmethod
     def binary_to_base64(s):
@@ -1685,14 +1685,18 @@ class Exchange(object):
     def precision_from_string(self, str):
         # support string formats like '1e-4'
         if 'e' in str or 'E' in str:
-            numStr = re.sub(r'\d\.?\d*[eE]', '', str)
-            return int(numStr) * -1
-        # support integer formats (without dot) like '1', '10' etc [Note: bug in decimalToPrecision, so this should not be used atm]
-        # if not ('.' in str):
-        #     return len(str) * -1
+            # Find the exponent part after e/E
+            idx = str.find('e')
+            if idx == -1:
+                idx = str.find('E')
+            return -int(str[idx + 1:])
         # default strings like '0.0001'
-        parts = re.sub(r'0+$', '', str).split('.')
-        return len(parts[1]) if len(parts) > 1 else 0
+        dot_idx = str.find('.')
+        if dot_idx == -1:
+            return 0
+        # Strip trailing zeros and count decimal places
+        decimal_part = str[dot_idx + 1:].rstrip('0')
+        return len(decimal_part)
 
     def map_to_safe_map(self, dictionary):
         return dictionary  # wrapper for go
@@ -1765,15 +1769,15 @@ class Exchange(object):
         amount = int(timeframe[0:-1])
         unit = timeframe[-1]
         if 'y' == unit:
-            scale = 60 * 60 * 24 * 365
+            scale = 31536000  # 60 * 60 * 24 * 365
         elif 'M' == unit:
-            scale = 60 * 60 * 24 * 30
+            scale = 2592000  # 60 * 60 * 24 * 30
         elif 'w' == unit:
-            scale = 60 * 60 * 24 * 7
+            scale = 604800  # 60 * 60 * 24 * 7
         elif 'd' == unit:
-            scale = 60 * 60 * 24
+            scale = 86400  # 60 * 60 * 24
         elif 'h' == unit:
-            scale = 60 * 60
+            scale = 3600  # 60 * 60
         elif 'm' == unit:
             scale = 60
         elif 's' == unit:
@@ -5560,6 +5564,9 @@ class Exchange(object):
 
     def create_order(self, symbol: str, type: OrderType, side: OrderSide, amount: float, price: Num = None, params={}):
         raise NotSupported(self.id + ' createOrder() is not supported yet')
+
+    def create_twap_order(self, symbol: str, side: OrderSide, amount: float, duration: float, params={}):
+        raise NotSupported(self.id + ' createTwapOrder() is not supported yet')
 
     def create_convert_trade(self, id: str, fromCode: str, toCode: str, amount: Num = None, params={}):
         raise NotSupported(self.id + ' createConvertTrade() is not supported yet')

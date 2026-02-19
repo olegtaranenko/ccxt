@@ -644,6 +644,9 @@ interface binance {
     sapiGetDciProductList(params?: {}): Promise<implicitReturnType>;
     sapiGetDciProductPositions(params?: {}): Promise<implicitReturnType>;
     sapiGetDciProductAccounts(params?: {}): Promise<implicitReturnType>;
+    sapiGetAccumulatorProductList(params?: {}): Promise<implicitReturnType>;
+    sapiGetAccumulatorProductPositionList(params?: {}): Promise<implicitReturnType>;
+    sapiGetAccumulatorProductSumHolding(params?: {}): Promise<implicitReturnType>;
     sapiPostAccountDisableFastWithdrawSwitch(params?: {}): Promise<implicitReturnType>;
     sapiPostAccountEnableFastWithdrawSwitch(params?: {}): Promise<implicitReturnType>;
     sapiPostAssetConvertTransfer(params?: {}): Promise<implicitReturnType>;
@@ -681,6 +684,7 @@ interface binance {
     sapiPostSubAccountVirtualSubAccount(params?: {}): Promise<implicitReturnType>;
     sapiPostUserDataStream(params?: {}): Promise<implicitReturnType>;
     sapiPostUserDataStreamIsolated(params?: {}): Promise<implicitReturnType>;
+    sapiPostUserListenToken(params?: {}): Promise<implicitReturnType>;
     sapiPostLendingCustomizedFixedPurchase(params?: {}): Promise<implicitReturnType>;
     sapiPostLendingDailyPurchase(params?: {}): Promise<implicitReturnType>;
     sapiPostLendingDailyRedeem(params?: {}): Promise<implicitReturnType>;
@@ -767,6 +771,7 @@ interface binance {
     sapiPostSimpleEarnLockedSubscribe(params?: {}): Promise<implicitReturnType>;
     sapiPostDciProductAutoCompoundEdit(params?: {}): Promise<implicitReturnType>;
     sapiPostDciProductSubscribe(params?: {}): Promise<implicitReturnType>;
+    sapiPostAccumulatorProductSubscribe(params?: {}): Promise<implicitReturnType>;
     sapiPutUserDataStream(params?: {}): Promise<implicitReturnType>;
     sapiPutUserDataStreamIsolated(params?: {}): Promise<implicitReturnType>;
     sapiV2GetEthStakingAccount(params?: {}): Promise<implicitReturnType>;
