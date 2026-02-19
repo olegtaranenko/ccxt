@@ -562,6 +562,10 @@ class binance(Exchange, ImplicitAPI):
                         'dci/product/list': 0.1,
                         'dci/product/positions': 0.1,
                         'dci/product/accounts': 0.1,
+                        # Discount Buy
+                        'accumulator/product/list': 0.1,
+                        'accumulator/product/position/list': 0.1,
+                        'accumulator/product/sum-holding': 0.1,
                     },
                     'post': {
                         'asset/dust': 0.06667,  # Weight(UID): 10 => cost = 0.006667 * 10 = 0.06667
@@ -603,6 +607,7 @@ class binance(Exchange, ImplicitAPI):
                         'managed-subaccount/withdraw': 0.1,
                         'userDataStream': 0.1,
                         'userDataStream/isolated': 0.1,
+                        'userListenToken': 0.1,
                         'futures/transfer': 0.1,
                         # lending
                         'lending/customizedFixed/purchase': 0.1,
@@ -699,6 +704,8 @@ class binance(Exchange, ImplicitAPI):
                         # convert
                         'dci/product/subscribe': 0.1,
                         'dci/product/auto_compound/edit': 0.1,
+                        # discount buy
+                        'accumulator/product/subscribe': 0.1,
                     },
                     'put': {
                         'userDataStream': 0.1,
@@ -4583,7 +4590,7 @@ class binance(Exchange, ImplicitAPI):
         # binance docs say that the default limit 500, max 1500 for futures, max 1000 for spot markets
         # the reality is that the time range wider than 500 candles won't work right
         defaultLimit = 500
-        maxLimit = 1500
+        maxLimit = 1000
         price = self.safe_string(params, 'price')
         until = self.safe_integer(params, 'until')
         params = self.omit(params, ['price', 'until'])
@@ -11139,7 +11146,7 @@ class binance(Exchange, ImplicitAPI):
         :param str id: the identification number of the ledger entry
         :param str code: unified currency code
         :param dict [params]: extra parameters specific to the exchange API endpoint
-        :returns dict: a `ledger structure <https://docs.ccxt.com/?id=ledger>`
+        :returns dict: a `ledger structure <https://docs.ccxt.com/?id=ledger-entry-structure>`
         """
         await self.load_markets()
         type = None
@@ -11185,7 +11192,7 @@ class binance(Exchange, ImplicitAPI):
         :param boolean [params.paginate]: default False, when True will automatically paginate by calling self endpoint multiple times. See in the docs all the [available parameters](https://github.com/ccxt/ccxt/wiki/Manual#pagination-params)
         :param boolean [params.portfolioMargin]: set to True if you would like to fetch the ledger for a portfolio margin account
         :param str [params.subType]: "linear" or "inverse"
-        :returns dict: a `ledger structure <https://docs.ccxt.com/?id=ledger>`
+        :returns dict: a `ledger structure <https://docs.ccxt.com/?id=ledger-entry-structure>`
         """
         await self.load_markets()
         paginate = False
@@ -11378,7 +11385,7 @@ class binance(Exchange, ImplicitAPI):
                 }
             else:
                 raise AuthenticationError(self.id + ' historicalTrades endpoint requires `apiKey` credential')
-        userDataStream = (path == 'userDataStream') or (path == 'listenKey')
+        userDataStream = (path == 'userDataStream') or (path == 'listenKey') or (path == 'userListenToken')
         if userDataStream:
             if self.apiKey:
                 # v1 special case for userDataStream
@@ -11680,7 +11687,7 @@ class binance(Exchange, ImplicitAPI):
         :param str symbol: unified market symbol
         :param float amount: the amount of margin to remove
         :param dict [params]: extra parameters specific to the exchange API endpoint
-        :returns dict: a `margin structure <https://docs.ccxt.com/?id=reduce-margin-structure>`
+        :returns dict: a `margin structure <https://docs.ccxt.com/?id=margin-structure>`
         """
         return await self.modify_margin_helper(symbol, amount, 2, params)
 
@@ -11694,7 +11701,7 @@ class binance(Exchange, ImplicitAPI):
         :param str symbol: unified market symbol
         :param float amount: amount of margin to add
         :param dict [params]: extra parameters specific to the exchange API endpoint
-        :returns dict: a `margin structure <https://docs.ccxt.com/?id=add-margin-structure>`
+        :returns dict: a `margin structure <https://docs.ccxt.com/?id=margin-structure>`
         """
         return await self.modify_margin_helper(symbol, amount, 1, params)
 

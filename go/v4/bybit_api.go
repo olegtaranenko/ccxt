@@ -1243,6 +1243,10 @@ func (this *BybitCore) PrivatePostV5AccountNoConvertRepay(args ...interface{}) <
 	return this.callEndpointAsync("privatePostV5AccountNoConvertRepay", args...)
 }
 
+func (this *BybitCore) PrivatePostV5AccountSetLimitPxAction(args ...interface{}) <-chan interface{} {
+	return this.callEndpointAsync("privatePostV5AccountSetLimitPxAction", args...)
+}
+
 func (this *BybitCore) PrivatePostV5AssetExchangeQuoteApply(args ...interface{}) <-chan interface{} {
 	return this.callEndpointAsync("privatePostV5AssetExchangeQuoteApply", args...)
 }
@@ -1365,6 +1369,10 @@ func (this *BybitCore) PrivatePostV5CryptoLoanAdjustLtv(args ...interface{}) <-c
 
 func (this *BybitCore) PrivatePostV5CryptoLoanCommonAdjustLtv(args ...interface{}) <-chan interface{} {
 	return this.callEndpointAsync("privatePostV5CryptoLoanCommonAdjustLtv", args...)
+}
+
+func (this *BybitCore) PrivatePostV5CryptoLoanCommonMaxLoan(args ...interface{}) <-chan interface{} {
+	return this.callEndpointAsync("privatePostV5CryptoLoanCommonMaxLoan", args...)
 }
 
 func (this *BybitCore) PrivatePostV5CryptoLoanFlexibleBorrow(args ...interface{}) <-chan interface{} {

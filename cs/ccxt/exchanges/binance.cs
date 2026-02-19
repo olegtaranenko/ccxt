@@ -511,6 +511,9 @@ public partial class binance : Exchange
                         { "dci/product/list", 0.1 },
                         { "dci/product/positions", 0.1 },
                         { "dci/product/accounts", 0.1 },
+                        { "accumulator/product/list", 0.1 },
+                        { "accumulator/product/position/list", 0.1 },
+                        { "accumulator/product/sum-holding", 0.1 },
                     } },
                     { "post", new Dictionary<string, object>() {
                         { "asset/dust", 0.06667 },
@@ -549,6 +552,7 @@ public partial class binance : Exchange
                         { "managed-subaccount/withdraw", 0.1 },
                         { "userDataStream", 0.1 },
                         { "userDataStream/isolated", 0.1 },
+                        { "userListenToken", 0.1 },
                         { "futures/transfer", 0.1 },
                         { "lending/customizedFixed/purchase", 0.1 },
                         { "lending/daily/purchase", 0.1 },
@@ -635,6 +639,7 @@ public partial class binance : Exchange
                         { "simple-earn/locked/setRedeemOption", 5 },
                         { "dci/product/subscribe", 0.1 },
                         { "dci/product/auto_compound/edit", 0.1 },
+                        { "accumulator/product/subscribe", 0.1 },
                     } },
                     { "put", new Dictionary<string, object>() {
                         { "userDataStream", 0.1 },
@@ -4796,7 +4801,7 @@ public partial class binance : Exchange
         // binance docs say that the default limit 500, max 1500 for futures, max 1000 for spot markets
         // the reality is that the time range wider than 500 candles won't work right
         object defaultLimit = 500;
-        object maxLimit = 1500;
+        object maxLimit = 1000;
         object price = this.safeString(parameters, "price");
         object until = this.safeInteger(parameters, "until");
         parameters = this.omit(parameters, new List<object>() {"price", "until"});
@@ -12393,7 +12398,7 @@ public partial class binance : Exchange
      * @param {string} id the identification number of the ledger entry
      * @param {string} code unified currency code
      * @param {object} [params] extra parameters specific to the exchange API endpoint
-     * @returns {object} a [ledger structure]{@link https://docs.ccxt.com/?id=ledger}
+     * @returns {object} a [ledger structure]{@link https://docs.ccxt.com/?id=ledger-entry-structure}
      */
     public async override Task<object> fetchLedgerEntry(object id, object code = null, object parameters = null)
     {
@@ -12446,7 +12451,7 @@ public partial class binance : Exchange
      * @param {boolean} [params.paginate] default false, when true will automatically paginate by calling this endpoint multiple times. See in the docs all the [available parameters](https://github.com/ccxt/ccxt/wiki/Manual#pagination-params)
      * @param {boolean} [params.portfolioMargin] set to true if you would like to fetch the ledger for a portfolio margin account
      * @param {string} [params.subType] "linear" or "inverse"
-     * @returns {object} a [ledger structure]{@link https://docs.ccxt.com/?id=ledger}
+     * @returns {object} a [ledger structure]{@link https://docs.ccxt.com/?id=ledger-entry-structure}
      */
     public async override Task<object> fetchLedger(object code = null, object since = null, object limit = null, object parameters = null)
     {
@@ -12706,7 +12711,7 @@ public partial class binance : Exchange
                 throw new AuthenticationError ((string)add(this.id, " historicalTrades endpoint requires `apiKey` credential")) ;
             }
         }
-        object userDataStream = isTrue((isEqual(path, "userDataStream"))) || isTrue((isEqual(path, "listenKey")));
+        object userDataStream = isTrue(isTrue((isEqual(path, "userDataStream"))) || isTrue((isEqual(path, "listenKey")))) || isTrue((isEqual(path, "userListenToken")));
         if (isTrue(userDataStream))
         {
             if (isTrue(this.apiKey))
@@ -13144,7 +13149,7 @@ public partial class binance : Exchange
      * @param {string} symbol unified market symbol
      * @param {float} amount the amount of margin to remove
      * @param {object} [params] extra parameters specific to the exchange API endpoint
-     * @returns {object} a [margin structure]{@link https://docs.ccxt.com/?id=reduce-margin-structure}
+     * @returns {object} a [margin structure]{@link https://docs.ccxt.com/?id=margin-structure}
      */
     public async override Task<object> reduceMargin(object symbol, object amount, object parameters = null)
     {
@@ -13161,7 +13166,7 @@ public partial class binance : Exchange
      * @param {string} symbol unified market symbol
      * @param {float} amount amount of margin to add
      * @param {object} [params] extra parameters specific to the exchange API endpoint
-     * @returns {object} a [margin structure]{@link https://docs.ccxt.com/?id=add-margin-structure}
+     * @returns {object} a [margin structure]{@link https://docs.ccxt.com/?id=margin-structure}
      */
     public async override Task<object> addMargin(object symbol, object amount, object parameters = null)
     {

@@ -904,6 +904,10 @@ export default class binance extends Exchange {
                         'dci/product/list': 0.1,
                         'dci/product/positions': 0.1,
                         'dci/product/accounts': 0.1,
+                        // Discount Buy
+                        'accumulator/product/list': 0.1,
+                        'accumulator/product/position/list': 0.1,
+                        'accumulator/product/sum-holding': 0.1,
                     },
                     'post': {
                         'account/disableFastWithdrawSwitch': 0.1,
@@ -943,6 +947,7 @@ export default class binance extends Exchange {
                         'sub-account/virtualSubAccount': 0.1,
                         'userDataStream': 0.1,
                         'userDataStream/isolated': 0.1,
+                        'userListenToken': 0.1,
                         // 'account/apiRestrictions/ipRestriction': 1, discontinued
                         // 'account/apiRestrictions/ipRestriction/ipList': 1, discontinued
                         // 'margin/isolated/create': 1, discontinued
@@ -1042,6 +1047,8 @@ export default class binance extends Exchange {
                         // convert
                         'dci/product/auto_compound/edit': 0.1,
                         'dci/product/subscribe': 0.1,
+                        // discount buy
+                        'accumulator/product/subscribe': 0.1,
                     },
                     'put': {
                         'userDataStream': 0.1,
@@ -4853,7 +4860,7 @@ export default class binance extends Exchange {
         // binance docs say that the default limit 500, max 1500 for futures, max 1000 for spot markets
         // the reality is that the time range wider than 500 candles won't work right
         const defaultLimit = 500;
-        const maxLimit = 1500;
+        const maxLimit = 1000;
         const price = this.safeString (params, 'price');
         const until = this.safeInteger (params, 'until');
         params = this.omit (params, [ 'price', 'until' ]);
@@ -11933,7 +11940,7 @@ export default class binance extends Exchange {
      * @param {string} id the identification number of the ledger entry
      * @param {string} code unified currency code
      * @param {object} [params] extra parameters specific to the exchange API endpoint
-     * @returns {object} a [ledger structure]{@link https://docs.ccxt.com/?id=ledger}
+     * @returns {object} a [ledger structure]{@link https://docs.ccxt.com/?id=ledger-entry-structure}
      */
     async fetchLedgerEntry (id: string, code: Str = undefined, params = {}): Promise<LedgerEntry> {
         await this.loadMarkets ();
@@ -11981,7 +11988,7 @@ export default class binance extends Exchange {
      * @param {boolean} [params.paginate] default false, when true will automatically paginate by calling this endpoint multiple times. See in the docs all the [available parameters](https://github.com/ccxt/ccxt/wiki/Manual#pagination-params)
      * @param {boolean} [params.portfolioMargin] set to true if you would like to fetch the ledger for a portfolio margin account
      * @param {string} [params.subType] "linear" or "inverse"
-     * @returns {object} a [ledger structure]{@link https://docs.ccxt.com/?id=ledger}
+     * @returns {object} a [ledger structure]{@link https://docs.ccxt.com/?id=ledger-entry-structure}
      */
     async fetchLedger (code: Str = undefined, since: Int = undefined, limit: Int = undefined, params = {}): Promise<LedgerEntry[]> {
         await this.loadMarkets ();
@@ -12195,7 +12202,7 @@ export default class binance extends Exchange {
                 throw new AuthenticationError (this.id + ' historicalTrades endpoint requires `apiKey` credential');
             }
         }
-        const userDataStream = (path === 'userDataStream') || (path === 'listenKey');
+        const userDataStream = (path === 'userDataStream') || (path === 'listenKey') || (path === 'userListenToken');
         if (userDataStream) {
             if (this.apiKey) {
                 // v1 special case for userDataStream
@@ -12553,7 +12560,7 @@ export default class binance extends Exchange {
      * @param {string} symbol unified market symbol
      * @param {float} amount the amount of margin to remove
      * @param {object} [params] extra parameters specific to the exchange API endpoint
-     * @returns {object} a [margin structure]{@link https://docs.ccxt.com/?id=reduce-margin-structure}
+     * @returns {object} a [margin structure]{@link https://docs.ccxt.com/?id=margin-structure}
      */
     async reduceMargin (symbol: string, amount: number, params = {}): Promise<MarginModification> {
         return await this.modifyMarginHelper (symbol, amount, 2, params);
@@ -12568,7 +12575,7 @@ export default class binance extends Exchange {
      * @param {string} symbol unified market symbol
      * @param {float} amount amount of margin to add
      * @param {object} [params] extra parameters specific to the exchange API endpoint
-     * @returns {object} a [margin structure]{@link https://docs.ccxt.com/?id=add-margin-structure}
+     * @returns {object} a [margin structure]{@link https://docs.ccxt.com/?id=margin-structure}
      */
     async addMargin (symbol: string, amount: number, params = {}): Promise<MarginModification> {
         return await this.modifyMarginHelper (symbol, amount, 1, params);
