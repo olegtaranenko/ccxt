@@ -14,512 +14,6 @@ class binance extends Exchange {
         return $this->deep_extend(parent::describe(), array(
             'api' => array(
                 // the API structure below will need 3-layer apidefs
-                'sapi' => array(
-                    // IP (sapi) request rate limit of 12 000 per minute
-                    // 1 IP (sapi) => cost = 0.1 => (1000 / (50 * 0.1)) * 60 = 12000
-                    // 10 IP (sapi) => cost = 1
-                    // UID (sapi) request rate limit of 180 000 per minute
-                    // 1 UID (sapi) => cost = 0.006667 => (1000 / (50 * 0.006667)) * 60 = 180000
-                    'get' => array(
-                        // copy trading
-                        'copyTrading/futures/userStatus' => 2,
-                        'copyTrading/futures/leadSymbol' => 2,
-                        'system/status' => 0.1,
-                        // these endpoints require $this->apiKey
-                        'accountSnapshot' => 240, // Weight(IP) => 2400 => cost = 0.1 * 2400 = 240
-                        'account/info' => 0.1,
-                        'margin/asset' => 1, // Weight(IP) => 10 => cost = 0.1 * 10 = 1
-                        'margin/pair' => 1,
-                        'margin/allAssets' => 0.1,
-                        'margin/allPairs' => 0.1,
-                        'margin/priceIndex' => 1,
-                        // these endpoints require $this->apiKey . $this->secret
-                        'spot/delist-schedule' => 10,
-                        'asset/assetDividend' => 1,
-                        'asset/dribblet' => 0.1,
-                        'asset/transfer' => 0.1,
-                        'asset/assetDetail' => 0.1,
-                        'asset/tradeFee' => 0.1,
-                        'asset/ledger-transfer/cloud-mining/queryByPage' => 4.0002, // Weight(UID) => 600 => cost = 0.006667 * 600 = 4.0002
-                        'asset/convert-transfer/queryByPage' => 0.033335,
-                        'asset/wallet/balance' => 6, // Weight(IP) => 60 => cost = 0.1 * 60 = 6
-                        'asset/custody/transfer-history' => 6, // Weight(IP) => 60 => cost = 0.1 * 60 = 6
-                        'margin/borrow-repay' => 1,
-                        'margin/loan' => 1,
-                        'margin/repay' => 1,
-                        'margin/account' => 1,
-                        'margin/transfer' => 0.1,
-                        'margin/interestHistory' => 0.1,
-                        'margin/forceLiquidationRec' => 0.1,
-                        'margin/order' => 1,
-                        'margin/openOrders' => 1,
-                        'margin/allOrders' => 20, // Weight(IP) => 200 => cost = 0.1 * 200 = 20
-                        'margin/myTrades' => 1,
-                        'margin/maxBorrowable' => 5, // Weight(IP) => 50 => cost = 0.1 * 50 = 5
-                        'margin/maxTransferable' => 5,
-                        'margin/tradeCoeff' => 1,
-                        'margin/isolated/transfer' => 0.1,
-                        'margin/isolated/account' => 1,
-                        'margin/isolated/pair' => 1,
-                        'margin/isolated/allPairs' => 1,
-                        'margin/isolated/accountLimit' => 0.1,
-                        'margin/interestRateHistory' => 0.1,
-                        'margin/orderList' => 1,
-                        'margin/allOrderList' => 20, // Weight(IP) => 200 => cost = 0.1 * 200 = 20
-                        'margin/openOrderList' => 1,
-                        'margin/crossMarginData' => array( 'cost' => 0.1, 'noCoin' => 0.5 ),
-                        'margin/isolatedMarginData' => array( 'cost' => 0.1, 'noCoin' => 1 ),
-                        'margin/isolatedMarginTier' => 0.1,
-                        'margin/rateLimit/order' => 2,
-                        'margin/dribblet' => 0.1,
-                        'margin/dust' => 20.001, // Weight(UID) => 3000 => cost = 0.006667 * 3000 = 20
-                        'margin/crossMarginCollateralRatio' => 10,
-                        'margin/exchange-small-liability' => 0.6667,
-                        'margin/exchange-small-liability-history' => 0.6667,
-                        'margin/next-hourly-interest-rate' => 0.6667,
-                        'margin/capital-flow' => 10, // Weight(IP) => 100 => cost = 0.1 * 100 = 10
-                        'margin/delist-schedule' => 10, // Weight(IP) => 100 => cost = 0.1 * 100 = 10
-                        'margin/available-inventory' => 0.3334, // Weight(UID) => 50 => cost = 0.006667 * 50 = 0.3334
-                        'margin/leverageBracket' => 0.1, // Weight(IP) => 1 => cost = 0.1 * 1 = 0.1
-                        'loan/vip/loanable/data' => 40, // Weight(IP) => 400 => cost = 0.1 * 400 = 40
-                        'loan/vip/collateral/data' => 40, // Weight(IP) => 400 => cost = 0.1 * 400 = 40
-                        'loan/vip/request/data' => 2.6668, // Weight(UID) => 400 => cost = 0.006667 * 400 = 2.6668
-                        'loan/vip/request/interestRate' => 2.6668, // Weight(UID) => 400 => cost = 0.006667 * 400 = 2.6668
-                        'loan/income' => 40.002, // Weight(UID) => 6000 => cost = 0.006667 * 6000 = 40.002
-                        'loan/ongoing/orders' => 40, // Weight(IP) => 400 => cost = 0.1 * 400 = 40
-                        'loan/ltv/adjustment/history' => 40, // Weight(IP) => 400 => cost = 0.1 * 400 = 40
-                        'loan/borrow/history' => 40, // Weight(IP) => 400 => cost = 0.1 * 400 = 40
-                        'loan/repay/history' => 40, // Weight(IP) => 400 => cost = 0.1 * 400 = 40
-                        'loan/loanable/data' => 40, // Weight(IP) => 400 => cost = 0.1 * 400 = 40
-                        'loan/collateral/data' => 40, // Weight(IP) => 400 => cost = 0.1 * 400 = 40
-                        'loan/repay/collateral/rate' => 600, // Weight(IP) => 6000 => cost = 0.1 * 6000 = 600
-                        'loan/flexible/ongoing/orders' => 30, // TODO => Deprecating at 2024-04-24 03:00 (UTC)
-                        'loan/flexible/borrow/history' => 40, // Weight(IP) => 400 => cost = 0.1 * 400 = 40, check flexible rate loans order history before 2024-02-27 08:00 (UTC)
-                        'loan/flexible/repay/history' => 40, // Weight(IP) => 400 => cost = 0.1 * 400 = 40, check flexible rate loans order history before 2024-02-27 08:00 (UTC)
-                        'loan/flexible/ltv/adjustment/history' => 40, // Weight(IP) => 400 => cost = 0.1 * 400 = 40, check flexible rate loans order history before 2024-02-27 08:00 (UTC)
-                        'loan/vip/ongoing/orders' => 40, // Weight(IP) => 400 => cost = 0.1 * 400 = 40
-                        'loan/vip/repay/history' => 40, // Weight(IP) => 400 => cost = 0.1 * 400 = 40
-                        'loan/vip/collateral/account' => 600, // Weight(IP) => 6000 => cost = 0.1 * 6000 = 600
-                        'fiat/orders' => 600.03, // Weight(UID) => 90000 => cost = 0.006667 * 90000 = 600.03
-                        'fiat/payments' => 0.1,
-                        'futures/transfer' => 1,
-                        'futures/histDataLink' => 0.1, // Weight(IP) => 1 => cost = 0.1 * 1 = 0.1
-                        'rebate/taxQuery' => 80.004, // Weight(UID) => 12000 => cost = 0.006667 * 12000 = 80.004
-                        'capital/config/getall' => 1, // get networks for withdrawing USDT ERC20 vs USDT Omni
-                        'capital/deposit/address' => 1,
-                        'capital/deposit/address/list' => 1,
-                        'capital/deposit/hisrec' => 0.1,
-                        'capital/deposit/subAddress' => 0.1,
-                        'capital/deposit/subHisrec' => 0.1,
-                        'capital/withdraw/history' => 2, // Weight(UID) => 18000 . (Additional => 10 requests per second => cost = ( 1000 / rateLimit ) / 10 = 2
-                        'capital/withdraw/address/list' => 10,
-                        'capital/contract/convertible-coins' => 4.0002, // Weight(UID) => 600 => cost = 0.006667 * 600 = 4.0002
-                        'convert/tradeFlow' => 20.001, // Weight(UID) => 3000 => cost = 0.006667 * 3000 = 20.001
-                        'convert/exchangeInfo' => 50,
-                        'convert/assetInfo' => 10,
-                        'convert/orderStatus' => 0.6667,
-                        'convert/limit/queryOpenOrders' => 20.001, // Weight(UID) => 3000 => cost = 0.006667 * 3000 = 20.001
-                        'account/status' => 0.1,
-                        'account/apiTradingStatus' => 0.1,
-                        'account/apiRestrictions/ipRestriction' => 0.1,
-                        'bnbBurn' => 0.1,
-                        'sub-account/futures/account' => 1,
-                        'sub-account/futures/accountSummary' => 0.1,
-                        'sub-account/futures/positionRisk' => 1,
-                        'sub-account/futures/internalTransfer' => 0.1,
-                        'sub-account/list' => 0.1,
-                        'sub-account/margin/account' => 1,
-                        'sub-account/margin/accountSummary' => 1,
-                        'sub-account/spotSummary' => 0.1,
-                        'sub-account/status' => 1,
-                        'sub-account/sub/transfer/history' => 0.1,
-                        'sub-account/transfer/subUserHistory' => 0.1,
-                        'sub-account/universalTransfer' => 0.1,
-                        'sub-account/apiRestrictions/ipRestriction/thirdPartyList' => 1,
-                        'sub-account/transaction-statistics' => 0.40002, // Weight(UID) => 60 => cost = 0.006667 * 60 = 0.40002
-                        'sub-account/subAccountApi/ipRestriction' => 20.001, // Weight(UID) => 3000 => cost = 0.006667 * 3000 = 20.001
-                        'managed-subaccount/asset' => 0.1,
-                        'managed-subaccount/accountSnapshot' => 240,
-                        'managed-subaccount/queryTransLogForInvestor' => 0.1,
-                        'managed-subaccount/queryTransLogForTradeParent' => 0.40002, // Weight(UID) => 60 => cost = 0.006667 * 60 = 0.40002
-                        'managed-subaccount/fetch-future-asset' => 0.40002, // Weight(UID) => 60 => cost = 0.006667 * 60 = 0.40002
-                        'managed-subaccount/marginAsset' => 0.1,
-                        'managed-subaccount/info' => 0.40002, // Weight(UID) => 60 => cost = 0.006667 * 60 = 0.40002
-                        'managed-subaccount/deposit/address' => 0.006667, // Weight(UID) => 1 => cost = 0.006667 * 1 = 0.006667
-                        'managed-subaccount/query-trans-log' => 0.40002,
-                        // lending endpoints
-                        'lending/daily/product/list' => 0.1,
-                        'lending/daily/userLeftQuota' => 0.1,
-                        'lending/daily/userRedemptionQuota' => 0.1,
-                        'lending/daily/token/position' => 0.1,
-                        'lending/union/account' => 0.1,
-                        'lending/union/purchaseRecord' => 0.1,
-                        'lending/union/redemptionRecord' => 0.1,
-                        'lending/union/interestHistory' => 0.1,
-                        'lending/project/list' => 0.1,
-                        'lending/project/position/list' => 0.1,
-                        // eth-staking
-                        'eth-staking/eth/history/stakingHistory' => 15, // Weight(IP) => 150 => cost = 0.1 * 150 = 15
-                        'eth-staking/eth/history/redemptionHistory' => 15, // Weight(IP) => 150 => cost = 0.1 * 150 = 15
-                        'eth-staking/eth/history/rewardsHistory' => 15, // Weight(IP) => 150 => cost = 0.1 * 150 = 15
-                        'eth-staking/eth/quota' => 15, // Weight(IP) => 150 => cost = 0.1 * 150 = 15
-                        'eth-staking/eth/history/rateHistory' => 15, // Weight(IP) => 150 => cost = 0.1 * 150 = 15
-                        'eth-staking/account' => 15, // Weight(IP) => 150 => cost = 0.1 * 150 = 15
-                        'eth-staking/wbeth/history/wrapHistory' => 15, // Weight(IP) => 150 => cost = 0.1 * 150 = 15
-                        'eth-staking/wbeth/history/unwrapHistory' => 15, // Weight(IP) => 150 => cost = 0.1 * 150 = 15
-                        'eth-staking/eth/history/wbethRewardsHistory' => 15, // Weight(IP) => 150 => cost = 0.1 * 150 = 15
-                        'sol-staking/sol/history/stakingHistory' => 15,
-                        'sol-staking/sol/history/redemptionHistory' => 15,
-                        'sol-staking/sol/history/bnsolRewardsHistory' => 15,
-                        'sol-staking/sol/history/rateHistory' => 15,
-                        'sol-staking/account' => 15,
-                        'sol-staking/sol/quota' => 15,
-                        // mining endpoints
-                        'mining/pub/algoList' => 0.1,
-                        'mining/pub/coinList' => 0.1,
-                        'mining/worker/detail' => 0.5, // Weight(IP) => 5 => cost = 0.1 * 5 = 0.5
-                        'mining/worker/list' => 0.5,
-                        'mining/payment/list' => 0.5,
-                        'mining/statistics/user/status' => 0.5,
-                        'mining/statistics/user/list' => 0.5,
-                        'mining/payment/uid' => 0.5,
-                        // liquid swap endpoints
-                        'bswap/pools' => 0.1,
-                        'bswap/liquidity' => array( 'cost' => 0.1, 'noPoolId' => 1 ),
-                        'bswap/liquidityOps' => 20.001, // Weight(UID) => 3000 => cost = 0.006667 * 3000 = 20.001
-                        'bswap/quote' => 1.00005, // Weight(UID) => 150 => cost = 0.006667 * 150 = 1.00005
-                        'bswap/swap' => 20.001, // Weight(UID) => 3000 => cost = 0.006667 * 3000 = 20.001
-                        'bswap/poolConfigure' => 1.00005, // Weight(UID) => 150 => cost = 0.006667 * 150 = 1.00005
-                        'bswap/addLiquidityPreview' => 1.00005, // Weight(UID) => 150 => cost = 0.006667 * 150 = 1.00005
-                        'bswap/removeLiquidityPreview' => 1.00005, // Weight(UID) => 150 => cost = 0.006667 * 150 = 1.00005
-                        'bswap/unclaimedRewards' => 6.667, // Weight(UID) => 1000 => cost = 0.006667 * 1000 = 6.667
-                        'bswap/claimedHistory' => 6.667, // Weight(UID) => 1000 => cost = 0.006667 * 1000 = 6.667
-                        // leveraged token endpoints
-                        'blvt/tokenInfo' => 0.1,
-                        'blvt/subscribe/record' => 0.1,
-                        'blvt/redeem/record' => 0.1,
-                        'blvt/userLimit' => 0.1,
-                        // broker api TODO (NOT IN DOCS)
-                        'apiReferral/ifNewUser' => 1,
-                        'apiReferral/customization' => 1,
-                        'apiReferral/userCustomization' => 1,
-                        'apiReferral/rebate/recentRecord' => 1,
-                        'apiReferral/rebate/historicalRecord' => 1,
-                        'apiReferral/kickback/recentRecord' => 1,
-                        'apiReferral/kickback/historicalRecord' => 1,
-                        // brokerage API TODO https://binance-docs.github.io/Brokerage-API/General/ does not state ratelimits
-                        'broker/subAccountApi' => 1,
-                        'broker/subAccount' => 1,
-                        'broker/subAccountApi/commission/futures' => 1,
-                        'broker/subAccountApi/commission/coinFutures' => 1,
-                        'broker/info' => 1,
-                        'broker/transfer' => 1,
-                        'broker/transfer/futures' => 1,
-                        'broker/rebate/recentRecord' => 1,
-                        'broker/rebate/historicalRecord' => 1,
-                        'broker/subAccount/bnbBurn/status' => 1,
-                        'broker/subAccount/depositHist' => 1,
-                        'broker/subAccount/spotSummary' => 1,
-                        'broker/subAccount/marginSummary' => 1,
-                        'broker/subAccount/futuresSummary' => 1,
-                        'broker/rebate/futures/recentRecord' => 1,
-                        'broker/subAccountApi/ipRestriction' => 1,
-                        'broker/universalTransfer' => 1,
-                        // v2 not supported yet
-                        // GET /sapi/v2/broker/subAccount/futuresSummary
-                        'account/apiRestrictions' => 0.1,
-                        // c2c / p2p
-                        'c2c/orderMatch/listUserOrderHistory' => 0.1,
-                        // nft endpoints
-                        'nft/history/transactions' => 20.001, // Weight(UID) => 3000 => cost = 0.006667 * 3000 = 20.001
-                        'nft/history/deposit' => 20.001,
-                        'nft/history/withdraw' => 20.001,
-                        'nft/user/getAsset' => 20.001,
-                        'pay/transactions' => 20.001,
-                        'giftcard/verify' => 0.1,
-                        'giftcard/cryptography/rsa-public-key' => 0.1,
-                        'giftcard/buyCode/token-limit' => 0.1,
-                        'algo/spot/openOrders' => 0.1,
-                        'algo/spot/historicalOrders' => 0.1,
-                        'algo/spot/subOrders' => 0.1,
-                        'algo/futures/openOrders' => 0.1,
-                        'algo/futures/historicalOrders' => 0.1,
-                        'algo/futures/subOrders' => 0.1,
-                        'portfolio/account' => 0.1,
-                        'portfolio/collateralRate' => 5,
-                        'portfolio/pmLoan' => 3.3335,
-                        'portfolio/interest-history' => 0.6667,
-                        'portfolio/asset-index-price' => 0.1,
-                        'portfolio/repay-futures-switch' => 3, // Weight(IP) => 30 => cost = 0.1 * 30 = 3
-                        'portfolio/margin-asset-leverage' => 5, // Weight(IP) => 50 => cost = 0.1 * 50 = 5
-                        'portfolio/balance' => 2,
-                        'portfolio/negative-balance-exchange-record' => 2,
-                        'portfolio/pmloan-history' => 5,
-                        'portfolio/earn-asset-balance' => 150, // Weight(IP) => 1500 => cost = 0.1 * 1500 = 150
-                        'portfolio/delta-mode' => 150, // Weight(IP) => 1500 => cost = 0.1 * 1500 = 150
-                        // staking
-                        'staking/productList' => 0.1,
-                        'staking/position' => 0.1,
-                        'staking/stakingRecord' => 0.1,
-                        'staking/personalLeftQuota' => 0.1,
-                        'lending/auto-invest/target-asset/list' => 0.1, // Weight(IP) => 1 => cost = 0.1 * 1 = 0.1
-                        'lending/auto-invest/target-asset/roi/list' => 0.1,
-                        'lending/auto-invest/all/asset' => 0.1,
-                        'lending/auto-invest/source-asset/list' => 0.1,
-                        'lending/auto-invest/plan/list' => 0.1,
-                        'lending/auto-invest/plan/id' => 0.1,
-                        'lending/auto-invest/history/list' => 0.1,
-                        'lending/auto-invest/index/info' => 0.1, // Weight(IP) => 1 => cost = 0.1 * 1 = 0.1
-                        'lending/auto-invest/index/user-summary' => 0.1, // Weight(IP) => 1 => cost = 0.1 * 1 = 0.1
-                        'lending/auto-invest/one-off/status' => 0.1, // Weight(IP) => 1 => cost = 0.1 * 1 = 0.1
-                        'lending/auto-invest/redeem/history' => 0.1, // Weight(IP) => 1 => cost = 0.1 * 1 = 0.1
-                        'lending/auto-invest/rebalance/history' => 0.1, // Weight(IP) => 1 => cost = 0.1 * 1 = 0.1
-                        // simple earn
-                        'simple-earn/flexible/list' => 15,
-                        'simple-earn/locked/list' => 15,
-                        'simple-earn/flexible/personalLeftQuota' => 15,
-                        'simple-earn/locked/personalLeftQuota' => 15,
-                        'simple-earn/flexible/subscriptionPreview' => 15,
-                        'simple-earn/locked/subscriptionPreview' => 15,
-                        'simple-earn/flexible/history/rateHistory' => 15,
-                        'simple-earn/flexible/position' => 15,
-                        'simple-earn/locked/position' => 15,
-                        'simple-earn/account' => 15,
-                        'simple-earn/flexible/history/subscriptionRecord' => 15,
-                        'simple-earn/locked/history/subscriptionRecord' => 15,
-                        'simple-earn/flexible/history/redemptionRecord' => 15,
-                        'simple-earn/locked/history/redemptionRecord' => 15,
-                        'simple-earn/flexible/history/rewardsRecord' => 15,
-                        'simple-earn/locked/history/rewardsRecord' => 15,
-                        'simple-earn/flexible/history/collateralRecord' => 0.1,
-                        // Convert
-                        'dci/product/list' => 0.1,
-                        'dci/product/positions' => 0.1,
-                        'dci/product/accounts' => 0.1,
-                        // Discount Buy
-                        'accumulator/product/list' => 0.1,
-                        'accumulator/product/position/list' => 0.1,
-                        'accumulator/product/sum-holding' => 0.1,
-                    ),
-                    'post' => array(
-                        'asset/dust' => 0.06667, // Weight(UID) => 10 => cost = 0.006667 * 10 = 0.06667
-                        'asset/dust-btc' => 0.1,
-                        'asset/transfer' => 6.0003, // Weight(UID) => 900 => cost = 0.006667 * 900 = 6.0003
-                        'asset/get-funding-asset' => 0.1,
-                        'asset/convert-transfer' => 0.033335,
-                        'account/disableFastWithdrawSwitch' => 0.1,
-                        'account/enableFastWithdrawSwitch' => 0.1,
-                        // 'account/apiRestrictions/ipRestriction' => 1, discontinued
-                        // 'account/apiRestrictions/ipRestriction/ipList' => 1, discontinued
-                        'capital/withdraw/apply' => 4.0002, // Weight(UID) => 600 => cost = 0.006667 * 600 = 4.0002
-                        'capital/contract/convertible-coins' => 4.0002,
-                        'capital/deposit/credit-apply' => 0.1, // Weight(IP) => 1 => cost = 0.1 * 1 = 0.1
-                        'margin/borrow-repay' => 20.001,
-                        'margin/transfer' => 4.0002,
-                        'margin/loan' => 20.001, // Weight(UID) => 3000 => cost = 0.006667 * 3000 = 20.001
-                        'margin/repay' => 20.001,
-                        'margin/order' => 0.040002, // Weight(UID) => 6 => cost = 0.006667 * 6 = 0.040002
-                        'margin/order/oco' => 0.040002,
-                        'margin/dust' => 20.001, // Weight(UID) => 3000 => cost = 0.006667 * 3000 = 20.001
-                        'margin/exchange-small-liability' => 20.001,
-                        // 'margin/isolated/create' => 1, discontinued
-                        'margin/isolated/transfer' => 4.0002, // Weight(UID) => 600 => cost = 0.006667 * 600 = 4.0002
-                        'margin/isolated/account' => 2.0001, // Weight(UID) => 300 => cost = 0.006667 * 300 = 2.0001
-                        'margin/max-leverage' => 300, // Weight(IP) => 3000 => cost = 0.1 * 3000 = 300
-                        'bnbBurn' => 0.1,
-                        'sub-account/virtualSubAccount' => 0.1,
-                        'sub-account/margin/transfer' => 4.0002, // Weight(UID) => 600 => cost =  0.006667 * 600 = 4.0002
-                        'sub-account/margin/enable' => 0.1,
-                        'sub-account/futures/enable' => 0.1,
-                        'sub-account/futures/transfer' => 0.1,
-                        'sub-account/futures/internalTransfer' => 0.1,
-                        'sub-account/transfer/subToSub' => 0.1,
-                        'sub-account/transfer/subToMaster' => 0.1,
-                        'sub-account/universalTransfer' => 0.1,
-                        'sub-account/options/enable' => 0.1,
-                        'managed-subaccount/deposit' => 0.1,
-                        'managed-subaccount/withdraw' => 0.1,
-                        'userDataStream' => 0.1,
-                        'userDataStream/isolated' => 0.1,
-                        'userListenToken' => 0.1,
-                        'futures/transfer' => 0.1,
-                        // lending
-                        'lending/customizedFixed/purchase' => 0.1,
-                        'lending/daily/purchase' => 0.1,
-                        'lending/daily/redeem' => 0.1,
-                        // liquid swap endpoints
-                        'bswap/liquidityAdd' => 60, // Weight(UID) => 1000 . (Additional => 1 request every 3 seconds =  0.333 requests per second) => cost = ( 1000 / rateLimit ) / 0.333 = 60.0000006
-                        'bswap/liquidityRemove' => 60, // Weight(UID) => 1000 . (Additional => 1 request every three seconds)
-                        'bswap/swap' => 60, // Weight(UID) => 1000 . (Additional => 1 request every three seconds)
-                        'bswap/claimRewards' => 6.667, // Weight(UID) => 1000 => cost = 0.006667 * 1000 = 6.667
-                        // leveraged token endpoints
-                        'blvt/subscribe' => 0.1,
-                        'blvt/redeem' => 0.1,
-                        // brokerage API TODO => NO MENTION OF RATELIMITS IN BROKERAGE DOCS
-                        'apiReferral/customization' => 1,
-                        'apiReferral/userCustomization' => 1,
-                        'apiReferral/rebate/historicalRecord' => 1,
-                        'apiReferral/kickback/historicalRecord' => 1,
-                        'broker/subAccount' => 1,
-                        'broker/subAccount/margin' => 1,
-                        'broker/subAccount/futures' => 1,
-                        'broker/subAccountApi' => 1,
-                        'broker/subAccountApi/permission' => 1,
-                        'broker/subAccountApi/commission' => 1,
-                        'broker/subAccountApi/commission/futures' => 1,
-                        'broker/subAccountApi/commission/coinFutures' => 1,
-                        'broker/transfer' => 1,
-                        'broker/transfer/futures' => 1,
-                        'broker/rebate/historicalRecord' => 1,
-                        'broker/subAccount/bnbBurn/spot' => 1,
-                        'broker/subAccount/bnbBurn/marginInterest' => 1,
-                        'broker/subAccount/blvt' => 1,
-                        'broker/subAccountApi/ipRestriction' => 1,
-                        'broker/subAccountApi/ipRestriction/ipList' => 1,
-                        'broker/universalTransfer' => 1,
-                        'broker/subAccountApi/permission/universalTransfer' => 1,
-                        'broker/subAccountApi/permission/vanillaOptions' => 1,
-                        //
-                        'giftcard/createCode' => 0.1,
-                        'giftcard/redeemCode' => 0.1,
-                        'giftcard/buyCode' => 0.1,
-                        'algo/spot/newOrderTwap' => 20.001,
-                        'algo/futures/newOrderVp' => 20.001,
-                        'algo/futures/newOrderTwap' => 20.001,
-                        // staking
-                        'staking/purchase' => 0.1,
-                        'staking/redeem' => 0.1,
-                        'staking/setAutoStaking' => 0.1,
-                        // eth-staking
-                        'eth-staking/eth/stake' => 15, // Weight(IP) => 150 => cost = 0.1 * 150 = 15
-                        'eth-staking/eth/redeem' => 15, // Weight(IP) => 150 => cost = 0.1 * 150 = 15
-                        'eth-staking/wbeth/wrap' => 15, // Weight(IP) => 150 => cost = 0.1 * 150 = 15
-                        'sol-staking/sol/stake' => 15,
-                        'sol-staking/sol/redeem' => 15,
-                        // mining endpoints
-                        'mining/hash-transfer/config' => 0.5, // Weight(IP) => 5 => cost = 0.1 * 5 = 0.5
-                        'mining/hash-transfer/config/cancel' => 0.5, // Weight(IP) => 5 => cost = 0.1 * 5 = 0.5
-                        'portfolio/repay' => 20.001,
-                        'loan/vip/renew' => 40.002, // Weight(UID) => 6000 => cost = 0.006667 * 6000 = 40.002
-                        'loan/vip/borrow' => 40.002,
-                        'loan/borrow' => 40.002,
-                        'loan/repay' => 40.002,
-                        'loan/adjust/ltv' => 40.002,
-                        'loan/customize/margin_call' => 40.002,
-                        'loan/flexible/repay' => 40.002, // TODO => Deprecating at 2024-04-24 03:00 (UTC)
-                        'loan/flexible/adjust/ltv' => 40.002, // TODO => Deprecating at 2024-04-24 03:00 (UTC)
-                        'loan/vip/repay' => 40.002,
-                        'convert/getQuote' => 1.3334, // Weight(UID) => 200 => cost = 0.006667 * 200 = 1.3334
-                        'convert/acceptQuote' => 3.3335, // Weight(UID) => 500 => cost = 0.006667 * 500 = 3.3335
-                        'convert/limit/placeOrder' => 3.3335, // Weight(UID) => 500 => cost = 0.006667 * 500 = 3.3335
-                        'convert/limit/cancelOrder' => 1.3334, // Weight(UID) => 200 => cost = 0.006667 * 200 = 1.3334
-                        'portfolio/auto-collection' => 150, // Weight(IP) => 1500 => cost = 0.1 * 1500 = 150
-                        'portfolio/asset-collection' => 6, // Weight(IP) => 60 => cost = 0.1 * 60 = 6
-                        'portfolio/bnb-transfer' => 150, // Weight(IP) => 1500 => cost = 0.1 * 1500 = 150
-                        'portfolio/repay-futures-switch' => 150, // Weight(IP) => 1500 => cost = 0.1 * 1500 = 150
-                        'portfolio/repay-futures-negative-balance' => 150, // Weight(IP) => 1500 => cost = 0.1 * 1500 = 150
-                        'portfolio/mint' => 20,
-                        'portfolio/redeem' => 20,
-                        'portfolio/earn-asset-transfer' => 150, // Weight(IP) => 1500 => cost = 0.1 * 1500 = 150
-                        'portfolio/delta-mode' => 150, // Weight(IP) => 1500 => cost = 0.1 * 1500 = 150
-                        'lending/auto-invest/plan/add' => 0.1, // Weight(IP) => 1 => cost = 0.1 * 1 = 0.1
-                        'lending/auto-invest/plan/edit' => 0.1, // Weight(IP) => 1 => cost = 0.1 * 1 = 0.1
-                        'lending/auto-invest/plan/edit-status' => 0.1, // Weight(IP) => 1 => cost = 0.1 * 1 = 0.1
-                        'lending/auto-invest/one-off' => 0.1, // Weight(IP) => 1 => cost = 0.1 * 1 = 0.1
-                        'lending/auto-invest/redeem' => 0.1, // Weight(IP) => 1 => cost = 0.1 * 1 = 0.1
-                        // simple earn
-                        'simple-earn/flexible/subscribe' => 0.1,
-                        'simple-earn/locked/subscribe' => 0.1,
-                        'simple-earn/flexible/redeem' => 0.1,
-                        'simple-earn/locked/redeem' => 0.1,
-                        'simple-earn/flexible/setAutoSubscribe' => 15,
-                        'simple-earn/locked/setAutoSubscribe' => 15,
-                        'simple-earn/locked/setRedeemOption' => 5,
-                        // convert
-                        'dci/product/subscribe' => 0.1,
-                        'dci/product/auto_compound/edit' => 0.1,
-                        // discount buy
-                        'accumulator/product/subscribe' => 0.1,
-                    ),
-                    'put' => array(
-                        'userDataStream' => 0.1,
-                        'userDataStream/isolated' => 0.1,
-                    ),
-                    'delete' => array(
-                        // 'account/apiRestrictions/ipRestriction/ipList' => 1, discontinued
-                        'margin/openOrders' => 0.1,
-                        'margin/order' => 0.006667, // Weight(UID) => 1 => cost = 0.006667
-                        'margin/orderList' => 0.006667,
-                        'margin/isolated/account' => 2.0001, // Weight(UID) => 300 => cost =  0.006667 * 300 = 2.0001
-                        'userDataStream' => 0.1,
-                        'userDataStream/isolated' => 0.1,
-                        // brokerage API TODO NO MENTION OF RATELIMIT IN BROKERAGE DOCS
-                        'broker/subAccountApi' => 1,
-                        'broker/subAccountApi/ipRestriction/ipList' => 1,
-                        'algo/spot/order' => 0.1,
-                        'algo/futures/order' => 0.1,
-                        'sub-account/subAccountApi/ipRestriction/ipList' => 20.001, // Weight(UID) => 3000 => cost = 0.006667 * 3000 = 20.001
-                    ),
-                ),
-                'sapiV2' => array(
-                    'get' => array(
-                        'eth-staking/account' => 15, // Weight(IP) => 150 => cost = 0.1 * 150 = 15
-                        'sub-account/futures/account' => 0.1,
-                        'sub-account/futures/accountSummary' => 1,
-                        'sub-account/futures/positionRisk' => 0.1,
-                        'loan/flexible/ongoing/orders' => 30, // Weight(IP) => 300 => cost = 0.1 * 300 = 30
-                        'loan/flexible/borrow/history' => 40, // Weight(IP) => 400 => cost = 0.1 * 400 = 40
-                        'loan/flexible/repay/history' => 40, // Weight(IP) => 400 => cost = 0.1 * 400 = 40
-                        'loan/flexible/ltv/adjustment/history' => 40, // Weight(IP) => 400 => cost = 0.1 * 400 = 40
-                        'loan/flexible/loanable/data' => 40, // Weight(IP) => 400 => cost = 0.1 * 400 = 40
-                        'loan/flexible/collateral/data' => 40, // Weight(IP) => 400 => cost = 0.1 * 400 = 40
-                        'portfolio/account' => 2,
-                    ),
-                    'post' => array(
-                        'eth-staking/eth/stake' => 15, // Weight(IP) => 150 => cost = 0.1 * 150 = 15
-                        'sub-account/subAccountApi/ipRestriction' => 20.001, // Weight(UID) => 3000 => cost = 0.006667 * 3000 = 20.001
-                        'loan/flexible/borrow' => 40.002, // Weight(UID) => 6000 => cost = 0.006667 * 6000 = 40.002
-                        'loan/flexible/repay' => 40.002, // Weight(UID) => 6000 => cost = 0.006667 * 6000 = 40.002
-                        'loan/flexible/adjust/ltv' => 40.002, // Weight(UID) => 6000 => cost = 0.006667 * 6000 = 40.002
-                    ),
-                ),
-                'sapiV3' => array(
-                    'get' => array(
-                        'sub-account/assets' => 0.40002, // Weight(UID) => 60 => cost =  0.006667 * 60 = 0.40002
-                    ),
-                    'post' => array(
-                        'asset/getUserAsset' => 0.5,
-                    ),
-                ),
-                'sapiV4' => array(
-                    'get' => array(
-                        'sub-account/assets' => 0.40002, // Weight(UID) => 60 => cost = 0.006667 * 60 = 0.40002
-                    ),
-                ),
-                'dapiPublic' => array(
-                    'get' => array(
-                        'ping' => 1,
-                        'time' => 1,
-                        'exchangeInfo' => 1,
-                        'depth' => array( 'cost' => 2, 'byLimit' => array( array( 50, 2 ), array( 100, 5 ), array( 500, 10 ), array( 1000, 20 ) ) ),
-                        'trades' => 5,
-                        'historicalTrades' => 20,
-                        'aggTrades' => 20,
-                        'premiumIndex' => 10,
-                        'fundingRate' => 1,
-                        'klines' => array( 'cost' => 1, 'byLimit' => array( array( 99, 1 ), array( 499, 2 ), array( 1000, 5 ), array( 10000, 10 ) ) ),
-                        'continuousKlines' => array( 'cost' => 1, 'byLimit' => array( array( 99, 1 ), array( 499, 2 ), array( 1000, 5 ), array( 10000, 10 ) ) ),
-                        'indexPriceKlines' => array( 'cost' => 1, 'byLimit' => array( array( 99, 1 ), array( 499, 2 ), array( 1000, 5 ), array( 10000, 10 ) ) ),
-                        'markPriceKlines' => array( 'cost' => 1, 'byLimit' => array( array( 99, 1 ), array( 499, 2 ), array( 1000, 5 ), array( 10000, 10 ) ) ),
-                        'premiumIndexKlines' => array( 'cost' => 1, 'byLimit' => array( array( 99, 1 ), array( 499, 2 ), array( 1000, 5 ), array( 10000, 10 ) ) ),
-                        'ticker/24hr' => array( 'cost' => 1, 'noSymbol' => 40 ),
-                        'ticker/price' => array( 'cost' => 1, 'noSymbol' => 2 ),
-                        'ticker/bookTicker' => array( 'cost' => 2, 'noSymbol' => 5 ),
-                        'constituents' => 2,
-                        'openInterest' => 1,
-                        'fundingInfo' => 1,
-                    ),
-                ),
                 'dapiData' => array(
                     'get' => array(
                         'basis' => 1,
@@ -637,6 +131,7 @@ class binance extends Exchange {
                         'block/order/orders' => 5,
                         'block/user-trades' => 5,
                         'blockTrades' => 5,
+                        'comission' => 5,
                         'countdownCancelAll' => 1,
                         'exerciseRecord' => 5,
                         'historyOrders' => 3,
@@ -833,54 +328,7 @@ class binance extends Exchange {
                         'ticker/price' => array( 'cost' => 1, 'noSymbol' => 2 ),
                         'time' => 1,
                         'trades' => 5,
-                        'historicalTrades' => 20,
-                        'exerciseHistory' => 3,
-                        'openInterest' => 3,
-                    ),
-                ),
-                'eapiPrivate' => array(
-                    'get' => array(
-                        'account' => 3,
-                        'position' => 5,
-                        'openOrders' => array( 'cost' => 1, 'noSymbol' => 40 ),
-                        'historyOrders' => 3,
-                        'userTrades' => 5,
-                        'exerciseRecord' => 5,
-                        'bill' => 1,
-                        'income/asyn' => 5,
-                        'income/asyn/id' => 5,
-                        'marginAccount' => 3,
-                        'mmp' => 1,
-                        'countdownCancelAll' => 1,
-                        'order' => 1,
-                        'block/order/orders' => 5,
-                        'block/order/execute' => 5,
-                        'block/user-trades' => 5,
-                        'blockTrades' => 5,
-                        'comission' => 5,
-                    ),
-                    'post' => array(
-                        'order' => 1,
-                        'batchOrders' => 5,
-                        'listenKey' => 1,
-                        'mmpSet' => 1,
-                        'mmpReset' => 1,
-                        'countdownCancelAll' => 1,
-                        'countdownCancelAllHeartBeat' => 10,
-                        'block/order/create' => 5,
-                        'block/order/execute' => 5,
-                    ),
-                    'put' => array(
-                        'listenKey' => 1,
-                        'block/order/create' => 5,
-                    ),
-                    'delete' => array(
-                        'order' => 1,
-                        'batchOrders' => 1,
-                        'allOpenOrders' => 1,
-                        'allOpenOrdersByUnderlying' => 1,
-                        'listenKey' => 1,
-                        'block/order/create' => 5,
+                        'tradingSchedule' => 5,
                     ),
                 ),
                 'fapiPublicV2' => array(
@@ -888,39 +336,8 @@ class binance extends Exchange {
                         'ticker/price' => 0,
                     ),
                 ),
-                'private' => array(
-                    'get' => array(
-                        'allOrderList' => 4, // oco Weight(IP) => 20 => cost = 0.2 * 20 = 4
-                        'openOrderList' => 1.2, // oco Weight(IP) => 6 => cost = 0.2 * 6 = 1.2
-                        'orderList' => 0.8, // oco
-                        'order' => 0.8,
-                        'openOrders' => array( 'cost' => 1.2, 'noSymbol' => 16 ),
-                        'allOrders' => 4,
-                        'account' => 4,
-                        'myTrades' => 4,
-                        'rateLimit/order' => 8, // Weight(IP) => 40 => cost = 0.2 * 40 = 8
-                        'myPreventedMatches' => 4, // Weight(IP) => 20 => cost = 0.2 * 20 = 4
-                        'myAllocations' => 4,
-                        'account/commission' => 4,
-                    ),
-                    'post' => array(
-                        'order/oco' => 0.2,
-                        'orderList/oco' => 0.2,
-                        'orderList/oto' => 0.2,
-                        'orderList/otoco' => 0.2,
-                        'orderList/opo' => 0.2,
-                        'orderList/opoco' => 0.2,
-                        'sor/order' => 0.2,
-                        'sor/order/test' => 0.2,
-                        'order' => 0.2,
-                        'order/cancelReplace' => 0.2,
-                        'order/test' => 0.2,
-                    ),
-                    'delete' => array(
-                        'openOrders' => 0.2,
-                        'orderList' => 0.2, // oco
-                        'order' => 0.2,
-                    ),
+                'fapiPublicV3' => array(
+                    'get' => array(),
                 ),
                 'papi' => array(
                     'delete' => array(
@@ -1069,6 +486,8 @@ class binance extends Exchange {
                         'order/oco' => 0.2,
                         'order/test' => 0.2,
                         'orderList/oco' => 0.2,
+                        'orderList/opo' => 0.2,
+                        'orderList/opoco' => 0.2,
                         'orderList/oto' => 0.2,
                         'orderList/otoco' => 0.2,
                         'sor/order' => 0.2,
@@ -1365,6 +784,7 @@ class binance extends Exchange {
                         'portfolio/negative-balance-exchange-record' => 2,
                         'portfolio/pmloan-history' => 5,
                         'portfolio/earn-asset-balance' => 150, // Weight(IP) => 1500 => cost = 0.1 * 1500 = 150
+                        'portfolio/delta-mode' => 150, // Weight(IP) => 1500 => cost = 0.1 * 1500 = 150
                         // staking
                         'lending/auto-invest/all/asset' => 0.1,
                         'lending/auto-invest/history/list' => 0.1,
@@ -1404,6 +824,10 @@ class binance extends Exchange {
                         'dci/product/list' => 0.1,
                         'dci/product/positions' => 0.1,
                         'dci/product/accounts' => 0.1,
+                        // Discount Buy
+                        'accumulator/product/list' => 0.1,
+                        'accumulator/product/position/list' => 0.1,
+                        'accumulator/product/sum-holding' => 0.1,
                     ),
                     'post' => array(
                         'account/disableFastWithdrawSwitch' => 0.1,
@@ -1443,6 +867,7 @@ class binance extends Exchange {
                         'sub-account/virtualSubAccount' => 0.1,
                         'userDataStream' => 0.1,
                         'userDataStream/isolated' => 0.1,
+                        'userListenToken' => 0.1,
                         // 'account/apiRestrictions/ipRestriction' => 1, discontinued
                         // 'account/apiRestrictions/ipRestriction/ipList' => 1, discontinued
                         // 'margin/isolated/create' => 1, discontinued
@@ -1524,6 +949,7 @@ class binance extends Exchange {
                         'portfolio/asset-collection' => 6, // Weight(IP) => 60 => cost = 0.1 * 60 = 6
                         'portfolio/auto-collection' => 150, // Weight(IP) => 1500 => cost = 0.1 * 1500 = 150
                         'portfolio/bnb-transfer' => 150, // Weight(IP) => 1500 => cost = 0.1 * 1500 = 150
+                        'portfolio/delta-mode' => 150, // Weight(IP) => 1500 => cost = 0.1 * 1500 = 150
                         'portfolio/earn-asset-transfer' => 150, // Weight(IP) => 1500 => cost = 0.1 * 1500 = 150
                         'portfolio/mint' => 20,
                         'portfolio/redeem' => 20,
@@ -1541,6 +967,8 @@ class binance extends Exchange {
                         // convert
                         'dci/product/auto_compound/edit' => 0.1,
                         'dci/product/subscribe' => 0.1,
+                        // discount buy
+                        'accumulator/product/subscribe' => 0.1,
                     ),
                     'put' => array(
                         'userDataStream' => 0.1,
@@ -2922,6 +2350,7 @@ class binance extends Exchange {
                 'editOrder' => true,
                 'editOrders' => true,
                 'fetchAccounts' => null,
+                'fetchADLRank' => true,
                 'fetchAllGreeks' => true,
                 'fetchBalance' => true,
                 'fetchBidsAsks' => true,
@@ -2991,9 +2420,11 @@ class binance extends Exchange {
                 'fetchOrders' => true,
                 'fetchOrderTrades' => true,
                 'fetchPosition' => true,
+                'fetchPositionADLRank' => true,
                 'fetchPositionHistory' => false,
                 'fetchPositionMode' => true,
                 'fetchPositions' => true,
+                'fetchPositionsADLRank' => true,
                 'fetchPositionsHistory' => false,
                 'fetchPositionsRisk' => true,
                 'fetchPremiumIndexOHLCV' => true,
@@ -11242,10 +10673,16 @@ class binance extends Exchange {
 
     public function load_leverage_brackets($reload = false, $params = array ()) {
         $this->load_markets();
+        $leveragesFromOutside = $this->safe_value($params, 'leveragesFromOutside', $this->options['leveragesFromOutside']);
+        $fetchLeveragesCallback = $this->safe_value($params, 'fetchLeveragesCallback', $this->options['fetchLeveragesCallback']);
+        $outdated = !$fetchLeveragesCallback || $fetchLeveragesCallback ();
+        if ($outdated && $fetchLeveragesCallback !== null) {
+            $reload = true;
+        }
         // by default cache the leverage $bracket
         // it contains useful stuff like the maintenance margin and initial margin for positions
         $leverageBrackets = $this->safe_dict($this->options, 'leverageBrackets');
-        if (($leverageBrackets === null) || ($reload)) {
+        if (($leverageBrackets === null || $reload) && $outdated) {
             $defaultType = $this->safe_string($this->options, 'defaultType', 'future');
             $type = $this->safe_string($params, 'type', $defaultType);
             $query = $this->omit($params, 'type');
@@ -11254,23 +10691,69 @@ class binance extends Exchange {
             $isPortfolioMargin = null;
             list($isPortfolioMargin, $params) = $this->handle_option_and_params_2($params, 'loadLeverageBrackets', 'papi', 'portfolioMargin', false);
             $response = null;
+            $catched;
+            $catchedHandled;
             if ($this->is_linear($type, $subType)) {
                 if ($isPortfolioMargin) {
-                    $response = $this->papiGetUmLeverageBracket ($query);
+                    try {
+                        $response = $this->papiGetUmLeverageBracket ($query);
+                    } catch (Exception $e) {
+                        $catched = $e;
+                        if ($e instanceof NetworkError || $e instanceof AuthenticationError) {
+                            if ($leveragesFromOutside) {
+                                $response = $leveragesFromOutside;
+                                $catchedHandled = true;
+                            }
+                        }
+                    }
                 } else {
-                    $response = $this->fapiPrivateGetLeverageBracket ($query);
+                    try {
+                        $response = $this->fapiPrivateGetLeverageBracket ($query);
+                    } catch (Exception $e) {
+                        $catched = $e;
+                        if ($e instanceof NetworkError || $e instanceof AuthenticationError) {
+                            if ($leveragesFromOutside) {
+                                $response = $leveragesFromOutside;
+                                $catchedHandled = true;
+                            }
+                        }
+                    }
                 }
             } elseif ($this->is_inverse($type, $subType)) {
                 if ($isPortfolioMargin) {
-                    $response = $this->papiGetCmLeverageBracket ($query);
+                    try {
+                        $response = $this->papiGetCmLeverageBracket ($query);
+                    } catch (Exception $e) {
+                        $catched = $e;
+                        if ($e instanceof NetworkError || $e instanceof AuthenticationError) {
+                            if ($leveragesFromOutside) {
+                                $response = $leveragesFromOutside;
+                                $catchedHandled = true;
+                            }
+                        }
+                    }
                 } else {
-                    $response = $this->dapiPrivateV2GetLeverageBracket ($query);
+                    try {
+                        $response = $this->dapiPrivateV2GetLeverageBracket ($query);
+                    } catch (Exception $e) {
+                        $catched = $e;
+                        if ($e instanceof NetworkError || $e instanceof AuthenticationError) {
+                            if ($leveragesFromOutside) {
+                                $response = $leveragesFromOutside;
+                                $catchedHandled = true;
+                            }
+                        }
+                    }
                 }
             } else {
                 throw new NotSupported($this->id . ' loadLeverageBrackets() supports linear and inverse contracts only');
             }
             $this->options['leverageBrackets'] = $this->create_safe_dictionary();
-            for ($i = 0; $i < count($response); $i++) {
+            $length = 0;
+            if ((gettype($response) === 'array' && array_keys($response) === array_keys(array_keys($response)))) {
+                $length = count($response);
+            }
+            for ($i = 0; $i < $length; $i++) {
                 $entry = $response[$i];
                 $marketId = $this->safe_string($entry, 'symbol');
                 $symbol = $this->safe_symbol($marketId, null, null, 'contract');
@@ -11284,6 +10767,21 @@ class binance extends Exchange {
                 }
                 $this->options['leverageBrackets'][$symbol] = $result;
             }
+            if ($fetchLeveragesCallback) {
+                if (!$catched) {
+                    $fetchLeveragesCallback ($this->options['leverageBrackets']);
+                }
+                $this->omit($params, 'fetchLeveragesCallback');
+                $this->options['fetchLeveragesCallback'] = $fetchLeveragesCallback;
+            }
+            $this->omit($params, 'leveragesFromOutside');
+            $this->omit($this->options, 'leveragesFromOutside');
+            if ($catched && !$catchedHandled) {
+                // $this->bootstrapped = false
+                throw $catched;
+            }
+        } elseif (!isEmpty ($leveragesFromOutside)) {
+            return $leveragesFromOutside;
         }
         return $this->options['leverageBrackets'];
     }
@@ -15093,6 +14591,141 @@ class binance extends Exchange {
             'datetime' => $this->iso8601($timestamp),
             'timeframe' => null,
             'longShortRatio' => $this->safe_number($info, 'longShortRatio'),
+        );
+    }
+
+    public function fetch_adl_rank(string $symbol, $params = array ()): array {
+        /**
+         * fetches the auto deleveraging rank and risk percentage for a $symbol
+         *
+         * @see https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/ADL-Risk
+         *
+         * @param {string} $symbol unified $symbol of the $market to fetch the auto deleveraging rank for
+         * @param {array} [$params] extra parameters specific to the exchange API endpoint
+         * @return {array} an ~@link https://docs.ccxt.com/?id=auto-de-leverage-structure auto de leverage structure~
+         */
+        $this->load_markets();
+        $market = $this->market($symbol);
+        $request = array(
+            'symbol' => $market['id'],
+        );
+        $subType = null;
+        list($subType, $params) = $this->handle_sub_type_and_params('fetchADLRank', $market, $params);
+        $response = null;
+        if ($subType === 'linear') {
+            $response = $this->fapiPublicGetSymbolAdlRisk ($this->extend($request, $params));
+            //
+            //     {
+            //         "symbol" => "BTCUSDT",
+            //         "adlRisk" => "LOW",
+            //         "updateTime" => 1766827800453
+            //     }
+            //
+        } else {
+            throw new BadRequest($this->id . ' fetchADLRank() supports linear subTypes only');
+        }
+        return $this->parse_adl_rank($response, $market);
+    }
+
+    public function fetch_positions_adl_rank(?array $symbols = null, $params = array ()): array {
+        /**
+         * fetches the auto deleveraging rank and risk percentage for a list of $symbols that have open positions
+         *
+         * @see https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Position-ADL-Quantile-Estimation
+         * @see https://developers.binance.com/docs/derivatives/coin-margined-futures/trade/rest-api/Position-ADL-Quantile-Estimation
+         * @see https://developers.binance.com/docs/derivatives/portfolio-margin/trade/UM-Position-ADL-Quantile-Estimation
+         * @see https://developers.binance.com/docs/derivatives/portfolio-margin/trade/CM-Position-ADL-Quantile-Estimation
+         *
+         * @param {string[]} [$symbols] list of unified $market $symbols
+         * @param {array} [$params] extra parameters specific to the exchange API endpoint
+         * @param {boolean} [$params->portfolioMargin] set to true for the portfolio margin account
+         * @return {array[]} an array of ~@link https://docs.ccxt.com/?id=auto-de-leverage-structure auto de leverage structure~
+         */
+        $this->load_markets();
+        $symbols = $this->market_symbols($symbols, null, true, true, true);
+        $market = $this->get_market_from_symbols($symbols);
+        $subType = null;
+        list($subType, $params) = $this->handle_sub_type_and_params('fetchPositionsADLRank', $market, $params);
+        $isPortfolioMargin = null;
+        list($isPortfolioMargin, $params) = $this->handle_option_and_params_2($params, 'fetchPositionsADLRank', 'papi', 'portfolioMargin', false);
+        $response = null;
+        if ($subType === 'linear') {
+            if ($isPortfolioMargin) {
+                $response = $this->papiGetUmAdlQuantile ($params);
+            } else {
+                $response = $this->fapiPrivateGetAdlQuantile ($params);
+            }
+        } elseif ($subType === 'inverse') {
+            if ($isPortfolioMargin) {
+                $response = $this->papiGetCmAdlQuantile ($params);
+            } else {
+                $response = $this->dapiPrivateGetAdlQuantile ($params);
+            }
+        } else {
+            throw new BadRequest($this->id . ' fetchPositionsADLRank() supports linear and inverse subTypes only');
+        }
+        //
+        //     array(
+        //         {
+        //             "symbol" => "BTCUSDT",
+        //             "adlQuantile" => {
+        //                 "LONG" => 0,
+        //                 "SHORT" => 0,
+        //                 "BOTH" => 1
+        //             }
+        //         }
+        //     )
+        //
+        return $this->parse_adl_ranks($response, $symbols);
+    }
+
+    public function parse_adl_rank(array $info, ?array $market = null): array {
+        //
+        // fetchADLRank
+        //
+        //     {
+        //         "symbol" => "BTCUSDT",
+        //         "adlRisk" => "LOW",
+        //         "updateTime" => 1766827800453
+        //     }
+        //
+        // fetchPositionADLRank
+        //
+        //     {
+        //         "symbol" => "BTCUSDT",
+        //         "adlQuantile" => {
+        //             "LONG" => 0,
+        //             "SHORT" => 0,
+        //             "BOTH" => 1
+        //         }
+        //     }
+        //
+        $adlQuantile = $this->safe_dict($info, 'adlQuantile', array());
+        $longNum = $this->safe_number($adlQuantile, 'LONG');
+        $shortNum = $this->safe_number($adlQuantile, 'SHORT');
+        $both = $this->safe_number($adlQuantile, 'BOTH');
+        $rank = null;
+        if ($both !== null) {
+            $rank = $both;
+        } else {
+            if ($longNum !== null && $shortNum !== null) {
+                if ($longNum > $shortNum) {
+                    $rank = $longNum;
+                } else {
+                    $rank = $shortNum;
+                }
+            }
+        }
+        $marketId = $this->safe_string($info, 'symbol');
+        $timestamp = $this->safe_integer_2($info, 'timestamp', 'updateTime');
+        return array(
+            'info' => $info,
+            'symbol' => $this->safe_symbol($marketId, $market, null, 'contract'),
+            'rank' => $rank,
+            'rating' => $this->safe_string_lower($info, 'adlRisk'),
+            'percentage' => null,
+            'timestamp' => $timestamp,
+            'datetime' => $this->iso8601($timestamp),
         );
     }
 }

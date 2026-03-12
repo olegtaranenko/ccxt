@@ -505,6 +505,15 @@ export interface LongShortRatio {
     timeframe?: string;
     timestamp?: number;
 }
+export interface ADL {
+    info: any;
+    symbol: string;
+    rank?: Int;
+    rating?: Str;
+    percentage?: number;
+    timestamp?: Int;
+    datetime?: Str;
+}
 export interface MarginModification {
     'amount': Num;
     'code': Str;

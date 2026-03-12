@@ -21810,32 +21810,31 @@ class backpack extends _abstract_backpack_js__WEBPACK_IMPORTED_MODULE_0__/* ["de
 /* harmony export */ });
 /* unused harmony export default */
 /* harmony import */ var _functions_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(5095);
-/* harmony import */ var _functions_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7437);
-/* harmony import */ var _functions_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(6238);
-/* harmony import */ var _errors_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(2079);
-/* harmony import */ var _Precise_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(5147);
-/* harmony import */ var _ws_WsClient_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(7288);
-/* harmony import */ var _ws_Future_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(3206);
-/* harmony import */ var _ws_OrderBook_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(3828);
-/* harmony import */ var _functions_crypto_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(8283);
-/* harmony import */ var _functions_totp_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(8995);
-/* harmony import */ var _static_dependencies_ethers_index_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(5897);
-/* harmony import */ var _static_dependencies_ethers_hash_index_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(4380);
-/* harmony import */ var _static_dependencies_noble_curves_secp256k1_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(987);
-/* harmony import */ var _static_dependencies_noble_hashes_sha3_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(8432);
-/* harmony import */ var _static_dependencies_jsencrypt_lib_jsbn_rng_js__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(447);
-/* harmony import */ var _static_dependencies_scure_starknet_index_js__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(3187);
-/* harmony import */ var _static_dependencies_zklink_zklink_sdk_web_js__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(7661);
-/* harmony import */ var _static_dependencies_starknet_index_js__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(9793);
-/* harmony import */ var _static_dependencies_starknet_index_js__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(9491);
-/* harmony import */ var _static_dependencies_starknet_index_js__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(6907);
-/* harmony import */ var _static_dependencies_starknet_index_js__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(1878);
-/* harmony import */ var _ws_Client_js__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(934);
-/* harmony import */ var _static_dependencies_noble_hashes_sha256_js__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(4852);
-/* harmony import */ var _static_dependencies_noble_hashes_sha1_js__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(3466);
-/* harmony import */ var _static_dependencies_dydx_v4_client_onboarding_js__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(9187);
-/* harmony import */ var _static_dependencies_dydx_v4_client_helpers_js__WEBPACK_IMPORTED_MODULE_25__ = __webpack_require__(1291);
-/* harmony import */ var _static_dependencies_dydx_v4_client_helpers_js__WEBPACK_IMPORTED_MODULE_25___default = /*#__PURE__*/__webpack_require__.n(_static_dependencies_dydx_v4_client_helpers_js__WEBPACK_IMPORTED_MODULE_25__);
+/* harmony import */ var _functions_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(6238);
+/* harmony import */ var _errors_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(2079);
+/* harmony import */ var _Precise_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(5147);
+/* harmony import */ var _ws_WsClient_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(7288);
+/* harmony import */ var _ws_Future_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(3206);
+/* harmony import */ var _ws_OrderBook_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(3828);
+/* harmony import */ var _functions_crypto_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(8283);
+/* harmony import */ var _functions_totp_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(8995);
+/* harmony import */ var _static_dependencies_ethers_index_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(5897);
+/* harmony import */ var _static_dependencies_ethers_hash_index_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(4380);
+/* harmony import */ var _static_dependencies_noble_curves_secp256k1_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(987);
+/* harmony import */ var _static_dependencies_noble_hashes_sha3_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(8432);
+/* harmony import */ var _static_dependencies_jsencrypt_lib_jsbn_rng_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(447);
+/* harmony import */ var _static_dependencies_scure_starknet_index_js__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(3187);
+/* harmony import */ var _static_dependencies_zklink_zklink_sdk_web_js__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(7661);
+/* harmony import */ var _static_dependencies_starknet_index_js__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(9793);
+/* harmony import */ var _static_dependencies_starknet_index_js__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(9491);
+/* harmony import */ var _static_dependencies_starknet_index_js__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(6907);
+/* harmony import */ var _static_dependencies_starknet_index_js__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(1878);
+/* harmony import */ var _ws_Client_js__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(934);
+/* harmony import */ var _static_dependencies_noble_hashes_sha256_js__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(4852);
+/* harmony import */ var _static_dependencies_noble_hashes_sha1_js__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(3466);
+/* harmony import */ var _static_dependencies_dydx_v4_client_onboarding_js__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(9187);
+/* harmony import */ var _static_dependencies_dydx_v4_client_helpers_js__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(1291);
+/* harmony import */ var _static_dependencies_dydx_v4_client_helpers_js__WEBPACK_IMPORTED_MODULE_24___default = /*#__PURE__*/__webpack_require__.n(_static_dependencies_dydx_v4_client_helpers_js__WEBPACK_IMPORTED_MODULE_24__);
 // ----------------------------------------------------------------------------
 
 
@@ -22029,7 +22028,6 @@ class Exchange {
         this.isNode = isNode;
         this.iso8601 = iso8601;
         this.json = json;
-        this.keys = _functions_js__WEBPACK_IMPORTED_MODULE_1__/* .keys */ .HP;
         this.keysort = keysort;
         this.merge = merge;
         this.microseconds = microseconds;
@@ -22090,8 +22088,7 @@ class Exchange {
         this.uuid16 = uuid16;
         this.uuid22 = uuid22;
         this.uuidv1 = uuidv1;
-        this.values = _functions_js__WEBPACK_IMPORTED_MODULE_1__/* .values */ .zu;
-        this.vwap = _functions_js__WEBPACK_IMPORTED_MODULE_2__/* .vwap */ .ru;
+        this.vwap = _functions_js__WEBPACK_IMPORTED_MODULE_1__/* .vwap */ .ru;
         this.ymd = ymd;
         this.ymdhms = ymdhms;
         this.yymmdd = yymmdd;
@@ -22233,7 +22230,7 @@ class Exchange {
             .map((byte) => parseInt(byte, 16));
         const nameBytes = new TextEncoder().encode(name);
         const data = new Uint8Array([...nsBytes, ...nameBytes]);
-        const nsHash = (0,_static_dependencies_noble_hashes_sha1_js__WEBPACK_IMPORTED_MODULE_23__/* .sha1 */ .e)(data);
+        const nsHash = (0,_static_dependencies_noble_hashes_sha1_js__WEBPACK_IMPORTED_MODULE_22__/* .sha1 */ .e)(data);
         // eslint-disable-next-line
         nsHash[6] = (nsHash[6] & 0x0f) | 0x50;
         // eslint-disable-next-line
@@ -22276,7 +22273,7 @@ class Exchange {
         }
         if (!result) {
             if (error) {
-                throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported('Your current version of CCXT is ' + Exchange.ccxtVersion + ', a newer version ' + requiredVersion + ' is required, please, upgrade your version of CCXT');
+                throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported('Your current version of CCXT is ' + Exchange.ccxtVersion + ', a newer version ' + requiredVersion + ' is required, please, upgrade your version of CCXT');
             }
             else {
                 return error;
@@ -22334,7 +22331,7 @@ class Exchange {
                         this.defineRestApiEndpoint(methodName, uppercaseMethod, lowercaseMethod, camelcaseMethod, path, paths, { 'cost': config });
                     }
                     else {
-                        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' defineRestApi() API format is not supported, API leafs must strings, objects or numbers');
+                        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' defineRestApi() API format is not supported, API leafs must strings, objects or numbers');
                     }
                 }
             }
@@ -22389,11 +22386,11 @@ class Exchange {
         let chosenAgent = undefined;
         // in browser-side, proxy modules are not supported in 'fetch/ws' methods
         if (!isNode && (httpProxy || httpsProxy || socksProxy)) {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' - proxies in browser-side projects are not supported. You have several choices: [A] Use `exchange.proxyUrl` property to redirect requests through local/remote cors-proxy server (find sample file named "sample-local-proxy-server-with-cors" in https://github.com/ccxt/ccxt/tree/master/examples/ folder, which can be used for REST requests only) [B] override `exchange.fetch` && `exchange.watch` methods to send requests through your custom proxy');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' - proxies in browser-side projects are not supported. You have several choices: [A] Use `exchange.proxyUrl` property to redirect requests through local/remote cors-proxy server (find sample file named "sample-local-proxy-server-with-cors" in https://github.com/ccxt/ccxt/tree/master/examples/ folder, which can be used for REST requests only) [B] override `exchange.fetch` && `exchange.watch` methods to send requests through your custom proxy');
         }
         if (httpProxy) {
             if (this.httpProxyAgentModule === undefined) {
-                throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' you need to load JS proxy modules with `await instance.loadProxyModules()` method at first to use proxies');
+                throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' you need to load JS proxy modules with `await instance.loadProxyModules()` method at first to use proxies');
             }
             if (!(httpProxy in this.proxyDictionaries)) {
                 this.proxyDictionaries[httpProxy] = new this.httpProxyAgentModule.HttpProxyAgent(httpProxy);
@@ -22402,7 +22399,7 @@ class Exchange {
         }
         else if (httpsProxy) {
             if (this.httpsProxyAgentModule === undefined) {
-                throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' you need to load JS proxy modules with `await instance.loadProxyModules()` method at first to use proxies');
+                throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' you need to load JS proxy modules with `await instance.loadProxyModules()` method at first to use proxies');
             }
             if (!(httpsProxy in this.proxyDictionaries)) {
                 this.proxyDictionaries[httpsProxy] = new this.httpsProxyAgentModule.HttpsProxyAgent(httpsProxy);
@@ -22412,7 +22409,7 @@ class Exchange {
         }
         else if (socksProxy) {
             if (this.socksProxyAgentModule === undefined) {
-                throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' - to use SOCKS proxy with ccxt, at first you need install module "npm i socks-proxy-agent" and then initialize proxies with `await instance.loadProxyModules()` method');
+                throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' - to use SOCKS proxy with ccxt, at first you need install module "npm i socks-proxy-agent" and then initialize proxies with `await instance.loadProxyModules()` method');
             }
             if (!(socksProxy in this.proxyDictionaries)) {
                 this.proxyDictionaries[socksProxy] = new this.socksProxyAgentModule.SocksProxyAgent(socksProxy);
@@ -22434,7 +22431,7 @@ class Exchange {
             // only for non-ssl proxy
             if (url.substring(0, 5) === 'ws://') {
                 if (this.httpAgent === undefined) {
-                    throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' to use proxy with non-ssl ws:// urls, at first run  `await exchange.loadHttpProxyAgent()` method');
+                    throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' to use proxy with non-ssl ws:// urls, at first run  `await exchange.loadHttpProxyAgent()` method');
                 }
                 return this.httpAgent;
             }
@@ -22446,7 +22443,7 @@ class Exchange {
     }
     decodeProtoMsg(data) {
         if (!protobufMexc) {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' requires protobuf to decode messages, please install it with `npm install protobufjs`');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' requires protobuf to decode messages, please install it with `npm install protobufjs`');
         }
         if (data instanceof ArrayBuffer) {
             // browser case
@@ -22527,7 +22524,7 @@ class Exchange {
         // log
         if (this.verbose || this.verboseTruncate) {
             if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto('fetch', method, url, headers, body)) {
-                const truncated = (0,_ws_Client_js__WEBPACK_IMPORTED_MODULE_21__/* .getBodyTruncated */ .D)(body, this.verboseTruncate);
+                const truncated = (0,_ws_Client_js__WEBPACK_IMPORTED_MODULE_20__/* .getBodyTruncated */ .D)(body, this.verboseTruncate);
                 this.log('fetch Request:\n', this.id, method, url, '\nRequestHeaders:\n', headers, '\nRequestBody:\n', truncated, '\n');
             }
         }
@@ -22603,13 +22600,13 @@ class Exchange {
         }
         catch (e) {
             if (e instanceof this.AbortError) {
-                throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.RequestTimeout(this.id + ' ' + method + ' ' + url + ' request timed out (' + this.timeout + ' ms)');
+                throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.RequestTimeout(this.id + ' ' + method + ' ' + url + ' request timed out (' + this.timeout + ' ms)');
             }
             else if (e instanceof this.FetchError) {
                 this.offline = true;
-                throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NetworkError(this.id + ' ' + method + ' ' + url + ' fetch failed');
+                throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NetworkError(this.id + ' ' + method + ' ' + url + ' fetch failed');
             }
-            else if (e instanceof _errors_js__WEBPACK_IMPORTED_MODULE_3__.AuthenticationError) {
+            else if (e instanceof _errors_js__WEBPACK_IMPORTED_MODULE_2__.AuthenticationError) {
                 this.authenticated = false;
             }
             throw e;
@@ -22669,7 +22666,7 @@ class Exchange {
             }
             if (this.verbose || this.verboseTruncate) {
                 if (typeof this.verboseLogVeto !== 'function' || !this.verboseLogVeto('response', method, url, response)) {
-                    const truncated = (0,_ws_Client_js__WEBPACK_IMPORTED_MODULE_21__/* .getBodyTruncated */ .D)(bodyText, this.verboseTruncate);
+                    const truncated = (0,_ws_Client_js__WEBPACK_IMPORTED_MODULE_20__/* .getBodyTruncated */ .D)(bodyText, this.verboseTruncate);
                     this.log('handleRestResponse:\n', this.id, method, url, response.status, response.statusText, '\nResponseHeaders:\n', responseHeaders, '\nResponseBody:\n', truncated, '\n');
                 }
             }
@@ -22730,7 +22727,7 @@ class Exchange {
                 }
                 catch (e) {
                     catched = e;
-                    if (e instanceof _errors_js__WEBPACK_IMPORTED_MODULE_3__.NetworkError || e instanceof _errors_js__WEBPACK_IMPORTED_MODULE_3__.AuthenticationError) {
+                    if (e instanceof _errors_js__WEBPACK_IMPORTED_MODULE_2__.NetworkError || e instanceof _errors_js__WEBPACK_IMPORTED_MODULE_2__.AuthenticationError) {
                         if (currenciesFromOutside) {
                             currencies = currenciesFromOutside;
                             catchedHandled = true;
@@ -22772,7 +22769,7 @@ class Exchange {
             }
             catch (e) {
                 catched = e;
-                if (e instanceof _errors_js__WEBPACK_IMPORTED_MODULE_3__.NetworkError || e instanceof _errors_js__WEBPACK_IMPORTED_MODULE_3__.AuthenticationError) {
+                if (e instanceof _errors_js__WEBPACK_IMPORTED_MODULE_2__.NetworkError || e instanceof _errors_js__WEBPACK_IMPORTED_MODULE_2__.AuthenticationError) {
                     if (marketsFromOutside) {
                         markets = marketsFromOutside;
                         catchedHandled = true;
@@ -22903,11 +22900,11 @@ class Exchange {
     checkOrderArguments(market, type, side, amount, price, params) {
         if (price === undefined) {
             if (type === 'limit') {
-                throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.ArgumentsRequired(this.id + ' createOrder() requires a price argument for a limit order');
+                throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired(this.id + ' createOrder() requires a price argument for a limit order');
             }
         }
         if (amount <= 0) {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.ArgumentsRequired(this.id + ' createOrder() amount should be above 0');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired(this.id + ' createOrder() amount should be above 0');
         }
     }
     handleHttpStatusCode(code, reason, url, method, body) {
@@ -22932,7 +22929,7 @@ class Exchange {
         return dict; // wrapper for go
     }
     spawn(method, ...args) {
-        const future = (0,_ws_Future_js__WEBPACK_IMPORTED_MODULE_6__/* .Future */ .K)();
+        const future = (0,_ws_Future_js__WEBPACK_IMPORTED_MODULE_5__/* .Future */ .K)();
         // using setTimeout 0 to force the execution to run after the future is returned
         setTimeout(() => {
             method.apply(this, args).then(future.resolve).catch(future.reject);
@@ -22948,13 +22945,13 @@ class Exchange {
     // -----------------------------------------------------------------------
     // WS/PRO methods
     orderBook(snapshot = {}, depth = Number.MAX_SAFE_INTEGER) {
-        return new _ws_OrderBook_js__WEBPACK_IMPORTED_MODULE_7__/* .OrderBook */ .Mi(snapshot, depth);
+        return new _ws_OrderBook_js__WEBPACK_IMPORTED_MODULE_6__/* .OrderBook */ .Mi(snapshot, depth);
     }
     indexedOrderBook(snapshot = {}, depth = Number.MAX_SAFE_INTEGER) {
-        return new _ws_OrderBook_js__WEBPACK_IMPORTED_MODULE_7__/* .IndexedOrderBook */ .nS(snapshot, depth);
+        return new _ws_OrderBook_js__WEBPACK_IMPORTED_MODULE_6__/* .IndexedOrderBook */ .nS(snapshot, depth);
     }
     countedOrderBook(snapshot = {}, depth = Number.MAX_SAFE_INTEGER) {
-        return new _ws_OrderBook_js__WEBPACK_IMPORTED_MODULE_7__/* .CountedOrderBook */ ["if"](snapshot, depth);
+        return new _ws_OrderBook_js__WEBPACK_IMPORTED_MODULE_6__/* .CountedOrderBook */ ["if"](snapshot, depth);
     }
     handleMessage(client, message) {
     } // stub to override
@@ -22992,7 +22989,7 @@ class Exchange {
                 },
                 'decompressBinary': this.safeBool(this.options, 'decompressBinary', true),
             }, wsOptions);
-            this.clients[url] = new _ws_WsClient_js__WEBPACK_IMPORTED_MODULE_5__/* ["default"] */ .A(url, onMessage, onError, onClose, onConnected, options);
+            this.clients[url] = new _ws_WsClient_js__WEBPACK_IMPORTED_MODULE_4__/* ["default"] */ .A(url, onMessage, onError, onClose, onConnected, options);
         }
         return this.clients[url];
     }
@@ -23028,7 +23025,7 @@ class Exchange {
         //                                 |               |
         //                             subscribe -----→ receive
         //
-        const future = _ws_Future_js__WEBPACK_IMPORTED_MODULE_6__/* .Future */ .K.race(messageHashes.map((messageHash) => client.future(messageHash)));
+        const future = _ws_Future_js__WEBPACK_IMPORTED_MODULE_5__/* .Future */ .K.race(messageHashes.map((messageHash) => client.future(messageHash)));
         // read and write subscription, this is done before connecting the client
         // to avoid race conditions when other parts of the code read or write to the client.subscriptions
         const missingSubscriptions = [];
@@ -23195,7 +23192,7 @@ class Exchange {
         const closedClients = [];
         for (let i = 0; i < clients.length; i++) {
             const client = clients[i];
-            client.error = new _errors_js__WEBPACK_IMPORTED_MODULE_3__.ExchangeClosedByUser(this.id + ' closedByUser');
+            client.error = new _errors_js__WEBPACK_IMPORTED_MODULE_2__.ExchangeClosedByUser(this.id + ' closedByUser');
             closedClients.push(client.close());
         }
         for (let i = 0; i < clients.length; i++) {
@@ -23207,7 +23204,7 @@ class Exchange {
     }
     async loadOrderBook(client, messageHash, symbol, limit = undefined, params = {}) {
         if (!(symbol in this.orderbooks)) {
-            client.reject(new _errors_js__WEBPACK_IMPORTED_MODULE_3__.ExchangeError(this.id + ' loadOrderBook() orderbook is not initiated'), messageHash);
+            client.reject(new _errors_js__WEBPACK_IMPORTED_MODULE_2__.ExchangeError(this.id + ' loadOrderBook() orderbook is not initiated'), messageHash);
             return;
         }
         const maxRetries = this.handleOption('watchOrderBook', 'snapshotMaxRetries', 3);
@@ -23227,7 +23224,7 @@ class Exchange {
                 }
                 tries++;
             }
-            client.reject(new _errors_js__WEBPACK_IMPORTED_MODULE_3__.ExchangeError(this.id + ' nonce is behind the cache after ' + maxRetries.toString() + ' tries.'), messageHash);
+            client.reject(new _errors_js__WEBPACK_IMPORTED_MODULE_2__.ExchangeError(this.id + ' nonce is behind the cache after ' + maxRetries.toString() + ' tries.'), messageHash);
             delete this.clients[client.url];
             this.orderbooks[symbol] = this.orderBook(); // clear the orderbook and its cache - issue https://github.com/ccxt/ccxt/issues/26753
         }
@@ -23263,7 +23260,7 @@ class Exchange {
         return message.slice(0, length);
     }
     axolotl(payload, hexKey, ed25519) {
-        return (0,_functions_crypto_js__WEBPACK_IMPORTED_MODULE_8__/* .axolotl */ .Sw)(payload, hexKey, ed25519);
+        return (0,_functions_crypto_js__WEBPACK_IMPORTED_MODULE_7__/* .axolotl */ .Sw)(payload, hexKey, ed25519);
     }
     fixStringifiedJsonMembers(content) {
         // used for instance in bingx
@@ -23277,22 +23274,22 @@ class Exchange {
         return modifiedContent;
     }
     ethAbiEncode(types, args) {
-        return this.base16ToBinary(_static_dependencies_ethers_index_js__WEBPACK_IMPORTED_MODULE_10__/* ["default"] */ .Ay.encode(types, args).slice(2));
+        return this.base16ToBinary(_static_dependencies_ethers_index_js__WEBPACK_IMPORTED_MODULE_9__/* ["default"] */ .Ay.encode(types, args).slice(2));
     }
     ethEncodeStructuredData(domain, messageTypes, messageData) {
-        return this.base16ToBinary(_static_dependencies_ethers_hash_index_js__WEBPACK_IMPORTED_MODULE_11__/* .TypedDataEncoder */ .z.encode(domain, messageTypes, messageData).slice(-132));
+        return this.base16ToBinary(_static_dependencies_ethers_hash_index_js__WEBPACK_IMPORTED_MODULE_10__/* .TypedDataEncoder */ .z.encode(domain, messageTypes, messageData).slice(-132));
     }
     ethGetAddressFromPrivateKey(privateKey) {
         // Accepts a "0x"-prefixed hexstring private key and returns the corresponding Ethereum address
         // Removes the "0x" prefix if present
         const cleanPrivateKey = this.remove0xPrefix(privateKey);
         // Get the public key from the private key using secp256k1 curve
-        const publicKeyBytes = _static_dependencies_noble_curves_secp256k1_js__WEBPACK_IMPORTED_MODULE_12__/* .secp256k1 */ .bI.getPublicKey(cleanPrivateKey);
+        const publicKeyBytes = _static_dependencies_noble_curves_secp256k1_js__WEBPACK_IMPORTED_MODULE_11__/* .secp256k1 */ .bI.getPublicKey(cleanPrivateKey);
         // For Ethereum, we need to use the uncompressed public key (without the first byte which indicates compression)
         // secp256k1.getPublicKey returns compressed key, we need uncompressed
-        const publicKeyUncompressed = _static_dependencies_noble_curves_secp256k1_js__WEBPACK_IMPORTED_MODULE_12__/* .secp256k1 */ .bI.ProjectivePoint.fromHex(publicKeyBytes).toRawBytes(false).slice(1); // Remove 0x04 prefix
+        const publicKeyUncompressed = _static_dependencies_noble_curves_secp256k1_js__WEBPACK_IMPORTED_MODULE_11__/* .secp256k1 */ .bI.ProjectivePoint.fromHex(publicKeyBytes).toRawBytes(false).slice(1); // Remove 0x04 prefix
         // Hash the public key with Keccak256
-        const publicKeyHash = (0,_static_dependencies_noble_hashes_sha3_js__WEBPACK_IMPORTED_MODULE_13__/* .keccak_256 */ .lY)(publicKeyUncompressed);
+        const publicKeyHash = (0,_static_dependencies_noble_hashes_sha3_js__WEBPACK_IMPORTED_MODULE_12__/* .keccak_256 */ .lY)(publicKeyUncompressed);
         // Take the last 20 bytes (40 hex chars)
         const addressBytes = publicKeyHash.slice(-20);
         // Convert to hex and add 0x prefix
@@ -23300,17 +23297,17 @@ class Exchange {
         return addressHex;
     }
     retrieveStarkAccount(signature, accountClassHash, accountProxyClassHash) {
-        const privateKey = (0,_static_dependencies_scure_starknet_index_js__WEBPACK_IMPORTED_MODULE_15__/* .ethSigToPrivate */ .b)(signature);
-        const publicKey = (0,_static_dependencies_scure_starknet_index_js__WEBPACK_IMPORTED_MODULE_15__/* .getStarkKey */ .$u)(privateKey);
-        const callData = _static_dependencies_starknet_index_js__WEBPACK_IMPORTED_MODULE_19__/* .CallData */ .fP.compile({
+        const privateKey = (0,_static_dependencies_scure_starknet_index_js__WEBPACK_IMPORTED_MODULE_14__/* .ethSigToPrivate */ .b)(signature);
+        const publicKey = (0,_static_dependencies_scure_starknet_index_js__WEBPACK_IMPORTED_MODULE_14__/* .getStarkKey */ .$u)(privateKey);
+        const callData = _static_dependencies_starknet_index_js__WEBPACK_IMPORTED_MODULE_18__/* .CallData */ .fP.compile({
             'implementation': accountClassHash,
-            'selector': _static_dependencies_starknet_index_js__WEBPACK_IMPORTED_MODULE_17__/* .getSelectorFromName */ .BK('initialize'),
-            'calldata': _static_dependencies_starknet_index_js__WEBPACK_IMPORTED_MODULE_19__/* .CallData */ .fP.compile({
+            'selector': _static_dependencies_starknet_index_js__WEBPACK_IMPORTED_MODULE_16__/* .getSelectorFromName */ .BK('initialize'),
+            'calldata': _static_dependencies_starknet_index_js__WEBPACK_IMPORTED_MODULE_18__/* .CallData */ .fP.compile({
                 'signer': publicKey,
                 'guardian': '0',
             }),
         });
-        const address = _static_dependencies_starknet_index_js__WEBPACK_IMPORTED_MODULE_18__/* .calculateContractAddressFromHash */ .r4(publicKey, accountProxyClassHash, callData, 0);
+        const address = _static_dependencies_starknet_index_js__WEBPACK_IMPORTED_MODULE_17__/* .calculateContractAddressFromHash */ .r4(publicKey, accountProxyClassHash, callData, 0);
         return {
             privateKey,
             publicKey,
@@ -23320,7 +23317,7 @@ class Exchange {
     starknetEncodeStructuredData(domain, messageTypes, messageData, address) {
         const types = Object.keys(messageTypes);
         if (types.length > 1) {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' starknetEncodeStructuredData only support single type');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' starknetEncodeStructuredData only support single type');
         }
         const request = {
             'domain': domain,
@@ -23334,27 +23331,27 @@ class Exchange {
             }, messageTypes),
             'message': messageData,
         };
-        const msgHash = _static_dependencies_starknet_index_js__WEBPACK_IMPORTED_MODULE_20__/* .getMessageHash */ .E(request, address);
+        const msgHash = _static_dependencies_starknet_index_js__WEBPACK_IMPORTED_MODULE_19__/* .getMessageHash */ .E(request, address);
         return msgHash;
     }
     starknetSign(msgHash, pri) {
         // TODO: unify to ecdsa
-        const signature = (0,_static_dependencies_scure_starknet_index_js__WEBPACK_IMPORTED_MODULE_15__/* .sign */ ._S)(msgHash.replace('0x', ''), pri.replace('0x', ''));
+        const signature = (0,_static_dependencies_scure_starknet_index_js__WEBPACK_IMPORTED_MODULE_14__/* .sign */ ._S)(msgHash.replace('0x', ''), pri.replace('0x', ''));
         return this.json([signature.r.toString(), signature.s.toString()]);
     }
     async getZKContractSignatureObj(seed, params = {}) {
-        const formattedSlotId = BigInt('0x' + this.remove0xPrefix(this.hash(this.encode(this.safeString(params, 'slotId')), _static_dependencies_noble_hashes_sha256_js__WEBPACK_IMPORTED_MODULE_22__/* .sha256 */ .s, 'hex'))).toString();
-        const formattedNonce = BigInt('0x' + this.remove0xPrefix(this.hash(this.encode(this.safeString(params, 'nonce')), _static_dependencies_noble_hashes_sha256_js__WEBPACK_IMPORTED_MODULE_22__/* .sha256 */ .s, 'hex'))).toString();
+        const formattedSlotId = BigInt('0x' + this.remove0xPrefix(this.hash(this.encode(this.safeString(params, 'slotId')), _static_dependencies_noble_hashes_sha256_js__WEBPACK_IMPORTED_MODULE_21__/* .sha256 */ .s, 'hex'))).toString();
+        const formattedNonce = BigInt('0x' + this.remove0xPrefix(this.hash(this.encode(this.safeString(params, 'nonce')), _static_dependencies_noble_hashes_sha256_js__WEBPACK_IMPORTED_MODULE_21__/* .sha256 */ .s, 'hex'))).toString();
         const formattedUint64 = '18446744073709551615';
         const formattedUint32 = '4294967295';
-        const accountId = parseInt(_Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringMod(this.safeString(params, 'accountId'), formattedUint32), 10);
-        const slotId = parseInt(_Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringDiv(_Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringMod(formattedSlotId, formattedUint64), formattedUint32), 10);
-        const nonce = parseInt(_Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringMod(formattedNonce, formattedUint32), 10);
-        await (0,_static_dependencies_zklink_zklink_sdk_web_js__WEBPACK_IMPORTED_MODULE_16__/* ["default"] */ .Ay)();
-        const _signer = _static_dependencies_zklink_zklink_sdk_web_js__WEBPACK_IMPORTED_MODULE_16__/* .newRpcSignerWithProvider */ .$s({});
+        const accountId = parseInt(_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringMod(this.safeString(params, 'accountId'), formattedUint32), 10);
+        const slotId = parseInt(_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringDiv(_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringMod(formattedSlotId, formattedUint64), formattedUint32), 10);
+        const nonce = parseInt(_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringMod(formattedNonce, formattedUint32), 10);
+        await (0,_static_dependencies_zklink_zklink_sdk_web_js__WEBPACK_IMPORTED_MODULE_15__/* ["default"] */ .Ay)();
+        const _signer = _static_dependencies_zklink_zklink_sdk_web_js__WEBPACK_IMPORTED_MODULE_15__/* .newRpcSignerWithProvider */ .$s({});
         await _signer.initZklinkSigner(seed);
-        const tx_builder = new _static_dependencies_zklink_zklink_sdk_web_js__WEBPACK_IMPORTED_MODULE_16__/* .ContractBuilder */ .KR(accountId, 0, slotId, nonce, this.safeInteger(params, 'pairId'), _Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringMul(this.safeString(params, 'size'), '1e18'), _Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringMul(this.safeString(params, 'price'), '1e18'), this.safeString(params, 'direction') === 'BUY', parseInt(_Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringMul(this.safeString(params, 'makerFeeRate'), '10000')), parseInt(_Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringMul(this.safeString(params, 'takerFeeRate'), '10000')), false);
-        const contractor = _static_dependencies_zklink_zklink_sdk_web_js__WEBPACK_IMPORTED_MODULE_16__/* .newContract */ .JF(tx_builder);
+        const tx_builder = new _static_dependencies_zklink_zklink_sdk_web_js__WEBPACK_IMPORTED_MODULE_15__/* .ContractBuilder */ .KR(accountId, 0, slotId, nonce, this.safeInteger(params, 'pairId'), _Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringMul(this.safeString(params, 'size'), '1e18'), _Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringMul(this.safeString(params, 'price'), '1e18'), this.safeString(params, 'direction') === 'BUY', parseInt(_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringMul(this.safeString(params, 'makerFeeRate'), '10000')), parseInt(_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringMul(this.safeString(params, 'takerFeeRate'), '10000')), false);
+        const contractor = _static_dependencies_zklink_zklink_sdk_web_js__WEBPACK_IMPORTED_MODULE_15__/* .newContract */ .JF(tx_builder);
         // const signer = ZkLinkSigner.ethSig(seed);
         // const signer = new Signer(seed);
         contractor?.sign(_signer?.getZkLinkSigner());
@@ -23363,17 +23360,17 @@ class Exchange {
         return zkSign;
     }
     async getZKTransferSignatureObj(seed, params = {}) {
-        await (0,_static_dependencies_zklink_zklink_sdk_web_js__WEBPACK_IMPORTED_MODULE_16__/* ["default"] */ .Ay)();
-        const _signer = _static_dependencies_zklink_zklink_sdk_web_js__WEBPACK_IMPORTED_MODULE_16__/* .newRpcSignerWithProvider */ .$s({});
+        await (0,_static_dependencies_zklink_zklink_sdk_web_js__WEBPACK_IMPORTED_MODULE_15__/* ["default"] */ .Ay)();
+        const _signer = _static_dependencies_zklink_zklink_sdk_web_js__WEBPACK_IMPORTED_MODULE_15__/* .newRpcSignerWithProvider */ .$s({});
         await _signer.initZklinkSigner(seed);
         let nonce = this.safeString(params, 'nonce', '0');
         if (this.safeBool(params, 'isContract') === true) {
             const formattedUint32 = '4294967295';
-            const formattedNonce = BigInt('0x' + this.remove0xPrefix(this.hash(this.encode(nonce), _static_dependencies_noble_hashes_sha256_js__WEBPACK_IMPORTED_MODULE_22__/* .sha256 */ .s, 'hex'))).toString();
-            nonce = _Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringMod(formattedNonce, formattedUint32);
+            const formattedNonce = BigInt('0x' + this.remove0xPrefix(this.hash(this.encode(nonce), _static_dependencies_noble_hashes_sha256_js__WEBPACK_IMPORTED_MODULE_21__/* .sha256 */ .s, 'hex'))).toString();
+            nonce = _Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringMod(formattedNonce, formattedUint32);
         }
-        const tx_builder = new _static_dependencies_zklink_zklink_sdk_web_js__WEBPACK_IMPORTED_MODULE_16__/* .TransferBuilder */ .H3(this.safeNumber(params, 'zkAccountId', 0), this.safeString(params, 'receiverAddress'), this.safeNumber(params, 'subAccountId', 0), this.safeNumber(params, 'receiverSubAccountId', 0), this.safeNumber(params, 'tokenId', 0), this.safeString(params, 'fee', '0'), this.safeString(params, 'amount', '0'), this.parseToInt(nonce), this.safeNumber(params, 'timestampSeconds', 0));
-        const contractor = _static_dependencies_zklink_zklink_sdk_web_js__WEBPACK_IMPORTED_MODULE_16__/* .newTransfer */ .qj(tx_builder);
+        const tx_builder = new _static_dependencies_zklink_zklink_sdk_web_js__WEBPACK_IMPORTED_MODULE_15__/* .TransferBuilder */ .H3(this.safeNumber(params, 'zkAccountId', 0), this.safeString(params, 'receiverAddress'), this.safeNumber(params, 'subAccountId', 0), this.safeNumber(params, 'receiverSubAccountId', 0), this.safeNumber(params, 'tokenId', 0), this.safeString(params, 'fee', '0'), this.safeString(params, 'amount', '0'), this.parseToInt(nonce), this.safeNumber(params, 'timestampSeconds', 0));
+        const contractor = _static_dependencies_zklink_zklink_sdk_web_js__WEBPACK_IMPORTED_MODULE_15__/* .newTransfer */ .qj(tx_builder);
         // const signer = ZkLinkSigner.ethSig(seed);
         // const signer = new Signer(seed);
         contractor?.sign(_signer?.getZkLinkSigner());
@@ -23398,21 +23395,21 @@ class Exchange {
         SignMode = modules[2].SignMode;
     }
     toDydxLong(numStr) {
-        return _static_dependencies_dydx_v4_client_helpers_js__WEBPACK_IMPORTED_MODULE_25___default().fromString(numStr);
+        return _static_dependencies_dydx_v4_client_helpers_js__WEBPACK_IMPORTED_MODULE_24___default().fromString(numStr);
     }
     retrieveDydxCredentials(entropy) {
         let credentials = undefined;
         if (entropy.indexOf(' ') > 0) {
-            credentials = (0,_static_dependencies_dydx_v4_client_onboarding_js__WEBPACK_IMPORTED_MODULE_24__/* .deriveHDKeyFromMnemonic */ .t)(entropy);
+            credentials = (0,_static_dependencies_dydx_v4_client_onboarding_js__WEBPACK_IMPORTED_MODULE_23__/* .deriveHDKeyFromMnemonic */ .t)(entropy);
             credentials['mnemonic'] = entropy;
             return credentials;
         }
-        credentials = (0,_static_dependencies_dydx_v4_client_onboarding_js__WEBPACK_IMPORTED_MODULE_24__/* .exportMnemonicAndPrivateKey */ .e)(this.base16ToBinary(entropy));
+        credentials = (0,_static_dependencies_dydx_v4_client_onboarding_js__WEBPACK_IMPORTED_MODULE_23__/* .exportMnemonicAndPrivateKey */ .e)(this.base16ToBinary(entropy));
         return credentials;
     }
     encodeDydxTxForSimulation(message, memo, sequence, publicKey) {
         if (!encodeAsAny) {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' requires protobuf to encode messages, please install it with `npm install protobufjs`');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' requires protobuf to encode messages, please install it with `npm install protobufjs`');
         }
         if (!publicKey) {
             throw new Error('Public key cannot be undefined');
@@ -23443,7 +23440,7 @@ class Exchange {
     }
     encodeDydxTxForSigning(message, memo, chainId, account, authenticators, fee = undefined) {
         if (!encodeAsAny) {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' requires protobuf to encode messages, please install it with `npm install protobufjs`');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' requires protobuf to encode messages, please install it with `npm install protobufjs`');
         }
         if (!account.pub_key) {
             throw new Error('Public key cannot be undefined');
@@ -23490,12 +23487,12 @@ class Exchange {
             'bodyBytes': txBodyBytes,
             'chainId': chainId,
         });
-        const signingHash = this.hash(SignDoc.encode(signDoc).finish(), _static_dependencies_noble_hashes_sha256_js__WEBPACK_IMPORTED_MODULE_22__/* .sha256 */ .s, 'hex');
+        const signingHash = this.hash(SignDoc.encode(signDoc).finish(), _static_dependencies_noble_hashes_sha256_js__WEBPACK_IMPORTED_MODULE_21__/* .sha256 */ .s, 'hex');
         return [signingHash, signDoc];
     }
     encodeDydxTxRaw(signDoc, signature) {
         if (!encodeAsAny) {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' requires protobuf to encode messages, please install it with `npm install protobufjs`');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' requires protobuf to encode messages, please install it with `npm install protobufjs`');
         }
         return '0x' + this.binaryToBase16(TxRaw.encode(TxRaw.fromPartial({
             'bodyBytes': signDoc.bodyBytes,
@@ -23516,7 +23513,7 @@ class Exchange {
         return dict;
     }
     randomBytes(length) {
-        const rng = new _static_dependencies_jsencrypt_lib_jsbn_rng_js__WEBPACK_IMPORTED_MODULE_14__/* .SecureRandom */ .D();
+        const rng = new _static_dependencies_jsencrypt_lib_jsbn_rng_js__WEBPACK_IMPORTED_MODULE_13__/* .SecureRandom */ .D();
         const x = [];
         x.length = length;
         rng.nextBytes(x);
@@ -23674,6 +23671,7 @@ class Exchange {
                 'editOrderWs': undefined,
                 'editOrders': undefined,
                 'fetchAccounts': undefined,
+                'fetchADLRank': undefined,
                 'fetchBalance': true,
                 'fetchBalanceWs': undefined,
                 'fetchBidsAsks': undefined,
@@ -23760,6 +23758,8 @@ class Exchange {
                 'fetchOrdersByStatus': undefined,
                 'fetchOrdersWs': undefined,
                 'fetchPosition': undefined,
+                'fetchPositionADLRank': undefined,
+                'fetchPositionsADLRank': undefined,
                 'fetchPositionHistory': undefined,
                 'fetchPositionMode': undefined,
                 'fetchPositionWs': undefined,
@@ -23848,31 +23848,31 @@ class Exchange {
                 'ws': undefined,
             },
             'httpExceptions': {
-                '400': _errors_js__WEBPACK_IMPORTED_MODULE_3__.ExchangeNotAvailable,
-                '401': _errors_js__WEBPACK_IMPORTED_MODULE_3__.AuthenticationError,
-                '403': _errors_js__WEBPACK_IMPORTED_MODULE_3__.ExchangeNotAvailable,
-                '404': _errors_js__WEBPACK_IMPORTED_MODULE_3__.ExchangeNotAvailable,
-                '405': _errors_js__WEBPACK_IMPORTED_MODULE_3__.ExchangeNotAvailable,
-                '407': _errors_js__WEBPACK_IMPORTED_MODULE_3__.AuthenticationError,
-                '408': _errors_js__WEBPACK_IMPORTED_MODULE_3__.RequestTimeout,
-                '409': _errors_js__WEBPACK_IMPORTED_MODULE_3__.ExchangeNotAvailable,
-                '410': _errors_js__WEBPACK_IMPORTED_MODULE_3__.ExchangeNotAvailable,
-                '418': _errors_js__WEBPACK_IMPORTED_MODULE_3__.DDoSProtection,
-                '422': _errors_js__WEBPACK_IMPORTED_MODULE_3__.ExchangeError,
-                '429': _errors_js__WEBPACK_IMPORTED_MODULE_3__.RateLimitExceeded,
-                '451': _errors_js__WEBPACK_IMPORTED_MODULE_3__.ExchangeNotAvailable,
-                '500': _errors_js__WEBPACK_IMPORTED_MODULE_3__.ExchangeNotAvailable,
-                '501': _errors_js__WEBPACK_IMPORTED_MODULE_3__.ExchangeNotAvailable,
-                '502': _errors_js__WEBPACK_IMPORTED_MODULE_3__.ExchangeNotAvailable,
-                '503': _errors_js__WEBPACK_IMPORTED_MODULE_3__.ExchangeNotAvailable,
-                '504': _errors_js__WEBPACK_IMPORTED_MODULE_3__.RequestTimeout,
-                '511': _errors_js__WEBPACK_IMPORTED_MODULE_3__.AuthenticationError,
-                '520': _errors_js__WEBPACK_IMPORTED_MODULE_3__.ExchangeNotAvailable,
-                '521': _errors_js__WEBPACK_IMPORTED_MODULE_3__.ExchangeNotAvailable,
-                '522': _errors_js__WEBPACK_IMPORTED_MODULE_3__.ExchangeNotAvailable,
-                '525': _errors_js__WEBPACK_IMPORTED_MODULE_3__.ExchangeNotAvailable,
-                '526': _errors_js__WEBPACK_IMPORTED_MODULE_3__.ExchangeNotAvailable,
-                '530': _errors_js__WEBPACK_IMPORTED_MODULE_3__.ExchangeNotAvailable,
+                '400': _errors_js__WEBPACK_IMPORTED_MODULE_2__.ExchangeNotAvailable,
+                '401': _errors_js__WEBPACK_IMPORTED_MODULE_2__.AuthenticationError,
+                '403': _errors_js__WEBPACK_IMPORTED_MODULE_2__.ExchangeNotAvailable,
+                '404': _errors_js__WEBPACK_IMPORTED_MODULE_2__.ExchangeNotAvailable,
+                '405': _errors_js__WEBPACK_IMPORTED_MODULE_2__.ExchangeNotAvailable,
+                '407': _errors_js__WEBPACK_IMPORTED_MODULE_2__.AuthenticationError,
+                '408': _errors_js__WEBPACK_IMPORTED_MODULE_2__.RequestTimeout,
+                '409': _errors_js__WEBPACK_IMPORTED_MODULE_2__.ExchangeNotAvailable,
+                '410': _errors_js__WEBPACK_IMPORTED_MODULE_2__.ExchangeNotAvailable,
+                '418': _errors_js__WEBPACK_IMPORTED_MODULE_2__.DDoSProtection,
+                '422': _errors_js__WEBPACK_IMPORTED_MODULE_2__.ExchangeError,
+                '429': _errors_js__WEBPACK_IMPORTED_MODULE_2__.RateLimitExceeded,
+                '451': _errors_js__WEBPACK_IMPORTED_MODULE_2__.ExchangeNotAvailable,
+                '500': _errors_js__WEBPACK_IMPORTED_MODULE_2__.ExchangeNotAvailable,
+                '501': _errors_js__WEBPACK_IMPORTED_MODULE_2__.ExchangeNotAvailable,
+                '502': _errors_js__WEBPACK_IMPORTED_MODULE_2__.ExchangeNotAvailable,
+                '503': _errors_js__WEBPACK_IMPORTED_MODULE_2__.ExchangeNotAvailable,
+                '504': _errors_js__WEBPACK_IMPORTED_MODULE_2__.RequestTimeout,
+                '511': _errors_js__WEBPACK_IMPORTED_MODULE_2__.AuthenticationError,
+                '520': _errors_js__WEBPACK_IMPORTED_MODULE_2__.ExchangeNotAvailable,
+                '521': _errors_js__WEBPACK_IMPORTED_MODULE_2__.ExchangeNotAvailable,
+                '522': _errors_js__WEBPACK_IMPORTED_MODULE_2__.ExchangeNotAvailable,
+                '525': _errors_js__WEBPACK_IMPORTED_MODULE_2__.ExchangeNotAvailable,
+                '526': _errors_js__WEBPACK_IMPORTED_MODULE_2__.ExchangeNotAvailable,
+                '530': _errors_js__WEBPACK_IMPORTED_MODULE_2__.ExchangeNotAvailable,
             },
             'id': undefined,
             'limits': {
@@ -24041,7 +24041,7 @@ class Exchange {
         }
     }
     handleDelta(bookside, delta) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' handleDelta not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' handleDelta not supported yet');
     }
     handleDeltasWithKeys(bookSide, deltas, priceKey = 0, amountKey = 1, countOrIdKey = 2) {
         for (let i = 0; i < deltas.length; i++) {
@@ -24105,7 +24105,7 @@ class Exchange {
         const length = usedProxies.length;
         if (length > 1) {
             const joinedProxyNames = usedProxies.join(',');
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.InvalidProxySettings(this.id + ' you have multiple conflicting proxy settings (' + joinedProxyNames + '), please use only one from : proxyUrl, proxy_url, proxyUrlCallback, proxy_url_callback');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidProxySettings(this.id + ' you have multiple conflicting proxy settings (' + joinedProxyNames + '), please use only one from : proxyUrl, proxy_url, proxyUrlCallback, proxy_url_callback');
         }
         return proxyUrl;
     }
@@ -24163,7 +24163,7 @@ class Exchange {
         const length = usedProxies.length;
         if (length > 1) {
             const joinedProxyNames = usedProxies.join(',');
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.InvalidProxySettings(this.id + ' you have multiple conflicting proxy settings (' + joinedProxyNames + '), please use only one from: httpProxy, httpsProxy, httpProxyCallback, httpsProxyCallback, socksProxy, socksProxyCallback');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidProxySettings(this.id + ' you have multiple conflicting proxy settings (' + joinedProxyNames + '), please use only one from: httpProxy, httpsProxy, httpProxyCallback, httpsProxyCallback, socksProxy, socksProxyCallback');
         }
         return [httpProxy, httpsProxy, socksProxy];
     }
@@ -24197,24 +24197,24 @@ class Exchange {
         const length = usedProxies.length;
         if (length > 1) {
             const joinedProxyNames = usedProxies.join(',');
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.InvalidProxySettings(this.id + ' you have multiple conflicting proxy settings (' + joinedProxyNames + '), please use only one from: wsProxy, wssProxy, wsSocksProxy');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidProxySettings(this.id + ' you have multiple conflicting proxy settings (' + joinedProxyNames + '), please use only one from: wsProxy, wssProxy, wsSocksProxy');
         }
         return [wsProxy, wssProxy, wsSocksProxy];
     }
     checkConflictingProxies(proxyAgentSet, proxyUrlSet) {
         if (proxyAgentSet && proxyUrlSet) {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.InvalidProxySettings(this.id + ' you have multiple conflicting proxy settings, please use only one from : proxyUrl, httpProxy, httpsProxy, socksProxy');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidProxySettings(this.id + ' you have multiple conflicting proxy settings, please use only one from : proxyUrl, httpProxy, httpsProxy, socksProxy');
         }
     }
     checkAddress(address = undefined) {
         if (address === undefined) {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.InvalidAddress(this.id + ' address is undefined');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidAddress(this.id + ' address is undefined');
         }
         // check the address is not the same letter like 'aaaaa' nor too short nor has a space
         const uniqChars = (this.unique(this.stringToCharsArray(address)));
         const length = uniqChars.length; // py transpiler trick
         if (length === 1 || address.length < this.minFundingAddressLength || address.indexOf(' ') > -1) {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.InvalidAddress(this.id + ' address is invalid or has less than ' + this.minFundingAddressLength.toString() + ' characters: "' + address.toString() + '"');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidAddress(this.id + ' address is invalid or has less than ' + this.minFundingAddressLength.toString() + ' characters: "' + address.toString() + '"');
         }
         return address;
     }
@@ -24332,7 +24332,7 @@ class Exchange {
                 }
             }
             else {
-                throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' does not have a sandbox URL');
+                throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' does not have a sandbox URL');
             }
             // set flag
             this.isSandboxModeEnabled = true;
@@ -24358,7 +24358,7 @@ class Exchange {
      */
     enableDemoTrading(enable) {
         if (this.isSandboxModeEnabled) {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' demo trading does not support in sandbox environment. Please check https://www.binance.com/en/support/faq/detail/9be58f73e5e14338809e3b705b9687dd to see the differences');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' demo trading does not support in sandbox environment. Please check https://www.binance.com/en/support/faq/detail/9be58f73e5e14338809e3b705b9687dd to see the differences');
         }
         if (enable) {
             this.urls['apiBackupDemoTrading'] = this.urls['api'];
@@ -24375,85 +24375,85 @@ class Exchange {
         return {};
     }
     async fetchAccounts(params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchAccounts() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchAccounts() is not supported yet');
     }
     async fetchTrades(symbol, since = undefined, limit = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchTrades() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchTrades() is not supported yet');
     }
     async fetchTradesWs(symbol, since = undefined, limit = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchTradesWs() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchTradesWs() is not supported yet');
     }
     async watchLiquidations(symbol, since = undefined, limit = undefined, params = {}) {
         if (this.has['watchLiquidationsForSymbols']) {
             return await this.watchLiquidationsForSymbols([symbol], since, limit, params);
         }
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' watchLiquidations() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' watchLiquidations() is not supported yet');
     }
     async watchLiquidationsForSymbols(symbols, since = undefined, limit = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' watchLiquidationsForSymbols() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' watchLiquidationsForSymbols() is not supported yet');
     }
     async watchMyLiquidations(symbol, since = undefined, limit = undefined, params = {}) {
         if (this.has['watchMyLiquidationsForSymbols']) {
             return this.watchMyLiquidationsForSymbols([symbol], since, limit, params);
         }
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' watchMyLiquidations() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' watchMyLiquidations() is not supported yet');
     }
     async watchMyLiquidationsForSymbols(symbols, since = undefined, limit = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' watchMyLiquidationsForSymbols() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' watchMyLiquidationsForSymbols() is not supported yet');
     }
     async watchTrades(symbol, since = undefined, limit = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' watchTrades() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' watchTrades() is not supported yet');
     }
     async unWatchOrders(symbol = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' unWatchOrders() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' unWatchOrders() is not supported yet');
     }
     async unWatchTrades(symbol, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' unWatchTrades() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' unWatchTrades() is not supported yet');
     }
     async watchTradesForSymbols(symbols, since = undefined, limit = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' watchTradesForSymbols() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' watchTradesForSymbols() is not supported yet');
     }
     async unWatchTradesForSymbols(symbols, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' unWatchTradesForSymbols() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' unWatchTradesForSymbols() is not supported yet');
     }
     async watchMyTradesForSymbols(symbols, since = undefined, limit = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' watchMyTradesForSymbols() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' watchMyTradesForSymbols() is not supported yet');
     }
     async watchOrdersForSymbols(symbols, since = undefined, limit = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' watchOrdersForSymbols() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' watchOrdersForSymbols() is not supported yet');
     }
     async watchOHLCVForSymbols(symbolsAndTimeframes, since = undefined, limit = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' watchOHLCVForSymbols() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' watchOHLCVForSymbols() is not supported yet');
     }
     async unWatchOHLCVForSymbols(symbolsAndTimeframes, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' unWatchOHLCVForSymbols() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' unWatchOHLCVForSymbols() is not supported yet');
     }
     async watchOrderBookForSymbols(symbols, limit = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' watchOrderBookForSymbols() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' watchOrderBookForSymbols() is not supported yet');
     }
     async unWatchOrderBookForSymbols(symbols, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' unWatchOrderBookForSymbols() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' unWatchOrderBookForSymbols() is not supported yet');
     }
     async unWatchPositions(symbols = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' unWatchPositions() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' unWatchPositions() is not supported yet');
     }
     async unWatchTicker(symbol, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' unWatchTicker() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' unWatchTicker() is not supported yet');
     }
     async unWatchMarkPrice(symbol, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' unWatchMarkPrice() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' unWatchMarkPrice() is not supported yet');
     }
     async unWatchMarkPrices(symbols = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' unWatchMarkPrices() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' unWatchMarkPrices() is not supported yet');
     }
     async fetchDepositAddresses(codes = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchDepositAddresses() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchDepositAddresses() is not supported yet');
     }
     async fetchOrderBook(symbol, limit = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchOrderBook() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchOrderBook() is not supported yet');
     }
     async fetchOrderBookWs(symbol, limit = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchOrderBookWs() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchOrderBookWs() is not supported yet');
     }
     async fetchMarginMode(symbol, params = {}) {
         if (this.has['fetchMarginModes']) {
@@ -24461,11 +24461,11 @@ class Exchange {
             return this.safeDict(marginModes, symbol);
         }
         else {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchMarginMode() is not supported yet');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchMarginMode() is not supported yet');
         }
     }
     async fetchMarginModes(symbols = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchMarginModes () is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchMarginModes () is not supported yet');
     }
     async fetchRestOrderBookSafe(symbol, limit = undefined, params = {}) {
         const fetchSnapshotMaxRetries = this.handleOption('watchOrderBook', 'maxRetries', 3);
@@ -24483,19 +24483,19 @@ class Exchange {
         return undefined;
     }
     async watchOrderBook(symbol, limit = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' watchOrderBook() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' watchOrderBook() is not supported yet');
     }
     async unWatchOrderBook(symbol, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' unWatchOrderBook() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' unWatchOrderBook() is not supported yet');
     }
     async fetchTime(params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchTime() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchTime() is not supported yet');
     }
     async fetchTradingLimits(symbols = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchTradingLimits() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchTradingLimits() is not supported yet');
     }
     parseCurrency(rawCurrency) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' parseCurrency() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' parseCurrency() is not supported yet');
     }
     parseCurrencies(rawCurrencies) {
         const result = {};
@@ -24508,7 +24508,7 @@ class Exchange {
         return result;
     }
     parseMarket(market) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' parseMarket() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' parseMarket() is not supported yet');
     }
     parseMarkets(markets) {
         const result = [];
@@ -24518,91 +24518,91 @@ class Exchange {
         return result;
     }
     parseTicker(ticker, market = undefined) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' parseTicker() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' parseTicker() is not supported yet');
     }
     parseDepositAddress(depositAddress, currency = undefined) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' parseDepositAddress() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' parseDepositAddress() is not supported yet');
     }
     parseTrade(trade, market = undefined) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' parseTrade() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' parseTrade() is not supported yet');
     }
     parseTransaction(transaction, currency = undefined) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' parseTransaction() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' parseTransaction() is not supported yet');
     }
     parseTransfer(transfer, currency = undefined) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' parseTransfer() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' parseTransfer() is not supported yet');
     }
     parseAccount(account) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' parseAccount() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' parseAccount() is not supported yet');
     }
     parseLedgerEntry(item, currency = undefined) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' parseLedgerEntry() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' parseLedgerEntry() is not supported yet');
     }
     parseOrder(order, market = undefined) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' parseOrder() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' parseOrder() is not supported yet');
     }
     async fetchCrossBorrowRates(params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchCrossBorrowRates() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchCrossBorrowRates() is not supported yet');
     }
     async fetchIsolatedBorrowRates(params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchIsolatedBorrowRates() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchIsolatedBorrowRates() is not supported yet');
     }
     parseMarketLeverageTiers(info, market = undefined) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' parseMarketLeverageTiers() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' parseMarketLeverageTiers() is not supported yet');
     }
     async fetchLeverageTiers(symbols = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchLeverageTiers() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchLeverageTiers() is not supported yet');
     }
     parsePosition(position, market = undefined) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' parsePosition() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' parsePosition() is not supported yet');
     }
     parseFundingRateHistory(info, market = undefined) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' parseFundingRateHistory() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' parseFundingRateHistory() is not supported yet');
     }
     parseBorrowInterest(info, market = undefined) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' parseBorrowInterest() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' parseBorrowInterest() is not supported yet');
     }
     parseIsolatedBorrowRate(info, market = undefined) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' parseIsolatedBorrowRate() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' parseIsolatedBorrowRate() is not supported yet');
     }
     parseWsTrade(trade, market = undefined) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' parseWsTrade() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' parseWsTrade() is not supported yet');
     }
     parseWsOrder(order, market = undefined) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' parseWsOrder() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' parseWsOrder() is not supported yet');
     }
     parseWsOrderTrade(trade, market = undefined) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' parseWsOrderTrade() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' parseWsOrderTrade() is not supported yet');
     }
     parseWsOHLCV(ohlcv, market = undefined) {
         return this.parseOHLCV(ohlcv, market);
     }
     async fetchFundingRates(symbols = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchFundingRates() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchFundingRates() is not supported yet');
     }
     async fetchFundingIntervals(symbols = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchFundingIntervals() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchFundingIntervals() is not supported yet');
     }
     async watchFundingRate(symbol, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' watchFundingRate() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' watchFundingRate() is not supported yet');
     }
     async watchFundingRates(symbols, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' watchFundingRates() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' watchFundingRates() is not supported yet');
     }
     async watchFundingRatesForSymbols(symbols, params = {}) {
         return await this.watchFundingRates(symbols, params);
     }
     async transfer(code, amount, fromAccount, toAccount, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' transfer() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' transfer() is not supported yet');
     }
     async withdraw(code, amount, address, tag = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' withdraw() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' withdraw() is not supported yet');
     }
     async createDepositAddress(code, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' createDepositAddress() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' createDepositAddress() is not supported yet');
     }
     async setLeverage(leverage, symbol = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' setLeverage() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' setLeverage() is not supported yet');
     }
     async fetchLeverage(symbol, params = {}) {
         if (this.has['fetchLeverages']) {
@@ -24610,29 +24610,29 @@ class Exchange {
             return this.safeDict(leverages, symbol);
         }
         else {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchLeverage() is not supported yet');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchLeverage() is not supported yet');
         }
     }
     async fetchLeverages(symbols = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchLeverages() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchLeverages() is not supported yet');
     }
     async setPositionMode(hedged, symbol = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' setPositionMode() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' setPositionMode() is not supported yet');
     }
     async addMargin(symbol, amount, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' addMargin() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' addMargin() is not supported yet');
     }
     async reduceMargin(symbol, amount, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' reduceMargin() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' reduceMargin() is not supported yet');
     }
     async setMargin(symbol, amount, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' setMargin() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' setMargin() is not supported yet');
     }
     async fetchLongShortRatio(symbol, timeframe = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchLongShortRatio() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchLongShortRatio() is not supported yet');
     }
     async fetchLongShortRatioHistory(symbol = undefined, timeframe = undefined, since = undefined, limit = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchLongShortRatioHistory() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchLongShortRatioHistory() is not supported yet');
     }
     async fetchMarginAdjustmentHistory(symbol = undefined, type = undefined, since = undefined, limit = undefined, params = {}) {
         /**
@@ -24646,28 +24646,34 @@ class Exchange {
          * @param {object} params extra parameters specific to the exchange api endpoint
          * @returns {object[]} a list of [margin structures]{@link https://docs.ccxt.com/?id=margin-loan-structure}
          */
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchMarginAdjustmentHistory() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchMarginAdjustmentHistory() is not supported yet');
     }
     async setMarginMode(marginMode, symbol = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' setMarginMode() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' setMarginMode() is not supported yet');
     }
     async fetchDepositAddressesByNetwork(code, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchDepositAddressesByNetwork() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchDepositAddressesByNetwork() is not supported yet');
     }
     async fetchOpenInterestHistory(symbol, timeframe = '1h', since = undefined, limit = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchOpenInterestHistory() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchOpenInterestHistory() is not supported yet');
     }
     async fetchOpenInterest(symbol, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchOpenInterest() is not supported yet');
+        if (this.has['fetchOpenInterests']) {
+            const openInterests = await this.fetchOpenInterests([symbol], params);
+            return this.safeDict(openInterests, symbol);
+        }
+        else {
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchOpenInterest() is not supported yet');
+        }
     }
     async fetchOpenInterests(symbols = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchOpenInterests() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchOpenInterests() is not supported yet');
     }
     async signIn(params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' signIn() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' signIn() is not supported yet');
     }
     async fetchPaymentMethods(params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchPaymentMethods() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchPaymentMethods() is not supported yet');
     }
     parseToInt(number) {
         // Solve Common parseInt misuse ex: parseInt ((since / 1000).toString ())
@@ -24723,7 +24729,7 @@ class Exchange {
     }
     initRestRateLimiter() {
         if (this.rateLimit === undefined || (this.id !== undefined && this.rateLimit === -1)) {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.ExchangeError(this.id + '.rateLimit property is not configured');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.ExchangeError(this.id + '.rateLimit property is not configured');
         }
         let refillRate = this.MAX_VALUE;
         if (this.rateLimit > 0) {
@@ -24956,18 +24962,18 @@ class Exchange {
         const amount = this.safeString(entry, 'amount');
         if (amount !== undefined) {
             if (before === undefined && after !== undefined) {
-                before = _Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringSub(after, amount);
+                before = _Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringSub(after, amount);
             }
             else if (before !== undefined && after === undefined) {
-                after = _Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringAdd(before, amount);
+                after = _Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringAdd(before, amount);
             }
         }
         if (before !== undefined && after !== undefined) {
             if (direction === undefined) {
-                if (_Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringGt(before, after)) {
+                if (_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringGt(before, after)) {
                     direction = 'out';
                 }
-                if (_Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringGt(after, before)) {
+                if (_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringGt(after, before)) {
                     direction = 'in';
                 }
             }
@@ -25033,13 +25039,13 @@ class Exchange {
                 // find lowest fee (which is more desired)
                 const fee = this.safeString(network, 'fee');
                 const feeMain = this.safeString(currency, 'fee');
-                if (feeMain === undefined || _Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringLt(fee, feeMain)) {
+                if (feeMain === undefined || _Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringLt(fee, feeMain)) {
                     currency['fee'] = this.parseNumber(fee);
                 }
                 // find lowest precision (which is more desired)
                 const precision = this.safeString(network, 'precision');
                 const precisionMain = this.safeString(currency, 'precision');
-                if (precisionMain === undefined || _Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringGt(precision, precisionMain)) {
+                if (precisionMain === undefined || _Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringGt(precision, precisionMain)) {
                     currency['precision'] = this.parseNumber(precision);
                 }
                 // limits
@@ -25059,11 +25065,11 @@ class Exchange {
                 const limitsDepositMinMain = this.safeString(limitsDepositMain, 'min');
                 const limitsDepositMaxMain = this.safeString(limitsDepositMain, 'max');
                 // find min
-                if (limitsDepositMinMain === undefined || _Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringLt(limitsDepositMin, limitsDepositMinMain)) {
+                if (limitsDepositMinMain === undefined || _Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringLt(limitsDepositMin, limitsDepositMinMain)) {
                     currency['limits']['deposit']['min'] = this.parseNumber(limitsDepositMin);
                 }
                 // find max
-                if (limitsDepositMaxMain === undefined || _Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringGt(limitsDepositMax, limitsDepositMaxMain)) {
+                if (limitsDepositMaxMain === undefined || _Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringGt(limitsDepositMax, limitsDepositMaxMain)) {
                     currency['limits']['deposit']['max'] = this.parseNumber(limitsDepositMax);
                 }
                 // withdrawals
@@ -25077,11 +25083,11 @@ class Exchange {
                 const limitsWithdrawMinMain = this.safeString(limitsWithdrawMain, 'min');
                 const limitsWithdrawMaxMain = this.safeString(limitsWithdrawMain, 'max');
                 // find min
-                if (limitsWithdrawMinMain === undefined || _Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringLt(limitsWithdrawMin, limitsWithdrawMinMain)) {
+                if (limitsWithdrawMinMain === undefined || _Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringLt(limitsWithdrawMin, limitsWithdrawMinMain)) {
                     currency['limits']['withdraw']['min'] = this.parseNumber(limitsWithdrawMin);
                 }
                 // find max
-                if (limitsWithdrawMaxMain === undefined || _Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringGt(limitsWithdrawMax, limitsWithdrawMaxMain)) {
+                if (limitsWithdrawMaxMain === undefined || _Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringGt(limitsWithdrawMax, limitsWithdrawMaxMain)) {
                     currency['limits']['withdraw']['max'] = this.parseNumber(limitsWithdrawMax);
                 }
             }
@@ -25303,11 +25309,11 @@ class Exchange {
     setMarketsFromExchange(sourceExchange) {
         // Validate that both exchanges are of the same type
         if (this.id !== sourceExchange.id) {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.ArgumentsRequired(this.id + ' shareMarkets() can only share markets with exchanges of the same type (got ' + sourceExchange['id'] + ')');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired(this.id + ' shareMarkets() can only share markets with exchanges of the same type (got ' + sourceExchange['id'] + ')');
         }
         // Validate that source exchange has loaded markets
         if (!sourceExchange.markets) {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.ExchangeError('setMarketsFromExchange() source exchange must have loaded markets first. Can call by using loadMarkets function');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.ExchangeError('setMarketsFromExchange() source exchange must have loaded markets first. Can call by using loadMarkets function');
         }
         // Set all market-related data
         this.markets = sourceExchange.markets;
@@ -25348,13 +25354,13 @@ class Exchange {
             let used = this.safeString(balance[code], 'used');
             const debt = this.safeString(balance[code], 'debt');
             if ((total === undefined) && (free !== undefined) && (used !== undefined)) {
-                total = _Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringAdd(free, used);
+                total = _Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringAdd(free, used);
             }
             if ((free === undefined) && (total !== undefined) && (used !== undefined)) {
-                free = _Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringSub(total, used);
+                free = _Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringSub(total, used);
             }
             if ((used === undefined) && (total !== undefined) && (free !== undefined)) {
-                used = _Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringSub(total, free);
+                used = _Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringSub(total, free);
             }
             balance[code]['free'] = this.parseNumber(free);
             balance[code]['used'] = this.parseNumber(used);
@@ -25444,11 +25450,11 @@ class Exchange {
                     const trade = trades[i];
                     const tradeAmount = this.safeString(trade, 'amount');
                     if (parseFilled && (tradeAmount !== undefined)) {
-                        filled = _Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringAdd(filled, tradeAmount);
+                        filled = _Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringAdd(filled, tradeAmount);
                     }
                     const tradeCost = this.safeString(trade, 'cost');
                     if (parseCost && (tradeCost !== undefined)) {
-                        cost = _Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringAdd(cost, tradeCost);
+                        cost = _Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringAdd(cost, tradeCost);
                     }
                     if (parseSymbol) {
                         symbol = this.safeString(trade, 'symbol');
@@ -25509,7 +25515,7 @@ class Exchange {
         if (amount === undefined) {
             // ensure amount = filled + remaining
             if (filled !== undefined && remaining !== undefined) {
-                amount = _Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringAdd(filled, remaining);
+                amount = _Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringAdd(filled, remaining);
             }
             else if (status === 'closed') {
                 amount = filled;
@@ -25517,7 +25523,7 @@ class Exchange {
         }
         if (filled === undefined) {
             if (amount !== undefined && remaining !== undefined) {
-                filled = _Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringSub(amount, remaining);
+                filled = _Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringSub(amount, remaining);
             }
             else if (status === 'closed' && amount !== undefined) {
                 filled = amount;
@@ -25525,7 +25531,7 @@ class Exchange {
         }
         if (remaining === undefined) {
             if (amount !== undefined && filled !== undefined) {
-                remaining = _Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringSub(amount, filled);
+                remaining = _Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringSub(amount, filled);
             }
             else if (status === 'closed') {
                 remaining = '0';
@@ -25540,13 +25546,13 @@ class Exchange {
         // linear
         // price = cost / (filled * contract size)
         if (average === undefined) {
-            if ((filled !== undefined) && (cost !== undefined) && _Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringGt(filled, '0')) {
-                const filledTimesContractSize = _Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringMul(filled, contractSize);
+            if ((filled !== undefined) && (cost !== undefined) && _Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringGt(filled, '0')) {
+                const filledTimesContractSize = _Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringMul(filled, contractSize);
                 if (inverse) {
-                    average = _Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringDiv(filledTimesContractSize, cost);
+                    average = _Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringDiv(filledTimesContractSize, cost);
                 }
                 else {
-                    average = _Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringDiv(cost, filledTimesContractSize);
+                    average = _Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringDiv(cost, filledTimesContractSize);
                 }
             }
         }
@@ -25566,17 +25572,17 @@ class Exchange {
                 multiplyPrice = average;
             }
             // contract trading
-            const filledTimesContractSize = _Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringMul(filled, contractSize);
+            const filledTimesContractSize = _Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringMul(filled, contractSize);
             if (inverse) {
-                cost = _Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringDiv(filledTimesContractSize, multiplyPrice);
+                cost = _Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringDiv(filledTimesContractSize, multiplyPrice);
             }
             else {
-                cost = _Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringMul(filledTimesContractSize, multiplyPrice);
+                cost = _Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringMul(filledTimesContractSize, multiplyPrice);
             }
         }
         // support for market orders
         const orderType = this.safeValue(order, 'type');
-        const emptyPrice = (price === undefined) || _Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringEquals(price, '0');
+        const emptyPrice = (price === undefined) || _Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringEquals(price, '0');
         if (emptyPrice && (orderType === 'market')) {
             price = average;
         }
@@ -25697,7 +25703,7 @@ class Exchange {
     }
     calculateFeeWithRate(symbol, type, side, amount, price, takerOrMaker = 'taker', feeRate = undefined, params = {}) {
         if (type === 'market' && takerOrMaker === 'maker') {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.ArgumentsRequired(this.id + ' calculateFee() - you have provided incompatible arguments - "market" type order can not be "maker". Change either the "type" or the "takerOrMaker" argument to calculate the fee.');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired(this.id + ' calculateFee() - you have provided incompatible arguments - "market" type order can not be "maker". Change either the "type" or the "takerOrMaker" argument to calculate the fee.');
         }
         const market = this.markets[symbol];
         const feeSide = this.safeString(market, 'feeSide', 'quote');
@@ -25718,7 +25724,7 @@ class Exchange {
         let key = undefined;
         if (useQuote) {
             const priceString = this.numberToString(price);
-            cost = _Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringMul(cost, priceString);
+            cost = _Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringMul(cost, priceString);
             key = 'quote';
         }
         else {
@@ -25733,7 +25739,7 @@ class Exchange {
             takerOrMaker = 'taker';
         }
         const rate = (feeRate !== undefined) ? this.numberToString(feeRate) : this.safeString(market, takerOrMaker);
-        cost = _Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringMul(cost, rate);
+        cost = _Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringMul(cost, rate);
         return {
             'cost': this.parseNumber(cost),
             'currency': market[key],
@@ -25763,10 +25769,10 @@ class Exchange {
         let baseValue = this.safeString(liquidation, 'baseValue');
         let quoteValue = this.safeString(liquidation, 'quoteValue');
         if ((baseValue === undefined) && (contracts !== undefined) && (contractSize !== undefined) && (price !== undefined)) {
-            baseValue = _Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringMul(contracts, contractSize);
+            baseValue = _Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringMul(contracts, contractSize);
         }
         if ((quoteValue === undefined) && (baseValue !== undefined) && (price !== undefined)) {
-            quoteValue = _Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringMul(baseValue, price);
+            quoteValue = _Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringMul(baseValue, price);
         }
         liquidation['contracts'] = this.parseNumber(contracts);
         liquidation['contractSize'] = this.parseNumber(contractSize);
@@ -25786,11 +25792,11 @@ class Exchange {
             if (contractSize !== undefined) {
                 const inverse = this.safeBool(market, 'inverse', false);
                 if (inverse) {
-                    multiplyPrice = _Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringDiv('1', price);
+                    multiplyPrice = _Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringDiv('1', price);
                 }
-                multiplyPrice = _Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringMul(multiplyPrice, contractSize);
+                multiplyPrice = _Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringMul(multiplyPrice, contractSize);
             }
-            cost = _Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringMul(multiplyPrice, amount);
+            cost = _Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringMul(multiplyPrice, amount);
         }
         const [resultFee, resultFees] = this.parsedFeeAndFees(trade);
         trade['fee'] = resultFee;
@@ -25954,7 +25960,7 @@ class Exchange {
                 }
                 const rateKey = (rate === undefined) ? '' : rate;
                 if (rateKey in reduced[feeCurrencyCode]) {
-                    reduced[feeCurrencyCode][rateKey]['cost'] = _Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringAdd(reduced[feeCurrencyCode][rateKey]['cost'], cost);
+                    reduced[feeCurrencyCode][rateKey]['cost'] = _Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringAdd(reduced[feeCurrencyCode][rateKey]['cost'], cost);
                 }
                 else {
                     reduced[feeCurrencyCode][rateKey] = {
@@ -25985,54 +25991,54 @@ class Exchange {
         const baseVolume = this.safeString(ticker, 'baseVolume');
         const quoteVolume = this.safeString(ticker, 'quoteVolume');
         if (vwap === undefined) {
-            vwap = _Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringDiv(this.omitZero(quoteVolume), baseVolume);
+            vwap = _Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringDiv(this.omitZero(quoteVolume), baseVolume);
         }
         // calculate open
         if (change !== undefined) {
             if (close === undefined && average !== undefined) {
-                close = _Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringAdd(average, _Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringDiv(change, '2'));
+                close = _Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringAdd(average, _Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringDiv(change, '2'));
             }
             if (open === undefined && close !== undefined) {
-                open = _Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringSub(close, change);
+                open = _Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringSub(close, change);
             }
         }
         else if (percentage !== undefined) {
             if (close === undefined && average !== undefined) {
-                const openAddClose = _Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringMul(average, '2');
+                const openAddClose = _Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringMul(average, '2');
                 // openAddClose = open * (1 + (100 + percentage)/100)
-                const denominator = _Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringAdd('2', _Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringDiv(percentage, '100'));
-                const calcOpen = (open !== undefined) ? open : _Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringDiv(openAddClose, denominator);
-                close = _Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringMul(calcOpen, _Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringAdd('1', _Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringDiv(percentage, '100')));
+                const denominator = _Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringAdd('2', _Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringDiv(percentage, '100'));
+                const calcOpen = (open !== undefined) ? open : _Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringDiv(openAddClose, denominator);
+                close = _Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringMul(calcOpen, _Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringAdd('1', _Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringDiv(percentage, '100')));
             }
             if (open === undefined && close !== undefined) {
-                open = _Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringDiv(close, _Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringAdd('1', _Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringDiv(percentage, '100')));
+                open = _Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringDiv(close, _Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringAdd('1', _Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringDiv(percentage, '100')));
             }
         }
         // change
         if (change === undefined) {
             if (close !== undefined && open !== undefined) {
-                change = _Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringSub(close, open);
+                change = _Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringSub(close, open);
             }
             else if (close !== undefined && percentage !== undefined) {
-                change = _Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringMul(_Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringDiv(percentage, '100'), _Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringDiv(close, '100'));
+                change = _Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringMul(_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringDiv(percentage, '100'), _Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringDiv(close, '100'));
             }
             else if (open !== undefined && percentage !== undefined) {
-                change = _Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringMul(open, _Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringDiv(percentage, '100'));
+                change = _Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringMul(open, _Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringDiv(percentage, '100'));
             }
         }
         // calculate things according to "open" (similar can be done with "close")
         if (open !== undefined) {
             // percentage (using change)
             if (percentage === undefined && change !== undefined) {
-                percentage = _Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringMul(_Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringDiv(change, open), '100');
+                percentage = _Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringMul(_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringDiv(change, open), '100');
             }
             // close (using change)
             if (close === undefined && change !== undefined) {
-                close = _Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringAdd(open, change);
+                close = _Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringAdd(open, change);
             }
             // close (using average)
             if (close === undefined && average !== undefined) {
-                close = _Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringMul(average, '2');
+                close = _Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringMul(average, '2');
             }
             // average
             if (average === undefined && close !== undefined) {
@@ -26044,7 +26050,7 @@ class Exchange {
                         precision = this.precisionFromString(precisionPrice);
                     }
                 }
-                average = _Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringDiv(_Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringAdd(open, close), '2', precision);
+                average = _Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringDiv(_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringAdd(open, close), '2', precision);
             }
         }
         // timestamp and symbol operations don't belong in safeTicker
@@ -26072,42 +26078,42 @@ class Exchange {
         });
     }
     async fetchBorrowRate(code, amount, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchBorrowRate is deprecated, please use fetchCrossBorrowRate or fetchIsolatedBorrowRate instead');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchBorrowRate is deprecated, please use fetchCrossBorrowRate or fetchIsolatedBorrowRate instead');
     }
     async repayCrossMargin(code, amount, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' repayCrossMargin is not support yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' repayCrossMargin is not support yet');
     }
     async repayIsolatedMargin(symbol, code, amount, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' repayIsolatedMargin is not support yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' repayIsolatedMargin is not support yet');
     }
     async borrowCrossMargin(code, amount, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' borrowCrossMargin is not support yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' borrowCrossMargin is not support yet');
     }
     async borrowIsolatedMargin(symbol, code, amount, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' borrowIsolatedMargin is not support yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' borrowIsolatedMargin is not support yet');
     }
     async borrowMargin(code, amount, symbol = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' borrowMargin is deprecated, please use borrowCrossMargin or borrowIsolatedMargin instead');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' borrowMargin is deprecated, please use borrowCrossMargin or borrowIsolatedMargin instead');
     }
     async repayMargin(code, amount, symbol = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' repayMargin is deprecated, please use repayCrossMargin or repayIsolatedMargin instead');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' repayMargin is deprecated, please use repayCrossMargin or repayIsolatedMargin instead');
     }
     async fetchOHLCV(symbol, timeframe = '1m', since = undefined, limit = undefined, params = {}) {
         let message = '';
         if (this.has['fetchTrades']) {
             message = '. If you want to build OHLCV candles from trade executions data, visit https://github.com/ccxt/ccxt/tree/master/examples/ and see "build-ohlcv-bars" file';
         }
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchOHLCV() is not supported yet' + message);
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchOHLCV() is not supported yet' + message);
     }
     async fetchOHLCVWs(symbol, timeframe = '1m', since = undefined, limit = undefined, params = {}) {
         let message = '';
         if (this.has['fetchTradesWs']) {
             message = '. If you want to build OHLCV candles from trade executions data, visit https://github.com/ccxt/ccxt/tree/master/examples/ and see "build-ohlcv-bars" file';
         }
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchOHLCVWs() is not supported yet. Try using fetchOHLCV instead.' + message);
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchOHLCVWs() is not supported yet. Try using fetchOHLCV instead.' + message);
     }
     async watchOHLCV(symbol, timeframe = '1m', since = undefined, limit = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' watchOHLCV() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' watchOHLCV() is not supported yet');
     }
     convertTradingViewToOHLCV(ohlcvs, timestamp = 't', open = 'o', high = 'h', low = 'l', close = 'c', volume = 'v', ms = false) {
         const result = [];
@@ -26198,7 +26204,7 @@ class Exchange {
                     return jsoned; // if parsing was not successfull, exception should be thrown
                 }
                 else {
-                    throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.BadResponse('could not parse the response into json');
+                    throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.BadResponse('could not parse the response into json');
                 }
             }
             else {
@@ -26212,7 +26218,7 @@ class Exchange {
             return undefined;
         }
         else {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.BadResponse(errorMessage);
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.BadResponse(errorMessage);
         }
     }
     marketIds(symbols = undefined) {
@@ -26248,14 +26254,14 @@ class Exchange {
     marketSymbols(symbols = undefined, type = undefined, allowEmpty = true, sameTypeOnly = false, sameSubTypeOnly = false) {
         if (symbols === undefined) {
             if (!allowEmpty) {
-                throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.ArgumentsRequired(this.id + ' empty list of symbols is not supported');
+                throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired(this.id + ' empty list of symbols is not supported');
             }
             return symbols;
         }
         const symbolsLength = symbols.length;
         if (symbolsLength === 0) {
             if (!allowEmpty) {
-                throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.ArgumentsRequired(this.id + ' empty list of symbols is not supported');
+                throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired(this.id + ' empty list of symbols is not supported');
             }
             return symbols;
         }
@@ -26266,16 +26272,16 @@ class Exchange {
             const market = this.market(symbols[i]);
             if (sameTypeOnly && (marketType !== undefined)) {
                 if (market['type'] !== marketType) {
-                    throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.BadRequest(this.id + ' symbols must be of the same type, either ' + marketType + ' or ' + market['type'] + '.');
+                    throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest(this.id + ' symbols must be of the same type, either ' + marketType + ' or ' + market['type'] + '.');
                 }
             }
             if (sameSubTypeOnly && (isLinearSubType !== undefined)) {
                 if (market['linear'] !== isLinearSubType) {
-                    throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.BadRequest(this.id + ' symbols must be of the same subType, either linear or inverse.');
+                    throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest(this.id + ' symbols must be of the same subType, either linear or inverse.');
                 }
             }
             if (type !== undefined && market['type'] !== type) {
-                throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.BadRequest(this.id + ' symbols must be of the same type ' + type + '. If the type is incorrect you can change it in options or the params of the request');
+                throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest(this.id + ' symbols must be of the same type ' + type + '. If the type is incorrect you can change it in options or the params of the request');
             }
             marketType = market['type'];
             if (!market['spot']) {
@@ -26460,7 +26466,7 @@ class Exchange {
         const responseNetworksLength = availableNetworkIds.length;
         if (networkCode !== undefined) {
             if (responseNetworksLength === 0) {
-                throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' - ' + networkCode + ' network did not return any result for ' + currencyCode);
+                throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' - ' + networkCode + ' network did not return any result for ' + currencyCode);
             }
             else {
                 // if networkCode was provided by user, we should check it after response, as the referenced exchange doesn't support network-code during request
@@ -26469,13 +26475,13 @@ class Exchange {
                     chosenNetworkId = networkIdOrCode;
                 }
                 else {
-                    throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' - ' + networkIdOrCode + ' network was not found for ' + currencyCode + ', use one of ' + availableNetworkIds.join(', '));
+                    throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' - ' + networkIdOrCode + ' network was not found for ' + currencyCode + ', use one of ' + availableNetworkIds.join(', '));
                 }
             }
         }
         else {
             if (responseNetworksLength === 0) {
-                throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' - no networks were returned for ' + currencyCode);
+                throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' - no networks were returned for ' + currencyCode);
             }
             else {
                 // if networkCode was not provided by user, then we try to use the default network (if it was defined in "defaultNetworks"), otherwise, we just return the first network entry
@@ -26484,7 +26490,7 @@ class Exchange {
                 if (defaultNetworkId in indexedNetworkEntries) {
                     return defaultNetworkId;
                 }
-                throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' - can not determine the default network, please pass param["network"] one from : ' + availableNetworkIds.join(', '));
+                throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' - can not determine the default network, please pass param["network"] one from : ' + availableNetworkIds.join(', '));
             }
         }
         return chosenNetworkId;
@@ -26572,7 +26578,7 @@ class Exchange {
         const percentage = this.safeValue(position, 'percentage');
         if ((percentage === undefined) && (unrealizedPnlString !== undefined) && (initialMarginString !== undefined)) {
             // as it was done in all implementations ( aax, btcex, bybit, deribit, ftx, gate, kucoinfutures, phemex )
-            const percentageString = _Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringMul(_Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringDiv(unrealizedPnlString, initialMarginString, 4), '100');
+            const percentageString = _Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringMul(_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringDiv(unrealizedPnlString, initialMarginString, 4), '100');
             position['percentage'] = this.parseNumber(percentageString);
         }
         // if contractSize is undefined get from market
@@ -26595,6 +26601,19 @@ class Exchange {
         for (let i = 0; i < positions.length; i++) {
             const position = this.extend(this.parsePosition(positions[i], undefined), params);
             result.push(position);
+        }
+        return this.filterByArrayPositions(result, 'symbol', symbols, false);
+    }
+    parseADLRank(info, market = undefined) {
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' parseADLRank() is not supported yet');
+    }
+    parseADLRanks(ranks, symbols = undefined, params = {}) {
+        symbols = this.marketSymbols(symbols);
+        ranks = this.toArray(ranks);
+        const result = [];
+        for (let i = 0; i < ranks.length; i++) {
+            const rank = this.extend(this.parseADLRank(ranks[i], undefined), params);
+            result.push(rank);
         }
         return this.filterByArrayPositions(result, 'symbol', symbols, false);
     }
@@ -26755,7 +26774,7 @@ class Exchange {
             request[exchangeSpecificKey] = this.networkCodeToId(networkCode, currencyCode);
         }
         else if (isRequired) {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.ArgumentsRequired(this.id + ' - "network" param is required for this request');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired(this.id + ' - "network" param is required for this request');
         }
         return [request, params];
     }
@@ -26838,7 +26857,7 @@ class Exchange {
                 return await this.fetch(request['url'], request['method'], request['headers'], request['body']);
             }
             catch (e) {
-                if (e instanceof _errors_js__WEBPACK_IMPORTED_MODULE_3__.OperationFailed) {
+                if (e instanceof _errors_js__WEBPACK_IMPORTED_MODULE_2__.OperationFailed) {
                     if (i < retries) {
                         if (this.verbose) {
                             const index = i + 1;
@@ -26958,16 +26977,16 @@ class Exchange {
         return await this.createOrderWs(symbol, type, side, amount, price, params);
     }
     async fetchPosition(symbol, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchPosition() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchPosition() is not supported yet');
     }
     async fetchPositionWs(symbol, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchPositionWs() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchPositionWs() is not supported yet');
     }
     async watchPosition(symbol = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' watchPosition() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' watchPosition() is not supported yet');
     }
     async watchPositions(symbols = undefined, since = undefined, limit = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' watchPositions() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' watchPositions() is not supported yet');
     }
     async watchPositionForSymbols(symbols = undefined, since = undefined, limit = undefined, params = {}) {
         return await this.watchPositions(symbols, since, limit, params);
@@ -26981,7 +27000,7 @@ class Exchange {
          * @param {object} params extra parameters specific to the endpoint
          * @returns {object[]} a list of [position structure]{@link https://docs.ccxt.com/?id=position-structure} with maximum 3 items - possible one position for "one-way" mode, and possible two positions (long & short) for "two-way" (a.k.a. hedge) mode
          */
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchPositionsForSymbol() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchPositionsForSymbol() is not supported yet');
     }
     async fetchPositionsForSymbolWs(symbol, params = {}) {
         /**
@@ -26992,28 +27011,28 @@ class Exchange {
          * @param {object} params extra parameters specific to the endpoint
          * @returns {object[]} a list of [position structure]{@link https://docs.ccxt.com/?id=position-structure} with maximum 3 items - possible one position for "one-way" mode, and possible two positions (long & short) for "two-way" (a.k.a. hedge) mode
          */
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchPositionsForSymbol() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchPositionsForSymbol() is not supported yet');
     }
     async fetchPositions(symbols = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchPositions() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchPositions() is not supported yet');
     }
     async fetchPositionsWs(symbols = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchPositions() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchPositions() is not supported yet');
     }
     async fetchPositionsRisk(symbols = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchPositionsRisk() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchPositionsRisk() is not supported yet');
     }
     async fetchBidsAsks(symbols = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchBidsAsks() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchBidsAsks() is not supported yet');
     }
     async fetchBorrowInterest(code = undefined, symbol = undefined, since = undefined, limit = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchBorrowInterest() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchBorrowInterest() is not supported yet');
     }
     async fetchLedger(code = undefined, since = undefined, limit = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchLedger() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchLedger() is not supported yet');
     }
     async fetchLedgerEntry(id, code = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchLedgerEntry() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchLedgerEntry() is not supported yet');
     }
     parseBidAsk(bidask, priceKey = 0, amountKey = 1, countOrIdKey = 2) {
         const price = this.safeFloat(bidask, priceKey);
@@ -27053,7 +27072,7 @@ class Exchange {
                 else {
                     if (marketType === undefined) {
                         if (market === undefined) {
-                            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.ArgumentsRequired(this.id + ' safeMarket() requires a fourth argument for ' + marketId + ' to disambiguate between different markets with the same market id');
+                            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired(this.id + ' safeMarket() requires a fourth argument for ' + marketId + ' to disambiguate between different markets with the same market id');
                         }
                         else {
                             marketType = market['type'];
@@ -27107,7 +27126,7 @@ class Exchange {
             const key = keys[i];
             if (this.requiredCredentials[key] && !this[key]) {
                 if (error) {
-                    throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.AuthenticationError(this.id + ' requires "' + key + '" credential');
+                    throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.AuthenticationError(this.id + ' requires "' + key + '" credential');
                 }
                 else {
                     return false;
@@ -27118,23 +27137,23 @@ class Exchange {
     }
     oath() {
         if (this.twofa !== undefined) {
-            return (0,_functions_totp_js__WEBPACK_IMPORTED_MODULE_9__/* .totp */ .O)(this.twofa);
+            return (0,_functions_totp_js__WEBPACK_IMPORTED_MODULE_8__/* .totp */ .O)(this.twofa);
         }
         else {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.ExchangeError(this.id + ' exchange.twofa has not been set for 2FA Two-Factor Authentication');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.ExchangeError(this.id + ' exchange.twofa has not been set for 2FA Two-Factor Authentication');
         }
     }
     async fetchBalance(params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchBalance() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchBalance() is not supported yet');
     }
     async fetchBalanceWs(params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchBalanceWs() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchBalanceWs() is not supported yet');
     }
     parseBalance(response) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' parseBalance() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' parseBalance() is not supported yet');
     }
     async watchBalance(params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' watchBalance() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' watchBalance() is not supported yet');
     }
     async fetchPartialBalance(part, params = {}) {
         const balance = await this.fetchBalance(params);
@@ -27150,23 +27169,23 @@ class Exchange {
         return await this.fetchPartialBalance('total', params);
     }
     async fetchStatus(params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchStatus() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchStatus() is not supported yet');
     }
     async fetchTransactionFee(code, params = {}) {
         if (!this.has['fetchTransactionFees']) {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchTransactionFee() is not supported yet');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchTransactionFee() is not supported yet');
         }
         return await this.fetchTransactionFees([code], params);
     }
     async fetchTransactionFees(codes = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchTransactionFees() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchTransactionFees() is not supported yet');
     }
     async fetchDepositWithdrawFees(codes = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchDepositWithdrawFees() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchDepositWithdrawFees() is not supported yet');
     }
     async fetchDepositWithdrawFee(code, params = {}) {
         if (!this.has['fetchDepositWithdrawFees']) {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchDepositWithdrawFee() is not supported yet');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchDepositWithdrawFee() is not supported yet');
         }
         const fees = await this.fetchDepositWithdrawFees([code], params);
         return this.safeValue(fees, code);
@@ -27176,30 +27195,30 @@ class Exchange {
             return mapping[key];
         }
         else {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' ' + key + ' does not have a value in mapping');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' ' + key + ' does not have a value in mapping');
         }
     }
     async fetchCrossBorrowRate(code, params = {}) {
         await this.loadMarkets();
         if (!this.has['fetchBorrowRates']) {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchCrossBorrowRate() is not supported yet');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchCrossBorrowRate() is not supported yet');
         }
         const borrowRates = await this.fetchCrossBorrowRates(params);
         const rate = this.safeValue(borrowRates, code);
         if (rate === undefined) {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.ExchangeError(this.id + ' fetchCrossBorrowRate() could not find the borrow rate for currency code ' + code);
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.ExchangeError(this.id + ' fetchCrossBorrowRate() could not find the borrow rate for currency code ' + code);
         }
         return rate;
     }
     async fetchIsolatedBorrowRate(symbol, params = {}) {
         await this.loadMarkets();
         if (!this.has['fetchBorrowRates']) {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchIsolatedBorrowRate() is not supported yet');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchIsolatedBorrowRate() is not supported yet');
         }
         const borrowRates = await this.fetchIsolatedBorrowRates(params);
         const rate = this.safeDict(borrowRates, symbol);
         if (rate === undefined) {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.ExchangeError(this.id + ' fetchIsolatedBorrowRate() could not find the borrow rate for market symbol ' + symbol);
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.ExchangeError(this.id + ' fetchIsolatedBorrowRate() could not find the borrow rate for market symbol ' + symbol);
         }
         return rate;
     }
@@ -27360,14 +27379,14 @@ class Exchange {
         return this.safeValue(config, 'cost', 1);
     }
     async pingServerImpl(params) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' pingServer() method declared, but not implemented');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' pingServer() method declared, but not implemented');
     }
     async pingServer(params = {}) {
         if (this.has['pingServer']) {
             return this.pingServerImpl(params);
         }
         else {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' pingServer() is not supported yet');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' pingServer() is not supported yet');
         }
     }
     async fetchTicker(symbol, params = {}) {
@@ -27378,14 +27397,14 @@ class Exchange {
             const tickers = await this.fetchTickers([symbol], params);
             const ticker = this.safeDict(tickers, symbol);
             if (ticker === undefined) {
-                throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NullResponse(this.id + ' fetchTickers() could not find a ticker for ' + symbol);
+                throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NullResponse(this.id + ' fetchTickers() could not find a ticker for ' + symbol);
             }
             else {
                 return ticker;
             }
         }
         else {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchTicker() is not supported yet');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchTicker() is not supported yet');
         }
     }
     async fetchMarkPrice(symbol, params = {}) {
@@ -27396,14 +27415,14 @@ class Exchange {
             const tickers = await this.fetchMarkPrices([symbol], params);
             const ticker = this.safeDict(tickers, symbol);
             if (ticker === undefined) {
-                throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NullResponse(this.id + ' fetchMarkPrices() could not find a ticker for ' + symbol);
+                throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NullResponse(this.id + ' fetchMarkPrices() could not find a ticker for ' + symbol);
             }
             else {
                 return ticker;
             }
         }
         else {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchMarkPrices() is not supported yet');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchMarkPrices() is not supported yet');
         }
     }
     async fetchTickerWs(symbol, params = {}) {
@@ -27414,42 +27433,42 @@ class Exchange {
             const tickers = await this.fetchTickersWs([symbol], params);
             const ticker = this.safeDict(tickers, symbol);
             if (ticker === undefined) {
-                throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NullResponse(this.id + ' fetchTickerWs() could not find a ticker for ' + symbol);
+                throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NullResponse(this.id + ' fetchTickerWs() could not find a ticker for ' + symbol);
             }
             else {
                 return ticker;
             }
         }
         else {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchTickerWs() is not supported yet');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchTickerWs() is not supported yet');
         }
     }
     async watchTicker(symbol, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' watchTicker() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' watchTicker() is not supported yet');
     }
     async fetchTickers(symbols = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchTickers() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchTickers() is not supported yet');
     }
     async fetchMarkPrices(symbols = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchMarkPrices() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchMarkPrices() is not supported yet');
     }
     async fetchTickersWs(symbols = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchTickers() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchTickers() is not supported yet');
     }
     async fetchOrderBooks(symbols = undefined, limit = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchOrderBooks() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchOrderBooks() is not supported yet');
     }
     async watchBidsAsks(symbols = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' watchBidsAsks() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' watchBidsAsks() is not supported yet');
     }
     async watchTickers(symbols = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' watchTickers() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' watchTickers() is not supported yet');
     }
     async unWatchTickers(symbols = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' unWatchTickers() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' unWatchTickers() is not supported yet');
     }
     async fetchOrder(id, symbol = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchOrder() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchOrder() is not supported yet');
     }
     /**
      * @method
@@ -27465,7 +27484,7 @@ class Exchange {
         return await this.fetchOrder('', symbol, extendedParams);
     }
     async fetchOrderWs(id, symbol = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchOrderWs() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchOrderWs() is not supported yet');
     }
     async fetchOrderStatus(id, symbol = undefined, params = {}) {
         // TODO: TypeScript: change method signature by replacing
@@ -27477,22 +27496,46 @@ class Exchange {
         return await this.fetchOrder(this.safeString(order, 'id'), this.safeString(order, 'symbol'), params);
     }
     async createOrder(symbol, type, side, amount, price = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' createOrder() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' createOrder() is not supported yet');
     }
     async createTwapOrder(symbol, side, amount, duration, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' createTwapOrder() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' createTwapOrder() is not supported yet');
     }
     async createConvertTrade(id, fromCode, toCode, amount = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' createConvertTrade() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' createConvertTrade() is not supported yet');
     }
     async fetchConvertTrade(id, code = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchConvertTrade() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchConvertTrade() is not supported yet');
     }
     async fetchConvertTradeHistory(code = undefined, since = undefined, limit = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchConvertTradeHistory() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchConvertTradeHistory() is not supported yet');
     }
     async fetchPositionMode(symbol = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchPositionMode() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchPositionMode() is not supported yet');
+    }
+    async fetchADLRank(symbol, params = {}) {
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchADLRank() is not supported yet');
+    }
+    async fetchPositionsADLRank(symbols = undefined, params = {}) {
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchPositionsADLRank() is not supported yet');
+    }
+    async fetchPositionADLRank(symbol, params = {}) {
+        if (this.has['fetchPositionsADLRank']) {
+            await this.loadMarkets();
+            const market = this.market(symbol);
+            symbol = market['symbol'];
+            const ranks = await this.fetchPositionsADLRank([symbol], params);
+            const rank = this.safeDict(ranks, 0);
+            if (rank === undefined) {
+                throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NullResponse(this.id + ' fetchPositionsADLRank() could not find a rank for ' + symbol);
+            }
+            else {
+                return rank;
+            }
+        }
+        else {
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchPositionsADLRank() is not supported yet');
+        }
     }
     async createTrailingAmountOrder(symbol, type, side, amount, price = undefined, trailingAmount = undefined, trailingTriggerPrice = undefined, params = {}) {
         /**
@@ -27510,7 +27553,7 @@ class Exchange {
          * @returns {object} an [order structure]{@link https://docs.ccxt.com/?id=order-structure}
          */
         if (trailingAmount === undefined) {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.ArgumentsRequired(this.id + ' createTrailingAmountOrder() requires a trailingAmount argument');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired(this.id + ' createTrailingAmountOrder() requires a trailingAmount argument');
         }
         params['trailingAmount'] = trailingAmount;
         if (trailingTriggerPrice !== undefined) {
@@ -27519,7 +27562,7 @@ class Exchange {
         if (this.has['createTrailingAmountOrder']) {
             return await this.createOrder(symbol, type, side, amount, price, params);
         }
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' createTrailingAmountOrder() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' createTrailingAmountOrder() is not supported yet');
     }
     async createTrailingAmountOrderWs(symbol, type, side, amount, price = undefined, trailingAmount = undefined, trailingTriggerPrice = undefined, params = {}) {
         /**
@@ -27537,7 +27580,7 @@ class Exchange {
          * @returns {object} an [order structure]{@link https://docs.ccxt.com/?id=order-structure}
          */
         if (trailingAmount === undefined) {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.ArgumentsRequired(this.id + ' createTrailingAmountOrderWs() requires a trailingAmount argument');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired(this.id + ' createTrailingAmountOrderWs() requires a trailingAmount argument');
         }
         params['trailingAmount'] = trailingAmount;
         if (trailingTriggerPrice !== undefined) {
@@ -27546,7 +27589,7 @@ class Exchange {
         if (this.has['createTrailingAmountOrderWs']) {
             return await this.createOrderWs(symbol, type, side, amount, price, params);
         }
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' createTrailingAmountOrderWs() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' createTrailingAmountOrderWs() is not supported yet');
     }
     async createTrailingPercentOrder(symbol, type, side, amount, price = undefined, trailingPercent = undefined, trailingTriggerPrice = undefined, params = {}) {
         /**
@@ -27564,7 +27607,7 @@ class Exchange {
          * @returns {object} an [order structure]{@link https://docs.ccxt.com/?id=order-structure}
          */
         if (trailingPercent === undefined) {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.ArgumentsRequired(this.id + ' createTrailingPercentOrder() requires a trailingPercent argument');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired(this.id + ' createTrailingPercentOrder() requires a trailingPercent argument');
         }
         params['trailingPercent'] = trailingPercent;
         if (trailingTriggerPrice !== undefined) {
@@ -27573,7 +27616,7 @@ class Exchange {
         if (this.has['createTrailingPercentOrder']) {
             return await this.createOrder(symbol, type, side, amount, price, params);
         }
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' createTrailingPercentOrder() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' createTrailingPercentOrder() is not supported yet');
     }
     async createTrailingPercentOrderWs(symbol, type, side, amount, price = undefined, trailingPercent = undefined, trailingTriggerPrice = undefined, params = {}) {
         /**
@@ -27591,7 +27634,7 @@ class Exchange {
          * @returns {object} an [order structure]{@link https://docs.ccxt.com/?id=order-structure}
          */
         if (trailingPercent === undefined) {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.ArgumentsRequired(this.id + ' createTrailingPercentOrderWs() requires a trailingPercent argument');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired(this.id + ' createTrailingPercentOrderWs() requires a trailingPercent argument');
         }
         params['trailingPercent'] = trailingPercent;
         if (trailingTriggerPrice !== undefined) {
@@ -27600,7 +27643,7 @@ class Exchange {
         if (this.has['createTrailingPercentOrderWs']) {
             return await this.createOrderWs(symbol, type, side, amount, price, params);
         }
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' createTrailingPercentOrderWs() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' createTrailingPercentOrderWs() is not supported yet');
     }
     async createMarketOrderWithCost(symbol, side, cost, params = {}) {
         /**
@@ -27616,7 +27659,7 @@ class Exchange {
         if (this.has['createMarketOrderWithCost'] || (this.has['createMarketBuyOrderWithCost'] && this.has['createMarketSellOrderWithCost'])) {
             return await this.createOrder(symbol, 'market', side, cost, 1, params);
         }
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' createMarketOrderWithCost() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' createMarketOrderWithCost() is not supported yet');
     }
     async createMarketBuyOrderWithCost(symbol, cost, params = {}) {
         /**
@@ -27631,7 +27674,7 @@ class Exchange {
         if (this.options['createMarketBuyOrderRequiresPrice'] || this.has['createMarketBuyOrderWithCost']) {
             return await this.createOrder(symbol, 'market', 'buy', cost, 1, params);
         }
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' createMarketBuyOrderWithCost() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' createMarketBuyOrderWithCost() is not supported yet');
     }
     async createMarketSellOrderWithCost(symbol, cost, params = {}) {
         /**
@@ -27646,7 +27689,7 @@ class Exchange {
         if (this.options['createMarketSellOrderRequiresPrice'] || this.has['createMarketSellOrderWithCost']) {
             return await this.createOrder(symbol, 'market', 'sell', cost, 1, params);
         }
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' createMarketSellOrderWithCost() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' createMarketSellOrderWithCost() is not supported yet');
     }
     async createMarketOrderWithCostWs(symbol, side, cost, params = {}) {
         /**
@@ -27662,7 +27705,7 @@ class Exchange {
         if (this.has['createMarketOrderWithCostWs'] || (this.has['createMarketBuyOrderWithCostWs'] && this.has['createMarketSellOrderWithCostWs'])) {
             return await this.createOrderWs(symbol, 'market', side, cost, 1, params);
         }
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' createMarketOrderWithCostWs() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' createMarketOrderWithCostWs() is not supported yet');
     }
     async createTriggerOrder(symbol, type, side, amount, price = undefined, triggerPrice = undefined, params = {}) {
         /**
@@ -27679,13 +27722,13 @@ class Exchange {
          * @returns {object} an [order structure]{@link https://docs.ccxt.com/?id=order-structure}
          */
         if (triggerPrice === undefined) {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.ArgumentsRequired(this.id + ' createTriggerOrder() requires a triggerPrice argument');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired(this.id + ' createTriggerOrder() requires a triggerPrice argument');
         }
         params['triggerPrice'] = triggerPrice;
         if (this.has['createTriggerOrder']) {
             return await this.createOrder(symbol, type, side, amount, price, params);
         }
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' createTriggerOrder() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' createTriggerOrder() is not supported yet');
     }
     async createTriggerOrderWs(symbol, type, side, amount, price = undefined, triggerPrice = undefined, params = {}) {
         /**
@@ -27702,13 +27745,13 @@ class Exchange {
          * @returns {object} an [order structure]{@link https://docs.ccxt.com/?id=order-structure}
          */
         if (triggerPrice === undefined) {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.ArgumentsRequired(this.id + ' createTriggerOrderWs() requires a triggerPrice argument');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired(this.id + ' createTriggerOrderWs() requires a triggerPrice argument');
         }
         params['triggerPrice'] = triggerPrice;
         if (this.has['createTriggerOrderWs']) {
             return await this.createOrderWs(symbol, type, side, amount, price, params);
         }
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' createTriggerOrderWs() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' createTriggerOrderWs() is not supported yet');
     }
     async createStopLossOrder(symbol, type, side, amount, price = undefined, stopLossPrice = undefined, params = {}) {
         /**
@@ -27725,13 +27768,13 @@ class Exchange {
          * @returns {object} an [order structure]{@link https://docs.ccxt.com/?id=order-structure}
          */
         if (stopLossPrice === undefined) {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.ArgumentsRequired(this.id + ' createStopLossOrder() requires a stopLossPrice argument');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired(this.id + ' createStopLossOrder() requires a stopLossPrice argument');
         }
         params['stopLossPrice'] = stopLossPrice;
         if (this.has['createStopLossOrder']) {
             return await this.createOrder(symbol, type, side, amount, price, params);
         }
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' createStopLossOrder() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' createStopLossOrder() is not supported yet');
     }
     async createStopLossOrderWs(symbol, type, side, amount, price = undefined, stopLossPrice = undefined, params = {}) {
         /**
@@ -27748,13 +27791,13 @@ class Exchange {
          * @returns {object} an [order structure]{@link https://docs.ccxt.com/?id=order-structure}
          */
         if (stopLossPrice === undefined) {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.ArgumentsRequired(this.id + ' createStopLossOrderWs() requires a stopLossPrice argument');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired(this.id + ' createStopLossOrderWs() requires a stopLossPrice argument');
         }
         params['stopLossPrice'] = stopLossPrice;
         if (this.has['createStopLossOrderWs']) {
             return await this.createOrderWs(symbol, type, side, amount, price, params);
         }
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' createStopLossOrderWs() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' createStopLossOrderWs() is not supported yet');
     }
     async createTakeProfitOrder(symbol, type, side, amount, price = undefined, takeProfitPrice = undefined, params = {}) {
         /**
@@ -27771,13 +27814,13 @@ class Exchange {
          * @returns {object} an [order structure]{@link https://docs.ccxt.com/?id=order-structure}
          */
         if (takeProfitPrice === undefined) {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.ArgumentsRequired(this.id + ' createTakeProfitOrder() requires a takeProfitPrice argument');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired(this.id + ' createTakeProfitOrder() requires a takeProfitPrice argument');
         }
         params['takeProfitPrice'] = takeProfitPrice;
         if (this.has['createTakeProfitOrder']) {
             return await this.createOrder(symbol, type, side, amount, price, params);
         }
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' createTakeProfitOrder() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' createTakeProfitOrder() is not supported yet');
     }
     async createTakeProfitOrderWs(symbol, type, side, amount, price = undefined, takeProfitPrice = undefined, params = {}) {
         /**
@@ -27794,13 +27837,13 @@ class Exchange {
          * @returns {object} an [order structure]{@link https://docs.ccxt.com/?id=order-structure}
          */
         if (takeProfitPrice === undefined) {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.ArgumentsRequired(this.id + ' createTakeProfitOrderWs() requires a takeProfitPrice argument');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired(this.id + ' createTakeProfitOrderWs() requires a takeProfitPrice argument');
         }
         params['takeProfitPrice'] = takeProfitPrice;
         if (this.has['createTakeProfitOrderWs']) {
             return await this.createOrderWs(symbol, type, side, amount, price, params);
         }
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' createTakeProfitOrderWs() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' createTakeProfitOrderWs() is not supported yet');
     }
     async createOrderWithTakeProfitAndStopLoss(symbol, type, side, amount, price = undefined, takeProfit = undefined, stopLoss = undefined, params = {}) {
         /**
@@ -27829,11 +27872,11 @@ class Exchange {
         if (this.has['createOrderWithTakeProfitAndStopLoss']) {
             return await this.createOrder(symbol, type, side, amount, price, params);
         }
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' createOrderWithTakeProfitAndStopLoss() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' createOrderWithTakeProfitAndStopLoss() is not supported yet');
     }
     setTakeProfitAndStopLossParams(symbol, type, side, amount, price = undefined, takeProfit = undefined, stopLoss = undefined, params = {}) {
         if ((takeProfit === undefined) && (stopLoss === undefined)) {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.ArgumentsRequired(this.id + ' createOrderWithTakeProfitAndStopLoss() requires either a takeProfit or stopLoss argument');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired(this.id + ' createOrderWithTakeProfitAndStopLoss() requires either a takeProfit or stopLoss argument');
         }
         if (takeProfit !== undefined) {
             params['takeProfit'] = {
@@ -27907,19 +27950,19 @@ class Exchange {
         if (this.has['createOrderWithTakeProfitAndStopLossWs']) {
             return await this.createOrderWs(symbol, type, side, amount, price, params);
         }
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' createOrderWithTakeProfitAndStopLossWs() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' createOrderWithTakeProfitAndStopLossWs() is not supported yet');
     }
     async createOrders(orders, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' createOrders() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' createOrders() is not supported yet');
     }
     async editOrders(orders, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' editOrders() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' editOrders() is not supported yet');
     }
     async createOrderWs(symbol, type, side, amount, price = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' createOrderWs() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' createOrderWs() is not supported yet');
     }
     async cancelOrder(id, symbol = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' cancelOrder() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' cancelOrder() is not supported yet');
     }
     /**
      * @method
@@ -27935,10 +27978,10 @@ class Exchange {
         return await this.cancelOrder('', symbol, extendedParams);
     }
     async cancelOrderWs(id, symbol = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' cancelOrderWs() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' cancelOrderWs() is not supported yet');
     }
     async cancelOrders(ids, symbol = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' cancelOrders() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' cancelOrders() is not supported yet');
     }
     /**
      * @method
@@ -27954,101 +27997,101 @@ class Exchange {
         return await this.cancelOrders([], symbol, extendedParams);
     }
     async cancelOrdersWs(ids, symbol = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' cancelOrdersWs() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' cancelOrdersWs() is not supported yet');
     }
     async cancelAllOrders(symbol = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' cancelAllOrders() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' cancelAllOrders() is not supported yet');
     }
     async cancelAllOrdersAfter(timeout, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' cancelAllOrdersAfter() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' cancelAllOrdersAfter() is not supported yet');
     }
     async cancelOrdersForSymbols(orders, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' cancelOrdersForSymbols() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' cancelOrdersForSymbols() is not supported yet');
     }
     async cancelAllOrdersWs(symbol = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' cancelAllOrdersWs() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' cancelAllOrdersWs() is not supported yet');
     }
     async cancelUnifiedOrder(order, params = {}) {
         return this.cancelOrder(this.safeString(order, 'id'), this.safeString(order, 'symbol'), params);
     }
     async fetchOrders(symbol = undefined, since = undefined, limit = undefined, params = {}) {
         if (this.has['fetchOpenOrders'] && this.has['fetchClosedOrders']) {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchOrders() is not supported yet, consider using fetchOpenOrders() and fetchClosedOrders() instead');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchOrders() is not supported yet, consider using fetchOpenOrders() and fetchClosedOrders() instead');
         }
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchOrders() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchOrders() is not supported yet');
     }
     async fetchOrdersWs(symbol = undefined, since = undefined, limit = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchOrdersWs() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchOrdersWs() is not supported yet');
     }
     async fetchOrderTrades(id, symbol = undefined, since = undefined, limit = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchOrderTrades() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchOrderTrades() is not supported yet');
     }
     async watchOrders(symbol = undefined, since = undefined, limit = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' watchOrders() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' watchOrders() is not supported yet');
     }
     async fetchOpenOrders(symbol = undefined, since = undefined, limit = undefined, params = {}) {
         if (this.has['fetchOrders']) {
             const orders = await this.fetchOrders(symbol, since, limit, params);
             return this.filterBy(orders, 'status', 'open');
         }
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchOpenOrders() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchOpenOrders() is not supported yet');
     }
     async fetchOpenOrdersWs(symbol = undefined, since = undefined, limit = undefined, params = {}) {
         if (this.has['fetchOrdersWs']) {
             const orders = await this.fetchOrdersWs(symbol, since, limit, params);
             return this.filterBy(orders, 'status', 'open');
         }
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchOpenOrdersWs() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchOpenOrdersWs() is not supported yet');
     }
     async fetchClosedOrders(symbol = undefined, since = undefined, limit = undefined, params = {}) {
         if (this.has['fetchOrders']) {
             const orders = await this.fetchOrders(symbol, since, limit, params);
             return this.filterBy(orders, 'status', 'closed');
         }
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchClosedOrders() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchClosedOrders() is not supported yet');
     }
     async fetchCanceledOrders(symbol = undefined, since = undefined, limit = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchCanceledOrders() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchCanceledOrders() is not supported yet');
     }
     async fetchCanceledAndClosedOrders(symbol = undefined, since = undefined, limit = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchCanceledAndClosedOrders() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchCanceledAndClosedOrders() is not supported yet');
     }
     async fetchClosedOrdersWs(symbol = undefined, since = undefined, limit = undefined, params = {}) {
         if (this.has['fetchOrdersWs']) {
             const orders = await this.fetchOrdersWs(symbol, since, limit, params);
             return this.filterBy(orders, 'status', 'closed');
         }
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchClosedOrdersWs() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchClosedOrdersWs() is not supported yet');
     }
     async fetchMyTrades(symbol = undefined, since = undefined, limit = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchMyTrades() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchMyTrades() is not supported yet');
     }
     async fetchMyLiquidations(symbol = undefined, since = undefined, limit = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchMyLiquidations() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchMyLiquidations() is not supported yet');
     }
     async fetchLiquidations(symbol, since = undefined, limit = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchLiquidations() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchLiquidations() is not supported yet');
     }
     async fetchMyTradesWs(symbol = undefined, since = undefined, limit = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchMyTradesWs() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchMyTradesWs() is not supported yet');
     }
     async watchMyTrades(symbol = undefined, since = undefined, limit = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' watchMyTrades() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' watchMyTrades() is not supported yet');
     }
     async fetchGreeks(symbol, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchGreeks() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchGreeks() is not supported yet');
     }
     async fetchAllGreeks(symbols = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchAllGreeks() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchAllGreeks() is not supported yet');
     }
     async fetchOptionChain(code, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchOptionChain() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchOptionChain() is not supported yet');
     }
     async fetchOption(symbol, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchOption() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchOption() is not supported yet');
     }
     async fetchConvertQuote(fromCode, toCode, amount = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchConvertQuote() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchConvertQuote() is not supported yet');
     }
     async fetchDepositsWithdrawals(code = undefined, since = undefined, limit = undefined, params = {}) {
         /**
@@ -28061,44 +28104,44 @@ class Exchange {
          * @param {object} [params] extra parameters specific to the exchange API endpoint
          * @returns {object} a list of [transaction structures]{@link https://docs.ccxt.com/?id=transaction-structure}
          */
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchDepositsWithdrawals() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchDepositsWithdrawals() is not supported yet');
     }
     async fetchDeposits(code = undefined, since = undefined, limit = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchDeposits() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchDeposits() is not supported yet');
     }
     async fetchWithdrawals(code = undefined, since = undefined, limit = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchWithdrawals() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchWithdrawals() is not supported yet');
     }
     async fetchDepositsWs(code = undefined, since = undefined, limit = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchDepositsWs() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchDepositsWs() is not supported yet');
     }
     async fetchWithdrawalsWs(code = undefined, since = undefined, limit = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchWithdrawalsWs() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchWithdrawalsWs() is not supported yet');
     }
     async fetchFundingRateHistory(symbol = undefined, since = undefined, limit = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchFundingRateHistory() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchFundingRateHistory() is not supported yet');
     }
     async fetchFundingHistory(symbol = undefined, since = undefined, limit = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchFundingHistory() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchFundingHistory() is not supported yet');
     }
     async closePosition(symbol, side = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' closePosition() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' closePosition() is not supported yet');
     }
     async closeAllPositions(params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' closeAllPositions() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' closeAllPositions() is not supported yet');
     }
     async fetchL3OrderBook(symbol, limit = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.BadRequest(this.id + ' fetchL3OrderBook() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest(this.id + ' fetchL3OrderBook() is not supported yet');
     }
     parseLastPrice(price, market = undefined) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' parseLastPrice() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' parseLastPrice() is not supported yet');
     }
     async fetchDepositAddress(code, params = {}) {
         if (this.has['fetchDepositAddresses']) {
             const depositAddresses = await this.fetchDepositAddresses([code], params);
             const depositAddress = this.safeValue(depositAddresses, code);
             if (depositAddress === undefined) {
-                throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.InvalidAddress(this.id + ' fetchDepositAddress() could not find a deposit address for ' + code + ', make sure you have created a corresponding deposit address in your wallet on the exchange website');
+                throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidAddress(this.id + ' fetchDepositAddress() could not find a deposit address for ' + code + ', make sure you have created a corresponding deposit address in your wallet on the exchange website');
             }
             else {
                 return depositAddress;
@@ -28118,7 +28161,7 @@ class Exchange {
             }
         }
         else {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchDepositAddress() is not supported yet');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchDepositAddress() is not supported yet');
         }
     }
     account() {
@@ -28138,7 +28181,7 @@ class Exchange {
         const keys = Object.keys(this.currencies);
         const numCurrencies = keys.length;
         if (numCurrencies === 0) {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.ExchangeError(this.id + ' currencies not loaded');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.ExchangeError(this.id + ' currencies not loaded');
         }
         if (typeof code === 'string') {
             if (code in this.currencies) {
@@ -28148,7 +28191,7 @@ class Exchange {
                 return this.currencies_by_id[code];
             }
         }
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.ExchangeError(this.id + ' does not have currency code ' + code);
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.ExchangeError(this.id + ' does not have currency code ' + code);
     }
     /**
      * @method
@@ -28163,7 +28206,7 @@ class Exchange {
      */
     market(symbol, silentBadSymbol = undefined) {
         if (this.markets === undefined) {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.ExchangeError(this.id + ' markets not loaded');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.ExchangeError(this.id + ' markets not loaded');
         }
         if (silentBadSymbol === undefined) {
             silentBadSymbol = this.safeBool(this.options, 'allowNonMarketSymbol', false);
@@ -28186,12 +28229,12 @@ class Exchange {
             return this.createExpiredOptionMarket(symbol);
         }
         if (!silentBadSymbol) {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.BadSymbol(this.id + ' does not have market symbol ' + symbol);
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.BadSymbol(this.id + ' does not have market symbol ' + symbol);
         }
         return undefined;
     }
     createExpiredOptionMarket(symbol) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' createExpiredOptionMarket () is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' createExpiredOptionMarket () is not supported yet');
     }
     isLeveragedCurrency(currencyCode, checkBaseCoin = false, existingCurrencies = undefined) {
         const leverageSuffixes = [
@@ -28279,7 +28322,7 @@ class Exchange {
         const market = this.market(symbol);
         const result = this.decimalToPrecision(price, ROUND, market['precision']['price'], this.precisionMode, this.paddingMode);
         if (result === '0') {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.InvalidOrder(this.id + ' price of ' + market['symbol'] + ' must be greater than minimum price precision of ' + this.numberToString(market['precision']['price']));
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidOrder(this.id + ' price of ' + market['symbol'] + ' must be greater than minimum price precision of ' + this.numberToString(market['precision']['price']));
         }
         return result;
     }
@@ -28290,7 +28333,7 @@ class Exchange {
         const market = this.market(symbol);
         const result = this.decimalToPrecision(amount, TRUNCATE, market['precision']['amount'], this.precisionMode, this.paddingMode);
         if (result === '0') {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.InvalidOrder(this.id + ' amount of ' + market['symbol'] + ' must be greater than minimum amount precision of ' + this.numberToString(market['precision']['amount']));
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidOrder(this.id + ' amount of ' + market['symbol'] + ' must be greater than minimum amount precision of ' + this.numberToString(market['precision']['amount']));
         }
         return result;
     }
@@ -28380,11 +28423,11 @@ class Exchange {
         if (precision === undefined) {
             return undefined;
         }
-        if (_Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringGe(precision, '0')) {
+        if (_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringGe(precision, '0')) {
             return this.parsePrecision(precision);
         }
         else {
-            const positivePrecisionString = _Precise_js__WEBPACK_IMPORTED_MODULE_4__/* .Precise */ .Y.stringAbs(precision);
+            const positivePrecisionString = _Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringAbs(precision);
             const positivePrecision = parseInt(positivePrecisionString);
             let parsedPrecision = '1';
             for (let i = 0; i < positivePrecision - 1; i++) {
@@ -28406,93 +28449,93 @@ class Exchange {
         if (this.has['fetchLeverageTiers']) {
             const market = this.market(symbol);
             if (!market['contract']) {
-                throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.BadSymbol(this.id + ' fetchMarketLeverageTiers() supports contract markets only');
+                throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.BadSymbol(this.id + ' fetchMarketLeverageTiers() supports contract markets only');
             }
             const tiers = await this.fetchLeverageTiers([symbol]);
             return this.safeValue(tiers, symbol);
         }
         else {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchMarketLeverageTiers() is not supported yet');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchMarketLeverageTiers() is not supported yet');
         }
     }
     async createPostOnlyOrder(symbol, type, side, amount, price = undefined, params = {}) {
         if (!this.has['createPostOnlyOrder']) {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' createPostOnlyOrder() is not supported yet');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' createPostOnlyOrder() is not supported yet');
         }
         const query = this.extend(params, { 'postOnly': true });
         return await this.createOrder(symbol, type, side, amount, price, query);
     }
     async createPostOnlyOrderWs(symbol, type, side, amount, price = undefined, params = {}) {
         if (!this.has['createPostOnlyOrderWs']) {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' createPostOnlyOrderWs() is not supported yet');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' createPostOnlyOrderWs() is not supported yet');
         }
         const query = this.extend(params, { 'postOnly': true });
         return await this.createOrderWs(symbol, type, side, amount, price, query);
     }
     async createReduceOnlyOrder(symbol, type, side, amount, price = undefined, params = {}) {
         if (!this.has['createReduceOnlyOrder']) {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' createReduceOnlyOrder() is not supported yet');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' createReduceOnlyOrder() is not supported yet');
         }
         const query = this.extend(params, { 'reduceOnly': true });
         return await this.createOrder(symbol, type, side, amount, price, query);
     }
     async createReduceOnlyOrderWs(symbol, type, side, amount, price = undefined, params = {}) {
         if (!this.has['createReduceOnlyOrderWs']) {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' createReduceOnlyOrderWs() is not supported yet');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' createReduceOnlyOrderWs() is not supported yet');
         }
         const query = this.extend(params, { 'reduceOnly': true });
         return await this.createOrderWs(symbol, type, side, amount, price, query);
     }
     async createStopOrder(symbol, type, side, amount, price = undefined, triggerPrice = undefined, params = {}) {
         if (!this.has['createStopOrder']) {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' createStopOrder() is not supported yet');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' createStopOrder() is not supported yet');
         }
         if (triggerPrice === undefined) {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.ArgumentsRequired(this.id + ' create_stop_order() requires a stopPrice argument');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired(this.id + ' create_stop_order() requires a stopPrice argument');
         }
         const query = this.extend(params, { 'stopPrice': triggerPrice });
         return await this.createOrder(symbol, type, side, amount, price, query);
     }
     async createStopOrderWs(symbol, type, side, amount, price = undefined, triggerPrice = undefined, params = {}) {
         if (!this.has['createStopOrderWs']) {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' createStopOrderWs() is not supported yet');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' createStopOrderWs() is not supported yet');
         }
         if (triggerPrice === undefined) {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.ArgumentsRequired(this.id + ' createStopOrderWs() requires a stopPrice argument');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired(this.id + ' createStopOrderWs() requires a stopPrice argument');
         }
         const query = this.extend(params, { 'stopPrice': triggerPrice });
         return await this.createOrderWs(symbol, type, side, amount, price, query);
     }
     async createStopLimitOrder(symbol, side, amount, price, triggerPrice, params = {}) {
         if (!this.has['createStopLimitOrder']) {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' createStopLimitOrder() is not supported yet');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' createStopLimitOrder() is not supported yet');
         }
         const query = this.extend(params, { 'stopPrice': triggerPrice });
         return await this.createOrder(symbol, 'limit', side, amount, price, query);
     }
     async createStopLimitOrderWs(symbol, side, amount, price, triggerPrice, params = {}) {
         if (!this.has['createStopLimitOrderWs']) {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' createStopLimitOrderWs() is not supported yet');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' createStopLimitOrderWs() is not supported yet');
         }
         const query = this.extend(params, { 'stopPrice': triggerPrice });
         return await this.createOrderWs(symbol, 'limit', side, amount, price, query);
     }
     async createStopMarketOrder(symbol, side, amount, triggerPrice, params = {}) {
         if (!this.has['createStopMarketOrder']) {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' createStopMarketOrder() is not supported yet');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' createStopMarketOrder() is not supported yet');
         }
         const query = this.extend(params, { 'stopPrice': triggerPrice });
         return await this.createOrder(symbol, 'market', side, amount, undefined, query);
     }
     async createStopMarketOrderWs(symbol, side, amount, triggerPrice, params = {}) {
         if (!this.has['createStopMarketOrderWs']) {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' createStopMarketOrderWs() is not supported yet');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' createStopMarketOrderWs() is not supported yet');
         }
         const query = this.extend(params, { 'stopPrice': triggerPrice });
         return await this.createOrderWs(symbol, 'market', side, amount, undefined, query);
     }
     async createSubAccount(name, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' createSubAccount() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' createSubAccount() is not supported yet');
     }
     safeCurrencyCode(currencyId, currency = undefined) {
         currency = this.safeCurrency(currencyId, currency);
@@ -28614,7 +28657,7 @@ class Exchange {
         return interests;
     }
     parseBorrowRate(info, currency = undefined) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' parseBorrowRate() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' parseBorrowRate() is not supported yet');
     }
     parseBorrowRateHistory(response, code, since, limit) {
         const result = [];
@@ -28651,7 +28694,7 @@ class Exchange {
         return market['symbol'];
     }
     parseFundingRate(contract, market = undefined) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' parseFundingRate() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' parseFundingRate() is not supported yet');
     }
     parseFundingRates(response, symbols = undefined) {
         const fundingRates = {};
@@ -28663,7 +28706,7 @@ class Exchange {
         return this.filterByArray(fundingRates, 'symbol', symbols);
     }
     parseLongShortRatio(info, market = undefined) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' parseLongShortRatio() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' parseLongShortRatio() is not supported yet');
     }
     parseLongShortRatioHistory(response, market = undefined, since = undefined, limit = undefined) {
         const rates = [];
@@ -28719,7 +28762,7 @@ class Exchange {
         // A) if provided value is not unified (support old "up/down" strings too)
         // B) if exchange specific "trigger direction key" (eg. "stopPriceSide") was not provided
         if (!this.inArray(triggerDirection, ['ascending', 'descending', 'up', 'down', 'above', 'below']) && !exchangeSpecificDefined && !allowEmpty) {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.ArgumentsRequired(this.id + ' createOrder() : trigger orders require params["triggerDirection"] to be either "ascending" or "descending"');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired(this.id + ' createOrder() : trigger orders require params["triggerDirection"] to be either "ascending" or "descending"');
         }
         // if old format was provided, overwrite to new
         if (triggerDirection === 'up' || triggerDirection === 'above') {
@@ -28759,10 +28802,10 @@ class Exchange {
         postOnly = postOnly || timeInForcePostOnly || exchangeSpecificParam;
         if (postOnly) {
             if (ioc || fok) {
-                throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.InvalidOrder(this.id + ' postOnly orders cannot have timeInForce equal to ' + timeInForce);
+                throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidOrder(this.id + ' postOnly orders cannot have timeInForce equal to ' + timeInForce);
             }
             else if (isMarketOrder) {
-                throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.InvalidOrder(this.id + ' market orders cannot be postOnly');
+                throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidOrder(this.id + ' market orders cannot be postOnly');
             }
             else {
                 return true;
@@ -28789,10 +28832,10 @@ class Exchange {
         postOnly = postOnly || po || exchangeSpecificPostOnlyOption;
         if (postOnly) {
             if (ioc || fok) {
-                throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.InvalidOrder(this.id + ' postOnly orders cannot have timeInForce equal to ' + timeInForce);
+                throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidOrder(this.id + ' postOnly orders cannot have timeInForce equal to ' + timeInForce);
             }
             else if (isMarketOrder) {
-                throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.InvalidOrder(this.id + ' market orders cannot be postOnly');
+                throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.InvalidOrder(this.id + ' market orders cannot be postOnly');
             }
             else {
                 if (po) {
@@ -28805,26 +28848,26 @@ class Exchange {
         return [false, params];
     }
     async fetchLastPrices(symbols = undefined, params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchLastPrices() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchLastPrices() is not supported yet');
     }
     async fetchTradingFees(params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchTradingFees() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchTradingFees() is not supported yet');
     }
     async fetchTradingFeesWs(params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchTradingFeesWs() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchTradingFeesWs() is not supported yet');
     }
     async fetchTradingFee(symbol, params = {}) {
         if (!this.has['fetchTradingFees']) {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchTradingFee() is not supported yet');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchTradingFee() is not supported yet');
         }
         const fees = await this.fetchTradingFees(params);
         return this.safeDict(fees, symbol);
     }
     async fetchConvertCurrencies(params = {}) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchConvertCurrencies() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchConvertCurrencies() is not supported yet');
     }
     parseOpenInterest(interest, market = undefined) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' parseOpenInterest () is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' parseOpenInterest () is not supported yet');
     }
     parseOpenInterests(response, symbols = undefined) {
         const result = {};
@@ -28852,19 +28895,19 @@ class Exchange {
             const market = this.market(symbol);
             symbol = market['symbol'];
             if (!market['contract']) {
-                throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.BadSymbol(this.id + ' fetchFundingRate() supports contract markets only');
+                throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.BadSymbol(this.id + ' fetchFundingRate() supports contract markets only');
             }
             const rates = await this.fetchFundingRates([symbol], params);
             const rate = this.safeValue(rates, symbol);
             if (rate === undefined) {
-                throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NullResponse(this.id + ' fetchFundingRate () returned no data for ' + symbol);
+                throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NullResponse(this.id + ' fetchFundingRate () returned no data for ' + symbol);
             }
             else {
                 return rate;
             }
         }
         else {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchFundingRate () is not supported yet');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchFundingRate () is not supported yet');
         }
     }
     async fetchFundingInterval(symbol, params = {}) {
@@ -28873,19 +28916,19 @@ class Exchange {
             const market = this.market(symbol);
             symbol = market['symbol'];
             if (!market['contract']) {
-                throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.BadSymbol(this.id + ' fetchFundingInterval() supports contract markets only');
+                throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.BadSymbol(this.id + ' fetchFundingInterval() supports contract markets only');
             }
             const rates = await this.fetchFundingIntervals([symbol], params);
             const rate = this.safeValue(rates, symbol);
             if (rate === undefined) {
-                throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NullResponse(this.id + ' fetchFundingInterval() returned no data for ' + symbol);
+                throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NullResponse(this.id + ' fetchFundingInterval() returned no data for ' + symbol);
             }
             else {
                 return rate;
             }
         }
         else {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchFundingInterval() is not supported yet');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchFundingInterval() is not supported yet');
         }
     }
     async fetchMarkOHLCV(symbol, timeframe = '1m', since = undefined, limit = undefined, params = {}) {
@@ -28907,7 +28950,7 @@ class Exchange {
             return await this.fetchOHLCV(symbol, timeframe, since, limit, this.extend(request, params));
         }
         else {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchMarkOHLCV () is not supported yet');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchMarkOHLCV () is not supported yet');
         }
     }
     async fetchIndexOHLCV(symbol, timeframe = '1m', since = undefined, limit = undefined, params = {}) {
@@ -28929,7 +28972,7 @@ class Exchange {
             return await this.fetchOHLCV(symbol, timeframe, since, limit, this.extend(request, params));
         }
         else {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchIndexOHLCV () is not supported yet');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchIndexOHLCV () is not supported yet');
         }
     }
     async fetchPremiumIndexOHLCV(symbol, timeframe = '1m', since = undefined, limit = undefined, params = {}) {
@@ -28951,7 +28994,7 @@ class Exchange {
             return await this.fetchOHLCV(symbol, timeframe, since, limit, this.extend(request, params));
         }
         else {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchPremiumIndexOHLCV () is not supported yet');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchPremiumIndexOHLCV () is not supported yet');
         }
     }
     handleTimeInForce(params = {}) {
@@ -28965,7 +29008,7 @@ class Exchange {
         if (timeInForce !== undefined) {
             const exchangeValue = this.safeString(this.options['timeInForce'], timeInForce);
             if (exchangeValue === undefined) {
-                throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.ExchangeError(this.id + ' does not support timeInForce "' + timeInForce + '"');
+                throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.ExchangeError(this.id + ' does not support timeInForce "' + timeInForce + '"');
             }
             return exchangeValue;
         }
@@ -29009,7 +29052,7 @@ class Exchange {
             if (messageOptions !== '') {
                 message += ', one of ' + '(' + messageOptions + ')';
             }
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.ArgumentsRequired(message);
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired(message);
         }
     }
     checkRequiredMarginArgument(methodName, symbol, marginMode) {
@@ -29021,10 +29064,10 @@ class Exchange {
          * @param {string} marginMode is either 'isolated' or 'cross'
          */
         if ((marginMode === 'isolated') && (symbol === undefined)) {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.ArgumentsRequired(this.id + ' ' + methodName + '() requires a symbol argument for isolated margin');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired(this.id + ' ' + methodName + '() requires a symbol argument for isolated margin');
         }
         else if ((marginMode === 'cross') && (symbol !== undefined)) {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.ArgumentsRequired(this.id + ' ' + methodName + '() cannot have a symbol argument for cross margin');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired(this.id + ' ' + methodName + '() cannot have a symbol argument for cross margin');
         }
     }
     parseDepositWithdrawFees(response, codes = undefined, currencyIdKey = undefined) {
@@ -29055,7 +29098,7 @@ class Exchange {
         return depositWithdrawFees;
     }
     parseDepositWithdrawFee(fee, currency = undefined) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' parseDepositWithdrawFee() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' parseDepositWithdrawFee() is not supported yet');
     }
     depositWithdrawFee(info) {
         return {
@@ -29098,7 +29141,7 @@ class Exchange {
         return fee;
     }
     parseIncome(info, market = undefined) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' parseIncome () is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' parseIncome () is not supported yet');
     }
     parseIncomes(incomes, market = undefined, since = undefined, limit = undefined) {
         /**
@@ -29152,7 +29195,7 @@ class Exchange {
             return await this.fetchDepositsWithdrawals(code, since, limit, params);
         }
         else {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchTransactions () is not supported yet');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchTransactions () is not supported yet');
         }
     }
     filterByArrayPositions(objects, key, values = undefined, indexed = true) {
@@ -29168,6 +29211,14 @@ class Exchange {
          * @ignore
          * @method
          * @description Typed wrapper for filterByArray that returns a dictionary of tickers
+         */
+        return this.filterByArray(objects, key, values, indexed);
+    }
+    filterByArrayADLRanks(objects, key, values = undefined, indexed = true) {
+        /**
+         * @ignore
+         * @method
+         * @description Typed wrapper for filterByArray that returns a list of ADL Ranks
          */
         return this.filterByArray(objects, key, values, indexed);
     }
@@ -29205,7 +29256,7 @@ class Exchange {
         [maxEntriesPerRequest, params] = this.handleMaxEntriesPerRequestAndParams(method, maxEntriesPerRequest, params);
         if ((paginationDirection === 'forward')) {
             if (since === undefined) {
-                throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.ArgumentsRequired(this.id + ' pagination requires a since argument when paginationDirection set to forward');
+                throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired(this.id + ' pagination requires a since argument when paginationDirection set to forward');
             }
             paginationTimestamp = since;
         }
@@ -29294,7 +29345,7 @@ class Exchange {
                 }
             }
             catch (e) {
-                if (e instanceof _errors_js__WEBPACK_IMPORTED_MODULE_3__.RateLimitExceeded) {
+                if (e instanceof _errors_js__WEBPACK_IMPORTED_MODULE_2__.RateLimitExceeded) {
                     throw e; // if we are rate limited, we should not retry and fail fast
                 }
                 errors += 1;
@@ -29324,7 +29375,7 @@ class Exchange {
         if (until !== undefined) {
             const requiredCalls = Math.ceil((until - since) / step);
             if (requiredCalls > maxCalls) {
-                throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.BadRequest(this.id + ' the number of required calls is greater than the max number of calls allowed, either increase the paginationCalls or decrease the since-until gap. Current paginationCalls limit is ' + maxCalls.toString() + ' required calls is ' + requiredCalls.toString());
+                throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.BadRequest(this.id + ' the number of required calls is greater than the max number of calls allowed, either increase the paginationCalls or decrease the since-until gap. Current paginationCalls limit is ' + maxCalls.toString() + ' required calls is ' + requiredCalls.toString());
             }
         }
         for (let i = 0; i < maxCalls; i++) {
@@ -29550,7 +29601,7 @@ class Exchange {
         });
     }
     parseLiquidation(liquidation, market = undefined) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' parseLiquidation () is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' parseLiquidation () is not supported yet');
     }
     parseLiquidations(liquidations, market = undefined, since = undefined, limit = undefined) {
         /**
@@ -29574,7 +29625,7 @@ class Exchange {
         return this.filterBySymbolSinceLimit(sorted, symbol, since, limit);
     }
     parseGreeks(greeks, market = undefined) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' parseGreeks () is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' parseGreeks () is not supported yet');
     }
     parseAllGreeks(greeks, symbols = undefined, params = {}) {
         //
@@ -29602,7 +29653,7 @@ class Exchange {
         return this.filterByArray(results, 'symbol', symbols);
     }
     parseOption(chain, currency = undefined, market = undefined) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' parseOption () is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' parseOption () is not supported yet');
     }
     parseOptionChain(response, currencyKey = undefined, symbolKey = undefined) {
         const optionStructures = {};
@@ -29632,7 +29683,7 @@ class Exchange {
         return marginModeStructures;
     }
     parseMarginMode(marginMode, market = undefined) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' parseMarginMode () is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' parseMarginMode () is not supported yet');
     }
     parseLeverages(response, symbols = undefined, symbolKey = undefined, marketType = undefined) {
         const leverageStructures = {};
@@ -29650,7 +29701,7 @@ class Exchange {
         return leverageStructures;
     }
     parseLeverage(leverage, market = undefined) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' parseLeverage () is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' parseLeverage () is not supported yet');
     }
     parseConversions(conversions, code = undefined, fromCurrencyKey = undefined, toCurrencyKey = undefined, since = undefined, limit = undefined, params = {}) {
         conversions = this.toArray(conversions);
@@ -29685,7 +29736,7 @@ class Exchange {
         return this.filterBySinceLimit(both, since, limit);
     }
     parseConversion(conversion, fromCurrency = undefined, toCurrency = undefined) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' parseConversion () is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' parseConversion () is not supported yet');
     }
     convertExpireDate(date) {
         // parse YYMMDD to datetime string
@@ -29783,7 +29834,7 @@ class Exchange {
             return positions;
         }
         else {
-            throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchPositionHistory () is not supported yet');
+            throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchPositionHistory () is not supported yet');
         }
     }
     async loadMarketsAndSignIn() {
@@ -29800,10 +29851,10 @@ class Exchange {
          * @param {object} params extra parameters specific to the exchange api endpoint
          * @returns {object[]} a list of [position structures]{@link https://docs.ccxt.com/?id=position-structure}
          */
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchPositionsHistory () is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchPositionsHistory () is not supported yet');
     }
     parseMarginModification(data, market = undefined) {
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' parseMarginModification() is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' parseMarginModification() is not supported yet');
     }
     parseMarginModifications(response, symbols = undefined, symbolKey = undefined, marketType = undefined) {
         const marginModifications = [];
@@ -29827,7 +29878,7 @@ class Exchange {
          * @param {object} params extra parameters specific to the exchange api endpoint
          * @returns {object} a [transfer structure]{@link https://docs.ccxt.com/?id=transfer-structure}
          */
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchTransfer () is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchTransfer () is not supported yet');
     }
     async fetchTransfers(code = undefined, since = undefined, limit = undefined, params = {}) {
         /**
@@ -29840,7 +29891,7 @@ class Exchange {
          * @param {object} params extra parameters specific to the exchange api endpoint
          * @returns {object} a [transfer structure]{@link https://docs.ccxt.com/?id=transfer-structure}
          */
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchTransfers () is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchTransfers () is not supported yet');
     }
     async unWatchOHLCV(symbol, timeframe = '1m', params = {}) {
         /**
@@ -29852,7 +29903,7 @@ class Exchange {
          * @param {object} [params] extra parameters specific to the exchange API endpoint
          * @returns {int[][]} A list of candles ordered as timestamp, open, high, low, close, volume
          */
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' unWatchOHLCV () is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' unWatchOHLCV () is not supported yet');
     }
     async watchMarkPrice(symbol, params = {}) {
         /**
@@ -29863,7 +29914,7 @@ class Exchange {
          * @param {object} [params] extra parameters specific to the exchange API endpoint
          * @returns {object} a [ticker structure]{@link https://docs.ccxt.com/?id=ticker-structure}
          */
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' watchMarkPrice () is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' watchMarkPrice () is not supported yet');
     }
     async watchMarkPrices(symbols = undefined, params = {}) {
         /**
@@ -29874,7 +29925,7 @@ class Exchange {
          * @param {object} [params] extra parameters specific to the exchange API endpoint
          * @returns {object} a [ticker structure]{@link https://docs.ccxt.com/?id=ticker-structure}
          */
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' watchMarkPrices () is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' watchMarkPrices () is not supported yet');
     }
     async withdrawWs(code, amount, address, tag = undefined, params = {}) {
         /**
@@ -29888,7 +29939,7 @@ class Exchange {
          * @param {object} [params] extra parameters specific to the bitvavo api endpoint
          * @returns {object} a [transaction structure]{@link https://docs.ccxt.com/?id=transaction-structure}
          */
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' withdrawWs () is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' withdrawWs () is not supported yet');
     }
     async unWatchMyTrades(symbol = undefined, params = {}) {
         /**
@@ -29899,7 +29950,7 @@ class Exchange {
          * @param {object} [params] extra parameters specific to the exchange API endpoint
          * @returns {object[]} a list of [order structures]{@link https://docs.ccxt.com/?id=order-structure}
          */
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' unWatchMyTrades () is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' unWatchMyTrades () is not supported yet');
     }
     async createOrdersWs(orders, params = {}) {
         /**
@@ -29910,7 +29961,7 @@ class Exchange {
          * @param {object} [params] extra parameters specific to the exchange API endpoint
          * @returns {object} an [order structure]{@link https://docs.ccxt.com/?id=order-structure}
          */
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' createOrdersWs () is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' createOrdersWs () is not supported yet');
     }
     async fetchOrdersByStatusWs(status, symbol = undefined, since = undefined, limit = undefined, params = {}) {
         /**
@@ -29922,7 +29973,7 @@ class Exchange {
          * @param {object} [params] extra parameters specific to the exchange API endpoint
          * @returns {object} A dictionary of [order book structures]{@link https://docs.ccxt.com/?id=order-book-structure} indexed by market symbols
          */
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' fetchOrdersByStatusWs () is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' fetchOrdersByStatusWs () is not supported yet');
     }
     async unWatchBidsAsks(symbols = undefined, params = {}) {
         /**
@@ -29933,7 +29984,7 @@ class Exchange {
          * @param {object} [params] extra parameters specific to the exchange API endpoint
          * @returns {object} a [ticker structure]{@link https://docs.ccxt.com/?id=ticker-structure}
          */
-        throw new _errors_js__WEBPACK_IMPORTED_MODULE_3__.NotSupported(this.id + ' unWatchBidsAsks () is not supported yet');
+        throw new _errors_js__WEBPACK_IMPORTED_MODULE_2__.NotSupported(this.id + ' unWatchBidsAsks () is not supported yet');
     }
     cleanUnsubscription(client, subHash, unsubHash, subHashIsPrefix = false) {
         if (unsubHash in client.subscriptions) {
@@ -29944,7 +29995,7 @@ class Exchange {
                 delete client.subscriptions[subHash];
             }
             if (subHash in client.futures) {
-                const error = new _errors_js__WEBPACK_IMPORTED_MODULE_3__.UnsubscribeError(this.id + ' ' + subHash);
+                const error = new _errors_js__WEBPACK_IMPORTED_MODULE_2__.UnsubscribeError(this.id + ' ' + subHash);
                 client.reject(error, subHash);
             }
         }
@@ -29960,7 +30011,7 @@ class Exchange {
             for (let i = 0; i < clientFutures.length; i++) {
                 const future = clientFutures[i];
                 if (future.startsWith(subHash)) {
-                    const error = new _errors_js__WEBPACK_IMPORTED_MODULE_3__.UnsubscribeError(this.id + ' ' + future);
+                    const error = new _errors_js__WEBPACK_IMPORTED_MODULE_2__.UnsubscribeError(this.id + ' ' + future);
                     client.reject(error, future);
                 }
             }
@@ -38438,6 +38489,7 @@ class binance extends _abstract_binance_js__WEBPACK_IMPORTED_MODULE_0__/* ["defa
                 'editOrder': true,
                 'editOrders': true,
                 'fetchAccounts': undefined,
+                'fetchADLRank': true,
                 'fetchAllGreeks': true,
                 'fetchBalance': true,
                 'fetchBidsAsks': true,
@@ -38507,9 +38559,11 @@ class binance extends _abstract_binance_js__WEBPACK_IMPORTED_MODULE_0__/* ["defa
                 'fetchOrders': true,
                 'fetchOrderTrades': true,
                 'fetchPosition': true,
+                'fetchPositionADLRank': true,
                 'fetchPositionHistory': false,
                 'fetchPositionMode': true,
                 'fetchPositions': true,
+                'fetchPositionsADLRank': true,
                 'fetchPositionsHistory': false,
                 'fetchPositionsRisk': true,
                 'fetchPremiumIndexOHLCV': true,
@@ -50900,6 +50954,145 @@ class binance extends _abstract_binance_js__WEBPACK_IMPORTED_MODULE_0__/* ["defa
             'longShortRatio': this.safeNumber(info, 'longShortRatio'),
         };
     }
+    /**
+     * @method
+     * @name binance#fetchADLRank
+     * @description fetches the auto deleveraging rank and risk percentage for a symbol
+     * @see https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/ADL-Risk
+     * @param {string} symbol unified symbol of the market to fetch the auto deleveraging rank for
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object} an [auto de leverage structure]{@link https://docs.ccxt.com/?id=auto-de-leverage-structure}
+     */
+    async fetchADLRank(symbol, params = {}) {
+        await this.loadMarkets();
+        const market = this.market(symbol);
+        const request = {
+            'symbol': market['id'],
+        };
+        let subType = undefined;
+        [subType, params] = this.handleSubTypeAndParams('fetchADLRank', market, params);
+        let response = undefined;
+        if (subType === 'linear') {
+            response = await this.fapiPublicGetSymbolAdlRisk(this.extend(request, params));
+            //
+            //     {
+            //         "symbol": "BTCUSDT",
+            //         "adlRisk": "LOW",
+            //         "updateTime": 1766827800453
+            //     }
+            //
+        }
+        else {
+            throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_1__.BadRequest(this.id + ' fetchADLRank() supports linear subTypes only');
+        }
+        return this.parseADLRank(response, market);
+    }
+    /**
+     * @method
+     * @name binance#fetchPositionsADLRank
+     * @description fetches the auto deleveraging rank and risk percentage for a list of symbols that have open positions
+     * @see https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Position-ADL-Quantile-Estimation
+     * @see https://developers.binance.com/docs/derivatives/coin-margined-futures/trade/rest-api/Position-ADL-Quantile-Estimation
+     * @see https://developers.binance.com/docs/derivatives/portfolio-margin/trade/UM-Position-ADL-Quantile-Estimation
+     * @see https://developers.binance.com/docs/derivatives/portfolio-margin/trade/CM-Position-ADL-Quantile-Estimation
+     * @param {string[]} [symbols] list of unified market symbols
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {boolean} [params.portfolioMargin] set to true for the portfolio margin account
+     * @returns {object[]} an array of [auto de leverage structure]{@link https://docs.ccxt.com/?id=auto-de-leverage-structure}
+     */
+    async fetchPositionsADLRank(symbols = undefined, params = {}) {
+        await this.loadMarkets();
+        symbols = this.marketSymbols(symbols, undefined, true, true, true);
+        const market = this.getMarketFromSymbols(symbols);
+        let subType = undefined;
+        [subType, params] = this.handleSubTypeAndParams('fetchPositionsADLRank', market, params);
+        let isPortfolioMargin = undefined;
+        [isPortfolioMargin, params] = this.handleOptionAndParams2(params, 'fetchPositionsADLRank', 'papi', 'portfolioMargin', false);
+        let response = undefined;
+        if (subType === 'linear') {
+            if (isPortfolioMargin) {
+                response = await this.papiGetUmAdlQuantile(params);
+            }
+            else {
+                response = await this.fapiPrivateGetAdlQuantile(params);
+            }
+        }
+        else if (subType === 'inverse') {
+            if (isPortfolioMargin) {
+                response = await this.papiGetCmAdlQuantile(params);
+            }
+            else {
+                response = await this.dapiPrivateGetAdlQuantile(params);
+            }
+        }
+        else {
+            throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_1__.BadRequest(this.id + ' fetchPositionsADLRank() supports linear and inverse subTypes only');
+        }
+        //
+        //     [
+        //         {
+        //             "symbol": "BTCUSDT",
+        //             "adlQuantile": {
+        //                 "LONG": 0,
+        //                 "SHORT": 0,
+        //                 "BOTH": 1
+        //             }
+        //         }
+        //     ]
+        //
+        return this.parseADLRanks(response, symbols);
+    }
+    parseADLRank(info, market = undefined) {
+        //
+        // fetchADLRank
+        //
+        //     {
+        //         "symbol": "BTCUSDT",
+        //         "adlRisk": "LOW",
+        //         "updateTime": 1766827800453
+        //     }
+        //
+        // fetchPositionADLRank
+        //
+        //     {
+        //         "symbol": "BTCUSDT",
+        //         "adlQuantile": {
+        //             "LONG": 0,
+        //             "SHORT": 0,
+        //             "BOTH": 1
+        //         }
+        //     }
+        //
+        const adlQuantile = this.safeDict(info, 'adlQuantile', {});
+        const longNum = this.safeNumber(adlQuantile, 'LONG');
+        const shortNum = this.safeNumber(adlQuantile, 'SHORT');
+        const both = this.safeNumber(adlQuantile, 'BOTH');
+        let rank = undefined;
+        if (both !== undefined) {
+            rank = both;
+        }
+        else {
+            if (longNum !== undefined && shortNum !== undefined) {
+                if (longNum > shortNum) {
+                    rank = longNum;
+                }
+                else {
+                    rank = shortNum;
+                }
+            }
+        }
+        const marketId = this.safeString(info, 'symbol');
+        const timestamp = this.safeInteger2(info, 'timestamp', 'updateTime');
+        return {
+            'info': info,
+            'symbol': this.safeSymbol(marketId, market, undefined, 'contract'),
+            'rank': rank,
+            'rating': this.safeStringLower(info, 'adlRisk'),
+            'percentage': undefined,
+            'timestamp': timestamp,
+            'datetime': this.iso8601(timestamp),
+        };
+    }
 }
 
 
@@ -52099,7 +52292,7 @@ class bingx extends _abstract_bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
      * @method
      * @name bingx#fetchCurrencies
      * @description fetches all available currencies on an exchange
-     * @see https://bingx-api.github.io/docs/#/common/account-api.html#All%20Coins
+     * @see https://bingx-api.github.io/docs-v3/#/en/Account%20and%20Wallet/Wallet%20Deposits%20and%20Withdrawals/Query%20currency%20deposit%20and%20withdrawal%20data
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @returns {object} an associative dictionary of currencies
      */
@@ -52424,9 +52617,9 @@ class bingx extends _abstract_bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
      * @method
      * @name bingx#fetchMarkets
      * @description retrieves data on all markets for bingx
-     * @see https://bingx-api.github.io/docs/#/spot/market-api.html#Query%20Symbols
-     * @see https://bingx-api.github.io/docs/#/swapV2/market-api.html#Contract%20Information
-     * @see https://bingx-api.github.io/docs/#/en-us/cswap/market-api.html#Contract%20Information
+     * @see https://bingx-api.github.io/docs-v3/#/en/Spot/Market%20Data/Spot%20trading%20symbols
+     * @see https://bingx-api.github.io/docs-v3/#/en/Swap/Market%20Data/USDT-M%20Perp%20Futures%20symbols
+     * @see https://bingx-api.github.io/docs-v3/#/en/Coin-M%20Futures/Market%20Data/Contract%20Information
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @returns {object[]} an array of objects representing market data
      */
@@ -52448,11 +52641,10 @@ class bingx extends _abstract_bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
      * @method
      * @name bingx#fetchOHLCV
      * @description fetches historical candlestick data containing the open, high, low, and close price, and the volume of a market
-     * @see https://bingx-api.github.io/docs/#/swapV2/market-api.html#K-Line%20Data
-     * @see https://bingx-api.github.io/docs/#/spot/market-api.html#Candlestick%20chart%20data
-     * @see https://bingx-api.github.io/docs/#/swapV2/market-api.html#%20K-Line%20Data
-     * @see https://bingx-api.github.io/docs/#/en-us/swapV2/market-api.html#Mark%20Price%20Kline/Candlestick%20Data
-     * @see https://bingx-api.github.io/docs/#/en-us/cswap/market-api.html#Get%20K-line%20Data
+     * @see https://bingx-api.github.io/docs-v3/#/en/Spot/Market%20Data/Kline%2FCandlestick%20Data
+     * @see https://bingx-api.github.io/docs-v3/#/en/Swap/Market%20Data/Kline%2FCandlestick%20Data
+     * @see https://bingx-api.github.io/docs-v3/#/en/Swap/Market%20Data/Mark%20Price%20Kline%2FCandlestick%20Data
+     * @see https://bingx-api.github.io/docs-v3/#/en/Coin-M%20Futures/Market%20Data/Get%20K-line%20Data
      * @param {string} symbol unified symbol of the market to fetch OHLCV data for
      * @param {string} timeframe the length of time each candle represents
      * @param {int} [since] timestamp in ms of the earliest candle to fetch
@@ -52602,8 +52794,8 @@ class bingx extends _abstract_bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
      * @method
      * @name bingx#fetchTrades
      * @description get the list of most recent trades for a particular symbol
-     * @see https://bingx-api.github.io/docs/#/spot/market-api.html#Query%20transaction%20records
-     * @see https://bingx-api.github.io/docs/#/swapV2/market-api.html#The%20latest%20Trade%20of%20a%20Trading%20Pair
+     * @see https://bingx-api.github.io/docs-v3/#/en/Spot/Market%20Data/Recent%20Trades%20List
+     * @see https://bingx-api.github.io/docs-v3/#/en/Swap/Market%20Data/Recent%20Trades%20List
      * @param {string} symbol unified symbol of the market to fetch trades for
      * @param {int} [since] timestamp in ms of the earliest trade to fetch
      * @param {int} [limit] the maximum amount of trades to fetch
@@ -52836,9 +53028,9 @@ class bingx extends _abstract_bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
      * @method
      * @name bingx#fetchOrderBook
      * @description fetches information on open orders with bid (buy) and ask (sell) prices, volumes and other data
-     * @see https://bingx-api.github.io/docs/#/spot/market-api.html#Query%20depth%20information
-     * @see https://bingx-api.github.io/docs/#/swapV2/market-api.html#Get%20Market%20Depth
-     * @see https://bingx-api.github.io/docs/#/en-us/cswap/market-api.html#Query%20Depth%20Data
+     * @see https://bingx-api.github.io/docs-v3/#/en/Spot/Market%20Data/Order%20Book
+     * @see https://bingx-api.github.io/docs-v3/#/en/Swap/Market%20Data/Order%20Book
+     * @see https://bingx-api.github.io/docs-v3/#/en/Coin-M%20Futures/Market%20Data/Query%20Depth%20Data
      * @param {string} symbol unified symbol of the market to fetch the order book for
      * @param {int} [limit] the maximum amount of order book entries to return
      * @param {object} [params] extra parameters specific to the exchange API endpoint
@@ -52952,8 +53144,8 @@ class bingx extends _abstract_bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
      * @method
      * @name bingx#fetchFundingRate
      * @description fetch the current funding rate
-     * @see https://bingx-api.github.io/docs/#/swapV2/market-api.html#Current%20Funding%20Rate
-     * @see https://bingx-api.github.io/docs/#/en-us/cswap/market-api.html#Price%20&%20Current%20Funding%20Rate
+     * @see https://bingx-api.github.io/docs-v3/#/en/Swap/Market%20Data/Mark%20Price%20and%20Funding%20Rate
+     * @see https://bingx-api.github.io/docs-v3/#/en/Coin-M%20Futures/Market%20Data/Price%20%26%20Current%20Funding%20Rate
      * @param {string} symbol unified market symbol
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @returns {object} a [funding rate structure]{@link https://docs.ccxt.com/?id=funding-rate-structure}
@@ -52994,15 +53186,26 @@ class bingx extends _abstract_bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
      * @method
      * @name bingx#fetchFundingRates
      * @description fetch the current funding rate for multiple symbols
-     * @see https://bingx-api.github.io/docs/#/swapV2/market-api.html#Current%20Funding%20Rate
+     * @see https://bingx-api.github.io/docs-v3/#/en/Swap/Market%20Data/Mark%20Price%20and%20Funding%20Rate
+     * @see https://bingx-api.github.io/docs-v3/#/en/Coin-M%20Futures/Market%20Data/Price%20%26%20Current%20Funding%20Rate
      * @param {string[]} [symbols] list of unified market symbols
      * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {string} [params.subType] "linear" or "inverse" (default is linear)
      * @returns {object[]} a list of [funding rate structures]{@link https://docs.ccxt.com/?id=funding-rate-structure}
      */
     async fetchFundingRates(symbols = undefined, params = {}) {
         await this.loadMarkets();
-        symbols = this.marketSymbols(symbols, 'swap', true);
-        const response = await this.swapV2PublicGetQuotePremiumIndex(this.extend(params));
+        symbols = this.marketSymbols(symbols, 'swap', true, true, true);
+        const firstMarket = this.getMarketFromSymbols(symbols);
+        let subType = 'linear';
+        [subType, params] = this.handleSubTypeAndParams('fetchFundingRates', firstMarket, params, subType);
+        let response = undefined;
+        if (subType === 'inverse') {
+            response = await this.cswapV1PublicGetMarketPremiumIndex(this.extend(params));
+        }
+        else {
+            response = await this.swapV2PublicGetQuotePremiumIndex(this.extend(params));
+        }
         const data = this.safeList(response, 'data', []);
         return this.parseFundingRates(data, symbols);
     }
@@ -53043,7 +53246,7 @@ class bingx extends _abstract_bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
      * @method
      * @name bingx#fetchFundingRateHistory
      * @description fetches historical funding rate prices
-     * @see https://bingx-api.github.io/docs/#/swapV2/market-api.html#Funding%20Rate%20History
+     * @see https://bingx-api.github.io/docs-v3/#/en/Swap/Market%20Data/Get%20Funding%20Rate%20History
      * @param {string} symbol unified symbol of the market to fetch the funding rate history for
      * @param {int} [since] timestamp in ms of the earliest funding rate to fetch
      * @param {int} [limit] the maximum amount of [funding rate structures]{@link https://docs.ccxt.com/?id=funding-rate-history-structure} to fetch
@@ -53199,8 +53402,8 @@ class bingx extends _abstract_bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
      * @method
      * @name bingx#fetchOpenInterest
      * @description retrieves the open interest of a trading pair
-     * @see https://bingx-api.github.io/docs/#/swapV2/market-api.html#Get%20Swap%20Open%20Positions
-     * @see https://bingx-api.github.io/docs/#/en-us/cswap/market-api.html#Get%20Swap%20Open%20Positions
+     * @see https://bingx-api.github.io/docs-v3/#/en/Swap/Market%20Data/Open%20Interest%20Statistics
+     * @see https://bingx-api.github.io/docs-v3/#/en/Coin-M%20Futures/Market%20Data/Get%20Swap%20Open%20Positions
      * @param {string} symbol unified CCXT market symbol
      * @param {object} [params] exchange specific parameters
      * @returns {object} an open interest structure{@link https://docs.ccxt.com/?id=open-interest-structure}
@@ -53293,9 +53496,9 @@ class bingx extends _abstract_bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
      * @method
      * @name bingx#fetchTicker
      * @description fetches a price ticker, a statistical calculation with the information calculated over the past 24 hours for a specific market
-     * @see https://bingx-api.github.io/docs/#/en-us/swapV2/market-api.html#Get%20Ticker
-     * @see https://bingx-api.github.io/docs/#/en-us/spot/market-api.html#24-hour%20price%20changes
-     * @see https://bingx-api.github.io/docs/#/en-us/cswap/market-api.html#Query%2024-Hour%20Price%20Change
+     * @see https://bingx-api.github.io/docs-v3/#/en/Spot/Market%20Data/24hr%20Ticker%20Price%20Change%20Statistics
+     * @see https://bingx-api.github.io/docs-v3/#/en/Swap/Market%20Data/24hr%20Ticker%20Price%20Change%20Statistics
+     * @see https://bingx-api.github.io/docs-v3/#/en/Coin-M%20Futures/Market%20Data/Query%2024-Hour%20Price%20Change
      * @param {string} symbol unified symbol of the market to fetch the ticker for
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @returns {object} a [ticker structure]{@link https://docs.ccxt.com/?id=ticker-structure}
@@ -53358,9 +53561,9 @@ class bingx extends _abstract_bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
      * @method
      * @name bingx#fetchTickers
      * @description fetches price tickers for multiple markets, statistical information calculated over the past 24 hours for each market
-     * @see https://bingx-api.github.io/docs/#/en-us/swapV2/market-api.html#Get%20Ticker
-     * @see https://bingx-api.github.io/docs/#/en-us/spot/market-api.html#24-hour%20price%20changes
-     * @see https://bingx-api.github.io/docs/#/en-us/cswap/market-api.html#Query%2024-Hour%20Price%20Change
+     * @see https://bingx-api.github.io/docs-v3/#/en/Spot/Market%20Data/24hr%20Ticker%20Price%20Change%20Statistics
+     * @see https://bingx-api.github.io/docs-v3/#/en/Swap/Market%20Data/24hr%20Ticker%20Price%20Change%20Statistics
+     * @see https://bingx-api.github.io/docs-v3/#/en/Coin-M%20Futures/Market%20Data/Query%2024-Hour%20Price%20Change
      * @param {string[]|undefined} symbols unified symbols of the markets to fetch the ticker for, all market tickers are returned if not assigned
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @returns {object} a dictionary of [ticker structures]{@link https://docs.ccxt.com/?id=ticker-structure}
@@ -53427,7 +53630,8 @@ class bingx extends _abstract_bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
      * @method
      * @name bingx#fetchMarkPrice
      * @description fetches mark prices for the market
-     * @see https://bingx-api.github.io/docs/#/en-us/swapV2/market-api.html#Mark%20Price%20and%20Funding%20Rate
+     * @see https://bingx-api.github.io/docs-v3/#/en/Swap/Market%20Data/Mark%20Price%20and%20Funding%20Rate
+     * @see https://bingx-api.github.io/docs-v3/#/en/Coin-M%20Futures/Market%20Data/Price%20%26%20Current%20Funding%20Rate
      * @param {string} symbol unified symbol of the market to fetch the ticker for
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @returns {object} a dictionary of [ticker structures]{@link https://docs.ccxt.com/?id=ticker-structure}
@@ -53485,7 +53689,8 @@ class bingx extends _abstract_bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
      * @method
      * @name bingx#fetchMarkPrices
      * @description fetches mark prices for multiple markets
-     * @see https://bingx-api.github.io/docs/#/en-us/swapV2/market-api.html#Mark%20Price%20and%20Funding%20Rate
+     * @see https://bingx-api.github.io/docs-v3/#/en/Swap/Market%20Data/Mark%20Price%20and%20Funding%20Rate
+     * @see https://bingx-api.github.io/docs-v3/#/en/Coin-M%20Futures/Market%20Data/Price%20%26%20Current%20Funding%20Rate
      * @param {string[]} [symbols] unified symbols of the markets to fetch the ticker for, all market tickers are returned if not assigned
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @returns {object} a dictionary of [ticker structures]{@link https://docs.ccxt.com/?id=ticker-structure}
@@ -53647,10 +53852,10 @@ class bingx extends _abstract_bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
      * @method
      * @name bingx#fetchBalance
      * @description query for balance and get the amount of funds available for trading or funds locked in orders
-     * @see https://bingx-api.github.io/docs/#/spot/trade-api.html#Query%20Assets
-     * @see https://bingx-api.github.io/docs/#/en-us/swapV2/account-api.html#Query%20account%20data
-     * @see https://bingx-api.github.io/docs/#/standard/contract-interface.html#Query%20standard%20contract%20balance
-     * @see https://bingx-api.github.io/docs/#/en-us/cswap/trade-api.html#Query%20Account%20Assets
+     * @see https://bingx-api.github.io/docs-v3/#/en/Spot/Account%20Endpoints/Query%20Assets
+     * @see https://bingx-api.github.io/docs-v3/#/en/Swap/Account%20Endpoints/Query%20account%20data
+     * @see https://bingx-api.github.io/docs-v3/#/en/Coin-M%20Futures/Trades%20Endpoints/Query%20Account%20Assets
+     * @see https://bingx-api.github.io/docs-v3/#/en/Account%20and%20Wallet/Fund%20Account/Query%20Assets
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @param {boolean} [params.standard] whether to fetch standard contract balances
      * @param {string} [params.type] the type of balance to fetch (spot, swap, funding) default is `spot`
@@ -53885,7 +54090,7 @@ class bingx extends _abstract_bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
      * @method
      * @name bingx#fetchPositionHistory
      * @description fetches historical positions
-     * @see https://bingx-api.github.io/docs/#/en-us/swapV2/trade-api.html#Query%20Position%20History
+     * @see https://bingx-api.github.io/docs-v3/#/en/Swap/Trades%20Endpoints/Query%20Position%20History
      * @param {string} symbol unified contract symbol
      * @param {int} [since] the earliest time in ms to fetch positions for
      * @param {int} [limit] the maximum amount of records to fetch
@@ -53950,9 +54155,9 @@ class bingx extends _abstract_bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
      * @method
      * @name bingx#fetchPositions
      * @description fetch all open positions
-     * @see https://bingx-api.github.io/docs/#/en-us/swapV2/account-api.html#Query%20position%20data
+     * @see https://bingx-api.github.io/docs-v3/#/en/Swap/Account%20Endpoints/Query%20position%20data
      * @see https://bingx-api.github.io/docs/#/en-us/standard/contract-interface.html#position
-     * @see https://bingx-api.github.io/docs/#/en-us/cswap/trade-api.html#Query%20warehouse
+     * @see https://bingx-api.github.io/docs-v3/#/en/Coin-M%20Futures/Trades%20Endpoints/Query%20warehouse
      * @param {string[]|undefined} symbols list of unified market symbols
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @param {boolean} [params.standard] whether to fetch standard contract positions
@@ -54049,8 +54254,8 @@ class bingx extends _abstract_bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
      * @method
      * @name bingx#fetchPosition
      * @description fetch data on a single open contract trade position
-     * @see https://bingx-api.github.io/docs/#/en-us/swapV2/account-api.html#Query%20position%20data
-     * @see https://bingx-api.github.io/docs/#/en-us/cswap/trade-api.html#Query%20warehouse
+     * @see https://bingx-api.github.io/docs-v3/#/en/Swap/Account%20Endpoints/Query%20position%20data
+     * @see https://bingx-api.github.io/docs-v3/#/en/Coin-M%20Futures/Trades%20Endpoints/Query%20warehouse
      * @param {string} symbol unified market symbol of the market the position is held in
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @returns {object} a [position structure]{@link https://docs.ccxt.com/?id=position-structure}
@@ -54533,10 +54738,10 @@ class bingx extends _abstract_bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
      * @method
      * @name bingx#createOrder
      * @description create a trade order
-     * @see https://bingx-api.github.io/docs/#/en-us/swapV2/trade-api.html#Trade%20order
-     * @see https://bingx-api.github.io/docs/#/en-us/spot/trade-api.html#Create%20an%20Order
-     * @see https://bingx-api.github.io/docs/#/en-us/cswap/trade-api.html#Trade%20order
-     * @see https://bingx-api.github.io/docs/#/en-us/swapV2/trade-api.html#Place%20TWAP%20Order
+     * @see https://bingx-api.github.io/docs-v3/#/en/Spot/Trades%20Endpoints/Place%20order
+     * @see https://bingx-api.github.io/docs-v3/#/en/Swap/Trades%20Endpoints/Place%20order
+     * @see https://bingx-api.github.io/docs-v3/#/en/Swap/Trades%20Endpoints/Place%20TWAP%20Order
+     * @see https://bingx-api.github.io/docs-v3/#/en/Coin-M%20Futures/Trades%20Endpoints/Trade%20order
      * @param {string} symbol unified symbol of the market to create an order in
      * @param {string} type 'market' or 'limit'
      * @param {string} side 'buy' or 'sell'
@@ -54676,8 +54881,8 @@ class bingx extends _abstract_bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
      * @method
      * @name bingx#createOrders
      * @description create a list of trade orders
-     * @see https://bingx-api.github.io/docs/#/spot/trade-api.html#Batch%20Placing%20Orders
-     * @see https://bingx-api.github.io/docs/#/swapV2/trade-api.html#Bulk%20order
+     * @see https://bingx-api.github.io/docs-v3/#/en/Spot/Trades%20Endpoints/Place%20multiple%20orders
+     * @see https://bingx-api.github.io/docs-v3/#/en/Swap/Trades%20Endpoints/Place%20multiple%20orders
      * @param {Array} orders list of orders to create, each object should contain the parameters required by createOrder, namely symbol, type, side, amount, price and params
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @param {boolean} [params.sync] *spot only* if true, multiple orders are ordered serially and all orders do not require the same symbol/side/type
@@ -55195,10 +55400,10 @@ class bingx extends _abstract_bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
      * @method
      * @name bingx#cancelOrder
      * @description cancels an open order
-     * @see https://bingx-api.github.io/docs/#/en-us/spot/trade-api.html#Cancel%20Order
-     * @see https://bingx-api.github.io/docs/#/en-us/swapV2/trade-api.html#Cancel%20Order
-     * @see https://bingx-api.github.io/docs/#/en-us/cswap/trade-api.html#Cancel%20an%20Order
-     * @see https://bingx-api.github.io/docs/#/en-us/swapV2/trade-api.html#Cancel%20TWAP%20Order
+     * @see https://bingx-api.github.io/docs-v3/#/en/Spot/Trades%20Endpoints/Cancel%20Order
+     * @see https://bingx-api.github.io/docs-v3/#/en/Swap/Trades%20Endpoints/Cancel%20Order
+     * @see https://bingx-api.github.io/docs-v3/#/en/Swap/Trades%20Endpoints/Cancel%20TWAP%20Order
+     * @see https://bingx-api.github.io/docs-v3/#/en/Coin-M%20Futures/Trades%20Endpoints/Cancel%20an%20Order
      * @param {string} id order id
      * @param {string} symbol unified symbol of the market the order was made in
      * @param {object} [params] extra parameters specific to the exchange API endpoint
@@ -55379,24 +55584,29 @@ class bingx extends _abstract_bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
      * @method
      * @name bingx#cancelAllOrders
      * @description cancel all open orders
-     * @see https://bingx-api.github.io/docs/#/en-us/spot/trade-api.html#Cancel%20orders%20by%20symbol
-     * @see https://bingx-api.github.io/docs/#/swapV2/trade-api.html#Cancel%20All%20Orders
-     * @see https://bingx-api.github.io/docs/#/en-us/cswap/trade-api.html#Cancel%20all%20orders
+     * @see https://bingx-api.github.io/docs-v3/#/en/Spot/Trades%20Endpoints/Cancel%20all%20Open%20Orders%20on%20a%20Symbol
+     * @see https://bingx-api.github.io/docs-v3/#/en/Swap/Trades%20Endpoints/Cancel%20All%20Open%20Orders
+     * @see https://bingx-api.github.io/docs-v3/#/en/Coin-M%20Futures/Trades%20Endpoints/Cancel%20all%20orders
      * @param {string} [symbol] unified market symbol, only orders in the market of this symbol are cancelled when symbol is not undefined
      * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {string} [params.type] 'spot' or 'swap' (default is 'spot' if symbol is not provided)
+     * @param {string} [params.subType] 'linear' or 'inverse' for swap markets (default is 'linear' if symbol is not provided)
      * @returns {object[]} a list of [order structures]{@link https://docs.ccxt.com/?id=order-structure}
      */
     async cancelAllOrders(symbol = undefined, params = {}) {
-        if (symbol === undefined) {
-            throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_1__.ArgumentsRequired(this.id + ' cancelAllOrders() requires a symbol argument');
-        }
         await this.loadMarkets();
-        const market = this.market(symbol);
-        const request = {
-            'symbol': market['id'],
-        };
+        let market = undefined;
+        const request = {};
+        if (symbol !== undefined) {
+            market = this.market(symbol);
+            request['symbol'] = market['id'];
+        }
+        let marketType = 'spot';
+        let subType = undefined;
+        [marketType, params] = this.handleMarketTypeAndParams('cancelAllOrders', market, params);
+        [subType, params] = this.handleSubTypeAndParams('cancelAllOrders', market, params);
         let response = undefined;
-        if (market['spot']) {
+        if (marketType === 'spot') {
             response = await this.spotV1PrivatePostTradeCancelOpenOrders(this.extend(request, params));
             //
             //     {
@@ -55421,8 +55631,8 @@ class bingx extends _abstract_bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
             //     }
             //
         }
-        else if (market['swap']) {
-            if (market['inverse']) {
+        else if (marketType === 'swap') {
+            if (subType === 'inverse') {
                 response = await this.cswapV1PrivateDeleteTradeAllOpenOrders(this.extend(request, params));
                 //
                 //     {
@@ -55524,8 +55734,8 @@ class bingx extends _abstract_bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
      * @method
      * @name bingx#cancelOrders
      * @description cancel multiple orders
-     * @see https://bingx-api.github.io/docs/#/swapV2/trade-api.html#Cancel%20a%20Batch%20of%20Orders
-     * @see https://bingx-api.github.io/docs/#/spot/trade-api.html#Cancel%20a%20Batch%20of%20Orders
+     * @see https://bingx-api.github.io/docs-v3/#/en/Spot/Trades%20Endpoints/Cancel%20multiple%20orders
+     * @see https://bingx-api.github.io/docs-v3/#/en/Swap/Trades%20Endpoints/Cancel%20multiple%20orders
      * @param {string[]} ids order ids
      * @param {string} symbol unified market symbol, default is undefined
      * @param {object} [params] extra parameters specific to the exchange API endpoint
@@ -55632,8 +55842,8 @@ class bingx extends _abstract_bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
      * @method
      * @name bingx#cancelAllOrdersAfter
      * @description dead man's switch, cancel all orders after the given timeout
-     * @see https://bingx-api.github.io/docs/#/en-us/spot/trade-api.html#Cancel%20all%20orders%20in%20countdown
-     * @see https://bingx-api.github.io/docs/#/en-us/swapV2/trade-api.html#Cancel%20all%20orders%20in%20countdown
+     * @see https://bingx-api.github.io/docs-v3/#/en/Spot/Trades%20Endpoints/Cancel%20All%20After
+     * @see https://bingx-api.github.io/docs-v3/#/en/Swap/Trades%20Endpoints/Cancel%20All%20After
      * @param {number} timeout time in milliseconds, 0 represents cancel the timer
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @param {string} [params.type] spot or swap market
@@ -55675,10 +55885,10 @@ class bingx extends _abstract_bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
      * @method
      * @name bingx#fetchOrder
      * @description fetches information on an order made by the user
-     * @see https://bingx-api.github.io/docs/#/en-us/spot/trade-api.html#Query%20Order%20details
-     * @see https://bingx-api.github.io/docs/#/en-us/swapV2/trade-api.html#Query%20Order%20details
-     * @see https://bingx-api.github.io/docs/#/en-us/cswap/trade-api.html#Query%20Order
-     * @see https://bingx-api.github.io/docs/#/en-us/swapV2/trade-api.html#TWAP%20Order%20Details
+     * @see https://bingx-api.github.io/docs-v3/#/en/Spot/Trades%20Endpoints/Query%20Order%20details
+     * @see https://bingx-api.github.io/docs-v3/#/en/Swap/Trades%20Endpoints/Query%20Order%20details
+     * @see https://bingx-api.github.io/docs-v3/#/en/Swap/Trades%20Endpoints/TWAP%20Order%20Details
+     * @see https://bingx-api.github.io/docs-v3/#/en/Coin-M%20Futures/Trades%20Endpoints/Query%20Order
      * @param {string} id the order id
      * @param {string} symbol unified symbol of the market the order was made in
      * @param {object} [params] extra parameters specific to the exchange API endpoint
@@ -55854,8 +56064,8 @@ class bingx extends _abstract_bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
      * @method
      * @name bingx#fetchOrders
      * @description fetches information on multiple orders made by the user
-     * @see https://bingx-api.github.io/docs/#/en-us/swapV2/trade-api.html#All%20Orders
-     * @see https://bingx-api.github.io/docs/#/en-us/swapV2/trade-api.html#Query%20Order%20history (returns less fields than above)
+     * @see https://bingx-api.github.io/docs-v3/#/en/Swap/Trades%20Endpoints/All%20Orders
+     * @see https://bingx-api.github.io/docs-v3/#/en/Swap/Trades%20Endpoints/Query%20Order%20history (returns less fields than above)
      * @param {string} symbol unified market symbol of the market orders were made in
      * @param {int} [since] the earliest time in ms to fetch orders for
      * @param {int} [limit] the maximum number of order structures to retrieve
@@ -55945,10 +56155,10 @@ class bingx extends _abstract_bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
      * @method
      * @name bingx#fetchOpenOrders
      * @description fetch all unfilled currently open orders
-     * @see https://bingx-api.github.io/docs/#/en-us/spot/trade-api.html#Current%20Open%20Orders
-     * @see https://bingx-api.github.io/docs/#/en-us/swapV2/trade-api.html#Current%20All%20Open%20Orders
-     * @see https://bingx-api.github.io/docs/#/en-us/cswap/trade-api.html#Query%20all%20current%20pending%20orders
-     * @see https://bingx-api.github.io/docs/#/en-us/swapV2/trade-api.html#Query%20TWAP%20Entrusted%20Order
+     * @see https://bingx-api.github.io/docs-v3/#/en/Spot/Trades%20Endpoints/Current%20Open%20Orders
+     * @see https://bingx-api.github.io/docs-v3/#/en/Swap/Trades%20Endpoints/Current%20All%20Open%20Orders
+     * @see https://bingx-api.github.io/docs-v3/#/en/Coin-M%20Futures/Trades%20Endpoints/Query%20all%20current%20pending%20orders
+     * @see https://bingx-api.github.io/docs-v3/#/en/Swap/Trades%20Endpoints/Query%20TWAP%20Entrusted%20Order
      * @param {string} symbol unified market symbol
      * @param {int} [since] the earliest time in ms to fetch open orders for
      * @param {int} [limit] the maximum number of open order structures to retrieve
@@ -56132,9 +56342,9 @@ class bingx extends _abstract_bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
      * @method
      * @name bingx#fetchClosedOrders
      * @description fetches information on multiple closed orders made by the user
-     * @see https://bingx-api.github.io/docs/#/en-us/spot/trade-api.html#Query%20Order%20history
-     * @see https://bingx-api.github.io/docs/#/en-us/swapV2/trade-api.html#Query%20Order%20history
-     * @see https://bingx-api.github.io/docs/#/en-us/cswap/trade-api.html#User's%20History%20Orders
+     * @see https://bingx-api.github.io/docs-v3/#/en/Spot/Trades%20Endpoints/Query%20Order%20history
+     * @see https://bingx-api.github.io/docs-v3/#/en/Swap/Trades%20Endpoints/Query%20Order%20history
+     * @see https://bingx-api.github.io/docs-v3/#/en/Coin-M%20Futures/Trades%20Endpoints/User's%20History%20Orders
      * @see https://bingx-api.github.io/docs/#/standard/contract-interface.html#Historical%20order
      * @param {string} symbol unified market symbol of the closed orders
      * @param {int} [since] timestamp in ms of the earliest order
@@ -56153,9 +56363,9 @@ class bingx extends _abstract_bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
      * @method
      * @name bingx#fetchCanceledOrders
      * @description fetches information on multiple canceled orders made by the user
-     * @see https://bingx-api.github.io/docs/#/en-us/spot/trade-api.html#Query%20Order%20history
-     * @see https://bingx-api.github.io/docs/#/en-us/swapV2/trade-api.html#Query%20Order%20history
-     * @see https://bingx-api.github.io/docs/#/en-us/cswap/trade-api.html#User's%20History%20Orders
+     * @see https://bingx-api.github.io/docs-v3/#/en/Spot/Trades%20Endpoints/Query%20Order%20history
+     * @see https://bingx-api.github.io/docs-v3/#/en/Swap/Trades%20Endpoints/Query%20Order%20history
+     * @see https://bingx-api.github.io/docs-v3/#/en/Coin-M%20Futures/Trades%20Endpoints/User's%20History%20Orders
      * @see https://bingx-api.github.io/docs/#/standard/contract-interface.html#Historical%20order
      * @param {string} symbol unified market symbol of the canceled orders
      * @param {int} [since] timestamp in ms of the earliest order
@@ -56174,11 +56384,11 @@ class bingx extends _abstract_bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
      * @method
      * @name bingx#fetchCanceledAndClosedOrders
      * @description fetches information on multiple closed orders made by the user
-     * @see https://bingx-api.github.io/docs/#/en-us/spot/trade-api.html#Query%20Order%20history
-     * @see https://bingx-api.github.io/docs/#/en-us/swapV2/trade-api.html#Query%20Order%20history
-     * @see https://bingx-api.github.io/docs/#/en-us/cswap/trade-api.html#User's%20History%20Orders
+     * @see https://bingx-api.github.io/docs-v3/#/en/Spot/Trades%20Endpoints/Query%20Order%20history
+     * @see https://bingx-api.github.io/docs-v3/#/en/Swap/Trades%20Endpoints/Query%20Order%20history
+     * @see https://bingx-api.github.io/docs-v3/#/en/Coin-M%20Futures/Trades%20Endpoints/User's%20History%20Orders
      * @see https://bingx-api.github.io/docs/#/standard/contract-interface.html#Historical%20order
-     * @see https://bingx-api.github.io/docs/#/en-us/swapV2/trade-api.html#Query%20TWAP%20Historical%20Orders
+     * @see https://bingx-api.github.io/docs-v3/#/en/Swap/Trades%20Endpoints/Query%20TWAP%20Historical%20Orders
      * @param {string} [symbol] unified market symbol of the market orders were made in
      * @param {int} [since] the earliest time in ms to fetch orders for
      * @param {int} [limit] the maximum number of order structures to retrieve
@@ -56373,7 +56583,7 @@ class bingx extends _abstract_bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
      * @method
      * @name bingx#transfer
      * @description transfer currency internally between wallets on the same account
-     * @see https://bingx-api.github.io/docs/#/en-us/common/account-api.html#Asset%20Transfer%20New
+     * @see https://bingx-api.github.io/docs-v3/#/en/Account%20and%20Wallet/Fund%20Account/Asset%20Transfer%20New
      * @param {string} code unified currency code
      * @param {float} amount amount to transfer
      * @param {string} fromAccount account to transfer from (spot, swap, futures, or funding)
@@ -56434,7 +56644,7 @@ class bingx extends _abstract_bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
      * @method
      * @name bingx#fetchTransfers
      * @description fetch a history of internal transfers made on an account
-     * @see https://bingx-api.github.io/docs/#/en-us/common/account-api.html#Asset%20transfer%20records%20new
+     * @see https://bingx-api.github.io/docs-v3/#/en/Account%20and%20Wallet/Fund%20Account/Asset%20transfer%20records%20new
      * @param {string} [code] unified currency code of the currency transferred
      * @param {int} [since] the earliest time in ms to fetch transfers for
      * @param {int} [limit] the maximum number of transfers structures to retrieve (default 10, max 100)
@@ -56532,7 +56742,7 @@ class bingx extends _abstract_bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
      * @method
      * @name bingx#fetchDepositAddressesByNetwork
      * @description fetch the deposit addresses for a currency associated with this account
-     * @see https://bingx-api.github.io/docs/#/en-us/common/wallet-api.html#Query%20Main%20Account%20Deposit%20Address
+     * @see https://bingx-api.github.io/docs-v3/#/en/Account%20and%20Wallet/Wallet%20Deposits%20and%20Withdrawals/Main%20Account%20Deposit%20Address
      * @param {string} code unified currency code
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @returns {object} a dictionary [address structures]{@link https://docs.ccxt.com/?id=address-structure}, indexed by the network
@@ -56575,7 +56785,7 @@ class bingx extends _abstract_bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
      * @method
      * @name bingx#fetchDepositAddress
      * @description fetch the deposit address for a currency associated with this account
-     * @see https://bingx-api.github.io/docs/#/en-us/common/wallet-api.html#Query%20Main%20Account%20Deposit%20Address
+     * @see https://bingx-api.github.io/docs-v3/#/en/Account%20and%20Wallet/Wallet%20Deposits%20and%20Withdrawals/Main%20Account%20Deposit%20Address
      * @param {string} code unified currency code
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @param {string} [params.network] The chain of currency. This only apply for multi-chain currency, and there is no need for single chain currency
@@ -56631,7 +56841,7 @@ class bingx extends _abstract_bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
      * @method
      * @name bingx#fetchDeposits
      * @description fetch all deposits made to an account
-     * @see https://bingx-api.github.io/docs/#/spot/account-api.html#Deposit%20History(supporting%20network)
+     * @see https://bingx-api.github.io/docs-v3/#/en/Spot/Wallet%20deposits%20and%20withdrawals/Deposit%20records
      * @param {string} [code] unified currency code
      * @param {int} [since] the earliest time in ms to fetch deposits for
      * @param {int} [limit] the maximum number of deposits structures to retrieve
@@ -56676,7 +56886,7 @@ class bingx extends _abstract_bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
      * @method
      * @name bingx#fetchWithdrawals
      * @description fetch all withdrawals made from an account
-     * @see https://bingx-api.github.io/docs/#/spot/account-api.html#Withdraw%20History%20(supporting%20network)
+     * @see https://bingx-api.github.io/docs-v3/#/en/Spot/Wallet%20deposits%20and%20withdrawals/Withdraw%20records
      * @param {string} [code] unified currency code
      * @param {int} [since] the earliest time in ms to fetch withdrawals for
      * @param {int} [limit] the maximum number of withdrawals structures to retrieve
@@ -56838,8 +57048,8 @@ class bingx extends _abstract_bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
      * @method
      * @name bingx#setMarginMode
      * @description set margin mode to 'cross' or 'isolated'
-     * @see https://bingx-api.github.io/docs/#/en-us/swapV2/trade-api.html#Change%20Margin%20Type
-     * @see https://bingx-api.github.io/docs/#/en-us/cswap/trade-api.html#Set%20Margin%20Type
+     * @see https://bingx-api.github.io/docs-v3/#/en/Swap/Trades%20Endpoints/Change%20Margin%20Type
+     * @see https://bingx-api.github.io/docs-v3/#/en/Coin-M%20Futures/Trades%20Endpoints/Set%20Margin%20Type
      * @param {string} marginMode 'cross' or 'isolated'
      * @param {string} symbol unified market symbol
      * @param {object} [params] extra parameters specific to the exchange API endpoint
@@ -56890,7 +57100,7 @@ class bingx extends _abstract_bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
      * @method
      * @name bingx#setMargin
      * @description Either adds or reduces margin in an isolated position in order to set the margin to a specific value
-     * @see https://bingx-api.github.io/docs/#/swapV2/trade-api.html#Adjust%20isolated%20margin
+     * @see https://bingx-api.github.io/docs-v3/#/en/Swap/Trades%20Endpoints/Modify%20Isolated%20Position%20Margin
      * @param {string} symbol unified market symbol of the market to set margin in
      * @param {float} amount the amount to set the margin to
      * @param {object} [params] parameters specific to the bingx api endpoint
@@ -56949,8 +57159,8 @@ class bingx extends _abstract_bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
      * @method
      * @name bingx#fetchLeverage
      * @description fetch the set leverage for a market
-     * @see https://bingx-api.github.io/docs/#/swapV2/trade-api.html#Query%20Leverage
-     * @see https://bingx-api.github.io/docs/#/en-us/cswap/trade-api.html#Query%20Leverage
+     * @see https://bingx-api.github.io/docs-v3/#/en/Swap/Trades%20Endpoints/Query%20Leverage%20and%20Available%20Positions
+     * @see https://bingx-api.github.io/docs-v3/#/en/Coin-M%20Futures/Trades%20Endpoints/Query%20Leverage
      * @param {string} symbol unified market symbol
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @returns {object} a [leverage structure]{@link https://docs.ccxt.com/?id=leverage-structure}
@@ -57047,8 +57257,8 @@ class bingx extends _abstract_bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
      * @method
      * @name bingx#setLeverage
      * @description set the level of leverage for a market
-     * @see https://bingx-api.github.io/docs/#/swapV2/trade-api.html#Switch%20Leverage
-     * @see https://bingx-api.github.io/docs/#/en-us/cswap/trade-api.html#Modify%20Leverage
+     * @see https://bingx-api.github.io/docs-v3/#/en/Swap/Trades%20Endpoints/Set%20Leverage
+     * @see https://bingx-api.github.io/docs-v3/#/en/Coin-M%20Futures/Trades%20Endpoints/Modify%20Leverage
      * @param {float} leverage the rate of leverage
      * @param {string} symbol unified market symbol
      * @param {object} [params] extra parameters specific to the exchange API endpoint
@@ -57111,10 +57321,9 @@ class bingx extends _abstract_bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
      * @method
      * @name bingx#fetchMyTrades
      * @description fetch all trades made by the user
-     * @see https://bingx-api.github.io/docs/#/en-us/spot/trade-api.html#Query%20transaction%20details
-     * @see https://bingx-api.github.io/docs/#/en-us/swapV2/trade-api.html#Query%20historical%20transaction%20orders
-     * @see https://bingx-api.github.io/docs/#/en-us/swapV2/trade-api.html#Query%20historical%20transaction%20details
-     * @see https://bingx-api.github.io/docs/#/en-us/cswap/trade-api.html#Query%20Order%20Trade%20Detail
+     * @see https://bingx-api.github.io/docs-v3/#/en/Spot/Trades%20Endpoints/Query%20transaction%20details
+     * @see https://bingx-api.github.io/docs-v3/#/en/Swap/Trades%20Endpoints/Query%20historical%20transaction%20orders
+     * @see https://bingx-api.github.io/docs-v3/#/en/Coin-M%20Futures/Trades%20Endpoints/Query%20Order%20Trade%20Detail
      * @param {string} [symbol] unified market symbol
      * @param {int} [since] the earliest time in ms to fetch trades for
      * @param {int} [limit] the maximum number of trades structures to retrieve
@@ -57290,7 +57499,7 @@ class bingx extends _abstract_bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
      * @method
      * @name bingx#fetchDepositWithdrawFees
      * @description fetch deposit and withdraw fees
-     * @see https://bingx-api.github.io/docs/#/common/account-api.html#All%20Coins'%20Information
+     * @see https://bingx-api.github.io/docs-v3/#/en/Account%20and%20Wallet/Wallet%20Deposits%20and%20Withdrawals/Query%20currency%20deposit%20and%20withdrawal%20data
      * @param {string[]|undefined} codes list of unified currency codes
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @returns {object} a list of [fee structures]{@link https://docs.ccxt.com/?id=fee-structure}
@@ -57313,7 +57522,7 @@ class bingx extends _abstract_bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
      * @method
      * @name bingx#withdraw
      * @description make a withdrawal
-     * @see https://bingx-api.github.io/docs/#/en-us/spot/wallet-api.html#Withdraw
+     * @see https://bingx-api.github.io/docs-v3/#/en/Account%20and%20Wallet/Wallet%20Deposits%20and%20Withdrawals/Withdraw
      * @param {string} code unified currency code
      * @param {float} amount the amount to withdraw
      * @param {string} address the address to withdraw to
@@ -57389,8 +57598,8 @@ class bingx extends _abstract_bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
      * @method
      * @name bingx#fetchMyLiquidations
      * @description retrieves the users liquidated positions
-     * @see https://bingx-api.github.io/docs/#/swapV2/trade-api.html#User's%20Force%20Orders
-     * @see https://bingx-api.github.io/docs/#/en-us/cswap/trade-api.html#Query%20force%20orders
+     * @see https://bingx-api.github.io/docs-v3/#/en/Swap/Trades%20Endpoints/User's%20Force%20Orders
+     * @see https://bingx-api.github.io/docs-v3/#/en/Coin-M%20Futures/Trades%20Endpoints/Query%20force%20orders
      * @param {string} [symbol] unified CCXT market symbol
      * @param {int} [since] the earliest time in ms to fetch liquidations for
      * @param {int} [limit] the maximum number of liquidation structures to retrieve
@@ -57531,8 +57740,9 @@ class bingx extends _abstract_bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
      * @method
      * @name bingx#closePosition
      * @description closes open positions for a market
-     * @see https://bingx-api.github.io/docs/#/en-us/swapV2/trade-api.html#One-Click%20Close%20All%20Positions
-     * @see https://bingx-api.github.io/docs/#/en-us/cswap/trade-api.html#Close%20all%20positions%20in%20bulk
+     * @see https://bingx-api.github.io/docs-v3/#/en/Swap/Trades%20Endpoints/Close%20All%20Positions
+     * @see https://bingx-api.github.io/docs-v3/#/en/Swap/Trades%20Endpoints/Close%20position%20by%20position%20ID
+     * @see https://bingx-api.github.io/docs-v3/#/en/Coin-M%20Futures/Trades%20Endpoints/Close%20all%20positions%20in%20bulk
      * @param {string} symbol Unified CCXT market symbol
      * @param {string} [side] not used by bingx
      * @param {object} [params] extra parameters specific to the bingx api endpoint
@@ -57603,8 +57813,8 @@ class bingx extends _abstract_bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
      * @method
      * @name bitget#closePositions
      * @description closes open positions for a market
-     * @see https://bingx-api.github.io/docs/#/en-us/swapV2/trade-api.html#One-Click%20Close%20All%20Positions
-     * @see https://bingx-api.github.io/docs/#/en-us/cswap/trade-api.html#Close%20all%20positions%20in%20bulk
+     * @see https://bingx-api.github.io/docs-v3/#/en/Swap/Trades%20Endpoints/Close%20All%20Positions
+     * @see https://bingx-api.github.io/docs-v3/#/en/Coin-M%20Futures/Trades%20Endpoints/Close%20all%20positions%20in%20bulk
      * @param {object} [params] extra parameters specific to the bingx api endpoint
      * @param {string} [params.recvWindow] request valid time window value
      * @returns {object[]} [a list of position structures]{@link https://docs.ccxt.com/?id=position-structure}
@@ -57667,7 +57877,7 @@ class bingx extends _abstract_bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
      * @method
      * @name bingx#fetchPositionMode
      * @description fetchs the position mode, hedged or one way, hedged for binance is set identically for all linear markets or all inverse markets
-     * @see https://bingx-api.github.io/docs/#/en-us/swapV2/trade-api.html#Get%20Position%20Mode
+     * @see https://bingx-api.github.io/docs-v3/#/en/Swap/Trades%20Endpoints/Query%20position%20mode
      * @param {string} symbol unified symbol of the market to fetch the order book for
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @returns {object} an object detailing whether the market is in hedged or one-way mode
@@ -57695,7 +57905,7 @@ class bingx extends _abstract_bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
      * @method
      * @name bingx#setPositionMode
      * @description set hedged to true or false for a market
-     * @see https://bingx-api.github.io/docs/#/en-us/swapV2/trade-api.html#Set%20Position%20Mode
+     * @see https://bingx-api.github.io/docs-v3/#/en/Swap/Trades%20Endpoints/Set%20Position%20Mode
      * @param {bool} hedged set to true to use dualSidePosition
      * @param {string} symbol not used by bingx setPositionMode ()
      * @param {object} [params] extra parameters specific to the exchange API endpoint
@@ -57726,8 +57936,8 @@ class bingx extends _abstract_bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
      * @method
      * @name bingx#editOrder
      * @description cancels an order and places a new order
-     * @see https://bingx-api.github.io/docs/#/en-us/spot/trade-api.html#Cancel%20order%20and%20place%20a%20new%20order  // spot
-     * @see https://bingx-api.github.io/docs/#/en-us/swapV2/trade-api.html#Cancel%20an%20order%20and%20then%20Place%20a%20new%20order  // swap
+     * @see https://bingx-api.github.io/docs-v3/#/en/Spot/Trades%20Endpoints/Cancel%20an%20Existing%20Order%20and%20Send%20a%20New%20Order  // spot
+     * @see https://bingx-api.github.io/docs-v3/#/en/Swap/Trades%20Endpoints/Cancel%20an%20Existing%20Order%20and%20Send%20a%20New%20Orde  // swap
      * @param {string} id order id
      * @param {string} symbol unified symbol of the market to create an order in
      * @param {string} type 'market' or 'limit'
@@ -57864,8 +58074,8 @@ class bingx extends _abstract_bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
      * @method
      * @name bingx#fetchMarginMode
      * @description fetches the margin mode of the trading pair
-     * @see https://bingx-api.github.io/docs/#/en-us/swapV2/trade-api.html#Query%20Margin%20Type
-     * @see https://bingx-api.github.io/docs/#/en-us/cswap/trade-api.html#Query%20Margin%20Type
+     * @see https://bingx-api.github.io/docs-v3/#/en/Swap/Trades%20Endpoints/Query%20Margin%20Type
+     * @see https://bingx-api.github.io/docs-v3/#/en/Coin-M%20Futures/Trades%20Endpoints/Query%20Margin%20Type
      * @param {string} symbol unified symbol of the market to fetch the margin mode for
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @returns {object} a [margin mode structure]{@link https://docs.ccxt.com/?id=margin-mode-structure}
@@ -57922,9 +58132,9 @@ class bingx extends _abstract_bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
      * @method
      * @name bingx#fetchTradingFee
      * @description fetch the trading fees for a market
-     * @see https://bingx-api.github.io/docs/#/en-us/spot/trade-api.html#Query%20Trading%20Commission%20Rate
-     * @see https://bingx-api.github.io/docs/#/en-us/swapV2/account-api.html#Query%20Trading%20Commission%20Rate
-     * @see https://bingx-api.github.io/docs/#/en-us/cswap/trade-api.html#Query%20Trade%20Commission%20Rate
+     * @see https://bingx-api.github.io/docs-v3/#/en/Spot/Trades%20Endpoints/Query%20Trading%20Commission%20Rate
+     * @see https://bingx-api.github.io/docs-v3/#/en/Swap/Account%20Endpoints/Query%20Trading%20Commission%20Rate
+     * @see https://bingx-api.github.io/docs-v3/#/en/Coin-M%20Futures/Trades%20Endpoints/Query%20Trade%20Commission%20Rate
      * @param {string} symbol unified market symbol
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @returns {object} a [fee structure]{@link https://docs.ccxt.com/?id=fee-structure}
@@ -85172,11 +85382,15 @@ class bitmex extends _abstract_bitmex_js__WEBPACK_IMPORTED_MODULE_0__/* ["defaul
                 'fetchMyLiquidations': false,
                 'fetchMyTrades': true,
                 'fetchOHLCV': true,
+                'fetchOpenInterest': 'emulated',
+                'fetchOpenInterests': true,
                 'fetchOpenOrders': true,
                 'fetchOrder': true,
                 'fetchOrderBook': true,
                 'fetchOrders': true,
                 'fetchPosition': false,
+                'fetchPositionADLRank': true,
+                'fetchPositionsADLRank': true,
                 'fetchPositionHistory': false,
                 'fetchPositions': true,
                 'fetchPositionsHistory': false,
@@ -88057,6 +88271,70 @@ class bitmex extends _abstract_bitmex_js__WEBPACK_IMPORTED_MODULE_0__/* ["defaul
         //
         return this.parseDepositWithdrawFees(assets, codes, 'asset');
     }
+    /**
+     * @method
+     * @name bitmex#fetchOpenInterests
+     * @description Retrieves the open interest for a list of symbols
+     * @see https://docs.bitmex.com/api-explorer/get-stats
+     * @param {string[]} [symbols] a list of unified CCXT market symbols
+     * @param {object} [params] exchange specific parameters
+     * @returns {object[]} a list of [open interest structures]{@link https://docs.ccxt.com/?id=open-interest-structure}
+     */
+    async fetchOpenInterests(symbols = undefined, params = {}) {
+        await this.loadMarkets();
+        const request = {};
+        let response = undefined;
+        response = await this.publicGetStats(this.extend(request, params));
+        //
+        //    [
+        //        {
+        //            currency: 'XBt',
+        //            openInterest: '0',
+        //            openValue: '323890820079',
+        //            rootSymbol: 'Total',
+        //            turnover24h: '447088001322',
+        //            volume24h: '0'
+        //        }
+        //        ...
+        //    ]
+        //
+        symbols = this.marketSymbols(symbols);
+        return this.parseOpenInterests(response, symbols);
+    }
+    parseOpenInterest(interest, market = undefined) {
+        //
+        // fetchOpenInterest
+        //
+        //    {
+        //        currency: 'XBt',
+        //        openInterest: '0',
+        //        openValue: '323890820079',
+        //        rootSymbol: 'Total',
+        //        turnover24h: '447088001322',
+        //        volume24h: '0'
+        //    }
+        //
+        const quoteId = this.safeString(interest, 'currency');
+        const baseId = this.safeString(interest, 'rootSymbol');
+        const quoteSymbol = this.safeCurrencyCode(quoteId);
+        const baseSymbol = this.safeCurrencyCode(baseId);
+        let symbol = baseSymbol;
+        if (quoteSymbol !== undefined) {
+            symbol = baseSymbol + '/' + quoteSymbol + ':' + quoteSymbol;
+        }
+        const openInterest = this.safeNumber(interest, 'openInterest');
+        const openValue = this.safeNumber(interest, 'openValue');
+        return this.safeOpenInterest({
+            'info': interest,
+            'symbol': symbol,
+            'baseVolume': openInterest,
+            'quoteVolume': openValue,
+            'openInterestAmount': openInterest,
+            'openInterestValue': openValue,
+            'timestamp': undefined,
+            'datetime': undefined,
+        }, market);
+    }
     calculateRateLimiterCost(api, method, path, params, config = {}) {
         const isAuthenticated = this.checkRequiredCredentials(false);
         const cost = this.safeValue(config, 'cost', 1);
@@ -88138,6 +88416,266 @@ class bitmex extends _abstract_bitmex_js__WEBPACK_IMPORTED_MODULE_0__/* ["defaul
             'timestamp': undefined,
             'datetime': undefined,
         });
+    }
+    /**
+     * @method
+     * @name bitmex#fetchPositionsADLRank
+     * @description fetches the auto deleveraging rank and risk percentage for a list of symbols
+     * @see https://www.bitmex.com/api/explorer/#!/Position/Position_get
+     * @param {string[]} [symbols] list of unified market symbols
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object[]} an [auto de leverage structure]{@link https://docs.ccxt.com/?id=auto-de-leverage-structure}
+     */
+    async fetchPositionsADLRank(symbols = undefined, params = {}) {
+        await this.loadMarkets();
+        symbols = this.marketSymbols(symbols, undefined, true, true, true);
+        const response = await this.privateGetPosition(params);
+        //
+        //     [
+        //         {
+        //             "account": 395724,
+        //             "symbol": "XBTUSDT",
+        //             "strategy": "OneWay",
+        //             "currency": "USDt",
+        //             "underlying": "XBT",
+        //             "quoteCurrency": "USDT",
+        //             "commission": 0.0005,
+        //             "initMarginReq": 0.01,
+        //             "maintMarginReq": 0.005,
+        //             "riskLimit": 1000000000000,
+        //             "leverage": 100,
+        //             "crossMargin": true,
+        //             "deleveragePercentile": 1,
+        //             "rebalancedPnl": -4319,
+        //             "prevRealisedPnl": 0,
+        //             "prevUnrealisedPnl": null,
+        //             "openingQty": null,
+        //             "openOrderBuyQty": 0,
+        //             "openOrderBuyCost": 0,
+        //             "openOrderBuyPremium": 0,
+        //             "openOrderSellQty": 0,
+        //             "openOrderSellCost": 0,
+        //             "openOrderSellPremium": 0,
+        //             "currentQty": 100,
+        //             "currentCost": 8639330,
+        //             "currentComm": 0,
+        //             "realisedCost": 0,
+        //             "unrealisedCost": 8639330,
+        //             "grossOpenPremium": 0,
+        //             "isOpen": true,
+        //             "markPrice": 88636.92,
+        //             "markValue": 8863692,
+        //             "riskValue": 8863692,
+        //             "homeNotional": 0.0001,
+        //             "foreignNotional": -8.863692,
+        //             "posCost": 8639330,
+        //             "posCross": 0,
+        //             "posComm": 0,
+        //             "posLoss": 0,
+        //             "posMargin": 44061,
+        //             "posMaint": 44061,
+        //             "posInit": 0,
+        //             "initMargin": 0,
+        //             "maintMargin": 44061,
+        //             "realisedPnl": 0,
+        //             "unrealisedPnl": 224362,
+        //             "unrealisedPnlPcnt": 0.026,
+        //             "unrealisedRoePcnt": 2.597,
+        //             "avgCostPrice": 86393.3,
+        //             "avgEntryPrice": 86393.3,
+        //             "breakEvenPrice": 86436.5,
+        //             "marginCallPrice": null,
+        //             "liquidationPrice": 0,
+        //             "bankruptPrice": 0,
+        //             "timestamp": "2025-12-31T07:55:50.505Z",
+        //             "positionReport": {
+        //                 "account": 395724,
+        //                 "avgCostPrice": 86393.3,
+        //                 "avgEntryPrice": 86393.3,
+        //                 "bankruptPrice": 0,
+        //                 "breakEvenPrice": 86436.5,
+        //                 "commission": 0.0005,
+        //                 "crossMargin": true,
+        //                 "currency": "USDt",
+        //                 "currentComm": 0,
+        //                 "currentCost": 8639330,
+        //                 "currentQty": 100,
+        //                 "deleveragePercentile": 1,
+        //                 "foreignNotional": -8.863692,
+        //                 "grossOpenPremium": 0,
+        //                 "homeNotional": 0.0001,
+        //                 "initMargin": 0,
+        //                 "initMarginReq": 0.01,
+        //                 "isOpen": true,
+        //                 "leverage": 100,
+        //                 "liquidationPrice": 0,
+        //                 "maintMargin": 44061,
+        //                 "maintMarginReq": 0.005,
+        //                 "markPrice": 88636.92,
+        //                 "markValue": 8863692,
+        //                 "openOrderBuyCost": 0,
+        //                 "openOrderBuyPremium": 0,
+        //                 "openOrderBuyQty": 0,
+        //                 "openOrderRealisedPnl": 0,
+        //                 "openOrderSellCost": 0,
+        //                 "openOrderSellPremium": 0,
+        //                 "openOrderSellQty": 0,
+        //                 "posComm": 0,
+        //                 "posCost": 8639330,
+        //                 "posCross": 0,
+        //                 "posInit": 0,
+        //                 "posLoss": 0,
+        //                 "posMaint": 44061,
+        //                 "posMargin": 44061,
+        //                 "prevRealisedPnl": 0,
+        //                 "quoteCurrency": "USDT",
+        //                 "realisedCost": 0,
+        //                 "realisedPnl": 0,
+        //                 "rebalancedPnl": -4319,
+        //                 "riskLimit": 1000000000000,
+        //                 "riskValue": 8863692,
+        //                 "strategy": "OneWay",
+        //                 "symbol": "XBTUSDT",
+        //                 "timestamp": "2025-12-31T07:55:50.505Z",
+        //                 "underlying": "XBT",
+        //                 "unrealisedCost": 8639330,
+        //                 "unrealisedPnl": 224362,
+        //                 "unrealisedPnlPcnt": 0.026,
+        //                 "unrealisedRoePcnt": 2.597
+        //             }
+        //         }
+        //     ]
+        //
+        return this.parseADLRanks(response, symbols);
+    }
+    parseADLRank(info, market = undefined) {
+        //
+        // fetchPositionsADLRank
+        //
+        //     {
+        //         "account": 395724,
+        //         "symbol": "XBTUSDT",
+        //         "strategy": "OneWay",
+        //         "currency": "USDt",
+        //         "underlying": "XBT",
+        //         "quoteCurrency": "USDT",
+        //         "commission": 0.0005,
+        //         "initMarginReq": 0.01,
+        //         "maintMarginReq": 0.005,
+        //         "riskLimit": 1000000000000,
+        //         "leverage": 100,
+        //         "crossMargin": true,
+        //         "deleveragePercentile": 1,
+        //         "rebalancedPnl": -4319,
+        //         "prevRealisedPnl": 0,
+        //         "prevUnrealisedPnl": null,
+        //         "openingQty": null,
+        //         "openOrderBuyQty": 0,
+        //         "openOrderBuyCost": 0,
+        //         "openOrderBuyPremium": 0,
+        //         "openOrderSellQty": 0,
+        //         "openOrderSellCost": 0,
+        //         "openOrderSellPremium": 0,
+        //         "currentQty": 100,
+        //         "currentCost": 8639330,
+        //         "currentComm": 0,
+        //         "realisedCost": 0,
+        //         "unrealisedCost": 8639330,
+        //         "grossOpenPremium": 0,
+        //         "isOpen": true,
+        //         "markPrice": 88636.92,
+        //         "markValue": 8863692,
+        //         "riskValue": 8863692,
+        //         "homeNotional": 0.0001,
+        //         "foreignNotional": -8.863692,
+        //         "posCost": 8639330,
+        //         "posCross": 0,
+        //         "posComm": 0,
+        //         "posLoss": 0,
+        //         "posMargin": 44061,
+        //         "posMaint": 44061,
+        //         "posInit": 0,
+        //         "initMargin": 0,
+        //         "maintMargin": 44061,
+        //         "realisedPnl": 0,
+        //         "unrealisedPnl": 224362,
+        //         "unrealisedPnlPcnt": 0.026,
+        //         "unrealisedRoePcnt": 2.597,
+        //         "avgCostPrice": 86393.3,
+        //         "avgEntryPrice": 86393.3,
+        //         "breakEvenPrice": 86436.5,
+        //         "marginCallPrice": null,
+        //         "liquidationPrice": 0,
+        //         "bankruptPrice": 0,
+        //         "timestamp": "2025-12-31T07:55:50.505Z",
+        //         "positionReport": {
+        //             "account": 395724,
+        //             "avgCostPrice": 86393.3,
+        //             "avgEntryPrice": 86393.3,
+        //             "bankruptPrice": 0,
+        //             "breakEvenPrice": 86436.5,
+        //             "commission": 0.0005,
+        //             "crossMargin": true,
+        //             "currency": "USDt",
+        //             "currentComm": 0,
+        //             "currentCost": 8639330,
+        //             "currentQty": 100,
+        //             "deleveragePercentile": 1,
+        //             "foreignNotional": -8.863692,
+        //             "grossOpenPremium": 0,
+        //             "homeNotional": 0.0001,
+        //             "initMargin": 0,
+        //             "initMarginReq": 0.01,
+        //             "isOpen": true,
+        //             "leverage": 100,
+        //             "liquidationPrice": 0,
+        //             "maintMargin": 44061,
+        //             "maintMarginReq": 0.005,
+        //             "markPrice": 88636.92,
+        //             "markValue": 8863692,
+        //             "openOrderBuyCost": 0,
+        //             "openOrderBuyPremium": 0,
+        //             "openOrderBuyQty": 0,
+        //             "openOrderRealisedPnl": 0,
+        //             "openOrderSellCost": 0,
+        //             "openOrderSellPremium": 0,
+        //             "openOrderSellQty": 0,
+        //             "posComm": 0,
+        //             "posCost": 8639330,
+        //             "posCross": 0,
+        //             "posInit": 0,
+        //             "posLoss": 0,
+        //             "posMaint": 44061,
+        //             "posMargin": 44061,
+        //             "prevRealisedPnl": 0,
+        //             "quoteCurrency": "USDT",
+        //             "realisedCost": 0,
+        //             "realisedPnl": 0,
+        //             "rebalancedPnl": -4319,
+        //             "riskLimit": 1000000000000,
+        //             "riskValue": 8863692,
+        //             "strategy": "OneWay",
+        //             "symbol": "XBTUSDT",
+        //             "timestamp": "2025-12-31T07:55:50.505Z",
+        //             "underlying": "XBT",
+        //             "unrealisedCost": 8639330,
+        //             "unrealisedPnl": 224362,
+        //             "unrealisedPnlPcnt": 0.026,
+        //             "unrealisedRoePcnt": 2.597
+        //         }
+        //     }
+        //
+        const marketId = this.safeString(info, 'symbol');
+        const datetime = this.safeString(info, 'timestamp');
+        return {
+            'info': info,
+            'symbol': this.safeSymbol(marketId, market, undefined, 'contract'),
+            'rank': this.safeInteger(info, 'deleveragePercentile'),
+            'rating': undefined,
+            'percentage': undefined,
+            'timestamp': this.parse8601(datetime),
+            'datetime': datetime,
+        };
     }
     handleErrors(code, reason, url, method, headers, body, response, requestHeaders, requestBody) {
         if (response === undefined) {
@@ -106180,6 +106718,8 @@ class blofin extends _abstract_blofin_js__WEBPACK_IMPORTED_MODULE_0__/* ["defaul
                 'fetchOrders': false,
                 'fetchOrderTrades': true,
                 'fetchPosition': true,
+                'fetchPositionADLRank': true,
+                'fetchPositionsADLRank': true,
                 'fetchPositionMode': true,
                 'fetchPositions': true,
                 'fetchPositionsForSymbol': false,
@@ -108576,6 +109116,89 @@ class blofin extends _abstract_blofin_js__WEBPACK_IMPORTED_MODULE_0__/* ["defaul
         //     }
         //
         return await this.privatePostAccountSetPositionMode(this.extend(request, params));
+    }
+    /**
+     * @method
+     * @name blofin#fetchPositionsADLRank
+     * @description fetches the auto deleveraging rank and risk percentage for a list of symbols
+     * @see https://docs.blofin.com/index.html#get-positions
+     * @param {string[]} [symbols] a list of unified market symbols
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object[]} an array of [auto de leverage structures]{@link https://docs.ccxt.com/?id=auto-de-leverage-structure}
+     */
+    async fetchPositionsADLRank(symbols = undefined, params = {}) {
+        await this.loadMarkets();
+        symbols = this.marketSymbols(symbols, undefined, true, true, true);
+        const response = await this.privateGetAccountPositions(params);
+        //
+        //     {
+        //         "code": "0",
+        //         "msg": "success",
+        //         "data": [
+        //             {
+        //                 "positionId": "756786",
+        //                 "instId": "BTC-USDT",
+        //                 "instType": "SWAP",
+        //                 "marginMode": "cross",
+        //                 "positionSide": "net",
+        //                 "adl": "1",
+        //                 "positions": "0.1",
+        //                 "availablePositions": "0.1",
+        //                 "averagePrice": "88564.9",
+        //                 "markPrice": "88546.3696492756",
+        //                 "marginRatio": "822.305183525552961566",
+        //                 "liquidationPrice": "",
+        //                 "unrealizedPnl": "-0.00185303507244",
+        //                 "unrealizedPnlRatio": "-0.000627687178252332",
+        //                 "initialMargin": "2.951545654975853333",
+        //                 "maintenanceMargin": "0.02656391089478268",
+        //                 "createTime": "1767169876207",
+        //                 "updateTime": "1767169876207",
+        //                 "leverage": "3"
+        //             }
+        //         ]
+        //     }
+        //
+        const data = this.safeList(response, 'data', []);
+        return this.parseADLRanks(data, symbols);
+    }
+    parseADLRank(info, market = undefined) {
+        //
+        // fetchPositionsADLRank
+        //
+        //     {
+        //         "positionId": "756786",
+        //         "instId": "BTC-USDT",
+        //         "instType": "SWAP",
+        //         "marginMode": "cross",
+        //         "positionSide": "net",
+        //         "adl": "1",
+        //         "positions": "0.1",
+        //         "availablePositions": "0.1",
+        //         "averagePrice": "88564.9",
+        //         "markPrice": "88546.3696492756",
+        //         "marginRatio": "822.305183525552961566",
+        //         "liquidationPrice": "",
+        //         "unrealizedPnl": "-0.00185303507244",
+        //         "unrealizedPnlRatio": "-0.000627687178252332",
+        //         "initialMargin": "2.951545654975853333",
+        //         "maintenanceMargin": "0.02656391089478268",
+        //         "createTime": "1767169876207",
+        //         "updateTime": "1767169876207",
+        //         "leverage": "3"
+        //     }
+        //
+        const marketId = this.safeString(info, 'instId');
+        const timestamp = this.safeIntegerOmitZero(info, 'createTime');
+        return {
+            'info': info,
+            'symbol': this.safeSymbol(marketId, market, undefined, 'contract'),
+            'rank': this.safeInteger(info, 'adl'),
+            'rating': undefined,
+            'percentage': undefined,
+            'timestamp': timestamp,
+            'datetime': this.iso8601(timestamp),
+        };
     }
     handleErrors(httpCode, reason, url, method, headers, body, response, requestHeaders, requestBody) {
         if (response === undefined) {
@@ -115056,6 +115679,8 @@ class bybit extends _abstract_bybit_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
                 'fetchOrders': false,
                 'fetchOrderTrades': true,
                 'fetchPosition': true,
+                'fetchPositionADLRank': true,
+                'fetchPositionsADLRank': true,
                 'fetchPositionHistory': 'emulated',
                 'fetchPositions': true,
                 'fetchPositionsHistory': true,
@@ -124376,6 +125001,139 @@ class bybit extends _abstract_bybit_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
             'datetime': this.iso8601(timestamp),
             'timeframe': undefined,
             'longShortRatio': this.parseToNumeric(_base_Precise_js__WEBPACK_IMPORTED_MODULE_3__/* .Precise */ .Y.stringDiv(longString, shortString)),
+        };
+    }
+    /**
+     * @method
+     * @name bybit#fetchPositionsADLRank
+     * @description fetches the auto deleveraging rank and risk percentage for a list of symbols
+     * @see https://bybit-exchange.github.io/docs/v5/position#response-parameters
+     * @param {string[]} [symbols] list of unified market symbols
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object[]} an array of [auto de leverage structures]{@link https://docs.ccxt.com/?id=auto-de-leverage-structure}
+     */
+    async fetchPositionsADLRank(symbols = undefined, params = {}) {
+        if (symbols === undefined) {
+            throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_2__.ArgumentsRequired(this.id + ' fetchPositionsADLRank() requires a symbols argument');
+        }
+        await this.loadMarkets();
+        symbols = this.marketSymbols(symbols, undefined, true, true, true);
+        const market = this.getMarketFromSymbols(symbols);
+        const request = {};
+        if (market !== undefined) {
+            request['symbol'] = market['id'];
+        }
+        let type = undefined;
+        [type, params] = this.getBybitType('fetchPositionsADLRank', market, params);
+        request['category'] = type;
+        const response = await this.privateGetV5PositionList(this.extend(request, params));
+        //
+        //     {
+        //         "retCode": 0,
+        //         "retMsg": "OK",
+        //         "result": {
+        //             "nextPageCursor": "BTCUSDT%2C1767085496112%2C0",
+        //             "category": "linear",
+        //             "list": [
+        //                 {
+        //                     "symbol": "BTCUSDT",
+        //                     "leverage": "",
+        //                     "autoAddMargin": 0,
+        //                     "avgPrice": "177489.6",
+        //                     "liqPrice": "",
+        //                     "riskLimitValue": "",
+        //                     "takeProfit": "",
+        //                     "positionValue": "1774.896",
+        //                     "isReduceOnly": false,
+        //                     "positionIMByMp": "",
+        //                     "tpslMode": "Full",
+        //                     "riskId": 0,
+        //                     "trailingStop": "0",
+        //                     "unrealisedPnl": "-3.016",
+        //                     "markPrice": "177188",
+        //                     "adlRankIndicator": 2,
+        //                     "cumRealisedPnl": "-9782.391468",
+        //                     "positionMM": "",
+        //                     "createdTime": "1699928551230",
+        //                     "positionIdx": 0,
+        //                     "positionIM": "",
+        //                     "positionMMByMp": "",
+        //                     "seq": 9558506126,
+        //                     "updatedTime": "1767085496112",
+        //                     "side": "Buy",
+        //                     "bustPrice": "",
+        //                     "positionBalance": "",
+        //                     "leverageSysUpdatedTime": "",
+        //                     "curRealisedPnl": "-0.9761928",
+        //                     "size": "0.01",
+        //                     "positionStatus": "Normal",
+        //                     "mmrSysUpdatedTime": "",
+        //                     "stopLoss": "",
+        //                     "tradeMode": 0,
+        //                     "sessionAvgPrice": ""
+        //                 }
+        //             ]
+        //         },
+        //         "retExtInfo": {},
+        //         "time": 1767085741416
+        //     }
+        //
+        const result = this.safeDict(response, 'result', {});
+        const ranks = this.safeList(result, 'list', []);
+        return this.parseADLRanks(ranks, symbols);
+    }
+    parseADLRank(info, market = undefined) {
+        //
+        // fetchPositionsADLRank
+        //
+        //     {
+        //         "symbol": "BTCUSDT",
+        //         "leverage": "",
+        //         "autoAddMargin": 0,
+        //         "avgPrice": "177489.6",
+        //         "liqPrice": "",
+        //         "riskLimitValue": "",
+        //         "takeProfit": "",
+        //         "positionValue": "1774.896",
+        //         "isReduceOnly": false,
+        //         "positionIMByMp": "",
+        //         "tpslMode": "Full",
+        //         "riskId": 0,
+        //         "trailingStop": "0",
+        //         "unrealisedPnl": "-3.016",
+        //         "markPrice": "177188",
+        //         "adlRankIndicator": 2,
+        //         "cumRealisedPnl": "-9782.391468",
+        //         "positionMM": "",
+        //         "createdTime": "1699928551230",
+        //         "positionIdx": 0,
+        //         "positionIM": "",
+        //         "positionMMByMp": "",
+        //         "seq": 9558506126,
+        //         "updatedTime": "1767085496112",
+        //         "side": "Buy",
+        //         "bustPrice": "",
+        //         "positionBalance": "",
+        //         "leverageSysUpdatedTime": "",
+        //         "curRealisedPnl": "-0.9761928",
+        //         "size": "0.01",
+        //         "positionStatus": "Normal",
+        //         "mmrSysUpdatedTime": "",
+        //         "stopLoss": "",
+        //         "tradeMode": 0,
+        //         "sessionAvgPrice": ""
+        //     }
+        //
+        const marketId = this.safeString(info, 'symbol');
+        const timestamp = this.safeInteger(info, 'updatedTime');
+        return {
+            'info': info,
+            'symbol': this.safeSymbol(marketId, market, undefined, 'contract'),
+            'rank': this.safeInteger(info, 'adlRankIndicator'),
+            'rating': undefined,
+            'percentage': undefined,
+            'timestamp': timestamp,
+            'datetime': this.iso8601(timestamp),
         };
     }
     /**
@@ -169457,6 +170215,8 @@ class delta extends _abstract_delta_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
                 'fetchOrder': true,
                 'fetchOrderBook': true,
                 'fetchPosition': true,
+                'fetchPositionADLRank': true,
+                'fetchPositionsADLRank': true,
                 'fetchPositionMode': false,
                 'fetchPositions': true,
                 'fetchPremiumIndexOHLCV': false,
@@ -173080,6 +173840,371 @@ class delta extends _abstract_delta_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"
             'percentage': undefined,
             'baseVolume': this.safeNumber(chain, 'volume'),
             'quoteVolume': undefined,
+        };
+    }
+    /**
+     * @method
+     * @name delta#fetchPositionsADLRank
+     * @description fetches the auto deleveraging rank and risk percentage for a list of symbols
+     * @see https://docs.delta.exchange/#get-margined-positions
+     * @param {string[]} [symbols] a list of unified market symbols
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object[]} an array of [auto de leverage structures]{@link https://docs.ccxt.com/?id=auto-de-leverage-structure}
+     */
+    async fetchPositionsADLRank(symbols = undefined, params = {}) {
+        await this.loadMarkets();
+        symbols = this.marketSymbols(symbols, undefined, true, true, true);
+        const response = await this.privateGetPositionsMargined(params);
+        //
+        //     {
+        //         "result":
+        //             [
+        //                 {
+        //                     "adl_level": null,
+        //                     "auto_topup": false,
+        //                     "bankruptcy_price": "88618.22667",
+        //                     "commission": "0.03797924",
+        //                     "created_at": "2026-01-14T11:24:35.801586Z",
+        //                     "entry_price": "94948.1",
+        //                     "liquidation_price": "89092.96717",
+        //                     "margin": "6.32987333",
+        //                     "margin_mode": "isolated",
+        //                     "mark_price": "94942.90888022",
+        //                     "product": {
+        //                         "trading_status": "operational",
+        //                         "short_description": null,
+        //                         "quoting_asset": {
+        //                             "base_withdrawal_fee": "0.000000000000000000",
+        //                             "id": 4,
+        //                             "interest_credit": false,
+        //                             "interest_slabs": null,
+        //                             "kyc_deposit_limit": "0.000000000000000000",
+        //                             "kyc_withdrawal_limit": "0.000000000000000000",
+        //                             "min_withdrawal_amount": "0.000000000000000000",
+        //                             "minimum_precision": 2,
+        //                             "name": "Tether",
+        //                             "networks": [],
+        //                             "precision": 8,
+        //                             "sort_priority": null,
+        //                             "symbol": "USDT",
+        //                             "variable_withdrawal_fee": "0.000000000000000000"
+        //                         },
+        //                         "symbol": "BTCUSDT",
+        //                         "taker_commission_rate": "0.0004",
+        //                         "maintenance_margin_scaling_factor": "0",
+        //                         "spot_index": {
+        //                             "config": {
+        //                                 "impact_size": {
+        //                                     "max_impact_size": 150000,
+        //                                     "min_impact_size": 5000,
+        //                                     "step_value": 5000
+        //                                 },
+        //                                 "quoting_asset": "USDT",
+        //                                 "service_id": 1,
+        //                                 "underlying_asset": "BTC"
+        //                             },
+        //                             "constituent_exchanges": [
+        //                                 {
+        //                                     "exchange": "binance",
+        //                                     "health_interval": 3000,
+        //                                     "health_priority": 1,
+        //                                     "weight": 1
+        //                                 },
+        //                                 {
+        //                                     "exchange": "gateio",
+        //                                     "health_interval": 3000,
+        //                                     "health_priority": 3,
+        //                                     "weight": 1
+        //                                 },
+        //                                 {
+        //                                     "exchange": "bybit",
+        //                                     "health_interval": 3000,
+        //                                     "health_priority": 2,
+        //                                     "weight": 1
+        //                                 }
+        //                             ],
+        //                             "constituent_indices": null,
+        //                             "description": "BTC Spot",
+        //                             "health_interval": 300,
+        //                             "id": 2,
+        //                             "impact_size": "1.000000000000000000",
+        //                             "index_type": "spot_pair",
+        //                             "is_composite": false,
+        //                             "price_method": "ltp",
+        //                             "quoting_asset_id": 4,
+        //                             "symbol": ".DEXBTUSDT",
+        //                             "tick_size": "0.100000000000000000",
+        //                             "underlying_asset_id": 2
+        //                         },
+        //                         "liquidation_penalty_factor": "1",
+        //                         "auction_start_time": "2025-12-22T12:18:52Z",
+        //                         "is_quanto": false,
+        //                         "state": "live",
+        //                         "id": 84,
+        //                         "settling_asset": {
+        //                             "base_withdrawal_fee": "0.000000000000000000",
+        //                             "id": 4,
+        //                             "interest_credit": false,
+        //                             "interest_slabs": null,
+        //                             "kyc_deposit_limit": "0.000000000000000000",
+        //                             "kyc_withdrawal_limit": "0.000000000000000000",
+        //                             "min_withdrawal_amount": "0.000000000000000000",
+        //                             "minimum_precision": 2,
+        //                             "name": "Tether",
+        //                             "networks": [],
+        //                             "precision": 8,
+        //                             "sort_priority": null,
+        //                             "symbol": "USDT",
+        //                             "variable_withdrawal_fee": "0.000000000000000000"
+        //                         },
+        //                         "tick_size": "0.1",
+        //                         "impact_size": 4000,
+        //                         "insurance_fund_margin_contribution": "5",
+        //                         "maker_commission_rate": "0.0002",
+        //                         "ui_config": {
+        //                             "default_trading_view_candle": "15",
+        //                             "leverage_slider_values": [1,2,3,5,10,50,100],
+        //                             "price_clubbing_values": [0.1,1,10,50],
+        //                             "show_bracket_orders": false,
+        //                             "sort_priority": 1
+        //                         },
+        //                         "annualized_funding": "0",
+        //                         "strike_price": null,
+        //                         "price_band": "100",
+        //                         "funding_method": "mark_price",
+        //                         "contract_value": "0.001",
+        //                         "auction_finish_time": null,
+        //                         "product_specs": {
+        //                             "vol_expiry_time": 172800
+        //                         },
+        //                         "launch_time": "2020-04-20T08:37:05Z",
+        //                         "basis_factor_max_limit": "1000",
+        //                         "initial_margin": "1",
+        //                         "notional_type": "vanilla",
+        //                         "contract_unit_currency": "BTC",
+        //                         "disruption_reason": null,
+        //                         "underlying_asset": {
+        //                             "base_withdrawal_fee": "0.000000000000000000",
+        //                             "id": 2,
+        //                             "interest_credit": false,
+        //                             "interest_slabs": null,
+        //                             "kyc_deposit_limit": "0.000000000000000000",
+        //                             "kyc_withdrawal_limit": "0.000000000000000000",
+        //                             "min_withdrawal_amount": "0.000000000000000000",
+        //                             "minimum_precision": 4,
+        //                             "name": "Bitcoin",
+        //                             "networks": [],
+        //                             "precision": 8,
+        //                             "sort_priority": 1,
+        //                             "symbol": "BTC",
+        //                             "variable_withdrawal_fee": "0.000000000000000000"
+        //                         },
+        //                         "initial_margin_scaling_factor": "0",
+        //                         "position_size_limit": 10000000,
+        //                         "max_leverage_notional": "10000",
+        //                         "settlement_price": null,
+        //                         "barrier_price": null,
+        //                         "maintenance_margin": "0.5",
+        //                         "default_leverage": "50.000000000000000000",
+        //                         "settlement_time": null,
+        //                         "description": "BTCUSDT-Bitcoin Perpetual futures, quoted,settled & margined in Tether(USDT)",
+        //                         "contract_type": "perpetual_futures"
+        //                     },
+        //                     "product_id": 84,
+        //                     "product_symbol": "BTCUSDT",
+        //                     "realized_cashflow": "0.000000000000000000",
+        //                     "realized_funding": "0",
+        //                     "realized_holding_cost": "0",
+        //                     "realized_pnl": "0",
+        //                     "size": 1,
+        //                     "unrealized_pnl": "-0.00519112",
+        //                     "updated_at": "2026-01-14T11:24:35.801586Z",
+        //                     "user_id": 30084879
+        //                 }
+        //             ],
+        //         "success": true
+        //     }
+        //
+        const result = this.safeList(response, 'result', []);
+        return this.parseADLRanks(result, symbols);
+    }
+    parseADLRank(info, market = undefined) {
+        //
+        // fetchPositionsADLRank
+        //
+        //     {
+        //         "adl_level": null,
+        //         "auto_topup": false,
+        //         "bankruptcy_price": "88618.22667",
+        //         "commission": "0.03797924",
+        //         "created_at": "2026-01-14T11:24:35.801586Z",
+        //         "entry_price": "94948.1",
+        //         "liquidation_price": "89092.96717",
+        //         "margin": "6.32987333",
+        //         "margin_mode": "isolated",
+        //         "mark_price": "94942.90888022",
+        //         "product": {
+        //             "trading_status": "operational",
+        //             "short_description": null,
+        //             "quoting_asset": {
+        //                 "base_withdrawal_fee": "0.000000000000000000",
+        //                 "id": 4,
+        //                 "interest_credit": false,
+        //                 "interest_slabs": null,
+        //                 "kyc_deposit_limit": "0.000000000000000000",
+        //                 "kyc_withdrawal_limit": "0.000000000000000000",
+        //                 "min_withdrawal_amount": "0.000000000000000000",
+        //                 "minimum_precision": 2,
+        //                 "name": "Tether",
+        //                 "networks": [],
+        //                 "precision": 8,
+        //                 "sort_priority": null,
+        //                 "symbol": "USDT",
+        //                 "variable_withdrawal_fee": "0.000000000000000000"
+        //             },
+        //             "symbol": "BTCUSDT",
+        //             "taker_commission_rate": "0.0004",
+        //             "maintenance_margin_scaling_factor": "0",
+        //             "spot_index": {
+        //                 "config": {
+        //                     "impact_size": {
+        //                         "max_impact_size": 150000,
+        //                         "min_impact_size": 5000,
+        //                         "step_value": 5000
+        //                     },
+        //                     "quoting_asset": "USDT",
+        //                     "service_id": 1,
+        //                     "underlying_asset": "BTC"
+        //                 },
+        //                 "constituent_exchanges": [
+        //                     {
+        //                         "exchange": "binance",
+        //                         "health_interval": 3000,
+        //                         "health_priority": 1,
+        //                         "weight": 1
+        //                     },
+        //                     {
+        //                         "exchange": "gateio",
+        //                         "health_interval": 3000,
+        //                         "health_priority": 3,
+        //                         "weight": 1
+        //                     },
+        //                     {
+        //                         "exchange": "bybit",
+        //                         "health_interval": 3000,
+        //                         "health_priority": 2,
+        //                         "weight": 1
+        //                     }
+        //                 ],
+        //                 "constituent_indices": null,
+        //                 "description": "BTC Spot",
+        //                 "health_interval": 300,
+        //                 "id": 2,
+        //                 "impact_size": "1.000000000000000000",
+        //                 "index_type": "spot_pair",
+        //                 "is_composite": false,
+        //                 "price_method": "ltp",
+        //                 "quoting_asset_id": 4,
+        //                 "symbol": ".DEXBTUSDT",
+        //                 "tick_size": "0.100000000000000000",
+        //                 "underlying_asset_id": 2
+        //             },
+        //             "liquidation_penalty_factor": "1",
+        //             "auction_start_time": "2025-12-22T12:18:52Z",
+        //             "is_quanto": false,
+        //             "state": "live",
+        //             "id": 84,
+        //             "settling_asset": {
+        //                 "base_withdrawal_fee": "0.000000000000000000",
+        //                 "id": 4,
+        //                 "interest_credit": false,
+        //                 "interest_slabs": null,
+        //                 "kyc_deposit_limit": "0.000000000000000000",
+        //                 "kyc_withdrawal_limit": "0.000000000000000000",
+        //                 "min_withdrawal_amount": "0.000000000000000000",
+        //                 "minimum_precision": 2,
+        //                 "name": "Tether",
+        //                 "networks": [],
+        //                 "precision": 8,
+        //                 "sort_priority": null,
+        //                 "symbol": "USDT",
+        //                 "variable_withdrawal_fee": "0.000000000000000000"
+        //             },
+        //             "tick_size": "0.1",
+        //             "impact_size": 4000,
+        //             "insurance_fund_margin_contribution": "5",
+        //             "maker_commission_rate": "0.0002",
+        //             "ui_config": {
+        //                 "default_trading_view_candle": "15",
+        //                 "leverage_slider_values": [1,2,3,5,10,50,100],
+        //                 "price_clubbing_values": [0.1,1,10,50],
+        //                 "show_bracket_orders": false,
+        //                 "sort_priority": 1
+        //             },
+        //             "annualized_funding": "0",
+        //             "strike_price": null,
+        //             "price_band": "100",
+        //             "funding_method": "mark_price",
+        //             "contract_value": "0.001",
+        //             "auction_finish_time": null,
+        //             "product_specs": {
+        //                 "vol_expiry_time": 172800
+        //             },
+        //             "launch_time": "2020-04-20T08:37:05Z",
+        //             "basis_factor_max_limit": "1000",
+        //             "initial_margin": "1",
+        //             "notional_type": "vanilla",
+        //             "contract_unit_currency": "BTC",
+        //             "disruption_reason": null,
+        //             "underlying_asset": {
+        //                 "base_withdrawal_fee": "0.000000000000000000",
+        //                 "id": 2,
+        //                 "interest_credit": false,
+        //                 "interest_slabs": null,
+        //                 "kyc_deposit_limit": "0.000000000000000000",
+        //                 "kyc_withdrawal_limit": "0.000000000000000000",
+        //                 "min_withdrawal_amount": "0.000000000000000000",
+        //                 "minimum_precision": 4,
+        //                 "name": "Bitcoin",
+        //                 "networks": [],
+        //                 "precision": 8,
+        //                 "sort_priority": 1,
+        //                 "symbol": "BTC",
+        //                 "variable_withdrawal_fee": "0.000000000000000000"
+        //             },
+        //             "initial_margin_scaling_factor": "0",
+        //             "position_size_limit": 10000000,
+        //             "max_leverage_notional": "10000",
+        //             "settlement_price": null,
+        //             "barrier_price": null,
+        //             "maintenance_margin": "0.5",
+        //             "default_leverage": "50.000000000000000000",
+        //             "settlement_time": null,
+        //             "description": "BTCUSDT-Bitcoin Perpetual futures, quoted,settled & margined in Tether(USDT)",
+        //             "contract_type": "perpetual_futures"
+        //         },
+        //         "product_id": 84,
+        //         "product_symbol": "BTCUSDT",
+        //         "realized_cashflow": "0.000000000000000000",
+        //         "realized_funding": "0",
+        //         "realized_holding_cost": "0",
+        //         "realized_pnl": "0",
+        //         "size": 1,
+        //         "unrealized_pnl": "-0.00519112",
+        //         "updated_at": "2026-01-14T11:24:35.801586Z",
+        //         "user_id": 30084879
+        //     }
+        //
+        const marketId = this.safeString(info, 'product_symbol');
+        const datetime = this.safeString(info, 'created_at');
+        return {
+            'info': info,
+            'symbol': this.safeSymbol(marketId, market, undefined, 'contract'),
+            'rank': this.safeInteger(info, 'adl_level'),
+            'rating': undefined,
+            'percentage': undefined,
+            'timestamp': this.parse8601(datetime),
+            'datetime': datetime,
         };
     }
     sign(path, api = 'public', method = 'GET', params = {}, headers = undefined, body = undefined) {
@@ -214571,6 +215696,8 @@ class htx extends _abstract_htx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */
                 'fetchOrders': true,
                 'fetchOrderTrades': true,
                 'fetchPosition': true,
+                'fetchPositionADLRank': true,
+                'fetchPositionsADLRank': true,
                 'fetchPositionHistory': 'emulated',
                 'fetchPositions': true,
                 'fetchPositionsHistory': false,
@@ -223252,9 +224379,9 @@ class htx extends _abstract_htx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */
         }
         const request = {};
         let subType = undefined;
-        [subType, params] = this.handleSubTypeAndParams('fetchPositions', market, params, 'linear');
+        [subType, params] = this.handleSubTypeAndParams('fetchOpenInterests', market, params, 'linear');
         let marketType = undefined;
-        [marketType, params] = this.handleMarketTypeAndParams('fetchPositions', market, params);
+        [marketType, params] = this.handleMarketTypeAndParams('fetchOpenInterests', market, params);
         let response = undefined;
         if (marketType === 'future') {
             response = await this.contractPublicGetApiV1ContractOpenInterest(this.extend(request, params));
@@ -224225,6 +225352,267 @@ class htx extends _abstract_htx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */
             //
         }
         return response;
+    }
+    /**
+     * @method
+     * @name htx#fetchPositionsADLRank
+     * @description fetches the auto deleveraging rank and risk percentage for a list of symbols
+     * @see https://www.htx.com/en-us/opend/newApiPages/?id=8cb81b5a-77b5-11ed-9966-0242ac110003
+     * @see https://www.htx.com/en-us/opend/newApiPages/?id=8cb81c49-77b5-11ed-9966-0242ac110003
+     * @see https://www.htx.com/en-us/opend/newApiPages/?id=28c2f164-77ae-11ed-9966-0242ac110003
+     * @see https://www.htx.com/en-us/opend/newApiPages/?id=5d518648-77b6-11ed-9966-0242ac110003
+     * @param {string[]} [symbols] a list of unified market symbols
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object[]} an array of [auto de leverage structures]{@link https://docs.ccxt.com/?id=auto-de-leverage-structure}
+     */
+    async fetchPositionsADLRank(symbols = undefined, params = {}) {
+        await this.loadMarkets();
+        symbols = this.marketSymbols(symbols, undefined, true, true, true);
+        let market = undefined;
+        if (symbols !== undefined) {
+            const symbolsLength = symbols.length;
+            if (symbolsLength > 0) {
+                const first = this.safeString(symbols, 0);
+                market = this.market(first);
+            }
+        }
+        let marginMode = undefined;
+        [marginMode, params] = this.handleMarginModeAndParams('fetchPositionsADLRank', params, 'cross');
+        let subType = undefined;
+        [subType, params] = this.handleSubTypeAndParams('fetchPositionsADLRank', market, params, 'linear');
+        let marketType = undefined;
+        [marketType, params] = this.handleMarketTypeAndParams('fetchPositionsADLRank', market, params);
+        if (marketType === 'spot') {
+            marketType = 'future';
+        }
+        let response = undefined;
+        if (subType === 'linear') {
+            if (marginMode === 'isolated') {
+                response = await this.contractPrivatePostLinearSwapApiV1SwapPositionInfo(params);
+            }
+            else if (marginMode === 'cross') {
+                response = await this.contractPrivatePostLinearSwapApiV1SwapCrossPositionInfo(params);
+            }
+            else {
+                throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_1__.NotSupported(this.id + ' fetchPositionsADLRank() not support this market type');
+            }
+            //
+            //         {
+            //             "status": "ok",
+            //         "data": [
+            //             {
+            //                 "symbol": "BTC",
+            //                 "contract_code": "BTC-USDT",
+            //                 "volume": 1.000000000000000000,
+            //                 "available": 1.000000000000000000,
+            //                 "frozen": 0E-18,
+            //                 "cost_open": 96039.700000000000000000,
+            //                 "cost_hold": 96039.700000000000000000,
+            //                 "profit_unreal": 0.000600000000000000,
+            //                 "profit_rate": 0.000006247416432995,
+            //                 "lever_rate": 1,
+            //                 "position_margin": 96.040300000000000000,
+            //                 "direction": "buy",
+            //                 "profit": 0.000600000000000000,
+            //                 "last_price": 96040.3,
+            //                 "margin_asset": "USDT",
+            //                 "margin_mode": "cross",
+            //                 "margin_account": "USDT",
+            //                 "contract_type": "swap",
+            //                 "pair": "BTC-USDT",
+            //                 "business_type": "swap",
+            //                 "trade_partition":"USDT",
+            //                 "position_mode": "single_side",
+            //                 "store_time": "2023-10-08 20:05:06",
+            //                 "liquidation_price": null,
+            //                 "market_closing_slippage": null,
+            //                 "risk_rate": 249.274066168760049797,
+            //                 "new_risk_rate": 0.003995619743220614,
+            //                 "risk_rate_percent": 0.003995619743220614,
+            //                 "withdraw_available": null,
+            //                 "open_adl": 1,
+            //                 "adl_risk_percent": 3,
+            //                 "tp_trigger_price": null,
+            //                 "sl_trigger_price": null,
+            //                 "tp_order_id": null,
+            //                 "sl_order_id": null,
+            //                 "tp_trigger_type": null,
+            //                 "sl_trigger_type": null,
+            //                 "adjust_value": null
+            //             }
+            //         ],
+            //         "ts": 1768489640285
+            //     }
+            //
+        }
+        else {
+            if (marketType === 'future') {
+                response = await this.contractPrivatePostApiV1ContractPositionInfo(params);
+                //
+                //     {
+                //         "status": "ok",
+                //         "data": [
+                //             {
+                //                 "symbol": "BTC",
+                //                 "contract_code": "BTC-USDT-260123",
+                //                 "volume": 1.000000000000000000,
+                //                 "available": 1.000000000000000000,
+                //                 "frozen": 0E-18,
+                //                 "cost_open": 96203.100000000000000000,
+                //                 "cost_hold": 96203.100000000000000000,
+                //                 "profit_unreal": -0.199400000000000000,
+                //                 "profit_rate": -0.002072698281032524,
+                //                 "lever_rate": 1,
+                //                 "position_margin": 96.003700000000000000,
+                //                 "direction": "buy",
+                //                 "profit": -0.199400000000000000,
+                //                 "last_price": 96003.7,
+                //                 "margin_asset": "USDT",
+                //                 "margin_mode": "cross",
+                //                 "margin_account": "USDT",
+                //                 "contract_type": "next_week",
+                //                 "pair": "BTC-USDT",
+                //                 "business_type": "futures",
+                //                 "trade_partition": "USDT",
+                //                 "position_mode": "single_side",
+                //                 "store_time": "2026-01-15 23:45:21",
+                //                 "liquidation_price": null,
+                //                 "market_closing_slippage": null,
+                //                 "risk_rate": 249.265098252125343196,
+                //                 "new_risk_rate": 0.003995762920935011,
+                //                 "risk_rate_percent": 0.003995762920935011,
+                //                 "withdraw_available": null,
+                //                 "open_adl": 1,
+                //                 "adl_risk_percent": 2,
+                //                 "tp_trigger_price": null,
+                //                 "sl_trigger_price": null,
+                //                 "tp_order_id": null,
+                //                 "sl_order_id": null,
+                //                 "tp_trigger_type": null,
+                //                 "sl_trigger_type": null,
+                //                 "adjust_value": null
+                //             }
+                //         ],
+                //         "ts": 1768491964551
+                //     }
+                //
+            }
+            else if (marketType === 'swap') {
+                response = await this.contractPrivatePostSwapApiV1SwapPositionInfo(params);
+                //
+                //     {
+                //         "status": "ok"
+                //         "data": [
+                //             {
+                //                 "symbol": "THETA"
+                //                 "contract_code": "THETA-USD"
+                //                 "volume": 20
+                //                 "available": 20
+                //                 "frozen": 0
+                //                 "cost_open": 0.6048347107438017
+                //                 "cost_hold": 0.65931
+                //                 "profit_unreal": -10.5257562398811
+                //                 "profit_rate": 1.0158596753357925
+                //                 "lever_rate": 20
+                //                 "position_margin": 15.693659761456372
+                //                 "direction": "buy"
+                //                 "profit": 16.795657677889032
+                //                 "last_price": 0.6372
+                //                 "adl_risk_percent": "3"
+                //                 "liq_px": "112"
+                //                 "new_risk_rate": ""
+                //                 "trade_partition": ""
+                //             }
+                //         ]
+                //         "ts": 1603868312729
+                //     }
+                //
+            }
+            else {
+                throw new _base_errors_js__WEBPACK_IMPORTED_MODULE_1__.NotSupported(this.id + ' fetchPositionsADLRank() not support this market type');
+            }
+        }
+        const data = this.safeList(response, 'data', []);
+        return this.parseADLRanks(data, symbols);
+    }
+    parseADLRank(info, market = undefined) {
+        //
+        // fetchPositionADLRank linear swap and future
+        //
+        //     {
+        //         "symbol": "BTC",
+        //         "contract_code": "BTC-USDT",
+        //         "volume": 1.000000000000000000,
+        //         "available": 1.000000000000000000,
+        //         "frozen": 0E-18,
+        //         "cost_open": 96039.700000000000000000,
+        //         "cost_hold": 96039.700000000000000000,
+        //         "profit_unreal": 0.000600000000000000,
+        //         "profit_rate": 0.000006247416432995,
+        //         "lever_rate": 1,
+        //         "position_margin": 96.040300000000000000,
+        //         "direction": "buy",
+        //         "profit": 0.000600000000000000,
+        //         "last_price": 96040.3,
+        //         "margin_asset": "USDT",
+        //         "margin_mode": "cross",
+        //         "margin_account": "USDT",
+        //         "contract_type": "swap",
+        //         "pair": "BTC-USDT",
+        //         "business_type": "swap",
+        //         "trade_partition":"USDT",
+        //         "position_mode": "single_side",
+        //         "store_time": "2023-10-08 20:05:06",
+        //         "liquidation_price": null,
+        //         "market_closing_slippage": null,
+        //         "risk_rate": 249.274066168760049797,
+        //         "new_risk_rate": 0.003995619743220614,
+        //         "risk_rate_percent": 0.003995619743220614,
+        //         "withdraw_available": null,
+        //         "open_adl": 1,
+        //         "adl_risk_percent": 3,
+        //         "tp_trigger_price": null,
+        //         "sl_trigger_price": null,
+        //         "tp_order_id": null,
+        //         "sl_order_id": null,
+        //         "tp_trigger_type": null,
+        //         "sl_trigger_type": null,
+        //         "adjust_value": null
+        //     }
+        //
+        // fetchPositionADLRank inverse
+        //
+        //     {
+        //         "symbol": "THETA"
+        //         "contract_code": "THETA-USD"
+        //         "volume": 20
+        //         "available": 20
+        //         "frozen": 0
+        //         "cost_open": 0.6048347107438017
+        //         "cost_hold": 0.65931
+        //         "profit_unreal": -10.5257562398811
+        //         "profit_rate": 1.0158596753357925
+        //         "lever_rate": 20
+        //         "position_margin": 15.693659761456372
+        //         "direction": "buy"
+        //         "profit": 16.795657677889032
+        //         "last_price": 0.6372
+        //         "adl_risk_percent": "3"
+        //         "liq_px": "112"
+        //         "new_risk_rate": ""
+        //         "trade_partition": ""
+        //     }
+        //
+        const marketId = this.safeString(info, 'contract_code');
+        return {
+            'info': info,
+            'symbol': this.safeSymbol(marketId, market, undefined, 'contract'),
+            'rank': this.safeInteger(info, 'adl_risk_percent'),
+            'rating': undefined,
+            'percentage': undefined,
+            'timestamp': undefined,
+            'datetime': undefined,
+        };
     }
 }
 
@@ -244422,6 +245810,8 @@ class kucoinfutures extends _abstract_kucoinfutures_js__WEBPACK_IMPORTED_MODULE_
                 'fetchOrder': true,
                 'fetchOrderBook': true,
                 'fetchPosition': true,
+                'fetchPositionADLRank': true,
+                'fetchPositionsADLRank': true,
                 'fetchPositionHistory': false,
                 'fetchPositionMode': false,
                 'fetchPositions': true,
@@ -247759,6 +249149,125 @@ class kucoinfutures extends _abstract_kucoinfutures_js__WEBPACK_IMPORTED_MODULE_
             'marginMode': undefined,
             'longLeverage': leverageNum,
             'shortLeverage': leverageNum,
+        };
+    }
+    /**
+     * @method
+     * @name kucoinfutures#fetchPositionsADLRank
+     * @description fetches the auto deleveraging rank and risk percentage for a list of symbols
+     * @see https://www.kucoin.com/docs-new/rest/futures-trading/positions/get-position-list
+     * @param {string[]} [symbols] list of unified market symbols
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object[]} an array of [auto de leverage structures]{@link https://docs.ccxt.com/?id=auto-de-leverage-structure}
+     */
+    async fetchPositionsADLRank(symbols = undefined, params = {}) {
+        await this.loadMarkets();
+        symbols = this.marketSymbols(symbols, undefined, true, true, true);
+        const response = await this.futuresPrivateGetPositions(params);
+        //
+        //     {
+        //         "code": "200000",
+        //         "data": [
+        //             {
+        //                 "id": "600000000001260912",
+        //                 "symbol": "XBTUSDTM",
+        //                 "crossMode": true,
+        //                 "maintMarginReq": 0.0040000133,
+        //                 "delevPercentage": 0.0,
+        //                 "openingTimestamp": 1768481882915,
+        //                 "currentTimestamp": 1768481897988,
+        //                 "currentQty": 1,
+        //                 "currentCost": 96.9768,
+        //                 "currentComm": 0.05818608,
+        //                 "unrealisedCost": 96.9768,
+        //                 "realisedGrossCost": 0.0,
+        //                 "realisedCost": 0.05818608,
+        //                 "isOpen": true,
+        //                 "markPrice": 96985.6,
+        //                 "markValue": 96.9856,
+        //                 "posCost": 96.9768,
+        //                 "posInit": 4.84884,
+        //                 "posMargin": 4.84928,
+        //                 "posMaint": 0.38794369,
+        //                 "realisedGrossPnl": 0.0,
+        //                 "realisedPnl": -0.05818608,
+        //                 "unrealisedPnl": 0.0088,
+        //                 "unrealisedPnlPcnt": 1.0E-4,
+        //                 "unrealisedRoePcnt": 0.0018,
+        //                 "avgEntryPrice": 96976.8,
+        //                 "liquidationPrice": 52351.69,
+        //                 "bankruptPrice": 52110.87,
+        //                 "settleCurrency": "USDT",
+        //                 "isInverse": false,
+        //                 "maintainMargin": 0.0040000133,
+        //                 "marginMode": "CROSS",
+        //                 "positionSide": "LONG",
+        //                 "leverage": 20,
+        //                 "dealComm": -0.05818608,
+        //                 "fundingFee": 0,
+        //                 "tax": 0
+        //             }
+        //         ]
+        //     }
+        //
+        const data = this.safeList(response, 'data', []);
+        return this.parseADLRanks(data, symbols);
+    }
+    parseADLRank(info, market = undefined) {
+        //
+        // fetchPositionsADLRank
+        //
+        //     {
+        //         "id": "600000000001260912",
+        //         "symbol": "XBTUSDTM",
+        //         "crossMode": true,
+        //         "maintMarginReq": 0.0040000133,
+        //         "delevPercentage": 0.0,
+        //         "openingTimestamp": 1768481882915,
+        //         "currentTimestamp": 1768481897988,
+        //         "currentQty": 1,
+        //         "currentCost": 96.9768,
+        //         "currentComm": 0.05818608,
+        //         "unrealisedCost": 96.9768,
+        //         "realisedGrossCost": 0.0,
+        //         "realisedCost": 0.05818608,
+        //         "isOpen": true,
+        //         "markPrice": 96985.6,
+        //         "markValue": 96.9856,
+        //         "posCost": 96.9768,
+        //         "posInit": 4.84884,
+        //         "posMargin": 4.84928,
+        //         "posMaint": 0.38794369,
+        //         "realisedGrossPnl": 0.0,
+        //         "realisedPnl": -0.05818608,
+        //         "unrealisedPnl": 0.0088,
+        //         "unrealisedPnlPcnt": 1.0E-4,
+        //         "unrealisedRoePcnt": 0.0018,
+        //         "avgEntryPrice": 96976.8,
+        //         "liquidationPrice": 52351.69,
+        //         "bankruptPrice": 52110.87,
+        //         "settleCurrency": "USDT",
+        //         "isInverse": false,
+        //         "maintainMargin": 0.0040000133,
+        //         "marginMode": "CROSS",
+        //         "positionSide": "LONG",
+        //         "leverage": 20,
+        //         "dealComm": -0.05818608,
+        //         "fundingFee": 0,
+        //         "tax": 0
+        //     }
+        //
+        const marketId = this.safeString(info, 'symbol');
+        const timestamp = this.safeInteger(info, 'openingTimestamp');
+        const percentage = this.safeString(info, 'delevPercentage');
+        return {
+            'info': info,
+            'symbol': this.safeSymbol(marketId, market, undefined, 'contract'),
+            'rank': undefined,
+            'rating': undefined,
+            'percentage': this.parseNumber(_base_Precise_js__WEBPACK_IMPORTED_MODULE_1__/* .Precise */ .Y.stringMul(percentage, '100')),
+            'timestamp': timestamp,
+            'datetime': this.iso8601(timestamp),
         };
     }
 }
@@ -287581,6 +289090,9 @@ class phemex extends _abstract_phemex_js__WEBPACK_IMPORTED_MODULE_0__/* ["defaul
                 'future': false,
                 'option': false,
                 'addMargin': false,
+                'borrowCrossMargin': false,
+                'borrowIsolatedMargin': false,
+                'borrowMargin': false,
                 'cancelAllOrders': true,
                 'cancelOrder': true,
                 'closePosition': false,
@@ -287591,9 +289103,14 @@ class phemex extends _abstract_phemex_js__WEBPACK_IMPORTED_MODULE_0__/* ["defaul
                 'createStopMarketOrder': true,
                 'createStopOrder': true,
                 'editOrder': true,
+                'fetchAllGreeks': false,
                 'fetchBalance': true,
+                'fetchBorrowInterest': false,
+                'fetchBorrowRate': false,
                 'fetchBorrowRateHistories': false,
                 'fetchBorrowRateHistory': false,
+                'fetchBorrowRates': false,
+                'fetchBorrowRatesPerSymbol': false,
                 'fetchClosedOrders': true,
                 'fetchConvertQuote': true,
                 'fetchConvertTrade': false,
@@ -287610,6 +289127,7 @@ class phemex extends _abstract_phemex_js__WEBPACK_IMPORTED_MODULE_0__/* ["defaul
                 'fetchFundingRateHistories': false,
                 'fetchFundingRateHistory': true,
                 'fetchFundingRates': false,
+                'fetchGreeks': false,
                 'fetchIndexOHLCV': false,
                 'fetchIsolatedBorrowRate': false,
                 'fetchIsolatedBorrowRates': false,
@@ -287622,9 +289140,13 @@ class phemex extends _abstract_phemex_js__WEBPACK_IMPORTED_MODULE_0__/* ["defaul
                 'fetchOHLCV': true,
                 'fetchOpenInterest': true,
                 'fetchOpenOrders': true,
+                'fetchOption': false,
+                'fetchOptionChain': false,
                 'fetchOrder': true,
                 'fetchOrderBook': true,
                 'fetchOrders': true,
+                'fetchPositionADLRank': true,
+                'fetchPositionsADLRank': true,
                 'fetchPositions': true,
                 'fetchPositionsRisk': false,
                 'fetchPremiumIndexOHLCV': false,
@@ -287634,8 +289156,11 @@ class phemex extends _abstract_phemex_js__WEBPACK_IMPORTED_MODULE_0__/* ["defaul
                 'fetchTradingFee': false,
                 'fetchTradingFees': false,
                 'fetchTransfers': true,
+                'fetchVolatilityHistory': false,
                 'fetchWithdrawals': true,
                 'reduceMargin': false,
+                'repayCrossMargin': false,
+                'repayIsolatedMargin': false,
                 'sandbox': true,
                 'setLeverage': true,
                 'setMargin': true,
@@ -292875,6 +294400,349 @@ class phemex extends _abstract_phemex_js__WEBPACK_IMPORTED_MODULE_0__/* ["defaul
             'fee': undefined,
         };
     }
+    /**
+     * @method
+     * @name phemex#fetchPositionADLRank
+     * @description fetches the auto deleveraging rank and risk percentage for a list of symbols
+     * @see https://phemex-docs.github.io/#query-account-positions
+     * @see https://phemex-docs.github.io/#query-trading-account-and-positions
+     * @see https://phemex-docs.github.io/#query-account-positions-with-unrealized-pnl
+     * @param {string[]} [symbols] list of unified market symbols
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {string} [params.code] the currency code to fetch ranks for, USD, BTC or USDT, USDT is the default
+     * @param {string} [params.method] *USDT contracts only* 'privateGetGAccountsAccountPositions' or 'privateGetGAccountsAccountPositions' default is 'privateGetGAccountsAccountPositions'
+     * @returns {object} an array of [auto de leverage structures]{@link https://docs.ccxt.com/?id=auto-de-leverage-structure}
+     */
+    async fetchPositionsADLRank(symbols = undefined, params = {}) {
+        await this.loadMarkets();
+        symbols = this.marketSymbols(symbols, undefined, true, true, true);
+        let subType = undefined;
+        let code = this.safeString2(params, 'currency', 'code', 'USDT');
+        params = this.omit(params, ['currency', 'code']);
+        let settle = undefined;
+        let market = undefined;
+        const firstSymbol = this.safeString(symbols, 0);
+        if (firstSymbol !== undefined) {
+            market = this.market(firstSymbol);
+            settle = market['settle'];
+            code = market['settle'];
+        }
+        else {
+            [settle, params] = this.handleOptionAndParams(params, 'fetchPositionsADLRank', 'settle', code);
+        }
+        [subType, params] = this.handleSubTypeAndParams('fetchPositionsADLRank', market, params);
+        const isUSDTSettled = settle === 'USDT';
+        if (isUSDTSettled) {
+            code = 'USDT';
+        }
+        else if (settle === 'BTC') {
+            code = 'BTC';
+        }
+        else if (code === undefined) {
+            code = (subType === 'linear') ? 'USD' : 'BTC';
+        }
+        const currency = this.currency(code);
+        const request = {
+            'currency': currency['id'],
+        };
+        let response = undefined;
+        if (isUSDTSettled) {
+            let method = undefined;
+            [method, params] = this.handleOptionAndParams(params, 'fetchPositionsADLRank', 'method', 'privateGetGAccountsAccountPositions');
+            if (method === 'privateGetGAccountsAccountPositions') {
+                response = await this.privateGetGAccountsAccountPositions(this.extend(request, params));
+            }
+            else {
+                response = await this.privateGetGAccountsPositions(this.extend(request, params));
+            }
+            //
+            //     {
+            //         "code": 0,
+            //         "msg": "",
+            //         "data": {
+            //             "account": {
+            //                 "userID": 940666,
+            //                 "accountId": 9406660003,
+            //                 "currency": "USDT",
+            //                 "accountBalanceRv": "439.96184445932",
+            //                 "totalUsedBalanceRv": "89.22502732",
+            //                 "bonusBalanceRv": "0",
+            //                 "status": 0,
+            //                 "userMode": 1
+            //             },
+            //             "positions": [
+            //                 {
+            //                     "userID": 940666,
+            //                     "accountID": 9406660003,
+            //                     "symbol": "BTCUSDT",
+            //                     "currency": "USDT",
+            //                     "side": "Buy",
+            //                     "positionStatus": "Normal",
+            //                     "crossMargin": true,
+            //                     "leverageRr": "-10",
+            //                     "initMarginReqRr": "0.1",
+            //                     "maintMarginReqRr": "0.005",
+            //                     "riskLimitRv": "20000000",
+            //                     "size": "0.01",
+            //                     "valueRv": "887.531",
+            //                     "avgEntryPriceRp": "88753.1",
+            //                     "avgEntryPrice": "88753.1",
+            //                     "posCostRv": "89.22502732",
+            //                     "assignedPosBalanceRv": "89.29802732",
+            //                     "bankruptCommRv": "0.529812426",
+            //                     "bankruptPriceRp": "44783.79",
+            //                     "positionMarginRv": "88.695214894",
+            //                     "liquidationPriceRp": "45009",
+            //                     "deleveragePercentileRr": "0",
+            //                     "buyValueToCostRr": "0.10114",
+            //                     "sellValueToCostRr": "0.10126",
+            //                     "markPriceRp": "88747.2",
+            //                     "estimatedOrdLossRv": "0",
+            //                     "usedBalanceRv": "89.22502732",
+            //                     "cumClosedPnlRv": "425.97796",
+            //                     "cumFundingFeeRv": "54.892930099379",
+            //                     "cumTransactFeeRv": "1.288782144",
+            //                     "transactTimeNs": 1767176685241254818,
+            //                     "takerFeeRateRr": "-1",
+            //                     "makerFeeRateRr": "-1",
+            //                     "term": 6,
+            //                     "lastTermEndTimeNs": 1759835547751667598,
+            //                     "lastFundingTimeNs": 1759824000000000000,
+            //                     "curTermRealisedPnlRv": "-0.5325186",
+            //                     "execSeq": 47732822790,
+            //                     "posSide": "Long",
+            //                     "posMode": "Hedged",
+            //                     "buyLeavesValueRv": "0",
+            //                     "buyLeavesQtyRq": "0",
+            //                     "sellLeavesValueRv": "0",
+            //                     "sellLeavesQtyRq": "0"
+            //                 },
+            //             ]
+            //         }
+            //     }
+            //
+        }
+        else {
+            response = await this.privateGetAccountsAccountPositions(this.extend(request, params));
+            //
+            //     {
+            //         "code": 0,
+            //         "msg": "",
+            //         "data": {
+            //             "account": {
+            //                 "userID": 940666,
+            //                 "accountId": 9406660001,
+            //                 "currency": "BTC",
+            //                 "accountBalanceEv": 50050270,
+            //                 "totalUsedBalanceEv": 58,
+            //                 "bonusBalanceEv": 0
+            //             },
+            //             "positions": [
+            //                 {
+            //                     "userID": 940666,
+            //                     "accountID": 9406660001,
+            //                     "symbol": "BTCUSD",
+            //                     "currency": "BTC",
+            //                     "side": "Buy",
+            //                     "positionStatus": "Normal",
+            //                     "crossMargin": false,
+            //                     "leverageEr": -2000000000,
+            //                     "leverage": -20.00000000,
+            //                     "initMarginReqEr": 5000000,
+            //                     "initMarginReq": 0.05000000,
+            //                     "maintMarginReqEr": 500000,
+            //                     "maintMarginReq": 0.00500000,
+            //                     "riskLimitEv": 150000000000,
+            //                     "riskLimit": 1500.00000000,
+            //                     "size": 1,
+            //                     "value": 0.00001128,
+            //                     "valueEv": 1128,
+            //                     "avgEntryPriceEp": 886524823,
+            //                     "avgEntryPrice": 88652.48230000,
+            //                     "posCostEv": 58,
+            //                     "posCost": 5.8E-7,
+            //                     "assignedPosBalanceEv": 58,
+            //                     "assignedPosBalance": 5.8E-7,
+            //                     "bankruptCommEv": 1,
+            //                     "bankruptComm": 1E-8,
+            //                     "bankruptPriceEp": 100000,
+            //                     "bankruptPrice": 10.00000000,
+            //                     "positionMarginEv": 57,
+            //                     "positionMargin": 5.7E-7,
+            //                     "liquidationPriceEp": 100000,
+            //                     "liquidationPrice": 10.00000000,
+            //                     "deleveragePercentileEr": 0,
+            //                     "deleveragePercentile": 0E-8,
+            //                     "buyValueToCostEr": 5123000,
+            //                     "buyValueToCost": 0.05123000,
+            //                     "sellValueToCostEr": 5117000,
+            //                     "sellValueToCost": 0.05117000,
+            //                     "markPriceEp": 886028000,
+            //                     "markPrice": 88602.80000000,
+            //                     "estimatedOrdLossEv": 0,
+            //                     "estimatedOrdLoss": 0E-8,
+            //                     "usedBalanceEv": 58,
+            //                     "usedBalance": 5.8E-7,
+            //                     "cumClosedPnlEv": 127,
+            //                     "cumFundingFeeEv": -146,
+            //                     "cumTransactFeeEv": 3,
+            //                     "transactTimeNs": 1767177964554892106,
+            //                     "takerFeeRateEr": 60000,
+            //                     "makerFeeRateEr": 10000,
+            //                     "term": 2,
+            //                     "lastTermEndTimeNs": 1716225275381802994,
+            //                     "lastFundingTimeNs": 1767168000000000000,
+            //                     "curTermRealisedPnlEv": -1,
+            //                     "execSeq": 1104909332,
+            //                     "freeQty": -1,
+            //                     "freeCostEv": 0,
+            //                     "buyLeavesValueEv": 0,
+            //                     "sellLeavesValueEv": 0,
+            //                     "buyLeavesQty": 0,
+            //                     "sellLeavesQty": 0
+            //                 }
+            //             ]
+            //         }
+            //     }
+            //
+        }
+        const data = this.safeValue(response, 'data', {});
+        const ranks = this.safeValue(data, 'positions', []);
+        const result = [];
+        for (let i = 0; i < ranks.length; i++) {
+            const rank = ranks[i];
+            result.push(this.parseADLRank(rank));
+        }
+        return this.filterByArrayADLRanks(result, 'symbol', symbols, false);
+    }
+    parseADLRank(info, market = undefined) {
+        //
+        // fetchPositionADLRank: linear
+        //
+        //     {
+        //         "userID": 940666,
+        //         "accountID": 9406660003,
+        //         "symbol": "BTCUSDT",
+        //         "currency": "USDT",
+        //         "side": "Buy",
+        //         "positionStatus": "Normal",
+        //         "crossMargin": true,
+        //         "leverageRr": "-10",
+        //         "initMarginReqRr": "0.1",
+        //         "maintMarginReqRr": "0.005",
+        //         "riskLimitRv": "20000000",
+        //         "size": "0.01",
+        //         "valueRv": "887.531",
+        //         "avgEntryPriceRp": "88753.1",
+        //         "avgEntryPrice": "88753.1",
+        //         "posCostRv": "89.22502732",
+        //         "assignedPosBalanceRv": "89.29802732",
+        //         "bankruptCommRv": "0.529812426",
+        //         "bankruptPriceRp": "44783.79",
+        //         "positionMarginRv": "88.695214894",
+        //         "liquidationPriceRp": "45009",
+        //         "deleveragePercentileRr": "0",
+        //         "buyValueToCostRr": "0.10114",
+        //         "sellValueToCostRr": "0.10126",
+        //         "markPriceRp": "88747.2",
+        //         "estimatedOrdLossRv": "0",
+        //         "usedBalanceRv": "89.22502732",
+        //         "cumClosedPnlRv": "425.97796",
+        //         "cumFundingFeeRv": "54.892930099379",
+        //         "cumTransactFeeRv": "1.288782144",
+        //         "transactTimeNs": 1767176685241254818,
+        //         "takerFeeRateRr": "-1",
+        //         "makerFeeRateRr": "-1",
+        //         "term": 6,
+        //         "lastTermEndTimeNs": 1759835547751667598,
+        //         "lastFundingTimeNs": 1759824000000000000,
+        //         "curTermRealisedPnlRv": "-0.5325186",
+        //         "execSeq": 47732822790,
+        //         "posSide": "Long",
+        //         "posMode": "Hedged",
+        //         "buyLeavesValueRv": "0",
+        //         "buyLeavesQtyRq": "0",
+        //         "sellLeavesValueRv": "0",
+        //         "sellLeavesQtyRq": "0"
+        //     }
+        //
+        // fetchPositionADLRank: inverse
+        //
+        //     {
+        //         "userID": 940666,
+        //         "accountID": 9406660001,
+        //         "symbol": "BTCUSD",
+        //         "currency": "BTC",
+        //         "side": "Buy",
+        //         "positionStatus": "Normal",
+        //         "crossMargin": false,
+        //         "leverageEr": -2000000000,
+        //         "leverage": -20.00000000,
+        //         "initMarginReqEr": 5000000,
+        //         "initMarginReq": 0.05000000,
+        //         "maintMarginReqEr": 500000,
+        //         "maintMarginReq": 0.00500000,
+        //         "riskLimitEv": 150000000000,
+        //         "riskLimit": 1500.00000000,
+        //         "size": 1,
+        //         "value": 0.00001128,
+        //         "valueEv": 1128,
+        //         "avgEntryPriceEp": 886524823,
+        //         "avgEntryPrice": 88652.48230000,
+        //         "posCostEv": 58,
+        //         "posCost": 5.8E-7,
+        //         "assignedPosBalanceEv": 58,
+        //         "assignedPosBalance": 5.8E-7,
+        //         "bankruptCommEv": 1,
+        //         "bankruptComm": 1E-8,
+        //         "bankruptPriceEp": 100000,
+        //         "bankruptPrice": 10.00000000,
+        //         "positionMarginEv": 57,
+        //         "positionMargin": 5.7E-7,
+        //         "liquidationPriceEp": 100000,
+        //         "liquidationPrice": 10.00000000,
+        //         "deleveragePercentileEr": 0,
+        //         "deleveragePercentile": 0E-8,
+        //         "buyValueToCostEr": 5123000,
+        //         "buyValueToCost": 0.05123000,
+        //         "sellValueToCostEr": 5117000,
+        //         "sellValueToCost": 0.05117000,
+        //         "markPriceEp": 886028000,
+        //         "markPrice": 88602.80000000,
+        //         "estimatedOrdLossEv": 0,
+        //         "estimatedOrdLoss": 0E-8,
+        //         "usedBalanceEv": 58,
+        //         "usedBalance": 5.8E-7,
+        //         "cumClosedPnlEv": 127,
+        //         "cumFundingFeeEv": -146,
+        //         "cumTransactFeeEv": 3,
+        //         "transactTimeNs": 1767177964554892106,
+        //         "takerFeeRateEr": 60000,
+        //         "makerFeeRateEr": 10000,
+        //         "term": 2,
+        //         "lastTermEndTimeNs": 1716225275381802994,
+        //         "lastFundingTimeNs": 1767168000000000000,
+        //         "curTermRealisedPnlEv": -1,
+        //         "execSeq": 1104909332,
+        //         "freeQty": -1,
+        //         "freeCostEv": 0,
+        //         "buyLeavesValueEv": 0,
+        //         "sellLeavesValueEv": 0,
+        //         "buyLeavesQty": 0,
+        //         "sellLeavesQty": 0
+        //     }
+        //
+        const marketId = this.safeString(info, 'symbol');
+        return {
+            'info': info,
+            'symbol': this.safeSymbol(marketId, market, undefined, 'contract'),
+            'rank': undefined,
+            'rating': undefined,
+            'percentage': this.safeNumber2(info, 'deleveragePercentileRr', 'deleveragePercentileEr'),
+            'timestamp': undefined,
+            'datetime': undefined,
+        };
+    }
     handleErrors(httpCode, reason, url, method, headers, body, response, requestHeaders, requestBody) {
         if (response === undefined) {
             return undefined; // fallback to default error handler
@@ -292954,6 +294822,7 @@ class poloniex extends _abstract_poloniex_js__WEBPACK_IMPORTED_MODULE_0__/* ["de
                 'createStopOrder': true,
                 'createTriggerOrder': true,
                 'editOrder': true,
+                'fetchAllGreeks': false,
                 'fetchBalance': true,
                 'fetchClosedOrder': false,
                 'fetchClosedOrders': true,
@@ -292971,6 +294840,7 @@ class poloniex extends _abstract_poloniex_js__WEBPACK_IMPORTED_MODULE_0__/* ["de
                 'fetchFundingRate': false,
                 'fetchFundingRateHistory': false,
                 'fetchFundingRates': undefined,
+                'fetchGreeks': false,
                 'fetchLedger': undefined,
                 'fetchLeverage': true,
                 'fetchLiquidations': undefined,
@@ -292981,6 +294851,8 @@ class poloniex extends _abstract_poloniex_js__WEBPACK_IMPORTED_MODULE_0__/* ["de
                 'fetchOpenInterestHistory': false,
                 'fetchOpenOrder': false,
                 'fetchOpenOrders': true,
+                'fetchOption': false,
+                'fetchOptionChain': false,
                 'fetchOrder': true,
                 'fetchOrderBook': true,
                 'fetchOrderBooks': false,
@@ -292997,6 +294869,7 @@ class poloniex extends _abstract_poloniex_js__WEBPACK_IMPORTED_MODULE_0__/* ["de
                 'fetchTransactions': 'emulated',
                 'fetchTransfer': false,
                 'fetchTransfers': false,
+                'fetchVolatilityHistory': false,
                 'fetchWithdrawals': true,
                 'reduceMargin': true,
                 'sandbox': true,
@@ -308551,9 +310424,9 @@ class bingx extends _bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A {
      * @method
      * @name bingx#watchTicker
      * @description watches a price ticker, a statistical calculation with the information calculated over the past 24 hours for a specific market
-     * @see https://bingx-api.github.io/docs/#/en-us/spot/socket/market.html#Subscribe%20to%2024-hour%20Price%20Change
-     * @see https://bingx-api.github.io/docs/#/en-us/swapV2/socket/market.html#Subscribe%20to%2024-hour%20price%20changes
-     * @see https://bingx-api.github.io/docs/#/en-us/cswap/socket/market.html#Subscribe%20to%2024-Hour%20Price%20Change
+     * @see https://bingx-api.github.io/docs-v3/#/en/Spot/Websocket%20Market%20Data/Subscribe%20to%2024-hour%20Price%20Change
+     * @see https://bingx-api.github.io/docs-v3/#/en/Swap/Websocket%20Market%20Data/Subscribe%20to%2024-hour%20price%20changes
+     * @see https://bingx-api.github.io/docs-v3/#/en/Coin-M%20Futures/Websocket%20Market%20Data/Subscribe%20to%2024-Hour%20Price%20Change
      * @param {string} symbol unified symbol of the market to fetch the ticker for
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @returns {object} a [ticker structure]{@link https://docs.ccxt.com/?id=ticker-structure}
@@ -308592,9 +310465,9 @@ class bingx extends _bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A {
      * @method
      * @name bingx#unWatchTicker
      * @description unWatches a price ticker, a statistical calculation with the information calculated over the past 24 hours for all markets of a specific list
-     * @see https://bingx-api.github.io/docs/#/en-us/spot/socket/market.html#Subscribe%20to%2024-hour%20Price%20Change
-     * @see https://bingx-api.github.io/docs/#/en-us/swapV2/socket/market.html#Subscribe%20to%2024-hour%20price%20changes
-     * @see https://bingx-api.github.io/docs/#/en-us/cswap/socket/market.html#Subscribe%20to%2024-Hour%20Price%20Change
+     * @see https://bingx-api.github.io/docs-v3/#/en/Spot/Websocket%20Market%20Data/Subscribe%20to%2024-hour%20Price%20Change
+     * @see https://bingx-api.github.io/docs-v3/#/en/Swap/Websocket%20Market%20Data/Subscribe%20to%2024-hour%20price%20changes
+     * @see https://bingx-api.github.io/docs-v3/#/en/Coin-M%20Futures/Websocket%20Market%20Data/Subscribe%20to%2024-Hour%20Price%20Change
      * @param {string} symbol unified symbol of the market to fetch the ticker for
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @returns {object} a [ticker structure]{@link https://docs.ccxt.com/?id=ticker-structure}
@@ -308759,9 +310632,9 @@ class bingx extends _bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A {
      * @method
      * @name bingx#watchTrades
      * @description watches information on multiple trades made in a market
-     * @see https://bingx-api.github.io/docs/#/en-us/spot/socket/market.html#Subscription%20transaction%20by%20transaction
-     * @see https://bingx-api.github.io/docs/#/en-us/swapV2/socket/market.html#Subscribe%20the%20Latest%20Trade%20Detail
-     * @see https://bingx-api.github.io/docs/#/en-us/cswap/socket/market.html#Subscription%20transaction%20by%20transaction
+     * @see https://bingx-api.github.io/docs-v3/#/en/Spot/Websocket%20Market%20Data/Subscription%20transaction%20by%20transaction
+     * @see https://bingx-api.github.io/docs-v3/#/en/Swap/Websocket%20Market%20Data/Subscribe%20the%20Latest%20Trade%20Detail
+     * @see https://bingx-api.github.io/docs-v3/#/en/Coin-M%20Futures/Websocket%20Market%20Data/Subscription%20transaction%20by%20transaction
      * @param {string} symbol unified market symbol of the market orders were made in
      * @param {int} [since] the earliest time in ms to fetch orders for
      * @param {int} [limit] the maximum number of order structures to retrieve
@@ -308813,9 +310686,9 @@ class bingx extends _bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A {
      * @method
      * @name bingx#unWatchTrades
      * @description unsubscribes from the trades channel
-     * @see https://bingx-api.github.io/docs/#/en-us/spot/socket/market.html#Subscription%20transaction%20by%20transaction
-     * @see https://bingx-api.github.io/docs/#/en-us/swapV2/socket/market.html#Subscribe%20the%20Latest%20Trade%20Detail
-     * @see https://bingx-api.github.io/docs/#/en-us/cswap/socket/market.html#Subscription%20transaction%20by%20transaction
+     * @see https://bingx-api.github.io/docs-v3/#/en/Spot/Websocket%20Market%20Data/Subscription%20transaction%20by%20transaction
+     * @see https://bingx-api.github.io/docs-v3/#/en/Swap/Websocket%20Market%20Data/Subscribe%20the%20Latest%20Trade%20Detail
+     * @see https://bingx-api.github.io/docs-v3/#/en/Coin-M%20Futures/Websocket%20Market%20Data/Subscription%20transaction%20by%20transaction
      * @param {string} symbol unified symbol of the market to fetch trades for
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @param {string} [params.name] the name of the method to call, 'trade' or 'aggTrade', default is 'trade'
@@ -308943,9 +310816,9 @@ class bingx extends _bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A {
      * @method
      * @name bingx#watchOrderBook
      * @description watches information on open orders with bid (buy) and ask (sell) prices, volumes and other data
-     * @see https://bingx-api.github.io/docs/#/en-us/spot/socket/market.html#Subscribe%20Market%20Depth%20Data
-     * @see https://bingx-api.github.io/docs/#/en-us/swapV2/socket/market.html#Subscribe%20Market%20Depth%20Data
-     * @see https://bingx-api.github.io/docs/#/en-us/cswap/socket/market.html#Subscribe%20to%20Limited%20Depth
+     * @see https://bingx-api.github.io/docs-v3/#/en/Spot/Websocket%20Market%20Data/Subscribe%20Market%20Depth%20Data
+     * @see https://bingx-api.github.io/docs-v3/#/en/Swap/Websocket%20Market%20Data/Partial%20Order%20Book%20Depth
+     * @see https://bingx-api.github.io/docs-v3/#/en/Coin-M%20Futures/Websocket%20Market%20Data/Subscribe%20to%20Limited%20Depth
      * @param {string} symbol unified symbol of the market to fetch the order book for
      * @param {int} [limit] the maximum amount of order book entries to return
      * @param {object} [params] extra parameters specific to the exchange API endpoint
@@ -309001,9 +310874,9 @@ class bingx extends _bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A {
      * @method
      * @name bingx#unWatchOrderBook
      * @description unWatches information on open orders with bid (buy) and ask (sell) prices, volumes and other data
-     * @see https://bingx-api.github.io/docs/#/en-us/spot/socket/market.html#Subscribe%20Market%20Depth%20Data
-     * @see https://bingx-api.github.io/docs/#/en-us/swapV2/socket/market.html#Subscribe%20Market%20Depth%20Data
-     * @see https://bingx-api.github.io/docs/#/en-us/cswap/socket/market.html#Subscribe%20to%20Limited%20Depth
+     * @see https://bingx-api.github.io/docs-v3/#/en/Spot/Websocket%20Market%20Data/Subscribe%20Market%20Depth%20Data
+     * @see https://bingx-api.github.io/docs-v3/#/en/Swap/Websocket%20Market%20Data/Partial%20Order%20Book%20Depth
+     * @see https://bingx-api.github.io/docs-v3/#/en/Coin-M%20Futures/Websocket%20Market%20Data/Subscribe%20to%20Limited%20Depth
      * @param {string} symbol unified symbol of the market
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @returns {object} A dictionary of [order book structures]{@link https://docs.ccxt.com/?id=order-book-structure} indexed by market symbols
@@ -309275,9 +311148,9 @@ class bingx extends _bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A {
      * @method
      * @name bingx#watchOHLCV
      * @description watches historical candlestick data containing the open, high, low, and close price, and the volume of a market
-     * @see https://bingx-api.github.io/docs/#/en-us/spot/socket/market.html#K-line%20Streams
-     * @see https://bingx-api.github.io/docs/#/en-us/swapV2/socket/market.html#Subscribe%20K-Line%20Data
-     * @see https://bingx-api.github.io/docs/#/en-us/cswap/socket/market.html#Subscribe%20to%20Latest%20Trading%20Pair%20K-Line
+     * @see https://bingx-api.github.io/docs-v3/#/en/Spot/Websocket%20Market%20Data/K-line%20Streamst
+     * @see https://bingx-api.github.io/docs-v3/#/en/Swap/Websocket%20Market%20Data/Subscribe%20K-Line%20Data
+     * @see https://bingx-api.github.io/docs-v3/#/en/Coin-M%20Futures/Websocket%20Market%20Data/Subscribe%20to%20Latest%20Trading%20Pair%20K-Line
      * @param {string} symbol unified symbol of the market to fetch OHLCV data for
      * @param {string} timeframe the length of time each candle represents
      * @param {int} [since] timestamp in ms of the earliest candle to fetch
@@ -309332,9 +311205,9 @@ class bingx extends _bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A {
      * @method
      * @name bingx#unWatchOHLCV
      * @description unWatches historical candlestick data containing the open, high, low, and close price, and the volume of a market
-     * @see https://bingx-api.github.io/docs/#/en-us/spot/socket/market.html#K-line%20Streams
-     * @see https://bingx-api.github.io/docs/#/en-us/swapV2/socket/market.html#Subscribe%20K-Line%20Data
-     * @see https://bingx-api.github.io/docs/#/en-us/cswap/socket/market.html#Subscribe%20to%20Latest%20Trading%20Pair%20K-Line
+     * @see https://bingx-api.github.io/docs-v3/#/en/Spot/Websocket%20Market%20Data/K-line%20Streamst
+     * @see https://bingx-api.github.io/docs-v3/#/en/Swap/Websocket%20Market%20Data/Subscribe%20K-Line%20Data
+     * @see https://bingx-api.github.io/docs-v3/#/en/Coin-M%20Futures/Websocket%20Market%20Data/Subscribe%20to%20Latest%20Trading%20Pair%20K-Line
      * @param {string} symbol unified symbol of the market to fetch OHLCV data for
      * @param {string} timeframe the length of time each candle represents
      * @param {object} [params] extra parameters specific to the exchange API endpoint
@@ -309358,9 +311231,9 @@ class bingx extends _bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A {
      * @method
      * @name bingx#watchOrders
      * @description watches information on multiple orders made by the user
-     * @see https://bingx-api.github.io/docs/#/en-us/spot/socket/account.html#Subscription%20order%20update%20data
-     * @see https://bingx-api.github.io/docs/#/en-us/swapV2/socket/account.html#Order%20update%20push
-     * @see https://bingx-api.github.io/docs/#/en-us/cswap/socket/account.html#Order%20update%20push
+     * @see https://bingx-api.github.io/docs-v3/#/en/Spot/Websocket%20Account%20Data/order%20update%20event
+     * @see https://bingx-api.github.io/docs-v3/#/en/Swap/Websocket%20Account%20Data/Order%20update%20push
+     * @see https://bingx-api.github.io/docs-v3/#/en/Coin-M%20Futures/Websocket%20Account%20Data/Order%20update%20push
      * @param {string} [symbol] unified market symbol of the market orders are made in
      * @param {int} [since] the earliest time in ms to watch orders for
      * @param {int} [limit] the maximum number of order structures to retrieve
@@ -309421,9 +311294,9 @@ class bingx extends _bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A {
      * @method
      * @name bingx#watchMyTrades
      * @description watches information on multiple trades made by the user
-     * @see https://bingx-api.github.io/docs/#/en-us/spot/socket/account.html#Subscription%20order%20update%20data
-     * @see https://bingx-api.github.io/docs/#/en-us/swapV2/socket/account.html#Order%20update%20push
-     * @see https://bingx-api.github.io/docs/#/en-us/cswap/socket/account.html#Order%20update%20push
+     * @see https://bingx-api.github.io/docs-v3/#/en/Spot/Websocket%20Account%20Data/order%20update%20event
+     * @see https://bingx-api.github.io/docs-v3/#/en/Swap/Websocket%20Account%20Data/Order%20update%20push
+     * @see https://bingx-api.github.io/docs-v3/#/en/Coin-M%20Futures/Websocket%20Account%20Data/Order%20update%20push
      * @param {string} [symbol] unified market symbol of the market the trades are made in
      * @param {int} [since] the earliest time in ms to watch trades for
      * @param {int} [limit] the maximum number of trade structures to retrieve
@@ -309484,9 +311357,9 @@ class bingx extends _bingx_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A {
      * @method
      * @name bingx#watchBalance
      * @description query for balance and get the amount of funds available for trading or funds locked in orders
-     * @see https://bingx-api.github.io/docs/#/en-us/spot/socket/account.html#Subscription%20account%20balance%20push
-     * @see https://bingx-api.github.io/docs/#/en-us/swapV2/socket/account.html#Account%20balance%20and%20position%20update%20push
-     * @see https://bingx-api.github.io/docs/#/en-us/cswap/socket/account.html#Account%20balance%20and%20position%20update%20push
+     * @see https://bingx-api.github.io/docs-v3/#/en/Spot/Websocket%20Account%20Data/Subscription%20account%20balance%20push
+     * @see https://bingx-api.github.io/docs-v3/#/en/Swap/Websocket%20Account%20Data/Account%20balance%20and%20position%20update%20push
+     * @see https://bingx-api.github.io/docs-v3/#/en/Coin-M%20Futures/Websocket%20Account%20Data/Account%20balance%20and%20position%20update%20push
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @returns {object} a [balance structure]{@link https://docs.ccxt.com/?id=balance-structure}
      */
@@ -323231,7 +325104,8 @@ class blofin extends _blofin_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A
             const firstSymbol = this.safeString(firstMarket, 'symbol');
             limit = trades.getLimit(firstSymbol, limit);
         }
-        return this.filterBySinceLimit(trades, since, limit, 'timestamp', true);
+        const result = this.filterBySinceLimit(trades, since, limit, 'timestamp', true);
+        return this.sortBy(result, 'timestamp'); // needed bcz of https://github.com/ccxt/ccxt/actions/runs/20755599430/job/59597237029?pr=27624#step:11:611
     }
     handleTrades(client, message) {
         //
@@ -425998,6 +427872,8 @@ class woo extends _abstract_woo_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */
                 'fetchOrders': true,
                 'fetchOrderTrades': true,
                 'fetchPosition': true,
+                'fetchPositionADLRank': true,
+                'fetchPositionsADLRank': true,
                 'fetchPositionHistory': false,
                 'fetchPositionMode': false,
                 'fetchPositions': true,
@@ -430106,6 +431982,92 @@ class woo extends _abstract_woo_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */
             };
         }
         return result;
+    }
+    /**
+     * @method
+     * @name woo#fetchPositionsADLRank
+     * @description fetches the auto deleveraging rank and risk percentage for a list of symbols
+     * @see https://docs.woox.io/#get-all-position-info-new
+     * @param {string[]} [symbols] a list of unified market symbols
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object[]} an array of [auto de leverage structures]{@link https://docs.ccxt.com/?id=auto-de-leverage-structure}
+     */
+    async fetchPositionsADLRank(symbols = undefined, params = {}) {
+        await this.loadMarkets();
+        symbols = this.marketSymbols(symbols, undefined, true, true, true);
+        const response = await this.v3PrivateGetFuturesPositions(params);
+        //
+        //     {
+        //         "success": true,
+        //         "data": {
+        //             "positions": [
+        //                 {
+        //                     "symbol": "PERP_BTC_USDT",
+        //                     "holding": "0.001",
+        //                     "pendingLongQty": "0",
+        //                     "pendingShortQty": "0",
+        //                     "settlePrice": "90732",
+        //                     "averageOpenPrice": "90732",
+        //                     "pnl24H": "-0.001",
+        //                     "fee24H": "0.1360115",
+        //                     "markPrice": "90736",
+        //                     "estLiqPrice": "0",
+        //                     "timestamp": 1768049379264,
+        //                     "adlQuantile": 3,
+        //                     "positionSide": "BOTH",
+        //                     "marginMode": "CROSS",
+        //                     "isolatedMarginToken": "",
+        //                     "isolatedMarginAmount": "0",
+        //                     "isolatedFrozenLong": "0",
+        //                     "isolatedFrozenShort": "0",
+        //                     "leverage": 10
+        //                 },
+        //             ]
+        //         },
+        //         "timestamp": 1768049428472
+        //     }
+        //
+        const result = this.safeDict(response, 'data', {});
+        const positions = this.safeList(result, 'positions', []);
+        return this.parseADLRanks(positions, symbols);
+    }
+    parseADLRank(info, market = undefined) {
+        //
+        // fetchPositionsADLRank
+        //
+        //     {
+        //         "symbol": "PERP_BTC_USDT",
+        //         "holding": "0.001",
+        //         "pendingLongQty": "0",
+        //         "pendingShortQty": "0",
+        //         "settlePrice": "90732",
+        //         "averageOpenPrice": "90732",
+        //         "pnl24H": "-0.001",
+        //         "fee24H": "0.1360115",
+        //         "markPrice": "90736",
+        //         "estLiqPrice": "0",
+        //         "timestamp": 1768049379264,
+        //         "adlQuantile": 3,
+        //         "positionSide": "BOTH",
+        //         "marginMode": "CROSS",
+        //         "isolatedMarginToken": "",
+        //         "isolatedMarginAmount": "0",
+        //         "isolatedFrozenLong": "0",
+        //         "isolatedFrozenShort": "0",
+        //         "leverage": 10
+        //     }
+        //
+        const marketId = this.safeString(info, 'symbol');
+        const timestamp = this.safeInteger(info, 'timestamp');
+        return {
+            'info': info,
+            'symbol': this.safeSymbol(marketId, market, undefined, 'contract'),
+            'rank': this.safeNumber(info, 'adlQuantile'),
+            'rating': undefined,
+            'percentage': undefined,
+            'timestamp': timestamp,
+            'datetime': this.iso8601(timestamp),
+        };
     }
     defaultNetworkCodeForCurrency(code) {
         const currencyItem = this.currency(code);
@@ -463141,7 +465103,7 @@ SOFTWARE.
 
 //-----------------------------------------------------------------------------
 // this is updated by vss.js when building
-const version = '4.5.38';
+const version = '4.5.39';
 _src_base_Exchange_js__WEBPACK_IMPORTED_MODULE_0__/* .Exchange */ .k.ccxtVersion = version;
 //-----------------------------------------------------------------------------
 
