@@ -2,7 +2,7 @@
 
 # -----------------------------------------------------------------------------
 
-__version__ = '4.5.39'
+__version__ = '4.5.42'
 
 # -----------------------------------------------------------------------------
 
@@ -33,7 +33,7 @@ from ccxt.base.exchange import Exchange as BaseExchange, ArgumentsRequired
 
 # -----------------------------------------------------------------------------
 
-from ccxt.async_support.base.ws.functions import inflate, inflate64, gunzip
+from ccxt.async_support.base.ws.functions import inflate, gunzip
 from ccxt.async_support.base.ws.client import Client
 from ccxt.async_support.base.ws.future import Future
 from ccxt.async_support.base.ws.order_book import OrderBook, IndexedOrderBook, CountedOrderBook
@@ -87,6 +87,9 @@ class Exchange(BaseExchange):
         super(Exchange, self).__init__(config)
         self.markets_loading = None
         self.reloading_markets = False
+
+    async def load_lighter_library(self, path, chainId, privateKey, apiKeyIndex, accountIndex):
+        return self.load_lighter_library_helper(path, chainId, privateKey, apiKeyIndex, accountIndex)
 
     def get_event_loop(self):
         return self.asyncio_loop
@@ -204,7 +207,28 @@ class Exchange(BaseExchange):
         # end of proxies & headers
 
         request_body = body
-        encoded_body = body.encode() if body else None
+        # check content-type is multipart/form-data for lighter
+        has_multipart = False
+        content_type_key = None
+        for k, v in request_headers.items():
+            lk = k.lower()
+            if lk == 'content-type':
+                if v == 'multipart/form-data':
+                    content_type_key = k
+                    has_multipart = True
+                    data = aiohttp.FormData()
+                    # TODO: attach file?
+                    for k, v in body.items():
+                        data.add_field(k, v)
+                    encoded_body = data
+                    break
+                else:
+                    break
+        if not has_multipart:
+            encoded_body = body.encode() if body else None
+        else:
+            # asyncio would handle it for multipart/form-data
+            del request_headers[content_type_key]
         self.open()
         final_session = proxy_session if proxy_session is not None else self.session
         session_method = getattr(final_session, method.lower())
@@ -397,10 +421,6 @@ class Exchange(BaseExchange):
     @staticmethod
     def inflate(data):
         return inflate(data)
-
-    @staticmethod
-    def inflate64(data):
-        return inflate64(data)
 
     @staticmethod
     def gunzip(data):
@@ -784,8 +804,11 @@ class Exchange(BaseExchange):
     async def watch_funding_rate(self, symbol: str, params={}):
         raise NotSupported(self.id + ' watchFundingRate() is not supported yet')
 
-    async def watch_funding_rates(self, symbols: List[str], params={}):
+    async def watch_funding_rates(self, symbols: Strings = None, params={}):
         raise NotSupported(self.id + ' watchFundingRates() is not supported yet')
+
+    async def un_watch_funding_rates(self, symbols: Strings = None, params={}):
+        raise NotSupported(self.id + ' unWatchFundingRates() is not supported yet')
 
     async def watch_funding_rates_for_symbols(self, symbols: List[str], params={}):
         return await self.watch_funding_rates(symbols, params)
@@ -1210,6 +1233,9 @@ class Exchange(BaseExchange):
 
     async def un_watch_tickers(self, symbols: Strings = None, params={}):
         raise NotSupported(self.id + ' unWatchTickers() is not supported yet')
+
+    async def un_watch_funding_rate(self, symbol: str, params={}):
+        raise NotSupported(self.id + ' unWatchFundingRate() is not supported yet')
 
     async def fetch_order(self, id: str, symbol: Str = None, params={}):
         raise NotSupported(self.id + ' fetchOrder() is not supported yet')
