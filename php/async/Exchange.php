@@ -42,13 +42,15 @@ use React;
 use React\Async;
 use React\EventLoop\Loop;
 
+use Lighter\Signer;
+
 use Exception;
 
-$version = '4.5.39';
+$version = '4.5.42';
 
 class Exchange extends \ccxt\Exchange {
 
-    const VERSION = '4.5.39';
+    const VERSION = '4.5.42';
 
     public $browser;
     public $marketsLoading = null;
@@ -151,6 +153,26 @@ class Exchange extends \ccxt\Exchange {
                     $headers = array_merge(['User-Agent' => $userAgent], $headers);
                 } elseif ((gettype($userAgent) === 'array') && array_key_exists('User-Agent', $userAgent)) {
                     $headers = array_merge($userAgent, $headers);
+                }
+            }
+            // multipart/form-data
+            if (is_array($headers)) {
+                $tmp = $headers;
+                foreach ($tmp as $key => $value) {
+                    if (strtolower($key) == 'content-type') {
+                        if ($value == 'multipart/form-data') {
+                            $boundary = '--------------------------' . $this->random_bytes(12);
+                            $eol = "\r\n";
+                            $newBody = '';
+                            foreach ($body as $fKey => $fValue) {
+                                $newBody .= '--' . $boundary . $eol . 'Content-Disposition: form-data; name="' . $fKey . '"' . $eol . $eol . $fValue . $eol;
+                            }
+                            $newBody .= '--' . $boundary . '--' . $eol;
+                            $value .= '; boundary=' . $boundary;
+                            $headers[$key] = $value;
+                            $body = $newBody;
+                        }
+                    }
                 }
             }
             // set final headers
@@ -341,6 +363,12 @@ class Exchange extends \ccxt\Exchange {
         $str = $wrapper->serializeToJsonString();
         $dict = json_decode($str, true);
         return $dict;
+    }
+
+    public function load_lighter_library($path, $chainId, $privateKey, $apiKeyIndex, $accountIndex) {
+        return Async\async(function () use ($path, $chainId, $privateKey, $apiKeyIndex, $accountIndex) {
+            return $this->load_lighter_library_helper($path, $chainId, $privateKey, $apiKeyIndex, $accountIndex);
+        }) ();
     }
 
     // ########################################################################
@@ -1463,8 +1491,12 @@ class Exchange extends \ccxt\Exchange {
         throw new NotSupported($this->id . ' watchFundingRate() is not supported yet');
     }
 
-    public function watch_funding_rates(array $symbols, $params = array ()) {
+    public function watch_funding_rates(?array $symbols = null, $params = array ()) {
         throw new NotSupported($this->id . ' watchFundingRates() is not supported yet');
+    }
+
+    public function un_watch_funding_rates(?array $symbols = null, $params = array ()) {
+        throw new NotSupported($this->id . ' unWatchFundingRates() is not supported yet');
     }
 
     public function watch_funding_rates_for_symbols(array $symbols, $params = array ()) {
@@ -4493,6 +4525,10 @@ class Exchange extends \ccxt\Exchange {
 
     public function un_watch_tickers(?array $symbols = null, $params = array ()) {
         throw new NotSupported($this->id . ' unWatchTickers() is not supported yet');
+    }
+
+    public function un_watch_funding_rate(string $symbol, $params = array ()) {
+        throw new NotSupported($this->id . ' unWatchFundingRate() is not supported yet');
     }
 
     public function fetch_order(string $id, ?string $symbol = null, $params = array ()) {
