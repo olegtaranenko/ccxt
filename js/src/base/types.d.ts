@@ -514,15 +514,6 @@ export interface ADL {
     timestamp?: Int;
     datetime?: Str;
 }
-export interface ADL {
-    info: any;
-    symbol: string;
-    rank?: Int;
-    rating?: Str;
-    percentage?: number;
-    timestamp?: Int;
-    datetime?: Str;
-}
 export interface MarginModification {
     'amount': Num;
     'code': Str;

@@ -326,6 +326,7 @@ class ImplicitAPI:
     papi_post_um_leverage = papiPostUmLeverage = Entry('um/leverage', 'papi', 'POST', {'cost': 0.2})
     papi_post_um_order = papiPostUmOrder = Entry('um/order', 'papi', 'POST', {'cost': 1})
     papi_post_um_positionside_dual = papiPostUmPositionSideDual = Entry('um/positionSide/dual', 'papi', 'POST', {'cost': 0.2})
+    papi_post_um_stock_contract = papiPostUmStockContract = Entry('um/stock/contract', 'papi', 'POST', {'cost': 1})
     papi_put_cm_order = papiPutCmOrder = Entry('cm/order', 'papi', 'PUT', {'cost': 1})
     papi_put_listenkey = papiPutListenKey = Entry('listenKey', 'papi', 'PUT', {'cost': 0.2})
     papi_put_um_order = papiPutUmOrder = Entry('um/order', 'papi', 'PUT', {'cost': 1})

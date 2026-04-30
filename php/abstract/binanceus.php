@@ -979,6 +979,9 @@ abstract class binanceus extends \ccxt\binance {
     public function papi_post_um_positionside_dual($params = array()) {
         return $this->request('um/positionSide/dual', 'papi', 'POST', $params, null, null, array("cost" => 0.2));
     }
+    public function papi_post_um_stock_contract($params = array()) {
+        return $this->request('um/stock/contract', 'papi', 'POST', $params, null, null, array("cost" => 1));
+    }
     public function papi_put_cm_order($params = array()) {
         return $this->request('cm/order', 'papi', 'PUT', $params, null, null, array("cost" => 1));
     }
@@ -3510,6 +3513,9 @@ abstract class binanceus extends \ccxt\binance {
     }
     public function papiPostUmPositionSideDual($params = array()) {
         return $this->request('um/positionSide/dual', 'papi', 'POST', $params, null, null, array("cost" => 0.2));
+    }
+    public function papiPostUmStockContract($params = array()) {
+        return $this->request('um/stock/contract', 'papi', 'POST', $params, null, null, array("cost" => 1));
     }
     public function papiPutCmOrder($params = array()) {
         return $this->request('cm/order', 'papi', 'PUT', $params, null, null, array("cost" => 1));

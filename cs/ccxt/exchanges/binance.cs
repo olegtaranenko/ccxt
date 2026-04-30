@@ -1269,6 +1269,7 @@ public partial class binance : Exchange
                         { "asset-collection", 6 },
                         { "margin/repay-debt", 3000 },
                         { "um/feeBurn", 1 },
+                        { "um/stock/contract", 1 },
                     } },
                     { "put", new Dictionary<string, object>() {
                         { "listenKey", 0.2 },
@@ -1400,16 +1401,54 @@ public partial class binance : Exchange
                 } },
                 { "networks", new Dictionary<string, object>() {
                     { "ERC20", "ETH" },
+                    { "ETH", "ETH" },
                     { "TRC20", "TRX" },
+                    { "TRX", "TRX" },
                     { "BEP2", "BNB" },
+                    { "BSC", "BSC" },
                     { "BEP20", "BSC" },
-                    { "OMNI", "OMNI" },
                     { "EOS", "EOS" },
                     { "SPL", "SOL" },
                     { "SOL", "SOL" },
+                    { "ARBONE", "ARBITRUM" },
+                    { "AVAXC", "AVAXC" },
+                    { "MATIC", "MATIC" },
+                    { "BASE", "BASE" },
+                    { "SUI", "SUI" },
+                    { "OP", "OPTIMISM" },
+                    { "OPTIMISM", "OPTIMISM" },
+                    { "NEAR", "NEAR" },
+                    { "APT", "APT" },
+                    { "SCROLL", "SCROLL" },
+                    { "KAVA", "KAVA" },
+                    { "XLM", "XLM" },
+                    { "RSK", "RSK" },
+                    { "SEI", "SEI" },
+                    { "TON", "TON" },
+                    { "ADA", "ADA" },
+                    { "ALGO", "ALGO" },
+                    { "RUNE", "RUNE" },
+                    { "OSMO", "OSMO" },
+                    { "CELO", "CELO" },
+                    { "HBAR", "HBAR" },
+                    { "ZKSYNCERA", "ZKSYNCERA" },
+                    { "KLAY", "KLAY" },
+                    { "ACA", "ACA" },
+                    { "STX", "STX" },
+                    { "XTZ", "XTZ" },
+                    { "METIS", "METIS" },
+                    { "EGLD", "EGLD" },
+                    { "ASTR", "ASTR" },
+                    { "CFX", "CFX" },
+                    { "SCRT", "SCRT" },
+                    { "ONT", "ONT" },
                 } },
                 { "networksById", new Dictionary<string, object>() {
+                    { "TRX", "TRC20" },
+                    { "BSC", "BEP20" },
+                    { "ETH", "ERC20" },
                     { "SOL", "SOL" },
+                    { "OPTIMISM", "OP" },
                 } },
                 { "impliedNetworks", new Dictionary<string, object>() {
                     { "ETH", new Dictionary<string, object>() {
@@ -2742,11 +2781,6 @@ public partial class binance : Exchange
         return base.safeMarket(marketId, market, delimiter, marketType);
     }
 
-    public override object costToPrecision(object symbol, object cost)
-    {
-        return this.decimalToPrecision(cost, TRUNCATE, getValue(getValue(getValue(this.markets, symbol), "precision"), "quote"), this.precisionMode, this.paddingMode);
-    }
-
     public override object nonce()
     {
         return subtract(this.milliseconds(), getValue(this.options, "timeDifference"));
@@ -2978,7 +3012,7 @@ public partial class binance : Exchange
             {
                 object networkItem = getValue(networkList, j);
                 object network = this.safeString(networkItem, "network");
-                object networkCode = this.networkIdToCode(network);
+                object networkCode = this.networkIdToCode(network, code);
                 object isETF = (isEqual(network, "ETF")); // e.g. BTCUP, ETHDOWN
                 // const name = this.safeString (networkItem, 'name');
                 object withdrawFee = this.safeNumber(networkItem, "withdrawFee");
@@ -5844,16 +5878,29 @@ public partial class binance : Exchange
         return this.safeString(statuses, status, status);
     }
 
-    public virtual object parseOrderType(object type)
+    public virtual object parseOrderTypeByMarket(object type, object marketType)
     {
-        object types = new Dictionary<string, object>() {
-            { "limit_maker", "limit" },
-            { "stop", "limit" },
-            { "stop_market", "market" },
-            { "take_profit", "limit" },
-            { "take_profit_market", "market" },
-            { "trailing_stop_market", "market" },
-        };
+        object types = new Dictionary<string, object>() {};
+        if (isTrue(isTrue((!isEqual(marketType, null))) && isTrue(isEqual(marketType, "spot"))))
+        {
+            types = new Dictionary<string, object>() {
+                { "limit_maker", "limit" },
+                { "stop_loss_limit", "limit" },
+                { "stop_loss", "market" },
+                { "take_profit_limit", "limit" },
+                { "take_profit", "market" },
+            };
+        } else
+        {
+            types = new Dictionary<string, object>() {
+                { "limit_maker", "limit" },
+                { "stop", "limit" },
+                { "stop_market", "market" },
+                { "take_profit", "limit" },
+                { "take_profit_market", "market" },
+                { "trailing_stop_market", "market" },
+            };
+        }
         return this.safeString(types, type, type);
     }
 
@@ -6453,7 +6500,7 @@ public partial class binance : Exchange
             { "lastTradeTimestamp", lastTradeTimestamp },
             { "lastUpdateTimestamp", lastUpdateTimestamp },
             { "symbol", symbol },
-            { "type", this.parseOrderType(type) },
+            { "type", this.parseOrderTypeByMarket(type, marketType) },
             { "timeInForce", timeInForce },
             { "postOnly", postOnly },
             { "reduceOnly", this.safeBool(order, "reduceOnly") },
@@ -9188,7 +9235,8 @@ public partial class binance : Exchange
         {
             intern = ((bool) isTrue((!isEqual(internalInteger, 0)))) ? true : false;
         }
-        object network = this.safeString(transaction, "network");
+        object networkId = this.safeString(transaction, "network");
+        object network = this.networkIdToCode(networkId, code);
         return new Dictionary<string, object>() {
             { "info", transaction },
             { "id", id },
@@ -9585,13 +9633,13 @@ public partial class binance : Exchange
         object request = new Dictionary<string, object>() {
             { "coin", getValue(currency, "id") },
         };
-        object networks = this.safeDict(this.options, "networks", new Dictionary<string, object>() {});
-        object network = this.safeStringUpper(parameters, "network"); // this line allows the user to specify either ERC20 or ETH
-        network = this.safeString(networks, network, network); // handle ERC20>ETH alias
-        if (isTrue(!isEqual(network, null)))
+        object networkCode = null;
+        var networkCodeparametersVariable = this.handleNetworkCodeAndParams(parameters);
+        networkCode = ((IList<object>)networkCodeparametersVariable)[0];
+        parameters = ((IList<object>)networkCodeparametersVariable)[1];
+        if (isTrue(!isEqual(networkCode, null)))
         {
-            ((IDictionary<string,object>)request)["network"] = network;
-            parameters = this.omit(parameters, "network");
+            ((IDictionary<string,object>)request)["network"] = this.networkCodeToId(networkCode, getValue(currency, "code"));
         }
         // has support for the 'network' parameter
         object response = await this.sapiGetCapitalDepositAddress(this.extend(request, parameters));
@@ -9864,13 +9912,14 @@ public partial class binance : Exchange
         //        ]
         //    }
         //
+        object code = this.safeString(currency, "code");
         object networkList = this.safeList(fee, "networkList", new List<object>() {});
         object result = this.depositWithdrawFee(fee);
         for (object j = 0; isLessThan(j, getArrayLength(networkList)); postFixIncrement(ref j))
         {
             object networkEntry = getValue(networkList, j);
             object networkId = this.safeString(networkEntry, "network");
-            object networkCode = this.networkIdToCode(networkId);
+            object networkCode = this.networkIdToCode(networkId, code);
             object withdrawFee = this.safeNumber(networkEntry, "withdrawFee");
             object isDefault = this.safeBool(networkEntry, "isDefault");
             if (isTrue(isEqual(isDefault, true)))
@@ -9923,15 +9972,15 @@ public partial class binance : Exchange
         {
             ((IDictionary<string,object>)request)["addressTag"] = tag;
         }
-        object networks = this.safeDict(this.options, "networks", new Dictionary<string, object>() {});
-        object network = this.safeStringUpper(parameters, "network"); // this line allows the user to specify either ERC20 or ETH
-        network = this.safeString(networks, network, network); // handle ERC20>ETH alias
-        if (isTrue(!isEqual(network, null)))
+        object networkCode = null;
+        var networkCodeparametersVariable = this.handleNetworkCodeAndParams(parameters);
+        networkCode = ((IList<object>)networkCodeparametersVariable)[0];
+        parameters = ((IList<object>)networkCodeparametersVariable)[1];
+        if (isTrue(!isEqual(networkCode, null)))
         {
-            ((IDictionary<string,object>)request)["network"] = network;
-            parameters = this.omit(parameters, "network");
+            ((IDictionary<string,object>)request)["network"] = this.networkCodeToId(networkCode, getValue(currency, "code"));
         }
-        ((IDictionary<string,object>)request)["amount"] = this.currencyToPrecision(code, amount, network);
+        ((IDictionary<string,object>)request)["amount"] = this.currencyToPrecision(getValue(currency, "code"), amount, networkCode);
         object response = await this.sapiPostCapitalWithdrawApply(this.extend(request, parameters));
         //     { id: '9a67628b16ba4988ae20d329333f16bc' }
         return this.parseTransaction(response, currency);

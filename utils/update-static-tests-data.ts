@@ -17,7 +17,7 @@ if (platform === 'win32' && __dirname[0] === '/') {
     __dirname = __dirname.substring (1);
 }
 const rootDir = __dirname + '/../';
-const useJsonParsing = false;
+const useJsonParsing = false; 
 
 function getExchangeSettings (exchangeId) {
     // set up keys and settings, if any
@@ -86,7 +86,7 @@ function twoSpacedIndent (jsonStr) {
 // #####################################
 
 function add_static_result (requestOrResponse, exchangeId, method, entry, spacesIndent = undefined) {
-
+        
     if (!exchangeId) {
         die ("Exchange id is missing");
     }
@@ -100,9 +100,9 @@ function add_static_result (requestOrResponse, exchangeId, method, entry, spaces
         throw new Error ('should be either "request" or "response"');
     }
     const filePath = rootDir + `/ts/src/test/static/${requestOrResponse}/${exchangeId}.json`;
-    const defaultStructure = {"exchange":exchangeId, "skipKeys": [], "options": {}, "methods": {}, outputType: undefined};
+    const defaultStructure = {"exchange":exchangeId, "skipKeys": [], "options": {}, "methods": {}};
     if (requestOrResponse === 'request') {
-        defaultStructure.outputType = 'both';
+        (defaultStructure as any).outputType = 'both';
     }
     const fileContent = readFileInit (filePath, jsonStringify(defaultStructure));
     // auto-detect 2 or 4 spaces used (just for backward compatibility)
@@ -112,7 +112,7 @@ function add_static_result (requestOrResponse, exchangeId, method, entry, spaces
         const jsonFull = JSON.parse (fileContent);
         const jsonMethods = jsonFull['methods']
         const orderedMap = new Map(Object.entries(jsonMethods));
-        let methodArray: any = orderedMap.get(method);
+        let methodArray = orderedMap.get(method) as any;
         if (methodArray === undefined) {
             methodArray = [];
         }
@@ -151,7 +151,7 @@ function prependWhitespace(content, spacesAmountPerIndent, indentAmount) {
     const indentedScript = indentedLines.join("\n");
     return indentedScript;
 }
-
+  
 
 export default {};
 

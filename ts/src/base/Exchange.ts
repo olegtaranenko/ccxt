@@ -997,6 +997,15 @@ export default class Exchange {
         return msg instanceof Uint8Array || msg instanceof ArrayBuffer;
     }
 
+    stringToBinary (content) {
+        // same as: this.base64ToBinary (this.stringToBase64 (str));
+        return this.encode (content);
+    }
+
+    binaryToString (binary) {
+        return this.decode (binary);
+    }
+
     decodeProtoMsg (data) {
         if (!protobufMexc) {
             throw new NotSupported (this.id + ' requires protobuf to decode messages, please install it with `npm install protobufjs`');
@@ -1071,7 +1080,7 @@ export default class Exchange {
         if (userAgent && isNode) {
             if (typeof userAgent === 'string') {
                 headers = this.extend ({ 'User-Agent': userAgent }, headers);
-            } else if ((typeof userAgent === 'object') && ('User-Agent' in userAgent)) {
+            } else if (this.isDictionary (userAgent) && ('User-Agent' in userAgent)) {
                 headers = this.extend (userAgent, headers);
             }
         }
@@ -2204,7 +2213,7 @@ export default class Exchange {
         return undefined;  // c# stub
     }
 
-    async loadLighterLibrary (libraryPath, chainId, privateKey, apiKeyIndex, accountIndex) {
+    async loadLighterLibrary (libraryPath, chainId, privateKey, apiKeyIndex, accountIndex, createClient = false) {
         // wasmExecPathExample: '/opt/homebrew/opt/go/libexec/lib/wasm/wasm_exec.js';
         // libraryPath eg: '/Users/cjg/Git/lighter-go/lighter.wasm';
         if (libraryPath === undefined || libraryPath === '') {
@@ -2224,11 +2233,17 @@ export default class Exchange {
         const bytes = new Uint8Array (readFile (libraryPath, null) as Buffer); // it should point to lighter.wasm
         const { instance } = await WebAssembly.instantiate (bytes, go.importObject);
         go.run (instance);
-        // createCLient
+        if (createClient) {
+            this.lighterCreateClient (undefined, chainId, privateKey, apiKeyIndex, accountIndex);
+        }
+        return {}; // empty object we will read it from globalThis
+    }
+
+    lighterCreateClient (signer, chainId, privateKey, apiKeyIndex, accountIndex) {
         const url = this.implodeHostname (this.urls['api']['public']);
         const res = globalThis.CreateClient (url, privateKey, chainId, apiKeyIndex, accountIndex);
         this.checkLighterSignedError (res);
-        return {}; // empty object we will read it from globalThis
+        return signer;
     }
 
     // eslint-disable-next-line no-unused-vars
@@ -2250,7 +2265,15 @@ export default class Exchange {
                 'OrderExpiry': order['order_expiry'],
             });
         }
-        const res = globalThis.SignCreateGroupedOrders (request['grouping_type'], ordersArr, orders.length, request['nonce'], request['api_key_index'], request['account_index']);
+        const res = globalThis.SignCreateGroupedOrders (
+            request['grouping_type'],
+            ordersArr,
+            orders.length,
+            1, // skip nonce
+            request['nonce'],
+            request['api_key_index'],
+            request['account_index']
+        );
         this.checkLighterSignedError (res);
         return [ res.txType, res.txInfo ];
     }
@@ -2268,6 +2291,10 @@ export default class Exchange {
             request['reduce_only'],
             request['trigger_price'],
             request['order_expiry'],
+            request['integrator_account_index'],
+            request['integrator_taker_fee'],
+            request['integrator_maker_fee'],
+            1, // skip nonce
             request['nonce'],
             request['api_key_index'],
             request['account_index']
@@ -2286,6 +2313,7 @@ export default class Exchange {
         const res = (globalThis.SignCancelOrder (
             request['market_index'],
             request['order_index'],
+            1, // skip nonce
             request['nonce'],
             request['api_key_index'],
             request['account_index']
@@ -2299,6 +2327,7 @@ export default class Exchange {
             request['asset_index'],
             request['route_type'],
             request['amount'],
+            1, // skip nonce
             request['nonce'],
             request['api_key_index'],
             request['account_index']
@@ -2310,6 +2339,7 @@ export default class Exchange {
     // eslint-disable-next-line no-unused-vars
     lighterSignCreateSubAccount (signer, request): any[] {
         const res = (globalThis.SignCreateSubAccount (
+            1, // skip nonce
             request['nonce'],
             request['api_key_index'],
             request['account_index']
@@ -2322,6 +2352,7 @@ export default class Exchange {
         const res = (globalThis.SignCancelAllOrders (
             request['time_in_force'],
             request['time'],
+            1, // skip nonce
             request['nonce'],
             request['api_key_index'],
             request['account_index']
@@ -2337,6 +2368,10 @@ export default class Exchange {
             request['base_amount'],
             request['price'],
             request['trigger_price'],
+            request['integrator_account_index'],
+            request['integrator_taker_fee'],
+            request['integrator_maker_fee'],
+            1, // skip nonce
             request['nonce'],
             request['api_key_index'],
             request['account_index']
@@ -2354,6 +2389,7 @@ export default class Exchange {
             request['amount'],
             request['usdc_fee'],
             request['memo'],
+            1, // skip nonce
             request['nonce'],
             request['api_key_index'],
             request['account_index']
@@ -2367,6 +2403,7 @@ export default class Exchange {
             request['market_index'],
             request['initial_margin_fraction'],
             request['margin_mode'],
+            1, // skip nonce
             request['nonce'],
             request['api_key_index'],
             request['account_index']
@@ -2390,12 +2427,51 @@ export default class Exchange {
             request['market_index'],
             request['usdc_amount'],
             request['direction'],
+            1, // skip nonce
             request['nonce'],
             request['api_key_index'],
             request['account_index']
         );
         this.checkLighterSignedError (res);
         return [ res.txType, res.txInfo ];
+    }
+
+    // eslint-disable-next-line no-unused-vars
+    lighterSignApproveIntegrator (signer, request): any[] {
+        const res = globalThis.SignApproveIntegrator (
+            request['integrator_account_index'],
+            request['integrator_taker_fee'],
+            request['integrator_maker_fee'],
+            request['integrator_taker_fee'],
+            request['integrator_maker_fee'],
+            request['approval_expiry'],
+            1, // skip nonce
+            request['nonce'],
+            request['api_key_index'],
+            request['account_index']
+        );
+        this.checkLighterSignedError (res);
+        return [ res.txType, res.txInfo, res.messageToSign ];
+    }
+
+    // eslint-disable-next-line no-unused-vars
+    lighterGenerateApiKey (signer): any[] {
+        const res = globalThis.GenerateAPIKey ();
+        this.checkLighterSignedError (res);
+        return [ res.privateKey, res.publicKey ];
+    }
+
+    // eslint-disable-next-line no-unused-vars
+    lighterSignChangePubkey (signer, request): any[] {
+        const res = globalThis.SignChangePubKey (
+            Buffer.from (request['pubkey']).toString (),
+            1, // skip nonce
+            request['nonce'],
+            request['api_key_index'],
+            request['account_index']
+        );
+        this.checkLighterSignedError (res);
+        return [ res.txType, res.txInfo, res.messageToSign ];
     }
 
     /* eslint-enable */
@@ -2834,7 +2910,7 @@ export default class Exchange {
         if (value === undefined) {
             return defaultValue;
         }
-        if ((typeof value === 'object') && !Array.isArray (value)) {
+        if (this.isDictionary (value)) {
             return value;
         }
         return defaultValue;
@@ -2851,7 +2927,7 @@ export default class Exchange {
         if (value === undefined) {
             return defaultValue;
         }
-        if ((typeof value === 'object') && !Array.isArray (value)) {
+        if (this.isDictionary (value)) {
             return value;
         }
         return defaultValue;
@@ -2882,6 +2958,10 @@ export default class Exchange {
             return value;
         }
         return defaultValue;
+    }
+
+    isDictionary (value: any): boolean {
+        return (value !== undefined) && (typeof value === 'object') && !Array.isArray (value);
     }
 
     safeList2 (dictionaryOrList, key1: IndexType, key2: string, defaultValue: any[] = undefined): any[] | undefined {
@@ -3667,6 +3747,10 @@ export default class Exchange {
         // i.e. isRoundNumber(1.000) returns true, while isInteger(1.000) returns false
         const res = this.parseToNumeric ((value % 1));
         return res === 0;
+    }
+
+    isEmptyString (value) {
+        return !this.valueIsDefined (value) || value === '';
     }
 
     safeNumberOmitZero (obj: object, key: IndexType, defaultValue: Num = undefined): Num {
@@ -4870,6 +4954,10 @@ export default class Exchange {
         return reversed;
     }
 
+    stringToBase16 (str) {
+        return '0x' + this.binaryToBase16 (this.base64ToBinary (this.stringToBase64 (str)));
+    }
+
     reduceFeesByCurrency (fees) {
         //
         // this function takes a list of fee structures having the following format
@@ -5082,6 +5170,14 @@ export default class Exchange {
             message = '. If you want to build OHLCV candles from trade executions data, visit https://github.com/ccxt/ccxt/tree/master/examples/ and see "build-ohlcv-bars" file';
         }
         throw new NotSupported (this.id + ' fetchOHLCV() is not supported yet' + message);
+    }
+
+    async fetchSpotOHLCV (symbol: string, timeframe: string = '1m', since: Int = undefined, limit: Int = undefined, params = {}): Promise<OHLCV[]> {
+        throw new NotSupported (this.id + ' fetchSpotOHLCV() is not supported yet');
+    }
+
+    async fetchContractOHLCV (symbol: string, timeframe: string = '1m', since: Int = undefined, limit: Int = undefined, params = {}): Promise<OHLCV[]> {
+        throw new NotSupported (this.id + ' fetchContractOHLCV() is not supported yet');
     }
 
     async fetchOHLCVWs (symbol: string, timeframe: string = '1m', since: Int = undefined, limit: Int = undefined, params = {}): Promise<OHLCV[]> {
@@ -5853,6 +5949,30 @@ export default class Exchange {
         return results;
     }
 
+    filterOutByArray (objects, key: IndexType, values = undefined, indexed = true) {
+        objects = this.toArray (objects);
+        // return all of them if no values were passed
+        if (values === undefined || !values) {
+            // return indexed ? this.indexBy (objects, key) : objects;
+            if (indexed) {
+                return this.indexBy (objects, key);
+            } else {
+                return objects;
+            }
+        }
+        const results = [];
+        for (let i = 0; i < objects.length; i++) {
+            if (!this.inArray (objects[i][key], values)) {
+                results.push (objects[i]);
+            }
+        }
+        // return indexed ? this.indexBy (results, key) : results;
+        if (indexed) {
+            return this.indexBy (results, key);
+        }
+        return results;
+    }
+
     async fetch2 (path, api: any = 'public', method = 'GET', params = {}, headers: any = undefined, body: any = undefined, config = {}) {
         if (this.enableRateLimit) {
             const cost = this.calculateRateLimiterCost (api, method, path, params, config);
@@ -5988,7 +6108,8 @@ export default class Exchange {
     }
 
     async editOrderWithClientOrderId (clientOrderId: string, symbol: string, type: OrderType, side: OrderSide, amount: Num = undefined, price: Num = undefined, params = {}): Promise<Order> {
-        return await this.editOrder ('', symbol, type, side, amount, price, this.extend ({ 'clientOrderId': clientOrderId }, params));
+        const extendedParams = this.extend (params, { 'clientOrderId': clientOrderId });
+        return await this.editOrder ('', symbol, type, side, amount, price, extendedParams);
     }
 
     async editOrderWs (id: string, symbol: string, type: OrderType, side: OrderSide, amount: Num = undefined, price: Num = undefined, params = {}): Promise<Order> {
@@ -6506,12 +6627,20 @@ export default class Exchange {
         throw new NotSupported (this.id + ' fetchTickers() is not supported yet');
     }
 
+    async fetchSpotTickers (symbols: Strings = undefined, params = {}): Promise<Tickers> {
+        throw new NotSupported (this.id + ' fetchSpotTickers() is not supported yet');
+    }
+
+    async fetchContractTickers (symbols: Strings = undefined, params = {}): Promise<Tickers> {
+        throw new NotSupported (this.id + ' fetchContractTickers() is not supported yet');
+    }
+
     async fetchMarkPrices (symbols: Strings = undefined, params = {}): Promise<Tickers> {
         throw new NotSupported (this.id + ' fetchMarkPrices() is not supported yet');
     }
 
     async fetchTickersWs (symbols: Strings = undefined, params = {}): Promise<Tickers> {
-        throw new NotSupported (this.id + ' fetchTickers() is not supported yet');
+        throw new NotSupported (this.id + ' fetchTickersWs() is not supported yet');
     }
 
     async fetchOrderBooks (symbols: Strings = undefined, limit: Int = undefined, params = {}): Promise<OrderBooks> {
@@ -7052,6 +7181,14 @@ export default class Exchange {
         throw new NotSupported (this.id + ' createOrders() is not supported yet');
     }
 
+    async createSpotOrders (orders: OrderRequest[], params = {}): Promise<Order[]> {
+        throw new NotSupported (this.id + ' createSpotOrders() is not supported yet');
+    }
+
+    async createContractOrders (orders: OrderRequest[], params = {}): Promise<Order[]> {
+        throw new NotSupported (this.id + ' createContractOrders() is not supported yet');
+    }
+
     async editOrders (orders: OrderRequest[], params = {}): Promise<Order[]> {
         throw new NotSupported (this.id + ' editOrders() is not supported yet');
     }
@@ -7062,6 +7199,14 @@ export default class Exchange {
 
     async cancelOrder (id: string, symbol: Str = undefined, params = {}): Promise<Order> {
         throw new NotSupported (this.id + ' cancelOrder() is not supported yet');
+    }
+
+    async cancelSpotOrder (id: string, symbol: Str = undefined, params = {}): Promise<Order> {
+        throw new NotSupported (this.id + ' cancelSpotOrder() is not supported yet');
+    }
+
+    async cancelContractOrder (id: string, symbol: Str = undefined, params = {}): Promise<Order> {
+        throw new NotSupported (this.id + ' cancelContractOrder() is not supported yet');
     }
 
     /**
@@ -7106,6 +7251,14 @@ export default class Exchange {
 
     async cancelAllOrders (symbol: Str = undefined, params = {}): Promise<Order[]> {
         throw new NotSupported (this.id + ' cancelAllOrders() is not supported yet');
+    }
+
+    async cancelAllSpotOrders (symbol: Str = undefined, params = {}): Promise<Order[]> {
+        throw new NotSupported (this.id + ' cancelAllSpotOrders() is not supported yet');
+    }
+
+    async cancelAllContractOrders (symbol: Str = undefined, params = {}): Promise<Order[]> {
+        throw new NotSupported (this.id + ' cancelAllContractOrders() is not supported yet');
     }
 
     async cancelAllOrdersAfter (timeout: Int, params = {}): Promise<{}> {
@@ -7302,6 +7455,10 @@ export default class Exchange {
         }
     }
 
+    async fetchContractDepositAddress (code: string, params = {}): Promise<DepositAddress> {
+        throw new NotSupported (this.id + ' fetchContractDepositAddress() is not supported yet');
+    }
+
     account (): BalanceAccount {
         return {
             'free': undefined,
@@ -7400,7 +7557,7 @@ export default class Exchange {
     }
 
     handleWithdrawTagAndParams (tag, params): any {
-        if ((tag !== undefined) && (typeof tag === 'object')) {
+        if (this.isDictionary (tag)) {
             params = this.extend (tag, params);
             tag = undefined;
         }
@@ -9344,6 +9501,10 @@ export default class Exchange {
             return (ms / second) + 's';
         }
         return '';
+    }
+
+    async isUTAEnabled (params = {}) {
+        return false; // stub
     }
 }
 

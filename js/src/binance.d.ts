@@ -1,5 +1,5 @@
 import Exchange from './abstract/binance.js';
-import type { TransferEntry, Int, OrderSide, Balances, OrderType, Trade, OHLCV, Order, FundingRateHistory, OpenInterest, Liquidation, OrderRequest, Str, Transaction, Ticker, OrderBook, Tickers, Market, Greeks, Strings, Currency, MarketInterface, MarginMode, MarginModes, Leverage, Leverages, Num, Option, MarginModification, TradingFeeInterface, Currencies, TradingFees, Conversion, CrossBorrowRate, IsolatedBorrowRates, IsolatedBorrowRate, Dict, LeverageTier, LeverageTiers, int, LedgerEntry, FundingRate, FundingRates, DepositAddress, LongShortRatio, BorrowInterest, Position, ADL } from './base/types.js';
+import type { ADL, Balances, BorrowInterest, Conversion, CrossBorrowRate, Currencies, Currency, DepositAddress, Dict, FundingRate, FundingRateHistory, FundingRates, Greeks, int, Int, IsolatedBorrowRate, IsolatedBorrowRates, LedgerEntry, Leverage, Leverages, LeverageTier, LeverageTiers, Liquidation, LongShortRatio, MarginMode, MarginModes, MarginModification, Market, MarketInterface, Num, OHLCV, OpenInterest, Option, Order, OrderBook, OrderRequest, OrderSide, OrderType, Position, Str, Strings, Ticker, Tickers, Trade, TradingFeeInterface, TradingFees, Transaction, TransferEntry } from './base/types.js';
 /**
  * @class binance
  * @augments Exchange
@@ -10,9 +10,8 @@ export default class binance extends Exchange {
     isLinear(type: string, subType?: Str): boolean;
     setSandboxMode(enable: boolean): void;
     createExpiredOptionMarket(symbol: string): MarketInterface;
-    market(symbol: string): MarketInterface;
+    market(symbol: string, allowNonMarketSymbol?: any): MarketInterface;
     safeMarket(marketId?: Str, market?: Market, delimiter?: Str, marketType?: Str): MarketInterface;
-    costToPrecision(symbol: any, cost: any): string;
     nonce(): number;
     /**
      * @method
@@ -157,12 +156,12 @@ export default class binance extends Exchange {
      */
     fetchLastPrices(symbols?: Strings, params?: {}): Promise<import("./base/types.js").LastPrices>;
     parseLastPrice(entry: any, market?: Market): {
-        symbol: string;
-        timestamp: number;
         datetime: string;
+        info: any;
         price: number;
         side: any;
-        info: any;
+        symbol: string;
+        timestamp: number;
     };
     /**
      * @method
@@ -328,7 +327,7 @@ export default class binance extends Exchange {
      */
     editOrders(orders: OrderRequest[], params?: {}): Promise<Order[]>;
     parseOrderStatus(status: Str): string;
-    parseOrderType(type: Str): string;
+    parseOrderTypeByMarket(type: Str, marketType: Str): string;
     parseOrder(order: Dict, market?: Market): Order;
     /**
      * @method
@@ -692,22 +691,22 @@ export default class binance extends Exchange {
      */
     fetchMyDustTrades(symbol?: Str, since?: Int, limit?: Int, params?: {}): Promise<any>;
     parseDustTrade(trade: any, market?: Market): {
-        id: any;
-        timestamp: number;
-        datetime: string;
-        symbol: any;
-        order: string;
-        type: any;
-        takerOrMaker: any;
-        side: any;
         amount: number;
-        price: number;
         cost: number;
+        datetime: string;
         fee: {
-            currency: string;
+            currency: any;
             cost: number;
         };
+        id: any;
         info: any;
+        order: string;
+        price: number;
+        side: any;
+        symbol: any;
+        takerOrMaker: any;
+        timestamp: number;
+        type: any;
     };
     /**
      * @method
@@ -907,11 +906,11 @@ export default class binance extends Exchange {
      */
     fetchFundingRateHistory(symbol?: Str, since?: Int, limit?: Int, params?: {}): Promise<FundingRateHistory[]>;
     parseFundingRateHistory(contract: any, market?: Market): {
+        datetime: string;
+        fundingRate: number;
         info: any;
         symbol: string;
-        fundingRate: number;
         timestamp: number;
-        datetime: string;
     };
     /**
      * @method
@@ -928,29 +927,29 @@ export default class binance extends Exchange {
     parseFundingRate(contract: any, market?: Market): FundingRate;
     parseAccountPositions(account: any, filterClosed?: boolean): any[];
     parseAccountPosition(position: any, market?: Market): {
-        info: any;
-        id: any;
-        symbol: string;
-        timestamp: number;
-        datetime: string;
-        initialMargin: number;
-        initialMarginPercentage: number;
-        maintenanceMargin: number;
-        maintenanceMarginPercentage: number;
-        entryPrice: number;
-        notional: number;
-        leverage: number;
-        unrealizedPnl: number;
+        collateral: number;
         contracts: number;
         contractSize: any;
-        marginRatio: any;
-        liquidationPrice: any;
-        markPrice: any;
-        collateral: number;
-        marginMode: any;
-        side: any;
+        datetime: string;
+        entryPrice: number;
         hedged: boolean;
+        id: any;
+        info: any;
+        initialMargin: number;
+        initialMarginPercentage: number;
+        leverage: number;
+        liquidationPrice: any;
+        maintenanceMargin: number;
+        maintenanceMarginPercentage: number;
+        marginMode: any;
+        marginRatio: any;
+        markPrice: any;
+        notional: number;
         percentage: any;
+        side: any;
+        symbol: string;
+        timestamp: number;
+        unrealizedPnl: number;
     };
     parsePositionRisk(position: any, market?: Market): Position;
     loadLeverageBrackets(reload?: boolean, params?: {}): Promise<any>;
@@ -1275,11 +1274,11 @@ export default class binance extends Exchange {
     fetchBorrowRateHistory(code: string, since?: Int, limit?: Int, params?: {}): Promise<any>;
     parseBorrowRate(info: any, currency?: Currency): {
         currency: string;
-        rate: number;
-        period: number;
-        timestamp: number;
         datetime: string;
         info: any;
+        period: number;
+        rate: number;
+        timestamp: number;
     };
     parseIsolatedBorrowRate(info: Dict, market?: Market): IsolatedBorrowRate;
     /**
@@ -1293,11 +1292,11 @@ export default class binance extends Exchange {
      * @returns {object} The gift code id, code, currency and amount
      */
     createGiftCode(code: string, amount: any, params?: {}): Promise<{
-        info: any;
-        id: string;
+        amount: any;
         code: string;
         currency: string;
-        amount: any;
+        id: string;
+        info: any;
     }>;
     /**
      * @method
@@ -1351,13 +1350,13 @@ export default class binance extends Exchange {
      * @returns {object} a [margin loan structure]{@link https://docs.ccxt.com/?id=margin-loan-structure}
      */
     repayCrossMargin(code: string, amount: any, params?: {}): Promise<{
-        id: number;
-        currency: string;
         amount: number;
+        currency: string;
+        datetime: string;
+        id: number;
+        info: any;
         symbol: any;
         timestamp: number;
-        datetime: string;
-        info: any;
     }>;
     /**
      * @method
@@ -1371,13 +1370,13 @@ export default class binance extends Exchange {
      * @returns {object} a [margin loan structure]{@link https://docs.ccxt.com/?id=margin-loan-structure}
      */
     repayIsolatedMargin(symbol: string, code: string, amount: any, params?: {}): Promise<{
-        id: number;
-        currency: string;
         amount: number;
+        currency: string;
+        datetime: string;
+        id: number;
+        info: any;
         symbol: any;
         timestamp: number;
-        datetime: string;
-        info: any;
     }>;
     /**
      * @method
@@ -1392,13 +1391,13 @@ export default class binance extends Exchange {
      * @returns {object} a [margin loan structure]{@link https://docs.ccxt.com/?id=margin-loan-structure}
      */
     borrowCrossMargin(code: string, amount: number, params?: {}): Promise<{
-        id: number;
-        currency: string;
         amount: number;
+        currency: string;
+        datetime: string;
+        id: number;
+        info: any;
         symbol: any;
         timestamp: number;
-        datetime: string;
-        info: any;
     }>;
     /**
      * @method
@@ -1412,22 +1411,22 @@ export default class binance extends Exchange {
      * @returns {object} a [margin loan structure]{@link https://docs.ccxt.com/?id=margin-loan-structure}
      */
     borrowIsolatedMargin(symbol: string, code: string, amount: number, params?: {}): Promise<{
-        id: number;
-        currency: string;
         amount: number;
+        currency: string;
+        datetime: string;
+        id: number;
+        info: any;
         symbol: any;
         timestamp: number;
-        datetime: string;
-        info: any;
     }>;
     parseMarginLoan(info: any, currency?: Currency): {
-        id: number;
-        currency: string;
         amount: number;
+        currency: string;
+        datetime: string;
+        id: number;
+        info: any;
         symbol: any;
         timestamp: number;
-        datetime: string;
-        info: any;
     };
     /**
      * @method
@@ -1514,8 +1513,8 @@ export default class binance extends Exchange {
      * @returns {object} an object detailing whether the market is in hedged or one-way mode
      */
     fetchPositionMode(symbol?: Str, params?: {}): Promise<{
-        info: any;
         hedged: boolean;
+        info: any;
     }>;
     /**
      * @method

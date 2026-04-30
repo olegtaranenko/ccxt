@@ -1303,6 +1303,10 @@ func (this *BinanceCore) PapiPostUmPositionSideDual (args ...interface{}) <-chan
    return this.callEndpointAsync("papiPostUmPositionSideDual", args...)
 }
 
+func (this *BinanceCore) PapiPostUmStockContract (args ...interface{}) <-chan interface{} {
+   return this.callEndpointAsync("papiPostUmStockContract", args...)
+}
+
 func (this *BinanceCore) PapiPutCmOrder (args ...interface{}) <-chan interface{} {
    return this.callEndpointAsync("papiPutCmOrder", args...)
 }

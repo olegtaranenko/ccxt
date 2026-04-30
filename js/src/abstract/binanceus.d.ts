@@ -325,6 +325,7 @@ interface binance {
     papiPostUmLeverage(params?: {}): Promise<implicitReturnType>;
     papiPostUmOrder(params?: {}): Promise<implicitReturnType>;
     papiPostUmPositionSideDual(params?: {}): Promise<implicitReturnType>;
+    papiPostUmStockContract(params?: {}): Promise<implicitReturnType>;
     papiPutCmOrder(params?: {}): Promise<implicitReturnType>;
     papiPutListenKey(params?: {}): Promise<implicitReturnType>;
     papiPutUmOrder(params?: {}): Promise<implicitReturnType>;
