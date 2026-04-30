@@ -214,7 +214,6 @@ class coinmetro extends Exchange {
             'options' => array(
                 'currenciesByIdForParseMarket' => null,
                 'currencyIdsListForParseMarket' => array( 'QRDO' ),
-                'skippedMarkets' => array( 'VXVUSDT' ), // broken markets which do not have enough info in API
             ),
             'features' => array(
                 'spot' => array(
@@ -386,7 +385,7 @@ class coinmetro extends Exchange {
                 $code = $this->safe_currency_code($id);
                 $typeRaw = $this->safe_string($currency, 'type');
                 $type = null;
-                if ($typeRaw === 'coin' || $typeRaw === 'token' || $typeRaw === 'erc20') {
+                if ($typeRaw === 'coin' || $typeRaw === 'token' || $typeRaw === 'erc20' || $typeRaw === 'crypto') {
                     $type = 'crypto';
                 } elseif ($typeRaw === 'fiat') {
                     $type = 'fiat';
@@ -466,11 +465,11 @@ class coinmetro extends Exchange {
             //         ...
             //     )
             //
-            $skippedMarkets = $this->safe_list($this->options, 'skippedMarkets', array());
             $result = array();
             for ($i = 0; $i < count($response); $i++) {
                 $market = $this->parse_market($response[$i]);
-                if ($this->in_array($market['id'], $skippedMarkets)) {
+                // there are several broken (unavailable info) markets
+                if ($market['base'] === null || $market['quote'] === null) {
                     continue;
                 }
                 $result[] = $market;
@@ -576,6 +575,17 @@ class coinmetro extends Exchange {
                 }
             }
         }
+        if ($baseId === null || $quoteId === null) {
+            // https://github.com/ccxt/ccxt/issues/26820
+            if (str_ends_with($marketId, 'USDT')) {
+                $baseId = str_replace('USDT', '', $marketId);
+                $quoteId = 'USDT';
+            }
+            if (str_ends_with($marketId, 'USD')) {
+                $baseId = str_replace('USD', '', $marketId);
+                $quoteId = 'USD';
+            }
+        }
         $result = array(
             'baseId' => $baseId,
             'quoteId' => $quoteId,
@@ -596,7 +606,7 @@ class coinmetro extends Exchange {
         return $result;
     }
 
-    public function fetch_ohlcv(string $symbol, $timeframe = '1m', ?int $since = null, ?int $limit = null, $params = array ()): PromiseInterface {
+    public function fetch_ohlcv(string $symbol, string $timeframe = '1m', ?int $since = null, ?int $limit = null, $params = array ()): PromiseInterface {
         return Async\async(function () use ($symbol, $timeframe, $since, $limit, $params) {
             /**
              * fetches historical candlestick data containing the open, high, low, and close price, and the volume of a $market
@@ -689,7 +699,7 @@ class coinmetro extends Exchange {
              * @param {int} [$since] timestamp in ms of the earliest trade to fetch
              * @param {int} [$limit] the maximum amount of trades to fetch (default 200, max 500)
              * @param {array} [$params] extra parameters specific to the exchange API endpoint
-             * @return {Trade[]} a list of ~@link https://docs.ccxt.com/#/?id=public-trades trade structures~
+             * @return {Trade[]} a list of ~@link https://docs.ccxt.com/?id=public-trades trade structures~
              */
             Async\await($this->load_markets());
             $market = $this->market($symbol);
@@ -747,7 +757,7 @@ class coinmetro extends Exchange {
              * @param {int} [$since] the earliest time in ms to fetch trades for
              * @param {int} [$limit] the maximum number of trades structures to retrieve (default 500, max 1000)
              * @param {array} [$params] extra parameters specific to the exchange API endpoint
-             * @return {Trade[]} a list of ~@link https://docs.ccxt.com/#/?id=trade-structure trade structures~
+             * @return {Trade[]} a list of ~@link https://docs.ccxt.com/?id=trade-structure trade structures~
              */
             Async\await($this->load_markets());
             $market = null;
@@ -859,7 +869,7 @@ class coinmetro extends Exchange {
              * @param {string} $symbol unified $symbol of the $market to fetch the order $book for
              * @param {int} [$limit] the maximum amount of order $book entries to return (default 100, max 200)
              * @param {array} [$params] extra parameters specific to the exchange API endpoint
-             * @return {array} A dictionary of ~@link https://docs.ccxt.com/#/?id=order-$book-structure order $book structures~ indexed by $market symbols
+             * @return {array} A dictionary of ~@link https://docs.ccxt.com/?id=order-$book-structure order $book structures~ indexed by $market symbols
              */
             Async\await($this->load_markets());
             $market = $this->market($symbol);
@@ -928,7 +938,7 @@ class coinmetro extends Exchange {
              *
              * @param {string[]} [$symbols] unified $symbols of the markets to fetch the ticker for, all market $tickers are returned if not assigned
              * @param {array} [$params] extra parameters specific to the exchange API endpoint
-             * @return {array} a dictionary of ~@link https://docs.ccxt.com/#/?id=ticker-structure ticker structures~
+             * @return {array} a dictionary of ~@link https://docs.ccxt.com/?id=ticker-structure ticker structures~
              */
             Async\await($this->load_markets());
             $response = Async\await($this->publicGetExchangePrices ($params));
@@ -1013,7 +1023,7 @@ class coinmetro extends Exchange {
              *
              * @param {string[]} [$symbols] unified $symbols of the markets to fetch the bids and asks for, all markets are returned if not assigned
              * @param {array} [$params] extra parameters specific to the exchange API endpoint
-             * @return {array} a dictionary of ~@link https://docs.ccxt.com/#/?id=ticker-structure ticker structures~
+             * @return {array} a dictionary of ~@link https://docs.ccxt.com/?id=ticker-structure ticker structures~
              */
             Async\await($this->load_markets());
             $response = Async\await($this->publicGetExchangePrices ($params));
@@ -1084,7 +1094,7 @@ class coinmetro extends Exchange {
              * @see https://documenter.getpostman.com/view/3653795/SVfWN6KS#741a1dcc-7307-40d0-acca-28d003d1506a
              *
              * @param {array} [$params] extra parameters specific to the exchange API endpoint
-             * @return {array} a ~@link https://docs.ccxt.com/#/?id=balance-structure balance structure~
+             * @return {array} a ~@link https://docs.ccxt.com/?id=balance-structure balance structure~
              */
             Async\await($this->load_markets());
             $response = Async\await($this->privateGetUsersWallets ($params));
@@ -1143,7 +1153,7 @@ class coinmetro extends Exchange {
              * @param {int} [$limit] max number of $ledger entries to return (default 200, max 500)
              * @param {array} [$params] extra parameters specific to the exchange API endpoint
              * @param {int} [$params->until] the latest time in ms to fetch entries for
-             * @return {array} a ~@link https://docs.ccxt.com/#/?id=$ledger ledger structure~
+             * @return {array} a ~@link https://docs.ccxt.com/?id=$ledger-entry-structure $ledger structure~
              */
             Async\await($this->load_markets());
             $request = array();
@@ -1354,7 +1364,7 @@ class coinmetro extends Exchange {
              * @param {bool} [$params->margin] true for creating a margin order
              * @param {string} [$params->fillStyle] fill style of the limit order => "sell" fulfills selling quantity "buy" fulfills buying quantity "base" fulfills base currency quantity "quote" fulfills quote currency quantity
              * @param {string} [$params->clientOrderId] client's $comment
-             * @return {array} an ~@link https://docs.ccxt.com/#/?id=order-structure order structure~
+             * @return {array} an ~@link https://docs.ccxt.com/?id=order-structure order structure~
              */
             Async\await($this->load_markets());
             $market = $this->market($symbol);
@@ -1480,7 +1490,7 @@ class coinmetro extends Exchange {
              * @param {string} $symbol not used by coinmetro cancelOrder ()
              * @param {array} [$params] extra parameters specific to the exchange API endpoint
              * @param {string} [$params->margin] true for cancelling a margin order
-             * @return {array} An ~@link https://docs.ccxt.com/#/?$id=order-structure order structure~
+             * @return {array} An ~@link https://docs.ccxt.com/?$id=order-structure order structure~
              */
             Async\await($this->load_markets());
             $request = array(
@@ -1531,7 +1541,7 @@ class coinmetro extends Exchange {
              * @param {array} [$params] extra parameters specific to the exchange API endpoint
              * @param {string} [$params->orderID] order id
              * @param {number} [$params->fraction] fraction of order to close, between 0 and 1 (defaults to 1)
-             * @return {array} An ~@link https://docs.ccxt.com/#/?id=order-structure order structure~
+             * @return {array} An ~@link https://docs.ccxt.com/?id=order-structure order structure~
              */
             Async\await($this->load_markets());
             $orderId = $this->safe_string($params, 'orderId');
@@ -1586,7 +1596,7 @@ class coinmetro extends Exchange {
              * @param {int} [$since] the earliest time in ms to fetch open $orders for
              * @param {int} [$limit] the maximum number of open $order structures to retrieve
              * @param {array} [$params] extra parameters specific to the exchange API endpoint
-             * @return {Order[]} a list of ~@link https://docs.ccxt.com/#/?id=$order-structure $order structures~
+             * @return {Order[]} a list of ~@link https://docs.ccxt.com/?id=$order-structure $order structures~
              */
             Async\await($this->load_markets());
             $market = null;
@@ -1614,7 +1624,7 @@ class coinmetro extends Exchange {
              * @param {int} [$since] the earliest time in ms to fetch orders for
              * @param {int} [$limit] the maximum number of order structures to retrieve
              * @param {array} [$params] extra parameters specific to the exchange API endpoint
-             * @return {Order[]} a list of ~@link https://docs.ccxt.com/#/?id=order-structure order structures~
+             * @return {Order[]} a list of ~@link https://docs.ccxt.com/?id=order-structure order structures~
              */
             Async\await($this->load_markets());
             $market = null;
@@ -1640,7 +1650,7 @@ class coinmetro extends Exchange {
              * @param {int|string} $id order $id
              * @param {string} $symbol not used by coinmetro fetchOrder ()
              * @param {array} [$params] extra parameters specific to the exchange API endpoint
-             * @return {array} An ~@link https://docs.ccxt.com/#/?$id=order-structure order structure~
+             * @return {array} An ~@link https://docs.ccxt.com/?$id=order-structure order structure~
              */
             Async\await($this->load_markets());
             $request = array(
@@ -1984,7 +1994,7 @@ class coinmetro extends Exchange {
              * @param {string} $code unified $currency $code of the $currency to borrow
              * @param {float} $amount the $amount to borrow
              * @param {array} [$params] extra parameters specific to the exchange API endpoint
-             * @return {array} a ~@link https://docs.ccxt.com/#/?id=margin-loan-structure margin loan structure~
+             * @return {array} a ~@link https://docs.ccxt.com/?id=margin-loan-structure margin loan structure~
              */
             Async\await($this->load_markets());
             $currency = $this->currency($code);
