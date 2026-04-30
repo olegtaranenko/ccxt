@@ -1,6 +1,8 @@
 package ccxt
 
 import (
+	"encoding/hex"
+	"encoding/json"
 	"fmt"
 	"math/big"
 	"reflect"
@@ -8,6 +10,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/common/math"
 	"github.com/ethereum/go-ethereum/crypto"
@@ -73,7 +76,7 @@ type OrderMessage struct {
 	Type     string             `mapstructure:"type" msgpack:"type"`
 	Orders   []OrderHyperliquid `mapstructure:"orders" msgpack:"orders"`
 	Grouping string             `mapstructure:"grouping" msgpack:"grouping"`
-	Builder  Builder            `mapstructure:"builder" msgpack:"builder,omitempty"`
+	Builder  *Builder           `mapstructure:"builder" msgpack:"builder,omitempty"`
 }
 
 type Builder struct {
@@ -172,6 +175,83 @@ type ReserveRequestWeightMessage struct {
 	Weight int    `mapstructure:"weight" msgpack:"weight"`
 }
 
+// SetReferrer message
+
+type SetReferrerMessage struct {
+	Type string `mapstructure:"type" msgpack:"type"`
+	Code string `mapstructure:"code" msgpack:"code"`
+}
+
+// AgentSetAbstraction message
+
+type AgentSetAbstractionMessage struct {
+	Type        string `mapstructure:"type" msgpack:"type"`
+	Abstraction string `mapstructure:"abstraction" msgpack:"abstraction"`
+}
+
+// TwapOrder message
+
+type TwapOrderSpec struct {
+	A int    `mapstructure:"a" msgpack:"a"`
+	B bool   `mapstructure:"b" msgpack:"b"`
+	S string `mapstructure:"s" msgpack:"s"`
+	R bool   `mapstructure:"r" msgpack:"r"`
+	M int    `mapstructure:"m" msgpack:"m"`
+	T bool   `mapstructure:"t" msgpack:"t"`
+}
+
+type TwapOrderMessage struct {
+	Type string        `mapstructure:"type" msgpack:"type"`
+	Twap TwapOrderSpec `mapstructure:"twap" msgpack:"twap"`
+}
+
+// TwapCancel message
+
+type TwapCancelMessage struct {
+	Type string `mapstructure:"type" msgpack:"type"`
+	A    int    `mapstructure:"a" msgpack:"a"`
+	T    int    `mapstructure:"t" msgpack:"t"`
+}
+
+// ScheduleCancel message
+
+type ScheduleCancelMessage struct {
+	Type string `mapstructure:"type" msgpack:"type"`
+	Time int    `mapstructure:"time" msgpack:"time"`
+}
+
+// CreateVault message
+
+type CreateVaultMessage struct {
+	Type        string `mapstructure:"type" msgpack:"type"`
+	Name        string `mapstructure:"name" msgpack:"name"`
+	Description string `mapstructure:"description" msgpack:"description"`
+	InitialUsd  int    `mapstructure:"initialUsd" msgpack:"initialUsd"`
+	Nonce       int    `mapstructure:"nonce" msgpack:"nonce"`
+}
+
+// SubAccountSpotTransfer message
+
+type SubAccountSpotTransferMessage struct {
+	Type           string `mapstructure:"type" msgpack:"type"`
+	SubAccountUser string `mapstructure:"subAccountUser" msgpack:"subAccountUser"`
+	IsDeposit      bool   `mapstructure:"isDeposit" msgpack:"isDeposit"`
+	Token          string `mapstructure:"token" msgpack:"token"`
+	Amount         string `mapstructure:"amount" msgpack:"amount"`
+}
+
+// CancelByCloid message
+
+type CancelByCloidItem struct {
+	Asset int    `mapstructure:"asset" msgpack:"asset"`
+	Cloid string `mapstructure:"cloid" msgpack:"cloid"`
+}
+
+type CancelByCloidMessage struct {
+	Type    string              `mapstructure:"type" msgpack:"type"`
+	Cancels []CancelByCloidItem `mapstructure:"cancels" msgpack:"cancels"`
+}
+
 // =====================================  Hyperliquid Structs ===================================== //
 
 func ethEncodeStructuredData(primaryType string, domain apitypes.TypedDataDomain, messageTypes map[string][]apitypes.Type, messageData map[string]interface{}) (string, error) {
@@ -216,6 +296,14 @@ func ethEncodeStructuredData(primaryType string, domain apitypes.TypedDataDomain
 }
 
 func (this *Exchange) EthEncodeStructuredData(domain2 interface{}, messageTypes2 interface{}, messageData2 interface{}) []uint8 {
+
+	useDynamicStruct := true // Set to false for hardcoded struct-based approach
+	if useDynamicStruct {
+		return this.EthEncodeStructuredDataDynamically(domain2, messageTypes2, messageData2)
+	}
+
+	// Legacy struct-based approach
+
 	// domain {"chainId":1337,"name":"Exchange","verifyingContract":"0x0000000000000000000000000000000000000000","version":"1"}
 	// agent: {"Agent":[{"name":"source","type":"string"},{"name":"connectionId","type":"bytes32"}]}
 	// phantom: {"source":"a","connectionId":{"0":81,"1":132,"2":60,"3":100,"4":202,"5":146,"6":114,"7":128,"8":99,"9":200,"10":106,"11":37,"12":220,"13":61,"14":150,"15":236,"16":173,"17":119,"18":83,"19":11,"20":205,"21":91,"22":222,"23":149,"24":201,"25":182,"26":71,"27":103,"28":74,"29":0,"30":223,"31":202}}
@@ -267,6 +355,25 @@ func (this *Exchange) EthEncodeStructuredData(domain2 interface{}, messageTypes2
 		str, _ := fmt.Printf("Binary Data: %x\n", hexData)
 		panic(str)
 	}
+	return this.Base16ToBinary(hexData)
+}
+
+func (this *Exchange) EthEncodeStructuredDataDynamically(domain2 interface{}, messageTypes2 interface{}, messageData2 interface{}) []uint8 {
+	domain := domain2.(map[string]interface{})
+	messageTypes := messageTypes2.(map[string]interface{})
+	messageData := messageData2.(map[string]interface{})
+
+	td, err := BuildTypedDataFromJS("", domain, messageTypes, messageData)
+	if err != nil {
+		panic(fmt.Sprintf("Error building typed data: %v", err))
+	}
+	digest, err := this.EncodeTypedData(td)
+	if err != nil {
+		panic(fmt.Sprintf("Error computing digest: %v", err))
+	}
+
+	hexData := hexutil.Encode(digest[:])
+	hexData = strings.TrimPrefix(hexData, "0x")
 	return this.Base16ToBinary(hexData)
 }
 
@@ -544,6 +651,110 @@ func (this *Exchange) Packb(data interface{}) []uint8 {
 			panic(err)
 		}
 		return packed
+	case "setReferrer":
+		var msg SetReferrerMessage
+
+		err := mapstructure.Decode(converted, &msg)
+		if err != nil {
+			panic(err)
+		}
+
+		packed, err := msgpack.Marshal(msg)
+		if err != nil {
+			panic(err)
+		}
+		return packed
+	case "agentSetAbstraction":
+		var msg AgentSetAbstractionMessage
+
+		err := mapstructure.Decode(converted, &msg)
+		if err != nil {
+			panic(err)
+		}
+
+		packed, err := msgpack.Marshal(msg)
+		if err != nil {
+			panic(err)
+		}
+		return packed
+	case "twapOrder":
+		var msg TwapOrderMessage
+
+		err := mapstructure.Decode(converted, &msg)
+		if err != nil {
+			panic(err)
+		}
+
+		packed, err := msgpack.Marshal(msg)
+		if err != nil {
+			panic(err)
+		}
+		return packed
+	case "twapCancel":
+		var msg TwapCancelMessage
+
+		err := mapstructure.Decode(converted, &msg)
+		if err != nil {
+			panic(err)
+		}
+
+		packed, err := msgpack.Marshal(msg)
+		if err != nil {
+			panic(err)
+		}
+		return packed
+	case "scheduleCancel":
+		var msg ScheduleCancelMessage
+
+		err := mapstructure.Decode(converted, &msg)
+		if err != nil {
+			panic(err)
+		}
+
+		packed, err := msgpack.Marshal(msg)
+		if err != nil {
+			panic(err)
+		}
+		return packed
+	case "createVault":
+		var msg CreateVaultMessage
+
+		err := mapstructure.Decode(converted, &msg)
+		if err != nil {
+			panic(err)
+		}
+
+		packed, err := msgpack.Marshal(msg)
+		if err != nil {
+			panic(err)
+		}
+		return packed
+	case "subAccountSpotTransfer":
+		var msg SubAccountSpotTransferMessage
+
+		err := mapstructure.Decode(converted, &msg)
+		if err != nil {
+			panic(err)
+		}
+
+		packed, err := msgpack.Marshal(msg)
+		if err != nil {
+			panic(err)
+		}
+		return packed
+	case "cancelByCloid":
+		var msg CancelByCloidMessage
+
+		err := mapstructure.Decode(converted, &msg)
+		if err != nil {
+			panic(err)
+		}
+
+		packed, err := msgpack.Marshal(msg)
+		if err != nil {
+			panic(err)
+		}
+		return packed
 	}
 	return nil
 }
@@ -577,15 +788,27 @@ func SafeInt(v interface{}) int64 {
 
 // it's necessary to load lighter library in python
 // we create client with the given api credential in this function
-func (this *Exchange) LoadLighterLibrary(path interface{}, chainId interface{}, privateKey interface{}, apiKeyIndex interface{}, accountIndex interface{}) <-chan interface{} {
+func (this *Exchange) LoadLighterLibrary(path interface{}, chainId interface{}, privateKey interface{}, apiKeyIndex interface{}, accountIndex interface{}, createClient bool) <-chan interface{} {
 	ch := make(chan interface{})
 	go func() {
-		ch <- this.loadLighterLibraryHelper(path.(string), uint32(SafeInt(chainId)), privateKey.(string), uint8(SafeInt(apiKeyIndex)), int64(SafeInt(accountIndex)))
+		ch <- this.loadLighterLibraryHelper(path.(string), uint32(SafeInt(chainId)), privateKey.(string), uint8(SafeInt(apiKeyIndex)), int64(SafeInt(accountIndex)), createClient)
 	}()
 	return ch
 }
 
-func (this *Exchange) loadLighterLibraryHelper(path string, chainId uint32, privateKey string, apiKeyIndex uint8, accountIndex int64) interface{} {
+func (this *Exchange) loadLighterLibraryHelper(path string, chainId uint32, privateKey string, apiKeyIndex uint8, accountIndex int64, createClient bool) interface{} {
+	if createClient {
+		txClient := this.lighterCreateClient(nil, chainId, privateKey, apiKeyIndex, accountIndex)
+		return txClient
+	}
+	return nil
+}
+
+func (this *Exchange) LighterCreateClient(signer interface{}, chainId interface{}, privateKey interface{}, apiKeyIndex interface{}, accountIndex interface{}) interface{} {
+	return this.lighterCreateClient(signer, uint32(SafeInt(chainId)), privateKey.(string), uint8(SafeInt(apiKeyIndex)), int64(SafeInt(accountIndex)))
+}
+
+func (this *Exchange) lighterCreateClient(signer interface{}, chainId uint32, privateKey string, apiKeyIndex uint8, accountIndex int64) interface{} {
 	url := this.ImplodeHostname(GetValue(GetValue(this.Urls, "api"), "public")).(string)
 
 	httpClient := http.NewClient(url)
@@ -595,6 +818,19 @@ func (this *Exchange) loadLighterLibraryHelper(path string, chainId uint32, priv
 		panic(err)
 	}
 	return txClient
+}
+
+func (this *Exchange) lighterL2TxAttr(integratorAccountIndex int64, integratorTakerFee uint32, integratorMakerFee uint32, skipNonce uint8) types.L2TxAttributes {
+	l2TxAttr := types.L2TxAttributes{}
+	if integratorAccountIndex > 0 && integratorTakerFee > 0 && integratorMakerFee > 0 {
+		l2TxAttr.IntegratorAccountIndex = &integratorAccountIndex
+		l2TxAttr.IntegratorTakerFee = &integratorTakerFee
+		l2TxAttr.IntegratorMakerFee = &integratorMakerFee
+	}
+	if skipNonce == 1 {
+		l2TxAttr.SkipNonce = &skipNonce
+	}
+	return l2TxAttr
 }
 
 func (this *Exchange) LighterSignCreateGroupedOrders(signer interface{}, request interface{}) interface{} {
@@ -646,8 +882,10 @@ func (this *Exchange) lighterSignCreateGroupedOrders(signer *client.TxClient, re
 	}
 
 	nonce := int64(SafeInt(request["nonce"]))
+	l2TxAttr := this.lighterL2TxAttr(int64(SafeInt(request["integrator_account_index"])), uint32(SafeInt(request["integrator_taker_fee"])), uint32(SafeInt(request["integrator_maker_fee"])), uint8(1))
 	ops := &types.TransactOpts{
-		Nonce: &nonce,
+		Nonce:        &nonce,
+		TxAttributes: &l2TxAttr,
 	}
 
 	txInfo, err := signer.GetCreateGroupedOrdersTransaction(tx, ops)
@@ -663,7 +901,6 @@ func (this *Exchange) lighterSignCreateGroupedOrders(signer *client.TxClient, re
 	res := make([]interface{}, 0)
 	res = append(res, txInfo.GetTxType())
 	res = append(res, txInfoStr)
-	fmt.Println(txInfo.GetTxType(), txInfoStr, res, GetValue(res, 0), GetValue(res, 1))
 
 	return res
 }
@@ -691,8 +928,10 @@ func (this *Exchange) lighterSignCreateOrder(signer *client.TxClient, request ma
 		OrderExpiry:      orderExpiry,
 	}
 	nonce := int64(SafeInt(request["nonce"]))
+	l2TxAttr := this.lighterL2TxAttr(int64(SafeInt(request["integrator_account_index"])), uint32(SafeInt(request["integrator_taker_fee"])), uint32(SafeInt(request["integrator_maker_fee"])), uint8(1))
 	ops := &types.TransactOpts{
-		Nonce: &nonce,
+		Nonce:        &nonce,
+		TxAttributes: &l2TxAttr,
 	}
 
 	txInfo, err := signer.GetCreateOrderTransaction(tx, ops)
@@ -708,7 +947,6 @@ func (this *Exchange) lighterSignCreateOrder(signer *client.TxClient, request ma
 	res := make([]interface{}, 0)
 	res = append(res, txInfo.GetTxType())
 	res = append(res, txInfoStr)
-	fmt.Println(txInfo.GetTxType(), txInfoStr, res, GetValue(res, 0), GetValue(res, 1))
 
 	return res
 }
@@ -723,8 +961,10 @@ func (this *Exchange) lighterSignCancelOrder(signer *client.TxClient, request ma
 		Index:       int64(SafeInt(request["order_index"])),
 	}
 	nonce := int64(SafeInt(request["nonce"]))
+	l2TxAttr := this.lighterL2TxAttr(0, uint32(0), uint32(0), uint8(1))
 	ops := &types.TransactOpts{
-		Nonce: &nonce,
+		Nonce:        &nonce,
+		TxAttributes: &l2TxAttr,
 	}
 
 	txInfo, err := signer.GetCancelOrderTransaction(tx, ops)
@@ -753,8 +993,10 @@ func (this *Exchange) lighterSignWithdraw(signer *client.TxClient, request map[s
 		Amount:     uint64(SafeInt(request["amount"])),
 	}
 	nonce := int64(SafeInt(request["nonce"]))
+	l2TxAttr := this.lighterL2TxAttr(0, uint32(0), uint32(0), uint8(1))
 	ops := &types.TransactOpts{
-		Nonce: &nonce,
+		Nonce:        &nonce,
+		TxAttributes: &l2TxAttr,
 	}
 
 	txInfo, err := signer.GetWithdrawTransaction(tx, ops)
@@ -778,8 +1020,10 @@ func (this *Exchange) LighterSignCreateSubAccount(signer interface{}, request in
 
 func (this *Exchange) lighterSignCreateSubAccount(signer *client.TxClient, request map[string]interface{}) interface{} {
 	nonce := int64(SafeInt(request["nonce"]))
+	l2TxAttr := this.lighterL2TxAttr(0, uint32(0), uint32(0), uint8(1))
 	ops := &types.TransactOpts{
-		Nonce: &nonce,
+		Nonce:        &nonce,
+		TxAttributes: &l2TxAttr,
 	}
 
 	txInfo, err := signer.GetCreateSubAccountTransaction(ops)
@@ -807,8 +1051,10 @@ func (this *Exchange) lighterSignCancelAllOrders(signer *client.TxClient, reques
 		Time:        int64(SafeInt(request["time"])),
 	}
 	nonce := int64(SafeInt(request["nonce"]))
+	l2TxAttr := this.lighterL2TxAttr(0, uint32(0), uint32(0), uint8(1))
 	ops := &types.TransactOpts{
-		Nonce: &nonce,
+		Nonce:        &nonce,
+		TxAttributes: &l2TxAttr,
 	}
 
 	txInfo, err := signer.GetCancelAllOrdersTransaction(tx, ops)
@@ -839,8 +1085,10 @@ func (this *Exchange) lighterSignModifyOrder(signer *client.TxClient, request ma
 		TriggerPrice: uint32(SafeInt(request["trigger_price"])),
 	}
 	nonce := int64(SafeInt(request["nonce"]))
+	l2TxAttr := this.lighterL2TxAttr(0, uint32(0), uint32(0), uint8(1))
 	ops := &types.TransactOpts{
-		Nonce: &nonce,
+		Nonce:        &nonce,
+		TxAttributes: &l2TxAttr,
 	}
 
 	txInfo, err := signer.GetModifyOrderTransaction(tx, ops)
@@ -881,8 +1129,10 @@ func (this *Exchange) lighterSignTransfer(signer *client.TxClient, request map[s
 		Memo:           memoArr,
 	}
 	nonce := int64(SafeInt(request["nonce"]))
+	l2TxAttr := this.lighterL2TxAttr(0, uint32(0), uint32(0), uint8(1))
 	ops := &types.TransactOpts{
-		Nonce: &nonce,
+		Nonce:        &nonce,
+		TxAttributes: &l2TxAttr,
 	}
 
 	txInfo, err := signer.GetTransferTransaction(tx, ops)
@@ -911,8 +1161,10 @@ func (this *Exchange) lighterSignUpdateLeverage(signer *client.TxClient, request
 		MarginMode:            uint8(SafeInt(request["margin_mode"])),
 	}
 	nonce := int64(SafeInt(request["nonce"]))
+	l2TxAttr := this.lighterL2TxAttr(0, uint32(0), uint32(0), uint8(1))
 	ops := &types.TransactOpts{
-		Nonce: &nonce,
+		Nonce:        &nonce,
+		TxAttributes: &l2TxAttr,
 	}
 
 	txInfo, err := signer.GetUpdateLeverageTransaction(tx, ops)
@@ -956,8 +1208,10 @@ func (this *Exchange) lighterSignUpdateMargin(signer *client.TxClient, request m
 		Direction:   uint8(SafeInt(request["direction"])),
 	}
 	nonce := int64(SafeInt(request["nonce"]))
+	l2TxAttr := this.lighterL2TxAttr(0, uint32(0), uint32(0), uint8(1))
 	ops := &types.TransactOpts{
-		Nonce: &nonce,
+		Nonce:        &nonce,
+		TxAttributes: &l2TxAttr,
 	}
 
 	txInfo, err := signer.GetUpdateMarginTransaction(tx, ops)
@@ -972,6 +1226,87 @@ func (this *Exchange) lighterSignUpdateMargin(signer *client.TxClient, request m
 	res := make([]interface{}, 0)
 	res = append(res, txInfo.GetTxType())
 	res = append(res, txInfoStr)
+	return res
+}
+
+func (this *Exchange) LighterSignApproveIntegrator(signer interface{}, request interface{}) interface{} {
+	return this.lighterSignApproveIntegrator(signer.(*client.TxClient), request.(map[string]interface{}))
+}
+
+func (this *Exchange) lighterSignApproveIntegrator(signer *client.TxClient, request map[string]interface{}) interface{} {
+	tx := &types.ApproveIntegratorTxReq{
+		IntegratorAccountIndex: int64(SafeInt(request["integrator_account_index"])),
+		MaxPerpsTakerFee:       uint32(SafeInt(request["integrator_taker_fee"])),
+		MaxPerpsMakerFee:       uint32(SafeInt(request["integrator_maker_fee"])),
+		MaxSpotTakerFee:        uint32(SafeInt(request["integrator_taker_fee"])),
+		MaxSpotMakerFee:        uint32(SafeInt(request["integrator_maker_fee"])),
+		ApprovalExpiry:         int64(SafeInt(request["approval_expiry"])),
+	}
+	nonce := int64(SafeInt(request["nonce"]))
+	l2TxAttr := this.lighterL2TxAttr(0, uint32(0), uint32(0), uint8(1))
+	ops := &types.TransactOpts{
+		Nonce:        &nonce,
+		TxAttributes: &l2TxAttr,
+	}
+
+	txInfo, err := signer.GetApproveIntegratorTx(tx, ops)
+	if err != nil {
+		panic(err)
+	}
+	txInfoStr, err := txInfo.GetTxInfo()
+	if err != nil {
+		panic(err)
+	}
+
+	res := make([]interface{}, 0)
+	res = append(res, txInfo.GetTxType())
+	res = append(res, txInfoStr)
+	res = append(res, txInfo.GetL1SignatureBody(signer.GetChainId()))
+	return res
+}
+
+func (this *Exchange) LighterGenerateApiKey(signer interface{}) interface{} {
+	privateKey, publicKey, _ := client.GenerateAPIKey()
+	res := make([]interface{}, 0)
+	res = append(res, privateKey)
+	res = append(res, publicKey)
+	return res
+}
+
+func (this *Exchange) LighterSignChangePubkey(signer interface{}, request interface{}) interface{} {
+	return this.lighterSignChangePubkey(signer.(*client.TxClient), request.(map[string]interface{}))
+}
+
+func (this *Exchange) lighterSignChangePubkey(signer *client.TxClient, request map[string]interface{}) interface{} {
+	decPubkey, err := hexutil.Decode(request["pubkey"].(string))
+	if err != nil {
+		panic(err)
+	}
+	var pubkeyBytes [40]byte
+	copy(pubkeyBytes[:], decPubkey)
+	tx := &types.ChangePubKeyReq{
+		PubKey: pubkeyBytes,
+	}
+	nonce := int64(SafeInt(request["nonce"]))
+	l2TxAttr := this.lighterL2TxAttr(0, uint32(0), uint32(0), uint8(1))
+	ops := &types.TransactOpts{
+		Nonce:        &nonce,
+		TxAttributes: &l2TxAttr,
+	}
+
+	txInfo, err := signer.GetChangePubKeyTransaction(tx, ops)
+	if err != nil {
+		panic(err)
+	}
+	txInfoStr, err := txInfo.GetTxInfo()
+	if err != nil {
+		panic(err)
+	}
+
+	res := make([]interface{}, 0)
+	res = append(res, txInfo.GetTxType())
+	res = append(res, txInfoStr)
+	res = append(res, txInfo.GetL1SignatureBody())
 	return res
 }
 
@@ -1014,4 +1349,331 @@ func (this *Exchange) EthGetAddressFromPrivateKey(privateKey interface{}) string
 
 	// Convert to hex and add 0x prefix
 	return "0x" + hexutil.Encode(addressBytes)[2:]
+}
+
+// ============================= EIP-712 Dynamic Helper Functions ============================= //
+
+// BuildTypedDataFromJS creates an EIP-712 TypedData instance from generic JSON-like maps.
+// The inputs mirror the MetaMask/ethers.js shape: domain, types, primaryType, and message.
+// This avoids having to define Go structs for each payload.
+func BuildTypedDataFromJS(primaryType string, domain map[string]interface{}, rawTypes map[string]interface{}, rawMessage map[string]interface{}) (apitypes.TypedData, error) {
+	typedTypes, inferredPrimary, err := toTypedDataTypes(rawTypes, domain)
+	if err != nil {
+		return apitypes.TypedData{}, err
+	}
+	if primaryType == "" {
+		primaryType = inferredPrimary
+	}
+	if primaryType == "" {
+		return apitypes.TypedData{}, fmt.Errorf("primaryType is required")
+	}
+
+	domainTyped, err := toTypedDataDomain(domain)
+	if err != nil {
+		return apitypes.TypedData{}, err
+	}
+
+	normalizedMsg, err := normalizeTypedMessage(typedTypes, primaryType, rawMessage)
+	if err != nil {
+		return apitypes.TypedData{}, err
+	}
+
+	return apitypes.TypedData{
+		Domain:      domainTyped,
+		Types:       typedTypes,
+		PrimaryType: primaryType,
+		Message:     normalizedMsg,
+	}, nil
+}
+
+// EncodeTypedData returns the EIP-712 digest "\x19\x01" + domainSeparator + hashStruct(message)
+func (this *Exchange) EncodeTypedData(td apitypes.TypedData) ([]byte, error) {
+	domainSeparator, err := td.HashStruct("EIP712Domain", td.Domain.Map())
+	if err != nil {
+		return []byte{}, err
+	}
+	typedDataHash, err := td.HashStruct(td.PrimaryType, td.Message)
+	if err != nil {
+		return []byte{}, err
+	}
+	prefix := []byte{0x19, 0x01}
+	rawData := append(append(prefix, domainSeparator...), typedDataHash...)
+	return rawData, nil
+}
+
+func toTypedDataTypes(rawTypes map[string]interface{}, domain map[string]interface{}) (map[string][]apitypes.Type, string, error) {
+	typed := make(map[string][]apitypes.Type, len(rawTypes))
+	inferred := ""
+	// the first key in the map is the primary type, but the order is not guaranteed
+	// so we need to check for the primary type explicitly
+	if _, ok := rawTypes["OrderWithBuilderFee"]; ok {
+		inferred = "OrderWithBuilderFee"
+	} else if _, ok := rawTypes["Order"]; ok {
+		inferred = "Order"
+	} else {
+		for typeName := range rawTypes {
+			if inferred == "" {
+				inferred = typeName
+			}
+		}
+	}
+
+	for typeName, fieldsAny := range rawTypes {
+		fields, ok := fieldsAny.([]interface{})
+		if !ok {
+			return nil, "", fmt.Errorf("types[%s] must be array", typeName)
+		}
+		typedFields := make([]apitypes.Type, len(fields))
+		for i, fAny := range fields {
+			fMap, ok := fAny.(map[string]interface{})
+			if !ok {
+				return nil, "", fmt.Errorf("types[%s][%d] must be object", typeName, i)
+			}
+			nameVal, _ := fMap["name"].(string)
+			typeVal, _ := fMap["type"].(string)
+			typedFields[i] = apitypes.Type{Name: nameVal, Type: typeVal}
+		}
+		typed[typeName] = typedFields
+	}
+
+	// Add EIP712Domain type based on what's actually in the domain
+	if _, exists := typed["EIP712Domain"]; !exists {
+		domainFields := []apitypes.Type{}
+		if _, ok := domain["name"]; ok {
+			domainFields = append(domainFields, apitypes.Type{Name: "name", Type: "string"})
+		}
+		if _, ok := domain["version"]; ok {
+			domainFields = append(domainFields, apitypes.Type{Name: "version", Type: "string"})
+		}
+		if _, ok := domain["chainId"]; ok {
+			domainFields = append(domainFields, apitypes.Type{Name: "chainId", Type: "uint256"})
+		}
+		if _, ok := domain["verifyingContract"]; ok {
+			domainFields = append(domainFields, apitypes.Type{Name: "verifyingContract", Type: "address"})
+		}
+		typed["EIP712Domain"] = domainFields
+	}
+
+	return typed, inferred, nil
+}
+
+func toTypedDataDomain(domain map[string]interface{}) (apitypes.TypedDataDomain, error) {
+	var d apitypes.TypedDataDomain
+	if domain == nil {
+		return d, nil
+	}
+	if v, ok := domain["name"].(string); ok {
+		d.Name = v
+	}
+	if v, ok := domain["version"].(string); ok {
+		d.Version = v
+	}
+	if v, ok := domain["verifyingContract"].(string); ok {
+		d.VerifyingContract = v
+	}
+	if v, ok := domain["chainId"]; ok {
+		bi, err := toBigInt(v)
+		if err != nil {
+			return d, fmt.Errorf("chainId: %w", err)
+		}
+		d.ChainId = (*math.HexOrDecimal256)(bi)
+	}
+	return d, nil
+}
+
+func normalizeTypedMessage(types map[string][]apitypes.Type, primaryType string, value interface{}) (apitypes.TypedDataMessage, error) {
+	structVal, err := normalizeStruct(types, primaryType, value)
+	if err != nil {
+		return nil, err
+	}
+	return structVal, nil
+}
+
+func normalizeStruct(types map[string][]apitypes.Type, typeName string, value interface{}) (apitypes.TypedDataMessage, error) {
+	obj, ok := value.(map[string]interface{})
+	if !ok {
+		return nil, fmt.Errorf("value for %s must be object", typeName)
+	}
+	fields, ok := types[typeName]
+	if !ok {
+		return nil, fmt.Errorf("type %s not found in types", typeName)
+	}
+	out := make(apitypes.TypedDataMessage)
+
+	// Include all fields from type definition - ALL fields must be present
+	for _, f := range fields {
+		raw, exists := obj[f.Name]
+
+		// If field doesn't exist or is nil, provide default zero value
+		if !exists || raw == nil {
+			defaultVal := getDefaultValueForType(f.Type)
+			out[f.Name] = defaultVal
+			continue
+		}
+
+		conv, err := normalizeValue(types, f.Type, raw)
+		if err != nil {
+			return nil, fmt.Errorf("field %s (type %s, value %v): %w", f.Name, f.Type, raw, err)
+		}
+		out[f.Name] = conv
+	}
+	return out, nil
+}
+
+func getDefaultValueForType(typeName string) interface{} {
+	// Handle arrays
+	if strings.HasSuffix(typeName, "[]") {
+		return []interface{}{}
+	}
+
+	// Handle integers
+	if strings.HasPrefix(typeName, "uint") || strings.HasPrefix(typeName, "int") {
+		return big.NewInt(0)
+	}
+
+	// Handle address
+	if typeName == "address" {
+		return common.HexToAddress("0x0000000000000000000000000000000000000000")
+	}
+
+	// Handle bool
+	if typeName == "bool" {
+		return false
+	}
+
+	// Handle bytes
+	if strings.HasPrefix(typeName, "bytes") {
+		if typeName == "bytes" {
+			return []byte{}
+		}
+		// Fixed size bytes (bytes32, etc)
+		return []byte{}
+	}
+
+	// Handle string
+	if typeName == "string" {
+		return ""
+	}
+
+	// For custom types/structs, return empty map
+	return make(map[string]interface{})
+}
+
+func normalizeValue(types map[string][]apitypes.Type, typeName string, value interface{}) (interface{}, error) {
+	if strings.HasSuffix(typeName, "[]") {
+		base := strings.TrimSuffix(typeName, "[]")
+
+		// Handle empty arrays or nil
+		if value == nil {
+			if _, isStruct := types[base]; isStruct {
+				return []apitypes.TypedDataMessage{}, nil
+			}
+			return []interface{}{}, nil
+		}
+
+		arr, ok := value.([]interface{})
+		if !ok {
+			return nil, fmt.Errorf("expected array for %s", typeName)
+		}
+
+		// Check if the base type is a struct
+		if _, isStruct := types[base]; isStruct {
+			// For array of structs, return as []apitypes.TypedDataMessage
+			out := make([]apitypes.TypedDataMessage, len(arr))
+			for i, v := range arr {
+				structVal, err := normalizeStruct(types, base, v)
+				if err != nil {
+					return nil, fmt.Errorf("index %d: %w", i, err)
+				}
+				out[i] = structVal
+			}
+			return out, nil
+		}
+
+		// For array of primitives
+		out := make([]interface{}, len(arr))
+		for i, v := range arr {
+			conv, err := normalizeValue(types, base, v)
+			if err != nil {
+				return nil, fmt.Errorf("index %d: %w", i, err)
+			}
+			out[i] = conv
+		}
+		return out, nil
+	}
+
+	if _, isStruct := types[typeName]; isStruct {
+		return normalizeStruct(types, typeName, value)
+	}
+
+	switch {
+	case strings.HasPrefix(typeName, "uint") || strings.HasPrefix(typeName, "int"):
+		bi, err := toBigInt(value)
+		if err != nil {
+			return nil, err
+		}
+		// For smaller integer types (not 256-bit), validate they fit in range
+		// and return the big.Int (the library will validate the range)
+		return bi, nil
+	case typeName == "address":
+		if s, ok := value.(string); ok {
+			addr := common.HexToAddress(s)
+			return addr.Bytes(), nil
+		}
+		if addr, ok := value.(common.Address); ok {
+			return addr.Bytes(), nil
+		}
+		return value, nil
+	case strings.HasPrefix(typeName, "bytes") && typeName != "bytes":
+		if s, ok := value.(string); ok {
+			b, err := hex.DecodeString(strings.TrimPrefix(s, "0x"))
+			if err != nil {
+				return nil, fmt.Errorf("decode %s: %w", typeName, err)
+			}
+			return b, nil
+		}
+		// Handle byte slices that are already decoded
+		if b, ok := value.([]byte); ok {
+			return b, nil
+		}
+		return value, nil
+	default:
+		return value, nil
+	}
+}
+
+func toBigInt(v interface{}) (*big.Int, error) {
+	switch n := v.(type) {
+	case nil:
+		return nil, fmt.Errorf("nil int value")
+	case *big.Int:
+		return n, nil
+	case json.Number:
+		return parseBigIntString(n.String())
+	case string:
+		return parseBigIntString(n)
+	case int:
+		return big.NewInt(int64(n)), nil
+	case int64:
+		return big.NewInt(n), nil
+	case uint64:
+		return new(big.Int).SetUint64(n), nil
+	case float64:
+		return big.NewInt(int64(n)), nil
+	default:
+		return nil, fmt.Errorf("unsupported int type %T", v)
+	}
+}
+
+func parseBigIntString(s string) (*big.Int, error) {
+	radix := 10
+	if strings.HasPrefix(s, "0x") || strings.HasPrefix(s, "0X") {
+		radix = 16
+		s = s[2:]
+	}
+	bi, ok := new(big.Int).SetString(s, radix)
+	if !ok {
+		return nil, fmt.Errorf("invalid integer string")
+	}
+	return bi, nil
 }

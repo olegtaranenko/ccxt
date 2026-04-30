@@ -4,7 +4,7 @@
 
 # ----------------------------------------------------------------------------
 
-__version__ = '4.5.42'
+__version__ = '4.5.51'
 
 # ----------------------------------------------------------------------------
 
@@ -90,13 +90,11 @@ from ccxt.pro.coinbase import coinbase                                    # noqa
 from ccxt.pro.coinbaseadvanced import coinbaseadvanced                    # noqa: F401
 from ccxt.pro.coinbaseexchange import coinbaseexchange                    # noqa: F401
 from ccxt.pro.coinbaseinternational import coinbaseinternational          # noqa: F401
-from ccxt.pro.coincatch import coincatch                                  # noqa: F401
 from ccxt.pro.coincheck import coincheck                                  # noqa: F401
 from ccxt.pro.coinex import coinex                                        # noqa: F401
 from ccxt.pro.coinone import coinone                                      # noqa: F401
 from ccxt.pro.cryptocom import cryptocom                                  # noqa: F401
 from ccxt.pro.deepcoin import deepcoin                                    # noqa: F401
-from ccxt.pro.defx import defx                                            # noqa: F401
 from ccxt.pro.deribit import deribit                                      # noqa: F401
 from ccxt.pro.derive import derive                                        # noqa: F401
 from ccxt.pro.dydx import dydx                                            # noqa: F401
@@ -104,6 +102,7 @@ from ccxt.pro.exmo import exmo                                            # noqa
 from ccxt.pro.gate import gate                                            # noqa: F401
 from ccxt.pro.gateio import gateio                                        # noqa: F401
 from ccxt.pro.gemini import gemini                                        # noqa: F401
+from ccxt.pro.grvt import grvt                                            # noqa: F401
 from ccxt.pro.hashkey import hashkey                                      # noqa: F401
 from ccxt.pro.hitbtc import hitbtc                                        # noqa: F401
 from ccxt.pro.hollaex import hollaex                                      # noqa: F401
@@ -127,11 +126,13 @@ from ccxt.pro.okxus import okxus                                          # noqa
 from ccxt.pro.onetrading import onetrading                                # noqa: F401
 from ccxt.pro.oxfun import oxfun                                          # noqa: F401
 from ccxt.pro.p2b import p2b                                              # noqa: F401
+from ccxt.pro.pacifica import pacifica                                    # noqa: F401
 from ccxt.pro.paradex import paradex                                      # noqa: F401
 from ccxt.pro.phemex import phemex                                        # noqa: F401
 from ccxt.pro.poloniex import poloniex                                    # noqa: F401
 from ccxt.pro.toobit import toobit                                        # noqa: F401
 from ccxt.pro.upbit import upbit                                          # noqa: F401
+from ccxt.pro.weex import weex                                            # noqa: F401
 from ccxt.pro.whitebit import whitebit                                    # noqa: F401
 from ccxt.pro.woo import woo                                              # noqa: F401
 from ccxt.pro.woofipro import woofipro                                    # noqa: F401
@@ -171,13 +172,11 @@ exchanges = [
     'coinbaseadvanced',
     'coinbaseexchange',
     'coinbaseinternational',
-    'coincatch',
     'coincheck',
     'coinex',
     'coinone',
     'cryptocom',
     'deepcoin',
-    'defx',
     'deribit',
     'derive',
     'dydx',
@@ -185,6 +184,7 @@ exchanges = [
     'gate',
     'gateio',
     'gemini',
+    'grvt',
     'hashkey',
     'hitbtc',
     'hollaex',
@@ -208,11 +208,13 @@ exchanges = [
     'onetrading',
     'oxfun',
     'p2b',
+    'pacifica',
     'paradex',
     'phemex',
     'poloniex',
     'toobit',
     'upbit',
+    'weex',
     'whitebit',
     'woo',
     'woofipro',

@@ -6,11 +6,28 @@ import type { Dict, FundingRate, FundingRates, Int, int, Market, OHLCV, OrderBoo
  */
 export default class lighter extends Exchange {
     describe(): any;
-    loadAccount(chainId: any, privateKey: any, apiKeyIndex: any, accountIndex: any, params?: {}): Promise<import("./base/types.js").Dictionary<any>>;
+    loadAccount(chainId: any, privateKey: any, apiKeyIndex: string, accountIndex: string, params?: {}): Promise<any>;
+    initAuthObject(strAccountIndex: string, strApiKeyIndex: string): void;
+    getLighterPrivateKey(strAccountIndex: string, strApiKeyIndex: string): any;
+    /**
+     * @method
+     * @name lighter#preLoadLighterLibrary
+     * @description if the required credentials are available in options, it will pre-load the lighter Signer to avoid delaying sensitive calls like createOrder the first time they're executed
+     * @param params
+     * @returns {boolean} true if the signer was loaded, false otherwise
+     */
+    preLoadLighterLibrary(params?: {}): Promise<boolean>;
+    handleApiKeyIndex(params: object, methodName1: string, optionName1: string, optionName2: string, defaultValue?: any): any[];
     handleAccountIndex(params: object, methodName1: string, optionName1: string, optionName2: string, defaultValue?: any): Promise<any[]>;
     createSubAccount(name: string, params?: {}): Promise<any>;
     createAuth(params?: {}): string;
     pow(n: string, m: string): string;
+    hashMessage(message: string): string;
+    signHash(hash: any, privateKey: any): string;
+    signL1AndPrepareTxInfo(txInfo: any, message: any, privateKey: any): string;
+    handleBuilderFeeApproval(accountIndex: number, apiKeyIndex: number): Promise<boolean>;
+    approveBuilderFee(builder: number, takerFeeRate: number, makerFeeRate: number, accountIndex: number, apiKeyIndex: number, params?: object): Promise<any>;
+    changeApiKey(params?: object): Promise<any>;
     setSandboxMode(enable: boolean): void;
     createOrderRequest(symbol: string, type: OrderType, side: OrderSide, amount: number, price?: Num, params?: {}): any[];
     fetchNonce(accountIndex: any, apiKeyIndex: any, params?: {}): Promise<number>;
@@ -159,6 +176,7 @@ export default class lighter extends Exchange {
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @param {string} [params.by] fetch balance by 'index' or 'l1_address', defaults to 'index'
      * @param {string} [params.value] fetch balance value, account index or l1 address
+     * @param {string} [params.type] 'spot', 'swap', default is 'swap'
      * @returns {object} a [balance structure]{@link https://docs.ccxt.com/?id=balance-structure}
      */
     fetchBalance(params?: {}): Promise<Balances>;
@@ -232,8 +250,10 @@ export default class lighter extends Exchange {
     fetchClosedOrders(symbol?: Str, since?: Int, limit?: Int, params?: {}): Promise<Order[]>;
     parseOrder(order: Dict, market?: Market): Order;
     parseOrderStatus(status: Str): string;
-    parseOrderType(status: any): string;
-    parseOrderTimeInForeces(tif: any): string;
+    parseOrderType(type: any): string;
+    parseOrderTypeInteger(typeInteger: any): string;
+    parseOrderTimeInForce(tif: any): string;
+    parseOrderTimeInForceInteger(tifInteger: any): string;
     /**
      * @method
      * @name lighter#transfer
@@ -260,6 +280,7 @@ export default class lighter extends Exchange {
      * @param {int} [limit] the maximum number of  transfers structures to retrieve
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @param {string} [params.accountIndex] account index
+     * @param {boolean} [params.paginate] default false, when true will automatically paginate by calling this endpoint multiple times. See in the docs all the [availble parameters](https://github.com/ccxt/ccxt/wiki/Manual#pagination-params)
      * @returns {object[]} a list of [transfer structures]{@link https://docs.ccxt.com/?id=transfer-structure}
      */
     fetchTransfers(code?: Str, since?: Int, limit?: Int, params?: {}): Promise<TransferEntry[]>;
@@ -275,6 +296,7 @@ export default class lighter extends Exchange {
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @param {string} [params.accountIndex] account index
      * @param {string} [params.address] l1_address
+     * @param {boolean} [params.paginate] default false, when true will automatically paginate by calling this endpoint multiple times. See in the docs all the [availble parameters](https://github.com/ccxt/ccxt/wiki/Manual#pagination-params)
      * @returns {object[]} a list of [transaction structures]{@link https://docs.ccxt.com/?id=transaction-structure}
      */
     fetchDeposits(code?: Str, since?: Int, limit?: Int, params?: {}): Promise<Transaction[]>;
@@ -288,6 +310,7 @@ export default class lighter extends Exchange {
      * @param {int} [limit] the maximum number of withdrawals structures to retrieve
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @param {string} [params.accountIndex] account index
+     * @param {boolean} [params.paginate] default false, when true will automatically paginate by calling this endpoint multiple times. See in the docs all the [availble parameters](https://github.com/ccxt/ccxt/wiki/Manual#pagination-params)
      * @returns {object[]} a list of [transaction structures]{@link https://docs.ccxt.com/?id=transaction-structure}
      */
     fetchWithdrawals(code?: Str, since?: Int, limit?: Int, params?: {}): Promise<Transaction[]>;
@@ -318,6 +341,8 @@ export default class lighter extends Exchange {
      * @param {int} [limit] the maximum number of trades structures to retrieve
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @param {string} [params.accountIndex] account index
+     * @param {boolean} [params.paginate] default false, when true will automatically paginate by calling this endpoint multiple times. See in the docs all the [availble parameters](https://github.com/ccxt/ccxt/wiki/Manual#pagination-params)
+     * @param {int} [params.until] timestamp in ms of the latest trade to fetch
      * @returns {object[]} a list of [trade structures]{@link https://docs.ccxt.com/?id=trade-structure}
      */
     fetchMyTrades(symbol?: Str, since?: Int, limit?: Int, params?: {}): Promise<Trade[]>;

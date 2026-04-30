@@ -618,6 +618,13 @@ class Exchange {
     isBinaryMessage(msg) {
         return msg instanceof Uint8Array || msg instanceof ArrayBuffer;
     }
+    stringToBinary(content) {
+        // same as: this.base64ToBinary (this.stringToBase64 (str));
+        return this.encode(content);
+    }
+    binaryToString(binary) {
+        return this.decode(binary);
+    }
     decodeProtoMsg(data) {
         if (!protobufMexc) {
             throw new errors.NotSupported(this.id + ' requires protobuf to decode messages, please install it with `npm install protobufjs`');
@@ -692,7 +699,7 @@ class Exchange {
             if (typeof userAgent === 'string') {
                 headers = this.extend({ 'User-Agent': userAgent }, headers);
             }
-            else if ((typeof userAgent === 'object') && ('User-Agent' in userAgent)) {
+            else if (this.isDictionary(userAgent) && ('User-Agent' in userAgent)) {
                 headers = this.extend(userAgent, headers);
             }
         }
@@ -1603,7 +1610,7 @@ class Exchange {
     unlockId() {
         return undefined; // c# stub
     }
-    async loadLighterLibrary(libraryPath, chainId, privateKey, apiKeyIndex, accountIndex) {
+    async loadLighterLibrary(libraryPath, chainId, privateKey, apiKeyIndex, accountIndex, createClient = false) {
         // wasmExecPathExample: '/opt/homebrew/opt/go/libexec/lib/wasm/wasm_exec.js';
         // libraryPath eg: '/Users/cjg/Git/lighter-go/lighter.wasm';
         if (libraryPath === undefined || libraryPath === '') {
@@ -1623,11 +1630,16 @@ class Exchange {
         const bytes = new Uint8Array(readFile(libraryPath, null)); // it should point to lighter.wasm
         const { instance } = await WebAssembly.instantiate(bytes, go.importObject);
         go.run(instance);
-        // createCLient
+        if (createClient) {
+            this.lighterCreateClient(undefined, chainId, privateKey, apiKeyIndex, accountIndex);
+        }
+        return {}; // empty object we will read it from globalThis
+    }
+    lighterCreateClient(signer, chainId, privateKey, apiKeyIndex, accountIndex) {
         const url = this.implodeHostname(this.urls['api']['public']);
         const res = globalThis.CreateClient(url, privateKey, chainId, apiKeyIndex, accountIndex);
         this.checkLighterSignedError(res);
-        return {}; // empty object we will read it from globalThis
+        return signer;
     }
     // eslint-disable-next-line no-unused-vars
     lighterSignCreateGroupedOrders(signer, request) {
@@ -1648,13 +1660,15 @@ class Exchange {
                 'OrderExpiry': order['order_expiry'],
             });
         }
-        const res = globalThis.SignCreateGroupedOrders(request['grouping_type'], ordersArr, orders.length, request['nonce'], request['api_key_index'], request['account_index']);
+        const res = globalThis.SignCreateGroupedOrders(request['grouping_type'], ordersArr, orders.length, 1, // skip nonce
+        request['nonce'], request['api_key_index'], request['account_index']);
         this.checkLighterSignedError(res);
         return [res.txType, res.txInfo];
     }
     // eslint-disable-next-line no-unused-vars
     lighterSignCreateOrder(signer, request) {
-        const res = (globalThis.SignCreateOrder(parseInt(request['market_index']), request['client_order_index'], request['base_amount'], request['avg_execution_price'], request['is_ask'], request['order_type'], request['time_in_force'], request['reduce_only'], request['trigger_price'], request['order_expiry'], request['nonce'], request['api_key_index'], request['account_index']));
+        const res = (globalThis.SignCreateOrder(parseInt(request['market_index']), request['client_order_index'], request['base_amount'], request['avg_execution_price'], request['is_ask'], request['order_type'], request['time_in_force'], request['reduce_only'], request['trigger_price'], request['order_expiry'], request['integrator_account_index'], request['integrator_taker_fee'], request['integrator_maker_fee'], 1, // skip nonce
+        request['nonce'], request['api_key_index'], request['account_index']));
         this.checkLighterSignedError(res);
         return [res.txType, res.txInfo];
     }
@@ -1664,38 +1678,45 @@ class Exchange {
         }
     }
     lighterSignCancelOrder(signer, request) {
-        const res = (globalThis.SignCancelOrder(request['market_index'], request['order_index'], request['nonce'], request['api_key_index'], request['account_index']));
+        const res = (globalThis.SignCancelOrder(request['market_index'], request['order_index'], 1, // skip nonce
+        request['nonce'], request['api_key_index'], request['account_index']));
         this.checkLighterSignedError(res);
         return [res.txType, res.txInfo];
     }
     lighterSignWithdraw(signer, request) {
-        const res = (globalThis.SignWithdraw(request['asset_index'], request['route_type'], request['amount'], request['nonce'], request['api_key_index'], request['account_index']));
+        const res = (globalThis.SignWithdraw(request['asset_index'], request['route_type'], request['amount'], 1, // skip nonce
+        request['nonce'], request['api_key_index'], request['account_index']));
         this.checkLighterSignedError(res);
         return [res.txType, res.txInfo];
     }
     // eslint-disable-next-line no-unused-vars
     lighterSignCreateSubAccount(signer, request) {
-        const res = (globalThis.SignCreateSubAccount(request['nonce'], request['api_key_index'], request['account_index']));
+        const res = (globalThis.SignCreateSubAccount(1, // skip nonce
+        request['nonce'], request['api_key_index'], request['account_index']));
         this.checkLighterSignedError(res);
         return [res.txType, res.txInfo];
     }
     lighterSignCancelAllOrders(signer, request) {
-        const res = (globalThis.SignCancelAllOrders(request['time_in_force'], request['time'], request['nonce'], request['api_key_index'], request['account_index']));
+        const res = (globalThis.SignCancelAllOrders(request['time_in_force'], request['time'], 1, // skip nonce
+        request['nonce'], request['api_key_index'], request['account_index']));
         this.checkLighterSignedError(res);
         return [res.txType, res.txInfo];
     }
     lighterSignModifyOrder(signer, request) {
-        const res = (globalThis.SignModifyOrder(request['market_index'], request['index'], request['base_amount'], request['price'], request['trigger_price'], request['nonce'], request['api_key_index'], request['account_index']));
+        const res = (globalThis.SignModifyOrder(request['market_index'], request['index'], request['base_amount'], request['price'], request['trigger_price'], request['integrator_account_index'], request['integrator_taker_fee'], request['integrator_maker_fee'], 1, // skip nonce
+        request['nonce'], request['api_key_index'], request['account_index']));
         this.checkLighterSignedError(res);
         return [res.txType, res.txInfo];
     }
     lighterSignTransfer(signer, request) {
-        const res = globalThis.SignTransfer(request['to_account_index'], request['asset_index'], request['from_route_type'], request['to_route_type'], request['amount'], request['usdc_fee'], request['memo'], request['nonce'], request['api_key_index'], request['account_index']);
+        const res = globalThis.SignTransfer(request['to_account_index'], request['asset_index'], request['from_route_type'], request['to_route_type'], request['amount'], request['usdc_fee'], request['memo'], 1, // skip nonce
+        request['nonce'], request['api_key_index'], request['account_index']);
         this.checkLighterSignedError(res);
         return [res.txType, res.txInfo];
     }
     lighterSignUpdateLeverage(signer, request) {
-        const res = (globalThis.SignUpdateLeverage(request['market_index'], request['initial_margin_fraction'], request['margin_mode'], request['nonce'], request['api_key_index'], request['account_index']));
+        const res = (globalThis.SignUpdateLeverage(request['market_index'], request['initial_margin_fraction'], request['margin_mode'], 1, // skip nonce
+        request['nonce'], request['api_key_index'], request['account_index']));
         this.checkLighterSignedError(res);
         return [res.txType, res.txInfo];
     }
@@ -1705,9 +1726,30 @@ class Exchange {
         return res.authToken;
     }
     lighterSignUpdateMargin(signer, request) {
-        const res = globalThis.SignUpdateMargin(request['market_index'], request['usdc_amount'], request['direction'], request['nonce'], request['api_key_index'], request['account_index']);
+        const res = globalThis.SignUpdateMargin(request['market_index'], request['usdc_amount'], request['direction'], 1, // skip nonce
+        request['nonce'], request['api_key_index'], request['account_index']);
         this.checkLighterSignedError(res);
         return [res.txType, res.txInfo];
+    }
+    // eslint-disable-next-line no-unused-vars
+    lighterSignApproveIntegrator(signer, request) {
+        const res = globalThis.SignApproveIntegrator(request['integrator_account_index'], request['integrator_taker_fee'], request['integrator_maker_fee'], request['integrator_taker_fee'], request['integrator_maker_fee'], request['approval_expiry'], 1, // skip nonce
+        request['nonce'], request['api_key_index'], request['account_index']);
+        this.checkLighterSignedError(res);
+        return [res.txType, res.txInfo, res.messageToSign];
+    }
+    // eslint-disable-next-line no-unused-vars
+    lighterGenerateApiKey(signer) {
+        const res = globalThis.GenerateAPIKey();
+        this.checkLighterSignedError(res);
+        return [res.privateKey, res.publicKey];
+    }
+    // eslint-disable-next-line no-unused-vars
+    lighterSignChangePubkey(signer, request) {
+        const res = globalThis.SignChangePubKey(Buffer.from(request['pubkey']).toString(), 1, // skip nonce
+        request['nonce'], request['api_key_index'], request['account_index']);
+        this.checkLighterSignedError(res);
+        return [res.txType, res.txInfo, res.messageToSign];
     }
     /* eslint-enable */
     // ------------------------------------------------------------------------
@@ -2134,7 +2176,7 @@ class Exchange {
         if (value === undefined) {
             return defaultValue;
         }
-        if ((typeof value === 'object') && !Array.isArray(value)) {
+        if (this.isDictionary(value)) {
             return value;
         }
         return defaultValue;
@@ -2150,7 +2192,7 @@ class Exchange {
         if (value === undefined) {
             return defaultValue;
         }
-        if ((typeof value === 'object') && !Array.isArray(value)) {
+        if (this.isDictionary(value)) {
             return value;
         }
         return defaultValue;
@@ -2179,6 +2221,9 @@ class Exchange {
             return value;
         }
         return defaultValue;
+    }
+    isDictionary(value) {
+        return (value !== undefined) && (typeof value === 'object') && !Array.isArray(value);
     }
     safeList2(dictionaryOrList, key1, key2, defaultValue = undefined) {
         /**
@@ -2871,6 +2916,9 @@ class Exchange {
         // i.e. isRoundNumber(1.000) returns true, while isInteger(1.000) returns false
         const res = this.parseToNumeric((value % 1));
         return res === 0;
+    }
+    isEmptyString(value) {
+        return !this.valueIsDefined(value) || value === '';
     }
     safeNumberOmitZero(obj, key, defaultValue = undefined) {
         const value = this.safeString(obj, key);
@@ -4070,6 +4118,9 @@ class Exchange {
         }
         return reversed;
     }
+    stringToBase16(str) {
+        return '0x' + this.binaryToBase16(this.base64ToBinary(this.stringToBase64(str)));
+    }
     reduceFeesByCurrency(fees) {
         //
         // this function takes a list of fee structures having the following format
@@ -4277,6 +4328,12 @@ class Exchange {
             message = '. If you want to build OHLCV candles from trade executions data, visit https://github.com/ccxt/ccxt/tree/master/examples/ and see "build-ohlcv-bars" file';
         }
         throw new errors.NotSupported(this.id + ' fetchOHLCV() is not supported yet' + message);
+    }
+    async fetchSpotOHLCV(symbol, timeframe = '1m', since = undefined, limit = undefined, params = {}) {
+        throw new errors.NotSupported(this.id + ' fetchSpotOHLCV() is not supported yet');
+    }
+    async fetchContractOHLCV(symbol, timeframe = '1m', since = undefined, limit = undefined, params = {}) {
+        throw new errors.NotSupported(this.id + ' fetchContractOHLCV() is not supported yet');
     }
     async fetchOHLCVWs(symbol, timeframe = '1m', since = undefined, limit = undefined, params = {}) {
         let message = '';
@@ -5011,6 +5068,30 @@ class Exchange {
         }
         return results;
     }
+    filterOutByArray(objects, key, values = undefined, indexed = true) {
+        objects = this.toArray(objects);
+        // return all of them if no values were passed
+        if (values === undefined || !values) {
+            // return indexed ? this.indexBy (objects, key) : objects;
+            if (indexed) {
+                return this.indexBy(objects, key);
+            }
+            else {
+                return objects;
+            }
+        }
+        const results = [];
+        for (let i = 0; i < objects.length; i++) {
+            if (!this.inArray(objects[i][key], values)) {
+                results.push(objects[i]);
+            }
+        }
+        // return indexed ? this.indexBy (results, key) : results;
+        if (indexed) {
+            return this.indexBy(results, key);
+        }
+        return results;
+    }
     async fetch2(path, api = 'public', method = 'GET', params = {}, headers = undefined, body = undefined, config = {}) {
         if (this.enableRateLimit) {
             const cost = this.calculateRateLimiterCost(api, method, path, params, config);
@@ -5143,7 +5224,8 @@ class Exchange {
         return await this.createOrder(symbol, type, side, amount, price, params);
     }
     async editOrderWithClientOrderId(clientOrderId, symbol, type, side, amount = undefined, price = undefined, params = {}) {
-        return await this.editOrder('', symbol, type, side, amount, price, this.extend({ 'clientOrderId': clientOrderId }, params));
+        const extendedParams = this.extend(params, { 'clientOrderId': clientOrderId });
+        return await this.editOrder('', symbol, type, side, amount, price, extendedParams);
     }
     async editOrderWs(id, symbol, type, side, amount = undefined, price = undefined, params = {}) {
         await this.cancelOrderWs(id, symbol);
@@ -5611,11 +5693,17 @@ class Exchange {
     async fetchTickers(symbols = undefined, params = {}) {
         throw new errors.NotSupported(this.id + ' fetchTickers() is not supported yet');
     }
+    async fetchSpotTickers(symbols = undefined, params = {}) {
+        throw new errors.NotSupported(this.id + ' fetchSpotTickers() is not supported yet');
+    }
+    async fetchContractTickers(symbols = undefined, params = {}) {
+        throw new errors.NotSupported(this.id + ' fetchContractTickers() is not supported yet');
+    }
     async fetchMarkPrices(symbols = undefined, params = {}) {
         throw new errors.NotSupported(this.id + ' fetchMarkPrices() is not supported yet');
     }
     async fetchTickersWs(symbols = undefined, params = {}) {
-        throw new errors.NotSupported(this.id + ' fetchTickers() is not supported yet');
+        throw new errors.NotSupported(this.id + ' fetchTickersWs() is not supported yet');
     }
     async fetchOrderBooks(symbols = undefined, limit = undefined, params = {}) {
         throw new errors.NotSupported(this.id + ' fetchOrderBooks() is not supported yet');
@@ -6120,6 +6208,12 @@ class Exchange {
     async createOrders(orders, params = {}) {
         throw new errors.NotSupported(this.id + ' createOrders() is not supported yet');
     }
+    async createSpotOrders(orders, params = {}) {
+        throw new errors.NotSupported(this.id + ' createSpotOrders() is not supported yet');
+    }
+    async createContractOrders(orders, params = {}) {
+        throw new errors.NotSupported(this.id + ' createContractOrders() is not supported yet');
+    }
     async editOrders(orders, params = {}) {
         throw new errors.NotSupported(this.id + ' editOrders() is not supported yet');
     }
@@ -6128,6 +6222,12 @@ class Exchange {
     }
     async cancelOrder(id, symbol = undefined, params = {}) {
         throw new errors.NotSupported(this.id + ' cancelOrder() is not supported yet');
+    }
+    async cancelSpotOrder(id, symbol = undefined, params = {}) {
+        throw new errors.NotSupported(this.id + ' cancelSpotOrder() is not supported yet');
+    }
+    async cancelContractOrder(id, symbol = undefined, params = {}) {
+        throw new errors.NotSupported(this.id + ' cancelContractOrder() is not supported yet');
     }
     /**
      * @method
@@ -6166,6 +6266,12 @@ class Exchange {
     }
     async cancelAllOrders(symbol = undefined, params = {}) {
         throw new errors.NotSupported(this.id + ' cancelAllOrders() is not supported yet');
+    }
+    async cancelAllSpotOrders(symbol = undefined, params = {}) {
+        throw new errors.NotSupported(this.id + ' cancelAllSpotOrders() is not supported yet');
+    }
+    async cancelAllContractOrders(symbol = undefined, params = {}) {
+        throw new errors.NotSupported(this.id + ' cancelAllContractOrders() is not supported yet');
     }
     async cancelAllOrdersAfter(timeout, params = {}) {
         throw new errors.NotSupported(this.id + ' cancelAllOrdersAfter() is not supported yet');
@@ -6329,6 +6435,9 @@ class Exchange {
             throw new errors.NotSupported(this.id + ' fetchDepositAddress() is not supported yet');
         }
     }
+    async fetchContractDepositAddress(code, params = {}) {
+        throw new errors.NotSupported(this.id + ' fetchContractDepositAddress() is not supported yet');
+    }
     account() {
         return {
             'free': undefined,
@@ -6408,7 +6517,7 @@ class Exchange {
         return false;
     }
     handleWithdrawTagAndParams(tag, params) {
-        if ((tag !== undefined) && (typeof tag === 'object')) {
+        if (this.isDictionary(tag)) {
             params = this.extend(tag, params);
             tag = undefined;
         }
@@ -8263,6 +8372,9 @@ class Exchange {
             return (ms / second) + 's';
         }
         return '';
+    }
+    async isUTAEnabled(params = {}) {
+        return false; // stub
     }
 }
 

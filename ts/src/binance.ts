@@ -529,6 +529,7 @@ export default class binance extends Exchange {
                         'um/leverage': 0.2,
                         'um/order': 1,
                         'um/positionSide/dual': 0.2,
+                        'um/stock/contract': 1,
                     },
                     'put': {
                         'cm/order': 1,
@@ -2642,17 +2643,75 @@ export default class binance extends Exchange {
                 },
                 'loadAllOptions': false,
                 'networks': {
+                    'ACA': 'ACA',
+                    'ADA': 'ADA',
+                    'ALGO': 'ALGO',
+                    'APT': 'APT',
+                    'ARBONE': 'ARBITRUM',
+                    'ASTR': 'ASTR',
+                    'AVAXC': 'AVAXC',
+                    'BASE': 'BASE',
                     'BEP2': 'BNB',
                     'BEP20': 'BSC',
+                    'BSC': 'BSC',
+                    'CELO': 'CELO',
+                    'CFX': 'CFX',
+                    'EGLD': 'EGLD',
                     'EOS': 'EOS',
                     'ERC20': 'ETH',
-                    'OMNI': 'OMNI',
+                    'ETH': 'ETH',
+                    'HBAR': 'HBAR',
+                    'KAVA': 'KAVA',
+                    'KLAY': 'KLAY',
+                    'MATIC': 'MATIC',
+                    'METIS': 'METIS',
+                    'NEAR': 'NEAR',
+                    'ONT': 'ONT', // ontology
+                    'OP': 'OPTIMISM',
+                    'OPTIMISM': 'OPTIMISM',
+                    'OSMO': 'OSMO',
+                    'RSK': 'RSK', // RBTC
+                    'RUNE': 'RUNE',
+                    'SCROLL': 'SCROLL',
+                    'SCRT': 'SCRT',
+                    'SEI': 'SEI',
                     'SOL': 'SOL', // we shouldn't rename SOL
                     'SPL': 'SOL', // temporarily keep support for SPL (old name)
+                    'STX': 'STX', // STACKS
+                    'SUI': 'SUI',
+                    'TON': 'TON',
                     'TRC20': 'TRX',
+                    'TRX': 'TRX',
+                    'XLM': 'XLM',
+                    'XTZ': 'XTZ',
+                    'ZKSYNCERA': 'ZKSYNCERA',
+                    // 'FIAT': 'FIAT_MONEY', // not unified atm
+                    // 'GLMR': 'GLMR', GLIMMER vs MOONBEAM
+                    // 'LEVERAGE_TOKEN': 'ETF', // not unified atm
+                    // 'NEO': 'NEO', // tbd NEO3
+                    // 'STAKING': 'STAKING', // not unified atm
+                    // AUR - not supported
+                    // BLAST - not supported
+                    // CANTO - not supported
+                    // CORE - not supported
+                    // CRO - not supported
+                    // FSN - not supported
+                    // FTM - renamed
+                    // HECO - not supported
+                    // HYPE - not supported
+                    // LINEA - not supported
+                    // MNT - not supported
+                    // TAIKO - not supported
+                    // TLOS - not supported
+                    // WEMIX - not supported
+                    // XIN - not supported
                 },
                 'networksById': {
+                    'BSC': 'BEP20',
+                    'ETH': 'ERC20',
+                    'OPTIMISM': 'OP',
                     'SOL': 'SOL', // temporary fix for SPL definition
+                    'TRX': 'TRC20',
                 },
                 'newOrderRespType': {
                     'market': 'FULL', // 'ACK' for order id, 'RESULT' for full order or 'FULL' for order with fills
@@ -2913,10 +2972,6 @@ export default class binance extends Exchange {
         return super.safeMarket (marketId, market, delimiter, marketType);
     }
 
-    costToPrecision (symbol, cost) {
-        return this.decimalToPrecision (cost, TRUNCATE, this.markets[symbol]['precision']['quote'], this.precisionMode, this.paddingMode);
-    }
-
     nonce () {
         return this.milliseconds () - this.options['timeDifference'];
     }
@@ -3126,7 +3181,7 @@ export default class binance extends Exchange {
             for (let j = 0; j < networkList.length; j++) {
                 const networkItem = networkList[j];
                 const network = this.safeString (networkItem, 'network');
-                const networkCode = this.networkIdToCode (network);
+                const networkCode = this.networkIdToCode (network, code);
                 const isETF = (network === 'ETF'); // e.g. BTCUP, ETHDOWN
                 // const name = this.safeString (networkItem, 'name');
                 const withdrawFee = this.safeNumber (networkItem, 'withdrawFee');
@@ -5809,15 +5864,26 @@ export default class binance extends Exchange {
         return this.safeString (statuses, status, status);
     }
 
-    parseOrderType (type: Str) {
-        const types = {
-            'limit_maker': 'limit',
-            'stop': 'limit',
-            'stop_market': 'market',
-            'take_profit': 'limit',
-            'take_profit_market': 'market',
-            'trailing_stop_market': 'market',
-        };
+    parseOrderTypeByMarket (type: Str, marketType: Str) {
+        let types = {};
+        if ((marketType !== undefined) && marketType === 'spot') {
+            types = {
+                'limit_maker': 'limit',
+                'stop_loss_limit': 'limit',
+                'stop_loss': 'market',
+                'take_profit_limit': 'limit',
+                'take_profit': 'market',
+            };
+        } else {
+            types = {
+                'limit_maker': 'limit',
+                'stop': 'limit',
+                'stop_market': 'market',
+                'take_profit': 'limit',
+                'take_profit_market': 'market',
+                'trailing_stop_market': 'market',
+            };
+        }
         return this.safeString (types, type, type);
     }
 
@@ -6419,7 +6485,7 @@ export default class binance extends Exchange {
             'timestamp': timestamp,
             'trades': fills,
             'triggerPrice': triggerPrice,
-            'type': this.parseOrderType (type),
+            'type': this.parseOrderTypeByMarket (type, marketType),
         }, market);
     }
 
@@ -8940,7 +9006,8 @@ export default class binance extends Exchange {
         if (internalInteger !== undefined) {
             internal = (internalInteger !== 0) ? true : false;
         }
-        const network = this.safeString (transaction, 'network');
+        const networkId = this.safeString (transaction, 'network');
+        const network = this.networkIdToCode (networkId, code);
         return {
             'address': address,
             'addressFrom': undefined,
@@ -9367,12 +9434,10 @@ export default class binance extends Exchange {
             'coin': currency['id'],
             // 'network': 'ETH', // 'BSC', 'XMR', you can get network and isDefault in networkList in the response of sapiGetCapitalConfigDetail
         };
-        const networks = this.safeDict (this.options, 'networks', {});
-        let network = this.safeStringUpper (params, 'network'); // this line allows the user to specify either ERC20 or ETH
-        network = this.safeString (networks, network, network); // handle ERC20>ETH alias
-        if (network !== undefined) {
-            request['network'] = network;
-            params = this.omit (params, 'network');
+        let networkCode = undefined;
+        [ networkCode, params ] = this.handleNetworkCodeAndParams (params);
+        if (networkCode !== undefined) {
+            request['network'] = this.networkCodeToId (networkCode, currency['code']);
         }
         // has support for the 'network' parameter
         const response = await this.sapiGetCapitalDepositAddress (this.extend (request, params));
@@ -9636,12 +9701,13 @@ export default class binance extends Exchange {
         //        "withdrawing": "0",
         //    }
         //
+        const code = this.safeString (currency, 'code');
         const networkList = this.safeList (fee, 'networkList', []);
         const result = this.depositWithdrawFee (fee);
         for (let j = 0; j < networkList.length; j++) {
             const networkEntry = networkList[j];
             const networkId = this.safeString (networkEntry, 'network');
-            const networkCode = this.networkIdToCode (networkId);
+            const networkCode = this.networkIdToCode (networkId, code);
             const withdrawFee = this.safeNumber (networkEntry, 'withdrawFee');
             const isDefault = this.safeBool (networkEntry, 'isDefault');
             if (isDefault === true) {
@@ -9690,14 +9756,12 @@ export default class binance extends Exchange {
         if (tag !== undefined) {
             request['addressTag'] = tag;
         }
-        const networks = this.safeDict (this.options, 'networks', {});
-        let network = this.safeStringUpper (params, 'network'); // this line allows the user to specify either ERC20 or ETH
-        network = this.safeString (networks, network, network); // handle ERC20>ETH alias
-        if (network !== undefined) {
-            request['network'] = network;
-            params = this.omit (params, 'network');
+        let networkCode = undefined;
+        [ networkCode, params ] = this.handleNetworkCodeAndParams (params);
+        if (networkCode !== undefined) {
+            request['network'] = this.networkCodeToId (networkCode, currency['code']);
         }
-        request['amount'] = this.currencyToPrecision (code, amount, network);
+        request['amount'] = this.currencyToPrecision (currency['code'], amount, networkCode);
         const response = await this.sapiPostCapitalWithdrawApply (this.extend (request, params));
         //     { id: '9a67628b16ba4988ae20d329333f16bc' }
         return this.parseTransaction (response, currency);
