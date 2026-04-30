@@ -340,6 +340,7 @@ export default class bitfinex extends Exchange {
             'precisionMode': SIGNIFICANT_DIGITS,
             'options': {
                 'precision': 'R0', // P0, P1, P2, P3, P4, R0
+                'defaultCurrencyPrecision': 8, // default currency precision
                 // convert 'EXCHANGE MARKET' to lowercase 'market'
                 // convert 'EXCHANGE LIMIT' to lowercase 'limit'
                 // everything else remains uppercase
@@ -548,10 +549,6 @@ export default class bitfinex extends Exchange {
         return (code in this.options['fiat']);
     }
 
-    getCurrencyId (code) {
-        return 'f' + code;
-    }
-
     getCurrencyName (code) {
         // temporary fix for transpiler recognition, even though this is in parent class
         if (code in this.options['currencyNames']) {
@@ -611,43 +608,36 @@ export default class bitfinex extends Exchange {
      * @returns {object[]} an array of objects representing market data
      */
     async fetchMarkets (params = {}): Promise<Market[]> {
-        const spotMarketsInfoPromise = this.publicGetConfPubInfoPair (params);
-        const futuresMarketsInfoPromise = this.publicGetConfPubInfoPairFutures (params);
-        const marginIdsPromise = this.publicGetConfPubListPairMargin (params);
-        let [ spotMarketsInfo, futuresMarketsInfo, marginIds ] = await Promise.all ([ spotMarketsInfoPromise, futuresMarketsInfoPromise, marginIdsPromise ]);
-        spotMarketsInfo = this.safeList (spotMarketsInfo, 0, []);
-        futuresMarketsInfo = this.safeList (futuresMarketsInfo, 0, []);
+        const labels = [
+            'pub:info:pair',
+            // [  ['AAVE:USD',      [null,null,null,"0.02","5000.0",null,null,null,null,null,null,null,] ], ... ]
+            'pub:info:pair:futures',
+            // [  ['AAVEF0:USTF0',  [null,null,null,"0.02","5000.0",null,null,null,0.01,0.005,] ]]
+            'pub:list:pair:securities',
+            // ALT2612:USD","ALT2612:UST","BMN2:BTC","BMN2:USD","TITAN1:GBP","TITAN1:USD","TITAN2:GBP","TITAN2:USD","USTBL:USD","USTBL:UST"]]
+            'pub:list:pair:margin',
+            // [ 'ADABTC', 'AVAX:BTC', ... ] // delimiter inconsistency
+        ];
+        const config = labels.join (',');
+        const request: Dict = {
+            'config': config,
+        };
+        const [ spotMarketsInfo, futuresMarketsInfo, securitiesMarketsIds, marginIds ] = await this.publicGetConfConfig (this.extend (request, params));
         const markets = this.arrayConcat (spotMarketsInfo, futuresMarketsInfo);
-        marginIds = this.safeValue (marginIds, 0, []);
-        //
-        //    [
-        //        "1INCH:USD",
-        //        [
-        //           null,
-        //           null,
-        //           null,
-        //           "2.0",
-        //           "100000.0",
-        //           null,
-        //           null,
-        //           null,
-        //           null,
-        //           null,
-        //           null,
-        //           null
-        //        ]
-        //    ]
-        //
         const result = [];
         for (let i = 0; i < markets.length; i++) {
-            const pair = markets[i];
-            const id = this.safeStringUpper (pair, 0);
-            const market = this.safeValue (pair, 1, {});
+            const pairObj = markets[i];
+            const id = this.safeStringUpper (pairObj, 0);
+            const market = this.safeValue (pairObj, 1, {});
             let spot = true;
+            let type: Str = undefined;
             if (id.indexOf ('F0') >= 0) {
                 spot = false;
+                type = 'swap';
+            } else {
+                type = 'spot';
             }
-            const swap = !spot;
+            const swap = type === 'swap';
             let baseId = undefined;
             let quoteId = undefined;
             if (id.indexOf (':') >= 0) {
@@ -665,8 +655,8 @@ export default class bitfinex extends Exchange {
             base = this.safeString (splitBase, 0);
             quote = this.safeString (splitQuote, 0);
             let symbol = base + '/' + quote;
-            baseId = this.getCurrencyId (baseId);
-            quoteId = this.getCurrencyId (quoteId);
+            // baseId = 'f' + baseId;
+            // quoteId = 'f' + quoteId;
             let settle = undefined;
             let settleId = undefined;
             if (swap) {
@@ -676,10 +666,6 @@ export default class bitfinex extends Exchange {
             }
             const minOrderSizeString = this.safeString (market, 3);
             const maxOrderSizeString = this.safeString (market, 4);
-            let margin = false;
-            if (spot && this.inArray (id, marginIds)) {
-                margin = true;
-            }
             result.push ({
                 'id': 't' + id,
                 'symbol': symbol,
@@ -689,14 +675,15 @@ export default class bitfinex extends Exchange {
                 'baseId': baseId,
                 'quoteId': quoteId,
                 'settleId': settleId,
-                'type': spot ? 'spot' : 'swap',
+                'type': type,
                 'spot': spot,
-                'margin': margin,
+                'tradfi': this.inArray (id, securitiesMarketsIds),
+                'margin': (spot && this.inArray (id, marginIds)),
                 'swap': swap,
                 'future': false,
                 'option': false,
                 'active': true,
-                'contract': swap,
+                'contract': !spot,
                 'linear': swap ? true : undefined,
                 'inverse': swap ? false : undefined,
                 'contractSize': swap ? this.parseNumber ('1') : undefined,
@@ -753,6 +740,7 @@ export default class bitfinex extends Exchange {
             'pub:map:currency:tx:fee', // maps currencies to their withdrawal fees https://github.com/ccxt/ccxt/issues/7745,
             'pub:map:tx:method', // maps withdrawal/deposit methods to their API symbols
             'pub:info:tx:status', // maps withdrawal/deposit statuses, coins: 1 = enabled, 0 = maintenance
+            'pub:list:currency:margin', // margin enabled currencies
         ];
         const config = labels.join (',');
         const request: Dict = {
@@ -852,6 +840,7 @@ export default class bitfinex extends Exchange {
             'fees': this.indexBy (this.safeList (response, 7, []), 0),
             'networks': this.safeList (response, 8, []),
             'statuses': this.indexBy (this.safeList (response, 9, []), 0),
+            'marginables': this.safeList (response, 10, []),
         };
         const indexedNetworks: Dict = {};
         for (let i = 0; i < indexed['networks'].length; i++) {
@@ -878,31 +867,25 @@ export default class bitfinex extends Exchange {
             const pool = this.safeList (indexed['pool'], id, []);
             const rawType = this.safeString (pool, 1);
             const isCryptoCoin = (rawType !== undefined) || (id in indexed['explorer']); // "hacky" solution
-            let type = undefined;
-            if (isCryptoCoin) {
-                type = 'crypto';
-            }
+            const type = isCryptoCoin ? 'crypto' : undefined;
             const feeValues = this.safeList (indexed['fees'], id, []);
             const fees = this.safeList (feeValues, 1, []);
             const fee = this.safeNumber (fees, 1);
             const undl = this.safeList (indexed['undl'], id, []);
-            const precision = '8'; // default precision, todo: fix "magic constants"
-            const fid = 'f' + id;
-            const dwStatuses = this.safeList (indexed['statuses'], id, []);
-            const depositEnabled = this.safeInteger (dwStatuses, 1) === 1;
-            const withdrawEnabled = this.safeInteger (dwStatuses, 2) === 1;
+            const precision = this.safeString (this.options, 'defaultCurrencyPrecision', '8');
             const networks: Dict = {};
             const netwokIds = this.safeList (indexedNetworks, id, []);
             for (let j = 0; j < netwokIds.length; j++) {
                 const networkId = netwokIds[j];
                 const network = this.networkIdToCode (networkId);
+                const dwStatuses = this.safeList (indexed['statuses'], networkId, []);
                 networks[network] = {
                     'info': networkId,
                     'id': networkId.toLowerCase (),
                     'network': networkId,
                     'active': undefined,
-                    'deposit': undefined,
-                    'withdraw': undefined,
+                    'deposit': this.safeInteger (dwStatuses, 1) === 1,
+                    'withdraw': this.safeInteger (dwStatuses, 2) === 1,
                     'fee': undefined,
                     'precision': undefined,
                     'limits': {
@@ -914,20 +897,19 @@ export default class bitfinex extends Exchange {
                 };
             }
             result[code] = this.safeCurrencyStructure ({
-                'id': fid,
-                'uppercaseId': id,
+                'id': id,
                 'code': code,
                 'info': [ id, label, pool, feeValues, undl ],
                 'type': type,
                 'name': name,
                 'active': true,
-                'deposit': depositEnabled,
-                'withdraw': withdrawEnabled,
+                'deposit': undefined,
+                'withdraw': undefined,
                 'fee': fee,
-                'precision': parseInt (precision),
+                'precision': this.parseNumber (precision),
                 'limits': {
                     'amount': {
-                        'min': this.parseNumber (this.parsePrecision (precision)),
+                        'min': undefined,
                         'max': undefined,
                     },
                     'withdraw': {
@@ -936,6 +918,7 @@ export default class bitfinex extends Exchange {
                     },
                 },
                 'networks': networks,
+                'margin': this.inArray (id, indexed['marginables']),
             });
         }
         return result;
@@ -1225,7 +1208,8 @@ export default class bitfinex extends Exchange {
         //     ]
         //
         const length = ticker.length;
-        const isFetchTicker = (length === 10) || (length === 16);
+        const firstValue = this.safeNumber (ticker, 0);
+        const isFetchTicker = firstValue !== undefined; // if it's Nan, then it's string (symbol)
         let symbol: Str = undefined;
         let minusIndex = 0;
         let isFundingCurrency = false;
@@ -2720,7 +2704,7 @@ export default class bitfinex extends Exchange {
         let response = undefined;
         if (code !== undefined) {
             currency = this.currency (code);
-            request['currency'] = currency['uppercaseId'];
+            request['currency'] = currency['id'];
             response = await this.privatePostAuthRMovementsCurrencyHist (this.extend (request, params));
         } else {
             response = await this.privatePostAuthRMovementsHist (this.extend (request, params));
@@ -3113,7 +3097,7 @@ export default class bitfinex extends Exchange {
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @param {int} [params.until] timestamp in ms of the latest ledger entry
      * @param {boolean} [params.paginate] default false, when true will automatically paginate by calling this endpoint multiple times. See in the docs all the [available parameters](https://github.com/ccxt/ccxt/wiki/Manual#pagination-params)
-     * @returns {object} a [ledger structure]{@link https://docs.ccxt.com/?id=ledger}
+     * @returns {object} a [ledger structure]{@link https://docs.ccxt.com/?id=ledger-entry-structure}
      */
     async fetchLedger (code: Str = undefined, since: Int = undefined, limit: Int = undefined, params = {}): Promise<LedgerEntry[]> {
         await this.loadMarkets ();
@@ -3134,7 +3118,7 @@ export default class bitfinex extends Exchange {
         let response = undefined;
         if (code !== undefined) {
             currency = this.currency (code);
-            request['currency'] = currency['uppercaseId'];
+            request['currency'] = currency['id'];
             response = await this.privatePostAuthRLedgersCurrencyHist (this.extend (request, params));
         } else {
             response = await this.privatePostAuthRLedgersHist (this.extend (request, params));

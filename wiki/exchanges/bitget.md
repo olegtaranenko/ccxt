@@ -633,7 +633,7 @@ create a trade order
 | type | <code>string</code> | Yes | 'market' or 'limit' |
 | side | <code>string</code> | Yes | 'buy' or 'sell' |
 | amount | <code>float</code> | Yes | how much you want to trade in units of the base currency |
-| price | <code>float</code> | No | the price at which the order is to be fulfilled, in units of the quote currency, ignored in market orders |
+| price | <code>float</code> | No | the price at which the order is to be fulfilled, in units of the quote currency, ignored in market orders, and used as the execution price for contract stop-loss / take-profit orders |
 | params | <code>object</code> | No | extra parameters specific to the exchange API endpoint |
 | params.cost | <code>float</code> | No | *spot only* how much you want to trade in units of the quote currency, for market buy orders only |
 | params.triggerPrice | <code>float</code> | No | *swap only* The price at which a trigger order is triggered at |
@@ -1037,7 +1037,7 @@ bitget.fetchCanceledAndClosedOrders (symbol[, since, limit, params])
 fetch the history of changes, actions done by the user or operations that altered the balance of the user
 
 **Kind**: instance method of [<code>bitget</code>](#bitget)  
-**Returns**: <code>object</code> - a [ledger structure](https://docs.ccxt.com/?id=ledger)
+**Returns**: <code>object</code> - a [ledger structure](https://docs.ccxt.com/?id=ledger-entry-structure)
 
 **See**
 
@@ -1287,7 +1287,7 @@ bitget.fetchFundingHistory (symbol[, since, limit, params])
 remove margin from a position
 
 **Kind**: instance method of [<code>bitget</code>](#bitget)  
-**Returns**: <code>object</code> - a [margin structure](https://docs.ccxt.com/?id=reduce-margin-structure)
+**Returns**: <code>object</code> - a [margin structure](https://docs.ccxt.com/?id=margin-structure)
 
 **See**: https://www.bitget.com/api-doc/contract/account/Change-Margin  
 
@@ -1309,7 +1309,7 @@ bitget.reduceMargin (symbol, amount[, params])
 add margin
 
 **Kind**: instance method of [<code>bitget</code>](#bitget)  
-**Returns**: <code>object</code> - a [margin structure](https://docs.ccxt.com/?id=add-margin-structure)
+**Returns**: <code>object</code> - a [margin structure](https://docs.ccxt.com/?id=margin-structure)
 
 **See**: https://www.bitget.com/api-doc/contract/account/Change-Margin  
 
@@ -3072,7 +3072,7 @@ create a trade order
 | type | <code>string</code> | Yes | 'market' or 'limit' |
 | side | <code>string</code> | Yes | 'buy' or 'sell' |
 | amount | <code>float</code> | Yes | how much you want to trade in units of the base currency |
-| price | <code>float</code> | No | the price at which the order is to be fulfilled, in units of the quote currency, ignored in market orders |
+| price | <code>float</code> | No | the price at which the order is to be fulfilled, in units of the quote currency, ignored in market orders, and used as the execution price for contract stop-loss / take-profit orders |
 | params | <code>object</code> | No | extra parameters specific to the exchange API endpoint |
 | params.cost | <code>float</code> | No | *spot only* how much you want to trade in units of the quote currency, for market buy orders only |
 | params.triggerPrice | <code>float</code> | No | *swap only* The price at which a trigger order is triggered at |
@@ -3476,7 +3476,7 @@ bitget.fetchCanceledAndClosedOrders (symbol[, since, limit, params])
 fetch the history of changes, actions done by the user or operations that altered the balance of the user
 
 **Kind**: instance method of [<code>bitget</code>](#bitget)  
-**Returns**: <code>object</code> - a [ledger structure](https://docs.ccxt.com/?id=ledger)
+**Returns**: <code>object</code> - a [ledger structure](https://docs.ccxt.com/?id=ledger-entry-structure)
 
 **See**
 
@@ -3726,7 +3726,7 @@ bitget.fetchFundingHistory (symbol[, since, limit, params])
 remove margin from a position
 
 **Kind**: instance method of [<code>bitget</code>](#bitget)  
-**Returns**: <code>object</code> - a [margin structure](https://docs.ccxt.com/?id=reduce-margin-structure)
+**Returns**: <code>object</code> - a [margin structure](https://docs.ccxt.com/?id=margin-structure)
 
 **See**: https://www.bitget.com/api-doc/contract/account/Change-Margin  
 
@@ -3748,7 +3748,7 @@ bitget.reduceMargin (symbol, amount[, params])
 add margin
 
 **Kind**: instance method of [<code>bitget</code>](#bitget)  
-**Returns**: <code>object</code> - a [margin structure](https://docs.ccxt.com/?id=add-margin-structure)
+**Returns**: <code>object</code> - a [margin structure](https://docs.ccxt.com/?id=margin-structure)
 
 **See**: https://www.bitget.com/api-doc/contract/account/Change-Margin  
 

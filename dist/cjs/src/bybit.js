@@ -97,6 +97,7 @@ class bybit extends bybit$1["default"] {
                 'fetchLongShortRatio': false,
                 'fetchLongShortRatioHistory': true,
                 'fetchMarginAdjustmentHistory': false,
+                'fetchMarginMode': true,
                 'fetchMarketLeverageTiers': true,
                 'fetchMarkets': true,
                 'fetchMarkOHLCV': true,
@@ -115,8 +116,10 @@ class bybit extends bybit$1["default"] {
                 'fetchOrders': false,
                 'fetchOrderTrades': true,
                 'fetchPosition': true,
+                'fetchPositionADLRank': true,
                 'fetchPositionHistory': 'emulated',
                 'fetchPositions': true,
+                'fetchPositionsADLRank': true,
                 'fetchPositionsHistory': true,
                 'fetchPremiumIndexOHLCV': true,
                 'fetchSettlementHistory': true,
@@ -348,7 +351,7 @@ class bybit extends bybit$1["default"] {
                         'v5/asset/coin-greeks': 1,
                         'v5/account/fee-rate': 10,
                         'v5/account/info': 5,
-                        'v5/account/transaction-log': 1,
+                        'v5/account/transaction-log': 1.66,
                         'v5/account/contract-transaction-log': 1,
                         'v5/account/smp-group': 1,
                         'v5/account/mmp-state': 5,
@@ -378,6 +381,13 @@ class bybit extends bybit$1["default"] {
                         'v5/asset/withdraw/query-record': 10,
                         'v5/asset/withdraw/withdrawable-amount': 5,
                         'v5/asset/withdraw/vasp/list': 5,
+                        'v5/asset/convert/small-balance-list': 5,
+                        'v5/asset/convert/small-balance-history': 5,
+                        'v5/fiat/query-coin-list': 5,
+                        'v5/fiat/reference-price': 5,
+                        'v5/fiat/trade-query': 5,
+                        'v5/fiat/query-trade-history': 5,
+                        'v5/fiat/balance-query': 5,
                         // user
                         'v5/user/query-sub-members': 5,
                         'v5/user/query-api': 5,
@@ -397,6 +407,7 @@ class bybit extends bybit$1["default"] {
                         'v5/spot-margin-trade/position-tiers': 5,
                         'v5/spot-margin-trade/coinstate': 5,
                         'v5/spot-margin-trade/repayment-available-amount': 5,
+                        'v5/spot-margin-trade/get-auto-repay-mode': 5,
                         'v5/spot-cross-margin-trade/loan-info': 1,
                         'v5/spot-cross-margin-trade/account': 1,
                         'v5/spot-cross-margin-trade/orders': 1,
@@ -536,6 +547,7 @@ class bybit extends bybit$1["default"] {
                         'v5/account/borrow': 5,
                         'v5/account/repay': 5,
                         'v5/account/no-convert-repay': 5,
+                        'v5/account/set-limit-px-action': 5,
                         // asset
                         'v5/asset/exchange/quote-apply': 1,
                         'v5/asset/exchange/convert-execute': 1,
@@ -545,6 +557,10 @@ class bybit extends bybit$1["default"] {
                         'v5/asset/deposit/deposit-to-account': 5,
                         'v5/asset/withdraw/create': 50,
                         'v5/asset/withdraw/cancel': 50,
+                        'v5/asset/covert/get-quote': 10,
+                        'v5/asset/covert/small-balance-execute': 10,
+                        'v5/fiat/quote-apply': 10,
+                        'v5/fiat/trade-execute': 10,
                         // user
                         'v5/user/create-sub-member': 10,
                         'v5/user/create-sub-api': 10,
@@ -559,6 +575,7 @@ class bybit extends bybit$1["default"] {
                         // spot margin trade
                         'v5/spot-margin-trade/switch-mode': 5,
                         'v5/spot-margin-trade/set-leverage': 5,
+                        'v5/spot-margin-trade/set-auto-repay-mode': 5,
                         'v5/spot-cross-margin-trade/loan': 2.5,
                         'v5/spot-cross-margin-trade/repay': 2.5,
                         'v5/spot-cross-margin-trade/switch': 2.5,
@@ -568,6 +585,7 @@ class bybit extends bybit$1["default"] {
                         'v5/crypto-loan/adjust-ltv': 5,
                         // crypto loan (new)
                         'v5/crypto-loan-common/adjust-ltv': 50,
+                        'v5/crypto-loan-common/max-loan': 10,
                         'v5/crypto-loan-flexible/borrow': 50,
                         'v5/crypto-loan-flexible/repay': 50,
                         'v5/crypto-loan-flexible/repay-collateral': 50,
@@ -580,6 +598,7 @@ class bybit extends bybit$1["default"] {
                         'v5/crypto-loan-fixed/repay-collateral': 50,
                         // institutional lending
                         'v5/ins-loan/association-uid': 5,
+                        'v5/ins-loan/repay-loan': 5,
                         // c2c lending
                         'v5/lending/purchase': 5,
                         'v5/lending/redeem': 5,
@@ -887,6 +906,7 @@ class bybit extends bybit$1["default"] {
                     '170203': errors.InvalidOrder,
                     '170204': errors.InvalidOrder,
                     '170206': errors.InvalidOrder,
+                    '170209': errors.RestrictedLocation,
                     '170210': errors.InvalidOrder,
                     '170213': errors.OrderNotFound,
                     '170217': errors.InvalidOrder,
@@ -1071,6 +1091,7 @@ class bybit extends bybit$1["default"] {
                 'enableDemoTrading': false,
                 'fetchMarkets': {
                     'types': ['spot', 'linear', 'inverse', 'option'],
+                    'options': ['BTC', 'ETH', 'SOL', 'XRP', 'MNT', 'DOGE'],
                 },
                 'enableUnifiedMargin': undefined,
                 'enableUnifiedAccount': undefined,
@@ -1109,8 +1130,12 @@ class bybit extends bybit$1["default"] {
                     'FUND': 'fund',
                 },
                 'networks': {
+                    'BTC': 'BTC',
+                    'ETH': 'ETH',
                     'ERC20': 'ETH',
+                    'TRX': 'TRX',
                     'TRC20': 'TRX',
+                    'BSC': 'BSC',
                     'BEP20': 'BSC',
                     'SOL': 'SOL',
                     'ACA': 'ACA',
@@ -1159,6 +1184,7 @@ class bybit extends bybit$1["default"] {
                     'OASIS': 'ROSE',
                     'OMNI': 'OMNI',
                     'ONE': 'ONE',
+                    'OP': 'OP',
                     'OPTIMISM': 'OP',
                     'POKT': 'POKT',
                     'QTUM': 'QTUM',
@@ -1189,8 +1215,7 @@ class bybit extends bybit$1["default"] {
                     'ETH': 'ERC20',
                     'TRX': 'TRC20',
                     'BSC': 'BEP20',
-                    'OMNI': 'OMNI',
-                    'SPL': 'SOL',
+                    'OP': 'OP',
                 },
                 'defaultNetwork': 'ERC20',
                 'defaultNetworks': {
@@ -1330,6 +1355,7 @@ class bybit extends bybit$1["default"] {
                     'deposit': {},
                 },
             },
+            'rollingWindowSize': 5000.0, // According to the docs (https://bybit-exchange.github.io/docs/v5/rate-limit), tested with 90000.0 with no errors
         });
     }
     /**
@@ -1685,68 +1711,66 @@ class bybit extends bybit$1["default"] {
         //
         const data = this.safeDict(response, 'result', {});
         const rows = this.safeList(data, 'rows', []);
-        const result = {};
-        for (let i = 0; i < rows.length; i++) {
-            const currency = rows[i];
-            const currencyId = this.safeString(currency, 'coin');
-            const code = this.safeCurrencyCode(currencyId);
-            const name = this.safeString(currency, 'name');
-            const chains = this.safeList(currency, 'chains', []);
-            const networks = {};
-            for (let j = 0; j < chains.length; j++) {
-                const chain = chains[j];
-                const networkId = this.safeString(chain, 'chain');
-                const networkCode = this.networkIdToCode(networkId);
-                networks[networkCode] = {
-                    'info': chain,
-                    'id': networkId,
-                    'network': networkCode,
-                    'active': undefined,
-                    'deposit': this.safeInteger(chain, 'chainDeposit') === 1,
-                    'withdraw': this.safeInteger(chain, 'chainWithdraw') === 1,
-                    'fee': this.safeNumber(chain, 'withdrawFee'),
-                    'precision': this.parseNumber(this.parsePrecision(this.safeString(chain, 'minAccuracy'))),
-                    'limits': {
-                        'withdraw': {
-                            'min': this.safeNumber(chain, 'withdrawMin'),
-                            'max': undefined,
-                        },
-                        'deposit': {
-                            'min': this.safeNumber(chain, 'depositMin'),
-                            'max': undefined,
-                        },
-                    },
-                };
-            }
-            result[code] = this.safeCurrencyStructure({
-                'info': currency,
-                'code': code,
-                'id': currencyId,
-                'name': name,
+        return this.parseCurrencies(rows);
+    }
+    parseCurrency(currency) {
+        const currencyId = this.safeString(currency, 'coin');
+        const code = this.safeCurrencyCode(currencyId);
+        const name = this.safeString(currency, 'name');
+        const chains = this.safeList(currency, 'chains', []);
+        const networks = {};
+        for (let j = 0; j < chains.length; j++) {
+            const chain = chains[j];
+            const networkId = this.safeString(chain, 'chain');
+            const networkCode = this.networkIdToCode(networkId, code);
+            networks[networkCode] = {
+                'info': chain,
+                'id': networkId,
+                'network': networkCode,
                 'active': undefined,
-                'deposit': undefined,
-                'withdraw': undefined,
-                'fee': undefined,
-                'precision': undefined,
+                'deposit': this.safeInteger(chain, 'chainDeposit') === 1,
+                'withdraw': this.safeInteger(chain, 'chainWithdraw') === 1,
+                'fee': this.safeNumber(chain, 'withdrawFee'),
+                'precision': this.parseNumber(this.parsePrecision(this.safeString(chain, 'minAccuracy'))),
                 'limits': {
-                    'amount': {
-                        'min': undefined,
-                        'max': undefined,
-                    },
                     'withdraw': {
-                        'min': undefined,
+                        'min': this.safeNumber(chain, 'withdrawMin'),
                         'max': undefined,
                     },
                     'deposit': {
-                        'min': undefined,
+                        'min': this.safeNumber(chain, 'depositMin'),
                         'max': undefined,
                     },
                 },
-                'networks': networks,
-                'type': 'crypto', // atm exchange api provides only cryptos
-            });
+            };
         }
-        return result;
+        return this.safeCurrencyStructure({
+            'info': currency,
+            'code': code,
+            'id': currencyId,
+            'name': name,
+            'active': undefined,
+            'deposit': undefined,
+            'withdraw': undefined,
+            'fee': undefined,
+            'precision': undefined,
+            'limits': {
+                'amount': {
+                    'min': undefined,
+                    'max': undefined,
+                },
+                'withdraw': {
+                    'min': undefined,
+                    'max': undefined,
+                },
+                'deposit': {
+                    'min': undefined,
+                    'max': undefined,
+                },
+            },
+            'networks': networks,
+            'type': 'crypto', // atm exchange api provides only cryptos
+        });
     }
     /**
      * @method
@@ -1783,26 +1807,34 @@ class bybit extends bybit$1["default"] {
                 promisesUnresolved.push(this.fetchFutureMarkets({ 'category': 'inverse' }));
             }
             else if (marketType === 'option') {
-                promisesUnresolved.push(this.fetchOptionMarkets({ 'baseCoin': 'BTC' }));
-                promisesUnresolved.push(this.fetchOptionMarkets({ 'baseCoin': 'ETH' }));
-                promisesUnresolved.push(this.fetchOptionMarkets({ 'baseCoin': 'SOL' }));
+                const optionsCurrencies = this.safeList(fetchMarketsOptions, 'options', ['BTC', 'ETH', 'SOL']);
+                for (let j = 0; j < optionsCurrencies.length; j++) {
+                    const currency = optionsCurrencies[j];
+                    promisesUnresolved.push(this.fetchOptionMarkets({ 'baseCoin': currency }));
+                }
             }
             else {
                 throw new errors.ExchangeError(this.id + ' fetchMarkets() this.options fetchMarkets "' + marketType + '" is not a supported market type');
             }
         }
         const promises = await Promise.all(promisesUnresolved);
-        const spotMarkets = this.safeList(promises, 0, []);
-        const linearMarkets = this.safeList(promises, 1, []);
-        const inverseMarkets = this.safeList(promises, 2, []);
-        const btcOptionMarkets = this.safeList(promises, 3, []);
-        const ethOptionMarkets = this.safeList(promises, 4, []);
-        const solOptionMarkets = this.safeList(promises, 5, []);
-        const futureMarkets = this.arrayConcat(linearMarkets, inverseMarkets);
-        let optionMarkets = this.arrayConcat(btcOptionMarkets, ethOptionMarkets);
-        optionMarkets = this.arrayConcat(optionMarkets, solOptionMarkets);
-        const derivativeMarkets = this.arrayConcat(futureMarkets, optionMarkets);
-        return this.arrayConcat(spotMarkets, derivativeMarkets);
+        let result = [];
+        for (let i = 0; i < promises.length; i++) {
+            const parsedMarket = promises[i];
+            result = this.arrayConcat(result, parsedMarket);
+        }
+        // const spotMarkets = this.safeList (promises, 0, []);
+        // const linearMarkets = this.safeList (promises, 1, []);
+        // const inverseMarkets = this.safeList (promises, 2, []);
+        // const btcOptionMarkets = this.safeList (promises, 3, []);
+        // const ethOptionMarkets = this.safeList (promises, 4, []);
+        // const solOptionMarkets = this.safeList (promises, 5, []);
+        // const futureMarkets = this.arrayConcat (linearMarkets, inverseMarkets);
+        // let optionMarkets = this.arrayConcat (btcOptionMarkets, ethOptionMarkets);
+        // optionMarkets = this.arrayConcat (optionMarkets, solOptionMarkets);
+        // const derivativeMarkets = this.arrayConcat (futureMarkets, optionMarkets);
+        // return this.arrayConcat (spotMarkets, derivativeMarkets);
+        return result;
     }
     async fetchSpotMarkets(params) {
         const request = {
@@ -2876,7 +2908,7 @@ class bybit extends bybit$1["default"] {
         let paginate = false;
         [paginate, params] = this.handleOptionAndParams(params, 'fetchFundingRateHistory', 'paginate');
         if (paginate) {
-            return await this.fetchPaginatedCallDeterministic('fetchFundingRateHistory', symbol, since, limit, '8h', params, 200);
+            return await this.fetchPaginatedCallDynamic('fetchFundingRateHistory', symbol, since, limit, params, 200);
         }
         if (limit === undefined) {
             limit = 200;
@@ -2889,6 +2921,7 @@ class bybit extends bybit$1["default"] {
             'limit': limit, // Limit for data size per page. [1, 200]. Default: 200
         };
         const market = this.market(symbol);
+        const fundingTimeFrameMins = this.safeInteger(market['info'], 'fundingInterval');
         symbol = market['symbol'];
         request['symbol'] = market['id'];
         let type = undefined;
@@ -2909,8 +2942,11 @@ class bybit extends bybit$1["default"] {
         else {
             if (since !== undefined) {
                 // end time is required when since is not empty
-                const fundingInterval = 60 * 60 * 8 * 1000;
-                request['endTime'] = since + limit * fundingInterval;
+                let fundingInterval = 60 * 60 * 8 * 1000;
+                if (fundingTimeFrameMins !== undefined) {
+                    fundingInterval = fundingTimeFrameMins * 60 * 1000;
+                }
+                request['endTime'] = this.sum(since, limit * fundingInterval);
             }
         }
         const response = await this.publicGetV5MarketFundingHistory(this.extend(request, params));
@@ -4156,11 +4192,16 @@ class bybit extends bybit$1["default"] {
                         }
                     }
                 }
-                if (tpslModeSl !== tpslModeTp) {
+                if (isTakeProfitOrder && isStopLossOrder && tpslModeSl !== tpslModeTp) {
                     throw new errors.InvalidOrder(this.id + ' createOrder() requires both stopLoss and takeProfit to be full or partial when using as OCO combination');
                 }
-                request['tpslMode'] = tpslModeSl; // same as tpslModeTp
-                params = this.omit(params, ['stopLossLimitPrice', 'takeProfitLimitPrice']);
+                if (tpslModeSl !== undefined) {
+                    request['tpslMode'] = tpslModeSl;
+                }
+                else {
+                    request['tpslMode'] = tpslModeTp;
+                }
+                params = this.omit(params, ['stopLossLimitPrice', 'takeProfitLimitPrice', 'tradingStopEndpoint']);
             }
         }
         else {
@@ -6038,7 +6079,7 @@ class bybit extends bybit$1["default"] {
             'txid': this.safeString(transaction, 'txID'),
             'timestamp': timestamp,
             'datetime': this.iso8601(timestamp),
-            'network': this.networkIdToCode(this.safeString(transaction, 'chain')),
+            'network': this.networkIdToCode(this.safeString(transaction, 'chain'), code),
             'address': undefined,
             'addressTo': toAddress,
             'addressFrom': undefined,
@@ -6067,7 +6108,7 @@ class bybit extends bybit$1["default"] {
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @param {boolean} [params.paginate] default false, when true will automatically paginate by calling this endpoint multiple times. See in the docs all the [available parameters](https://github.com/ccxt/ccxt/wiki/Manual#pagination-params)
      * @param {string} [params.subType] if inverse will use v5/account/contract-transaction-log
-     * @returns {object} a [ledger structure]{@link https://docs.ccxt.com/?id=ledger}
+     * @returns {object} a [ledger structure]{@link https://docs.ccxt.com/?id=ledger-entry-structure}
      */
     async fetchLedger(code = undefined, since = undefined, limit = undefined, params = {}) {
         await this.loadMarkets();
@@ -6375,7 +6416,7 @@ class bybit extends bybit$1["default"] {
             request['tag'] = tag;
         }
         const [networkCode, query] = this.handleNetworkCodeAndParams(params);
-        const networkId = this.networkCodeToId(networkCode);
+        const networkId = this.networkCodeToId(networkCode, code);
         if (networkId !== undefined) {
             request['chain'] = networkId.toUpperCase();
         }
@@ -6741,7 +6782,15 @@ class bybit extends bybit$1["default"] {
                 side = undefined;
             }
         }
-        const notional = this.safeString2(position, 'positionValue', 'cumExitValue');
+        let notional = undefined;
+        const contractSize = this.safeString(market, 'contractSize');
+        const markPrice = this.safeString(position, 'markPrice');
+        if (market['inverse']) {
+            notional = Precise["default"].stringDiv(Precise["default"].stringMul(size, contractSize), markPrice);
+        }
+        else {
+            notional = this.safeString2(position, 'positionValue', 'cumExitValue');
+        }
         const unrealisedPnl = this.omitZero(this.safeString(position, 'unrealisedPnl'));
         let initialMarginString = this.safeString2(position, 'positionIM', 'cumEntryValue');
         let maintenanceMarginString = this.safeString(position, 'positionMM');
@@ -6750,17 +6799,8 @@ class bybit extends bybit$1["default"] {
         if (lastUpdateTimestamp === undefined) {
             lastUpdateTimestamp = this.safeIntegerN(position, ['updatedTime', 'updatedAt', 'updatedTime']);
         }
-        const tradeMode = this.safeInteger(position, 'tradeMode', 0);
-        let marginMode = undefined;
-        if ((!this.options['enableUnifiedAccount']) || (this.options['enableUnifiedAccount'] && market['inverse'])) {
-            // tradeMode would work for classic and UTA(inverse)
-            if (!isHistory) { // cannot tell marginMode for fetchPositionsHistory, and closedSize will only be defined for fetchPositionsHistory response
-                marginMode = (tradeMode === 1) ? 'isolated' : 'cross';
-            }
-        }
         let collateralString = this.safeString(position, 'positionBalance');
         const entryPrice = this.omitZero(this.safeStringN(position, ['entryPrice', 'avgPrice', 'avgEntryPrice']));
-        const markPrice = this.safeString(position, 'markPrice');
         const liquidationPrice = this.omitZero(this.safeString(position, 'liqPrice'));
         const leverage = this.safeString(position, 'leverage');
         if (liquidationPrice !== undefined) {
@@ -6816,7 +6856,7 @@ class bybit extends bybit$1["default"] {
             'notional': this.parseNumber(notional),
             'leverage': this.parseNumber(leverage),
             'unrealizedPnl': this.parseNumber(unrealisedPnl),
-            'realizedPnl': this.safeNumber(position, 'closedPnl'),
+            'realizedPnl': this.safeNumber2(position, 'curRealisedPnl', 'closedPnl'),
             'contracts': this.parseNumber(size),
             'contractSize': this.safeNumber(market, 'contractSize'),
             'marginRatio': this.parseNumber(marginRatio),
@@ -6824,7 +6864,7 @@ class bybit extends bybit$1["default"] {
             'markPrice': this.parseNumber(markPrice),
             'lastPrice': this.safeNumber(position, 'avgExitPrice'),
             'collateral': this.parseNumber(collateralString),
-            'marginMode': marginMode,
+            'marginMode': undefined,
             'side': side,
             'percentage': undefined,
             'stopLossPrice': this.safeNumber2(position, 'stop_loss', 'stopLoss'),
@@ -9398,6 +9438,187 @@ class bybit extends bybit$1["default"] {
             'timeframe': undefined,
             'longShortRatio': this.parseToNumeric(Precise["default"].stringDiv(longString, shortString)),
         };
+    }
+    /**
+     * @method
+     * @name bybit#fetchPositionsADLRank
+     * @description fetches the auto deleveraging rank and risk percentage for a list of symbols
+     * @see https://bybit-exchange.github.io/docs/v5/position#response-parameters
+     * @param {string[]} [symbols] list of unified market symbols
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object[]} an array of [auto de leverage structures]{@link https://docs.ccxt.com/?id=auto-de-leverage-structure}
+     */
+    async fetchPositionsADLRank(symbols = undefined, params = {}) {
+        if (symbols === undefined) {
+            throw new errors.ArgumentsRequired(this.id + ' fetchPositionsADLRank() requires a symbols argument');
+        }
+        await this.loadMarkets();
+        symbols = this.marketSymbols(symbols, undefined, true, true, true);
+        const market = this.getMarketFromSymbols(symbols);
+        const request = {};
+        if (market !== undefined) {
+            request['symbol'] = market['id'];
+        }
+        let type = undefined;
+        [type, params] = this.getBybitType('fetchPositionsADLRank', market, params);
+        request['category'] = type;
+        const response = await this.privateGetV5PositionList(this.extend(request, params));
+        //
+        //     {
+        //         "retCode": 0,
+        //         "retMsg": "OK",
+        //         "result": {
+        //             "nextPageCursor": "BTCUSDT%2C1767085496112%2C0",
+        //             "category": "linear",
+        //             "list": [
+        //                 {
+        //                     "symbol": "BTCUSDT",
+        //                     "leverage": "",
+        //                     "autoAddMargin": 0,
+        //                     "avgPrice": "177489.6",
+        //                     "liqPrice": "",
+        //                     "riskLimitValue": "",
+        //                     "takeProfit": "",
+        //                     "positionValue": "1774.896",
+        //                     "isReduceOnly": false,
+        //                     "positionIMByMp": "",
+        //                     "tpslMode": "Full",
+        //                     "riskId": 0,
+        //                     "trailingStop": "0",
+        //                     "unrealisedPnl": "-3.016",
+        //                     "markPrice": "177188",
+        //                     "adlRankIndicator": 2,
+        //                     "cumRealisedPnl": "-9782.391468",
+        //                     "positionMM": "",
+        //                     "createdTime": "1699928551230",
+        //                     "positionIdx": 0,
+        //                     "positionIM": "",
+        //                     "positionMMByMp": "",
+        //                     "seq": 9558506126,
+        //                     "updatedTime": "1767085496112",
+        //                     "side": "Buy",
+        //                     "bustPrice": "",
+        //                     "positionBalance": "",
+        //                     "leverageSysUpdatedTime": "",
+        //                     "curRealisedPnl": "-0.9761928",
+        //                     "size": "0.01",
+        //                     "positionStatus": "Normal",
+        //                     "mmrSysUpdatedTime": "",
+        //                     "stopLoss": "",
+        //                     "tradeMode": 0,
+        //                     "sessionAvgPrice": ""
+        //                 }
+        //             ]
+        //         },
+        //         "retExtInfo": {},
+        //         "time": 1767085741416
+        //     }
+        //
+        const result = this.safeDict(response, 'result', {});
+        const ranks = this.safeList(result, 'list', []);
+        return this.parseADLRanks(ranks, symbols);
+    }
+    parseADLRank(info, market = undefined) {
+        //
+        // fetchPositionsADLRank
+        //
+        //     {
+        //         "symbol": "BTCUSDT",
+        //         "leverage": "",
+        //         "autoAddMargin": 0,
+        //         "avgPrice": "177489.6",
+        //         "liqPrice": "",
+        //         "riskLimitValue": "",
+        //         "takeProfit": "",
+        //         "positionValue": "1774.896",
+        //         "isReduceOnly": false,
+        //         "positionIMByMp": "",
+        //         "tpslMode": "Full",
+        //         "riskId": 0,
+        //         "trailingStop": "0",
+        //         "unrealisedPnl": "-3.016",
+        //         "markPrice": "177188",
+        //         "adlRankIndicator": 2,
+        //         "cumRealisedPnl": "-9782.391468",
+        //         "positionMM": "",
+        //         "createdTime": "1699928551230",
+        //         "positionIdx": 0,
+        //         "positionIM": "",
+        //         "positionMMByMp": "",
+        //         "seq": 9558506126,
+        //         "updatedTime": "1767085496112",
+        //         "side": "Buy",
+        //         "bustPrice": "",
+        //         "positionBalance": "",
+        //         "leverageSysUpdatedTime": "",
+        //         "curRealisedPnl": "-0.9761928",
+        //         "size": "0.01",
+        //         "positionStatus": "Normal",
+        //         "mmrSysUpdatedTime": "",
+        //         "stopLoss": "",
+        //         "tradeMode": 0,
+        //         "sessionAvgPrice": ""
+        //     }
+        //
+        const marketId = this.safeString(info, 'symbol');
+        const timestamp = this.safeInteger(info, 'updatedTime');
+        return {
+            'info': info,
+            'symbol': this.safeSymbol(marketId, market, undefined, 'contract'),
+            'rank': this.safeInteger(info, 'adlRankIndicator'),
+            'rating': undefined,
+            'percentage': undefined,
+            'timestamp': timestamp,
+            'datetime': this.iso8601(timestamp),
+        };
+    }
+    /**
+     * @method
+     * @name bybit#fetchMarginMode
+     * @description fetches the margin mode of the trading pair
+     * @see https://bybit-exchange.github.io/docs/v5/account/account-info
+     * @param {string} [symbol] unified symbol of the market to fetch the margin mode for
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object} a [margin mode structure]{@link https://docs.ccxt.com/?id=margin-mode-structure}
+     */
+    async fetchMarginMode(symbol, params = {}) {
+        await this.loadMarkets();
+        const market = this.market(symbol);
+        const response = await this.privateGetV5AccountInfo(params);
+        //
+        //     {
+        //         "retCode": 0,
+        //         "retMsg": "OK",
+        //         "result": {
+        //             "marginMode": "REGULAR_MARGIN",
+        //             "updatedTime": "1723481446000",
+        //             "unifiedMarginStatus": 5,
+        //             "dcpStatus": "OFF",
+        //             "timeWindow": 0,
+        //             "smpGroup": 0,
+        //             "isMasterTrader": false,
+        //             "spotHedgingStatus": "OFF"
+        //         }
+        //     }
+        //
+        const result = this.safeDict(response, 'result', {});
+        return this.parseMarginMode(result, market);
+    }
+    parseMarginMode(marginMode, market = undefined) {
+        const marginType = this.safeString(marginMode, 'marginMode');
+        return {
+            'info': marginMode,
+            'symbol': this.safeSymbol(undefined, market),
+            'marginMode': this.parseMarginModeType(marginType),
+        };
+    }
+    parseMarginModeType(marginMode) {
+        const marginModes = {
+            'ISOLATED_MARGIN': 'isolated',
+            'REGULAR_MARGIN': 'cross',
+            'PORTFOLIO_MARGIN': 'portfolio',
+        };
+        return this.safeString(marginModes, marginMode, marginMode);
     }
     sign(path, api = 'public', method = 'GET', params = {}, headers = undefined, body = undefined) {
         let url = this.implodeHostname(this.urls['api'][api]) + '/' + path;

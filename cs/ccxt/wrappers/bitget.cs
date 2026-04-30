@@ -654,7 +654,7 @@ public partial class bitget
     /// <item>
     /// <term>price</term>
     /// <description>
-    /// float : the price at which the order is to be fulfilled, in units of the quote currency, ignored in market orders
+    /// float : the price at which the order is to be fulfilled, in units of the quote currency, ignored in market orders, and used as the execution price for contract stop-loss / take-profit orders
     /// </description>
     /// </item>
     /// <item>
@@ -1483,7 +1483,7 @@ public partial class bitget
     /// </item>
     /// </list>
     /// </remarks>
-    /// <returns> <term>object</term> a [ledger structure]{@link https://docs.ccxt.com/?id=ledger}.</returns>
+    /// <returns> <term>object</term> a [ledger structure]{@link https://docs.ccxt.com/?id=ledger-entry-structure}.</returns>
     public async Task<List<LedgerEntry>> FetchLedger(string code = null, Int64? since2 = 0, Int64? limit2 = 0, Dictionary<string, object> parameters = null)
     {
         var since = since2 == 0 ? null : (object)since2;

@@ -1744,7 +1744,7 @@ export default class hibachi extends Exchange {
      * @param {int} [since] timestamp in ms of the earliest ledger entry, default is undefined
      * @param {int} [limit] max number of ledger entries to return, default is undefined
      * @param {object} [params] extra parameters specific to the exchange API endpoint
-     * @returns {object} a [ledger structure]{@link https://docs.ccxt.com/?id=ledger}
+     * @returns {object} a [ledger structure]{@link https://docs.ccxt.com/?id=ledger-entry-structure}
      */
     async fetchLedger (code: Str = undefined, since: Int = undefined, limit: Int = undefined, params = {}): Promise<LedgerEntry[]> {
         await this.loadMarkets ();
@@ -1769,7 +1769,7 @@ export default class hibachi extends Exchange {
         //             "status": "pending",
         //             "timestampSec": 1752692872,
         //             "token": "USDT",
-        //             "transactionHash": "0x408e48881e0ba77d8638e3fe57bc06bdec513ddaa8b672e0aefa7e22e2f18b5e",
+        //             "transactionHash": "0x408e48881e0ba77d8638e3fe57bc06bdec513ddaa8b672e0aefa7e22e2f18b4e",
         //             "transactionType": "deposit"
         //         },
         //         {

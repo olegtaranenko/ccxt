@@ -9,7 +9,7 @@ import Exchange from './abstract/deepcoin.js';
 import { TICK_SIZE } from './base/functions/number.js';
 import { sha256 } from './static_dependencies/noble-hashes/sha256.js';
 import { Precise } from './base/Precise.js';
-import { ArgumentsRequired, BadRequest, ExchangeError, InsufficientFunds, InvalidOrder, OrderNotFound, NotSupported, NullResponse } from '../ccxt.js';
+import { ArgumentsRequired, BadRequest, ExchangeError, InsufficientFunds, InvalidOrder, OrderNotFound, NotSupported, NullResponse } from './base/errors.js';
 // ---------------------------------------------------------------------------
 /**
  * @class deepcoin
@@ -916,7 +916,7 @@ export default class deepcoin extends Exchange {
      */
     async fetchBalance(params = {}) {
         await this.loadMarkets();
-        let marketType = 'spot';
+        let marketType = undefined;
         [marketType, params] = this.handleMarketTypeAndParams('fetchBalance', undefined, params, marketType);
         const request = {
             'instType': this.convertToInstrumentType(marketType),
@@ -1231,7 +1231,7 @@ export default class deepcoin extends Exchange {
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @param {int} [params.until] timestamp in ms of the latest ledger entry
      * @param {string} [params.type] 'spot' or 'swap', the market type for the ledger (default 'spot')
-     * @returns {object[]} a list of [ledger structures]{@link https://docs.ccxt.com/?id=ledger}
+     * @returns {object[]} a list of [ledger structures]{@link https://docs.ccxt.com/?id=ledger-entry-structure}
      */
     async fetchLedger(code = undefined, since = undefined, limit = undefined, params = {}) {
         await this.loadMarkets();

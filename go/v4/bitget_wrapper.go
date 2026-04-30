@@ -641,7 +641,7 @@ func (this *Bitget) CreateMarketBuyOrderWithCost(symbol string, cost float64, op
  * @param {string} type 'market' or 'limit'
  * @param {string} side 'buy' or 'sell'
  * @param {float} amount how much you want to trade in units of the base currency
- * @param {float} [price] the price at which the order is to be fulfilled, in units of the quote currency, ignored in market orders
+ * @param {float} [price] the price at which the order is to be fulfilled, in units of the quote currency, ignored in market orders, and used as the execution price for contract stop-loss / take-profit orders
  * @param {object} [params] extra parameters specific to the exchange API endpoint
  * @param {float} [params.cost] *spot only* how much you want to trade in units of the quote currency, for market buy orders only
  * @param {float} [params.triggerPrice] *swap only* The price at which a trigger order is triggered at
@@ -1202,7 +1202,7 @@ func (this *Bitget) FetchCanceledAndClosedOrders(options ...FetchCanceledAndClos
  * @param {string} [params.symbol] *contract only* unified market symbol
  * @param {string} [params.productType] *contract only* 'USDT-FUTURES', 'USDC-FUTURES', 'COIN-FUTURES', 'SUSDT-FUTURES', 'SUSDC-FUTURES' or 'SCOIN-FUTURES'
  * @param {boolean} [params.paginate] default false, when true will automatically paginate by calling this endpoint multiple times. See in the docs all the [available parameters](https://github.com/ccxt/ccxt/wiki/Manual#pagination-params)
- * @returns {object} a [ledger structure]{@link https://docs.ccxt.com/?id=ledger}
+ * @returns {object} a [ledger structure]{@link https://docs.ccxt.com/?id=ledger-entry-structure}
  */
 func (this *Bitget) FetchLedger(options ...FetchLedgerOptions) ([]LedgerEntry, error) {
 

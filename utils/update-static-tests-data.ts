@@ -102,7 +102,7 @@ function add_static_result (requestOrResponse, exchangeId, method, entry, spaces
     const filePath = rootDir + `/ts/src/test/static/${requestOrResponse}/${exchangeId}.json`;
     const defaultStructure = {"exchange":exchangeId, "skipKeys": [], "options": {}, "methods": {}, outputType: undefined};
     if (requestOrResponse === 'request') {
-        defaultStructure.outputType = 'both';
+        (defaultStructure as any).outputType = 'both';
     }
     const fileContent = readFileInit (filePath, jsonStringify(defaultStructure));
     // auto-detect 2 or 4 spaces used (just for backward compatibility)
