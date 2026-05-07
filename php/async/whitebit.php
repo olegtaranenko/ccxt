@@ -74,7 +74,7 @@ class whitebit extends Exchange {
                 'fetchFundingHistory' => true,
                 'fetchFundingLimits' => true,
                 'fetchFundingRate' => true,
-                'fetchFundingRateHistory' => false,
+                'fetchFundingRateHistory' => true,
                 'fetchFundingRates' => true,
                 'fetchIndexOHLCV' => false,
                 'fetchIsolatedBorrowRate' => false,
@@ -199,6 +199,7 @@ class whitebit extends Exchange {
                             'assets',
                             'collateral/markets',
                             'fee',
+                            'funding-history/{market}',
                             'orderbook/depth/{market}',
                             'orderbook/{market}',
                             'ticker',
@@ -432,6 +433,9 @@ class whitebit extends Exchange {
                     '422' => '\\ccxt\\OrderNotFound', // array("response":null,"status":422,"errors":array("orderId":["Finished order id 1295772653 not found on your account"]),"notification":null,"warning":"Finished order id 1295772653 not found on your account","_token":null)
                 ),
                 'broad' => array(
+                    'limit must be less than or equal to' => '\\ccxt\\BadRequest',
+                    'The Price should be less than or equal to' => '\\ccxt\\InvalidOrder', // array("code":250,"errors":array("price":["The Price should be less than or equal to 1.277"]),"message":"Validation failed")
+                    'The Price should be greater than or equal to' => '\\ccxt\\InvalidOrder', // array("code":250,"errors":array("price":["The Price should be greater than or equal to 0.0029"]),"message":"Validation failed")
                     'This action is unauthorized' => '\\ccxt\\PermissionDenied', // array("code":2,"message":"This action is unauthorized. Enable your key in API settings")
                     'Given amount is less than min amount' => '\\ccxt\\InvalidOrder', // array("code":0,"message":"Validation failed","errors":array("amount":["Given amount is less than min amount 200000"],"total":["Total is less than 5.05"]))
                     'Min amount step' => '\\ccxt\\InvalidOrder', // array("code":32,"errors":array("amount":["Min amount step = 0.01"]),"message":"Validation failed")
@@ -4155,6 +4159,70 @@ class whitebit extends Exchange {
         return $this->in_array($currency, $fiatCurrencies);
     }
 
+    public function fetch_funding_rate_history(?string $symbol = null, ?int $since = null, ?int $limit = null, $params = array ()) {
+        return Async\async(function () use ($symbol, $since, $limit, $params) {
+            /**
+             * fetches historical funding rate prices
+             *
+             * @see https://docs.whitebit.com/api-reference/market-data/funding-history
+             *
+             * @param {string} $symbol unified $symbol of the $market to fetch the funding rate history for
+             * @param {int} [$since] timestamp in ms of the earliest funding rate to fetch
+             * @param {int} [$limit] the maximum amount of ~@link https://docs.ccxt.com/?id=funding-rate-history-structure funding rate structures~ to fetch (default 100, max 100)
+             * @param {array} [$params] extra parameters specific to the exchange API endpoint
+             * @param {int} [$params->until] timestamp in ms of the latest funding rate
+             * @return {array[]} a list of ~@link https://docs.ccxt.com/?id=funding-rate-history-structure funding rate structures~
+             */
+            if ($symbol === null) {
+                throw new ArgumentsRequired($this->id . ' fetchFundingRateHistory() requires a $symbol argument');
+            }
+            $maxLimit = 100;
+            $paginate = false;
+            list($paginate, $params) = $this->handle_option_and_params($params, 'fetchFundingRateHistory', 'paginate');
+            if ($paginate) {
+                return Async\await($this->fetch_paginated_call_deterministic('fetchFundingRateHistory', $symbol, $since, $limit, '8h', $params, $maxLimit));
+            }
+            Async\await($this->load_markets());
+            $market = $this->market($symbol);
+            $request = array(
+                'market' => $market['id'],
+            );
+            if ($since !== null) {
+                $request['startDate'] = (int) round($since / 1000);
+            }
+            list($request, $params) = $this->handle_until_option('until_timestamp', $request, $params, 0.001);
+            if ($limit !== null) {
+                $request['limit'] = $limit;
+            }
+            $response = Async\await($this->v4PublicGetFundingHistoryMarket ($this->extend($request, $params)));
+            //
+            //     array(
+            //         {
+            //             "fundingTime" => "1773648000",
+            //             "fundingRate" => "-0.00004593",
+            //             "market" => "ETH_PERP",
+            //             "settlementPrice" => "2248.47",
+            //             "rateCalculatedTime" => "1773619200"
+            //         }
+            //     )
+            //
+            return $this->parse_funding_rate_histories($response, $market, $since, $limit);
+        }) ();
+    }
+
+    public function parse_funding_rate_history($info, ?array $market = null) {
+        $marketId = $this->safe_string($info, 'market');
+        $market = $this->safe_market($marketId, $market);
+        $timestamp = $this->safe_timestamp($info, 'fundingTime');
+        return array(
+            'info' => $info,
+            'symbol' => $market['symbol'],
+            'fundingRate' => $this->safe_number($info, 'fundingRate'),
+            'timestamp' => $timestamp,
+            'datetime' => $this->iso8601($timestamp),
+        );
+    }
+
     public function nonce() {
         return $this->milliseconds() - $this->options['timeDifference'];
     }
@@ -4227,6 +4295,24 @@ class whitebit extends Exchange {
                         $errorInfo = ($errorMessageLength > 0) ? $errorMessageArray[0] : $body;
                     }
                 }
+                $this->throw_exactly_matched_exception($this->exceptions['exact'], $errorInfo, $feedback);
+                $this->throw_broadly_matched_exception($this->exceptions['broad'], $body, $feedback);
+                throw new ExchangeError($feedback);
+            }
+            // array("success":false,"message":array("limit":["limit must be less than or equal to 100"]),"result":null)
+            $success = $this->safe_bool($response, 'success', true);
+            if (!$success) {
+                $errMsg = $this->safe_dict($response, 'message', array());
+                $errKeys = is_array($errMsg) ? array_keys($errMsg) : array();
+                $errKeysLength = count($errKeys);
+                $errorInfo = $body;
+                if ($errKeysLength > 0) {
+                    $errorKey = $errKeys[0];
+                    $errorMessageArray = $this->safe_list($errMsg, $errorKey, array());
+                    $errorMessageLength = count($errorMessageArray);
+                    $errorInfo = ($errorMessageLength > 0) ? $errorMessageArray[0] : $body;
+                }
+                $feedback = $this->id . ' ' . $body;
                 $this->throw_exactly_matched_exception($this->exceptions['exact'], $errorInfo, $feedback);
                 $this->throw_broadly_matched_exception($this->exceptions['broad'], $body, $feedback);
                 throw new ExchangeError($feedback);

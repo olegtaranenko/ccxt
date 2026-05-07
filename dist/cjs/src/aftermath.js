@@ -8,7 +8,6 @@ var crypto = require('./base/functions/crypto.js');
 var ed25519 = require('./static_dependencies/noble-curves/ed25519.js');
 var errors = require('./base/errors.js');
 
-// ----------------------------------------------------------------------------
 class aftermath extends aftermath$1["default"] {
     describe() {
         return this.deepExtend(super.describe(), {
@@ -656,7 +655,7 @@ class aftermath extends aftermath$1["default"] {
         //
         // [
         //     {
-        //         "id": "0x21c5e3d2f5bcfd4351a62cd70874878b7923b56d79d04225ed96370a7ac844c4",
+        //         "id": "0x22c5e3d2f5bcfd4351a62cd70874878b7923b56d79d04225ed96370a7ac844c4",
         //         "type": "primary",
         //         "code": "USDC",
         //         "accountNumber": 14822

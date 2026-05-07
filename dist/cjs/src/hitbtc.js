@@ -8,7 +8,6 @@ var Precise = require('./base/Precise.js');
 var errors = require('./base/errors.js');
 var sha256 = require('./static_dependencies/noble-hashes/sha256.js');
 
-// ----------------------------------------------------------------------------
 /**
  * @class hitbtc
  * @augments Exchange
@@ -760,6 +759,7 @@ class hitbtc extends hitbtc$1["default"] {
                 'XMT': 'MTL',
                 'XPNT': 'PNT',
             },
+            'rollingWindowSize': 1000.0,
         });
     }
     nonce() {

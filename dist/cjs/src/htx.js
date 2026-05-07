@@ -8,7 +8,7 @@ var Precise = require('./base/Precise.js');
 var number = require('./base/functions/number.js');
 var sha256 = require('./static_dependencies/noble-hashes/sha256.js');
 
-// ----------------------------------------------------------------------------
+//  ---------------------------------------------------------------------------
 //  ---------------------------------------------------------------------------
 /**
  * @class htx
@@ -1400,6 +1400,7 @@ class htx extends htx$1["default"] {
                     },
                 },
             },
+            'rollingWindowSize': 2000.0,
         });
     }
     /**
