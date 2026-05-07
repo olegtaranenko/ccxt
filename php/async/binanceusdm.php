@@ -13,13 +13,14 @@ class binanceusdm extends binance {
 
     public function describe(): mixed {
         return $this->deep_extend(parent::describe(), array(
-            // https://binance-docs.github.io/apidocs/futures/en/#error-codes
-            // https://developers.binance.com/docs/derivatives/usds-margined-futures/error-code
-            'exceptions' => array(
-                'exact' => array(
-                    '-5021' => '\\ccxt\\InvalidOrder', // array("code":-5021,"msg":"Due to the order could not be filled immediately, the FOK order has been rejected.")
-                    '-5022' => '\\ccxt\\InvalidOrder', // array("code":-5022,"msg":"Due to the order could not be executed, the Post Only order will be rejected.")
-                    '-5028' => '\\ccxt\\InvalidOrder', // array("code":-5028,"msg":"Timestamp for this request is outside of the ME recvWindow.")
+            'id' => 'binanceusdm',
+            'name' => 'Binance USDⓈ-M',
+            'urls' => array(
+                'logo' => 'https://github.com/user-attachments/assets/871cbea7-eebb-4b28-b260-c1c91df0487a',
+                'doc' => array(
+                    'https://binance-docs.github.io/apidocs/futures/en/',
+                    'https://binance-docs.github.io/apidocs/spot/en',
+                    'https://developers.binance.com/en',
                 ),
             ),
             'has' => array(
@@ -31,26 +32,26 @@ class binanceusdm extends binance {
                 'option' => null,
                 'createStopMarketOrder' => true,
             ),
-            'id' => 'binanceusdm',
-            'name' => 'Binance USDⓈ-M',
             'options' => array(
-                'defaultSubType' => 'linear',
                 'fetchMarkets' => array(
                     'types' => array( 'linear' ),
                 ),
+                'defaultType' => 'swap',
+                'defaultSubType' => 'linear',
                 // https://www.binance.com/en/support/faq/360033162192
                 // tier amount, maintenance margin, initial margin,
                 'leverageBrackets' => null,
-                'marginModes' => array(),
                 'marginTypes' => array(),
+                'marginModes' => array(),
             ),
-            'urls' => array(
-                'doc' => array(
-                    'https://binance-docs.github.io/apidocs/futures/en/',
-                    'https://binance-docs.github.io/apidocs/spot/en',
-                    'https://developers.binance.com/en',
+            // https://binance-docs.github.io/apidocs/futures/en/#error-codes
+            // https://developers.binance.com/docs/derivatives/usds-margined-futures/error-code
+            'exceptions' => array(
+                'exact' => array(
+                    '-5021' => '\\ccxt\\InvalidOrder', // array("code":-5021,"msg":"Due to the order could not be filled immediately, the FOK order has been rejected.")
+                    '-5022' => '\\ccxt\\InvalidOrder', // array("code":-5022,"msg":"Due to the order could not be executed, the Post Only order will be rejected.")
+                    '-5028' => '\\ccxt\\InvalidOrder', // array("code":-5028,"msg":"Timestamp for this request is outside of the ME recvWindow.")
                 ),
-                'logo' => 'https://github.com/user-attachments/assets/871cbea7-eebb-4b28-b260-c1c91df0487a',
             ),
         ));
     }

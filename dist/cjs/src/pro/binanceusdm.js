@@ -3,13 +3,18 @@
 Object.defineProperty(exports, '__esModule', { value: true });
 
 var binance = require('./binance.js');
+var binanceusdm$1 = require('../binanceusdm.js');
 var errors = require('../base/errors.js');
 
 // ----------------------------------------------------------------------------
 // ---------------------------------------------------------------------------
 class binanceusdm extends binance["default"] {
     describe() {
-        return this.deepExtend(super.describe(), {
+        // eslint-disable-next-line new-cap
+        const restInstance = new binanceusdm$1["default"]();
+        const restDescribe = restInstance.describe();
+        const extended = this.deepExtend(super.describe(), restDescribe);
+        return this.deepExtend(extended, {
             // https://binance-docs.github.io/apidocs/futures/en/#error-codes
             // https://developers.binance.com/docs/derivatives/usds-margined-futures/error-code
             'exceptions': {

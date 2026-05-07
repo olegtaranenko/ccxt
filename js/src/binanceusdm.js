@@ -33,6 +33,7 @@ export default class binanceusdm extends binance {
             'name': 'Binance USDⓈ-M',
             'options': {
                 'defaultSubType': 'linear',
+                'defaultType': 'swap',
                 'fetchMarkets': {
                     'types': ['linear'],
                 },

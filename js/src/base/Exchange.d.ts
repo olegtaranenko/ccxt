@@ -70,7 +70,6 @@ export default class Exchange {
     validateClientSsl: boolean;
     validateServerSsl: boolean;
     timeout: Int;
-    twofa: string;
     verbose: boolean;
     verboseLogVeto: any;
     verboseTruncate: boolean;
@@ -81,6 +80,7 @@ export default class Exchange {
     privateKey: string;
     secret: string;
     token: string;
+    twofa: string;
     uid: string;
     walletAddress: string;
     accounts: any;
@@ -135,7 +135,6 @@ export default class Exchange {
     liquidations: any;
     markets: Dictionary<any>;
     markets_by_id: Dictionary<any>;
-    marketsByAltname: Dictionary<any>;
     marketsLoading: Promise<Dictionary<any>>;
     myLiquidations: any;
     myTrades: ArrayCache;
@@ -171,7 +170,6 @@ export default class Exchange {
     requiresEddsa: boolean;
     requiresWeb3: boolean;
     rollingWindowSize: number;
-    stablePairs: {};
     status: {
         eta: Num;
         info: any;
@@ -184,7 +182,7 @@ export default class Exchange {
     throttler: any;
     tickers: Dictionary<Ticker>;
     timeframes: Dictionary<number | string>;
-    tokenBucket: any;
+    tokenBucket: Dictionary<number>;
     trades: Dictionary<ArrayCache>;
     transactions: {};
     triggerOrders: ArrayCache;

@@ -44,7 +44,7 @@ use BN\BN;
 use Sop\ASN1\Type\UnspecifiedType;
 use Exception;
 
-$version = '4.5.51';
+$version = '4.5.52';
 
 // rounding mode
 const TRUNCATE = 0;
@@ -63,7 +63,7 @@ const PAD_WITH_ZERO = 6;
 
 class Exchange {
 
-    const VERSION = '4.5.51';
+    const VERSION = '4.5.52';
 
     private static $base58_alphabet = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
     private static $base58_encoder = null;
@@ -76,7 +76,7 @@ class Exchange {
     public $curl_reset = true;
     public $curl_close = false;
 
-    public $id = null;
+    public $id = 'Exchange';
 
     public $validateServerSsl = true;
     public $validateClientSsl = false;
@@ -131,13 +131,7 @@ class Exchange {
     public $quoteJsonNumbers = true; // treat numbers in json as quoted precise strings
 
     public $name = null;
-    public $status = array(
-        'status' => 'ok',
-        'updated' => null,
-        'eta' => null,
-        'url' => null,
-        'info' => null,
-    );
+    public $status = null;
     public $countries = null;
     public $version = null;
     public $certified = false; // if certified by the CCXT dev team
@@ -188,13 +182,7 @@ class Exchange {
         ),
     );
 
-    public $precision = array(
-        'amount'=> null,
-        'price'=> null,
-        'cost'=> null,
-        'base'=> null,
-        'quote'=> null,
-    );
+    public $precision = null;
     public $liquidations = null;
     public $orders = null;
     public $triggerOrders = null;
@@ -205,15 +193,11 @@ class Exchange {
     public $positions = null;
     public $ohlcvs = array();
     public $exceptions = array();
-    public $accounts = array();
-    public $accountsById = array();
+    public $accounts = null;
+    public $accountsById = null;
 
     public $limits = array(
-        'cost' => array(
-            'min' => null,
-            'max' => null,
-        ),
-        'price' => array(
+        'leverage' => array(
             'min' => null,
             'max' => null,
         ),
@@ -221,7 +205,11 @@ class Exchange {
             'min' => null,
             'max' => null,
         ),
-        'leverage' => array(
+        'price' => array(
+            'min' => null,
+            'max' => null,
+        ),
+        'cost' => array(
             'min' => null,
             'max' => null,
         ),
@@ -254,17 +242,18 @@ class Exchange {
         '511' => 'AuthenticationError',
     );
     public $verbose = false;
-    public $apiKey = '';
-    public $secret = '';
-    public $password = '';
-    public $login = '';
-    public $uid = '';
-    public $accountId = null;
-    public $privateKey = '';
-    public $walletAddress = '';
-    public $token = ''; // reserved for HTTP auth in some cases
 
-    public $twofa = null;
+    public $apiKey;
+    public $secret;
+    public $password;
+    public $login;
+    public $uid;
+    public $accountId;
+    public $privateKey;
+    public $walletAddress;
+    public $token; // reserved for HTTP auth in some cases
+    public $twofa;
+
     public $markets_by_id = null;
     public $currencies_by_id = null;
     public $minFundingAddressLength = 1; // used in check_address
@@ -290,7 +279,7 @@ class Exchange {
 
     // API methods metainfo
     public $has = array();
-    public $features = array();
+    public $features = null;
 
     public $precisionMode = DECIMAL_PLACES;
     public $paddingMode = NO_PADDING;
@@ -315,13 +304,11 @@ class Exchange {
     public $last_request_body = null;
     public $last_request_url = null;
 
-    public $requiresWeb3 = false;
     public $requiresEddsa = false;
     public $rateLimit = 2000;
 
     public $commonCurrencies = array(
         'XBT' => 'BTC',
-        'BCC' => 'BCH',
         'BCHSV' => 'BSV',
     );
 
@@ -2785,19 +2772,19 @@ class Exchange {
 
     public function describe(): mixed {
         return array(
-            'alias' => false, // whether this exchange is an alias to another exchange
+            'alias' => $this->alias, // whether this exchange is an alias to another exchange
             'api' => null,
             'authenticated' => true,
             'bootstrapped' => true,
-            'certified' => false, // if certified by the CCXT dev team
+            'certified' => $this->certified, // if certified by the CCXT dev team
             'commonCurrencies' => array(
                 'BCHSV' => 'BSV',
                 'XBT' => 'BTC',
             ),
-            'countries' => null,
+            'countries' => $this->countries,
             'currencies' => array(), // to be filled manually or by fetchMarkets
             'dex' => false,
-            'enableRateLimit' => true,
+            'enableRateLimit' => $this->enableRateLimit,
             'exceptions' => null,
             'fees' => array(
                 'funding' => array(
@@ -3082,7 +3069,7 @@ class Exchange {
                 '526' => '\\ccxt\\ExchangeNotAvailable',
                 '530' => '\\ccxt\\ExchangeNotAvailable',
             ),
-            'id' => null,
+            'id' => $this->id,
             'limits' => array(
                 'amount' => array( 'min' => null, 'max' => null ),
                 'cost' => array( 'min' => null, 'max' => null ),
@@ -3090,12 +3077,13 @@ class Exchange {
                 'price' => array( 'min' => null, 'max' => null ),
             ),
             'markets' => null, // to be filled manually or by fetchMarkets
-            'name' => null,
+            'name' => $this->name,
             'offline' => false,
             'paddingMode' => NO_PADDING,
             'precisionMode' => TICK_SIZE,
-            'pro' => false, // if it is integrated with CCXT Pro for WebSocket support
-            'rateLimit' => 2000, // milliseconds = seconds * 1000
+            'pro' => $this->pro, // if it is integrated with CCXT Pro for WebSocket support
+            'rateLimit' => $this->rateLimit, // milliseconds = seconds * 1000
+            'rateLimiterAlgorithm' => $this->rateLimiterAlgorithm,
             'requiredCredentials' => array(
                 'accountId' => false,
                 'apiKey' => true,
@@ -3110,6 +3098,7 @@ class Exchange {
             ),
             'status' => array(
                 'eta' => null,
+                'info' => null,
                 'status' => 'ok',
                 'updated' => null,
                 'url' => null,
@@ -3118,9 +3107,12 @@ class Exchange {
             'timeout' => $this->timeout, // milliseconds = seconds * 1000
             'urls' => array(
                 'api' => null,
+                'api_management' => null,
                 'doc' => null,
                 'fees' => null,
                 'logo' => null,
+                'referral' => null,
+                'test' => null,
                 'www' => null,
             ),
             'rollingWindowSize' => 60000, // default 60 seconds, requires rateLimiterAlgorithm to be set as 'rollingWindow'
@@ -7154,7 +7146,7 @@ class Exchange {
         if ($triggerPrice === null) {
             throw new ArgumentsRequired($this->id . ' createTriggerOrder() requires a $triggerPrice argument');
         }
-        $params['triggerPrice'] = $triggerPrice;
+        $params = $this->extend($params, array( 'triggerPrice' => $triggerPrice ));
         if ($this->has['createTriggerOrder']) {
             return $this->create_order($symbol, $type, $side, $amount, $price, $params);
         }
@@ -7176,7 +7168,7 @@ class Exchange {
         if ($triggerPrice === null) {
             throw new ArgumentsRequired($this->id . ' createTriggerOrderWs() requires a $triggerPrice argument');
         }
-        $params['triggerPrice'] = $triggerPrice;
+        $params = $this->extend($params, array( 'triggerPrice' => $triggerPrice ));
         if ($this->has['createTriggerOrderWs']) {
             return $this->create_order_ws($symbol, $type, $side, $amount, $price, $params);
         }
@@ -7198,7 +7190,7 @@ class Exchange {
         if ($stopLossPrice === null) {
             throw new ArgumentsRequired($this->id . ' createStopLossOrder() requires a $stopLossPrice argument');
         }
-        $params['stopLossPrice'] = $stopLossPrice;
+        $params = $this->extend($params, array( 'stopLossPrice' => $stopLossPrice ));
         if ($this->has['createStopLossOrder']) {
             return $this->create_order($symbol, $type, $side, $amount, $price, $params);
         }
@@ -7220,7 +7212,7 @@ class Exchange {
         if ($stopLossPrice === null) {
             throw new ArgumentsRequired($this->id . ' createStopLossOrderWs() requires a $stopLossPrice argument');
         }
-        $params['stopLossPrice'] = $stopLossPrice;
+        $params = $this->extend($params, array( 'stopLossPrice' => $stopLossPrice ));
         if ($this->has['createStopLossOrderWs']) {
             return $this->create_order_ws($symbol, $type, $side, $amount, $price, $params);
         }
@@ -7242,7 +7234,7 @@ class Exchange {
         if ($takeProfitPrice === null) {
             throw new ArgumentsRequired($this->id . ' createTakeProfitOrder() requires a $takeProfitPrice argument');
         }
-        $params['takeProfitPrice'] = $takeProfitPrice;
+        $params = $this->extend($params, array( 'takeProfitPrice' => $takeProfitPrice ));
         if ($this->has['createTakeProfitOrder']) {
             return $this->create_order($symbol, $type, $side, $amount, $price, $params);
         }
@@ -7264,7 +7256,7 @@ class Exchange {
         if ($takeProfitPrice === null) {
             throw new ArgumentsRequired($this->id . ' createTakeProfitOrderWs() requires a $takeProfitPrice argument');
         }
-        $params['takeProfitPrice'] = $takeProfitPrice;
+        $params = $this->extend($params, array( 'takeProfitPrice' => $takeProfitPrice ));
         if ($this->has['createTakeProfitOrderWs']) {
             return $this->create_order_ws($symbol, $type, $side, $amount, $price, $params);
         }
@@ -7816,7 +7808,7 @@ class Exchange {
             return null;
         }
         $market = $this->market($symbol);
-        return $this->decimal_to_precision($cost, TRUNCATE, $market['precision']['price'], $this->precisionMode, $this->paddingMode);
+        return $this->decimal_to_precision($cost, TRUNCATE, $this->safe_string_2($market['precision'], 'cost', 'price'), $this->precisionMode, $this->paddingMode);
     }
 
     public function price_to_precision(string $symbol, $price) {

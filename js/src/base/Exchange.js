@@ -93,7 +93,6 @@ export default class Exchange {
         this.validateClientSsl = false;
         this.validateServerSsl = true;
         this.timeout = 10000; // milliseconds
-        this.twofa = undefined; // two-factor authentication (2-FA)
         this.verbose = false;
         this.verboseTruncate = false;
         this.accounts = undefined;
@@ -108,7 +107,7 @@ export default class Exchange {
         this.enableLastHttpResponse = true;
         this.enableLastJsonResponse = false;
         this.enableLastResponseHeaders = true;
-        this.enableRateLimit = undefined;
+        this.enableRateLimit = true;
         this.exceptions = {};
         this.features = undefined;
         this.fundingRates = {};
@@ -127,7 +126,6 @@ export default class Exchange {
         this.liquidations = undefined;
         this.markets = undefined;
         this.markets_by_id = undefined;
-        this.marketsByAltname = undefined;
         this.marketsLoading = undefined;
         this.myLiquidations = undefined;
         this.name = undefined;
@@ -137,13 +135,12 @@ export default class Exchange {
         this.precision = undefined;
         this.precisionMode = undefined;
         this.quoteCurrencies = undefined;
-        this.rateLimit = undefined; // milliseconds
+        this.rateLimit = 2000; // milliseconds
         this.rateLimiterAlgorithm = 'leakyBucket';
         this.reloadingMarkets = undefined;
         this.requiresEddsa = false;
         this.requiresWeb3 = false;
         this.rollingWindowSize = 0.0; // set to 0.0 to use leaky bucket rate limiter
-        this.stablePairs = {};
         this.status = undefined;
         this.symbols = undefined;
         this.targetAccount = undefined;
@@ -1929,19 +1926,19 @@ export default class Exchange {
     // METHODS BELOW THIS LINE ARE TRANSPILED FROM TYPESCRIPT
     describe() {
         return {
-            'alias': false,
+            'alias': this.alias,
             'api': undefined,
             'authenticated': true,
             'bootstrapped': true,
-            'certified': false,
+            'certified': this.certified,
             'commonCurrencies': {
                 'BCHSV': 'BSV',
                 'XBT': 'BTC',
             },
-            'countries': undefined,
+            'countries': this.countries,
             'currencies': {},
             'dex': false,
-            'enableRateLimit': true,
+            'enableRateLimit': this.enableRateLimit,
             'exceptions': undefined,
             'fees': {
                 'funding': {
@@ -2226,7 +2223,7 @@ export default class Exchange {
                 '526': ExchangeNotAvailable,
                 '530': ExchangeNotAvailable,
             },
-            'id': undefined,
+            'id': this.id,
             'limits': {
                 'amount': { 'min': undefined, 'max': undefined },
                 'cost': { 'min': undefined, 'max': undefined },
@@ -2234,12 +2231,13 @@ export default class Exchange {
                 'price': { 'min': undefined, 'max': undefined },
             },
             'markets': undefined,
-            'name': undefined,
+            'name': this.name,
             'offline': false,
             'paddingMode': NO_PADDING,
             'precisionMode': TICK_SIZE,
-            'pro': false,
-            'rateLimit': 2000,
+            'pro': this.pro,
+            'rateLimit': this.rateLimit,
+            'rateLimiterAlgorithm': this.rateLimiterAlgorithm,
             'requiredCredentials': {
                 'accountId': false,
                 'apiKey': true,
@@ -2254,6 +2252,7 @@ export default class Exchange {
             },
             'status': {
                 'eta': undefined,
+                'info': undefined,
                 'status': 'ok',
                 'updated': undefined,
                 'url': undefined,
@@ -2262,9 +2261,12 @@ export default class Exchange {
             'timeout': this.timeout,
             'urls': {
                 'api': undefined,
+                'api_management': undefined,
                 'doc': undefined,
                 'fees': undefined,
                 'logo': undefined,
+                'referral': undefined,
+                'test': undefined,
                 'www': undefined,
             },
             'rollingWindowSize': 60000, // default 60 seconds, requires rateLimiterAlgorithm to be set as 'rollingWindow'
@@ -6128,7 +6130,7 @@ export default class Exchange {
         if (triggerPrice === undefined) {
             throw new ArgumentsRequired(this.id + ' createTriggerOrder() requires a triggerPrice argument');
         }
-        params['triggerPrice'] = triggerPrice;
+        params = this.extend(params, { 'triggerPrice': triggerPrice });
         if (this.has['createTriggerOrder']) {
             return await this.createOrder(symbol, type, side, amount, price, params);
         }
@@ -6151,7 +6153,7 @@ export default class Exchange {
         if (triggerPrice === undefined) {
             throw new ArgumentsRequired(this.id + ' createTriggerOrderWs() requires a triggerPrice argument');
         }
-        params['triggerPrice'] = triggerPrice;
+        params = this.extend(params, { 'triggerPrice': triggerPrice });
         if (this.has['createTriggerOrderWs']) {
             return await this.createOrderWs(symbol, type, side, amount, price, params);
         }
@@ -6174,7 +6176,7 @@ export default class Exchange {
         if (stopLossPrice === undefined) {
             throw new ArgumentsRequired(this.id + ' createStopLossOrder() requires a stopLossPrice argument');
         }
-        params['stopLossPrice'] = stopLossPrice;
+        params = this.extend(params, { 'stopLossPrice': stopLossPrice });
         if (this.has['createStopLossOrder']) {
             return await this.createOrder(symbol, type, side, amount, price, params);
         }
@@ -6197,7 +6199,7 @@ export default class Exchange {
         if (stopLossPrice === undefined) {
             throw new ArgumentsRequired(this.id + ' createStopLossOrderWs() requires a stopLossPrice argument');
         }
-        params['stopLossPrice'] = stopLossPrice;
+        params = this.extend(params, { 'stopLossPrice': stopLossPrice });
         if (this.has['createStopLossOrderWs']) {
             return await this.createOrderWs(symbol, type, side, amount, price, params);
         }
@@ -6220,7 +6222,7 @@ export default class Exchange {
         if (takeProfitPrice === undefined) {
             throw new ArgumentsRequired(this.id + ' createTakeProfitOrder() requires a takeProfitPrice argument');
         }
-        params['takeProfitPrice'] = takeProfitPrice;
+        params = this.extend(params, { 'takeProfitPrice': takeProfitPrice });
         if (this.has['createTakeProfitOrder']) {
             return await this.createOrder(symbol, type, side, amount, price, params);
         }
@@ -6243,7 +6245,7 @@ export default class Exchange {
         if (takeProfitPrice === undefined) {
             throw new ArgumentsRequired(this.id + ' createTakeProfitOrderWs() requires a takeProfitPrice argument');
         }
-        params['takeProfitPrice'] = takeProfitPrice;
+        params = this.extend(params, { 'takeProfitPrice': takeProfitPrice });
         if (this.has['createTakeProfitOrderWs']) {
             return await this.createOrderWs(symbol, type, side, amount, price, params);
         }
@@ -6738,7 +6740,7 @@ export default class Exchange {
             return undefined;
         }
         const market = this.market(symbol);
-        return this.decimalToPrecision(cost, TRUNCATE, market['precision']['price'], this.precisionMode, this.paddingMode);
+        return this.decimalToPrecision(cost, TRUNCATE, this.safeString2(market['precision'], 'cost', 'price'), this.precisionMode, this.paddingMode);
     }
     priceToPrecision(symbol, price) {
         if (price === undefined) {
